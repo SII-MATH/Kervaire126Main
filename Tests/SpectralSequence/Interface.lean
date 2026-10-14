@@ -1,6 +1,6 @@
 module
 
-public import KIP126
+public import KIP126.Def.SpectralSequence
 import Lean
 
 open Lean Elab Command
@@ -10,7 +10,7 @@ set_option maxHeartbeats 0
 -- A normal consumer imports only the public entry point. The contract locks
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../module02-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../spectral-sequence-api.json")
   let declarations ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let expectedExports ← ofExcept <| contract.getObjValAs? (Array String) "exports"
   let env ← getEnv
