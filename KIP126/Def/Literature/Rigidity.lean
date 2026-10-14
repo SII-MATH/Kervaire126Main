@@ -159,7 +159,7 @@ public structure NuModLambdaPageData (X : ClassicalObject) (n : ℕ) where
   safe : ∀ (r s t w : ℤ), 2 ≤ r → 0 ≤ t-w → t-w+r-2 < n →
     IsIso ((D.family.quotientProjection (D.nu.functor.obj (X.obj D.auxiliary)) n).pageMap r (s,t,w))
 
-public structure RigidityBindings where
+private structure RigidityBindings where
   pages : NuPageCoordinates D
   free : FreeLambdaPages D pages
   inversion : LambdaInversionComparison D pages
@@ -168,7 +168,7 @@ public structure RigidityBindings where
     (free.component X r hr s t w h).hom = comparisonPageMap D X (inversion.data X) r s t w
   weights : NuInfinityWeightMaps D
 
-public structure RigidityResults (B : RigidityBindings D) where
+private structure RigidityResults (B : RigidityBindings D) where
   degeneration : ∀ (X : ClassicalObject) (N : ℤ),
     DegeneratesAt (D.classical.obj (X.obj D.auxiliary)) N →
     DegeneratesAt (D.family.nu D.nu (X.obj D.auxiliary)).sequence N

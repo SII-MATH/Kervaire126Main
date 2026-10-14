@@ -2,133 +2,85 @@ module
 
 import KIP126.Def.AdamsSynthetic
 
-
-/-! Consumer checks use only ordinary imports and supplied interface values.
-The examples never construct a global Adams system or assume the final target. -/
-
-open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+/-! Ordinary-import consumers of the fixed project background.
+Only actual objects, maps, classes and mathematical hypotheses are parameters. -/
+open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory
+open KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence
 open KIP126.Core.SpectralSequence KIP126.AdamsSynthetic KIP126.Kervaire.Route
-
-universe u v w
+open KIP126.AdamsSynthetic.Standard
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 1000000
+example (X : Spectrum) : classical.map (𝟙 X) = 𝟙 (classical.obj X) := classical.map_id X
 
-section Classical
-variable {C : Type u} [StableHomotopyCategory.{u, v} C]
-  (A : ClassicalAdamsFamily C)
-
-example (X : C) : A.map (𝟙 X) = 𝟙 (A.obj X) := A.map_id X
-
-example {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    A.map (f ≫ g) = A.map f ≫ A.map g := A.map_comp f g
+example {X Y Z : Spectrum} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    classical.map (f ≫ g) = classical.map f ≫ classical.map g := classical.map_comp f g
 
 -- Naturality is for the actual induced page maps and differentials.
-example {X Y : C} (f : X ⟶ Y) (r : ℤ) (p : Bidegree) :
-    A.pageMap f r p ≫ (A.obj Y).d r p =
-      (A.obj X).d r p ≫ A.pageMap f r (p + (A.obj X).diffDeg r) ≫
-        eqToHom (by rw [(A.map f).diffDeg_eq]) :=
-  (A.map f).pageMap_comm_d r p
+example {X Y : Spectrum} (f : X ⟶ Y) (r : ℤ) (p : Bidegree) :
+    classical.pageMap f r p ≫ (classical.obj Y).d r p =
+      (classical.obj X).d r p ≫ classical.pageMap f r (p + (classical.obj X).diffDeg r) ≫
+        eqToHom (by rw [(classical.map f).diffDeg_eq]) :=
+  (classical.map f).pageMap_comm_d r p
 
-example {X Y : C} (f : X ⟶ Y) (r : ℤ) (p : Bidegree)
-    (x : (A.obj X).Page 2 p) (y : (A.obj X).Page r p)
-    (h : RepresentsOnPage (A.obj X) r p x y) :
-    RepresentsOnPage (A.obj Y) r p (A.pageMap f 2 p x) (A.pageMap f r p y) :=
-  (A.map f).representsOnPage h
+example {X Y : Spectrum} (f : X ⟶ Y) (r : ℤ) (p : Bidegree)
+    (x : (classical.obj X).Page 2 p) (y : (classical.obj X).Page r p)
+    (h : RepresentsOnPage (classical.obj X) r p x y) :
+    RepresentsOnPage (classical.obj Y) r p (classical.pageMap f 2 p x) (classical.pageMap f r p y) :=
+  (classical.map f).representsOnPage h
 
-example {X Y : C} (f : X ⟶ Y) (r : ℤ) (p q : Bidegree)
-    (x : (A.obj X).Page 2 p) (y : (A.obj X).Page 2 q)
-    (h : HasDifferential (A.obj X) r p q x y) :
-    HasDifferential (A.obj Y) r p q (A.pageMap f 2 p x) (A.pageMap f 2 q y) :=
-  (A.map f).hasDifferential h
+example {X Y : Spectrum} (f : X ⟶ Y) (r : ℤ) (p q : Bidegree)
+    (x : (classical.obj X).Page 2 p) (y : (classical.obj X).Page 2 q)
+    (h : HasDifferential (classical.obj X) r p q x y) :
+    HasDifferential (classical.obj Y) r p q (classical.pageMap f 2 p x) (classical.pageMap f 2 q y) :=
+  (classical.map f).hasDifferential h
 
-example [HasFunctorialCofiber (C := C)] (aux : AuxiliaryData C) :
-    A.obj (ClassicalObject.sphere.obj aux) = A.sphere := rfl
 
-variable (P : SphereE2Algebra A) (H : StandardSphereClasses A P)
+example : classical.sphere.Page 2 (2, 128) := standardClasses.standardH6Square
 
-example : A.sphere.Page 2 (2, 128) := H.standardH6Square
-
-example : H.standardH6Square = P.product (1, 64) (1, 64) H.standardH6 H.standardH6 :=
-  H.standardH6Square_eq_product
+example : standardClasses.standardH6Square = sphereAlgebra.product (1, 64) (1, 64) standardClasses.standardH6 standardClasses.standardH6 :=
+  standardClasses.standardH6Square_eq_product
 
 -- The final target is obtained only from the explicit finite-page and tail
 -- hypotheses. In particular, E₂ nonvanishing alone is not substituted here.
 example (N : ℤ) (hN : 2 ≤ N)
-    (hfinite : SurvivesTo A.sphere N (2, 128) H.standardH6Square)
-    (hout : ∀ r : ℤ, N ≤ r → A.sphere.d r (2, 128) = 0)
-    (hin : ∀ r : ℤ, N ≤ r → A.sphere.d r ((2, 128) - A.sphere.diffDeg r) = 0) :
-    NonzeroSurvival A.sphere (2, 128) H.standardH6Square := by
-  have hstart : A.sphere.r₀ = 2 := A.firstPage SphereSpectrum
-  exact nonzeroSurvival_of_survivesTo A.sphere N (by rw [hstart]; exact hN)
-    (2, 128) H.standardH6Square hfinite hout hin
+    (hfinite : SurvivesTo classical.sphere N (2, 128) standardClasses.standardH6Square)
+    (hout : ∀ r : ℤ, N ≤ r → classical.sphere.d r (2, 128) = 0)
+    (hin : ∀ r : ℤ, N ≤ r → classical.sphere.d r ((2, 128) - classical.sphere.diffDeg r) = 0) :
+    NonzeroSurvival classical.sphere (2, 128) standardClasses.standardH6Square := by
+  have hstart : classical.sphere.r₀ = 2 := classical.firstPage SphereSpectrum
+  exact nonzeroSurvival_of_survivesTo classical.sphere N (by rw [hstart]; exact hN)
+    (2, 128) standardClasses.standardH6Square hfinite hout hin
 
--- Every name below is also used successfully above. These failures concern
--- different dependent inputs, rather than an absent declaration.
-#check_failure (fun (A B : ClassicalAdamsFamily C) (x : A.sphere.Page 2 (2, 128)) =>
-  (x : B.sphere.Page 2 (2, 128)))
+example (X : SyntheticSpectrum) : family.map (𝟙 X) = 𝟙 (family.obj X).sequence := family.map_id X
 
-#check_failure (fun (A : ClassicalAdamsFamily C) (P Q : SphereE2Algebra A)
-    (H : StandardSphereClasses A P) => (H : StandardSphereClasses A Q))
-end Classical
+example {X Y Z : SyntheticSpectrum} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    family.map (f ≫ g) = family.map f ≫ family.map g := family.map_comp f g
 
-section Synthetic
-variable {C : Type u} [StableHomotopyCategory.{u, v} C]
-  [HasFunctorialCofiber (C := C)]
-  {Syn : Type w} [SyntheticCategory.{w, v} Syn]
-  [HasFunctorialCofiber (C := Syn)]
-  (A : ClassicalAdamsFamily C) (F : SyntheticAdamsFamily Syn)
-  (N : NuFunctorData C Syn) (aux : AuxiliaryData C)
+example {X Y : SyntheticSpectrum} (f : X ⟶ Y) (r : ℤ) (i : Tridegree) :
+    family.pageMap f r i ≫ (family.obj Y).sequence.d r i =
+      (family.obj X).sequence.d r i ≫
+        family.pageMap f r (i + (family.obj X).sequence.diffDeg r) ≫
+          eqToHom (by rw [(family.map f).diffDeg_eq]) :=
+  (family.map f).pageMap_comm_d r i
 
-example (X : Syn) : F.map (𝟙 X) = 𝟙 (F.obj X).sequence := F.map_id X
+example : (family.nu nu SphereSpectrum).sequence ≅ family.sphere.sequence := family.nuSphereIso nu
 
-example {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    F.map (f ≫ g) = F.map f ≫ F.map g := F.map_comp f g
+example (X : SyntheticSpectrum) (n : ℕ) :
+    (family.obj X).sequence ⟶ (family.obj (XModLambdaN X n)).sequence :=
+  family.quotientProjection X n
 
-example {X Y : Syn} (f : X ⟶ Y) (r : ℤ) (i : Tridegree) :
-    F.pageMap f r i ≫ (F.obj Y).sequence.d r i =
-      (F.obj X).sequence.d r i ≫
-        F.pageMap f r (i + (F.obj X).sequence.diffDeg r) ≫
-          eqToHom (by rw [(F.map f).diffDeg_eq]) :=
-  (F.map f).pageMap_comm_d r i
+example : family.sphere.E₂ (2, 128, 128) :=
+  comparison.sphereE2 2 128 0 standardClasses.standardH6Square
 
-example : (F.nu N SphereSpectrum).sequence ≅ F.sphere.sequence := F.nuSphereIso N
+example (X Y : ClassicalObject)
+    (f : X.obj auxiliary ⟶ Y.obj auxiliary) (a s t : ℤ) (k : ℕ)
+    (x : (classical.obj (X.obj auxiliary)).Page 2 (s, t)) :
+    family.pageMap ((SyntheticCategory.biShift (0, a)).map (nu.functor.map f))
+        2 (s, t, t+a-k) (comparison.nuE2 X a s t k x) =
+      comparison.nuE2 Y a s t k (classical.pageMap f 2 (s, t) x) :=
+  comparison.nu_natural X Y f a s t k x
 
-example (X : Syn) (n : ℕ) :
-    (F.obj X).sequence ⟶ (F.obj (XModLambdaN X n)).sequence :=
-  F.quotientProjection X n
-
-example (K : E2Comparison A F N aux) (P : SphereE2Algebra A)
-    (H : StandardSphereClasses A P) : F.sphere.E₂ (2, 128, 128) :=
-  K.sphereE2 2 128 0 H.standardH6Square
-
-example (K : E2Comparison A F N aux) (X Y : ClassicalObject)
-    (f : X.obj aux ⟶ Y.obj aux) (a s t : ℤ) (k : ℕ)
-    (x : (A.obj (X.obj aux)).Page 2 (s, t)) :
-    F.pageMap ((SyntheticCategory.biShift (0, a)).map (N.functor.map f))
-        2 (s, t, t+a-k) (K.nuE2 X a s t k x) =
-      K.nuE2 Y a s t k (A.pageMap f 2 (s, t) x) :=
-  K.nu_natural X Y f a s t k x
-
-#check_failure (fun (A B : ClassicalAdamsFamily C) (F : SyntheticAdamsFamily Syn)
-    (N : NuFunctorData C Syn) (aux : AuxiliaryData C) (K : E2Comparison A F N aux) =>
-  (K : E2Comparison B F N aux))
-end Synthetic
-
-section ActualMap
-variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
-
-example (F : SyntheticAdamsFamily Syn) {X Y : Syn} (g : X ⟶ Y)
-    {FX : Filtration (syntheticHomotopy X)} {FY : Filtration (syntheticHomotopy Y)}
-    (cx : Convergence (F.obj X).sequence (syntheticHomotopy X) FX)
-    (cy : Convergence (F.obj Y).sequence (syntheticHomotopy Y) FY)
-    (M : ConvergentMap F g cx cy) (p : ℤ × ℤ) :
-    M.filteredMap.map p = syntheticHomotopyMap g p := M.filteredMap_map p
-
-#check_failure (fun (F : SyntheticAdamsFamily Syn) (X Y : Syn) (g h : X ⟶ Y)
-    (FX : Filtration (syntheticHomotopy X)) (FY : Filtration (syntheticHomotopy Y))
-    (cx : Convergence (F.obj X).sequence (syntheticHomotopy X) FX)
-    (cy : Convergence (F.obj Y).sequence (syntheticHomotopy Y) FY)
-    (M : ConvergentMap F g cx cy) => (M : ConvergentMap F h cx cy))
-end ActualMap
 
 end

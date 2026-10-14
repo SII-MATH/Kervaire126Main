@@ -1,7 +1,9 @@
 module
 
 public import KIP126.Def.Literature.Applicability
+import all KIP126.Def.Literature.Applicability
 public import KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.Classical
 
 /-! BHS consumer language on the one supplied system. Adapted from
 Def/Kervaire/Route/SourceLanguage.lean and Interface/Challenge/Literature/Source.lean,
@@ -111,7 +113,7 @@ public def RealizationKernel : Prop :=
   ∀ (X : SyntheticObject) (m w : ℤ) (a : BiHom m w (X.obj D.nu D.auxiliary)),
     (D.recovery.realization.map a = 0 ↔ ∃ k : ℕ, lambdaMultiply k a = 0)
 
-public structure BHSResults : Prop where
+private structure BHSResults : Prop where
   finite_lift : FiniteLiftCriterion D
   bockstein : BocksteinDifferential D
   differentials : DifferentialRigidity D
@@ -123,7 +125,7 @@ public structure BHSResults : Prop where
 /-- These selected-object laws are explicit source-to-model comparison
 obligations, distinct from the conditional source theorem above. The source
 completion and comparison construction is deferred with the producer. -/
-public structure BHSSelectedComparisons : Prop where
+private structure BHSSelectedComparisons : Prop where
   permanent_lift : ∀ X : ClassicalObject, PermanentLiftAt D X
   filtration_lambda : ∀ X : ClassicalObject, FiltrationLambdaAt D X
   realization_kernel : RealizationKernel D
@@ -137,7 +139,7 @@ public def realizeNuZero (R : RealizationCoordinates D) (X : ClassicalObject)
 
 /-- BHS realization results with every source applicability condition. The
 boundary lift is existential: it never asserts a formula for an arbitrary lift. -/
-public structure BHSRealizationResults (R : RealizationCoordinates D) : Prop where
+private structure BHSRealizationResults (R : RealizationCoordinates D) : Prop where
   lifetime : ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ C),
     BHSObjectApplicability D products (X.obj D.auxiliary) →
     ∀ (s t : ℤ) (r : ℕ), 1 ≤ r →

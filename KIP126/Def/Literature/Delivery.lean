@@ -1,15 +1,25 @@
 module
 
 public import KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.Classical
 public import KIP126.Def.Literature.Rigidity
+import all KIP126.Def.Literature.Rigidity
 public import KIP126.Def.Literature.Triangles
+import all KIP126.Def.Literature.Triangles
 public import KIP126.Def.Literature.Lift
+import all KIP126.Def.Literature.Lift
 public import KIP126.Def.Literature.EInfinity
+import all KIP126.Def.Literature.EInfinity
 public import KIP126.Def.Literature.BHS
+import all KIP126.Def.Literature.BHS
 public import KIP126.Def.Literature.RealizationTransport
+import all KIP126.Def.Literature.RealizationTransport
 public import KIP126.Def.Literature.ClassicalRange
+import all KIP126.Def.Literature.ClassicalRange
 public import KIP126.Def.Literature.BX
+import all KIP126.Def.Literature.BX
 public import KIP126.Def.Literature.Secondary
+import all KIP126.Def.Literature.Secondary
 
 /-! Correlated literature delivery, retaining the bindings/results/interface
 architecture of Interface/Challenge/Literature/Delivery at bbac1fc05843.
@@ -27,7 +37,7 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C]
   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)
 
 /-- Sources, their fixed coordinates, and comparison witnesses. -/
-public structure LiteratureBindings extends ClassicalBindings D where
+private structure LiteratureBindings extends ClassicalBindings D where
   rigidity : RigidityBindings D
   eInfinity : EInfinityPresentation D
   infinityShift : InfinityShiftCoordinates D
@@ -41,7 +51,7 @@ public structure LiteratureBindings extends ClassicalBindings D where
 
 /-- Mathematical results use exactly the selected sources and background.
 Internal arbitrary-choice θ₅ transport remains a separate theorem parameter. -/
-public structure LiteratureResults (B : LiteratureBindings D) where
+private structure LiteratureResults (B : LiteratureBindings D) where
   foundation : ClassicalFoundationResults D
   classical : ClassicalResults D B.toClassicalBindings
   classicalRange : ClassicalRangeResults D
@@ -57,12 +67,12 @@ public structure LiteratureResults (B : LiteratureBindings D) where
   secondary : SecondaryResults D B.toClassicalBindings B.secondary
 
 /-- A consumer supplies one correlated delivery on its given model. -/
-public structure LiteratureInterface where
+private structure LiteratureInterface where
   bindings : LiteratureBindings D
   results : LiteratureResults D bindings
 
 /-- The corrected weight map is epi by the same actual λ/quotient formula. -/
-public theorem LiteratureInterface.weight_epi (L : LiteratureInterface D)
+private theorem LiteratureInterface.weight_epi (L : LiteratureInterface D)
     (X : ClassicalObject) (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t) :
     CategoryTheory.Epi (L.bindings.rigidity.weights.map X s t w₁ w₂ hw ht) := by
   rw [L.bindings.weights_lambda]

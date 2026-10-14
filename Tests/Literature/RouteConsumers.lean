@@ -1,51 +1,60 @@
 module
 
-public import KIP126.Def.Literature
+import KIP126.Def.Literature
 
 open CategoryTheory CategoryTheory.Limits
-open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic
-open KIP126.Classical.Adams KIP126.Core.SpectralSequence KIP126.Kervaire.Route
-open KIP126.Literature
-universe u v w
-variable {C : Type u} [StableHomotopyCategory.{u,v} C]
-  [HasFunctorialCofiber (C := C)]
-  {Syn : Type w} [SyntheticCategory.{w,v} Syn]
-  [HasFunctorialCofiber (C := Syn)] {D : Model C Syn}
+open KIP126.StableHomotopy KIP126.Synthetic.Context
+open KIP126.AdamsSynthetic KIP126.Classical.Adams KIP126.Core.SpectralSequence
+open KIP126.Kervaire.Route
+open KIP126.AdamsSynthetic.Standard (Spectrum SyntheticSpectrum model)
+open KIP126.Literature.Standard
 
--- A finite lift consumes the actual quotient restriction, without nonzero.
-example (L : LiteratureInterface D) (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
-    (s t : ℤ) (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
-    (hx : ReachesPage (D.classical.obj (X.obj D.auxiliary)) (q+1) (s,t) x) :
-    ∃ a : BiHom (t-s) t (XModLambdaN (nuZero D X) q),
-      a ≫ (D.quotients.tower (nuZero D X)).rho 1 q hq = firstLabel D X s t x :=
-  (L.results.bhs.finite_lift X q hq s t x).mp hx
+-- Zero is allowed in finite lifting; q > 0 is still a mathematical premise.
+example (q : ℕ) (hq : 0 < q) (s t : ℤ)
+    (x : model.classical.sphere.Page 2 (s,t))
+    (hx : ReachesPage model.classical.sphere (q+1) (s,t) x) :
+    ∃ a : BiHom (t-s) t (XModLambdaN (nuZero .sphere) q),
+      a ≫ (model.quotients.tower (nuZero .sphere)).rho 1 q hq = firstLabel .sphere s t x :=
+  (bhs_finite_lift .sphere q hq s t x).mp hx
 
--- The untruncated source theorem cannot silently discard applicability.
-example (R : BHSResults D) (X : ClassicalObject) (products : HasProductsOfShape ℕ C)
-    (h : BHSObjectApplicability D products (X.obj D.auxiliary)) : PermanentLiftAt D X := by
-  fail_if_success exact R.permanent_lift X products
-  exact R.permanent_lift X products h
+-- Source completeness is retained, while its fixed-object comparison is a
+-- separately tracked upstream theorem; neither asks for a result delivery.
+example (products : HasProductsOfShape ℕ Spectrum)
+    (h : BHSObjectApplicability products (SphereSpectrum (C := Spectrum))) :
+    PermanentLiftAt .sphere := bhs_permanent_lift .sphere products h
 
--- The full source delivery supplies the selected-object transport separately.
-example (L : LiteratureInterface D) (X : ClassicalObject) : PermanentLiftAt D X :=
-  L.results.selectedComparisons.permanent_lift X
+example : PermanentLiftAt .sphere := selected_permanent_lift .sphere
 
--- BR21 keeps the actual detector map, with no extra nonzero-survival claim.
-example (L : LiteratureInterface D) :
-    HasDifferential (D.classical.obj D.auxiliary.detector) 3 (16,112) (19,114)
-      ((D.classical.map L.bindings.tmf.sourceIso.hom).pageMap 2 (16,112)
-        L.bindings.tmfSource.v2Sixteen)
-      ((D.classical.map L.bindings.tmf.sourceIso.hom).pageMap 2 (19,114)
-        L.bindings.tmfSource.betaGFour) := L.results.tmf.detector_d3 D
+example (products : HasProductsOfShape ℕ Spectrum) : True := by
+  fail_if_success have h : PermanentLiftAt .sphere := bhs_permanent_lift .sphere products
+  trivial
 
--- BX gives one correlated choice; the vanishing argument is still needed.
-example (L : LiteratureInterface D) :
-    ∃ θ : BiHom 62 64 (S_0_0 : Syn),
-      Theta5Detected D θ ∧ θ+θ=0 ∧
-      (D.H6SquarePermanent ↔ lambdaEtaThetaSquare L.bindings.eta θ = 0) := by
-  obtain ⟨θ,hθ⟩ := L.results.bx
-  exact ⟨θ,hθ.theta_label,hθ.order_two,hθ.untruncated⟩
+example (r : ℕ) (hr : 1 ≤ r) :
+    SurvivesTo model.classical.sphere ((r : ℤ)+3) (2,128)
+      model.standardClasses.standardH6Square ↔ quotientClass r (etaThetaSquare bxTheta5) = 0 :=
+  bx_finite r hr
 
--- The original positive-stem restriction retains the h₀ tower in stem zero.
-example (L : LiteratureInterface D) (s t : ℤ) (hp : 0 < t-s) (hv : t-s < 2*s-3) :
-    Subsingleton (D.classical.sphere.Page 2 (s,t)) := L.results.classicalRange.sphereVanishing s t hp hv
+example : model.H6SquarePermanent ↔ lambdaEtaThetaSquare bxTheta5 = 0 := bx_untruncated
+
+example : Theta5Detected bxTheta5 ∧ bxTheta5 + bxTheta5 = 0 :=
+  ⟨bx_theta_label, bx_order_two⟩
+
+example (s t : ℤ) (hpos : 0 < t-s) (hline : t-s < 2*s-3) :
+    Subsingleton (model.classical.sphere.Page 2 (s,t)) := sphereVanishing s t hpos hline
+
+example (X : ClassicalObject) (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t) :
+    Epi (KIP126.AdamsSynthetic.Standard.weight_map X s t w₁ w₂ hw ht) :=
+  weight_epi X s t w₁ w₂ hw ht
+
+example (X : ClassicalObject) (n : ℕ) (hn : 0 < n) (s t w : ℤ)
+    (h : 0 ≤ t-w ∧ t-w < n) :
+    IsIso ((model.family.quotientProjection
+      (model.nu.functor.obj (X.obj model.auxiliary)) n).pageMap 2 (s,t,w)) :=
+  finite_quotient_retained X n hn s t w h
+
+#check nu_cofiber
+#check lift
+#check triangle_lift
+#check nuCofiber_distinguished
+#check eInfinity_lambda_finite
+#check eInfinity_finite_labels

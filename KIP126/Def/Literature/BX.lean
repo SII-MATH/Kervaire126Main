@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.Classical
 
 /-! BX Proposition 7.19 at one distinguished source choice. Migrated from
 Def/Kervaire/Theta5/Synthetic and Route/SourceLanguage at bbac1fc05843,
@@ -39,7 +40,7 @@ public def deltaH6Square : BiHom 125 129 (S_0_0 : Syn) :=
 
 /-- All three statements use this same θ. The last clause is an equivalence,
 not a proof of its zero right-hand side or of the final permanence target. -/
-public structure BXSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
+private structure BXSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
     (θ : BiHom 62 64 (S_0_0 : Syn)) : Prop where
   eta_label : sphereFirstQuotient D 1 2 (quotientClass 1 η) = D.standardClasses.standardHi 1
   theta_label : Theta5Detected D θ
@@ -51,7 +52,7 @@ public structure BXSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
   untruncated : D.H6SquarePermanent ↔ lambdaEtaThetaSquare η θ = 0
 
 /-- A single common source choice; no theorem for every detected θ is assumed. -/
-public def BXDistinguishedInput (η : BiHom 1 2 (S_0_0 : Syn)) : Prop :=
+private def BXDistinguishedInput (η : BiHom 1 2 (S_0_0 : Syn)) : Prop :=
   ∃ θ : BiHom 62 64 (S_0_0 : Syn), BXSourceResults D η θ
 
 end

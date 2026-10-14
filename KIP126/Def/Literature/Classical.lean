@@ -32,7 +32,7 @@ public abbrev ModTwoCohomology (n : ℤ) (X : C) :=
 
 /-- The ordinary stable-connectivity and HF₂ universal-coefficient results.
 Their applicability to this chosen background is a producer obligation. -/
-public structure ClassicalFoundationResults where
+private structure ClassicalFoundationResults where
   sphere_connected : IsConnected (SphereSpectrum (C := C)) (-1)
   connected_homology_vanishing : ∀ (X : C) (n : ℤ), IsConnected X n →
     ∀ i : ℤ, i ≤ n → Subsingleton (ModTwoHomology D.coefficients i X)
@@ -97,7 +97,7 @@ public def etaSourceIso (he : normalizedExponent D.classicalTower D.auxiliary.et
       (SyntheticCategory.biShift_comp (1,1) (0,1)).app S_0_0).symm
 
 /-- One tmf source, compared with the chosen detector and its actual unit. -/
-public structure TmfBindings where
+private structure TmfBindings where
   source : C
   sourceIso : source ≅ D.auxiliary.detector
   sourceUnit : SphereSpectrum ⟶ source
@@ -106,7 +106,7 @@ public structure TmfBindings where
   deltaH1g : D.classical.sphere.Page 2 (9,54)
 
 /-- All source choices are correlated with one actual model. -/
-public structure ClassicalBindings where
+private structure ClassicalBindings where
   realization : RealizationCoordinates D
   eta : BiHom 1 2 (S_0_0 : Syn)
   eta_exponent : normalizedExponent D.classicalTower D.auxiliary.etaMap = 1
@@ -117,7 +117,7 @@ public structure ClassicalBindings where
 
 /-- Xu Corollary 1.3, IWX's 62-stem, and standard Hopf detections.
 The stronger arbitrary-choice synthetic consequences are derived separately. -/
-public structure ClassicalResults (B : ClassicalBindings D) : Prop where
+private structure ClassicalResults (B : ClassicalBindings D) : Prop where
   h5Square_permanent : NonzeroSurvival D.classical.sphere (2,64)
     (D.standardClasses.standardHiSquare 5)
   theta5_detection : ClassicalTheta5Detected D B.theta5
@@ -136,14 +136,14 @@ public structure ClassicalResults (B : ClassicalBindings D) : Prop where
     Theta5Detected D a ∧ B.realization.sphereMap D 62 64 a = B.theta5
 
 /-- The chosen classical θ₅ has order dividing two by the 62-stem result. -/
-public theorem ClassicalResults.theta5_order_two {B : ClassicalBindings D}
+private theorem ClassicalResults.theta5_order_two {B : ClassicalBindings D}
     (R : ClassicalResults D B) : B.theta5 + B.theta5 = 0 :=
   R.stem62_exponent_two B.theta5
 
 /-- The precise additional comparison needed for arbitrary synthetic choices.
 These transport obligations are explicit parameters, not silently upgraded
 classical source facts or new unconditional Literature results. -/
-public structure Theta5Transport (B : ClassicalBindings D) : Prop where
+private structure Theta5Transport (B : ClassicalBindings D) : Prop where
   detection : ∀ a, Theta5Detected D a →
     ClassicalTheta5Detected D (B.realization.sphereMap D 62 64 a)
   doubling_kernel : ∀ a, Theta5Detected D a →
@@ -153,18 +153,18 @@ public structure Theta5Transport (B : ClassicalBindings D) : Prop where
       (D.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62 →
     FiltrationAtLeast D.syntheticTower 6 (a-b)
 
-public theorem theta5_order_two {B : ClassicalBindings D} (R : ClassicalResults D B)
+private theorem theta5_order_two {B : ClassicalBindings D} (R : ClassicalResults D B)
     (T : Theta5Transport D B) (a : BiHom 62 64 (S_0_0 : Syn)) (ha : Theta5Detected D a) : a+a=0 :=
   T.doubling_kernel a ha (by rw [map_add]; exact R.stem62_exponent_two _)
 
-public theorem theta5_indeterminacy_AF_ge_6 {B : ClassicalBindings D} (R : ClassicalResults D B)
+private theorem theta5_indeterminacy_AF_ge_6 {B : ClassicalBindings D} (R : ClassicalResults D B)
     (T : Theta5Transport D B) (a b : BiHom 62 64 (S_0_0 : Syn))
     (ha : Theta5Detected D a) (hb : Theta5Detected D b) : FiltrationAtLeast D.syntheticTower 6 (a-b) :=
   T.filtration_reflection a b ha hb (by
     rw [map_sub]
     exact R.theta5_filtration_gap _ _ (T.detection a ha) (T.detection b hb))
 
-public theorem theta5_detected_exists {B : ClassicalBindings D} (R : ClassicalResults D B) :
+private theorem theta5_detected_exists {B : ClassicalBindings D} (R : ClassicalResults D B) :
     ∃ a : BiHom 62 64 (S_0_0 : Syn), Theta5Detected D a := by
   obtain ⟨a, ha, _⟩ := R.theta5_lift
   exact ⟨a, ha⟩

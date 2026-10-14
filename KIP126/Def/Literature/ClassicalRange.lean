@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.Classical
 public import Mathlib.CategoryTheory.Monoidal.Mon
 
 /-! Source results beyond the old axiom inventory: the positive-stem
@@ -32,7 +33,7 @@ public def oneLineTarget (j : ℕ) : D.classical.sphere.Page 2
   D.sphereAlgebra.product (1,1) (2,((2^(j-1+1) : ℕ) : ℤ))
     (D.standardClasses.standardHi 0) (D.standardClasses.standardHiSquare (j-1))
 
-public structure ClassicalRangeResults : Prop where
+private structure ClassicalRangeResults : Prop where
   sphereVanishing : SphereVanishingLine D
   two_detection : ClassicalDetects (D.classicalConvergence .sphere) (1,1)
     (D.standardClasses.standardHi 0) (classicalTwo (C := C))
@@ -47,7 +48,7 @@ public def classicalSphereProduct {m n : ℤ}
     HomotopyGroup (C := C) (m+n) SphereSpectrum :=
   (shiftFunctorAdd C m n).hom.app SphereSpectrum ≫ (shiftFunctor C n).map x ≫ y
 
-public structure TmfSourceData (B : TmfBindings D) where
+private structure TmfSourceData (B : TmfBindings D) where
   algebra : MonObj B.source
   algebra_unit : algebra.one = B.sourceUnit
   convergence : ClassicalTowerConvergence D.classicalTower B.source
@@ -56,7 +57,7 @@ public structure TmfSourceData (B : TmfBindings D) where
   v2Sixteen : (D.classical.obj B.source).Page 2 (16,112)
   betaGFour : (D.classical.obj B.source).Page 2 (19,114)
 
-public def TmfSourceData.high125 {B : TmfBindings D} (S : TmfSourceData D B) :
+private def TmfSourceData.high125 {B : TmfBindings D} (S : TmfSourceData D B) :
     HomotopyGroup (C := C) 125 SphereSpectrum :=
   classicalSphereProduct
     (classicalSphereProduct (classicalSphereProduct S.kappaBar S.kappaBar)
@@ -64,7 +65,7 @@ public def TmfSourceData.high125 {B : TmfBindings D} (S : TmfSourceData D B) :
 
 /-- Only the supplied product κ̄⁴w is asserted nonzero under the source
 unit. This does not assert nonvanishing for every homotopy representative. -/
-public structure TmfSourceResults {B : TmfBindings D} (S : TmfSourceData D B) : Prop where
+private structure TmfSourceResults {B : TmfBindings D} (S : TmfSourceData D B) : Prop where
   connective : ∀ n : ℤ, n < 0 → Subsingleton (HomotopyGroup n B.source)
   finiteModTwoType : ∀ n : ℤ, Finite (ModTwoHomology D.coefficients n B.source)
   g_nonzero : B.g ≠ 0
@@ -82,7 +83,7 @@ public structure TmfSourceResults {B : TmfBindings D} (S : TmfSourceData D B) : 
 
 /-- The source differential transfers along its actual detector isomorphism.
 No second comparison of pages or extra nonzero-survival premise is chosen. -/
-public theorem TmfSourceResults.detector_d3 {B : TmfBindings D}
+private theorem TmfSourceResults.detector_d3 {B : TmfBindings D}
     {S : TmfSourceData D B} (R : TmfSourceResults D S) :
     HasDifferential (D.classical.obj D.auxiliary.detector) 3 (16,112) (19,114)
       ((D.classical.map B.sourceIso.hom).pageMap 2 (16,112) S.v2Sixteen)

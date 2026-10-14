@@ -247,7 +247,7 @@ public def InfinityShiftCoordinates.weightMap (S : InfinityShiftCoordinates D)
       rw [Int.toNat_of_nonneg (by omega)]; omega
     rw [he]; rfl)
 
-public structure EInfinityCompatibility (P : EInfinityPresentation D) (S : InfinityShiftCoordinates D) : Prop where
+private structure EInfinityCompatibility (P : EInfinityPresentation D) (S : InfinityShiftCoordinates D) : Prop where
   lambda_nu : ∀ (X : ClassicalObject) (k : ℕ) (p : Bidegree) (w : ℤ) (hw : w ≤ p.2)
       (x : ((D.family.nu D.nu (X.obj D.auxiliary)).sequence.ssData (p.1,p.2,w)).eInfty),
     P.nuWindow D X p (w-k) (by omega) (S.lambdaMap D (.nu X) k p w x) =
@@ -290,7 +290,7 @@ public structure EInfinityCompatibility (P : EInfinityPresentation D) (S : Infin
         P.finiteWindow D X q hq (s,t) w hw z = subquotientClass (cycles D X (q-t+w) (s,t)) (boundaries D X (1+t-w) (s,t)) ⟨x,hx⟩
 
 /-- Surjectivity is derived from the actual quotient formula and λ equation. -/
-public theorem EInfinityCompatibility.lambda_epi {P : EInfinityPresentation D}
+private theorem EInfinityCompatibility.lambda_epi {P : EInfinityPresentation D}
     {S : InfinityShiftCoordinates D} (R : EInfinityCompatibility D P S)
     (X : ClassicalObject) (k : ℕ) (p : Bidegree) (w : ℤ) (hw : w ≤ p.2) :
     Epi (S.lambdaMap D (.nu X) k p w) := by
@@ -304,7 +304,7 @@ public theorem EInfinityCompatibility.lambda_epi {P : EInfinityPresentation D}
   rw [R.lambda_nu X k p w hw]
   simpa only [AddEquiv.apply_symm_apply] using hz
 
-public theorem EInfinityCompatibility.weight_epi {P : EInfinityPresentation D}
+private theorem EInfinityCompatibility.weight_epi {P : EInfinityPresentation D}
     {S : InfinityShiftCoordinates D} (R : EInfinityCompatibility D P S)
     (X : ClassicalObject) (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t) :
     Epi (S.weightMap D X s t w₁ w₂ hw) := by

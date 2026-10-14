@@ -78,7 +78,7 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C]
 
 /-- Low-degree Toda input from the fixed source. Every label and product
 uses the same supplied synthetic sphere and first-quotient comparison. -/
-public structure TodaSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
+private structure TodaSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
     (S : TodaSourceData (Syn := Syn)) : Prop where
   h0_label : sphereFirstQuotient D.nu D.quotients.functoriality D.firstQuotient
     1 1 (quotientClass 1 S.h0) = D.standardClasses.standardHi 0
@@ -89,7 +89,7 @@ public structure TodaSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
 /-- The separate comparison/construction obligations used by the secondary
 route. These are explicit inputs, not consequences of the low-degree source
 results and not an asserted construction of the Toda witnesses. -/
-public structure TodaSecondaryComparison (η : BiHom 1 2 (S_0_0 : Syn))
+private structure TodaSecondaryComparison (η : BiHom 1 2 (S_0_0 : Syn))
     (S : TodaSourceData (Syn := Syn)) where
   low_bracket : TripleToda S.h0 η S.h0 (by simpa using sphereProduct η η)
   twoStar : BiHom 1 0 (S_0_0 : Syn)

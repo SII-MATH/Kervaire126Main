@@ -1,15 +1,15 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "module": "Computation",
   "source_repository": "https://github.com/SII-MATH/Kervaire126.git",
   "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
   "obligation_review_commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
   "attribution": "KIP126 contributors; Apache-2.0. Adapted from pinned Git objects.",
-  "source_policy": "Pinned Git objects only; producer implementations and raw/generated/checker dependency closure excluded.",
+  "source_policy": "Pinned Git sources retained with attribution. Fixed interfaces reuse the existing mathematical definitions and proofs; individual missing constructions/source proofs are explicit tracked sorry obligations. Raw/checker and Blueprint migrations remain deferred.",
   "files": [
     {
       "path": "KIP126/Def/Computation/Basis.lean",
-      "sha256": "ce52601189c4097a31e0aef60a14f56fa51687d4fa83ef9aa2577c769662d91e",
+      "sha256": "c4cc6975b2884400b55e205892ca518587bfdbf75a06e04aa968509255fe7bda",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -27,9 +27,93 @@
           "sha256": "700303c179f55dc4114806454c3ae35cf66296f423ea5e133562b2cbf8303a2c"
         }
       ],
-      "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "role": "mathematical-support-or-internal-generic-implementation",
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
     },
+    {
+      "path": "KIP126/Def/Computation/InternalAudit.lean",
+      "sha256": "424d51cca5508d42c32b133276ab7f3a81af68978c1e456cb579aa6d958f7948",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "role": "internal-trust-audit",
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    },
+    {
+      "path": "KIP126/Def/Computation/Source.lean",
+      "sha256": "617455ae723660d3382ca3cf71d104515ac208a9da3271f03cbfbd54f80fb1b5",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Presentation.lean",
+          "sha256": "877fb9103f5fb14a6e755c407c8b94f6ce23c34fe4ca83b0d1ce1a0c028cb469"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "role": "mathematical-support-or-internal-generic-implementation",
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    },
+    {
+      "path": "KIP126/Def/Computation/Standard.lean",
+      "sha256": "304d8a31392e7b719f4a9801b6e158f4f23da540817556de041fc03a0089fbd7",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Presentation.lean",
+          "sha256": "877fb9103f5fb14a6e755c407c8b94f6ce23c34fe4ca83b0d1ce1a0c028cb469"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/LinProgram/Interpretation/Near126/Names/Data.lean",
+          "sha256": "700303c179f55dc4114806454c3ae35cf66296f423ea5e133562b2cbf8303a2c"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/LinProgram/Interpretation/Route/Certification.lean",
+          "sha256": "d675c468b1de131e84289d567b1887910e379c04773ad3c84f4bea4ab55bd5c7"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Route/Consequences.lean",
+          "sha256": "f9145e2e51bf204c6a0af6935c0b83bc7afc97e617cb0682ec444ca5f65371cf"
+        },
+        {
+          "commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+          "path": "KIPBase/Section7/BjmBxCriterion.lean",
+          "sha256": "b8dc9ec6bcf9af1f1d2fa3adad5b4c527e5f77209da72e36f1495c7d061747c4"
+        }
+      ],
+      "role": "fixed-upstream-objects-and-direct-theorems",
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    },
+    {
+      "path": "KIP126/Def/Computation.lean",
+      "sha256": "fdcbc5726eb4d9cc78733bf49792f7b1763eb8081fc8df5eb01f8f76bb1cd9e1",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "role": "mathematical-support-or-internal-generic-implementation",
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    }
+  ],
+  "retired_files": [
     {
       "path": "KIP126/Def/Computation/Classes.lean",
       "sha256": "6e0e160c1542cb3fdc2b979e29502761e3d0c9c7511cd25dd8a328a72b827b2f",
@@ -46,7 +130,8 @@
         }
       ],
       "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports.",
+      "replacement": "KIP126/Def/Computation/Standard.lean"
     },
     {
       "path": "KIP126/Def/Computation/Cofiber.lean",
@@ -64,7 +149,8 @@
         }
       ],
       "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports.",
+      "replacement": "KIP126/Def/Computation/Standard.lean"
     },
     {
       "path": "KIP126/Def/Computation/Delivery.lean",
@@ -77,20 +163,8 @@
         }
       ],
       "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
-    },
-    {
-      "path": "KIP126/Def/Computation/InternalAudit.lean",
-      "sha256": "28b80cc05f6875c5a7ca8cb6637a233e3a52f97c0a3eb0f7816510954d69872a",
-      "origins": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
-          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
-        }
-      ],
-      "role": "entry-or-internal-trust-audit",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports.",
+      "replacement": "KIP126/Def/Computation/Standard.lean"
     },
     {
       "path": "KIP126/Def/Computation/Near126.lean",
@@ -113,7 +187,8 @@
         }
       ],
       "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports.",
+      "replacement": "KIP126/Def/Computation/Standard.lean"
     },
     {
       "path": "KIP126/Def/Computation/Route.lean",
@@ -131,38 +206,8 @@
         }
       ],
       "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
-    },
-    {
-      "path": "KIP126/Def/Computation/Source.lean",
-      "sha256": "700d3a1f7807b5aa45b34b0bc5adb347e60228f7943541bd545280fbbcb4f1c7",
-      "origins": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Interface/Challenge/Computation/Presentation.lean",
-          "sha256": "877fb9103f5fb14a6e755c407c8b94f6ce23c34fe4ca83b0d1ce1a0c028cb469"
-        },
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
-          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
-        }
-      ],
-      "role": "consumer-interface-and-derived-operations",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
-    },
-    {
-      "path": "KIP126/Def/Computation.lean",
-      "sha256": "960e8a1f8598e54fc42b9fe59a80964cd3aa0d3fe30f99a96eae715e035898ba",
-      "origins": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
-          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
-        }
-      ],
-      "role": "entry-or-internal-trust-audit",
-      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports."
+      "change": "Adapted to one explicit Model; no concrete producers or raw/checker imports.",
+      "replacement": "KIP126/Def/Computation/Standard.lean"
     }
   ]
 }

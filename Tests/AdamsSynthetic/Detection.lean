@@ -1,63 +1,49 @@
 module
 
-public import KIP126.Def.AdamsSynthetic
+import KIP126.Def.AdamsSynthetic
 
-/-! Consumers accept one coherent system; none constructs a concrete model. -/
-open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
-open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic
-universe u v
+/-! Ordinary-import consumers of the fixed project background.
+Only actual objects, maps, classes and mathematical hypotheses are parameters. -/
+open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory
+open KIP126.StableHomotopy KIP126.Synthetic.Context
+open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence
+open KIP126.Core.SpectralSequence KIP126.AdamsSynthetic KIP126.Kervaire.Route
+open KIP126.AdamsSynthetic.Standard
 noncomputable section
-variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]
-  [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}
-  {F : SyntheticAdamsFamily Syn} (P : SyntheticTowerPresentation unit F)
-  {X Y : Syn} (c : SyntheticTowerConvergence P X) (i : Tridegree)
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 1000000
 
-example : SyntheticCanonicalIdentification P X c.identification := c.canonical
+variable (U V : SyntheticObject) (i : Tridegree)
 
-example (s m w : ℤ) (a : BiHom m w X) :
-    FiltrationAtLeast P s a ↔
-      ∃ b : BiHom m w ((P.tower X).stageAt s),
-        b ≫ (P.tower X).projection s = a := Iff.rfl
+example : SyntheticCanonicalIdentification syntheticTower (U.obj nu auxiliary) (convergence U).identification := (convergence U).canonical
 
-example (f : X ⟶ Y) (p : ℤ × ℤ) (a : BiHom p.1 p.2 X) :
+example (s m w : ℤ) (a : BiHom m w (U.obj nu auxiliary)) :
+    FiltrationAtLeast syntheticTower s a ↔
+      ∃ b : BiHom m w ((syntheticTower.tower (U.obj nu auxiliary)).stageAt s),
+        b ≫ (syntheticTower.tower (U.obj nu auxiliary)).projection s = a := Iff.rfl
+
+example (f : (U.obj nu auxiliary) ⟶ (V.obj nu auxiliary)) (p : ℤ × ℤ) (a : BiHom p.1 p.2 (U.obj nu auxiliary)) :
     syntheticHomotopyMap f p a = a ≫ f := rfl
 
-example (x : (F.obj X).E₂ i) (a : BiHom (i.2.1-i.1) i.2.2 X)
-    (h : DetectsNonzero c i x a) : Detects c i x a := h.1
+example (x : (family.obj (U.obj nu auxiliary)).E₂ i) (a : BiHom (i.2.1-i.1) i.2.2 (U.obj nu auxiliary))
+    (h : DetectsNonzero (convergence U) i x a) : Detects (convergence U) i x a := h.1
 
-example (a : BiHom (i.2.1-i.1) i.2.2 X) (h : Detects c i 0 a) :
-    FiltrationAtLeast P (i.1+1) a := detects_zero_filtration c i h
+example (a : BiHom (i.2.1-i.1) i.2.2 (U.obj nu auxiliary)) (h : Detects (convergence U) i 0 a) :
+    FiltrationAtLeast syntheticTower (i.1+1) a := detects_zero_filtration (convergence U) i h
 
-example (x : (F.obj X).E₂ i) (a b : BiHom (i.2.1-i.1) i.2.2 X)
-    (ha : Detects c i x a) (hb : Detects c i x b) :
-    FiltrationAtLeast P (i.1+1) (a-b) := detects_sub_filtration c i ha hb
+example (x : (family.obj (U.obj nu auxiliary)).E₂ i) (a b : BiHom (i.2.1-i.1) i.2.2 (U.obj nu auxiliary))
+    (ha : Detects (convergence U) i x a) (hb : Detects (convergence U) i x b) :
+    FiltrationAtLeast syntheticTower (i.1+1) (a-b) := detects_sub_filtration (convergence U) i ha hb
 
-example (x : (F.obj X).E₂ i) (e e' : ((F.obj X).sequence.ssData i).eInfty)
-    (h : HasInfinityRepresentative (F.obj X) 2 i x e)
-    (h' : HasInfinityRepresentative (F.obj X) 2 i x e') : e=e' := h.unique h'
+example (x : (family.obj (U.obj nu auxiliary)).E₂ i) (e e' : ((family.obj (U.obj nu auxiliary)).sequence.ssData i).eInfty)
+    (h : HasInfinityRepresentative (family.obj (U.obj nu auxiliary)) 2 i x e)
+    (h' : HasInfinityRepresentative (family.obj (U.obj nu auxiliary)) 2 i x e') : e=e' := h.unique h'
 
-/-- A proof about another canonical identification cannot be substituted. -/
-example (Q : SyntheticTowerPresentation unit F) (_d : SyntheticTowerConvergence Q X)
-    (x : (F.obj X).E₂ i) (a : BiHom (i.2.1-i.1) i.2.2 X)
-    (_h : Detects c i x a) : True := by
-  fail_if_success have : Detects _d i x a := _h
+
+-- A zero leading term still supplies no nonzero detection.
+example (a : BiHom (i.2.1-i.1) i.2.2 (U.obj nu auxiliary))
+    (_h : Detects (convergence U) i 0 a) : True := by
+  fail_if_success have : DetectsNonzero (convergence U) i 0 a := _h
   trivial
 
-/-- Zero-leading detection carries no nonvanishing proof. -/
-example (a : BiHom (i.2.1-i.1) i.2.2 X) (_h : Detects c i 0 a) : True := by
-  fail_if_success have : DetectsNonzero c i 0 a := _h
-  trivial
-
-/-- Separation remains an additional mathematical obligation. -/
-example : True := by
-  fail_if_success exact (show HomotopySeparated P X from c)
-  trivial
-/-- A zero-length extension follows the actual map on the same infinity page. -/
-example (d : SyntheticTowerConvergence P Y) (g : X ⟶ Y)
-    (M : ConvergentMap F g c.toConvergence d.toConvergence)
-    (x : ((F.obj X).sequence.ssData i).eInfty) :
-    M.ExtensionEquation (i.2.1-i.1,i.2.2) i.1 0 rfl
-      (by simp [SyntheticTowerConvergence.toConvergence])
-      (elementMap x) (elementMap x ≫ (F.map g).eInftyMap i) :=
-  M.extensionEquation_zero i (elementMap x)
 end

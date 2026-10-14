@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "module": "Computation",
   "entry_module": "KIP126.Def.Computation",
-  "principle": "给定同一模型上相关的显式接口即可消费；具体实例构造和输入证明后补；派生结论使用定理。",
+  "principle": "普通公共导入即可调用同一固定背景上的对象与定理；下游不传入结果包。保留真正数学前提；未完成构造与证明逐项登记，不能把可调用误报为已证明。",
   "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
   "obligation_review_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
   "type_authority": "computation-api.json",
@@ -28,6 +28,96 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.GeneratorCatalogue",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.GeneratorCatalogue.degree",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceBasisSpecification",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceMonomial",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceMonomial.value",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SphereArchive",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SphereArchive.atom_degree",
+          "line": 46
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparison_symm_coordinates_basis",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.coordinates",
+          "line": 86
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.coordinates_basis",
+          "line": 93
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.archive",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceCoordinates",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.coordinates",
+          "line": 161
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.coordinates_basis",
+          "line": 173
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.comparison",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.comparisonF2",
+          "line": 165
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Basis.lean",
           "declaration": "KIP126.Computation.GeneratorCatalogue",
@@ -79,14 +169,14 @@
           "line": 101
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.archive",
+        "KIP126.Computation.Standard.sourceCoordinates",
+        "KIP126.Computation.Standard.coordinates",
+        "KIP126.Computation.Standard.coordinates_basis",
+        "KIP126.Computation.Standard.comparison",
+        "KIP126.Computation.Standard.comparisonF2"
+      ]
     },
     {
       "id": "computation-classes",
@@ -104,6 +194,196 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.P",
+          "line": 134
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.Q",
+          "line": 136
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.T",
+          "line": 126
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.U",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.V",
+          "line": 128
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.W",
+          "line": 122
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.X",
+          "line": 132
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.Y",
+          "line": 130
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.archive",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h0",
+          "line": 153
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h1",
+          "line": 154
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h2",
+          "line": 155
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h4",
+          "line": 156
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h5",
+          "line": 157
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.atom_h6",
+          "line": 158
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.comparison",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.correction",
+          "line": 138
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2Target",
+          "line": 143
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3Candidate",
+          "line": 148
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3OtherCandidate",
+          "line": 150
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d7Source",
+          "line": 145
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h0",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h0Six",
+          "line": 118
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h0Square",
+          "line": 116
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h1",
+          "line": 103
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h2",
+          "line": 104
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h4",
+          "line": 105
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h5",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h5Square",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h6",
+          "line": 107
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h6Square",
+          "line": 108
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.highClass",
+          "line": 140
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.product",
+          "line": 110
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceCoordinates",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceData",
+          "line": 42
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Classes.lean",
           "declaration": "KIP126.Computation.Bindings",
@@ -270,14 +550,44 @@
           "line": 92
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.P",
+        "KIP126.Computation.Standard.Q",
+        "KIP126.Computation.Standard.T",
+        "KIP126.Computation.Standard.U",
+        "KIP126.Computation.Standard.V",
+        "KIP126.Computation.Standard.W",
+        "KIP126.Computation.Standard.X",
+        "KIP126.Computation.Standard.Y",
+        "KIP126.Computation.Standard.archive",
+        "KIP126.Computation.Standard.atom",
+        "KIP126.Computation.Standard.atom_h0",
+        "KIP126.Computation.Standard.atom_h1",
+        "KIP126.Computation.Standard.atom_h2",
+        "KIP126.Computation.Standard.atom_h4",
+        "KIP126.Computation.Standard.atom_h5",
+        "KIP126.Computation.Standard.atom_h6",
+        "KIP126.Computation.Standard.comparison",
+        "KIP126.Computation.Standard.correction",
+        "KIP126.Computation.Standard.d2Target",
+        "KIP126.Computation.Standard.d3Candidate",
+        "KIP126.Computation.Standard.d3OtherCandidate",
+        "KIP126.Computation.Standard.d7Source",
+        "KIP126.Computation.Standard.h0",
+        "KIP126.Computation.Standard.h0Six",
+        "KIP126.Computation.Standard.h0Square",
+        "KIP126.Computation.Standard.h1",
+        "KIP126.Computation.Standard.h2",
+        "KIP126.Computation.Standard.h4",
+        "KIP126.Computation.Standard.h5",
+        "KIP126.Computation.Standard.h5Square",
+        "KIP126.Computation.Standard.h6",
+        "KIP126.Computation.Standard.h6Square",
+        "KIP126.Computation.Standard.highClass",
+        "KIP126.Computation.Standard.product",
+        "KIP126.Computation.Standard.sourceCoordinates",
+        "KIP126.Computation.Standard.sourceData"
+      ]
     },
     {
       "id": "computation-cofiber",
@@ -295,6 +605,56 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.bottom",
+          "line": 326
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiberSource",
+          "line": 347
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_d3",
+          "line": 349
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_target_not_hit_through5",
+          "line": 353
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_target_to_e6",
+          "line": 351
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.nuCofiberSequence",
+          "line": 324
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.topCell",
+          "line": 329
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.top_comparison",
+          "line": 332
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Cofiber.lean",
           "declaration": "KIP126.Computation.cofiberSequence",
@@ -326,14 +686,16 @@
           "line": 60
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.bottom",
+        "KIP126.Computation.Standard.cofiberSource",
+        "KIP126.Computation.Standard.cofiber_d3",
+        "KIP126.Computation.Standard.cofiber_target_not_hit_through5",
+        "KIP126.Computation.Standard.cofiber_target_to_e6",
+        "KIP126.Computation.Standard.nuCofiberSequence",
+        "KIP126.Computation.Standard.topCell",
+        "KIP126.Computation.Standard.top_comparison"
+      ]
     },
     {
       "id": "computation-delivery",
@@ -346,6 +708,296 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.archive",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_d3",
+          "line": 349
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_target_not_hit_through5",
+          "line": 353
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.cofiber_target_to_e6",
+          "line": 351
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.comparison",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.correction_permanent",
+          "line": 244
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_h0Six_h6",
+          "line": 217
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_h6",
+          "line": 374
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_x125_8",
+          "line": 206
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_h0Square_x123_13_2",
+          "line": 224
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_h4_x109_12",
+          "line": 220
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_x126_4",
+          "line": 228
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_x126_6_candidates",
+          "line": 234
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d7_source",
+          "line": 231
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.delta_agrees",
+          "line": 358
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detectorBetaGFour",
+          "line": 363
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detectorComparison",
+          "line": 364
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detectorComponent",
+          "line": 361
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detectorV2Sixteen",
+          "line": 362
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detector_beta_agrees",
+          "line": 369
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detector_d3",
+          "line": 382
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.detector_v2_agrees",
+          "line": 366
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e2_stem125_low",
+          "line": 271
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e4_stem124_af12",
+          "line": 276
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e4_stem125_af12",
+          "line": 278
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e5_stem124_af11",
+          "line": 274
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e5_stem125_af13",
+          "line": 280
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.g_agrees",
+          "line": 357
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h1_correction_zero",
+          "line": 263
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h5Square_b_zero",
+          "line": 250
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.high_e5",
+          "line": 198
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_h2_boundary",
+          "line": 265
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_permanent",
+          "line": 246
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_permanent_cycle",
+          "line": 286
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_h2_boundary",
+          "line": 268
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_permanent",
+          "line": 248
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_permanent_cycle",
+          "line": 289
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceData",
+          "line": 42
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.square_exhaustive",
+          "line": 283
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.square_nonzero",
+          "line": 282
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_not_h0_multiple",
+          "line": 252
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_not_h2_multiple",
+          "line": 255
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_only_incoming",
+          "line": 193
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_permanent_cycle",
+          "line": 190
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.topCell",
+          "line": 329
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.u_permanent",
+          "line": 196
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_not_hit",
+          "line": 204
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_to_e12",
+          "line": 202
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.w_d6_targets",
+          "line": 240
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.w_to_e6",
+          "line": 189
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_h2_zero",
+          "line": 258
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_not_hit",
+          "line": 215
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_to_e6",
+          "line": 213
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_not_h2_multiple",
+          "line": 260
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_not_hit",
+          "line": 211
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_to_e5",
+          "line": 209
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Delivery.lean",
           "declaration": "KIP126.Computation.DetectorData",
@@ -387,14 +1039,64 @@
           "line": 86
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.archive",
+        "KIP126.Computation.Standard.cofiber_d3",
+        "KIP126.Computation.Standard.cofiber_target_not_hit_through5",
+        "KIP126.Computation.Standard.cofiber_target_to_e6",
+        "KIP126.Computation.Standard.comparison",
+        "KIP126.Computation.Standard.correction_permanent",
+        "KIP126.Computation.Standard.d2_h0Six_h6",
+        "KIP126.Computation.Standard.d2_h6",
+        "KIP126.Computation.Standard.d2_x125_8",
+        "KIP126.Computation.Standard.d3_h0Square_x123_13_2",
+        "KIP126.Computation.Standard.d3_h4_x109_12",
+        "KIP126.Computation.Standard.d3_x126_4",
+        "KIP126.Computation.Standard.d3_x126_6_candidates",
+        "KIP126.Computation.Standard.d7_source",
+        "KIP126.Computation.Standard.delta_agrees",
+        "KIP126.Computation.Standard.detectorBetaGFour",
+        "KIP126.Computation.Standard.detectorComparison",
+        "KIP126.Computation.Standard.detectorComponent",
+        "KIP126.Computation.Standard.detectorV2Sixteen",
+        "KIP126.Computation.Standard.detector_beta_agrees",
+        "KIP126.Computation.Standard.detector_d3",
+        "KIP126.Computation.Standard.detector_v2_agrees",
+        "KIP126.Computation.Standard.e2_stem125_low",
+        "KIP126.Computation.Standard.e4_stem124_af12",
+        "KIP126.Computation.Standard.e4_stem125_af12",
+        "KIP126.Computation.Standard.e5_stem124_af11",
+        "KIP126.Computation.Standard.e5_stem125_af13",
+        "KIP126.Computation.Standard.g_agrees",
+        "KIP126.Computation.Standard.h1_correction_zero",
+        "KIP126.Computation.Standard.h5Square_b_zero",
+        "KIP126.Computation.Standard.high_e5",
+        "KIP126.Computation.Standard.p_h2_boundary",
+        "KIP126.Computation.Standard.p_permanent",
+        "KIP126.Computation.Standard.p_permanent_cycle",
+        "KIP126.Computation.Standard.q_h2_boundary",
+        "KIP126.Computation.Standard.q_permanent",
+        "KIP126.Computation.Standard.q_permanent_cycle",
+        "KIP126.Computation.Standard.sourceData",
+        "KIP126.Computation.Standard.square_exhaustive",
+        "KIP126.Computation.Standard.square_nonzero",
+        "KIP126.Computation.Standard.t_not_h0_multiple",
+        "KIP126.Computation.Standard.t_not_h2_multiple",
+        "KIP126.Computation.Standard.t_only_incoming",
+        "KIP126.Computation.Standard.t_permanent_cycle",
+        "KIP126.Computation.Standard.topCell",
+        "KIP126.Computation.Standard.u_permanent",
+        "KIP126.Computation.Standard.v_not_hit",
+        "KIP126.Computation.Standard.v_to_e12",
+        "KIP126.Computation.Standard.w_d6_targets",
+        "KIP126.Computation.Standard.w_to_e6",
+        "KIP126.Computation.Standard.x_h2_zero",
+        "KIP126.Computation.Standard.x_not_hit",
+        "KIP126.Computation.Standard.x_to_e6",
+        "KIP126.Computation.Standard.y_not_h2_multiple",
+        "KIP126.Computation.Standard.y_not_hit",
+        "KIP126.Computation.Standard.y_to_e5"
+      ]
     },
     {
       "id": "computation-near126",
@@ -417,6 +1119,111 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_x125_8",
+          "line": 206
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.high_e5",
+          "line": 198
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.no_other_incoming",
+          "line": 316
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_permanent_cycle",
+          "line": 286
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_permanent_cycle",
+          "line": 289
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_only_incoming",
+          "line": 193
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_permanent_cycle",
+          "line": 190
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.table2",
+          "line": 301
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.table3",
+          "line": 293
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.table7",
+          "line": 298
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.table9",
+          "line": 306
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.u_permanent",
+          "line": 196
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_not_hit",
+          "line": 204
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_to_e12",
+          "line": 202
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.w_to_e6",
+          "line": 189
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_not_hit",
+          "line": 215
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_to_e6",
+          "line": 213
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_not_hit",
+          "line": 211
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_to_e5",
+          "line": 209
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Near126.lean",
           "declaration": "KIP126.Computation.HighComponent",
@@ -463,14 +1270,27 @@
           "line": 99
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.d2_x125_8",
+        "KIP126.Computation.Standard.high_e5",
+        "KIP126.Computation.Standard.no_other_incoming",
+        "KIP126.Computation.Standard.p_permanent_cycle",
+        "KIP126.Computation.Standard.q_permanent_cycle",
+        "KIP126.Computation.Standard.t_only_incoming",
+        "KIP126.Computation.Standard.t_permanent_cycle",
+        "KIP126.Computation.Standard.table2",
+        "KIP126.Computation.Standard.table3",
+        "KIP126.Computation.Standard.table7",
+        "KIP126.Computation.Standard.table9",
+        "KIP126.Computation.Standard.u_permanent",
+        "KIP126.Computation.Standard.v_not_hit",
+        "KIP126.Computation.Standard.v_to_e12",
+        "KIP126.Computation.Standard.w_to_e6",
+        "KIP126.Computation.Standard.x_not_hit",
+        "KIP126.Computation.Standard.x_to_e6",
+        "KIP126.Computation.Standard.y_not_hit",
+        "KIP126.Computation.Standard.y_to_e5"
+      ]
     },
     {
       "id": "computation-route",
@@ -489,6 +1309,201 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.correction_permanent",
+          "line": 244
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_h0Six_h6",
+          "line": 217
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d2_x125_8",
+          "line": 206
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_h0Square_x123_13_2",
+          "line": 224
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_h4_x109_12",
+          "line": 220
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_x126_4",
+          "line": 228
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d3_x126_6_candidates",
+          "line": 234
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.d7_source",
+          "line": 231
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e2_stem125_low",
+          "line": 271
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e4_stem124_af12",
+          "line": 276
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e4_stem125_af12",
+          "line": 278
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e5_stem124_af11",
+          "line": 274
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.e5_stem125_af13",
+          "line": 280
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h1_correction_zero",
+          "line": 263
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.h5Square_b_zero",
+          "line": 250
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.high_e5",
+          "line": 198
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_h2_boundary",
+          "line": 265
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_permanent",
+          "line": 246
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.p_permanent_cycle",
+          "line": 286
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_h2_boundary",
+          "line": 268
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_permanent",
+          "line": 248
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.q_permanent_cycle",
+          "line": 289
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_not_h0_multiple",
+          "line": 252
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_not_h2_multiple",
+          "line": 255
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_only_incoming",
+          "line": 193
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.t_permanent_cycle",
+          "line": 190
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.u_permanent",
+          "line": 196
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_not_hit",
+          "line": 204
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.v_to_e12",
+          "line": 202
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.w_d6_targets",
+          "line": 240
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.w_to_e6",
+          "line": 189
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_h2_zero",
+          "line": 258
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_not_hit",
+          "line": 215
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.x_to_e6",
+          "line": 213
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_not_h2_multiple",
+          "line": 260
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_not_hit",
+          "line": 211
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.y_to_e5",
+          "line": 209
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/Computation/Route.lean",
           "declaration": "KIP126.Computation.RouteResults",
           "line": 28
@@ -499,14 +1514,45 @@
           "line": 85
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.correction_permanent",
+        "KIP126.Computation.Standard.d2_h0Six_h6",
+        "KIP126.Computation.Standard.d2_x125_8",
+        "KIP126.Computation.Standard.d3_h0Square_x123_13_2",
+        "KIP126.Computation.Standard.d3_h4_x109_12",
+        "KIP126.Computation.Standard.d3_x126_4",
+        "KIP126.Computation.Standard.d3_x126_6_candidates",
+        "KIP126.Computation.Standard.d7_source",
+        "KIP126.Computation.Standard.e2_stem125_low",
+        "KIP126.Computation.Standard.e4_stem124_af12",
+        "KIP126.Computation.Standard.e4_stem125_af12",
+        "KIP126.Computation.Standard.e5_stem124_af11",
+        "KIP126.Computation.Standard.e5_stem125_af13",
+        "KIP126.Computation.Standard.h1_correction_zero",
+        "KIP126.Computation.Standard.h5Square_b_zero",
+        "KIP126.Computation.Standard.high_e5",
+        "KIP126.Computation.Standard.p_h2_boundary",
+        "KIP126.Computation.Standard.p_permanent",
+        "KIP126.Computation.Standard.p_permanent_cycle",
+        "KIP126.Computation.Standard.q_h2_boundary",
+        "KIP126.Computation.Standard.q_permanent",
+        "KIP126.Computation.Standard.q_permanent_cycle",
+        "KIP126.Computation.Standard.t_not_h0_multiple",
+        "KIP126.Computation.Standard.t_not_h2_multiple",
+        "KIP126.Computation.Standard.t_only_incoming",
+        "KIP126.Computation.Standard.t_permanent_cycle",
+        "KIP126.Computation.Standard.u_permanent",
+        "KIP126.Computation.Standard.v_not_hit",
+        "KIP126.Computation.Standard.v_to_e12",
+        "KIP126.Computation.Standard.w_d6_targets",
+        "KIP126.Computation.Standard.w_to_e6",
+        "KIP126.Computation.Standard.x_h2_zero",
+        "KIP126.Computation.Standard.x_not_hit",
+        "KIP126.Computation.Standard.x_to_e6",
+        "KIP126.Computation.Standard.y_not_h2_multiple",
+        "KIP126.Computation.Standard.y_not_hit",
+        "KIP126.Computation.Standard.y_to_e5"
+      ]
     },
     {
       "id": "computation-source",
@@ -524,6 +1570,76 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom",
+          "line": 17
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom.degree",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom.record",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.ProgramData",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparisonF2",
+          "line": 105
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparison_mul",
+          "line": 113
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.h6_square",
+          "line": 121
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceData",
+          "line": 42
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceComponent",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceProduct",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/Computation/Standard.lean",
+          "declaration": "KIP126.Computation.Standard.sourceAtom",
+          "line": 41
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Computation/Source.lean",
           "declaration": "KIP126.Computation.Atom",
@@ -565,14 +1681,12 @@
           "line": 120
         }
       ],
-      "consumers": [
-        "Tests.Computation.Consumers",
-        "Tests.Delivery"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Computation.Standard.sourceData",
+        "KIP126.Computation.Standard.sourceComponent",
+        "KIP126.Computation.Standard.sourceProduct",
+        "KIP126.Computation.Standard.sourceAtom"
+      ]
     }
   ],
   "retained_obligations": [
@@ -584,8 +1698,8 @@
     "No README/AGENTS/Blueprint changes."
   ],
   "checks": [
-    "ComputationChecks",
-    "KIP126.Def.Computation.InternalAudit"
+    "Tests.Computation.Consumers",
+    "Tests.Computation.Interface"
   ],
   "source_disposition": {
     "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -857,8 +1971,14 @@
   "validation": {
     "command": "lake build",
     "result": "passed",
-    "jobs": 2188,
-    "internal_axiom_audit": 570,
-    "concrete_producers_constructed": false
-  }
+    "interface_types_and_exports": "locked by normal public import tests",
+    "direct_consumer_tests": true,
+    "proof_obligations": "exact direct names/types/bodies locked; no project axioms or synthetic sorry",
+    "previous_coverage_not_promoted": true,
+    "jobs": 2197,
+    "cache_invalidation_negative_checks": "passed; registry and API JSON are traced through Lake needs"
+  },
+  "status": "fixed-direct-interfaces; individual proofs and constructions tracked separately",
+  "proof_obligation_registry": "proof-obligations.json",
+  "migration_map": "fixed-interface-migration.json"
 }

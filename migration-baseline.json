@@ -1,7 +1,7 @@
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "created_date_utc": "2026-10-14",
-  "stage": "spectral-sequence-adams-synthetic-literature-computation-interfaces-frozen",
+  "stage": "fixed-upstream-objects-and-callable-theorems-frozen",
   "source_repository": {
     "url": "https://github.com/SII-MATH/Kervaire126.git",
     "local_path": "../Kervaire126",
@@ -49,7 +49,7 @@
     ],
     "first_code_slice": "SpectralSequence and complete AdamsSynthetic consumer interfaces",
     "external_repository_layout": "deferred",
-    "delivery_slice": "Literature and dependent Computation consumer deliveries from the pinned review baseline"
+    "delivery_slice": "Fixed Literature and Computation interfaces on AdamsSynthetic.Standard; no caller-supplied result packages."
   },
   "status": {
     "lean_code_migrated": true,
@@ -58,7 +58,7 @@
     "remote_configured": false,
     "mathematical_interfaces_approved": true,
     "original_boundary_conflicts_resolved": true,
-    "interface_approval_basis": "User-approved implementation plan; this records the design scope, not certification of concrete models.",
+    "interface_approval_basis": "User explicitly requested fixed upstream objects/theorems with individual temporary sorry, removal of Challenge and downstream result packages, retained mathematical premises, synchronized tracking and cached build.",
     "boundary_resolution_scope": [
       "SpectralSequence",
       "AdamsSynthetic",
@@ -73,80 +73,64 @@
   "spectralSequence": {
     "source_manifest": "spectral-sequence-sources.json",
     "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-    "spectral_sequence_files": 132,
+    "api_contract": "spectral-sequence-api.json",
+    "capability_ledger": "spectral-sequence-contracts.json",
     "root_import": "KIP126.Def.SpectralSequence",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2188,
-    "source_files_byte_identical_to_review_commit": false,
-    "cache_reuse": {
-      "dependency_packages": "Local symlinks under .lake/packages to ../Kervaire126/.lake/packages; all 9 retained package revisions verified against lake-manifest.json.",
-      "project_modules": "Seeded available prior artifacts; Lake rebuilt project modules under the new package identity.",
-      "fresh_clone": "Committed dependency manifest pins the same revisions; local symlinks are untracked."
-    },
-    "readme_and_agents_modified": false,
-    "concurrent_source_worktree_changes": "Excluded; migration reads pinned Git objects, not uncommitted working-tree edits.",
-    "blueprint": "Deferred by user instruction.",
-    "mathematical_bodies_unchanged": false,
-    "api_contract": "spectral-sequence-api.json",
+    "build_jobs": 2197,
+    "source_files": 135,
     "visibility": {
-      "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 312,
+      "default": "private; explicit public declarations",
       "named_public_declarations": 308,
       "generated_declarations": 685,
       "exports_including_generated_declarations": 993,
-      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "Only KIP126.Def.SpectralSequence modules, including internal algebra support, and Mathlib/Lean dependencies"
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
+      "Tests.SpectralSequence.Consumers",
       "Tests.SpectralSequence.Interface",
-      "Tests.SpectralSequence.Visibility",
-      "Tests.SpectralSequence.Consumers"
+      "Tests.SpectralSequence.Visibility"
     ],
     "axiom_audit": {
       "target": "KIP126.Def.SpectralSequence.InternalAudit",
       "declarations_checked": 2304,
-      "scope": "All own public and private declarations; upstream modules audited separately.",
-      "transitive_axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "unexpected_dependencies": [],
-      "project_axiom_declarations": []
+      "project_axiom_declarations": [],
+      "registered_direct_sorry": 0,
+      "registry": "proof-obligations.json",
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included."
     },
-    "capability_ledger": "spectral-sequence-contracts.json",
-    "source_files": 135,
-    "mathematical_change": "Original mathematical models and proof strength retained; new consumer operations proved and unused implementation conversions made private.",
-    "internal_algebra_files": 8,
-    "internal_algebra_directory": "KIP126/Def/SpectralSequence/Internal/Algebra",
-    "filtration_definition": "One public KIP126.Core.SpectralSequence.Filtration record is shared by algebra support, filtered complexes and convergence; no Algebra.Filtration duplicate or conversion wrappers remain.",
-    "internal_algebra_counting": "The 8 internal algebra files are included in the 132 SpectralSequence source files."
+    "implementation_style": "Generic mathematical definitions and proved operations; no sorry.",
+    "proof_completion_claimed": true,
+    "cache_reused": true,
+    "readme_and_agents_modified": false,
+    "blueprint": "Deferred by user instruction."
   },
   "module_boundaries": [
     {
       "module": "SpectralSequence",
       "name_zh": "谱序列核心",
       "responsibility": "Generic pages, differentials, common representatives, survival, morphisms, convergence, detection and ESS relations.",
-      "status": "implemented-and-frozen"
+      "status": "generic-core-proved"
     },
     {
       "module": "AdamsSynthetic",
       "name_zh": "Adams 与 synthetic 系统",
-      "responsibility": "One explicit coherent classical/synthetic background, designated classes and multiplication, nu/lambda quotients, canonical detection and extension interfaces.",
-      "status": "implemented-and-frozen"
+      "responsibility": "One fixed coherent classical/synthetic background, designated classes, actual multiplication, nu/lambda quotients, detection and ESS.",
+      "status": "fixed-direct-api-frozen; individual proofs and constructions pending"
     },
     {
       "module": "Literature",
       "name_zh": "文献交付",
       "responsibility": "Source-bound results with full hypotheses on the same AdamsSynthetic background.",
-      "status": "consumer-interface-implemented-and-frozen; producers deferred"
+      "status": "fixed-direct-api-frozen; individual proofs and constructions pending"
     },
     {
       "module": "Computation",
       "name_zh": "计算交付",
       "responsibility": "Mathematical computation results, comparison with actual objects and calibration of the same designated classes.",
-      "status": "consumer-interface-implemented-and-frozen; producers deferred"
+      "status": "fixed-direct-api-frozen; individual proofs and constructions pending"
     },
     {
       "module": "ProofTools",
@@ -162,12 +146,11 @@
     }
   ],
   "delivery_boundary": {
-    "common_background": "KIP126.Kervaire.Route.Model C Syn",
-    "existing_delivery_pattern": "KIP126.Challenge2 has exactly literature and its dependent computation fields on the same Model.",
-    "new_root_fields_in_challenge2": false,
-    "literature_and_computation_migrated": true,
-    "root_entry": "KIP126.Interface.Challenge2",
-    "root_field_check": "Tests.Delivery"
+    "common_background": "KIP126.AdamsSynthetic.Standard.model",
+    "pattern": "Fixed named objects and callable theorems; mathematical premises remain, caller-supplied result packages removed.",
+    "challenge_removed": true,
+    "root_check": "Tests.Integration",
+    "shared_literature_computation_labels": true
   },
   "adamsSynthetic": {
     "source_manifest": "adams-synthetic-sources.json",
@@ -177,172 +160,115 @@
     "root_import": "KIP126.Def.AdamsSynthetic",
     "default_build": "lake build",
     "build_result": "passed",
-    "source_files": 33,
+    "build_jobs": 2197,
+    "source_files": 38,
     "visibility": {
-      "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 331,
-      "named_public_declarations": 331,
-      "generated_declarations": 1256,
-      "exports_including_generated_declarations": 1587,
-      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "Only KIP126.Def.AdamsSynthetic and its public upstream KIP126.Def.SpectralSequence dependency, plus Mathlib/Lean dependencies"
+      "default": "private; explicit public declarations",
+      "named_public_declarations": 454,
+      "generated_declarations": 1260,
+      "exports_including_generated_declarations": 1714,
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
-      "Tests.AdamsSynthetic.Interface",
+      "Tests.AdamsSynthetic.Background",
       "Tests.AdamsSynthetic.Consumers",
       "Tests.AdamsSynthetic.Detection",
-      "Tests.AdamsSynthetic.System",
-      "Tests.AdamsSynthetic.Background",
       "Tests.AdamsSynthetic.Filtration",
+      "Tests.AdamsSynthetic.Interface",
       "Tests.AdamsSynthetic.Mapping",
-      "Tests.AdamsSynthetic.Structural"
+      "Tests.AdamsSynthetic.Structural",
+      "Tests.AdamsSynthetic.System"
     ],
     "axiom_audit": {
       "target": "KIP126.Def.AdamsSynthetic.InternalAudit",
-      "declarations_checked": 1670,
-      "scope": "All own public and private declarations; upstream modules audited separately.",
-      "transitive_axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "unexpected_dependencies": [],
-      "project_axiom_declarations": []
+      "declarations_checked": 1801,
+      "project_axiom_declarations": [],
+      "registered_direct_sorry": 77,
+      "registry": "proof-obligations.json",
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included."
     },
+    "implementation_style": "Fixed Standard objects and callable theorems; individual pending proofs/constructions are listed separately. Generic mathematical support may remain public; no result package is required by fixed consumers.",
+    "proof_completion_claimed": false,
+    "cache_reused": true,
     "readme_and_agents_modified": false,
-    "blueprint": "Deferred by user instruction.",
-    "implementation_style": "Given parameter records and derived theorems; no global existence assumption and no concrete tower, Milnor or cobar implementation.",
-    "retained_producer_obligations": [
-      "Construct the background and coherent systems.",
-      "Prove filtration separation where later consumers require it.",
-      "Calibrate designated standard classes through the computation delivery."
-    ],
-    "build_jobs": 2188,
-    "final_target": "Model.H6SquarePermanent uses NonzeroSurvival of the same classical sphere and standardH6Square defined by its actual E2 product.",
-    "obligation_review_commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
-    "mathematical_change": "21 uncovered structural responsibilities now have explicit consumer contracts; corrected broad or ill-typed legacy claims are recorded in the capability ledger. Existing root Model and Challenge delivery boundaries remain unchanged."
+    "blueprint": "Deferred by user instruction."
   },
   "verification": {
     "default_command": "lake build",
     "result": "passed",
-    "jobs": 2188,
+    "jobs": 2197,
+    "checked_at_utc": "2026-10-14T15:50:12.499122+00:00",
     "separate_module_checks": [
       "SpectralSequenceChecks",
       "AdamsSyntheticChecks",
       "LiteratureChecks",
       "ComputationChecks",
-      "DeliveryChecks"
+      "IntegrationChecks"
     ],
-    "normal_import_consumers": true,
-    "mixed_system_negative_checks": true,
-    "full_indeterminacy_coset_bridge": true,
-    "zero_length_actual_map_theorem": true,
-    "no_new_sorry_or_project_axiom": true,
+    "normal_public_import_consumers": true,
+    "fixed_api_has_no_model_or_result_package_binders": true,
+    "genuine_mathematical_hypotheses_retained": true,
+    "no_project_axioms": true,
+    "no_synthetic_sorry": true,
+    "spectral_sequence_sorry_free": true,
+    "pending_obligations": {
+      "total": 271,
+      "by_module": {
+        "AdamsSynthetic": 77,
+        "Computation": 72,
+        "Literature": 122
+      },
+      "by_kind": {
+        "pending-construction": 81,
+        "pending-proof": 190
+      }
+    },
+    "pending_registry": "proof-obligations.json",
+    "consumer_local_sorry_rejected": true,
+    "source_inventory_guard": "scripts/check-source-inventory.py",
+    "json_cache_dependencies": "Lake input_file targets connected by needs; proof registry uses Checks.Registry to avoid rebuilding mathematical modules.",
+    "negative_checks": [
+      {
+        "case": "pending-registry-cache",
+        "target": "KIP126.Def.Computation.InternalAudit",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Unregistered proof/construction obligation"
+      },
+      {
+        "case": "api-cache",
+        "target": "Tests.Computation.Interface",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Public type or universe parameters changed"
+      },
+      {
+        "case": "untracked-source",
+        "target": "sourceInventory",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "audit source mismatch"
+      },
+      {
+        "case": "consumer-local-hole",
+        "target": "sourceInventory",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Consumer source contains a local sorry/axiom"
+      }
+    ],
+    "cache_reused": true,
     "readme_agents_unchanged": true,
     "blueprint_checked": false,
-    "algebra_internal_refactor": {
-      "single_filtration_record": true,
-      "shared_associated_graded": true,
-      "category_only_filtration_consumers": true,
-      "internal_visibility_checked": true,
-      "handwritten_public_types_preserved": true,
-      "generated_export_changes_reviewed": true,
-      "cache_reused": true
-    },
-    "missing_interface_completion": {
-      "inventory_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
-      "responsibilities_completed": 21,
-      "consumer_checks": [
-        "Tests.AdamsSynthetic.Background",
-        "Tests.AdamsSynthetic.Filtration",
-        "Tests.AdamsSynthetic.Mapping",
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "explicit_optional_inputs": true,
-      "root_model_fields_added": false,
-      "corrected_statements_tracked": true,
-      "existing_public_types_preserved": true,
-      "derived_laws": "Finite exact filtration, nonzero detection, homology cardinal bound, E-infinity and abutment composition laws, graded lambda enrichment associativity/unit, and ESS transport operations are proved.",
-      "concrete_models_constructed": false,
-      "separation_proof_retained": true,
-      "cache_reused": true
-    },
-    "cache_reused": true,
-    "delivery_migration": {
-      "review_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-      "all_type_exports_locked": true,
-      "normal_public_import_consumers": true,
-      "shared_model_and_literature_negative_tests": true,
-      "raw_generated_checker_dependencies_excluded": true,
-      "no_sorry_or_project_axiom": true,
-      "challenge2_root_fields": [
-        "literature",
-        "computation"
-      ],
-      "upstream_signature_review": {
-        "spectral-sequence": {
-          "removed": [],
-          "added_count": 32,
-          "changed_types": []
-        },
-        "adams-synthetic": {
-          "removed": [],
-          "added_count": 7,
-          "changed_types": [
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.casesOn",
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.mk",
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.mk._flat_ctor",
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.preserves",
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.rec",
-            "KIP126.AdamsSynthetic.NuExactTriangleInput.recOn",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.casesOn",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.map",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.map_comp",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk._flat_ctor",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk.inj",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk.injEq",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk.noConfusion",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.mk.sizeOf_spec",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.naturality",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.rec",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.recOn",
-            "KIP126.AdamsSynthetic.NuInfinityWeightMaps.representative"
-          ]
-        }
-      },
-      "corrections": [
-        "E-infinity weights lower w2 to w1 for w1<=w2<=t; epi is derived from the actual quotient formula.",
-        "Nu preserves a cofiber under full injective/exact/surjective HF2-homology, not middle exactness alone.",
-        "Fact7.6 classifies actual page hits; it does not assert equality of arbitrary E2 representatives."
-      ],
-      "prior_main_six_touched": false,
-      "retained_obligations": [
-        "Concrete producer and source-to-model comparison proofs.",
-        "Synthetic arbitrary-choice theta5 order-two and F6 transport; not fields of LiteratureInterface.",
-        "Previously deferred finite quotient algebra/action and full realization-weight/nuE2 model comparisons."
-      ],
-      "legacy_prop_placeholders": {
-        "tables": [
-          4,
-          8,
-          10,
-          11,
-          12
-        ],
-        "status": "retired; not mathematical coverage",
-        "paper_rows_retained": 182
-      },
-      "tracking": "/tmp/kip126-axiom-inventory/interface-tracking.json",
-      "tracking_counts": {
-        "total": 111,
-        "covered": 70,
-        "partial": 29,
-        "uncovered": 7,
-        "retired": 5
-      },
-      "build_log_sha256": "afac24a31cde41268e0f3668c9969df9a5ee8c2e4cbcee46f92ff657f5c59d78"
-    }
+    "main_six_parked_responsibilities_unchanged": true,
+    "unrestricted_theta5_transport_not_assumed": true,
+    "retained_scope_limits": [
+      "Finite and infinite statements remain distinct.",
+      "Convergence remains on the specified object closure.",
+      "Projectivity, page/range, nonzero and full short-exactness conditions remain.",
+      "Earlier partial mappings are not promoted merely because fixed signatures are callable."
+    ]
   },
   "literature": {
     "source_manifest": "literature-sources.json",
@@ -352,39 +278,36 @@
     "root_import": "KIP126.Def.Literature",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2188,
-    "source_files": 17,
-    "readme_and_agents_modified": false,
-    "blueprint": "Deferred by user instruction.",
+    "build_jobs": 2197,
+    "source_files": 18,
     "visibility": {
-      "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 191,
-      "named_public_declarations": 191,
-      "generated_declarations": 738,
-      "exports_including_generated_declarations": 929,
-      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "SpectralSequence and AdamsSynthetic only, plus own modules and Mathlib/Lean."
-    },
-    "axiom_audit": {
-      "target": "KIP126.Def.Literature.InternalAudit",
-      "declarations_checked": 985,
-      "scope": "All own public and private declarations; upstream modules audited separately.",
-      "transitive_axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "unexpected_dependencies": [],
-      "project_axiom_declarations": []
+      "default": "private; explicit public declarations",
+      "named_public_declarations": 369,
+      "generated_declarations": 362,
+      "exports_including_generated_declarations": 731,
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
-      "Tests.Literature.Interface",
       "Tests.Literature.Consumers",
+      "Tests.Literature.Interface",
+      "Tests.Literature.Lift",
       "Tests.Literature.RouteConsumers",
-      "Tests.Literature.Secondary",
-      "Tests.Literature.Lift"
+      "Tests.Literature.Secondary"
     ],
-    "producer_status": "Explicit source/model/data contracts are supplied by the consumer; no concrete producer or source theorem proof constructed."
+    "axiom_audit": {
+      "target": "KIP126.Def.Literature.InternalAudit",
+      "declarations_checked": 1248,
+      "project_axiom_declarations": [],
+      "registered_direct_sorry": 122,
+      "registry": "proof-obligations.json",
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included."
+    },
+    "implementation_style": "Fixed Standard objects and callable theorems; individual pending proofs/constructions are listed separately. Generic mathematical support may remain public; no result package is required by fixed consumers.",
+    "proof_completion_claimed": false,
+    "cache_reused": true,
+    "readme_and_agents_modified": false,
+    "blueprint": "Deferred by user instruction."
   },
   "computation": {
     "source_manifest": "computation-sources.json",
@@ -394,36 +317,33 @@
     "root_import": "KIP126.Def.Computation",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2188,
-    "source_files": 9,
-    "readme_and_agents_modified": false,
-    "blueprint": "Deferred by user instruction.",
+    "build_jobs": 2197,
+    "source_files": 5,
     "visibility": {
-      "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 76,
-      "named_public_declarations": 76,
-      "generated_declarations": 489,
-      "exports_including_generated_declarations": 565,
-      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "SpectralSequence and AdamsSynthetic plus Literature, own modules and Mathlib/Lean."
-    },
-    "axiom_audit": {
-      "target": "KIP126.Def.Computation.InternalAudit",
-      "declarations_checked": 570,
-      "scope": "All own public and private declarations; upstream modules audited separately.",
-      "transitive_axioms": [
-        "propext",
-        "Classical.choice",
-        "Quot.sound"
-      ],
-      "unexpected_dependencies": [],
-      "project_axiom_declarations": []
+      "default": "private; explicit public declarations",
+      "named_public_declarations": 141,
+      "generated_declarations": 322,
+      "exports_including_generated_declarations": 463,
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
-      "Tests.Computation.Interface",
       "Tests.Computation.Consumers",
-      "Tests.Delivery"
+      "Tests.Computation.Interface"
     ],
-    "producer_status": "Explicit source/model/data contracts are supplied by the consumer; no concrete producer or source theorem proof constructed."
-  }
+    "axiom_audit": {
+      "target": "KIP126.Def.Computation.InternalAudit",
+      "declarations_checked": 472,
+      "project_axiom_declarations": [],
+      "registered_direct_sorry": 72,
+      "registry": "proof-obligations.json",
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included."
+    },
+    "implementation_style": "Fixed Standard objects and callable theorems; individual pending proofs/constructions are listed separately. Generic mathematical support may remain public; no result package is required by fixed consumers.",
+    "proof_completion_claimed": false,
+    "cache_reused": true,
+    "readme_and_agents_modified": false,
+    "blueprint": "Deferred by user instruction."
+  },
+  "interface_migration_map": "fixed-interface-migration.json"
 }

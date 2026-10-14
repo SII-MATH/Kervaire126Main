@@ -1,17 +1,7 @@
 module
 
-public import KIP126.Def.AdamsSynthetic.ConsumerOperations
+public import KIP126.Def.AdamsSynthetic.Standard
 
-public import KIP126.Def.AdamsSynthetic.PageExtensions
-public import KIP126.Def.AdamsSynthetic.ExtensionZero
-public import KIP126.Def.AdamsSynthetic.Realization
-public import KIP126.Def.AdamsSynthetic.HomologyExactness
-public import KIP126.Def.AdamsSynthetic.MappingDetection
-public import KIP126.Def.AdamsSynthetic.MappingEnrichment
-public import KIP126.Def.AdamsSynthetic.ESSShift
-public import KIP126.Def.AdamsSynthetic.Enrichment
-public import KIP126.Def.AdamsSynthetic.Weight
-
-/-! Consumer interface for one given classical/synthetic Adams background.
-Concrete constructions, literature deliveries and computation certifications
-are supplied separately. -/
+/-! Fixed public Adams and synthetic objects and directly callable theorems.
+Generic mathematical structures remain type support for the fixed objects;
+consumers do not supply a model or a package of upstream results. -/

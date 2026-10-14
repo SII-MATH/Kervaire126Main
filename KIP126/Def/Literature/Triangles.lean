@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.Classical
 
 /-! The conditional normalized-triangle results of KIPBase/Synthetic/Lift
 (5aa845241533), attached to the same maps and normalization exponents. -/
@@ -42,7 +43,7 @@ public theorem NormalizedCofiberComparison.distinguished {T : TriangleData D.aux
 
 /-- The unshifted triangle keeps the original exponent-sum hypothesis.
 The old theorem supplies arrows, not identities with normalized arrows. -/
-public structure NormalizedTriangleResults where
+private structure NormalizedTriangleResults where
   unshifted : ∀ T : TriangleData D.auxiliary,
     normalizedExponent D.classicalTower T.f +
       normalizedExponent D.classicalTower T.g + normalizedExponent D.classicalTower T.h = 1 →
@@ -138,7 +139,7 @@ public def normalizedNu (he : normalizedExponent D.classicalTower D.auxiliary.nu
 SourceLanguage:1190 at bbac1fc05843. The BHS geometric construction must be
 bound to these three chosen maps. This is realization data, not a theorem
 about arbitrary chosen lifts or an internal conclusion of the paper. -/
-public structure NuCofiberApplicability : Prop where
+private structure NuCofiberApplicability : Prop where
   nu_exponent : normalizedExponent D.classicalTower D.auxiliary.nuMap = 1
   bottom_exponent : normalizedExponent D.classicalTower D.auxiliary.nuRouteTriangle.g = 0
   top_exponent : normalizedExponent D.classicalTower D.auxiliary.nuRouteTriangle.h = 0
@@ -151,7 +152,7 @@ public structure NuCofiberApplicability : Prop where
     NormalizedTriangleCompatible D D.auxiliary.nuRouteTriangle he
 
 /-- The needed exponent equation follows from the three supplied values. -/
-public theorem NuCofiberApplicability.exponent_sum (A : NuCofiberApplicability D) :
+private theorem NuCofiberApplicability.exponent_sum (A : NuCofiberApplicability D) :
     (normalizedExponent D.classicalTower D.auxiliary.nuRouteTriangle.f : ℤ) +
       normalizedExponent D.classicalTower D.auxiliary.nuRouteTriangle.g +
       normalizedExponent D.classicalTower D.auxiliary.nuRouteTriangle.h = 1 := by
@@ -159,7 +160,7 @@ public theorem NuCofiberApplicability.exponent_sum (A : NuCofiberApplicability D
   rw [A.nu_exponent, A.bottom_exponent, A.top_exponent]
   norm_num
 
-public theorem NuCofiberApplicability.distinguished (A : NuCofiberApplicability D) :
+private theorem NuCofiberApplicability.distinguished (A : NuCofiberApplicability D) :
     normalizedTriangle D D.auxiliary.nuRouteTriangle (A.exponent_sum D) ∈ distTriang Syn :=
   A.triangle _
 

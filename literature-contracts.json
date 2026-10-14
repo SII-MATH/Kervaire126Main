@@ -1,8 +1,8 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "module": "Literature",
   "entry_module": "KIP126.Def.Literature",
-  "principle": "给定同一模型上相关的显式接口即可消费；具体实例构造和输入证明后补；派生结论使用定理。",
+  "principle": "普通公共导入即可调用同一固定背景上的对象与定理；下游不传入结果包。保留真正数学前提；未完成构造与证明逐项登记，不能把可调用误报为已证明。",
   "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
   "obligation_review_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
   "type_authority": "literature-api.json",
@@ -30,13 +30,18 @@
       "implementation": [
         {
           "path": "KIP126/Def/Literature/Applicability.lean",
+          "declaration": "KIP126.Literature.BHSObjectApplicability",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/Literature/Applicability.lean",
           "declaration": "KIP126.Literature.residualOneSubShift",
           "line": 25
         },
         {
-          "path": "KIP126/Def/Literature/Applicability.lean",
-          "declaration": "KIP126.Literature.BHSObjectApplicability",
-          "line": 35
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.BHSObjectApplicability",
+          "line": 1062
         }
       ],
       "consumers": [
@@ -46,9 +51,24 @@
         "Tests.Literature.Lift"
       ],
       "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "parameterized source contract or proved operation"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/Literature/Applicability.lean",
+          "declaration": "KIP126.Literature.residualOneSubShift",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/Literature/Applicability.lean",
+          "declaration": "KIP126.Literature.BHSObjectApplicability",
+          "line": 35
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.BHSObjectApplicability"
+      ]
     },
     {
       "id": "literature-b-h-s",
@@ -66,6 +86,143 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.BocksteinDifferential",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.ClassicalPermanentCycle",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.DifferentialRigidity",
+          "line": 96
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.FiltrationLambdaAt",
+          "line": 89
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.FiniteLiftCriterion",
+          "line": 62
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.LambdaDivisible",
+          "line": 83
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.PermanentLiftAt",
+          "line": 78
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.RealizationKernel",
+          "line": 112
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_bockstein",
+          "line": 754
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_differentials",
+          "line": 759
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_filtration_lambda",
+          "line": 770
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_finite_lift",
+          "line": 749
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_permanent_lift",
+          "line": 764
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_realization_boundary_lift",
+          "line": 828
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_realization_detection",
+          "line": 805
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_realization_lifetime",
+          "line": 793
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bhs_realization_prescribed_lift",
+          "line": 816
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_filtration_lambda",
+          "line": 781
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_permanent_lift",
+          "line": 776
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_realization_kernel",
+          "line": 786
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.bocksteinArrow",
+          "line": 43
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.bocksteinLabel",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.firstLabel",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.nuZero",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/Literature/BHS.lean",
+          "declaration": "KIP126.Literature.realizeNuZero",
+          "line": 134
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/BHS.lean",
           "declaration": "KIP126.Literature.nuZero",
@@ -147,16 +304,20 @@
           "line": 140
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.bhs_bockstein",
+        "KIP126.Literature.Standard.bhs_differentials",
+        "KIP126.Literature.Standard.bhs_filtration_lambda",
+        "KIP126.Literature.Standard.bhs_finite_lift",
+        "KIP126.Literature.Standard.bhs_permanent_lift",
+        "KIP126.Literature.Standard.bhs_realization_boundary_lift",
+        "KIP126.Literature.Standard.bhs_realization_detection",
+        "KIP126.Literature.Standard.bhs_realization_lifetime",
+        "KIP126.Literature.Standard.bhs_realization_prescribed_lift",
+        "KIP126.Literature.Standard.selected_filtration_lambda",
+        "KIP126.Literature.Standard.selected_permanent_lift",
+        "KIP126.Literature.Standard.selected_realization_kernel"
+      ]
     },
     {
       "id": "literature-b-x",
@@ -179,6 +340,73 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bxTheta5",
+          "line": 881
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_eta_label",
+          "line": 886
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_finite",
+          "line": 900
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_order_two",
+          "line": 895
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_theta_label",
+          "line": 890
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_total_boundary",
+          "line": 907
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.bx_untruncated",
+          "line": 912
+        },
+        {
+          "path": "KIP126/Def/Literature/BX.lean",
+          "declaration": "KIP126.Literature.deltaH6Square",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/Literature/BX.lean",
+          "declaration": "KIP126.Literature.etaThetaSquare",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/Literature/BX.lean",
+          "declaration": "KIP126.Literature.lambdaEtaThetaSquare",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/Literature/BX.lean",
+          "declaration": "KIP126.Literature.sphereTotalBoundary",
+          "line": 30
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/BX.lean",
           "declaration": "KIP126.Literature.etaThetaSquare",
@@ -210,16 +438,15 @@
           "line": 54
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.bxTheta5",
+        "KIP126.Literature.Standard.bx_eta_label",
+        "KIP126.Literature.Standard.bx_finite",
+        "KIP126.Literature.Standard.bx_order_two",
+        "KIP126.Literature.Standard.bx_theta_label",
+        "KIP126.Literature.Standard.bx_total_boundary",
+        "KIP126.Literature.Standard.bx_untruncated"
+      ]
     },
     {
       "id": "literature-classical",
@@ -242,6 +469,218 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.ClassicalTheta5Detected",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.IsConnected",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.ModTwoCohomology",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.RealizationCoordinates",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.RealizationCoordinates.sphereMap",
+          "line": 78
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.connected_homology_vanishing",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.deltaH1g",
+          "line": 111
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta",
+          "line": 129
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_detection",
+          "line": 166
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_exponent",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_label",
+          "line": 188
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_normalized",
+          "line": 134
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_permanent",
+          "line": 178
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eta_realization",
+          "line": 193
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.g",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.h5Square_permanent",
+          "line": 144
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nu_detection",
+          "line": 172
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nu_permanent",
+          "line": 183
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.realization_additive",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.realization_lambda",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.realization_sphere",
+          "line": 56
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.realization_unit",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.sphere_connected",
+          "line": 34
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.stem62_exponent_two",
+          "line": 155
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5",
+          "line": 139
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5_detected_exists",
+          "line": 208
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5_detection",
+          "line": 150
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5_filtration_gap",
+          "line": 160
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5_lift",
+          "line": 198
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.theta5_order_two",
+          "line": 204
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf",
+          "line": 86
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmfIso",
+          "line": 91
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmfUnit",
+          "line": 96
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmfUnit_agrees",
+          "line": 101
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.universal_coefficient",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.Theta5Detected",
+          "line": 57
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.etaSourceIso",
+          "line": 89
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.h6FirstQuotient",
+          "line": 50
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.h6FirstQuotient_label",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/Literature/Classical.lean",
+          "declaration": "KIP126.Literature.sphereFirstQuotient",
+          "line": 43
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Classical.lean",
           "declaration": "KIP126.Literature.IsConnected",
@@ -338,16 +777,38 @@
           "line": 167
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.connected_homology_vanishing",
+        "KIP126.Literature.Standard.deltaH1g",
+        "KIP126.Literature.Standard.eta",
+        "KIP126.Literature.Standard.eta_detection",
+        "KIP126.Literature.Standard.eta_exponent",
+        "KIP126.Literature.Standard.eta_label",
+        "KIP126.Literature.Standard.eta_normalized",
+        "KIP126.Literature.Standard.eta_permanent",
+        "KIP126.Literature.Standard.eta_realization",
+        "KIP126.Literature.Standard.g",
+        "KIP126.Literature.Standard.h5Square_permanent",
+        "KIP126.Literature.Standard.nu_detection",
+        "KIP126.Literature.Standard.nu_permanent",
+        "KIP126.Literature.Standard.realization_additive",
+        "KIP126.Literature.Standard.realization_lambda",
+        "KIP126.Literature.Standard.realization_sphere",
+        "KIP126.Literature.Standard.realization_unit",
+        "KIP126.Literature.Standard.sphere_connected",
+        "KIP126.Literature.Standard.stem62_exponent_two",
+        "KIP126.Literature.Standard.theta5",
+        "KIP126.Literature.Standard.theta5_detected_exists",
+        "KIP126.Literature.Standard.theta5_detection",
+        "KIP126.Literature.Standard.theta5_filtration_gap",
+        "KIP126.Literature.Standard.theta5_lift",
+        "KIP126.Literature.Standard.theta5_order_two",
+        "KIP126.Literature.Standard.tmf",
+        "KIP126.Literature.Standard.tmfIso",
+        "KIP126.Literature.Standard.tmfUnit",
+        "KIP126.Literature.Standard.tmfUnit_agrees",
+        "KIP126.Literature.Standard.universal_coefficient"
+      ]
     },
     {
       "id": "literature-classical-range",
@@ -370,6 +831,153 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/ClassicalRange.lean",
+          "declaration": "KIP126.Literature.SphereVanishingLine",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.adamsOneLine_d2",
+          "line": 225
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.deltaH1g_nonzero",
+          "line": 301
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.deltaH1g_unique",
+          "line": 306
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.detector_d3",
+          "line": 343
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.g_nonzero",
+          "line": 291
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.g_unique",
+          "line": 296
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.kappaBar",
+          "line": 248
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.kappaBar_detection",
+          "line": 322
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.sphereVanishing",
+          "line": 214
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmfBetaGFour",
+          "line": 263
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmfV2Sixteen",
+          "line": 258
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_algebra",
+          "line": 233
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_algebra_unit",
+          "line": 238
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_br21",
+          "line": 337
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_connective",
+          "line": 281
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_convergence",
+          "line": 243
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_finiteModTwoType",
+          "line": 286
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_high125_nonzero",
+          "line": 332
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_low_filtration63",
+          "line": 316
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.tmf_vanishing62",
+          "line": 311
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.two_detection",
+          "line": 219
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.wClass",
+          "line": 253
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.w_detection",
+          "line": 327
+        },
+        {
+          "path": "KIP126/Def/Literature/ClassicalRange.lean",
+          "declaration": "KIP126.Literature.classicalSphereProduct",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/Literature/ClassicalRange.lean",
+          "declaration": "KIP126.Literature.classicalTwo",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/Literature/ClassicalRange.lean",
+          "declaration": "KIP126.Literature.oneLineTarget",
+          "line": 31
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/ClassicalRange.lean",
           "declaration": "KIP126.Literature.SphereVanishingLine",
@@ -416,16 +1024,31 @@
           "line": 85
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.adamsOneLine_d2",
+        "KIP126.Literature.Standard.deltaH1g_nonzero",
+        "KIP126.Literature.Standard.deltaH1g_unique",
+        "KIP126.Literature.Standard.detector_d3",
+        "KIP126.Literature.Standard.g_nonzero",
+        "KIP126.Literature.Standard.g_unique",
+        "KIP126.Literature.Standard.kappaBar",
+        "KIP126.Literature.Standard.kappaBar_detection",
+        "KIP126.Literature.Standard.sphereVanishing",
+        "KIP126.Literature.Standard.tmfBetaGFour",
+        "KIP126.Literature.Standard.tmfV2Sixteen",
+        "KIP126.Literature.Standard.tmf_algebra",
+        "KIP126.Literature.Standard.tmf_algebra_unit",
+        "KIP126.Literature.Standard.tmf_br21",
+        "KIP126.Literature.Standard.tmf_connective",
+        "KIP126.Literature.Standard.tmf_convergence",
+        "KIP126.Literature.Standard.tmf_finiteModTwoType",
+        "KIP126.Literature.Standard.tmf_high125_nonzero",
+        "KIP126.Literature.Standard.tmf_low_filtration63",
+        "KIP126.Literature.Standard.tmf_vanishing62",
+        "KIP126.Literature.Standard.two_detection",
+        "KIP126.Literature.Standard.wClass",
+        "KIP126.Literature.Standard.w_detection"
+      ]
     },
     {
       "id": "literature-delivery",
@@ -438,6 +1061,28 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.weight_epi",
+          "line": 656
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.weights_lambda",
+          "line": 649
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Delivery.lean",
           "declaration": "KIP126.Literature.LiteratureBindings",
@@ -459,16 +1104,10 @@
           "line": 65
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.weight_epi",
+        "KIP126.Literature.Standard.weights_lambda"
+      ]
     },
     {
       "id": "literature-e-infinity",
@@ -486,6 +1125,233 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.CycleQuotient",
+          "line": 110
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.E2Subquotient",
+          "line": 90
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.EInfinityPresentation",
+          "line": 141
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.EInfinityPresentation.finiteLinear",
+          "line": 156
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.EInfinityPresentation.finiteWindow",
+          "line": 167
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.EInfinityPresentation.nuLinear",
+          "line": 151
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.EInfinityPresentation.nuWindow",
+          "line": 161
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates",
+          "line": 188
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.finiteLambdaMap",
+          "line": 216
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.finiteLambdaMap_zero",
+          "line": 227
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.lambdaMap",
+          "line": 199
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.lambdaMap_zero",
+          "line": 209
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.shift",
+          "line": 196
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.InfinityShiftCoordinates.weightMap",
+          "line": 241
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.PermanentQuotient",
+          "line": 112
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_finite",
+          "line": 521
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_finite_labels",
+          "line": 614
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_lambda_finite",
+          "line": 571
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_lambda_nu",
+          "line": 563
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_nu",
+          "line": 514
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_nu_labels",
+          "line": 604
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_rho_finite",
+          "line": 582
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.eInfinity_rho_nu",
+          "line": 593
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.infinityShift_comparison",
+          "line": 532
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.infinityShift_natural",
+          "line": 536
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.boundaries",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.boundaries_monotone",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.boundaryLabel",
+          "line": 32
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.cycleLabel",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.cycles",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.cycles_antitone",
+          "line": 62
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.finiteEInftyModel",
+          "line": 137
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.infinityShift",
+          "line": 177
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.nuEInftyModel",
+          "line": 133
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.permanentCycles",
+          "line": 43
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.permanentCycles_le_cycles",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.permanentQuotientMap",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.permanentQuotientMap_surjective",
+          "line": 129
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.permanentToFinite",
+          "line": 125
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.quotientMap",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.subquotientClass",
+          "line": 93
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.subquotientMap",
+          "line": 97
+        },
+        {
+          "path": "KIP126/Def/Literature/EInfinity.lean",
+          "declaration": "KIP126.Literature.subquotientMap_surjective",
+          "line": 103
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/EInfinity.lean",
           "declaration": "KIP126.Literature.cycleLabel",
@@ -667,16 +1533,18 @@
           "line": 307
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.eInfinity_finite",
+        "KIP126.Literature.Standard.eInfinity_finite_labels",
+        "KIP126.Literature.Standard.eInfinity_lambda_finite",
+        "KIP126.Literature.Standard.eInfinity_lambda_nu",
+        "KIP126.Literature.Standard.eInfinity_nu",
+        "KIP126.Literature.Standard.eInfinity_nu_labels",
+        "KIP126.Literature.Standard.eInfinity_rho_finite",
+        "KIP126.Literature.Standard.eInfinity_rho_nu",
+        "KIP126.Literature.Standard.infinityShift_comparison",
+        "KIP126.Literature.Standard.infinityShift_natural"
+      ]
     },
     {
       "id": "literature-lift",
@@ -699,6 +1567,88 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.LambdaTorsion",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.NuCofiberCriterion",
+          "line": 32
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.NuCofiberCriterion.toNuExactTriangleInput",
+          "line": 38
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.NuImageIsCofiber",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.lift",
+          "line": 739
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nu_cofiber",
+          "line": 734
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.triangle_lift",
+          "line": 744
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticFullLift",
+          "line": 43
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticFullLift.normalizedMap",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticLiftComparison",
+          "line": 50
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticTriangleLift",
+          "line": 56
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticTriangleLift.FullLiftComparison",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/Literature/Lift.lean",
+          "declaration": "KIP126.Literature.SyntheticTriangleLiftComparison",
+          "line": 92
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Lift.lean",
           "declaration": "KIP126.Literature.NuImageIsCofiber",
@@ -755,16 +1705,12 @@
           "line": 99
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+        "KIP126.Literature.Standard.lift",
+        "KIP126.Literature.Standard.nu_cofiber",
+        "KIP126.Literature.Standard.triangle_lift"
+      ]
     },
     {
       "id": "literature-may",
@@ -782,6 +1728,73 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/May.lean",
+          "declaration": "KIP126.Literature.Route.MayContext",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/Literature/May.lean",
+          "declaration": "KIP126.Literature.Route.MayContext.SignedBoundary",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/Literature/May.lean",
+          "declaration": "KIP126.Literature.Route.MayPushpullData",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_leftExact",
+          "line": 927
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_leftShift",
+          "line": 917
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_pushpull",
+          "line": 943
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_rightExact",
+          "line": 932
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_rightShift",
+          "line": 922
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.may_signed_boundary",
+          "line": 948
+        },
+        {
+          "path": "KIP126/Def/Literature/May.lean",
+          "declaration": "KIP126.StableHomotopy.HoCofiberSequence.map",
+          "line": 19
+        },
+        {
+          "path": "KIP126/Def/Literature/May.lean",
+          "declaration": "KIP126.StableHomotopy.connectingHomomorphism",
+          "line": 31
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/May.lean",
           "declaration": "KIP126.StableHomotopy.HoCofiberSequence.map",
@@ -823,16 +1836,14 @@
           "line": 117
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.may_leftExact",
+        "KIP126.Literature.Standard.may_leftShift",
+        "KIP126.Literature.Standard.may_pushpull",
+        "KIP126.Literature.Standard.may_rightExact",
+        "KIP126.Literature.Standard.may_rightShift",
+        "KIP126.Literature.Standard.may_signed_boundary"
+      ]
     },
     {
       "id": "literature-moss",
@@ -850,6 +1861,168 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.DetectionCompatible",
+          "line": 178
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.DetectsAbutment",
+          "line": 138
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.HasEInftyClass",
+          "line": 128
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.HasMossCrossing",
+          "line": 119
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.NoMossCrossingForProducts",
+          "line": 123
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.Indeterminacy",
+          "line": 96
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.Passage",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.Relation",
+          "line": 82
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.definingDifferential",
+          "line": 46
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.definingValue",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.degree",
+          "line": 43
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PageMassey.precedingDifferential",
+          "line": 54
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.PermanentCycle",
+          "line": 134
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.Statement",
+          "line": 214
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.StatementAt",
+          "line": 189
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.WeakConvergence",
+          "line": 109
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.abutment",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.abutmentComposition",
+          "line": 157
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.abutmentMap",
+          "line": 147
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.crossingSourceDegree",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.pageCast",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.sequence",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.shiftMap",
+          "line": 151
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.stem",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/Literature/Moss.lean",
+          "declaration": "KIP126.Literature.Moss.todaMap",
+          "line": 165
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.mappingComposition",
+          "line": 967
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.moss_at",
+          "line": 1016
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.moss_detection",
+          "line": 994
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.moss_indeterminacy",
+          "line": 999
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.moss_weak_convergence",
+          "line": 989
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Moss.lean",
           "declaration": "KIP126.Literature.Moss.stem",
@@ -991,16 +2164,13 @@
           "line": 238
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.mappingComposition",
+        "KIP126.Literature.Standard.moss_at",
+        "KIP126.Literature.Standard.moss_detection",
+        "KIP126.Literature.Standard.moss_indeterminacy",
+        "KIP126.Literature.Standard.moss_weak_convergence"
+      ]
     },
     {
       "id": "literature-realization-transport",
@@ -1019,9 +2189,24 @@
       ],
       "implementation": [
         {
-          "path": "KIP126/Def/Literature/RealizationTransport.lean",
-          "declaration": "KIP126.Literature.BHSSelectedRealizationComparisons",
-          "line": 36
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_realization_boundary_lift",
+          "line": 871
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_realization_detection",
+          "line": 850
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_realization_lifetime",
+          "line": 840
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.selected_realization_prescribed_lift",
+          "line": 860
         }
       ],
       "consumers": [
@@ -1031,9 +2216,22 @@
         "Tests.Literature.Lift"
       ],
       "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "parameterized source contract or proved operation"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/Literature/RealizationTransport.lean",
+          "declaration": "KIP126.Literature.BHSSelectedRealizationComparisons",
+          "line": 36
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.selected_realization_boundary_lift",
+        "KIP126.Literature.Standard.selected_realization_detection",
+        "KIP126.Literature.Standard.selected_realization_lifetime",
+        "KIP126.Literature.Standard.selected_realization_prescribed_lift"
+      ]
     },
     {
       "id": "literature-rigidity",
@@ -1056,6 +2254,173 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.FreeLambdaPages",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.FreeLambdaPages.classicalLift",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.FreeLambdaPages.classicalLift_differential",
+          "line": 87
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.FreeLambdaPages.classicalLift_lambda",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.LambdaInversionComparison",
+          "line": 125
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.NuModLambdaPageData",
+          "line": 148
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.NuPageCoordinates",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.NuPageCoordinates.lambda",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.above_diagonal",
+          "line": 497
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.degeneration",
+          "line": 490
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient",
+          "line": 503
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient_component",
+          "line": 458
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient_component_retained",
+          "line": 466
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient_retained",
+          "line": 476
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient_safe",
+          "line": 483
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.finite_quotient_vanishing",
+          "line": 507
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.free_component",
+          "line": 371
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.free_differential",
+          "line": 394
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.free_e2",
+          "line": 379
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.free_inversion",
+          "line": 451
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.free_lambda",
+          "line": 386
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.inversion_data",
+          "line": 415
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.inversion_differential",
+          "line": 430
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.inversion_e2",
+          "line": 423
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.inversion_lambda",
+          "line": 438
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuPage_e2",
+          "line": 357
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuPage_weightShift",
+          "line": 349
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.classicalDifferential",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.comparisonPageMap",
+          "line": 111
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.quotientE2Component",
+          "line": 142
+        },
+        {
+          "path": "KIP126/Def/Literature/Rigidity.lean",
+          "declaration": "KIP126.Literature.syntheticDifferential",
+          "line": 32
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Rigidity.lean",
           "declaration": "KIP126.Literature.classicalDifferential",
@@ -1127,16 +2492,27 @@
           "line": 171
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.above_diagonal",
+        "KIP126.Literature.Standard.degeneration",
+        "KIP126.Literature.Standard.finite_quotient",
+        "KIP126.Literature.Standard.finite_quotient_component",
+        "KIP126.Literature.Standard.finite_quotient_component_retained",
+        "KIP126.Literature.Standard.finite_quotient_retained",
+        "KIP126.Literature.Standard.finite_quotient_safe",
+        "KIP126.Literature.Standard.finite_quotient_vanishing",
+        "KIP126.Literature.Standard.free_component",
+        "KIP126.Literature.Standard.free_differential",
+        "KIP126.Literature.Standard.free_e2",
+        "KIP126.Literature.Standard.free_inversion",
+        "KIP126.Literature.Standard.free_lambda",
+        "KIP126.Literature.Standard.inversion_data",
+        "KIP126.Literature.Standard.inversion_differential",
+        "KIP126.Literature.Standard.inversion_e2",
+        "KIP126.Literature.Standard.inversion_lambda",
+        "KIP126.Literature.Standard.nuPage_e2",
+        "KIP126.Literature.Standard.nuPage_weightShift"
+      ]
     },
     {
       "id": "literature-secondary",
@@ -1155,6 +2531,38 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.closedTensor",
+          "line": 952
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.mapping",
+          "line": 960
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.mappingSphereCompatibility",
+          "line": 985
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.moss_convergence",
+          "line": 1010
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/Literature/Secondary.lean",
           "declaration": "KIP126.Literature.SecondaryBindings",
           "line": 27
@@ -1165,16 +2573,12 @@
           "line": 38
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.closedTensor",
+        "KIP126.Literature.Standard.mapping",
+        "KIP126.Literature.Standard.mappingSphereCompatibility",
+        "KIP126.Literature.Standard.moss_convergence"
+      ]
     },
     {
       "id": "literature-toda",
@@ -1192,6 +2596,133 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.Literature.Route.TodaSourceData",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.Literature.Route.TripleToda",
+          "line": 58
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.Literature.Route.syntheticTwo",
+          "line": 68
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.Literature.Route.tripleTodaSource",
+          "line": 46
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.syntheticH0",
+          "line": 1021
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.toda_h0_eta",
+          "line": 1037
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.toda_h0_label",
+          "line": 1026
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.toda_lambda_h0",
+          "line": 1032
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.toda_low_indeterminacy",
+          "line": 1042
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.Relation",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.absorb_first",
+          "line": 386
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.absorb_last",
+          "line": 404
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.composable",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.exists_relation",
+          "line": 138
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.juggling",
+          "line": 284
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.map",
+          "line": 514
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.postcompose",
+          "line": 376
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.precompose",
+          "line": 359
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.relation_iff_indeterminacy",
+          "line": 250
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.shuffle_iff",
+          "line": 417
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.suspension_iff",
+          "line": 472
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.tensor_left",
+          "line": 542
+        },
+        {
+          "path": "KIP126/Def/Literature/Toda.lean",
+          "declaration": "KIP126.StableHomotopy.Toda.tensor_right",
+          "line": 531
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Toda.lean",
           "declaration": "KIP126.StableHomotopy.Toda.Relation",
@@ -1293,16 +2824,13 @@
           "line": 542
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.syntheticH0",
+        "KIP126.Literature.Standard.toda_h0_eta",
+        "KIP126.Literature.Standard.toda_h0_label",
+        "KIP126.Literature.Standard.toda_lambda_h0",
+        "KIP126.Literature.Standard.toda_low_indeterminacy"
+      ]
     },
     {
       "id": "literature-triangles",
@@ -1325,6 +2853,108 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.NormalizedCofiberComparison",
+          "line": 23
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.NormalizedCofiberComparison.distinguished",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.NormalizedCofiberComparison.triangle",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.NormalizedTriangleCompatible",
+          "line": 105
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.normalized_cofiber",
+          "line": 676
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuCofiber_bottom_exponent",
+          "line": 692
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuCofiber_normalized_label",
+          "line": 702
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuCofiber_nu_exponent",
+          "line": 687
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuCofiber_top_exponent",
+          "line": 697
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.nuCofiber_triangle",
+          "line": 708
+        },
+        {
+          "path": "KIP126/Def/Literature/Standard.lean",
+          "declaration": "KIP126.Literature.Standard.unshifted",
+          "line": 664
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.negativeLift",
+          "line": 59
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.normalizedConnecting",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.normalizedNu",
+          "line": 128
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.normalizedTriangle",
+          "line": 97
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.nuSphereOne",
+          "line": 111
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.nuSphereThree",
+          "line": 121
+        },
+        {
+          "path": "KIP126/Def/Literature/Triangles.lean",
+          "declaration": "KIP126.Literature.nuSphereTwo",
+          "line": 115
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Consumers",
+        "Tests.Literature.RouteConsumers",
+        "Tests.Literature.Secondary",
+        "Tests.Literature.Lift"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/Literature/Triangles.lean",
           "declaration": "KIP126.Literature.NormalizedCofiberComparison",
@@ -1401,16 +3031,15 @@
           "line": 162
         }
       ],
-      "consumers": [
-        "Tests.Literature.Consumers",
-        "Tests.Literature.RouteConsumers",
-        "Tests.Literature.Secondary",
-        "Tests.Literature.Lift"
-      ],
-      "remaining_producer_obligations": [
-        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
-      ],
-      "interface_state": "parameterized source contract or proved operation"
+      "fixed_public_entries": [
+        "KIP126.Literature.Standard.normalized_cofiber",
+        "KIP126.Literature.Standard.nuCofiber_bottom_exponent",
+        "KIP126.Literature.Standard.nuCofiber_normalized_label",
+        "KIP126.Literature.Standard.nuCofiber_nu_exponent",
+        "KIP126.Literature.Standard.nuCofiber_top_exponent",
+        "KIP126.Literature.Standard.nuCofiber_triangle",
+        "KIP126.Literature.Standard.unshifted"
+      ]
     }
   ],
   "retained_obligations": [
@@ -1423,8 +3052,11 @@
     "No README/AGENTS/Blueprint changes."
   ],
   "checks": [
-    "LiteratureChecks",
-    "KIP126.Def.Literature.InternalAudit"
+    "Tests.Literature.Consumers",
+    "Tests.Literature.Interface",
+    "Tests.Literature.Lift",
+    "Tests.Literature.RouteConsumers",
+    "Tests.Literature.Secondary"
   ],
   "source_disposition": {
     "baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -2264,7 +3896,7 @@
     },
     "important_boundaries": [
       "16 KIPBase Literature obligations are tracked separately in /tmp/literature-interface-evidence.json; two arbitrary-choice synthetic theta5 consequences remain partial and require Main transport.",
-      "Concrete sources and their comparison proofs are inputs; no concrete producer or Main final theorem is claimed.",
+      "Fixed source objects and individually callable comparison theorems are published; pending proofs are listed in proof-obligations.json. No Main conclusion is assumed.",
       "General lift and cofiber source contracts retain all X,Y:C and arbitrary k; BHS, E-infinity and selected route operations intentionally use the approved ClassicalObject closure.",
       "Old NuExactTriangleInput with only middle exactness was corrected to full injective/exact/surjective short exactness.",
       "Old E-infinity weight raising map had backwards boundary inclusion: current canonical lambda quotient map lowers w2 to w1 for w1<=w2<=t; epi is proved.",
@@ -2275,8 +3907,14 @@
   "validation": {
     "command": "lake build",
     "result": "passed",
-    "jobs": 2188,
-    "internal_axiom_audit": 985,
-    "concrete_producers_constructed": false
-  }
+    "interface_types_and_exports": "locked by normal public import tests",
+    "direct_consumer_tests": true,
+    "proof_obligations": "exact direct names/types/bodies locked; no project axioms or synthetic sorry",
+    "previous_coverage_not_promoted": true,
+    "jobs": 2197,
+    "cache_invalidation_negative_checks": "passed; registry and API JSON are traced through Lake needs"
+  },
+  "status": "fixed-direct-interfaces; individual proofs and constructions tracked separately",
+  "proof_obligation_registry": "proof-obligations.json",
+  "migration_map": "fixed-interface-migration.json"
 }

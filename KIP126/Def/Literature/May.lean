@@ -74,7 +74,7 @@ public structure MayPushpullData (B : MayContext Syn)
     ∃ v : HomotopyGroup n vertex, v ≫ j1 = a ∧ v ≫ j2 = b
 
 /-- Source theorem input, not a construction of a TC3 model. -/
-public def MaySourceResults (B : MayContext Syn) : Prop :=
+private def MaySourceResults (B : MayContext Syn) : Prop :=
   ∀ T U, Nonempty (MayPushpullData Syn B T U)
 
 public def MayContext.SignedBoundary (B : MayContext Syn) : Prop :=
@@ -91,7 +91,7 @@ public def MayContext.SignedBoundary (B : MayContext Syn) : Prop :=
 variable {Syn}
 set_option backward.isDefEq.respectTransparency false in
 /-- A common pushpull lift proves the signed formula. -/
-public theorem may_signed_boundary_of_source (B : MayContext Syn)
+private theorem may_signed_boundary_of_source (B : MayContext Syn)
     (hB : MaySourceResults Syn B) : B.SignedBoundary := by
   letI := B.leftShift
   letI := B.rightShift
@@ -114,7 +114,7 @@ public theorem may_signed_boundary_of_source (B : MayContext Syn)
 set_option backward.isDefEq.respectTransparency false in
 /-- Sign removal requires exponent two in the actual projected group.
 Mod-two Adams coordinates alone do not imply this hypothesis. -/
-public theorem may_boundary_projected_of_exponent_two (B : MayContext Syn)
+private theorem may_boundary_projected_of_exponent_two (B : MayContext Syn)
     (hB : MaySourceResults Syn B) (T U : HoCofiberSequence (C := Syn))
     (n : ℤ) (a : HomotopyGroup n (T.X ⊗ U.Z))
     (b : HomotopyGroup n (T.Y ⊗ U.Y))

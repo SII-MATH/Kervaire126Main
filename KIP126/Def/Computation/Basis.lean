@@ -3,7 +3,7 @@ module
 public import KIP126.Def.Computation.Source
 
 /-! Mathematical archive coordinates without importing a raw CSV or checker.
-The archive value is supplied explicitly by its producer. This signature retains
+The project archive is fixed in Computation.Standard. These support types retain
 all generator addresses and degrees, every bounded basis monomial and full linear
 coordinate equivalences. Mere revision metadata cannot construct these proofs.
 Adapted from SphereBasisInterface in Interface/Challenge/Computation/Delivery at
@@ -15,8 +15,9 @@ open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.Kervaire.Route KIP126.Classical.Adams
 universe u v w
 
-/-- Complete generator catalogue of the supplied archived sphere calculation.
-The list itself is a producer input, not a second set of actual page classes. -/
+/-- Complete generator catalogue of an archived sphere calculation.
+The fixed project list is exposed by Standard.generators; these are source
+coordinates rather than a second set of actual page classes. -/
 public structure GeneratorCatalogue where
   count : ℕ
   record : Fin count → String × ℕ × ℕ

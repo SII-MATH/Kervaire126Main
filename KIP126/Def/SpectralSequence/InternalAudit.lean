@@ -1,5 +1,7 @@
 module
 
+import all KIP126.Def.SpectralSequence
+
 import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
 import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
 import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data

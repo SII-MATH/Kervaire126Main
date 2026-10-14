@@ -9,6 +9,7 @@ set_option maxHeartbeats 0
 
 -- A normal consumer imports only the public entry point. The contract locks
 -- complete types, universe parameters, exports and transitive axiom dependencies.
+-- Direct sorry obligations are locked separately by the internal trust audits.
 run_cmd do
   let contract ← ofExcept <| Json.parse (include_str "../../computation-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
@@ -33,6 +34,10 @@ run_cmd do
     unless toString (hash (toString info.type)) == expectedType &&
         info.levelParams.map Name.toString == universes do
       throwError "Public type or universe parameters changed: {name}"
+    let expectedAxioms ← ofExcept <| decl.getObjValAs? (Array String) "axioms"
+    let actualAxioms ← collectAxioms name.toName
+    unless (actualAxioms.map Name.toString).qsort (· < ·) == expectedAxioms.qsort (· < ·) do
+      throwError "Public trust dependencies changed: {name}"
   let mut actualExports : Array String := #[]
   for (name, _) in env.constants.toList do
     let some idx := env.getModuleIdxFor? name | continue
@@ -42,7 +47,7 @@ run_cmd do
     actualExports := actualExports.push name.toString
     let axioms ← collectAxioms name
     let unexpected := axioms.filter fun n =>
-      n != `propext && n != `Classical.choice && n != `Quot.sound
+      n != `propext && n != `Classical.choice && n != `Quot.sound && n != `sorryAx
     unless unexpected.isEmpty do
       throwError "Unexpected axiom dependency in {name}: {unexpected}"
   unless actualExports.qsort (· < ·) == expectedExports.qsort (· < ·) do
@@ -59,3 +64,30 @@ run_cmd do
 
 #check_failure KIP126.Main.Axiom.challenge2
 #check_failure KIP126.LinProgram.RawData.lookup
+
+-- A source result package must never become an ordinary downstream premise.
+#check_failure KIP126.Challenge2
+#check_failure KIP126.Literature.LiteratureInterface
+#check_failure KIP126.Computation.ComputationInterface
+#check_failure KIP126.Literature.LiteratureResults
+#check_failure KIP126.Computation.RouteResults
+#check_failure KIP126.Computation.Near126Results
+
+run_cmd do
+  let env ← getEnv
+  let exported := env.setExporting true
+  for (name, info) in env.constants.toList do
+    unless (`KIP126.Computation.Standard).isPrefixOf name do continue
+    unless (exported.find? name).isSome do continue
+    liftTermElabM <| Meta.forallTelescope info.type fun args _ => do
+      for arg in args do
+        let ty ← Meta.inferType arg
+        for dep in ty.getUsedConstants do
+          if dep == `KIP126.Kervaire.Route.Model ||
+              dep == `KIP126.Kervaire.Route.ModelData ||
+              dep == `KIP126.Literature.LiteratureInterface ||
+              dep == `KIP126.Literature.LiteratureResults ||
+              dep == `KIP126.Computation.ComputationInterface ||
+              dep == `KIP126.Computation.RouteResults ||
+              dep == `KIP126.Computation.Near126Results then
+            throwError "Fixed public interface asks its caller for an upstream result package: {name}"

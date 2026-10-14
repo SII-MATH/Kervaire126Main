@@ -2,6 +2,7 @@ module
 
 public import KIP126.Def.AdamsSynthetic.MappingComposition
 public import KIP126.Def.Literature.Toda
+import all KIP126.Def.Literature.Toda
 
 /-! The general mapping-spectrum Moss contract, with the preceding-page
 defining systems used in MainPaper 2537–2545. Fixed source:
@@ -218,7 +219,7 @@ on the defined Massey relation; it does not replace that relation with a
 chosen operation or discard either indeterminacy summand. The generic
 pairing already contains signed Leibniz, successor compatibility and
 associativity, so no duplicate coherence structure is selected here. -/
-public structure Context where
+private structure Context where
   composition : MappingComposition S
   weak_convergence : ∀ X Y : MappingObject scope, WeakConvergence (P := P) (B := B) X Y
   detection : DetectionCompatible S composition
@@ -232,10 +233,10 @@ public structure Context where
 
 /-- The external theorem is separate from the internal mapping context.
 Its source-to-model comparison is required of a producer supplying it. -/
-public def SourceResults (Q : Context S) : Prop := Statement S Q.composition
+private def SourceResults (Q : Context S) : Prop := Statement S Q.composition
 
 /-- Consume the source theorem on exactly the context's fixed data. -/
-public theorem SourceResults.at {Q : Context S} (h : SourceResults S Q)
+private theorem SourceResults.at {Q : Context S} (h : SourceResults S Q)
     (W X Y Z : MappingObject scope) : StatementAt S Q.composition W X Y Z :=
   h Q.detection W X Y Z
 

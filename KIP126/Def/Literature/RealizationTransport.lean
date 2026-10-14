@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Def.Literature.BHS
+import all KIP126.Def.Literature.BHS
 
 /-! Source-to-selected-model realization comparisons. Adapted from
 `Def/Kervaire/Route/SourceLanguage.lean`'s `BHSRealizationComparison`,
@@ -33,7 +34,7 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C]
 /-- The transported BHS conclusions for one given realization and the same
 selected towers, classes and first-quotient labels. The complete-source
 comparison is a binding obligation; no arbitrary θ₅ choice theorem is a field. -/
-public structure BHSSelectedRealizationComparisons (R : RealizationCoordinates D) : Prop where
+private structure BHSSelectedRealizationComparisons (R : RealizationCoordinates D) : Prop where
   lifetime : ∀ (X : ClassicalObject) (s t : ℤ) (r : ℕ), 1 ≤ r →
     ∀ (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
       (a : BiHom (t-s) t (nuZero D X)),

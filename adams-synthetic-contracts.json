@@ -1,12 +1,12 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "module": "AdamsSynthetic",
   "entry_module": "KIP126.Def.AdamsSynthetic",
-  "principle": "Given one coherent interface instance, consumers use its objects and laws without constructing a model.",
+  "principle": "普通公共导入即可调用同一固定背景上的对象与定理；下游不传入结果包。保留真正数学前提；未完成构造与证明逐项登记，不能把可调用误报为已证明。",
   "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
   "selective_reference": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
   "type_authority": "Complete types and universe/typeclass assumptions live in the referenced Lean declarations. The API manifest and normal-import tests freeze their elaborated types; this semantic ledger is not a second Lean source registry.",
-  "status": "consumer interfaces implemented; no concrete producer instance or final permanence result is claimed",
+  "status": "fixed-direct-interfaces; individual proofs and constructions tracked separately",
   "capabilities": [
     {
       "id": "stable-background",
@@ -31,6 +31,66 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.coefficients",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.quotients",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "KIP126.StableHomotopy.HasFunctorialCofiber",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "KIP126.StableHomotopy.ModTwoCoefficients",
+          "line": 88
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "KIP126.StableHomotopy.StableHomotopyCategory",
+          "line": 33
+        }
+      ],
+      "constraints": [
+        "No Prespectrum, completion, Milnor/cobar implementation is imported.",
+        "The mod-two unit is derived from the specified pi-zero identification and its element one."
+      ],
+      "consumers": [
+        "Adams tower signatures",
+        "AdamsSynthetic family and selected-object interfaces"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/AdamsSynthetic/Context.lean",
           "declaration": "StableHomotopyCategory",
           "line": 33
@@ -46,19 +106,14 @@
           "line": 88
         }
       ],
-      "constraints": [
-        "No Prespectrum, completion, Milnor/cobar implementation is imported.",
-        "The mod-two unit is derived from the specified pi-zero identification and its element one."
-      ],
-      "consumers": [
-        "Adams tower signatures",
-        "AdamsSynthetic family and selected-object interfaces"
-      ],
-      "remaining_producer_obligations": [
-        "Construct concrete classical/synthetic models and justify their intended identities."
-      ],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.coefficients",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem",
+        "KIP126.AdamsSynthetic.Standard.quotients",
+        "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+        "KIP126.AdamsSynthetic.Standard.syntheticCofiber"
+      ]
     },
     {
       "id": "nu-functor",
@@ -84,13 +139,18 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu",
+          "line": 35
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Context.lean",
-          "declaration": "NuFunctorData",
+          "declaration": "KIP126.Synthetic.Context.NuFunctorData",
           "line": 194
         },
         {
           "path": "KIP126/Def/AdamsSynthetic/Context.lean",
-          "declaration": "NuFunctorData.boundaryLandingIso",
+          "declaration": "KIP126.Synthetic.Context.NuFunctorData.boundaryLandingIso",
           "line": 211
         }
       ],
@@ -103,9 +163,26 @@
         "normalized synthetic maps",
         "finite quotient labels"
       ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "NuFunctorData",
+          "line": 194
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "NuFunctorData.boundaryLandingIso",
+          "line": 211
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.nu"
+      ]
     },
     {
       "id": "adams-families",
@@ -131,6 +208,78 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classical",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classical_map_comp",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.comparison",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence_natural",
+          "line": 74
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergentMap",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.differentialDegree",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.family",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.firstPage",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "KIP126.Classical.Adams.ClassicalAdamsFamily",
+          "line": 20
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS",
+          "line": 55
+        }
+      ],
+      "constraints": [
+        "First displayed page is two; classical differential has degree (r,r-1), synthetic degree (r,r-1,0).",
+        "Sphere, nu-images, quotient objects and their maps evaluate one functor.",
+        "Map identities and compositions are derived from that functor."
+      ],
+      "consumers": [
+        "standard h_i",
+        "naturality on finite pages",
+        "selected-object model"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/AdamsSynthetic/Families.lean",
           "declaration": "ClassicalAdamsFamily",
           "line": 20
@@ -146,19 +295,16 @@
           "line": 55
         }
       ],
-      "constraints": [
-        "First displayed page is two; classical differential has degree (r,r-1), synthetic degree (r,r-1,0).",
-        "Sphere, nu-images, quotient objects and their maps evaluate one functor.",
-        "Map identities and compositions are derived from that functor."
-      ],
-      "consumers": [
-        "standard h_i",
-        "naturality on finite pages",
-        "selected-object model"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.classical",
+        "KIP126.AdamsSynthetic.Standard.classical_map_comp",
+        "KIP126.AdamsSynthetic.Standard.comparison",
+        "KIP126.AdamsSynthetic.Standard.convergence_natural",
+        "KIP126.AdamsSynthetic.Standard.convergentMap",
+        "KIP126.AdamsSynthetic.Standard.differentialDegree",
+        "KIP126.AdamsSynthetic.Standard.family",
+        "KIP126.AdamsSynthetic.Standard.firstPage"
+      ]
     },
     {
       "id": "coefficient-tower-presentation",
@@ -197,6 +343,75 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "KIP126.AdamsSynthetic.AbstractAdamsTower",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalTowerPresentation",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classicalTower",
+          "line": 59
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.homologyShift",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticTower",
+          "line": 62
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticTowerPresentation",
+          "line": 198
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "KIP126.AdamsSynthetic.TowerMap",
+          "line": 136
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "KIP126.AdamsSynthetic.TowerSequencePresentation",
+          "line": 102
+        }
+      ],
+      "constraints": [
+        "stageAt s = stage s.toNat; negative stages are constant, so HF2 layer isomorphisms apply only to natural stages.",
+        "Layer is the chosen cofiber of that same transition and the layer iso identifies its inclusion with the coefficient-unit smash map.",
+        "The spectral ambient is isomorphic to the actual Z2 submodule, and every finite Z/B membership is fixed by the raw tower.",
+        "Differentials use the actual connecting lift and cofiber image, including zero representatives.",
+        "Classical naturality compares the same family morphism to the selected stage/cofiber map; synthetic natural_e2 allows their raw representatives to differ by an actual B2 boundary, retaining the original quotient-level law."
+      ],
+      "consumers": [
+        "ClassicalCanonicalIdentification",
+        "SyntheticCanonicalIdentification",
+        "Kervaire Route Model.towerPresentation"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
           "declaration": "AbstractAdamsTower",
           "line": 24
         },
@@ -221,23 +436,13 @@
           "line": 198
         }
       ],
-      "constraints": [
-        "stageAt s = stage s.toNat; negative stages are constant, so HF2 layer isomorphisms apply only to natural stages.",
-        "Layer is the chosen cofiber of that same transition and the layer iso identifies its inclusion with the coefficient-unit smash map.",
-        "The spectral ambient is isomorphic to the actual Z2 submodule, and every finite Z/B membership is fixed by the raw tower.",
-        "Differentials use the actual connecting lift and cofiber image, including zero representatives.",
-        "Classical naturality compares the same family morphism to the selected stage/cofiber map; synthetic natural_e2 allows their raw representatives to differ by an actual B2 boundary, retaining the original quotient-level law."
-      ],
-      "consumers": [
-        "ClassicalCanonicalIdentification",
-        "SyntheticCanonicalIdentification",
-        "Kervaire Route Model.towerPresentation"
-      ],
-      "remaining_producer_obligations": [
-        "Construct an inhabitant of the abstract tower and all representative comparison laws."
-      ],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.classicalTower",
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.homologyShift",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem",
+        "KIP126.AdamsSynthetic.Standard.syntheticTower"
+      ]
     },
     {
       "id": "canonical-convergence-detection",
@@ -268,6 +473,90 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalDetects",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalTowerConvergence",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.Detects",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.DetectsNonzero",
+          "line": 179
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.HasInfinityRepresentative",
+          "line": 162
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticTowerConvergence",
+          "line": 136
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.detects_sub_filtration",
+          "line": 251
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "KIP126.AdamsSynthetic.detects_zero_filtration",
+          "line": 244
+        }
+      ],
+      "constraints": [
+        "No independently chosen filtration is accepted.",
+        "The same lift supplies both the E1 cofiber class and the projected homotopy class.",
+        "Synthetic canonical convergence retains the weightHomotopyMap filtration-membership equivalence.",
+        "Convergence is requested on individual selected objects, not all ambient synthetic spectra.",
+        "Zero detection raises filtration; it never directly asserts the homotopy class is zero.",
+        "Nonzero detection requires a nonzero common E-infinity representative, not merely a nonzero E2 label."
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Detection",
+        "NuFifth detects_zero_filtration, detected_map, detection reflection"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
           "declaration": "ClassicalTowerConvergence",
@@ -309,24 +598,13 @@
           "line": 251
         }
       ],
-      "constraints": [
-        "No independently chosen filtration is accepted.",
-        "The same lift supplies both the E1 cofiber class and the projected homotopy class.",
-        "Synthetic canonical convergence retains the weightHomotopyMap filtration-membership equivalence.",
-        "Convergence is requested on individual selected objects, not all ambient synthetic spectra.",
-        "Zero detection raises filtration; it never directly asserts the homotopy class is zero.",
-        "Nonzero detection requires a nonzero common E-infinity representative, not merely a nonzero E2 label."
-      ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Detection",
-        "NuFifth detects_zero_filtration, detected_map, detection reflection"
-      ],
-      "remaining_producer_obligations": [
-        "Construct canonical convergence for each selected object.",
-        "Filtration separation remains a separate unfinished obligation."
-      ],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.convergence",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem"
+      ]
     },
     {
       "id": "standard-sphere-classes",
@@ -358,6 +636,69 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_identity",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_page_associative",
+          "line": 42
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_page_left_unital",
+          "line": 59
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_page_right_unital",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_pairing",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.sphereAlgebra",
+          "line": 55
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "KIP126.Classical.Adams.SphereE2Algebra",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "KIP126.Classical.Adams.StandardSphereClasses",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "KIP126.Classical.Adams.StandardSphereClasses.standardH6Square",
+          "line": 91
+        }
+      ],
+      "constraints": [
+        "Named classes are designated inputs with source identity; degree/nonzero alone is not asserted to identify a standard class.",
+        "No uniqueness of the whole h_i family is imposed.",
+        "h6-square nonvanishing is separate from h6 nonvanishing.",
+        "No permanent-survival conclusion is an input."
+      ],
+      "consumers": [
+        "H6SquarePermanent",
+        "Literature standard-class bindings",
+        "Computation class and multiplication calibration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
           "declaration": "SphereE2Algebra",
           "line": 22
@@ -373,20 +714,14 @@
           "line": 91
         }
       ],
-      "constraints": [
-        "Named classes are designated inputs with source identity; degree/nonzero alone is not asserted to identify a standard class.",
-        "No uniqueness of the whole h_i family is imposed.",
-        "h6-square nonvanishing is separate from h6 nonvanishing.",
-        "No permanent-survival conclusion is an input."
-      ],
-      "consumers": [
-        "H6SquarePermanent",
-        "Literature standard-class bindings",
-        "Computation class and multiplication calibration"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mapping_identity",
+        "KIP126.AdamsSynthetic.Standard.mapping_page_associative",
+        "KIP126.AdamsSynthetic.Standard.mapping_page_left_unital",
+        "KIP126.AdamsSynthetic.Standard.mapping_page_right_unital",
+        "KIP126.AdamsSynthetic.Standard.mapping_pairing",
+        "KIP126.AdamsSynthetic.Standard.sphereAlgebra"
+      ]
     },
     {
       "id": "shift-lambda-coherence",
@@ -412,6 +747,73 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "KIP126.Synthetic.Context.BiShiftCoherence",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "KIP126.Synthetic.Context.lambdaPow_add_comparison",
+          "line": 219
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "KIP126.Synthetic.Context.lambdaPow_naturality",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "KIP126.Synthetic.Context.lambdaRestrictionSourceMap_commutes",
+          "line": 272
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.quotients",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_coherence",
+          "line": 192
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.biShift_associativity",
+          "line": 170
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.biShift_left_unit",
+          "line": 178
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.biShift_right_unit",
+          "line": 182
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.biShift_lambda_comm",
+          "line": 186
+        }
+      ],
+      "constraints": [
+        "Coherence references the existing SyntheticCategory shifts and lambda, with explicit degree transports.",
+        "Power multiplication is proved, not another independent operation."
+      ],
+      "consumers": [
+        "XModLambdaN.map",
+        "XModLambdaN.restriction",
+        "normalized maps",
+        "lambda detection"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
           "declaration": "BiShiftCoherence",
           "line": 120
         },
@@ -431,19 +833,14 @@
           "line": 272
         }
       ],
-      "constraints": [
-        "Coherence references the existing SyntheticCategory shifts and lambda, with explicit degree transports.",
-        "Power multiplication is proved, not another independent operation."
-      ],
-      "consumers": [
-        "XModLambdaN.map",
-        "XModLambdaN.restriction",
-        "normalized maps",
-        "lambda detection"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.quotients",
+        "KIP126.AdamsSynthetic.Standard.graded_coherence",
+        "KIP126.AdamsSynthetic.Standard.biShift_associativity",
+        "KIP126.AdamsSynthetic.Standard.biShift_left_unit",
+        "KIP126.AdamsSynthetic.Standard.biShift_right_unit",
+        "KIP126.AdamsSynthetic.Standard.biShift_lambda_comm"
+      ]
     },
     {
       "id": "finite-lambda-quotients",
@@ -475,6 +872,61 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.quotients",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "KIP126.Synthetic.Context.FiniteLambdaQuotientTower",
+          "line": 142
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "KIP126.Synthetic.Context.LambdaQuotientFunctoriality",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "KIP126.Synthetic.Context.LambdaQuotientSystem",
+          "line": 212
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "KIP126.Synthetic.Context.LambdaRhoDeltaTriangle",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "KIP126.Synthetic.Context.XModLambdaN.map",
+          "line": 31
+        }
+      ],
+      "constraints": [
+        "Every quotient is the existing XModLambdaN X n.",
+        "Map inclusion/boundary naturality is derived from the chosen cofiber square.",
+        "Functoriality is supplied only for these chosen lambda cofiber maps, not assumed for arbitrary cones.",
+        "Restrictions equal the selected cofiber map of the proved power factorization.",
+        "Triangle ranges retain 0<i<j and j-i; lambdaMap and rho agree with the same quotient inclusions.",
+        "No inverse-limit, completeness or bounded-filtration assertion is introduced."
+      ],
+      "consumers": [
+        "finite source and target labels",
+        "rho/delta extension consumers",
+        "NuFifth finite_sphere_rho_label"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
           "declaration": "XModLambdaN.map",
           "line": 31
@@ -500,22 +952,10 @@
           "line": 212
         }
       ],
-      "constraints": [
-        "Every quotient is the existing XModLambdaN X n.",
-        "Map inclusion/boundary naturality is derived from the chosen cofiber square.",
-        "Functoriality is supplied only for these chosen lambda cofiber maps, not assumed for arbitrary cones.",
-        "Restrictions equal the selected cofiber map of the proved power factorization.",
-        "Triangle ranges retain 0<i<j and j-i; lambdaMap and rho agree with the same quotient inclusions.",
-        "No inverse-limit, completeness or bounded-filtration assertion is introduced."
-      ],
-      "consumers": [
-        "finite source and target labels",
-        "rho/delta extension consumers",
-        "NuFifth finite_sphere_rho_label"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.quotients",
+        "KIP126.AdamsSynthetic.Standard.syntheticCofiber"
+      ]
     },
     {
       "id": "classical-synthetic-e2-comparison",
@@ -541,8 +981,18 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
-          "declaration": "E2Comparison",
+          "declaration": "KIP126.AdamsSynthetic.E2Comparison",
           "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.comparison",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.family",
+          "line": 37
         }
       ],
       "constraints": [
@@ -555,9 +1005,22 @@
         "NuFifth sphere_quotient_label_to_nu",
         "Computation and Literature bindings"
       ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "E2Comparison",
+          "line": 25
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.comparison",
+        "KIP126.AdamsSynthetic.Standard.family"
+      ]
     },
     {
       "id": "conditional-nu-triangle",
@@ -576,8 +1039,13 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
-          "declaration": "NuExactTriangleInput",
+          "declaration": "KIP126.AdamsSynthetic.NuExactTriangleInput",
           "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+          "line": 40
         }
       ],
       "constraints": [
@@ -588,9 +1056,21 @@
       "consumers": [
         "Tests.Literature.Lift"
       ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "NuExactTriangleInput",
+          "line": 65
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle"
+      ]
     },
     {
       "id": "selected-object-configuration",
@@ -614,6 +1094,54 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "KIP126.Kervaire.Route.AuxiliaryData",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "KIP126.Kervaire.Route.AuxiliaryData.nuRouteTriangle",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "KIP126.Kervaire.Route.ClassicalObject",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "KIP126.Kervaire.Route.SyntheticObject",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "KIP126.Kervaire.Route.TriangleData",
+          "line": 60
+        }
+      ],
+      "constraints": [
+        "Cnu is the actual cofiber of the specified nu map.",
+        "Top cell and boundary maps retain their actual suspension targets.",
+        "Optional certificate objects C2/Ceta/CW are not added to the main object closure.",
+        "No computation data or source-result field is placed in this configuration."
+      ],
+      "consumers": [
+        "selected convergence fields",
+        "Main route objects",
+        "Literature and Computation binding projections"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
           "declaration": "AuxiliaryData",
@@ -640,20 +1168,9 @@
           "line": 72
         }
       ],
-      "constraints": [
-        "Cnu is the actual cofiber of the specified nu map.",
-        "Top cell and boundary maps retain their actual suspension targets.",
-        "Optional certificate objects C2/Ceta/CW are not added to the main object closure.",
-        "No computation data or source-result field is placed in this configuration."
-      ],
-      "consumers": [
-        "selected convergence fields",
-        "Main route objects",
-        "Literature and Computation binding projections"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.classicalConvergence"
+      ]
     },
     {
       "id": "normalized-extension-language",
@@ -708,6 +1225,166 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap.EssentialExtension",
+          "line": 78
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap.ExtensionEquation",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap.extensionEquation_zero",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap.extensionEquation_zero_reindex",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "KIP126.AdamsSynthetic.ConvergentMap.infinity_action_graded",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Normalized.lean",
+          "declaration": "KIP126.AdamsSynthetic.NormalizedSyntheticMap",
+          "line": 47
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence_natural",
+          "line": 74
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergentMap",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.family",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.normalizedMap",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "KIP126.AdamsSynthetic.TowerExtensionEquation",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Normalized.lean",
+          "declaration": "KIP126.AdamsSynthetic.normalizedExponent",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "KIP126.AdamsSynthetic.towerExtensionEquation_zero",
+          "line": 88
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.FiniteExtension",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionWitnesses.lean",
+          "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness.Essential",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness.length_nonnegative",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness.target_page_ge_two",
+          "line": 47
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.InfiniteExtension",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionWitnesses.lean",
+          "declaration": "KIP126.Kervaire.Route.InfiniteExtensionWitness",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.InfiniteExtensionWitness.Essential",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "KIP126.Kervaire.Route.InfiniteExtensionWitness.length_nonnegative",
+          "line": 58
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "KIP126.Kervaire.Route.finiteSourceForExtension",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "KIP126.Kervaire.Route.finiteTargetForExtension",
+          "line": 58
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "KIP126.Kervaire.Route.infiniteSourceForExtension",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "KIP126.Kervaire.Route.infiniteTargetForExtension",
+          "line": 72
+        }
+      ],
+      "constraints": [
+        "ExtensionEquation is the actual two-term filtered-map solution fiber.",
+        "The full target coset uses the actual shorter-extension boundary subobject, not a selected finite subset.",
+        "Length-zero extension must be derived from the same actual map on E-infinity and canonical convergence naturality.",
+        "Finite witnesses retain page>=2, lower/upper length bounds, source/target cycle levels and common infinity representatives.",
+        "Infinite witnesses retain common permanent representatives and the normalized lower length bound.",
+        "Bounded ESS hypotheses remain separate from general unbounded extension equations."
+      ],
+      "consumers": [
+        "NuFifth actual_extension_strict_elements and actual_extension_zero_8/11",
+        "ProofTools stretching/Leibniz/Mahowald consumers"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "mathematical_review": {
+        "finite_cycle_translation": "IsCycle(level) is translated to ReachesPage(level+1). Thus source page r and target page r-n+e retain the old r-1 and r-1-n+e cycle levels. Target page >=2 follows from length_upper.",
+        "permanent_translation": "Old permanentCycles is the range of the common Z-infinity representative into E2; IsPermanentCycle preserves that semantics including zero.",
+        "normalization": "e(f)=1 iff the same actual target tower admits a stage-one factorization, otherwise zero; no independently supplied filtration integer.",
+        "homology_exactness": "NuExactTriangleInput uses the actual inducedMap (H.object whiskerLeft f); complete injective/exact/surjective conditions correct the old middle-only premise."
+      },
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Normalized.lean",
           "declaration": "normalizedExponent",
@@ -824,29 +1501,12 @@
           "line": 58
         }
       ],
-      "constraints": [
-        "ExtensionEquation is the actual two-term filtered-map solution fiber.",
-        "The full target coset uses the actual shorter-extension boundary subobject, not a selected finite subset.",
-        "Length-zero extension must be derived from the same actual map on E-infinity and canonical convergence naturality.",
-        "Finite witnesses retain page>=2, lower/upper length bounds, source/target cycle levels and common infinity representatives.",
-        "Infinite witnesses retain common permanent representatives and the normalized lower length bound.",
-        "Bounded ESS hypotheses remain separate from general unbounded extension equations."
-      ],
-      "consumers": [
-        "NuFifth actual_extension_strict_elements and actual_extension_zero_8/11",
-        "ProofTools stretching/Leibniz/Mahowald consumers"
-      ],
-      "remaining_producer_obligations": [
-        "Prove paper-specific propagation, synchronization and no-crossing conclusions in ProofTools."
-      ],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
-      "mathematical_review": {
-        "finite_cycle_translation": "IsCycle(level) is translated to ReachesPage(level+1). Thus source page r and target page r-n+e retain the old r-1 and r-1-n+e cycle levels. Target page >=2 follows from length_upper.",
-        "permanent_translation": "Old permanentCycles is the range of the common Z-infinity representative into E2; IsPermanentCycle preserves that semantics including zero.",
-        "normalization": "e(f)=1 iff the same actual target tower admits a stage-one factorization, otherwise zero; no independently supplied filtration integer.",
-        "homology_exactness": "NuExactTriangleInput uses the actual inducedMap (H.object whiskerLeft f); complete injective/exact/surjective conditions correct the old middle-only premise."
-      }
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.convergence_natural",
+        "KIP126.AdamsSynthetic.Standard.convergentMap",
+        "KIP126.AdamsSynthetic.Standard.family",
+        "KIP126.AdamsSynthetic.Standard.normalizedMap"
+      ]
     },
     {
       "id": "lambda-recovery",
@@ -873,13 +1533,28 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
-          "declaration": "LambdaRecovery",
-          "line": 80
+          "declaration": "KIP126.AdamsSynthetic.StructuralExactness",
+          "line": 130
         },
         {
           "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
-          "declaration": "StructuralExactness",
-          "line": 130
+          "declaration": "KIP126.Synthetic.Context.LambdaRecovery",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.recovery",
+          "line": 49
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.realization",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nuRealizationIso",
+          "line": 41
         }
       ],
       "constraints": [
@@ -890,9 +1565,28 @@
         "comparisons and normalized maps",
         "later Literature binding for BHS"
       ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
+          "declaration": "LambdaRecovery",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
+          "declaration": "StructuralExactness",
+          "line": 130
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.recovery",
+        "KIP126.AdamsSynthetic.Standard.realization",
+        "KIP126.AdamsSynthetic.Standard.nuRealizationIso"
+      ]
     },
     {
       "id": "sphere-detection-and-multiplication",
@@ -929,6 +1623,84 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.AdamsSynthetic.FirstQuotientComparison",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.AdamsSynthetic.MultiplicationCompatible",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.AdamsSynthetic.SphereDetectionCompatible",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.AdamsSynthetic.SphereProductCommutative",
+          "line": 139
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_abutment_compatible",
+          "line": 34
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_pairing",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.AdamsSynthetic.sphereFirstQuotient",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.Synthetic.Context.lambdaMultiply",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.Synthetic.Context.sphereAction",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "KIP126.Synthetic.Context.sphereProduct",
+          "line": 24
+        }
+      ],
+      "constraints": [
+        "Sphere first-quotient identification is derived by transporting the selected nu-sphere comparison through the same actual quotient functor.",
+        "First-quotient and lambda detection refer to the same canonical sphere and quotient convergence.",
+        "The E2 multiplication and actual composition product retain the original natural-number degree ranges; detection may have zero leading term.",
+        "Commutativity has the topological Koszul sign, without an extra weight sign.",
+        "No standard-class uniqueness or nonzero detection follows from these equations alone."
+      ],
+      "consumers": [
+        "lambdaPower, product detection and sphere quotient consumers",
+        "Tests.AdamsSynthetic.System"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
           "declaration": "sphereProduct",
@@ -970,20 +1742,12 @@
           "line": 139
         }
       ],
-      "constraints": [
-        "Sphere first-quotient identification is derived by transporting the selected nu-sphere comparison through the same actual quotient functor.",
-        "First-quotient and lambda detection refer to the same canonical sphere and quotient convergence.",
-        "The E2 multiplication and actual composition product retain the original natural-number degree ranges; detection may have zero leading term.",
-        "Commutativity has the topological Koszul sign, without an extra weight sign.",
-        "No standard-class uniqueness or nonzero detection follows from these equations alone."
-      ],
-      "consumers": [
-        "lambdaPower, product detection and sphere quotient consumers",
-        "Tests.AdamsSynthetic.System"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.convergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_abutment_compatible",
+        "KIP126.AdamsSynthetic.Standard.mapping_pairing",
+        "KIP126.AdamsSynthetic.Standard.multiplicationCompatible"
+      ]
     },
     {
       "id": "classical-suspension",
@@ -1010,6 +1774,42 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalTowerSuspension",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalTowerSuspension.DesuspendsClass",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "KIP126.AdamsSynthetic.ClassicalTowerSuspension.desuspendFirstPage",
+          "line": 48
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.homologyShift",
+          "line": 63
+        }
+      ],
+      "constraints": [
+        "Tower stages, projection at zero, transition maps and cofiber layers refer to the same presentation.",
+        "The connecting-square comparison retains its minus sign.",
+        "DesuspendsClass compares actual common page-two representatives, not an arbitrary independently chosen E2 equivalence."
+      ],
+      "consumers": [
+        "selected classical suspension comparisons",
+        "Literature class labels after desuspension"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
           "declaration": "ClassicalTowerSuspension",
           "line": 21
         },
@@ -1024,18 +1824,9 @@
           "line": 60
         }
       ],
-      "constraints": [
-        "Tower stages, projection at zero, transition maps and cofiber layers refer to the same presentation.",
-        "The connecting-square comparison retains its minus sign.",
-        "DesuspendsClass compares actual common page-two representatives, not an arbitrary independently chosen E2 equivalence."
-      ],
-      "consumers": [
-        "selected classical suspension comparisons",
-        "Literature class labels after desuspension"
-      ],
-      "remaining_producer_obligations": [],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.homologyShift"
+      ]
     },
     {
       "id": "shared-consumer-model",
@@ -1074,6 +1865,142 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classical",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.classicalTower",
+          "line": 59
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.coefficients",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergence_natural",
+          "line": 74
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.convergentMap",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.family",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.homologyShift",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.normalizedMap",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.sphereAlgebra",
+          "line": 55
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticTower",
+          "line": 62
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.AdamsSynthetic.nuCoefficientUnit",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.ComparisonCompatible",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.Model",
+          "line": 90
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.Model.H6SquarePermanent",
+          "line": 110
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.Model.HomotopySeparated",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.Model.convergentMap",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "KIP126.Kervaire.Route.ModelData",
+          "line": 41
+        }
+      ],
+      "constraints": [
+        "The synthetic coefficient unit is the image of this very classical HF2 unit through the same nu functor and sphere identification.",
+        "Convergent maps use the selected object closure and agree with both the actual homotopy map and actual family E-infinity map.",
+        "All given canonical convergence data and quotient operations refer to the same tower presentation, family and background.",
+        "H6SquarePermanent uses the designated h6 square from actual E2 multiplication and common nonzero permanent-survival semantics; it is never a Model field.",
+        "HomotopySeparated remains an explicit separate proposition, not an automatic input property or a theorem here.",
+        "Fixed mathematical interfaces preserve module ownership; no Challenge wrapper or global model axiom remains. Actual constructions and source proofs are tracked individually."
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Consumers",
+        "Tests.AdamsSynthetic.System",
+        "future correlated Literature and Computation delivery",
+        "Main target expression"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "previous_parameterized_implementation": [
+        {
           "path": "KIP126/Def/AdamsSynthetic/System.lean",
           "declaration": "nuCoefficientUnit",
           "line": 25
@@ -1109,26 +2036,24 @@
           "line": 115
         }
       ],
-      "constraints": [
-        "The synthetic coefficient unit is the image of this very classical HF2 unit through the same nu functor and sphere identification.",
-        "Convergent maps use the selected object closure and agree with both the actual homotopy map and actual family E-infinity map.",
-        "All given canonical convergence data and quotient operations refer to the same tower presentation, family and background.",
-        "H6SquarePermanent uses the designated h6 square from actual E2 multiplication and common nonzero permanent-survival semantics; it is never a Model field.",
-        "HomotopySeparated remains an explicit separate proposition, not an automatic input property or a theorem here.",
-        "No Literature delivery, Computation calibration, new Challenge2 root input, global model axiom or concrete model construction is introduced."
-      ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Consumers",
-        "Tests.AdamsSynthetic.System",
-        "future correlated Literature and Computation delivery",
-        "Main target expression"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the coherent model instance and selected canonical convergence.",
-        "Discharge separation only in future proofs which require it."
-      ],
-      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
-      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.classical",
+        "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+        "KIP126.AdamsSynthetic.Standard.classicalTower",
+        "KIP126.AdamsSynthetic.Standard.coefficients",
+        "KIP126.AdamsSynthetic.Standard.convergence",
+        "KIP126.AdamsSynthetic.Standard.convergence_natural",
+        "KIP126.AdamsSynthetic.Standard.convergentMap",
+        "KIP126.AdamsSynthetic.Standard.family",
+        "KIP126.AdamsSynthetic.Standard.homologyShift",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem",
+        "KIP126.AdamsSynthetic.Standard.normalizedMap",
+        "KIP126.AdamsSynthetic.Standard.nu",
+        "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+        "KIP126.AdamsSynthetic.Standard.sphereAlgebra",
+        "KIP126.AdamsSynthetic.Standard.syntheticTower"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-parity",
@@ -1150,6 +2075,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.parity_apply",
           "line": 243
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_parity",
+          "line": 31
         }
       ],
       "constraints": [
@@ -1160,10 +2090,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.parity_apply",
+          "line": 243
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mapping_parity"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-e-infty-associative",
@@ -1185,6 +2125,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_associative",
           "line": 93
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1195,10 +2140,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_associative",
+          "line": 93
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-abutment-associative",
@@ -1220,6 +2175,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_associative",
           "line": 233
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1230,10 +2190,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_associative",
+          "line": 233
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-e-infty-left-unital",
@@ -1255,6 +2225,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_left_unital",
           "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1265,10 +2240,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_left_unital",
+          "line": 124
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-e-infty-right-unital",
@@ -1290,6 +2275,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_right_unital",
           "line": 140
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1300,10 +2290,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_right_unital",
+          "line": 140
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-abutment-left-unital",
@@ -1325,6 +2325,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_left_unital",
           "line": 217
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1335,10 +2340,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_left_unital",
+          "line": 217
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-adams-composition-converging-s-s-pairing-abutment-right-unital",
@@ -1360,6 +2375,11 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_right_unital",
           "line": 225
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
         }
       ],
       "constraints": [
@@ -1370,10 +2390,20 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_right_unital",
+          "line": 225
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition"
+      ]
     },
     {
       "id": "obligation-sphere-mapping-adams-s-s",
@@ -1392,6 +2422,26 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
+          "line": 298
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit",
+          "line": 311
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
           "declaration": "KIP126.AdamsSynthetic.sphereMappingAdamsIso",
           "line": 51
@@ -1406,10 +2456,23 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.sphereMappingAdamsIso",
+          "line": 51
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem",
+        "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
+        "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit"
+      ]
     },
     {
       "id": "obligation-adams-spectral-sequence-enrichment",
@@ -1431,6 +2494,26 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingEnrichment.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingEnrichment",
           "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment",
+          "line": 118
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page",
+          "line": 94
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnrichment",
+          "line": 155
         }
       ],
       "constraints": [
@@ -1442,10 +2525,23 @@
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingEnrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingEnrichment",
+          "line": 26
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment",
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty",
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page",
+        "KIP126.AdamsSynthetic.Standard.mappingEnrichment"
+      ]
     },
     {
       "id": "obligation-zlambda-enrichment",
@@ -1463,6 +2559,91 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.assoc",
+          "line": 191
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.left_unit",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.right_unit",
+          "line": 179
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
+          "line": 220
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_associative",
+          "line": 316
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous",
+          "line": 215
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
+          "line": 201
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_left_unit",
+          "line": 322
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_right_unit",
+          "line": 327
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.TotalWeightHom",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.WeightHom",
+          "line": 19
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.weightHomComp",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.weightHomLambda",
+          "line": 36
+        }
+      ],
+      "constraints": [
+        "Hom 分量就是 Hom(Σ^(0,w) X,Y)，总 Hom 是这些实际 Hom 的直和；不是任意新选对象。 Polynomial.X 在直和注入上等于由同一 lam 和同一 shift comparison 构成的 weightHomLambda；权重降低一。 复合是 ℤ[λ] 双线性，齐次分量上的复合等于实际移位映射复合；单位由同一 biShift_zero 得到。 修正旧未分次 EnrichedCategory(ModuleCat ℤ[λ]) 的语义：普通 Syn 是分次富集的零次部分；不宣称 λ 是固定权重 Hom 上的自映射。 结合律和左右单位律从同一 shift coherence、齐次实际复合相容式及 DirectSum 加法归纳推导，已经删除重复输入字段。",
+        "旧未分次富集声明没有绑定权重；新合同在 ⨁ w, Hom(Σ^(0,w) X,Y) 上交付 ℤ[λ] 富集，并将普通 Syn 解释为零次部分。λ 降权一，不能在固定权重 Hom 内强行当作自映射。"
+      ],
+      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
+      "consumers": [
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
           "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment",
@@ -1504,19 +2685,14 @@
           "line": 179
         }
       ],
-      "constraints": [
-        "Hom 分量就是 Hom(Σ^(0,w) X,Y)，总 Hom 是这些实际 Hom 的直和；不是任意新选对象。 Polynomial.X 在直和注入上等于由同一 lam 和同一 shift comparison 构成的 weightHomLambda；权重降低一。 复合是 ℤ[λ] 双线性，齐次分量上的复合等于实际移位映射复合；单位由同一 biShift_zero 得到。 修正旧未分次 EnrichedCategory(ModuleCat ℤ[λ]) 的语义：普通 Syn 是分次富集的零次部分；不宣称 λ 是固定权重 Hom 上的自映射。 结合律和左右单位律从同一 shift coherence、齐次实际复合相容式及 DirectSum 加法归纳推导，已经删除重复输入字段。",
-        "旧未分次富集声明没有绑定权重；新合同在 ⨁ w, Hom(Σ^(0,w) X,Y) 上交付 ℤ[λ] 富集，并将普通 Syn 解释为零次部分。λ 降权一，不能在固定权重 Hom 内强行当作自映射。"
-      ],
-      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
-      "consumers": [
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
-      ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
+        "KIP126.AdamsSynthetic.Standard.graded_associative",
+        "KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous",
+        "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
+        "KIP126.AdamsSynthetic.Standard.graded_left_unit",
+        "KIP126.AdamsSynthetic.Standard.graded_right_unit"
+      ]
     },
     {
       "id": "obligation-einfty-nu-x-weight-map",
@@ -1540,6 +2716,16 @@
           "line": 33
         },
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.weight_map",
+          "line": 229
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.weight_representative",
+          "line": 250
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
           "declaration": "KIP126.AdamsSynthetic.nuWeightLabel",
           "line": 22
@@ -1554,10 +2740,26 @@
         "Tests.AdamsSynthetic.Structural"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
+          "declaration": "KIP126.AdamsSynthetic.NuInfinityWeightMaps",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
+          "declaration": "KIP126.AdamsSynthetic.nuWeightLabel",
+          "line": 22
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.weight_map",
+        "KIP126.AdamsSynthetic.Standard.weight_representative"
+      ]
     },
     {
       "id": "obligation-synthetic-adams-e-s-s-shift-system-axiom",
@@ -1575,6 +2777,55 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.essShift",
+          "line": 288
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.essShiftSystem",
+          "line": 294
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticAdamsESSShiftSystem",
+          "line": 157
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.towerExtensionEquation_iff",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.transport",
+          "line": 79
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.lambdaBoundaryShiftIso",
+          "line": 147
+        }
+      ],
+      "constraints": [
+        "每个 n 给出既定对象闭包上的 Σ^(1,-n) 比较；通过 lambdaBoundaryShiftIso 与旧先减权再普通悬移一致。 ambient 映射等于同一 biShift 对实际同伦类的作用；同一实际 g 的方块由该公式推导，不重复索取自然性。 E∞ isomorphism 从同一塔收敛和滤过各层 isomorphism 推导；有限有效页的共同无限代表与此同一 E∞ iso 相容。 有限 λ 商和未截断对象都在 SyntheticObject 闭包中；一般扩张方程不需要 boundedness。 ESS 微分关系只在明确两端有界滤过及 projective 测试对象下转换；不声称存在全局有界无限 ESS。"
+      ],
+      "statement_disposition": "same responsibility, parameterized on the supplied background",
+      "consumers": [
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
           "declaration": "KIP126.AdamsSynthetic.SyntheticAdamsESSShiftSystem",
@@ -1601,18 +2852,10 @@
           "line": 147
         }
       ],
-      "constraints": [
-        "每个 n 给出既定对象闭包上的 Σ^(1,-n) 比较；通过 lambdaBoundaryShiftIso 与旧先减权再普通悬移一致。 ambient 映射等于同一 biShift 对实际同伦类的作用；同一实际 g 的方块由该公式推导，不重复索取自然性。 E∞ isomorphism 从同一塔收敛和滤过各层 isomorphism 推导；有限有效页的共同无限代表与此同一 E∞ iso 相容。 有限 λ 商和未截断对象都在 SyntheticObject 闭包中；一般扩张方程不需要 boundedness。 ESS 微分关系只在明确两端有界滤过及 projective 测试对象下转换；不声称存在全局有界无限 ESS。"
-      ],
-      "statement_disposition": "same responsibility, parameterized on the supplied background",
-      "consumers": [
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
-      ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.essShift",
+        "KIP126.AdamsSynthetic.Standard.essShiftSystem"
+      ]
     },
     {
       "id": "obligation-sh-closed-symmetric-t-t",
@@ -1631,6 +2874,11 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Background.lean",
           "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated",
           "line": 23
@@ -1645,10 +2893,20 @@
         "Tests.AdamsSynthetic.Background"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated",
+          "line": 23
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.closedBackground"
+      ]
     },
     {
       "id": "obligation-sphere-twist-sign",
@@ -1667,6 +2925,11 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.sphere_twist",
+          "line": 20
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Background.lean",
           "declaration": "KIP126.StableHomotopy.SphereTwistSign",
           "line": 62
@@ -1680,10 +2943,20 @@
         "Tests.AdamsSynthetic.Background"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.SphereTwistSign",
+          "line": 62
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.sphere_twist"
+      ]
     },
     {
       "id": "obligation-standard-spectrum-model",
@@ -1702,6 +2975,16 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.spectrumHomotopyEquivalence",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.spectrumRealization",
+          "line": 16
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
           "declaration": "KIP126.StableHomotopy.SpectrumModelRealization",
           "line": 201
@@ -1716,10 +2999,21 @@
         "Tests.AdamsSynthetic.Background"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.SpectrumModelRealization",
+          "line": 201
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.spectrumHomotopyEquivalence",
+        "KIP126.AdamsSynthetic.Standard.spectrumRealization"
+      ]
     },
     {
       "id": "obligation-standard-synthetic-model",
@@ -1738,6 +3032,16 @@
       ],
       "implementation": [
         {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticHomotopyEquivalence",
+          "line": 34
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticRealization",
+          "line": 19
+        },
+        {
           "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
           "declaration": "KIP126.StableHomotopy.SyntheticModelRealization",
           "line": 224
@@ -1752,10 +3056,21 @@
         "Tests.AdamsSynthetic.Background"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.SyntheticModelRealization",
+          "line": 224
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.syntheticHomotopyEquivalence",
+        "KIP126.AdamsSynthetic.Standard.syntheticRealization"
+      ]
     },
     {
       "id": "obligation-adams-separated",
@@ -1773,6 +3088,76 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FactorizationFiltrationComparison",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FiniteMapSeparation",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.IsOddTorsionMap",
+          "line": 93
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.separated_factorization",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.separated_factorization",
+          "line": 102
+        }
+      ],
+      "constraints": [
+        "For finite source and target, a map in every actual target-tower filtration of P is odd torsion. FactorizationFiltrationComparison binds the old same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.",
+        "Retain this as a foundational producer proof obligation; it is not proved or reclassified as an automatic literature fact."
+      ],
+      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
           "declaration": "KIP126.AdamsSynthetic.FiniteMapSeparation",
@@ -1794,19 +3179,15 @@
           "line": 93
         }
       ],
-      "constraints": [
-        "For finite source and target, a map in every actual target-tower filtration of P is odd torsion. FactorizationFiltrationComparison binds the old same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.",
-        "Retain this as a foundational producer proof obligation; it is not proved or reclassified as an automatic literature fact."
-      ],
-      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
-      ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+        "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+        "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+        "KIP126.AdamsSynthetic.Standard.separated_factorization"
+      ]
     },
     {
       "id": "obligation-af-not-odd-order-finite",
@@ -1824,6 +3205,76 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.ExactMapAdamsFiltration",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FactorizationFiltrationComparison",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FiniteMapSeparation",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.separated_factorization",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.finite_filtration_of_not_odd",
+          "line": 110
+        }
+      ],
+      "constraints": [
+        "From P and FiniteMapSeparation, a non-odd-torsion map between finite objects has an exact integer filtration. Derived using stage-zero membership, monotonicity and the first failed natural filtration stage.",
+        "Add finite source/target hypotheses omitted by the old unqualified statement. Non-odd-torsion excludes zero. This result is derived, not a separate input."
+      ],
+      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
           "declaration": "KIP126.AdamsSynthetic.finite_filtration_of_not_odd",
@@ -1845,19 +3296,15 @@
           "line": 70
         }
       ],
-      "constraints": [
-        "From P and FiniteMapSeparation, a non-odd-torsion map between finite objects has an exact integer filtration. Derived using stage-zero membership, monotonicity and the first failed natural filtration stage.",
-        "Add finite source/target hypotheses omitted by the old unqualified statement. Non-odd-torsion excludes zero. This result is derived, not a separate input."
-      ],
-      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
-      ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+        "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+        "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+        "KIP126.AdamsSynthetic.Standard.separated_factorization"
+      ]
     },
     {
       "id": "obligation-adams-boundedness",
@@ -1887,13 +3334,23 @@
         },
         {
           "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.HomotopyTwoLocal",
+          "line": 143
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
           "declaration": "KIP126.AdamsSynthetic.RationallyAcyclic",
           "line": 138
         },
         {
-          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
-          "declaration": "KIP126.AdamsSynthetic.HomotopyTwoLocal",
-          "line": 143
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.adams_filtration_bounded",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+          "line": 57
         },
         {
           "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
@@ -1910,10 +3367,41 @@
         "Tests.AdamsSynthetic.Filtration"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.AdamsBoundednessInput",
+          "line": 149
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.AdamsBoundednessInput.excludes_nonzero",
+          "line": 153
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.RationallyAcyclic",
+          "line": 138
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.HomotopyTwoLocal",
+          "line": 143
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.filtration_contains_zero",
+          "line": 163
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.adams_filtration_bounded",
+        "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero"
+      ]
     },
     {
       "id": "obligation-mod2-homology-cofiber-bound",
@@ -1933,13 +3421,18 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
           "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness.cofiber_card_bound",
           "line": 72
         },
         {
-          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
-          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness",
-          "line": 27
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound",
+          "line": 73
         },
         {
           "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
@@ -1956,10 +3449,30 @@
         "Tests.AdamsSynthetic.Filtration"
       ],
       "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness.cofiber_card_bound",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.modTwoConnecting",
+          "line": 18
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound"
+      ]
     },
     {
       "id": "obligation-af-detection",
@@ -1977,6 +3490,86 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FactorizationFiltrationComparison",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput",
+          "line": 114
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detect_non_odd",
+          "line": 139
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingFiltrationComparison",
+          "line": 104
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.NonzeroClassicalDetection",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.separated_factorization",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.nonzeroClassicalDetection_of_exact",
+          "line": 49
+        }
+      ],
+      "constraints": [
+        "The map f is represented in pi_0 of the actual internal hom F(X,Y) for B. Same-P mapping filtration comparison and finite-scope MappingSpectrumSystem convergence give a common Z-infinity representative with nonzero E-infinity image detecting the same map at (s,s). Exact detection is derived from the associated-graded quotient and convergence; finite exact filtration uses explicit separation.",
+        "Old nonzero-only detection was invalid for odd-torsion maps and referred to Y rather than F(X,Y). Require finite X,Y and non-odd-torsion, and produce an actual detection witness. detects_exact is a theorem, not an extra field."
+      ],
+      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detect_non_odd",
@@ -2008,19 +3601,15 @@
           "line": 49
         }
       ],
-      "constraints": [
-        "The map f is represented in pi_0 of the actual internal hom F(X,Y) for B. Same-P mapping filtration comparison and finite-scope MappingSpectrumSystem convergence give a common Z-infinity representative with nonzero E-infinity image detecting the same map at (s,s). Exact detection is derived from the associated-graded quotient and convergence; finite exact filtration uses explicit separation.",
-        "Old nonzero-only detection was invalid for odd-torsion maps and referred to Y rather than F(X,Y). Require finite X,Y and non-odd-torsion, and produce an actual detection witness. detects_exact is a theorem, not an extra field."
-      ],
-      "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Construct the explicit input on the intended concrete background; no producer or global axiom is supplied."
-      ],
-      "interface_state": "implemented and checked through the ordinary public entry",
-      "concrete_instance_state": "deferred; parameterized consumers require no concrete construction"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+        "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+        "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+        "KIP126.AdamsSynthetic.Standard.separated_factorization"
+      ]
     },
     {
       "id": "support-adams-filtration",
@@ -2052,6 +3641,160 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.AdamsBoundednessInput",
+          "line": 149
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.AdamsBoundednessInput.excludes_nonzero",
+          "line": 153
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.AdamsMapFactorization",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.ExactMapAdamsFiltration",
+          "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FactorizationFiltration",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FactorizationFiltrationComparison",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.FiniteMapSeparation",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.HomotopyTwoLocal",
+          "line": 143
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.IsFiniteSpectrum",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.IsOddTorsionMap",
+          "line": 93
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.MapAdamsFiltration",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomology",
+          "line": 32
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.RationallyAcyclic",
+          "line": 138
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.adams_filtration_bounded",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+          "line": 57
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.separated_factorization",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.ZeroOnModTwoHomology",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.filtration_contains_zero",
+          "line": 163
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.finite_filtration_of_not_odd",
+          "line": 110
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.mapAdamsFiltration_mono",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.mapAdamsFiltration_zero",
+          "line": 75
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.modTwoHomologyMap",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
+          "declaration": "KIP126.AdamsSynthetic.separated_factorization",
+          "line": 102
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/AdamsFiltration.lean",
           "declaration": "KIP126.AdamsSynthetic.IsFiniteSpectrum",
@@ -2153,13 +3896,17 @@
           "line": 163
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.adams_filtration_bounded",
+        "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+        "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+        "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
+        "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+        "KIP126.AdamsSynthetic.Standard.separated_factorization"
+      ]
     },
     {
       "id": "support-background",
@@ -2179,6 +3926,45 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.sphere_twist",
+          "line": 20
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated",
+          "line": 23
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.smashSpheres",
+          "line": 50
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.sphereTensorShift",
+          "line": 42
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Background.lean",
+          "declaration": "KIP126.StableHomotopy.SphereTwistSign",
+          "line": 62
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Background"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Background.lean",
           "declaration": "KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated",
@@ -2200,13 +3986,10 @@
           "line": 62
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Background"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.sphere_twist"
+      ]
     },
     {
       "id": "support-realization",
@@ -2226,6 +4009,100 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.spectrumHomotopyEquivalence",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.spectrumRealization",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticHomotopyEquivalence",
+          "line": 34
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Realization.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.syntheticRealization",
+          "line": 19
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.CofibrantGeneration",
+          "line": 167
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.IsModelPullback",
+          "line": 49
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.IsModelPushout",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.MonoidalModelCompatibility",
+          "line": 179
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.SpectrumModelRealization",
+          "line": 201
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableLocalization",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableLocalization.counitIsIso",
+          "line": 109
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableLocalization.unitIsIso",
+          "line": 101
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableModelRealization",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableModelRealization.Ho",
+          "line": 134
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableModelRealization.homotopyEquivalence",
+          "line": 141
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.StableModelRealization.localizationComparison",
+          "line": 152
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
+          "declaration": "KIP126.StableHomotopy.SyntheticModelRealization",
+          "line": 224
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Background"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Realization.lean",
           "declaration": "KIP126.StableHomotopy.IsModelPushout",
@@ -2292,13 +4169,12 @@
           "line": 224
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Background"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.spectrumHomotopyEquivalence",
+        "KIP126.AdamsSynthetic.Standard.spectrumRealization",
+        "KIP126.AdamsSynthetic.Standard.syntheticHomotopyEquivalence",
+        "KIP126.AdamsSynthetic.Standard.syntheticRealization"
+      ]
     },
     {
       "id": "support-homology-exactness",
@@ -2312,6 +4188,35 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness.cofiber_card_bound",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound",
+          "line": 73
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
+          "declaration": "KIP126.AdamsSynthetic.modTwoConnecting",
+          "line": 18
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/HomologyExactness.lean",
           "declaration": "KIP126.AdamsSynthetic.modTwoConnecting",
@@ -2328,13 +4233,9 @@
           "line": 72
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound"
+      ]
     },
     {
       "id": "support-mapping",
@@ -2348,6 +4249,85 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem.converging",
+          "line": 73
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem.homotopyEquiv",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem.reindex",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem.sequence",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.closedBackground",
+          "line": 18
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingSystem",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
+          "line": 298
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit",
+          "line": 311
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.mappingHomotopyEquiv",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.mappingHomotopyZeroEquiv",
+          "line": 38
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.mappingSpectrum",
+          "line": 23
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.sphereMappingAdamsIso",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
+          "declaration": "KIP126.AdamsSynthetic.sphereMappingIso",
+          "line": 45
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Mapping"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Mapping.lean",
           "declaration": "KIP126.AdamsSynthetic.mappingSpectrum",
@@ -2399,13 +4379,12 @@
           "line": 84
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Mapping"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.closedBackground",
+        "KIP126.AdamsSynthetic.Standard.mappingSystem",
+        "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
+        "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit"
+      ]
     },
     {
       "id": "support-mapping-composition",
@@ -2455,6 +4434,85 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_associative",
+          "line": 233
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_left_unital",
+          "line": 217
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_right_unital",
+          "line": 225
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_associative",
+          "line": 93
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_left_unital",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_right_unital",
+          "line": 140
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingComposition.parity_apply",
+          "line": 243
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingObject",
+          "line": 23
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSpectrumSystem.hom",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingSphereCompatibility",
+          "line": 252
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingComposition",
+          "line": 68
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_parity",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
+          "declaration": "KIP126.AdamsSynthetic.adamsStemParity",
+          "line": 30
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Mapping"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/MappingComposition.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingObject",
@@ -2516,13 +4574,10 @@
           "line": 252
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Mapping"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingComposition",
+        "KIP126.AdamsSynthetic.Standard.mapping_parity"
+      ]
     },
     {
       "id": "support-mapping-detection",
@@ -2536,6 +4591,75 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput",
+          "line": 114
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detect_non_odd",
+          "line": 139
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detects_exact",
+          "line": 122
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingFiltrationComparison",
+          "line": 104
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.NonzeroClassicalDetection",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.NonzeroClassicalDetection.detects",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.NonzeroClassicalDetection.pageElement",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+          "line": 81
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mapping_detects_exact",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.mappingClass",
+          "line": 88
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
+          "declaration": "KIP126.AdamsSynthetic.nonzeroClassicalDetection_of_exact",
+          "line": 49
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Filtration"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/MappingDetection.lean",
           "declaration": "KIP126.AdamsSynthetic.NonzeroClassicalDetection",
@@ -2582,13 +4706,11 @@
           "line": 139
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Filtration"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingConvergence",
+        "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.mapping_detects_exact"
+      ]
     },
     {
       "id": "support-mapping-enrichment",
@@ -2606,15 +4728,48 @@
           "path": "KIP126/Def/AdamsSynthetic/MappingEnrichment.lean",
           "declaration": "KIP126.AdamsSynthetic.MappingEnrichment",
           "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment",
+          "line": 118
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty",
+          "line": 106
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page",
+          "line": 94
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.mappingEnrichment",
+          "line": 155
         }
       ],
       "consumers": [
         "Tests.AdamsSynthetic.Mapping"
       ],
       "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/MappingEnrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.MappingEnrichment",
+          "line": 26
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment",
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty",
+        "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page",
+        "KIP126.AdamsSynthetic.Standard.mappingEnrichment"
+      ]
     },
     {
       "id": "support-e-s-s-shift",
@@ -2628,6 +4783,75 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.essShift",
+          "line": 288
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.essShiftSystem",
+          "line": 294
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticAdamsESSShiftSystem",
+          "line": 157
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.equation_iff",
+          "line": 99
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.towerExtensionEquation_iff",
+          "line": 115
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.transport",
+          "line": 79
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.lambdaBoundaryShiftFunctor",
+          "line": 142
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.lambdaBoundaryShiftIso",
+          "line": 147
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.shiftHomotopyClass",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.towerGradedIso",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
+          "declaration": "KIP126.AdamsSynthetic.towerInfinityIso",
+          "line": 42
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/ESSShift.lean",
           "declaration": "KIP126.AdamsSynthetic.shiftHomotopyClass",
@@ -2679,13 +4903,10 @@
           "line": 157
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.essShift",
+        "KIP126.AdamsSynthetic.Standard.essShiftSystem"
+      ]
     },
     {
       "id": "support-enrichment",
@@ -2699,6 +4920,105 @@
         }
       ],
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.assoc",
+          "line": 191
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose_lambda_left",
+          "line": 83
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose_lambda_right",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.left_unit",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.right_unit",
+          "line": 179
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.underlyingHom",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
+          "line": 220
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_associative",
+          "line": 316
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous",
+          "line": 215
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
+          "line": 201
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_left_unit",
+          "line": 322
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.graded_right_unit",
+          "line": 327
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.TotalWeightHom",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.WeightHom",
+          "line": 19
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.weightHomComp",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.weightHomInclusion",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
+          "declaration": "KIP126.AdamsSynthetic.weightHomLambda",
+          "line": 36
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Enrichment.lean",
           "declaration": "KIP126.AdamsSynthetic.WeightHom",
@@ -2760,13 +5080,14 @@
           "line": 191
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
+        "KIP126.AdamsSynthetic.Standard.graded_associative",
+        "KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous",
+        "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
+        "KIP126.AdamsSynthetic.Standard.graded_left_unit",
+        "KIP126.AdamsSynthetic.Standard.graded_right_unit"
+      ]
     },
     {
       "id": "support-weight",
@@ -2782,6 +5103,35 @@
       "implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
+          "declaration": "KIP126.AdamsSynthetic.NuInfinityWeightMaps",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.weight_map",
+          "line": 229
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Operations.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.weight_representative",
+          "line": 250
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
+          "declaration": "KIP126.AdamsSynthetic.nuWeightLabel",
+          "line": 22
+        }
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Weight.lean",
           "declaration": "KIP126.AdamsSynthetic.nuWeightLabel",
           "line": 22
         },
@@ -2791,18 +5141,52 @@
           "line": 33
         }
       ],
-      "consumers": [
-        "Tests.AdamsSynthetic.Structural"
-      ],
-      "remaining_producer_obligations": [
-        "Concrete inputs remain deferred."
-      ],
-      "interface_state": "public support for reviewed obligations, not a separate existence promise"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.weight_map",
+        "KIP126.AdamsSynthetic.Standard.weight_representative"
+      ]
     },
     {
       "id": "literature-representative-support",
       "mathematical_purpose": "本轮真实Literature消费者所需的完整前提及操作，不新增模型实例或已证存在性。",
       "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticHasDifferential",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticRepresentsOnPage",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.Synthetic.Context.susp_invariance",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.family",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu",
+          "line": 35
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.RouteConsumers"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        }
+      ],
+      "previous_parameterized_implementation": [
         {
           "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
           "declaration": "KIP126.Synthetic.Context.susp_invariance",
@@ -2819,15 +5203,13 @@
           "line": 37
         }
       ],
-      "consumers": [
-        "Tests.Literature.RouteConsumers"
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.family",
+        "KIP126.AdamsSynthetic.Standard.nu"
       ],
-      "source_locators": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
-          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
-        }
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ]
     },
     {
@@ -2843,6 +5225,11 @@
           "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
           "declaration": "KIP126.AdamsSynthetic.NuExactTriangleInput",
           "line": 65
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+          "line": 40
         }
       ],
       "consumers": [
@@ -2854,6 +5241,25 @@
           "path": "KIP126/Def/StableHomotopy/Implementation/Data.lean",
           "sha256": "101ebd16117094443078ab39d91d52c9b1c098dac2359aaea2a7780125fb300f"
         }
+      ],
+      "previous_parameterized_implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "KIP126.AdamsSynthetic.HomologyShortExact",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "KIP126.AdamsSynthetic.NuExactTriangleInput",
+          "line": 65
+        }
+      ],
+      "fixed_public_entries": [
+        "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle"
+      ],
+      "interface_state": "direct fixed objects/theorems with generic mathematical support; pending proofs separately locked",
+      "remaining_producer_obligations": [
+        "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ]
     }
   ],
@@ -2897,7 +5303,7 @@
     {
       "id": "external-literature-and-computation",
       "status": "future modules",
-      "rule": "Literature and Computation keep their correlated delivery. No new Challenge2 root input or global bundle axiom."
+      "rule": "Literature and Computation share the fixed Standard background. Challenge2 is removed; individual upstream declarations replace caller-supplied deliveries."
     },
     {
       "id": "finite-map-filtration-separation",
@@ -2907,15 +5313,14 @@
     }
   ],
   "checks": [
-    "Tests.AdamsSynthetic.Consumers",
-    "Tests.AdamsSynthetic.System",
-    "Tests.AdamsSynthetic.Detection",
-    "adams-synthetic-api.json",
-    "default lake build; repository-wide axiom dependency audit",
     "Tests.AdamsSynthetic.Background",
+    "Tests.AdamsSynthetic.Consumers",
+    "Tests.AdamsSynthetic.Detection",
     "Tests.AdamsSynthetic.Filtration",
+    "Tests.AdamsSynthetic.Interface",
     "Tests.AdamsSynthetic.Mapping",
-    "Tests.AdamsSynthetic.Structural"
+    "Tests.AdamsSynthetic.Structural",
+    "Tests.AdamsSynthetic.System"
   ],
   "exclusions": [
     "README and AGENTS edits",
@@ -2937,5 +5342,17 @@
     "reason": "Middle exactness of a distinguished triangle alone does not imply that nu preserves its cofiber.",
     "affected_type": "KIP126.AdamsSynthetic.NuExactTriangleInput.preserves",
     "compatibility": "Intentional correction of an overly strong legacy input; the same predicate is reused by the full Literature iff."
+  },
+  "proof_obligation_registry": "proof-obligations.json",
+  "migration_map": "fixed-interface-migration.json",
+  "validation": {
+    "command": "lake build",
+    "result": "passed",
+    "interface_types_and_exports": "locked by normal public import tests",
+    "direct_consumer_tests": true,
+    "proof_obligations": "exact direct names/types/bodies locked; no project axioms or synthetic sorry",
+    "previous_coverage_not_promoted": true,
+    "jobs": 2197,
+    "cache_invalidation_negative_checks": "passed; registry and API JSON are traced through Lake needs"
   }
 }

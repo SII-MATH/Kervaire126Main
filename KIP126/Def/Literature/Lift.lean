@@ -96,7 +96,7 @@ public def SyntheticTriangleLiftComparison : Prop :=
 
 /-- The three source leaves use the same background. Their delivery does
 not identify arbitrary previously selected normalized maps with these lifts. -/
-public structure LiftSourceResults : Prop where
+private structure LiftSourceResults : Prop where
   nu_cofiber : NuCofiberCriterion D
   lift : SyntheticLiftComparison D
   triangle_lift : SyntheticTriangleLiftComparison D
