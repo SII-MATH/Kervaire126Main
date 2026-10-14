@@ -390,7 +390,7 @@ public theorem SSData.first_boundary_page (D : SSData C) {T : C}
   · exact Nat.find_min hex (by omega)
 
 /-- The packaged infinity page vanishes when every finite page at the grading vanishes. -/
-public theorem EInftyData.eInfty_isZero_of_page_isZero
+theorem EInftyData.eInfty_isZero_of_page_isZero
     {C : Type u} [Category.{v} C] [Abelian C]
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (eData : EInftyData C ι) (k : ι)

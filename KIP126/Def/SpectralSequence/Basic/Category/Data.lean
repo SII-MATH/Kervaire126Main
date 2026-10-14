@@ -18,7 +18,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- The category of graded `SSData` families and their underlying morphisms. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Category.{max w v} (GradedSSData C ι) where
   Hom D D' := UnderlyingMorphism ι D.data D'.data
   id _ := ⟨fun _ => 𝟙 _⟩
@@ -48,7 +48,7 @@ public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     PreSSMorphism.ext (funext fun k => Category.assoc (f.φ k) (g.φ k) (h.φ k))
 
 /-- Forget a pre-spectral sequence to its graded family of nested-subobject data. -/
-public def PreSS.forget {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+def PreSS.forget {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     PreSS C ι ⥤ GradedSSData C ι where
   obj E := ⟨E.ssData⟩
   map f := ⟨f.φ⟩
@@ -56,7 +56,7 @@ public def PreSS.forget {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
   map_comp _ _ := rfl
 
 /-- The forgetful functor from `PreSS` is faithful. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Functor.Faithful (PreSS.forget (C := C) (ι := ι)) where
   map_injective h := PreSSMorphism.ext (congrArg UnderlyingMorphism.φ h)
 
@@ -86,7 +86,7 @@ public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     (funext fun k => Category.assoc (f.φ k) (g.φ k) (h.φ k))
 
 /-- Spectral-sequence morphisms are exactly morphisms of the underlying `PreSS`. -/
-public def SpectralSequenceMorphism.equivPreSSMorphism
+def SpectralSequenceMorphism.equivPreSSMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E E' : SpectralSequence C ι) :
     SpectralSequenceMorphism E E' ≃ PreSSMorphism E.toPreSS E'.toPreSS where
@@ -102,7 +102,7 @@ public def SpectralSequenceMorphism.equivPreSSMorphism
   right_inv _ := rfl
 
 /-- Inclusion of spectral sequences into pre-spectral sequences. -/
-public def inclusion
+def inclusion
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     SpectralSequence C ι ⥤ PreSS C ι where
   obj E := E.toPreSS
@@ -111,19 +111,19 @@ public def inclusion
   map_comp _ _ := PreSSMorphism.ext rfl
 
 /-- The inclusion of spectral sequences is faithful. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Functor.Faithful (SpectralSequence.inclusion (C := C) (ι := ι)) where
   map_injective h := SpectralSequenceMorphism.ext (congrArg (fun m => m.φ) h)
 
 /-- The inclusion of spectral sequences is full. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Functor.Full (SpectralSequence.inclusion (C := C) (ι := ι)) where
   map_surjective g :=
     ⟨(SpectralSequenceMorphism.equivPreSSMorphism _ _).symm g,
       (SpectralSequenceMorphism.equivPreSSMorphism _ _).apply_symm_apply g⟩
 
 /-- The inclusion of spectral sequences is fully faithful. -/
-public noncomputable def inclusionFullyFaithful
+noncomputable def inclusionFullyFaithful
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     (SpectralSequence.inclusion (C := C) (ι := ι)).FullyFaithful :=
   Functor.FullyFaithful.ofFullyFaithful _

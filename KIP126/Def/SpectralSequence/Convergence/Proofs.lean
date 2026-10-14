@@ -1,7 +1,12 @@
 module
 
+public import KIP126.Def.SpectralSequence.Convergence.Predicates
+
 import all KIP126.Def.SpectralSequence.Convergence.Predicates
 import all KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+public import Mathlib.Algebra.Category.ModuleCat.Subobject
+public import Mathlib.Algebra.Category.ModuleCat.Abelian
 
 @[expose] section
 
@@ -17,14 +22,32 @@ universe u v w
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
+omit [Abelian C] in
+/-- A filtration decreases between any two ordered integer levels. -/
+public theorem Filtration.le_of_le {ω : Type w} {A : ω → C}
+    (F : Filtration A) {s t : ℤ} (h : s ≤ t) (k : ω) : F.F t k ≤ F.F s k := by
+  induction t, h using Int.leInduction with
+  | base => exact le_rfl
+  | succ t _ ih => exact (F.mono t k).trans ih
+
+/-- A filtration representative has zero graded class precisely when its
+actual ambient element belongs to the next filtration level. -/
+public theorem Filtration.toAssociatedGraded_eq_zero_iff
+    {R : Type u} [Ring R] {ω : Type w} {A : ω → ModuleCat.{v} R}
+    (F : Filtration A) (s : ℤ) (k : ω)
+    (x : (Subobject.underlying.obj (F.F s k) : ModuleCat R)) :
+    F.toAssociatedGraded s k x = 0 ↔
+      (F.F s k).arrow x ∈ (ModuleCat.subobjectModule (A k)) (F.F (s + 1) k) :=
+  subobject_cokernel_π_eq_zero_iff (F.F (s + 1) k) (F.F s k) (F.mono s k) x
+
 @[simp]
-theorem Filtration.transportGraded_self
+public theorem Filtration.transportGraded_self
     {ω' : Type w} {A : ω' → C} (F : Filtration A)
     {r : ℤ × ω'} (h : r = r) :
     F.transportGraded h = 𝟙 (F.associatedGraded r.1 r.2) :=
   rfl
 
-theorem Filtration.transportGraded_trans
+public theorem Filtration.transportGraded_trans
     {ω' : Type w} {A : ω' → C} (F : Filtration A)
     {r₁ r₂ r₃ : ℤ × ω'} (h₁₂ : r₁ = r₂) (h₂₃ : r₂ = r₃) :
     F.transportGraded h₁₂ ≫ F.transportGraded h₂₃ =
@@ -50,7 +73,7 @@ theorem _root_.KIP126.Core.Algebra.Filtration.toSpectralSequence_toAlgebra
   rfl
 
 /-- Detection by zero is equivalent to lifting one filtration level deeper. -/
-theorem detect_zero
+public theorem detect_zero
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F)
@@ -73,7 +96,7 @@ theorem detect_zero
     rw [← hx', Category.assoc, cokernel.condition, Limits.comp_zero]
 
 /-- Two representatives detected by the same class differ by a deeper-filtration lift. -/
-theorem detect_difference
+public theorem detect_difference
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F)
@@ -122,14 +145,14 @@ theorem detect_difference
     rw [hx'eq, Preadditive.sub_comp, hd, hz0, sub_zero]
 
 /-- A two-sided bounded filtration is bounded below. -/
-def Filtration.IsBounded.toIsBoundedBelow
+public def Filtration.IsBounded.toIsBoundedBelow
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBounded) : F.IsBoundedBelow where
   lo := h.lo
   boundedBelow := h.boundedBelow
 
 /-- A two-sided bounded filtration is bounded above. -/
-def Filtration.IsBounded.toIsBoundedAbove
+public def Filtration.IsBounded.toIsBoundedAbove
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBounded) : F.IsBoundedAbove where
   hi := h.hi
@@ -137,7 +160,7 @@ def Filtration.IsBounded.toIsBoundedAbove
 
 omit [Abelian C] in
 /-- A bounded-below filtration is exhaustive. -/
-theorem Filtration.IsBoundedBelow.toIsExhaustive
+public theorem Filtration.IsBoundedBelow.toIsExhaustive
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBoundedBelow) : F.IsExhaustive := by
   intro k
@@ -154,7 +177,7 @@ theorem Filtration.isHausdorff_of_isEventuallyZero
   exact le_antisymm (by simpa only [hs] using hS s) bot_le
 
 /-- A bounded-above filtration is Hausdorff. -/
-theorem Filtration.IsBoundedAbove.toIsHausdorff
+public theorem Filtration.IsBoundedAbove.toIsHausdorff
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBoundedAbove) : F.IsHausdorff := by
   apply Filtration.isHausdorff_of_isEventuallyZero
@@ -163,7 +186,7 @@ theorem Filtration.IsBoundedAbove.toIsHausdorff
 
 /-- Extensionality for convergence morphisms. -/
 @[ext]
-theorem ConvergenceMorphism.ext
+public theorem ConvergenceMorphism.ext
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E₁ E₂ : SpectralSequence C ω} {ω' : Type w}
     {A₁ A₂ : ω' → C} {F₁ : Filtration A₁} {F₂ : Filtration A₂}

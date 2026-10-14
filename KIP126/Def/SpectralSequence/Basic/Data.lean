@@ -153,7 +153,7 @@ public structure SSDataMorphism
       lift ≫ ((D' k).B r).arrow = ((D k).B r).arrow ≫ φ k
 
 /-- Forget the preservation witnesses of an `SSDataMorphism`. -/
-public def SSDataMorphism.toUnderlying
+def SSDataMorphism.toUnderlying
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' : ι → SSData C} (f : SSDataMorphism ι D D') :
     UnderlyingMorphism ι D D' where
@@ -290,7 +290,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- Assemble a spectral sequence from its data and explicit compatibility proofs. -/
-public noncomputable def ofPreSS
+noncomputable def ofPreSS
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (P : PreSS C ι)
     (d_comp_d : ∀ (r : ℤ) (k : ι),
@@ -453,20 +453,20 @@ public noncomputable def SpectralSequenceMorphism.eInftyMap
   f.toSSDataMorphism.pageMap k ⊤
 
 /-- A spectral sequence packaged with a convenient infinity-page accessor. -/
-public structure EInftyData (C : Type u) [Category.{v} C] [Abelian C]
+structure EInftyData (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
   /-- Underlying spectral sequence. -/
   ss : SpectralSequence C ι
 
 /-- The infinity page at grading `k`. -/
-public noncomputable def EInftyData.EInfty
+noncomputable def EInftyData.EInfty
     {C : Type u} [Category.{v} C] [Abelian C]
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (eData : EInftyData C ι) (k : ι) : C :=
   (eData.ss.ssData k).eInfty
 
 /-- A graded family of `SSData`, used as the target of the forgetful functor. -/
-public structure GradedSSData (C : Type u) [Category.{v} C] [Abelian C]
+structure GradedSSData (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
   /-- Nested-subobject data at each grading. -/
   data : ι → SSData C

@@ -24,7 +24,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- A decreasing filtration with the historical `mono` field name. -/
-structure Filtration {ω : Type w} (A : ω → C) where
+public structure Filtration {ω : Type w} (A : ω → C) where
   /-- Filtration subobject at level `s` and grading `k`. -/
   F : ℤ → (k : ω) → Subobject (A k)
   /-- Successive levels form a decreasing family. -/
@@ -44,25 +44,25 @@ def _root_.KIP126.Core.Algebra.Filtration.toSpectralSequence
   mono := F.decreasing
 
 /-- Associated graded piece `F^s A^k / F^(s+1) A^k`. -/
-noncomputable def Filtration.associatedGraded
+public noncomputable def Filtration.associatedGraded
     {ω : Type w} {A : ω → C} (F : Filtration A) (s : ℤ) (k : ω) : C :=
   cokernel (Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k))
 
 /-- Projection from a filtration level to its associated graded piece. -/
-noncomputable def Filtration.toAssociatedGraded
+public noncomputable def Filtration.toAssociatedGraded
     {ω : Type w} {A : ω → C} (F : Filtration A) (s : ℤ) (k : ω) :
     Subobject.underlying.obj (F.F s k) ⟶ F.associatedGraded s k :=
   cokernel.π (Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k))
 
 /-- Transport associated graded pieces along equality of their indices. -/
-noncomputable def Filtration.transportGraded
+public noncomputable def Filtration.transportGraded
     {ω' : Type w} {A : ω' → C} (F : Filtration A)
     {r₁ r₂ : ℤ × ω'} (h : r₁ = r₂) :
     F.associatedGraded r₁.1 r₁.2 ⟶ F.associatedGraded r₂.1 r₂.2 :=
   eqToHom (by rw [h])
 
 /-- Weak convergence to a filtered graded object. -/
-structure Convergence
+public structure Convergence
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     (E : SpectralSequence C ω) {ω' : Type w} (A : ω' → C) (F : Filtration A) where
   /-- Reindexing from spectral-sequence degrees to filtration/stem degrees. -/
@@ -74,21 +74,21 @@ structure Convergence
     (E.ssData k).eInfty ≅ F.associatedGraded (reindex k).1 (reindex k).2
 
 /-- Filtration-degree component of the convergence reindexing. -/
-def Convergence.filtrationDegree
+public def Convergence.filtrationDegree
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F) (k : ω) : ℤ :=
   (conv.reindex k).1
 
 /-- Stem-degree component of the convergence reindexing. -/
-def Convergence.stemDegree
+public def Convergence.stemDegree
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F) (k : ω) : ω' :=
   (conv.reindex k).2
 
 /-- Map on associated graded pieces induced by filtration-compatible maps. -/
-noncomputable def Filtration.inducedAssocGradedMap
+public noncomputable def Filtration.inducedAssocGradedMap
     {ω' : Type w} {A₁ A₂ : ω' → C}
     {F₁ : Filtration A₁} {F₂ : Filtration A₂}
     (aMap : ∀ k', A₁ k' ⟶ A₂ k')
@@ -109,7 +109,7 @@ noncomputable def Filtration.inducedAssocGradedMap
         ← Category.assoc, Subobject.ofLE_arrow])
 
 /-- Data part of a morphism between convergent spectral sequences. -/
-structure ConvergenceMorphismData
+public structure ConvergenceMorphismData
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E₁ E₂ : SpectralSequence C ω} {ω' : Type w}
     {A₁ A₂ : ω' → C} {F₁ : Filtration A₁} {F₂ : Filtration A₂}
@@ -125,7 +125,7 @@ structure ConvergenceMorphismData
       φ ≫ (F₂.F s k').arrow = (F₁.F s k').arrow ≫ aMap k'
 
 /-- A morphism between convergent spectral sequences. -/
-structure ConvergenceMorphism
+public structure ConvergenceMorphism
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E₁ E₂ : SpectralSequence C ω} {ω' : Type w}
     {A₁ A₂ : ω' → C} {F₁ : Filtration A₁} {F₂ : Filtration A₂}
@@ -142,7 +142,7 @@ structure ConvergenceMorphism
         (conv₁.reindex k).1 (conv₁.reindex k).2
 
 /-- A filtration-preserving degreewise map. -/
-structure FilteredMorphism
+public structure FilteredMorphism
     {ω : Type w} {A₁ A₂ : ω → C} (F₁ : Filtration A₁) (F₂ : Filtration A₂) where
   /-- Degreewise map. -/
   map : ∀ (k : ω), A₁ k ⟶ A₂ k
@@ -153,7 +153,7 @@ structure FilteredMorphism
       φ ≫ (F₂.F s k).arrow = (F₁.F s k).arrow ≫ map k
 
 /-- A filtered morphism induces a map of associated graded pieces. -/
-noncomputable def FilteredMorphism.inducedGrMap
+public noncomputable def FilteredMorphism.inducedGrMap
     {ω : Type w} {A₁ A₂ : ω → C}
     {F₁ : Filtration A₁} {F₂ : Filtration A₂}
     (f : FilteredMorphism F₁ F₂) (s : ℤ) (k : ω) :

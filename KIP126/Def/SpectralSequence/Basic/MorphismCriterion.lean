@@ -25,7 +25,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 variable {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
 
-public structure DifferentialMorphismCriterion
+structure DifferentialMorphismCriterion
     (E E' : SpectralSequence C ι)
     (f : UnderlyingMorphism ι E.ssData E'.ssData) where
   r₀_eq : E.r₀ = E'.r₀
@@ -58,7 +58,7 @@ public structure DifferentialMorphismCriterion
           (E'.ssData (k + E.diffDeg r)).pageπ n ≫
           eqToHom (by rw [hk, hn])
 
-public noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
+noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :
@@ -89,7 +89,7 @@ public noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
               Subobject.ofLE_arrow]
 }
 
-public noncomputable def DifferentialMorphismCriterion.toMorphism
+noncomputable def DifferentialMorphismCriterion.toMorphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :
@@ -145,7 +145,7 @@ public noncomputable def DifferentialMorphismCriterion.toMorphism
     diffDeg_eq := P.diffDeg_eq
     comm_d := P.comm_d }
 
-public theorem DifferentialMorphismCriterion.exists_morphism
+theorem DifferentialMorphismCriterion.exists_morphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :

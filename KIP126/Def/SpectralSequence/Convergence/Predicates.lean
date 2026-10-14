@@ -1,5 +1,7 @@
 module
 
+public import KIP126.Def.SpectralSequence.Convergence.Data
+
 import all KIP126.Def.SpectralSequence.Convergence.Data
 
 @[expose] section
@@ -17,7 +19,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- A filtration is bounded on both sides degreewise. -/
-structure Filtration.IsBounded
+public structure Filtration.IsBounded
     {ω : Type w} {A : ω → C} (F : Filtration A) where
   /-- Lower bound. -/
   lo : ω → ℤ
@@ -31,7 +33,7 @@ structure Filtration.IsBounded
   boundedAbove : ∀ (k : ω) (s : ℤ), hi k ≤ s → F.F s k = ⊥
 
 /-- A filtration is bounded below degreewise. -/
-structure Filtration.IsBoundedBelow
+public structure Filtration.IsBoundedBelow
     {ω : Type w} {A : ω → C} (F : Filtration A) where
   /-- Lower bound. -/
   lo : ω → ℤ
@@ -39,7 +41,7 @@ structure Filtration.IsBoundedBelow
   boundedBelow : ∀ (k : ω) (s : ℤ), s ≤ lo k → F.F s k = ⊤
 
 /-- A filtration is bounded above degreewise. -/
-structure Filtration.IsBoundedAbove
+public structure Filtration.IsBoundedAbove
     {ω : Type w} {A : ω → C} (F : Filtration A) where
   /-- Upper bound. -/
   hi : ω → ℤ
@@ -47,19 +49,19 @@ structure Filtration.IsBoundedAbove
   boundedAbove : ∀ (k : ω) (s : ℤ), hi k ≤ s → F.F s k = ⊥
 
 /-- Degreewise exhaustiveness. -/
-def Filtration.IsExhaustive
+public def Filtration.IsExhaustive
     {ω : Type w} {A : ω → C} (F : Filtration A) : Prop :=
   ∀ (k : ω), ∃ (s : ℤ), F.F s k = ⊤
 
 /-- Degreewise Hausdorffness: the intersection of the filtration levels is
 zero, expressed by its subobject universal property. No finite level is
 required to vanish. -/
-def Filtration.IsHausdorff
+public def Filtration.IsHausdorff
     {ω : Type w} {A : ω → C} (F : Filtration A) : Prop :=
   ∀ (k : ω) (S : Subobject (A k)), (∀ s : ℤ, S ≤ F.F s k) → S = ⊥
 
 /-- The infinity-page class `y` detects the filtered class represented by `x`. -/
-def Detects
+public def Detects
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F)

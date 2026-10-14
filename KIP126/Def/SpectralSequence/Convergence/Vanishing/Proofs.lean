@@ -1,5 +1,7 @@
 module
 
+public import KIP126.Def.SpectralSequence.Convergence.Data
+
 import all KIP126.Def.SpectralSequence.Truncation.Proofs
 
 @[expose] section
@@ -17,7 +19,7 @@ variable {C : Type u} [Category.{v} C] [Abelian C]
   {ω : Type w} {A : ω → C} (F : Filtration A)
 
 /-- A zero associated grade identifies adjacent filtration subobjects. -/
-theorem Filtration.eq_succ_of_associatedGraded_isZero (s : ℤ) (k : ω)
+public theorem Filtration.eq_succ_of_associatedGraded_isZero (s : ℤ) (k : ω)
     (h : IsZero (F.associatedGraded s k)) : F.F s k = F.F (s + 1) k := by
   let i := Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k)
   haveI : Epi i := Abelian.epi_of_cokernel_π_eq_zero i (h.eq_of_tgt _ _)
@@ -30,7 +32,7 @@ theorem Filtration.eq_succ_of_associatedGraded_isZero (s : ℤ) (k : ω)
 
 /-- Vanishing on a finite interval identifies its endpoint filtrations.
 No separation or convergence hypothesis is required. -/
-theorem Filtration.eq_of_associatedGraded_isZero (s t : ℤ) (k : ω)
+public theorem Filtration.eq_of_associatedGraded_isZero (s t : ℤ) (k : ω)
     (hst : s ≤ t)
     (h : ∀ j : ℤ, s ≤ j → j < t → IsZero (F.associatedGraded j k)) :
     F.F s k = F.F t k := by

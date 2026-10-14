@@ -6,6 +6,10 @@ public import KIP126.Def.SpectralSequence.Computation.State.Proofs
 public import KIP126.Def.SpectralSequence.Computation.Morphism.Proofs
 public import KIP126.Def.SpectralSequence.Computation.PageThree.Proofs
 public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
+public import KIP126.Def.SpectralSequence.PageLevel.Proofs
+public import KIP126.Def.SpectralSequence.Convergence.Vanishing.Proofs
+public import KIP126.Def.SpectralSequence.Consumer.BoundedExtension
 
-/-! Public interface of module 02: pages, representatives, differentials,
-survival and spectral-sequence morphisms. Construction helpers stay private. -/
+/-! Public spectral-sequence language: pages, representatives, differentials,
+survival, morphisms, filtered convergence, detection and extension equations.
+The filtered-complex constructions behind the extension API remain private. -/

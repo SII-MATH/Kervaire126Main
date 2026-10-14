@@ -11,10 +11,17 @@ set_option maxHeartbeats 0
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 run_cmd do
   let contract ← ofExcept <| Json.parse (include_str "../../spectral-sequence-api.json")
-  let declarations ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
+  let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
+  let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
+  let declarations := named ++ generated
   let expectedExports ← ofExcept <| contract.getObjValAs? (Array String) "exports"
   let env ← getEnv
   let exported := env.setExporting true
+  for mod in env.header.moduleNames do
+    if (`KIP126).isPrefixOf mod &&
+        !(`KIP126.Def.SpectralSequence).isPrefixOf mod &&
+        !(`KIP126.Def.Algebra).isPrefixOf mod then
+      throwError "SpectralSequence crossed its dependency boundary: {mod}"
   for decl in declarations do
     let name ← ofExcept <| decl.getObjValAs? String "name"
     let expectedType ← ofExcept <| decl.getObjValAs? String "type_fingerprint"

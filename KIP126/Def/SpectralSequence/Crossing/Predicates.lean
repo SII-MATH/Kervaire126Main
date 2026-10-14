@@ -1,5 +1,7 @@
 module
 
+public import KIP126.Def.SpectralSequence.Basic.Data
+
 import all KIP126.Def.SpectralSequence.Crossing.Data
 import all KIP126.Def.SpectralSequence.Convergence.Data
 
@@ -21,7 +23,7 @@ def IsEssentialAt (E : SpectralSequence C ι) (r : ℤ) (k : ι) : Prop :=
   E.d r k ≠ 0
 
 /-- Relation on ambient representatives induced by `d_r`. -/
-def DifferentialRelation
+public def DifferentialRelation
     (E : SpectralSequence C ι) (r : ℤ) (k : ι)
     {T : C} (x : T ⟶ (E.ssData k).V)
     (y : T ⟶ (E.ssData (k + E.diffDeg r)).V) : Prop :=
@@ -35,7 +37,7 @@ def DifferentialRelation
             yZ ≫ (E.ssData (k + E.diffDeg r)).pageπ n
 
 /-- A differential relation whose target representative is not a boundary. -/
-def EssentialDifferentialRelation
+public def EssentialDifferentialRelation
     (E : SpectralSequence C ι) (r : ℤ) (k : ι)
     {T : C} (x : T ⟶ (E.ssData k).V)
     (y : T ⟶ (E.ssData (k + E.diffDeg r)).V) : Prop :=
@@ -45,7 +47,7 @@ def EssentialDifferentialRelation
         (↑(r - E.r₀).toNat : WithTop ℕ)) y
 
 /-- An ambient representative and the page class it represents. -/
-def ElementPageRel
+public def ElementPageRel
     (E : SpectralSequence C ι) (r : ℤ) (k : ι)
     {T : C} (x : T ⟶ (E.ssData k).V)
     (a : T ⟶ (E.ssData k).page
