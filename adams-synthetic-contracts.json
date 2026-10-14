@@ -1,0 +1,1191 @@
+{
+  "schema_version": 1,
+  "module": "AdamsSynthetic",
+  "entry_module": "KIP126.Def.AdamsSynthetic",
+  "principle": "Given one coherent interface instance, consumers use its objects and laws without constructing a model.",
+  "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
+  "selective_reference": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
+  "type_authority": "Complete types and universe/typeclass assumptions live in the referenced Lean declarations. The API manifest and normal-import tests freeze their elaborated types; this semantic ledger is not a second Lean source registry.",
+  "status": "consumer interfaces implemented; no concrete producer instance or final permanence result is claimed",
+  "capabilities": [
+    {
+      "id": "stable-background",
+      "mathematical_purpose": "两侧共享稳定同伦范畴、指定余纤维、同一个mod-two系数对象与单位。",
+      "roles": [
+        "data",
+        "structural-law"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StableHomotopy/Context/Data.lean",
+          "line": 35,
+          "locator": "class StableHomotopyCategory"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Data.lean",
+          "line": 54,
+          "locator": "structure FoundationInput"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "StableHomotopyCategory",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "HasFunctorialCofiber",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "ModTwoCoefficients",
+          "line": 88
+        }
+      ],
+      "constraints": [
+        "No Prespectrum, completion, Milnor/cobar implementation is imported.",
+        "The mod-two unit is derived from the specified pi-zero identification and its element one."
+      ],
+      "consumers": [
+        "Adams tower signatures",
+        "AdamsSynthetic family and selected-object interfaces"
+      ],
+      "remaining_producer_obligations": [
+        "Construct concrete classical/synthetic models and justify their intended identities."
+      ],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "nu-functor",
+      "mathematical_purpose": "指定同一ν函子、加性、零对象、球谱和悬移比较。",
+      "roles": [
+        "data",
+        "operation",
+        "structural-law"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Context/Data.lean",
+          "line": 87,
+          "locator": "structure NuFunctorData"
+        },
+        {
+          "commit": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
+          "path": "KIPBase/Synthetic/Nu.lean",
+          "line": 35,
+          "locator": "axiom nu :"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "NuFunctorData",
+          "line": 194
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Context.lean",
+          "declaration": "NuFunctorData.boundaryLandingIso",
+          "line": 211
+        }
+      ],
+      "constraints": [
+        "Use the same functor on all objects and maps.",
+        "No unconditional preservation of all distinguished triangles or unencoded strong monoidality."
+      ],
+      "consumers": [
+        "E2Comparison",
+        "normalized synthetic maps",
+        "finite quotient labels"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "adams-families",
+      "mathematical_purpose": "给定经典与synthetic谱序列函子及页、次数、自然性。",
+      "roles": [
+        "data",
+        "operation",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
+          "path": "KIPBase/StableHomotopy/Adams.lean",
+          "line": 69,
+          "locator": "axiom AdamsSS"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/AdamsSequence/Data.lean",
+          "line": 158,
+          "locator": "structure SyntheticAdamsFamily"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "ClassicalAdamsFamily",
+          "line": 20
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "SyntheticAdamsFamily",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Families.lean",
+          "declaration": "SyntheticAdamsSS",
+          "line": 55
+        }
+      ],
+      "constraints": [
+        "First displayed page is two; classical differential has degree (r,r-1), synthetic degree (r,r-1,0).",
+        "Sphere, nu-images, quotient objects and their maps evaluate one functor.",
+        "Map identities and compositions are derived from that functor."
+      ],
+      "consumers": [
+        "standard h_i",
+        "naturality on finite pages",
+        "selected-object model"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "coefficient-tower-presentation",
+      "mathematical_purpose": "给定HF₂单位纤维塔，保留实际Z₂ ambient、全部cycles/boundaries与lift微分的比较。",
+      "roles": [
+        "data",
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/Tower/Data.lean",
+          "line": 68,
+          "locator": "def adamsTowerAt"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/TowerPages/Data.lean",
+          "line": 49,
+          "locator": "def adamsCycles"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Data.lean",
+          "line": 27,
+          "locator": "abbrev adamsCycleAmbient"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/AdamsSequence/TowerComparison/Data.lean",
+          "line": 40,
+          "locator": "structure TowerPresentation"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "AbstractAdamsTower",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "TowerSequencePresentation",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "TowerMap",
+          "line": 136
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "ClassicalTowerPresentation",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Tower.lean",
+          "declaration": "SyntheticTowerPresentation",
+          "line": 198
+        }
+      ],
+      "constraints": [
+        "stageAt s = stage s.toNat; negative stages are constant, so HF2 layer isomorphisms apply only to natural stages.",
+        "Layer is the chosen cofiber of that same transition and the layer iso identifies its inclusion with the coefficient-unit smash map.",
+        "The spectral ambient is isomorphic to the actual Z2 submodule, and every finite Z/B membership is fixed by the raw tower.",
+        "Differentials use the actual connecting lift and cofiber image, including zero representatives.",
+        "Classical naturality compares the same family morphism to the selected stage/cofiber map; synthetic natural_e2 allows their raw representatives to differ by an actual B2 boundary, retaining the original quotient-level law."
+      ],
+      "consumers": [
+        "ClassicalCanonicalIdentification",
+        "SyntheticCanonicalIdentification",
+        "Kervaire Route Model.towerPresentation"
+      ],
+      "remaining_producer_obligations": [
+        "Construct an inhabitant of the abstract tower and all representative comparison laws."
+      ],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "canonical-convergence-detection",
+      "mathematical_purpose": "实际同伦群的滤过由塔投影range定义；E∞识别在同一lift的cofiber像上规范化。",
+      "roles": [
+        "data",
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/Detection/Convergence/Canonical/Predicates.lean",
+          "line": 19,
+          "locator": "def CanonicalIdentification"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/AdamsFiltration/Convergence/Canonical/Predicates.lean",
+          "line": 21,
+          "locator": "def TowerConvergence.Canonical"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+          "line": 26,
+          "locator": "convergence_canonical"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "ClassicalTowerConvergence",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "SyntheticTowerConvergence",
+          "line": 136
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "ClassicalDetects",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "HasInfinityRepresentative",
+          "line": 162
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "Detects",
+          "line": 169
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "DetectsNonzero",
+          "line": 179
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "detects_zero_filtration",
+          "line": 244
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Detection.lean",
+          "declaration": "detects_sub_filtration",
+          "line": 251
+        }
+      ],
+      "constraints": [
+        "No independently chosen filtration is accepted.",
+        "The same lift supplies both the E1 cofiber class and the projected homotopy class.",
+        "Synthetic canonical convergence retains the weightHomotopyMap filtration-membership equivalence.",
+        "Convergence is requested on individual selected objects, not all ambient synthetic spectra.",
+        "Zero detection raises filtration; it never directly asserts the homotopy class is zero.",
+        "Nonzero detection requires a nonzero common E-infinity representative, not merely a nonzero E2 label."
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Detection",
+        "NuFifth detects_zero_filtration, detected_map, detection reflection"
+      ],
+      "remaining_producer_obligations": [
+        "Construct canonical convergence for each selected object.",
+        "Filtration separation remains a separate unfinished obligation."
+      ],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "standard-sphere-classes",
+      "mathematical_purpose": "同一实际球谱E₂的F₂乘法及指定标准h_i，平方使用该乘法。",
+      "roles": [
+        "data",
+        "operation",
+        "structural-law"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StageInput/StandardSphere/Algebra/Components/Data.lean",
+          "line": 63,
+          "locator": "def actualE2Product"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StageInput/StandardSphere/Classes/Data.lean",
+          "line": 25,
+          "locator": "standardH6Square"
+        },
+        {
+          "commit": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
+          "path": "KIPBase/multiplicativeSS/adamsdata/adamsE2.lean",
+          "line": 13,
+          "locator": "class AdamsE2Data"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "SphereE2Algebra",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "StandardSphereClasses",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Sphere.lean",
+          "declaration": "standardH6Square",
+          "line": 91
+        }
+      ],
+      "constraints": [
+        "Named classes are designated inputs with source identity; degree/nonzero alone is not asserted to identify a standard class.",
+        "No uniqueness of the whole h_i family is imposed.",
+        "h6-square nonvanishing is separate from h6 nonvanishing.",
+        "No permanent-survival conclusion is an input."
+      ],
+      "consumers": [
+        "H6SquarePermanent",
+        "Literature standard-class bindings",
+        "Computation class and multiplication calibration"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "shift-lambda-coherence",
+      "mathematical_purpose": "固定双移位结合、单位及λ中心性；递归λ幂的自然性和分解作为定理。",
+      "roles": [
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Context/Coherence/Predicates.lean",
+          "line": 21,
+          "locator": "structure BiShiftCoherence"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Context/Coherence/Proofs.lean",
+          "line": 87,
+          "locator": "theorem lambdaPow_add_comparison"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "BiShiftCoherence",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "lambdaPow_naturality",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "lambdaPow_add_comparison",
+          "line": 219
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "lambdaRestrictionSourceMap_commutes",
+          "line": 272
+        }
+      ],
+      "constraints": [
+        "Coherence references the existing SyntheticCategory shifts and lambda, with explicit degree transports.",
+        "Power multiplication is proved, not another independent operation."
+      ],
+      "consumers": [
+        "XModLambdaN.map",
+        "XModLambdaN.restriction",
+        "normalized maps",
+        "lambda detection"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "finite-lambda-quotients",
+      "mathematical_purpose": "实际λ幂余纤维上的商map、restriction与λρδ三角。",
+      "roles": [
+        "data",
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/QuotientMap/Data.lean",
+          "line": 27,
+          "locator": "def XModLambdaN.map"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/QuotientTower/Data.lean",
+          "line": 71,
+          "locator": "structure LambdaRhoDeltaTriangle"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/QuotientFunctor/Restricted/Predicates.lean",
+          "line": 15,
+          "locator": "structure LambdaQuotientFunctoriality"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "XModLambdaN.map",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "LambdaQuotientFunctoriality",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "LambdaRhoDeltaTriangle",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "FiniteLambdaQuotientTower",
+          "line": 142
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Quotients.lean",
+          "declaration": "LambdaQuotientSystem",
+          "line": 212
+        }
+      ],
+      "constraints": [
+        "Every quotient is the existing XModLambdaN X n.",
+        "Map inclusion/boundary naturality is derived from the chosen cofiber square.",
+        "Functoriality is supplied only for these chosen lambda cofiber maps, not assumed for arbitrary cones.",
+        "Restrictions equal the selected cofiber map of the proved power factorization.",
+        "Triangle ranges retain 0<i<j and j-i; lambdaMap and rho agree with the same quotient inclusions.",
+        "No inverse-limit, completeness or bounded-filtration assertion is introduced."
+      ],
+      "consumers": [
+        "finite source and target labels",
+        "rho/delta extension consumers",
+        "NuFifth finite_sphere_rho_label"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "classical-synthetic-e2-comparison",
+      "mathematical_purpose": "同一经典系统与syntheticν系统的标签比较及自然性、第一商和λ相容。",
+      "roles": [
+        "data",
+        "structural-law"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Data.lean",
+          "line": 69,
+          "locator": "nuE2 :"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 24,
+          "locator": "structure ComparisonCompatible"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "E2Comparison",
+          "line": 25
+        }
+      ],
+      "constraints": [
+        "Comparison only concerns the specified E2 labels; it is not promoted to an isomorphism of whole classical/synthetic spectral sequences.",
+        "Weight is (s,t,t+a-k); quotient labels are induced by actual quotient projections.",
+        "Sphere/nu, nu naturality, first quotient and lambda equations reference the same maps and comparisons."
+      ],
+      "consumers": [
+        "finite and infinite normalized extension labels",
+        "NuFifth sphere_quotient_label_to_nu",
+        "Computation and Literature bindings"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "conditional-nu-triangle",
+      "mathematical_purpose": "在原HF₂同调Function.Exact条件下提供ν三角。",
+      "roles": [
+        "structural-law"
+      ],
+      "source_locators": [
+        {
+          "commit": "871b3be8f46a1c02d49011e9c6495ec3d938b338",
+          "path": "KIPBase/Synthetic/Nu.lean",
+          "line": 100,
+          "locator": "axiom nu_cofiber_ses"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "NuExactTriangleInput",
+          "line": 52
+        }
+      ],
+      "constraints": [
+        "Retains Function.Exact of the two named HF2 homology maps in every integer degree.",
+        "Does not silently strengthen the hypothesis to an independently chosen short exact sequence or drop it.",
+        "Does not assert arbitrary triangle preservation by nu."
+      ],
+      "consumers": [
+        "selected nu-cofiber triangle consumers"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "selected-object-configuration",
+      "mathematical_purpose": "S0、Cnu、detector与其移位，以及synthetic球、ν像、双移位、有限λ商闭包。",
+      "roles": [
+        "data",
+        "operation"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Objects/Data.lean",
+          "line": 17,
+          "locator": "structure AuxiliaryData"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Objects/Data.lean",
+          "line": 45,
+          "locator": "inductive SyntheticObject"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "AuxiliaryData",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "ClassicalObject",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "SyntheticObject",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "TriangleData",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Configuration.lean",
+          "declaration": "AuxiliaryData.nuRouteTriangle",
+          "line": 72
+        }
+      ],
+      "constraints": [
+        "Cnu is the actual cofiber of the specified nu map.",
+        "Top cell and boundary maps retain their actual suspension targets.",
+        "Optional certificate objects C2/Ceta/CW are not added to the main object closure.",
+        "No computation data or source-result field is placed in this configuration."
+      ],
+      "consumers": [
+        "selected convergence fields",
+        "Main route objects",
+        "Literature and Computation binding projections"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "normalized-extension-language",
+      "mathematical_purpose": "同一actual map的归一化lift及有限/无限延拓见证；未输入传播定理。",
+      "roles": [
+        "data",
+        "predicate",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/NormalizedMap/Data.lean",
+          "line": 41,
+          "locator": "structure NormalizedSyntheticMap"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/ExtensionRelation/Predicates.lean",
+          "line": 18,
+          "locator": "def ExtensionEquation"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Extensions/Witness/Data.lean",
+          "line": 22,
+          "locator": "structure FiniteExtensionWitness"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Extensions/Predicates.lean",
+          "line": 23,
+          "locator": "def FiniteExtension"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Extensions/Predicates.lean",
+          "line": 41,
+          "locator": "def InfiniteExtensionWitness.Essential"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Section7/NuFifth.lean",
+          "line": 474,
+          "locator": "have actual_extension_strict_elements"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Section7/NuFifth.lean",
+          "line": 494,
+          "locator": "have actual_extension_zero_comparison"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Normalized.lean",
+          "declaration": "normalizedExponent",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Normalized.lean",
+          "declaration": "NormalizedSyntheticMap",
+          "line": 47
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "ConvergentMap",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "ExtensionEquation",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "EssentialExtension",
+          "line": 78
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Extension.lean",
+          "declaration": "TowerExtensionEquation",
+          "line": 124
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "finiteSourceForExtension",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "finiteTargetForExtension",
+          "line": 58
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "infiniteSourceForExtension",
+          "line": 67
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionLabels.lean",
+          "declaration": "infiniteTargetForExtension",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionWitnesses.lean",
+          "declaration": "FiniteExtensionWitness",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionWitnesses.lean",
+          "declaration": "InfiniteExtensionWitness",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "ConvergentMap.infinity_action_graded",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "ConvergentMap.extensionEquation_zero",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "ConvergentMap.extensionEquation_zero_reindex",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ExtensionZero.lean",
+          "declaration": "towerExtensionEquation_zero",
+          "line": 88
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "FiniteExtension",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "FiniteExtensionWitness.Essential",
+          "line": 27
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "InfiniteExtension",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "InfiniteExtensionWitness.Essential",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "FiniteExtensionWitness.target_page_ge_two",
+          "line": 47
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "FiniteExtensionWitness.length_nonnegative",
+          "line": 53
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/PageExtensions.lean",
+          "declaration": "InfiniteExtensionWitness.length_nonnegative",
+          "line": 58
+        }
+      ],
+      "constraints": [
+        "ExtensionEquation is the actual two-term filtered-map solution fiber.",
+        "The full target coset uses the actual shorter-extension boundary subobject, not a selected finite subset.",
+        "Length-zero extension must be derived from the same actual map on E-infinity and canonical convergence naturality.",
+        "Finite witnesses retain page>=2, lower/upper length bounds, source/target cycle levels and common infinity representatives.",
+        "Infinite witnesses retain common permanent representatives and the normalized lower length bound.",
+        "Bounded ESS hypotheses remain separate from general unbounded extension equations."
+      ],
+      "consumers": [
+        "NuFifth actual_extension_strict_elements and actual_extension_zero_8/11",
+        "ProofTools stretching/Leibniz/Mahowald consumers"
+      ],
+      "remaining_producer_obligations": [
+        "Prove paper-specific propagation, synchronization and no-crossing conclusions in ProofTools."
+      ],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters",
+      "mathematical_review": {
+        "finite_cycle_translation": "IsCycle(level) is translated to ReachesPage(level+1). Thus source page r and target page r-n+e retain the old r-1 and r-1-n+e cycle levels. Target page >=2 follows from length_upper.",
+        "permanent_translation": "Old permanentCycles is the range of the common Z-infinity representative into E2; IsPermanentCycle preserves that semantics including zero.",
+        "normalization": "e(f)=1 iff the same actual target tower admits a stage-one factorization, otherwise zero; no independently supplied filtration integer.",
+        "homology_exactness": "NuExactTriangleInput uses inducedMap (H.object whiskerLeft f), exactly backup Mod2Homology.pushforward; Function.Exact is retained."
+      }
+    },
+    {
+      "id": "lambda-recovery",
+      "mathematical_purpose": "同一λ局部化、ν与经典恢复比较及实际所需exactness。",
+      "roles": [
+        "data",
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Localization/Recovery/Data.lean",
+          "line": 33,
+          "locator": "structure LambdaRecovery"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Data.lean",
+          "line": 54,
+          "locator": "realizationExact :"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
+          "declaration": "LambdaRecovery",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Recovery.lean",
+          "declaration": "StructuralExactness",
+          "line": 130
+        }
+      ],
+      "constraints": [
+        "Uses one lambda localization and recovery equivalence.",
+        "Exactness and shift compatibility reference that same realization and the specified shifts."
+      ],
+      "consumers": [
+        "comparisons and normalized maps",
+        "later Literature binding for BHS"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "sphere-detection-and-multiplication",
+      "mathematical_purpose": "同一实际球谱、第一λ商和乘法上的检测相容式。",
+      "roles": [
+        "data",
+        "structural-law",
+        "derived-theorem"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 29,
+          "locator": "first_quotient :"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 32,
+          "locator": "homotopy_lambda :"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 70,
+          "locator": "def MultiplicationCompatible"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 92,
+          "locator": "def SphereProductCommutative"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "sphereProduct",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "sphereAction",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "lambdaMultiply",
+          "line": 35
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "FirstQuotientComparison",
+          "line": 71
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "sphereFirstQuotient",
+          "line": 80
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "SphereDetectionCompatible",
+          "line": 98
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "MultiplicationCompatible",
+          "line": 120
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Compatibility.lean",
+          "declaration": "SphereProductCommutative",
+          "line": 139
+        }
+      ],
+      "constraints": [
+        "Sphere first-quotient identification is derived by transporting the selected nu-sphere comparison through the same actual quotient functor.",
+        "First-quotient and lambda detection refer to the same canonical sphere and quotient convergence.",
+        "The E2 multiplication and actual composition product retain the original natural-number degree ranges; detection may have zero leading term.",
+        "Commutativity has the topological Koszul sign, without an extra weight sign.",
+        "No standard-class uniqueness or nonzero detection follows from these equations alone."
+      ],
+      "consumers": [
+        "lambdaPower, product detection and sphere quotient consumers",
+        "Tests.AdamsSynthetic.System"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "classical-suspension",
+      "mathematical_purpose": "同一给定经典Adams塔的悬移比较及页面标签反悬移关系。",
+      "roles": [
+        "data",
+        "structural-law",
+        "predicate"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/Suspension/Data.lean",
+          "line": 30,
+          "locator": "structure TowerComparison"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/Suspension/Data.lean",
+          "line": 55,
+          "locator": "def classOfSecondCycle"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "ClassicalTowerSuspension",
+          "line": 21
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "desuspendFirstPage",
+          "line": 48
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Suspension.lean",
+          "declaration": "DesuspendsClass",
+          "line": 60
+        }
+      ],
+      "constraints": [
+        "Tower stages, projection at zero, transition maps and cofiber layers refer to the same presentation.",
+        "The connecting-square comparison retains its minus sign.",
+        "DesuspendsClass compares actual common page-two representatives, not an arbitrary independently chosen E2 equivalence."
+      ],
+      "consumers": [
+        "selected classical suspension comparisons",
+        "Literature class labels after desuspension"
+      ],
+      "remaining_producer_obligations": [],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    },
+    {
+      "id": "shared-consumer-model",
+      "mathematical_purpose": "同一共同输入组合背景、系统、标准类、商、检测与配置，主目标和分离性仅作为命题。",
+      "roles": [
+        "data",
+        "structural-law",
+        "operation",
+        "predicate"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Data.lean",
+          "line": 41,
+          "locator": "structure ModelData"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 24,
+          "locator": "structure ComparisonCompatible"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+          "line": 21,
+          "locator": "structure Model extends"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "line": 85,
+          "locator": "def HomotopySeparated"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "nuCoefficientUnit",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "ModelData",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "ComparisonCompatible",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "Model",
+          "line": 90
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "convergentMap",
+          "line": 102
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "H6SquarePermanent",
+          "line": 110
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/System.lean",
+          "declaration": "HomotopySeparated",
+          "line": 115
+        }
+      ],
+      "constraints": [
+        "The synthetic coefficient unit is the image of this very classical HF2 unit through the same nu functor and sphere identification.",
+        "Convergent maps use the selected object closure and agree with both the actual homotopy map and actual family E-infinity map.",
+        "All given canonical convergence data and quotient operations refer to the same tower presentation, family and background.",
+        "H6SquarePermanent uses the designated h6 square from actual E2 multiplication and common nonzero permanent-survival semantics; it is never a Model field.",
+        "HomotopySeparated remains an explicit separate proposition, not an automatic input property or a theorem here.",
+        "No Literature delivery, Computation calibration, new Challenge2 root input, global model axiom or concrete model construction is introduced."
+      ],
+      "consumers": [
+        "Tests.AdamsSynthetic.Consumers",
+        "Tests.AdamsSynthetic.System",
+        "future correlated Literature and Computation delivery",
+        "Main target expression"
+      ],
+      "remaining_producer_obligations": [
+        "Construct the coherent model instance and selected canonical convergence.",
+        "Discharge separation only in future proofs which require it."
+      ],
+      "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
+      "concrete_instance_state": "not constructed; consumers receive explicit parameters"
+    }
+  ],
+  "retained_obligations": [
+    {
+      "id": "filtration-separation",
+      "status": "unfinished producer obligation; separate explicit proposition",
+      "declaration": "KIP126.AdamsSynthetic.HomotopySeparated",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "line": 269,
+          "locator": "private theorem adams_filtration_separated"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "line": 3752,
+          "locator": "have hconnective :"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "line": 3768,
+          "locator": "have hpostnikov :"
+        }
+      ],
+      "rule": "Never a default Model/Convergence field. A proof which needs separation must accept it explicitly; no new Challenge root field."
+    },
+    {
+      "id": "concrete-model-and-standard-identity",
+      "status": "deferred by approved interface plan",
+      "rule": "Construct concrete background/towers and justify the designated standard classes. Declaring a structure is not constructing an instance."
+    },
+    {
+      "id": "paper-propagation",
+      "status": "retained for ProofTools/Main",
+      "rule": "No stretching, Leibniz, Mahowald, C3/C4/C5, Proposition7.8/7.9 or final h6-square survival conclusion is inserted as an AdamsSynthetic input."
+    },
+    {
+      "id": "external-literature-and-computation",
+      "status": "future modules",
+      "rule": "Literature and Computation keep their correlated delivery. No new Challenge2 root input or global bundle axiom."
+    }
+  ],
+  "checks": [
+    "Tests.AdamsSynthetic.Consumers",
+    "Tests.AdamsSynthetic.System",
+    "Tests.AdamsSynthetic.Detection",
+    "adams-synthetic-api.json",
+    "default lake build; repository-wide axiom dependency audit"
+  ],
+  "exclusions": [
+    "README and AGENTS edits",
+    "Blueprint migration/checks",
+    "concrete model construction",
+    "Literature/Computation/ProofTools/Main implementations",
+    "raw CSV/Generated/checkers"
+  ]
+}

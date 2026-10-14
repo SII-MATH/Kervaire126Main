@@ -10,8 +10,15 @@ require mathlib from git
 
 @[default_target]
 lean_lib KIP126 where
-  globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence]
+  globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence,
+    .andSubmodules `KIP126.Def.AdamsSynthetic]
 
 @[default_target]
 lean_lib SpectralSequenceChecks where
-  roots := #[`Tests.SpectralSequence.Interface, `Tests.SpectralSequence.Visibility]
+  roots := #[`Tests.SpectralSequence.Interface, `Tests.SpectralSequence.Visibility,
+    `Tests.SpectralSequence.Consumers]
+
+@[default_target]
+lean_lib AdamsSyntheticChecks where
+  roots := #[`Tests.AdamsSynthetic.Interface, `Tests.AdamsSynthetic.Consumers,
+    `Tests.AdamsSynthetic.Detection, `Tests.AdamsSynthetic.System]

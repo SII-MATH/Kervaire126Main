@@ -1,7 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "created_date_utc": "2026-10-14",
-  "stage": "spectral-sequence-interface-review",
+  "stage": "spectral-sequence-and-adams-synthetic-interfaces-frozen",
   "source_repository": {
     "url": "https://github.com/SII-MATH/Kervaire126.git",
     "local_path": "../Kervaire126",
@@ -55,18 +55,25 @@
     "lake_configuration_created": true,
     "lean_build_run": true,
     "remote_configured": false,
-    "mathematical_interfaces_approved": false,
-    "original_boundary_conflicts_resolved": false
+    "mathematical_interfaces_approved": true,
+    "original_boundary_conflicts_resolved": true,
+    "interface_approval_basis": "User-approved implementation plan; this records the design scope, not certification of concrete models.",
+    "boundary_resolution_scope": [
+      "SpectralSequence",
+      "AdamsSynthetic"
+    ],
+    "concrete_adams_synthetic_model_constructed": false,
+    "main_permanence_proved": false
   },
   "spectralSequence": {
     "source_manifest": "spectral-sequence-sources.json",
     "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-    "spectral_sequence_files": 120,
+    "spectral_sequence_files": 124,
     "required_algebra_files": 8,
-    "root_import": "KIP126",
+    "root_import": "KIP126.Def.SpectralSequence",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 1778,
+    "build_jobs": 1775,
     "source_files_byte_identical_to_review_commit": false,
     "cache_reuse": {
       "dependency_packages": "Local symlinks under .lake/packages to ../Kervaire126/.lake/packages; all 9 retained package revisions verified against lake-manifest.json.",
@@ -75,28 +82,144 @@
     },
     "readme_and_agents_modified": false,
     "concurrent_source_worktree_changes": "Excluded; migration reads pinned Git objects, not uncommitted working-tree edits.",
-    "blueprint": "Deferred until repository setup is complete, per user instruction.",
-    "mathematical_bodies_unchanged": true,
+    "blueprint": "Deferred by user instruction.",
+    "mathematical_bodies_unchanged": false,
     "api_contract": "spectral-sequence-api.json",
     "visibility": {
-      "explicit_public_source_commands": 209,
-      "private_source_commands": 453,
-      "named_interfaces_checked": 229,
-      "exports_including_generated_declarations": 535
+      "default": "private; explicit public source declarations",
+      "explicit_public_source_commands": 269,
+      "named_public_declarations": 267,
+      "generated_declarations": 474,
+      "exports_including_generated_declarations": 741,
+      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
+      "dependency_boundary": "Only module-local public entry and approved upstream SpectralSequence/Algebra dependencies"
     },
     "checks": [
       "Tests.SpectralSequence.Interface",
-      "Tests.SpectralSequence.Visibility"
+      "Tests.SpectralSequence.Visibility",
+      "Tests.SpectralSequence.Consumers"
     ],
     "axiom_audit": {
-      "unexpected_dependencies": [],
+      "target": "KIP126.Def.SpectralSequence.InternalAudit",
+      "declarations_checked": 2232,
+      "scope": "All internal and public declarations of this module; SpectralSequence also includes its Algebra support.",
       "transitive_axioms": [
         "propext",
         "Classical.choice",
         "Quot.sound"
       ],
-      "project_axiom_declarations": [],
-      "declarations_checked": 2200
+      "unexpected_dependencies": [],
+      "project_axiom_declarations": []
+    },
+    "capability_ledger": "spectral-sequence-contracts.json",
+    "source_files": 132,
+    "mathematical_change": "Original mathematical models and proof strength retained; new consumer operations proved and unused implementation conversions made private."
+  },
+  "module_boundaries": [
+    {
+      "module": "SpectralSequence",
+      "name_zh": "谱序列核心",
+      "responsibility": "Generic pages, differentials, common representatives, survival, morphisms, convergence, detection and ESS relations.",
+      "status": "implemented-and-frozen"
+    },
+    {
+      "module": "AdamsSynthetic",
+      "name_zh": "Adams 与 synthetic 系统",
+      "responsibility": "One explicit coherent classical/synthetic background, designated classes and multiplication, nu/lambda quotients, canonical detection and extension interfaces.",
+      "status": "implemented-and-frozen"
+    },
+    {
+      "module": "Literature",
+      "name_zh": "文献交付",
+      "responsibility": "Source-bound results with full hypotheses on the same AdamsSynthetic background.",
+      "status": "named-boundary-only; no placeholder directory"
+    },
+    {
+      "module": "Computation",
+      "name_zh": "计算交付",
+      "responsibility": "Mathematical computation results, comparison with actual objects and calibration of the same designated classes.",
+      "status": "named-boundary-only; no placeholder directory"
+    },
+    {
+      "module": "ProofTools",
+      "name_zh": "通用证明工具",
+      "responsibility": "Reusable stretching, generalized Leibniz and generalized Mahowald theorems.",
+      "status": "named-boundary-only; no placeholder directory"
+    },
+    {
+      "module": "Main",
+      "name_zh": "论文主证明",
+      "responsibility": "Consume the common inputs to prove intermediate results and the final nonzero permanence target.",
+      "status": "named-boundary-only; no placeholder directory"
     }
+  ],
+  "delivery_boundary": {
+    "common_background": "KIP126.Kervaire.Route.Model C Syn",
+    "existing_delivery_pattern": "Retain the source Challenge2 literature delivery and its dependent computation delivery when migrating those modules.",
+    "new_root_fields_in_challenge2": false,
+    "literature_and_computation_migrated": false
+  },
+  "adamsSynthetic": {
+    "source_manifest": "adams-synthetic-sources.json",
+    "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+    "api_contract": "adams-synthetic-api.json",
+    "capability_ledger": "adams-synthetic-contracts.json",
+    "root_import": "KIP126.Def.AdamsSynthetic",
+    "default_build": "lake build",
+    "build_result": "passed",
+    "source_files": 21,
+    "visibility": {
+      "default": "private; explicit public source declarations",
+      "explicit_public_source_commands": 231,
+      "named_public_declarations": 231,
+      "generated_declarations": 881,
+      "exports_including_generated_declarations": 1112,
+      "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
+      "dependency_boundary": "Only module-local public entry and approved upstream SpectralSequence/Algebra dependencies"
+    },
+    "checks": [
+      "Tests.AdamsSynthetic.Interface",
+      "Tests.AdamsSynthetic.Consumers",
+      "Tests.AdamsSynthetic.Detection",
+      "Tests.AdamsSynthetic.System"
+    ],
+    "axiom_audit": {
+      "target": "KIP126.Def.AdamsSynthetic.InternalAudit",
+      "declarations_checked": 1162,
+      "scope": "All internal and public declarations of this module; SpectralSequence also includes its Algebra support.",
+      "transitive_axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "unexpected_dependencies": [],
+      "project_axiom_declarations": []
+    },
+    "readme_and_agents_modified": false,
+    "blueprint": "Deferred by user instruction.",
+    "implementation_style": "Given parameter records and derived theorems; no global existence assumption and no concrete tower, Milnor or cobar implementation.",
+    "retained_producer_obligations": [
+      "Construct the background and coherent systems.",
+      "Prove filtration separation where later consumers require it.",
+      "Calibrate designated standard classes through the computation delivery."
+    ],
+    "build_jobs": 1921,
+    "final_target": "Model.H6SquarePermanent uses NonzeroSurvival of the same classical sphere and standardH6Square defined by its actual E2 product."
+  },
+  "verification": {
+    "default_command": "lake build",
+    "result": "passed",
+    "jobs": 1993,
+    "separate_module_checks": [
+      "SpectralSequenceChecks",
+      "AdamsSyntheticChecks"
+    ],
+    "normal_import_consumers": true,
+    "mixed_system_negative_checks": true,
+    "full_indeterminacy_coset_bridge": true,
+    "zero_length_actual_map_theorem": true,
+    "no_new_sorry_or_project_axiom": true,
+    "readme_agents_unchanged": true,
+    "blueprint_checked": false
   }
 }
