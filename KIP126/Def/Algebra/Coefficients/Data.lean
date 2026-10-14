@@ -3,7 +3,7 @@ module
 public import Mathlib.Algebra.Category.ModuleCat.Abelian
 public import Mathlib.Algebra.Field.ZMod
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Project coefficient conventions
@@ -16,7 +16,7 @@ interfaces explicit.  Generic Blueprint nodes continue to refer to Mathlib's
 namespace KIP126.Core.Algebra
 
 /-- The project's mod--2 coefficient field. -/
-abbrev F2 := ZMod 2
+public abbrev F2 := ZMod 2
 
 /-- The abelian category of modules over the project's mod--2 coefficient field. -/
 abbrev F2ModuleCat := ModuleCat F2

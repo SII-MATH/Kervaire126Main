@@ -1,10 +1,10 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
-public import KIP126.Def.SpectralSequence.Extension.Complex.Proofs
-public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
+import all KIP126.Def.SpectralSequence.Extension.Complex.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # The filtered two-term complex of a filtration-compatible map

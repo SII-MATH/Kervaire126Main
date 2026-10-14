@@ -1,10 +1,10 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
-public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
-public import KIP126.Def.SpectralSequence.Convergence.Category.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+import all KIP126.Def.SpectralSequence.Convergence.Category.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # The bounded self complex of a convergent spectral sequence

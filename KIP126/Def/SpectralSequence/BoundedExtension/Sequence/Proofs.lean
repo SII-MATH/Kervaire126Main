@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Data
-public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Boundedness proof for extension spectral sequences

@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Completion.Data
+import all KIP126.Def.SpectralSequence.Completion.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Completion predicates

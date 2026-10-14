@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Completion.UniversalProperty.Data
+import all KIP126.Def.SpectralSequence.Completion.UniversalProperty.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Universal property of completion

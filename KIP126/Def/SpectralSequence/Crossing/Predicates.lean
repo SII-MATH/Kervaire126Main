@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.Crossing.Data
-public import KIP126.Def.SpectralSequence.Convergence.Data
+import all KIP126.Def.SpectralSequence.Crossing.Data
+import all KIP126.Def.SpectralSequence.Convergence.Data
 
-@[expose] public section
+@[expose] section
 
 /-! Differential relations and crossing predicates for the `SSData` model. -/
 

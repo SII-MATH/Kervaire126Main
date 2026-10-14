@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Predicates
+import all KIP126.Def.SpectralSequence.Basic.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Elementary proofs for nested-subobject spectral sequences
@@ -20,11 +21,11 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- Bottom-page boundaries lie in the cycles on every page. -/
-theorem SSData.B_bot_le_Z (D : SSData C) (r : WithTop ℕ) : D.B ⊥ ≤ D.Z r :=
+public theorem SSData.B_bot_le_Z (D : SSData C) (r : WithTop ℕ) : D.B ⊥ ≤ D.Z r :=
   le_trans (D.B_mono bot_le) (D.B_le_Z r)
 
 /-- If cycles and boundaries agree, the corresponding quotient page is zero. -/
-theorem SSData.page_isZero_of_eq
+public theorem SSData.page_isZero_of_eq
     (D : SSData C) (r : WithTop ℕ) (h : D.B r = D.Z r) :
     IsZero (D.page r) := by
   unfold SSData.page
@@ -34,7 +35,7 @@ theorem SSData.page_isZero_of_eq
   exact isZero_cokernel_of_epi _
 
 /-- If a quotient page is zero, its cycles and boundaries agree. -/
-theorem SSData.eq_of_page_isZero
+public theorem SSData.eq_of_page_isZero
     (D : SSData C) (r : WithTop ℕ) (h : IsZero (D.page r)) :
     D.B r = D.Z r := by
   unfold SSData.page at h
@@ -48,7 +49,7 @@ theorem SSData.eq_of_page_isZero
     (by simp [Subobject.ofLE_arrow])
 
 /-- A spectral sequence with zero pages at one grading has zero infinity page there. -/
-theorem eInfty_isZero_of_page_isZero
+public theorem eInfty_isZero_of_page_isZero
     {C : Type*} [Category C] [Abelian C]
     {α : Type*} [AddCommGroup α] [DecidableEq α]
     (E : SpectralSequence C α) (k : α)
@@ -74,7 +75,7 @@ theorem eInfty_isZero_of_page_isZero
 
 /-- Extensionality for bare ambient morphisms. -/
 @[ext]
-theorem UnderlyingMorphism.ext
+public theorem UnderlyingMorphism.ext
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' : ι → SSData C} {f g : UnderlyingMorphism ι D D'}
     (h : f.φ = g.φ) : f = g := by
@@ -84,7 +85,7 @@ theorem UnderlyingMorphism.ext
 
 /-- Preservation witnesses do not add choices to an ambient tower morphism. -/
 @[ext]
-theorem SSDataMorphism.ext
+public theorem SSDataMorphism.ext
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' : ι → SSData C} {f g : SSDataMorphism ι D D'}
     (h : f.φ = g.φ) : f = g := by
@@ -99,12 +100,12 @@ variable {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
 variable {D D' D'' : ι → SSData C}
 
 @[reassoc (attr := simp)]
-theorem cycleMap_arrow (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ) :
+public theorem cycleMap_arrow (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ) :
     f.cycleMap k r ≫ ((D' k).Z r).arrow = ((D k).Z r).arrow ≫ f.φ k :=
   (f.preserves_Z k r).choose_spec
 
 /-- The cycle restriction is uniquely determined by the ambient square. -/
-theorem cycleMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
+public theorem cycleMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
     (m : Subobject.underlying.obj ((D k).Z r) ⟶
       Subobject.underlying.obj ((D' k).Z r))
     (hm : m ≫ ((D' k).Z r).arrow = ((D k).Z r).arrow ≫ f.φ k) :
@@ -113,14 +114,14 @@ theorem cycleMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
   rw [hm, cycleMap_arrow]
 
 @[simp]
-theorem cycleMap_id (D : ι → SSData C) (k : ι) (r : WithTop ℕ) :
+public theorem cycleMap_id (D : ι → SSData C) (k : ι) (r : WithTop ℕ) :
     (id D).cycleMap k r = 𝟙 _ := by
   symm
   apply cycleMap_unique
   simp [id]
 
 @[simp]
-theorem cycleMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
+public theorem cycleMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
     (k : ι) (r : WithTop ℕ) :
     (f.comp g).cycleMap k r = f.cycleMap k r ≫ g.cycleMap k r := by
   symm
@@ -129,7 +130,7 @@ theorem cycleMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D''
 
 /-- Cycle restrictions commute with inclusions between different pages. -/
 @[reassoc]
-theorem cycleMap_ofLE (f : SSDataMorphism ι D D') (k : ι)
+public theorem cycleMap_ofLE (f : SSDataMorphism ι D D') (k : ι)
     {r s : WithTop ℕ} (h : r ≤ s) :
     Subobject.ofLE ((D k).Z s) ((D k).Z r) ((D k).Z_anti h) ≫ f.cycleMap k r =
       f.cycleMap k s ≫
@@ -139,12 +140,12 @@ theorem cycleMap_ofLE (f : SSDataMorphism ι D D') (k : ι)
 
 /-- The canonical page map sends a cycle representative to its ambient image. -/
 @[reassoc (attr := simp)]
-theorem pageπ_pageMap (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ) :
+public theorem pageπ_pageMap (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ) :
     (D k).pageπ r ≫ f.pageMap k r = f.cycleMap k r ≫ (D' k).pageπ r := by
   exact cokernel.π_desc _ _ _
 
 /-- This representative identity uniquely determines the map of quotient pages. -/
-theorem pageMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
+public theorem pageMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
     (m : (D k).page r ⟶ (D' k).page r)
     (hm : (D k).pageπ r ≫ m = f.cycleMap k r ≫ (D' k).pageπ r) :
     m = f.pageMap k r := by
@@ -153,14 +154,14 @@ theorem pageMap_unique (f : SSDataMorphism ι D D') (k : ι) (r : WithTop ℕ)
   exact hm.trans (f.pageπ_pageMap k r).symm
 
 @[simp]
-theorem pageMap_id (D : ι → SSData C) (k : ι) (r : WithTop ℕ) :
+public theorem pageMap_id (D : ι → SSData C) (k : ι) (r : WithTop ℕ) :
     (id D).pageMap k r = 𝟙 _ := by
   symm
   apply pageMap_unique
   simp
 
 @[simp]
-theorem pageMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
+public theorem pageMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
     (k : ι) (r : WithTop ℕ) :
     (f.comp g).pageMap k r = f.pageMap k r ≫ g.pageMap k r := by
   symm
@@ -170,18 +171,18 @@ theorem pageMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
 /-- Naturality for generalized cycle representatives, without projectivity
 assumptions or a choice of a lift of an arbitrary quotient class. -/
 @[reassoc]
-theorem representative_naturality (f : SSDataMorphism ι D D') (k : ι)
+public theorem representative_naturality (f : SSDataMorphism ι D D') (k : ι)
     (r : WithTop ℕ) {T : C} (x : T ⟶ Subobject.underlying.obj ((D k).Z r)) :
     (x ≫ (D k).pageπ r) ≫ f.pageMap k r =
       (x ≫ f.cycleMap k r) ≫ (D' k).pageπ r := by
   simp [Category.assoc]
 
 @[simp]
-theorem pageMapAt_id (E : PreSS C ι) (r : ℤ) (k : ι) :
+public theorem pageMapAt_id (E : PreSS C ι) (r : ℤ) (k : ι) :
     (id E.ssData).pageMapAt (E := E) (E' := E) rfl r k = 𝟙 _ := by
   simp [pageMapAt]
 
-theorem pageMapAt_comp {E E' E'' : PreSS C ι}
+public theorem pageMapAt_comp {E E' E'' : PreSS C ι}
     (f : SSDataMorphism ι E.ssData E'.ssData)
     (g : SSDataMorphism ι E'.ssData E''.ssData)
     (hf : E.r₀ = E'.r₀) (hg : E'.r₀ = E''.r₀) (r : ℤ) (k : ι) :
@@ -199,7 +200,7 @@ end SSDataMorphism
 
 /-- Extensionality for pre-spectral-sequence morphisms. -/
 @[ext]
-theorem PreSSMorphism.ext
+public theorem PreSSMorphism.ext
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : PreSS C ι} {f g : PreSSMorphism E E'}
     (h : f.φ = g.φ) : f = g := by
@@ -214,7 +215,7 @@ theorem PreSSMorphism.ext
 
 /-- Extensionality for spectral-sequence morphisms. -/
 @[ext]
-theorem SpectralSequenceMorphism.ext
+public theorem SpectralSequenceMorphism.ext
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} {f g : SpectralSequenceMorphism E E'}
     (h : f.φ = g.φ) : f = g := by
@@ -224,7 +225,7 @@ theorem SpectralSequenceMorphism.ext
 
 /-- Differential naturality refers to the page map induced by the ambient map. -/
 @[reassoc]
-theorem PreSSMorphism.pageMap_comm_d
+public theorem PreSSMorphism.pageMap_comm_d
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : PreSS C ι} (f : PreSSMorphism E E') (r : ℤ) (k : ι) :
     f.pageMap r k ≫ E'.d r k =
@@ -234,7 +235,7 @@ theorem PreSSMorphism.pageMap_comm_d
 
 /-- Differential naturality for the underlying canonical maps of spectral sequences. -/
 @[reassoc]
-theorem SpectralSequenceMorphism.pageMap_comm_d
+public theorem SpectralSequenceMorphism.pageMap_comm_d
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E')
     (r : ℤ) (k : ι) :
@@ -244,7 +245,7 @@ theorem SpectralSequenceMorphism.pageMap_comm_d
   f.comm_d r k
 
 /-- Identity quotient maps commute with every page differential. -/
-theorem PreSSMorphism.id_comm_d
+public theorem PreSSMorphism.id_comm_d
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : PreSS C ι) (r : ℤ) (k : ι) :
     (SSDataMorphism.id E.ssData).pageMapAt (E := E) (E' := E) rfl r k ≫ E.d r k =
@@ -253,7 +254,7 @@ theorem PreSSMorphism.id_comm_d
   simp
 
 /-- The composite of the canonical quotient maps commutes with differentials. -/
-theorem PreSSMorphism.comp_comm_d
+public theorem PreSSMorphism.comp_comm_d
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' E'' : PreSS C ι} (f : PreSSMorphism E E') (g : PreSSMorphism E' E'')
     (r : ℤ) (k : ι) :
@@ -343,7 +344,7 @@ instance cokernelMap_ofLE_mono
 end PageHomology
 
 /-- Equal page classes of cycle representatives differ by a boundary in the ambient object. -/
-theorem SSData.sub_factors_boundary_of_page_eq (D : SSData C)
+public theorem SSData.sub_factors_boundary_of_page_eq (D : SSData C)
     (n : WithTop ℕ) {T : C}
     (u v : T ⟶ Subobject.underlying.obj (D.Z n))
     (h : u ≫ D.pageπ n = v ≫ D.pageπ n) :
@@ -367,7 +368,7 @@ theorem SSData.sub_factors_boundary_of_page_eq (D : SSData C)
   exact Subobject.factors_comp_arrow b
 
 /-- A nonzero page boundary has a first finite stage at which it enters the boundary tower. -/
-theorem SSData.first_boundary_page (D : SSData C) {T : C}
+public theorem SSData.first_boundary_page (D : SSData C) {T : C}
     (v : T ⟶ D.V) (n : ℕ)
     (hn : Subobject.Factors (D.B (↑n)) v)
     (hzero : ¬ Subobject.Factors (D.B (↑(0 : ℕ))) v) :
@@ -389,7 +390,7 @@ theorem SSData.first_boundary_page (D : SSData C) {T : C}
   · exact Nat.find_min hex (by omega)
 
 /-- The packaged infinity page vanishes when every finite page at the grading vanishes. -/
-theorem EInftyData.eInfty_isZero_of_page_isZero
+public theorem EInftyData.eInfty_isZero_of_page_isZero
     {C : Type u} [Category.{v} C] [Abelian C]
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (eData : EInftyData C ι) (k : ι)
@@ -400,7 +401,7 @@ theorem EInftyData.eInfty_isZero_of_page_isZero
 /-! Local stabilization, adapted from the generic proofs in
 `KIPBase/Synthetic/AdamsVanishing.lean`; no synthetic model is used. -/
 
-private theorem subobject_eq_of_quotient_epi
+theorem subobject_eq_of_quotient_epi
     {C : Type*} [Category C] [Abelian C] {V : C}
     (B P Q : Subobject V) (hBP : B ≤ P) (hPQ : P ≤ Q)
     [Epi (Subobject.ofLE P Q hPQ ≫
@@ -430,7 +431,7 @@ private theorem subobject_eq_of_quotient_epi
       (by simp [Subobject.ofLE_arrow]))
 
 /-- A zero outgoing differential preserves the cycle subobject. -/
-theorem cycles_succ_of_zero
+public theorem cycles_succ_of_zero
     {C : Type*} [Category C] [Abelian C]
     {ι : Type*} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (hr : E.r₀ ≤ r)
@@ -462,7 +463,7 @@ theorem cycles_succ_of_zero
     (D.B ↑n) (D.Z ↑(n + 1)) (D.Z ↑n) hBP hPQ hEpi
 
 /-- A zero differential leaves its target boundary subobject unchanged. -/
-theorem boundaries_succ_of_zero
+public theorem boundaries_succ_of_zero
     {C : Type*} [Category C] [Abelian C]
     {ι : Type*} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (hr : E.r₀ ≤ r)
@@ -491,7 +492,7 @@ theorem boundaries_succ_of_zero
 
 /-- Vanishing of all later outgoing differentials stabilizes the cycles
 at this grading, including the actual intersection at infinity. -/
-theorem cycles_top_eq_of_d_eq_zero
+public theorem cycles_top_eq_of_d_eq_zero
     {C : Type*} [Category C] [Abelian C]
     {ι : Type*} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (N : ℤ) (hN : E.r₀ ≤ N) (k : ι)
@@ -519,7 +520,7 @@ theorem cycles_top_eq_of_d_eq_zero
 
 /-- Vanishing of all later incoming differentials stabilizes the boundaries
 at this grading, including the actual union at infinity. -/
-theorem boundaries_top_eq_of_d_eq_zero
+public theorem boundaries_top_eq_of_d_eq_zero
     {C : Type*} [Category C] [Abelian C]
     {ι : Type*} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (N : ℤ) (hN : E.r₀ ≤ N) (k : ι)

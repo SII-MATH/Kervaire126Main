@@ -5,7 +5,7 @@ public import Mathlib.Algebra.Category.ModuleCat.Abelian
 public import Mathlib.Algebra.Category.ModuleCat.Images
 public import Mathlib.LinearAlgebra.Quotient.Basic
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence
 

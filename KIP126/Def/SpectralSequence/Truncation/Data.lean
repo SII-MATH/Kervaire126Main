@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.Convergence.Proofs
-public import KIP126.Def.Algebra.Truncation.Data
+import all KIP126.Def.SpectralSequence.Convergence.Proofs
+import all KIP126.Def.Algebra.Truncation.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Truncation data for nested-subobject filtrations

@@ -2,7 +2,7 @@ module
 
 public import Mathlib.CategoryTheory.GradedObject
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Graded objects

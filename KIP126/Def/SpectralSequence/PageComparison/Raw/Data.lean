@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
+import all KIP126.Def.SpectralSequence.Basic.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Page isomorphisms compatible with the actual differentials

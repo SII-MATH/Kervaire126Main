@@ -1,9 +1,9 @@
 module
 
 public import Mathlib.CategoryTheory.Abelian.Exact
-public import KIP126.Def.SpectralSequence.FilteredDifferential.Data
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
 
-@[expose] public section
+@[expose] section
 
 /-! Kernel, image, and transport lemmas used by finite-page differential proofs. -/
 

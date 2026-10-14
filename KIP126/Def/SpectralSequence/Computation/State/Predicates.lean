@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Computation.Predicates
+import all KIP126.Def.SpectralSequence.Computation.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Mathematical state predicates for computation interfaces
@@ -24,7 +25,7 @@ variable {R : Type u} [Ring R]
 /-- A label has a representative on the stated page; its class there may
 be zero. This is the cycle information stored by an unresolved outgoing
 staircase entry, not nonzero survival. -/
-def ReachesPage
+public def ReachesPage
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   ∃ xr : E.Page r p, RepresentsOnPage E r p x xr
@@ -32,7 +33,7 @@ def ReachesPage
 /-- The E₂ label is in the boundary subobject after page `r`. This
 allows an earlier hit, a sum of boundaries, and zero; an unresolved
 incoming staircase entry does not specify one nonzero differential. -/
-def IsBoundaryBy
+public def IsBoundaryBy
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   2 ≤ r ∧
@@ -47,7 +48,7 @@ def IsBoundaryBy
 /-- A common permanent-cycle representative of the given E₂ class.
 Its E∞ image may be zero. This deliberately omits the nonvanishing
 condition in `NonzeroSurvival`. -/
-def IsPermanentCycle
+public def IsPermanentCycle
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   let D := E.ssData p
@@ -58,7 +59,7 @@ def IsPermanentCycle
 /-- Membership in the final boundary subobject, expressed at the
 specified E₂ label. Zero is allowed, and no finite hitting page or
 nonzero incoming differential is selected by this predicate. -/
-def IsFinalBoundary
+public def IsFinalBoundary
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   let D := E.ssData p
@@ -71,7 +72,7 @@ def IsFinalBoundary
 in the specified nonempty window. Incoming boundaries and zero classes
 are allowed. Unlike a universal implication on continuations, this
 condition asserts that the continuations exist. -/
-def IsCycleOnWindow
+public def IsCycleOnWindow
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (first last : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   2 ≤ first ∧ first ≤ last ∧
@@ -80,7 +81,7 @@ def IsCycleOnWindow
 
 /-- Nonzero continuation on all pages of the specified nonempty
 window. This only concerns the stated window, not E∞ survival. -/
-def SurvivesOnWindow
+public def SurvivesOnWindow
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (first last : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   2 ≤ first ∧ first ≤ last ∧
@@ -89,7 +90,7 @@ def SurvivesOnWindow
 /-- No nonzero incoming hit in the specified nonempty window. This
 does not assert existence of continuations or absence of outgoing
 differentials, and is not an unrestricted permanence claim. -/
-def NeverHitOnWindow
+public def NeverHitOnWindow
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (first last : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   2 ≤ first ∧ first ≤ last ∧
@@ -97,7 +98,7 @@ def NeverHitOnWindow
 
 /-- Every outgoing differential at this bidegree is zero on every page
 from E₂ onward. This permits a zero page and does not assert survival of a label. -/
-def NoOutgoingAt
+public def NoOutgoingAt
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)) (s t : ℤ) : Prop :=
   ∀ r : ℤ, 2 ≤ r → ∀ x : E.Page r (s, t), E.d r (s, t) x = 0
 

@@ -2,7 +2,7 @@ module
 
 public import Mathlib.Data.Int.Basic
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence
 

@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
 public import Mathlib.Algebra.Group.Subgroup.Ker
 
-@[expose] public section
+@[expose] section
 
 /-! Actual fibers of the filtered representative equation. Neither the
 solution set nor its group of differences is an independently chosen input. -/

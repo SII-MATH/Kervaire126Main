@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
-public import KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # The bounded extension spectral sequence

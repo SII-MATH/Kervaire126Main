@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.Algebra.Filtration.Data
+import all KIP126.Def.Algebra.Filtration.Data
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.Algebra
 

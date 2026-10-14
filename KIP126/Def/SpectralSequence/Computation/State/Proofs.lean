@@ -1,10 +1,12 @@
 module
 
 public import KIP126.Def.SpectralSequence.Computation.Proofs
+import all KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.SpectralSequence.Computation.State.Predicates
+import all KIP126.Def.SpectralSequence.Computation.State.Predicates
 public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
-@[expose] public section
+@[expose] section
 
 
 /-!
@@ -22,7 +24,7 @@ variable {R : Type u} [Ring R]
 
 /-- An actual quotient-page element is zero exactly when its cycle representative
 comes from the actual boundary subobject. -/
-theorem SSData.pageπ_eq_zero_iff (D : SSData (ModuleCat.{v} R)) (n : WithTop ℕ)
+public theorem SSData.pageπ_eq_zero_iff (D : SSData (ModuleCat.{v} R)) (n : WithTop ℕ)
     (z : (Subobject.underlying.obj (D.Z n) : ModuleCat R)) :
     D.pageπ n z = 0 ↔ ∃ b : (Subobject.underlying.obj (D.B n) : ModuleCat R),
       Subobject.ofLE (D.B n) (D.Z n) (D.B_le_Z n) b = z := by
@@ -35,7 +37,7 @@ theorem SSData.pageπ_eq_zero_iff (D : SSData (ModuleCat.{v} R)) (n : WithTop �
 
 /-- Existence of a continuation and vanishing on every continuation give a
 differential equation with the zero label. -/
-theorem ReachesPage.hasDifferential_zero
+public theorem ReachesPage.hasDifferential_zero
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ}
     {x : E.Page 2 p} (hr : 2 ≤ r) (hdeg : p + E.diffDeg r = q)
     (hx : ReachesPage E r p x) (hz : DifferentialVanishesOn E r p x) :
@@ -46,7 +48,7 @@ theorem ReachesPage.hasDifferential_zero
 
 /-- Two later-cycle representatives equal on an earlier page remain equal on
 the later page: the earlier boundaries are included in the later boundaries. -/
-theorem SSData.page_eq_of_early_page_eq (D : SSData (ModuleCat.{v} R))
+public theorem SSData.page_eq_of_early_page_eq (D : SSData (ModuleCat.{v} R))
     (n m : WithTop ℕ) (hnm : n ≤ m)
     (z w : (Subobject.underlying.obj (D.Z m) : ModuleCat R))
     (h : (Subobject.ofLE (D.Z m) (D.Z n) (D.Z_anti hnm) ≫ D.pageπ n) z =
@@ -68,7 +70,7 @@ theorem SSData.page_eq_of_early_page_eq (D : SSData (ModuleCat.{v} R))
 
 /-- A fixed E₂ label has at most one actual continuation on any later page.
 This does not assert that a continuation exists. -/
-theorem RepresentsOnPage.unique
+public theorem RepresentsOnPage.unique
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} {yr zr : E.Page r p}
     (hy : RepresentsOnPage E r p x yr) (hz : RepresentsOnPage E r p x zr) :
@@ -82,7 +84,7 @@ theorem RepresentsOnPage.unique
 
 /-- A represented class on page `r + 1` is zero exactly when its E₂ label is
 in the actual cumulative boundary subobject after page `r`. -/
-theorem RepresentsOnPage.eq_zero_iff_isBoundaryBy
+public theorem RepresentsOnPage.eq_zero_iff_isBoundaryBy
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} {yr : E.Page (r + 1) p} (hr : 2 ≤ r)
     (hrep : RepresentsOnPage E (r + 1) p x yr) :
@@ -120,7 +122,7 @@ theorem RepresentsOnPage.eq_zero_iff_isBoundaryBy
 E₂ label already in the cumulative boundary space before that differential.
 The page bound is exactly the range in which `IsBoundaryBy (r - 1)` is defined.
 This uses actual common representatives, not a program boundary-span test. -/
-theorem HasDifferential.isBoundaryBy_of_source_zero
+public theorem HasDifferential.isBoundaryBy_of_source_zero
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ}
     {y : E.Page 2 q} (hr : 3 ≤ r) (h : HasDifferential E r p q 0 y) :
     IsBoundaryBy E (r - 1) q y := by
@@ -134,7 +136,7 @@ theorem HasDifferential.isBoundaryBy_of_source_zero
 
 /-- An actual earlier-boundary exclusion refutes a zero-source equation.
 A database diagnostic asserting this exclusion is not a proof of the premise. -/
-theorem not_hasDifferential_zero_of_not_isBoundaryBy
+public theorem not_hasDifferential_zero_of_not_isBoundaryBy
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ}
     {y : E.Page 2 q} (hr : 3 ≤ r) (hy : ¬ IsBoundaryBy E (r - 1) q y) :
     ¬ HasDifferential E r p q 0 y :=
@@ -142,7 +144,7 @@ theorem not_hasDifferential_zero_of_not_isBoundaryBy
 
 /-- A label excluded from the actual cumulative boundary space has a nonzero
 next-page continuation whenever a continuation exists. -/
-theorem ReachesPage.survives_of_not_isBoundaryBy
+public theorem ReachesPage.survives_of_not_isBoundaryBy
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} (hr : 2 ≤ r) (hx : ReachesPage E (r + 1) p x)
     (hboundary : ¬ IsBoundaryBy E r p x) : SurvivesTo E (r + 1) p x := by
@@ -151,7 +153,7 @@ theorem ReachesPage.survives_of_not_isBoundaryBy
 
 /-- Actual target exhaustiveness and exclusion of its nonzero alternative
 prove the zero differential once the source has an actual continuation. -/
-theorem hasDifferential_zero_of_excluded_target
+public theorem hasDifferential_zero_of_excluded_target
     {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} (hr : 2 ≤ r) (hx : ReachesPage E r p x)
     (y : E.Page 2 (p + E.diffDeg r))

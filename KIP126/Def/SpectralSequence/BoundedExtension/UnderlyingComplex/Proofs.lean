@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
-public import KIP126.Def.SpectralSequence.Convergence.Predicates
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
+import all KIP126.Def.SpectralSequence.Convergence.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Boundedness of the filtered two-term complex
@@ -139,7 +139,7 @@ theorem underlyingComplex_assocGradedDiff_compat_one
   simp only [underlyingComplex_filDiff_one,
     underlyingComplex_filToAssocGraded_zero]
 
-private lemma subobject_eq_bot_of_isZero {X : C} (hX : IsZero X)
+lemma subobject_eq_bot_of_isZero {X : C} (hX : IsZero X)
     (P : Subobject X) : P = ⊥ := by
   have hP_zero : IsZero (Subobject.underlying.obj P) := hX.of_mono P.arrow
   apply le_antisymm

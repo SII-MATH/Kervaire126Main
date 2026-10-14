@@ -1,9 +1,10 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
-public import KIP126.Def.Algebra.Filtration.Data
+import all KIP126.Def.SpectralSequence.Basic.Data
+import all KIP126.Def.Algebra.Filtration.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Internal convergence data for nested-subobject spectral sequences

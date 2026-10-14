@@ -1,9 +1,10 @@
 module
 
-public import KIP126.Def.SpectralSequence.PageComparison.Data
+import all KIP126.Def.SpectralSequence.PageComparison.Data
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
+import all KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Successor compatibility of pagewise spectral-sequence comparisons

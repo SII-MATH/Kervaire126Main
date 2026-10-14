@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.Algebra.Completion.Data
-public import KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.Algebra.Completion.Data
+import all KIP126.Def.Algebra.Filtration.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Filtrations on canonical quotient objects

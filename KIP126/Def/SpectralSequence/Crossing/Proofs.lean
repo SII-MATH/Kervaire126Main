@@ -1,9 +1,10 @@
 module
 
-public import KIP126.Def.SpectralSequence.Crossing.Predicates
+import all KIP126.Def.SpectralSequence.Crossing.Predicates
 public import KIP126.Def.SpectralSequence.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Basic.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-! Proofs about differential relations in the `SSData` model. -/
 

@@ -1,9 +1,10 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
+import all KIP126.Def.SpectralSequence.Basic.Data
 public import Mathlib.Algebra.Category.ModuleCat.Abelian
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence
 
@@ -13,7 +14,7 @@ universe u v
 
 /-- Successor-page representatives in the internal nested-subobject model.
 This uses one next-cycle representative for both quotient classes. -/
-def NextPageRelation {R : Type u} [Ring R]
+public def NextPageRelation {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)) (r : ℤ)
     (p : ℤ × ℤ) (x : E.Page r p) (y : E.Page (r + 1) p) : Prop :=
   let D := E.ssData p
@@ -29,7 +30,7 @@ def NextPageRelation {R : Type u} [Ring R]
 
 /-- A specified page class has a common Z∞ representative whose E∞ image is
 nonzero. This is internal SSData reasoning, with no Mathlib SS dependency. -/
-def NonzeroSurvival {R : Type u} [Ring R]
+public def NonzeroSurvival {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   let D := E.ssData p

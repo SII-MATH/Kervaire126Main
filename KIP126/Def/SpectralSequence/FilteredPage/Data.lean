@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Quotient pages of a filtered complex

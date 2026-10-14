@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
+import all KIP126.Def.SpectralSequence.Basic.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Predicates for nested-subobject spectral sequences
@@ -17,7 +18,7 @@ open CategoryTheory
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- A spectral sequence degenerates at `N` when all differentials from page `N` vanish. -/
-def DegeneratesAt
+public def DegeneratesAt
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (N : ℤ) : Prop :=
   ∀ (r : ℤ), N ≤ r → ∀ (k : ι), E.d r k = 0

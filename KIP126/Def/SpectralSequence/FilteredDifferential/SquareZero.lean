@@ -1,11 +1,11 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredDifferential.Helpers
-public import KIP126.Def.SpectralSequence.FilteredPage.Proofs
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Helpers
+import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
 
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
 
-@[expose] public section
+@[expose] section
 
 /-! The finite-page differential squares to zero. -/
 

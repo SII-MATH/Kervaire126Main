@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.Convergence.Predicates
-public import KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Convergence.Predicates
+import all KIP126.Def.Algebra.Filtration.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Proofs for convergence of nested-subobject spectral sequences

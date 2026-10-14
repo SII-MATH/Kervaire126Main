@@ -1,16 +1,16 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.Chain.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.Detection.Predicates
-public import KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Proofs
-public import KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
-public import KIP126.Def.SpectralSequence.BoundedExtension.SelfComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Detection.Predicates
+import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.SelfComplex.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Bounded extension spectral sequences

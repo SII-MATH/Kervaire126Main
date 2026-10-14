@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Restriction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Restriction.Data
 public import Mathlib.GroupTheory.QuotientGroup.Basic
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
 

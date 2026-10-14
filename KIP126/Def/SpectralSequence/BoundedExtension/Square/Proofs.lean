@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.Square.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Square.Data
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence.BoundedExtension
 open CategoryTheory

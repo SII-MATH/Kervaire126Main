@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
-public import KIP126.Def.SpectralSequence.Extension.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
+import all KIP126.Def.SpectralSequence.Extension.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Proofs for historical two-term extension data

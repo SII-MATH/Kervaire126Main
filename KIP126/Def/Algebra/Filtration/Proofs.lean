@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.Algebra.Filtration.Predicates
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.Algebra
 
@@ -16,7 +16,7 @@ namespace Filtration
 
 variable {ι : Type w} {A : CategoryTheory.GradedObject ι C}
 
-private lemma imageSubobject_ofLE_eq_bot_of_eq_bot [Abelian C]
+lemma imageSubobject_ofLE_eq_bot_of_eq_bot [Abelian C]
     {B : C} (X Y : Subobject B) (h : X ≤ Y) (hX : X = ⊥) :
     imageSubobject (Subobject.ofLE X Y h) = ⊥ := by
   subst hX

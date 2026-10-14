@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
-public import KIP126.Def.SpectralSequence.FilteredPage.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
+import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Proofs for the historical filtered-complex API

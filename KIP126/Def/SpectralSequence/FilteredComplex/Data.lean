@@ -1,10 +1,10 @@
 module
 
-public import KIP126.Def.Algebra.Filtration.Proofs
+import all KIP126.Def.Algebra.Filtration.Proofs
 public import Mathlib.Algebra.Homology.HomologicalComplex
 public import Mathlib.Algebra.Homology.CochainComplexOpposite
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Filtered chain complexes
@@ -355,7 +355,7 @@ lemma differential_preserves_sq (FC : FilteredComplex C) (s k : ℤ) :
     ← Category.assoc, (FC.differential_preserves s k).choose_spec,
     Category.assoc, FC.complex.d_comp_d, comp_zero]
 
-private lemma differential_preserves_sq_transport
+lemma differential_preserves_sq_transport
     (FC : FilteredComplex C) (s a b c : ℤ)
     (hab : a - 1 = b) (hbc : b - 1 = c) :
     ((FC.differential_preserves s a).choose ≫
@@ -561,7 +561,7 @@ lemma filteredCochainDiagram_map (FC : FilteredComplex C)
       (ChainComplex.cochainComplexEquivalence C).functor.map
         (FC.filtrationInclusionChainMap f.le) := rfl
 
-private lemma associatedGradedDifferential_sq_transport
+lemma associatedGradedDifferential_sq_transport
     (FC : FilteredComplex C) (s a b c : ℤ)
     (hab : a - 1 = b) (hbc : b - 1 = c) :
     (FC.associatedGradedDifferential s a ≫
@@ -687,7 +687,7 @@ lemma Morphism.comp_preserves_eq (f : Morphism FC GD) (g : Morphism GD GE)
           (GE.filtration.F s k).arrow := by
       simp only [Category.assoc]
 
-private lemma preserves_differential_transport (f : Morphism FC GD)
+lemma preserves_differential_transport (f : Morphism FC GD)
     (s a b : ℤ) (h : a - 1 = b) :
     (f.preserves s a).choose ≫ (GD.differential_preserves s a).choose ≫
         eqToHom (congrArg (fun k =>
@@ -893,7 +893,7 @@ lemma Morphism.associatedGradedMap_comm (f : Morphism FC GD) (s k : ℤ) :
       simpa only [Category.assoc, Morphism.associatedGradedMap] using
         congrArg (fun q => q ≫ f.toFilteredMorphism.associatedGradedMap s (k - 1)) hdiffF.symm
 
-private lemma associatedGradedMap_comm_transport (f : Morphism FC GD)
+lemma associatedGradedMap_comm_transport (f : Morphism FC GD)
     (s a b : ℤ) (h : a - 1 = b) :
     f.associatedGradedMap s a ≫ GD.associatedGradedDifferential s a ≫
         eqToHom (congrArg (GD.filtration.associatedGraded s) h) =

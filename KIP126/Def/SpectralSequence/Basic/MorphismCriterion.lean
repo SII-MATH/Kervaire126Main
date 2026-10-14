@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Basic.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Representative criterion for spectral-sequence morphisms
@@ -24,7 +25,7 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 variable {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
 
-structure DifferentialMorphismCriterion
+public structure DifferentialMorphismCriterion
     (E E' : SpectralSequence C ι)
     (f : UnderlyingMorphism ι E.ssData E'.ssData) where
   r₀_eq : E.r₀ = E'.r₀
@@ -57,7 +58,7 @@ structure DifferentialMorphismCriterion
           (E'.ssData (k + E.diffDeg r)).pageπ n ≫
           eqToHom (by rw [hk, hn])
 
-noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
+public noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :
@@ -88,7 +89,7 @@ noncomputable def DifferentialMorphismCriterion.toSSDataMorphism
               Subobject.ofLE_arrow]
 }
 
-noncomputable def DifferentialMorphismCriterion.toMorphism
+public noncomputable def DifferentialMorphismCriterion.toMorphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :
@@ -144,7 +145,7 @@ noncomputable def DifferentialMorphismCriterion.toMorphism
     diffDeg_eq := P.diffDeg_eq
     comm_d := P.comm_d }
 
-theorem DifferentialMorphismCriterion.exists_morphism
+public theorem DifferentialMorphismCriterion.exists_morphism
     {E E' : SpectralSequence C ι}
     {f : UnderlyingMorphism ι E.ssData E'.ssData}
     (H : DifferentialMorphismCriterion E E' f) :

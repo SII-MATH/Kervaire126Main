@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Extension.Proofs
+import all KIP126.Def.SpectralSequence.Extension.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # The canonical two-term complex

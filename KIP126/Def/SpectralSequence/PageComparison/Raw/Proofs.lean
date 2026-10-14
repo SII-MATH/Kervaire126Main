@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.PageComparison.Raw.Data
+import all KIP126.Def.SpectralSequence.PageComparison.Raw.Data
 
-@[expose] public section
+@[expose] section
 
 /-! Commuting squares for the actual centered page comparisons. -/
 

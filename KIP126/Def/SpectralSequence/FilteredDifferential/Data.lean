@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredPage.Data
+import all KIP126.Def.SpectralSequence.FilteredPage.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Differential on quotient pages
@@ -22,7 +22,7 @@ universe u v
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
-private theorem fil_arrow_eqToHom (FC : FilteredComplex C)
+theorem fil_arrow_eqToHom (FC : FilteredComplex C)
     (s : ℤ) (a b : ℤ) (h : a = b) :
     eqToHom (show Subobject.underlying.obj (FC.filtration.F s a) =
       Subobject.underlying.obj (FC.filtration.F s b) from by subst h; rfl) ≫
@@ -32,7 +32,7 @@ private theorem fil_arrow_eqToHom (FC : FilteredComplex C)
 
 /-- Transport lemma for the differential along an integer equality:
     `eqToHom ≫ FC.complex.d b (b - 1) = FC.complex.d a (a - 1) ≫ eqToHom`. -/
-private theorem d_eqToHom' (FC : FilteredComplex C)
+theorem d_eqToHom' (FC : FilteredComplex C)
     (a b : ℤ) (h : a = b) :
     eqToHom (show FC.complex.X a = FC.complex.X b from by subst h; rfl) ≫
     FC.complex.d b (b - 1) = FC.complex.d a (a - 1) ≫
@@ -41,7 +41,7 @@ private theorem d_eqToHom' (FC : FilteredComplex C)
 
 /-- `eqToHom ≫ dToK(k-1) = d(k)`: the transported differential composed with eqToHom
     gives the original differential. (Generalized version with free variables.) -/
-private theorem eqToHom_arrow_dToK_gen (FC : FilteredComplex C)
+theorem eqToHom_arrow_dToK_gen (FC : FilteredComplex C)
     (s : ℤ) (m k : ℤ) (hmk : m + 1 = k) :
     eqToHom (show Subobject.underlying.obj (FC.filtration.F s k) =
       Subobject.underlying.obj (FC.filtration.F s (m + 1)) by rw [hmk]) ≫
@@ -52,7 +52,7 @@ private theorem eqToHom_arrow_dToK_gen (FC : FilteredComplex C)
   simp [FilteredComplex.dToK]
 
 /-- Specialized transport: `eqToHom ≫ F^s((k-1)+1).arrow ≫ dToK(k-1) = F^s(k).arrow ≫ d(k)`. -/
-private theorem eqToHom_arrow_dToK (FC : FilteredComplex C)
+theorem eqToHom_arrow_dToK (FC : FilteredComplex C)
     (s k : ℤ) :
     eqToHom (show Subobject.underlying.obj (FC.filtration.F s k) =
       Subobject.underlying.obj (FC.filtration.F s ((k - 1) + 1)) by

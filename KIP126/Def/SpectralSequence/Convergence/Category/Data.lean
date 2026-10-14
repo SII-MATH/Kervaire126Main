@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Convergence.Proofs
+import all KIP126.Def.SpectralSequence.Convergence.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Category of convergent nested-subobject spectral sequences

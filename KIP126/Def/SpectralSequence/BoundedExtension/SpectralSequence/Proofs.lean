@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Data
-public import KIP126.Def.SpectralSequence.Convergence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Data
+import all KIP126.Def.SpectralSequence.Convergence.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Page-zero calculations for bounded extensions

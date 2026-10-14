@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.Chain.Data
-public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Bounded extensions in a composable chain

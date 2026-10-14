@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Predicates
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Bounded extension spectral-sequence input data

@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.Algebra.Truncation.Data
+import all KIP126.Def.Algebra.Truncation.Data
 
-@[expose] public section
+@[expose] section
 
 /-! Proofs and transition laws for the canonical truncation adapter. -/
 

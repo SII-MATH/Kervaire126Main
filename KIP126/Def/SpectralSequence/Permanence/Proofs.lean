@@ -1,10 +1,12 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Basic.Proofs
 public import KIP126.Def.SpectralSequence.Computation.State.Predicates
-public import KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+import all KIP126.Def.SpectralSequence.Computation.State.Predicates
+import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-! Local stabilization and common representatives at infinity. Neither
 permanent-cycle membership nor finite-page reachability asserts nonvanishing. -/
@@ -18,7 +20,7 @@ variable {R : Type u} [Ring R]
 
 /-- Two infinite-cycle representatives with the same class on one page
 have the same class at infinity: their difference is already a boundary. -/
-theorem SSData.infinity_projection_eq_of_page_projection_eq
+public theorem SSData.infinity_projection_eq_of_page_projection_eq
     (D : SSData (ModuleCat.{v} R)) (n : WithTop ℕ)
     (z z' : (Subobject.underlying.obj (D.Z ⊤) : ModuleCat R))
     (h : (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ n) z =
@@ -39,7 +41,7 @@ theorem SSData.infinity_projection_eq_of_page_projection_eq
 
 /-- A common representative on a finite page is permanent when the later
 outgoing differentials vanish at its grading. It may still be a boundary. -/
-theorem isPermanentCycle_of_reachesPage
+public theorem isPermanentCycle_of_reachesPage
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (N : ℤ) (hN : E.r₀ ≤ N) (p : ℤ × ℤ) (x : E.Page 2 p)
     (hx : ReachesPage E N p x)
@@ -58,7 +60,7 @@ theorem isPermanentCycle_of_reachesPage
 
 /-- Nonzero survival on a finite page persists at infinity when both later
 outgoing and incoming differentials vanish at this grading. -/
-theorem nonzeroSurvival_of_survivesTo
+public theorem nonzeroSurvival_of_survivesTo
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (N : ℤ) (hN : E.r₀ ≤ N) (p : ℤ × ℤ) (x : E.Page 2 p)
     (hx : SurvivesTo E N p x)

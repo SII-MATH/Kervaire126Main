@@ -2,12 +2,16 @@ module
 
 public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 public import KIP126.Def.SpectralSequence.Computation.Proofs
+import all KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.SpectralSequence.Permanence.Proofs
+import all KIP126.Def.SpectralSequence.Permanence.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
-public import KIP126.Def.SpectralSequence.ModuleQuotient.Proofs
+import all KIP126.Def.SpectralSequence.Basic.PageHomology.Data
+import all KIP126.Def.SpectralSequence.ModuleQuotient.Proofs
 public import KIP126.Def.Algebra.Coefficients.Data
+import all KIP126.Def.Algebra.Coefficients.Data
 
-@[expose] public section
+@[expose] section
 
 /-! Generic representative and finite-page generation lemmas for internal
 spectral sequences. These use the specified cycle and boundary subobjects;
@@ -20,7 +24,7 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxRecDepth 10000
 
-theorem represents_unique
+public theorem represents_unique
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a b : E.Page r p}
     (ha : RepresentsOnPage E r p x a) (hb : RepresentsOnPage E r p x b) : a = b := by
   obtain ⟨hr, z, hz, hza⟩ := ha
@@ -44,7 +48,7 @@ theorem represents_unique
   exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hh
 
 
-theorem represents_d_zero_of_later
+public theorem represents_d_zero_of_later
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hr0 : E.r₀ ≤ r) (hrt : r < t)
     {a : E.Page r p} (ha : RepresentsOnPage E r p x a)
     (ht : ReachesPage E t p x) : E.d r p a = 0 := by
@@ -75,7 +79,7 @@ theorem represents_d_zero_of_later
   rfl
 
 
-theorem next_projection_zero_iff_incoming
+public theorem next_projection_zero_iff_incoming
     (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))
     (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)
     (z : (Subobject.underlying.obj ((E.ssData (p+E.diffDeg r)).Z
@@ -123,7 +127,7 @@ theorem next_projection_zero_iff_incoming
     rwa [Subobject.ofLE_arrow] at hh
 
 
-theorem page_generated_from_representatives
+public theorem page_generated_from_representatives
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r)
     {N : ℕ} (e : E.Page 2 p ≃ₗ[ℤ] (Fin N →₀ KIP126.Core.Algebra.F2))
     (v : Fin N → E.Page r p)
@@ -181,7 +185,7 @@ theorem page_generated_from_representatives
   simpa only [hx] using hh
 
 
-theorem represents_before
+public theorem represents_before
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r t : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} {xt : E.Page t p}
     (hr : 2 ≤ r) (hrt : r ≤ t) (ht : RepresentsOnPage E t p x xt) :
@@ -197,7 +201,7 @@ theorem represents_before
   exact hz
 
 
-theorem next_page_two_of_kernel
+public theorem next_page_two_of_kernel
     (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)) (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)
     (v : (Subobject.underlying.obj ((E.ssData p).Z ↑((r-E.r₀).toNat+1)) : ModuleCat.{v} ℤ))
     (hcases : ∀ a : E.Page r p, E.d r p a = 0 → a = 0 ∨
@@ -235,7 +239,7 @@ theorem next_page_two_of_kernel
     rw [map_sub,hz,sub_self]
 
 
-theorem represents_next_nonzero_of_incoming_zero
+public theorem represents_next_nonzero_of_incoming_zero
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
     (hin : E.d r (p-E.diffDeg r) = 0)
@@ -273,7 +277,7 @@ theorem represents_next_nonzero_of_incoming_zero
   rwa [Subobject.ofLE_arrow]
 
 
-theorem differential_target_later_zero
+public theorem differential_target_later_zero
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r t : ℤ} {p q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q}
     (hr0 : E.r₀ ≤ r) (hrt : r < t)
     (h : HasDifferential E r p q x y) : RepresentsOnPage E t q y 0 := by
@@ -324,7 +328,7 @@ theorem differential_target_later_zero
     exact (ModuleCat.subobjectModule A.V).monotone (A.B_mono hnm) ⟨b',rfl⟩
 
 
-theorem represents_add_tail
+public theorem represents_add_tail
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}
     (hx : RepresentsOnPage E r p x a) (hy : RepresentsOnPage E r p y b) :
@@ -334,7 +338,7 @@ theorem represents_add_tail
   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩
 
 
-theorem sixth_zero_of_second_kernel
+public theorem sixth_zero_of_second_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 6 p x 0) :
@@ -355,7 +359,7 @@ theorem sixth_zero_of_second_kernel
   exact ⟨fun a b => (hz a).trans (hz b).symm⟩
 
 
-theorem fifth_frame_of_second_kernel
+public theorem fifth_frame_of_second_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ) (v : E.Page 5 p)
     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 →
@@ -379,7 +383,7 @@ theorem fifth_frame_of_second_kernel
 
 
 
-theorem fifth_zero_of_second_kernel
+public theorem fifth_zero_of_second_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 5 p x 0) :
@@ -401,7 +405,7 @@ theorem fifth_zero_of_second_kernel
   exact ⟨fun a b => (hz a).trans (hz b).symm⟩
 
 
-theorem fifth_zero_of_all_basis
+public theorem fifth_zero_of_all_basis
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {n : ℕ}
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin n →₀ F2))
     (he : ∀ i, RepresentsOnPage E 5 p (e.symm (Finsupp.single i 1)) 0) :
@@ -413,7 +417,7 @@ theorem fifth_zero_of_all_basis
   exact ⟨fun a b => (hz a).trans (hz b).symm⟩
 
 
-theorem frame_after_second
+public theorem frame_after_second
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p : ℤ × ℤ} (hs : E.r₀≤2) (hr : 3≤r)
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 2 →₀ F2))
@@ -459,7 +463,7 @@ theorem frame_after_second
     exact (hn (by simpa only [hxe,map_add,hz0,zero_add] using hc)).elim
 
 
-theorem third_zero_of_second_kernel
+public theorem third_zero_of_second_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 3 p x 0) :
@@ -481,7 +485,7 @@ theorem third_zero_of_second_kernel
   exact ⟨fun a b => (hz a).trans (hz b).symm⟩
 
 
-theorem fourth_d_zero_of_second_kernel
+public theorem fourth_d_zero_of_second_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 →
@@ -504,7 +508,7 @@ theorem fourth_d_zero_of_second_kernel
   exact hdb
 
 
-theorem vx_nonzero_no_incoming
+public theorem vx_nonzero_no_incoming
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ×ℤ}
     (hr0 : E.r₀≤2) (hin : ∀ r : ℤ, 2≤r → E.d r (p-E.diffDeg r)=0)
     {r : ℤ} {x : E.Page 2 p} {a : E.Page r p}
@@ -532,7 +536,7 @@ theorem vx_nonzero_no_incoming
   rwa [Subobject.ofLE_arrow]
 
 
-theorem pq_rep3zero_boundary
+public theorem pq_rep3zero_boundary
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {p : ℤ×ℤ} {x : E.Page 2 p}
     (h : RepresentsOnPage E 3 p x 0) : IsBoundaryBy E 2 p x := by
@@ -555,7 +559,7 @@ theorem pq_rep3zero_boundary
     simpa only [Category.assoc,Subobject.ofLE_arrow] using hb
   exact (congrArg (fun v => A.pageπ n v) heq).trans hzx
 
-theorem represents_sub_tail
+public theorem represents_sub_tail
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}
     {x y : E.Page 2 p} {a b : E.Page r p}
     (ha : RepresentsOnPage E r p x a) (hb : RepresentsOnPage E r p y b) :
@@ -566,7 +570,7 @@ theorem represents_sub_tail
   exact ⟨hr,z-w,by rw [map_sub,hz,hw],by rw [map_sub,hza,hwb]⟩
 
 
-theorem page_has_representative
+public theorem page_has_representative
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}
     (hr : 2≤r) (a : E.Page r p) : ∃ x, RepresentsOnPage E r p x a := by
   classical
@@ -580,7 +584,7 @@ theorem page_has_representative
   exact ⟨x,hr,z,rfl,hz⟩
 
 
-theorem reaches_from_support
+public theorem reaches_from_support
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {p : ℤ×ℤ} {r : ℤ} (hr : 2≤r) {N : ℕ}
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin N →₀ F2)) (x : E.Page 2 p)
@@ -623,7 +627,7 @@ theorem reaches_from_support
   exact ⟨a,by simpa only [hx] using ha⟩
 
 
-theorem d_zero_of_second_kernel_extends
+public theorem d_zero_of_second_kernel_extends
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     (hs : E.r₀≤2) {p : ℤ×ℤ} {r : ℤ} (hr : 3≤r)
     (hext : ∀ x : E.Page 2 p, E.d 2 p x=0 → ReachesPage E (r+1) p x) : E.d r p=0 := by
@@ -645,7 +649,7 @@ theorem d_zero_of_second_kernel_extends
   exact represents_d_zero_of_later (by omega) (by omega : r<r+1) hxa (hext x hx2)
 
 
-theorem reaches_before {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
+public theorem reaches_before {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr : 2≤r) (hrt : r≤t) (ht : ReachesPage E t p x) : ReachesPage E r p x := by
   obtain ⟨a,_,z,hz,_⟩ := ht
   let D := E.ssData p
@@ -657,7 +661,7 @@ theorem reaches_before {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (�
   rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]
   exact hz
 
-theorem choice_frame_of_three_basis
+public theorem choice_frame_of_three_basis
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}
     (hr : 2<r) (hr0 : E.r₀≤2)
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2))
@@ -748,7 +752,7 @@ theorem choice_frame_of_three_basis
     simp only [map_add,hd1,hd2,add_zero] at hx
     exact (hd0 hx).elim
 
-theorem choice_single_basis_zero_page
+public theorem choice_single_basis_zero_page
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}
     (hr : 2≤r)
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 1 →₀ KIP126.Core.Algebra.F2))
@@ -785,7 +789,7 @@ theorem choice_single_basis_zero_page
       exact represents_unique hxrep hb
   exact ⟨fun x y=>(hall x).trans (hall y).symm⟩
 
-theorem choice_next_zero_of_single_frame_nonzero_differential
+public theorem choice_next_zero_of_single_frame_nonzero_differential
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}
     (hr : 2≤r) (hr0 : E.r₀≤r)
     (a : E.Page r p) (ha : E.d r p a≠0) (hall : ∀b:E.Page r p,b=0∨b=a) :
@@ -824,7 +828,7 @@ theorem choice_next_zero_of_single_frame_nonzero_differential
   exact ⟨fun x y=>(hzero x).trans (hzero y).symm⟩
 
 
-theorem d_zero_of_complete_representatives
+public theorem d_zero_of_complete_representatives
     {ESeq : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p : ℤ × ℤ} {n : ℕ} (hr : 2 ≤ r)
     (e : ESeq.Page 2 p ≃ₗ[ℤ] (Fin n →₀ KIP126.Core.Algebra.F2))
@@ -857,7 +861,7 @@ theorem d_zero_of_complete_representatives
   exact hdx
 
 
-theorem page_eq_sum_of_complete_representatives
+public theorem page_eq_sum_of_complete_representatives
     {ESeq : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p : ℤ × ℤ} {n : ℕ} (hr : 2 ≤ r)
     (e : ESeq.Page 2 p ≃ₗ[ℤ] (Fin n →₀ KIP126.Core.Algebra.F2))
@@ -909,7 +913,7 @@ theorem page_eq_sum_of_complete_representatives
   exact Finsupp.sum_fintype _ _ (fun _ => by simp)
 
 
-theorem same_boundaries_projection_eq
+public theorem same_boundaries_projection_eq
     (A : SSData (ModuleCat.{v} ℤ))
     (n m : WithTop ℕ) (hnm : n ≤ m) (hB : A.B m = A.B n)
     (z z' : (Subobject.underlying.obj (A.Z m) : ModuleCat.{v} ℤ))
@@ -927,7 +931,7 @@ theorem same_boundaries_projection_eq
   rwa [Subobject.ofLE_arrow]
 
 
-theorem middle_add {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}
+public theorem middle_add {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}
     (hx : RepresentsOnPage E r p x a) (hy : RepresentsOnPage E r p y b) :
     RepresentsOnPage E r p (x+y) (a+b) := by
   classical
@@ -936,7 +940,7 @@ theorem middle_add {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ ×
   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩
 
 
-theorem middle_if {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a : E.Page r p}
+public theorem middle_if {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a : E.Page r p}
     (c : F2) (h : RepresentsOnPage E r p x a) :
     RepresentsOnPage E r p (if c=0 then 0 else x) (if c=0 then 0 else a) := by
   classical
@@ -945,7 +949,7 @@ theorem middle_if {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × 
   · exact h
 
 
-theorem middle_rep2 {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
+public theorem middle_rep2 {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {p : ℤ × ℤ} {r : ℤ} {x : E.Page 2 p} {a : E.Page r p} (hr : 2≤r)
     (ha : RepresentsOnPage E r p x a) : RepresentsOnPage E 2 p x x := by
   classical
@@ -954,7 +958,7 @@ theorem middle_rep2 {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ �
   exact hb
 
 
-theorem reaches_earlier {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hr : 2 ≤ r) (hrt : r ≤ t)
+public theorem reaches_earlier {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hr : 2 ≤ r) (hrt : r ≤ t)
     (ht : ReachesPage E t p x) : ReachesPage E r p x := by
   classical
   obtain ⟨_, _, z, hz, _⟩ := ht
@@ -971,7 +975,7 @@ theorem reaches_earlier {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (�
   exact hz
 
 
-theorem represents_sub {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {a b : E.Page 2 p} {ar br : E.Page r p}
+public theorem represents_sub {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {a b : E.Page 2 p} {ar br : E.Page r p}
     (ha : RepresentsOnPage E r p a ar) (hb : RepresentsOnPage E r p b br) :
     RepresentsOnPage E r p (a-b) (ar-br) := by
   classical
@@ -980,7 +984,7 @@ theorem represents_sub {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (�
   exact ⟨hr,z-w,by rw [map_sub,hz,hw],by rw [map_sub,hzr,hwr]⟩
 
 
-theorem differential_target_cycle {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q} (h : HasDifferential E r p q x y) :
+public theorem differential_target_cycle {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q} (h : HasDifferential E r p q x y) :
     ∃ yr : E.Page r q, RepresentsOnPage E r q y yr ∧ E.d r q yr = 0 := by
   classical
   obtain ⟨rfl,xr,yr,_,hy,hd⟩ := h
@@ -988,7 +992,7 @@ theorem differential_target_cycle {E : KIP126.Core.SpectralSequence (ModuleCat.{
   exact ⟨yr,hy,IsPageBoundary.d_eq_zero ⟨xr,hd⟩⟩
 
 
-theorem represents_two_self {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} (x : E.Page 2 p) : RepresentsOnPage E 2 p x x := by
+public theorem represents_two_self {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} (x : E.Page 2 p) : RepresentsOnPage E 2 p x x := by
   classical
   haveI : Epi ((E.ssData p).pageπ ↑(2-E.r₀).toNat) := by
     change Epi (cokernel.π _)
@@ -997,7 +1001,7 @@ theorem represents_two_self {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ
   exact ⟨le_rfl,z,by simpa only [Subobject.ofLE_refl,Category.id_comp] using hz,hz⟩
 
 
-theorem represents_later_zero {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hrt : r ≤ t)
+public theorem represents_later_zero {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hrt : r ≤ t)
     (hr : RepresentsOnPage E r p x 0) {y : E.Page t p}
     (ht : RepresentsOnPage E t p x y) : y = 0 := by
   classical
@@ -1023,7 +1027,7 @@ theorem represents_later_zero {E : KIP126.Core.SpectralSequence (ModuleCat.{v} �
   rwa [Subobject.ofLE_arrow] at hh'
 
 
-theorem page_has_initial_representative {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r) (a : E.Page r p) :
+public theorem page_has_initial_representative {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r) (a : E.Page r p) :
     ∃ x : E.Page 2 p, RepresentsOnPage E r p x a := by
   classical
   haveI : Epi ((E.ssData p).pageπ ↑(r-E.r₀).toNat) := by
@@ -1033,7 +1037,7 @@ theorem page_has_initial_representative {E : KIP126.Core.SpectralSequence (Modul
   exact ⟨_,hr,z,rfl,hz⟩
 
 
-theorem represents_transport_eq {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {t : ℤ} {x y : E.Page 2 p}
+public theorem represents_transport_eq {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {t : ℤ} {x y : E.Page 2 p}
     {ar : E.Page r p} {a b : E.Page t p} (hrt : r ≤ t)
     (hx : RepresentsOnPage E r p x ar) (hy : RepresentsOnPage E r p y ar)
     (hxt : RepresentsOnPage E t p x a) (hyt : RepresentsOnPage E t p y b) : a = b := by
@@ -1043,7 +1047,7 @@ theorem represents_transport_eq {E : KIP126.Core.SpectralSequence (ModuleCat.{v}
     (by simpa only [sub_self] using represents_sub hx hy) (represents_sub hxt hyt)
 
 
-theorem represents_bit {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (c : KIP126.Core.Algebra.F2) {x : E.Page 2 p} {a : E.Page r p}
+public theorem represents_bit {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (c : KIP126.Core.Algebra.F2) {x : E.Page 2 p} {a : E.Page r p}
     (h : RepresentsOnPage E r p x a) :
     RepresentsOnPage E r p (if c=0 then 0 else x) (if c=0 then 0 else a) := by
   classical
@@ -1052,7 +1056,7 @@ theorem represents_bit {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (�
   · simpa only [hc,ite_false] using h
 
 
-theorem differential_two_direct {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 (p+E.diffDeg 2)}
+public theorem differential_two_direct {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 (p+E.diffDeg 2)}
     (h : HasDifferential E 2 p (p+E.diffDeg 2) x y) : E.d 2 p x = y := by
   classical
   obtain ⟨_,hd⟩ := h.eq_on_page_two
@@ -1060,7 +1064,7 @@ theorem differential_two_direct {E : KIP126.Core.SpectralSequence (ModuleCat.{v}
 
 
 
-theorem f2_expand {N : ℕ} (f : Fin N →₀ F2) :
+public theorem f2_expand {N : ℕ} (f : Fin N →₀ F2) :
     f = ∑ i : Fin N, if f i=0 then 0 else Finsupp.single i 1 := by
   ext i
   simp only [Finsupp.finsetSum_apply]
@@ -1073,7 +1077,7 @@ theorem f2_expand {N : ℕ} (f : Fin N →₀ F2) :
     · simp [hf,hji]
   · simp
 
-theorem generated_one {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}
+public theorem generated_one {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 1 →₀ F2)) (a : E.Page r p)
     (ha : RepresentsOnPage E r p (e.symm (Finsupp.single 0 1)) a)
     (x : E.Page r p) : x=0 ∨ x=a := by
@@ -1086,7 +1090,7 @@ theorem generated_one {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ
   · exact Or.inl (by simpa only [h,ite_true] using hc)
   · exact Or.inr (by simpa only [h,ite_false] using hc)
 
-theorem generated_two {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}
+public theorem generated_two {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 2 →₀ F2)) (a b : E.Page r p)
     (ha : RepresentsOnPage E r p (e.symm (Finsupp.single 0 1)) a)
     (hb : RepresentsOnPage E r p (e.symm (Finsupp.single 1 1)) b)
@@ -1107,7 +1111,7 @@ theorem generated_two {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ
   · exact Or.inr (Or.inr (Or.inr hc))
 
 
-theorem fourth_zero_of_three_basis
+public theorem fourth_zero_of_three_basis
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} (hstart : E.r₀ ≤ 2) {p : ℤ × ℤ}
       (e : E.Page 2 p ≃ₗ[ℤ] (Fin 3 →₀ F2))
       (y0 y1 : E.Page 2 (p+E.diffDeg 3))
@@ -1153,7 +1157,7 @@ theorem fourth_zero_of_three_basis
     (by omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hs))
 
 
-theorem next_page_zero_of_kernel
+public theorem next_page_zero_of_kernel
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p : ℤ × ℤ} (hr : E.r₀ ≤ r)
     (hker : ∀ x : E.Page r p, E.d r p x = 0 → x = 0) :
@@ -1169,7 +1173,7 @@ theorem next_page_zero_of_kernel
     exact ⟨0,by rw [kerS x hx,map_zero]⟩)
   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E r p hr).isZero_iff.mpr
     ((S.exact_iff_isZero_homology).mp hs))
-theorem finite_basis_expansion {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}
+public theorem finite_basis_expansion {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}
     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (a : A) :
     a=∑ i : Fin N, if (e a) i=0 then 0 else e.symm (Finsupp.single i 1) := by
   apply e.injective
@@ -1185,7 +1189,7 @@ theorem finite_basis_expansion {A : Type v} [AddCommGroup A] [Module ℤ A] {N :
     · simp [hc,hji]
   · simp
 
-theorem fourth_frame_of_four_basis
+public theorem fourth_frame_of_four_basis
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {p : ℤ × ℤ} (hstart : E.r₀ ≤ 2)
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 4 →₀ F2))
@@ -1333,7 +1337,7 @@ theorem fourth_frame_of_four_basis
     rw [he3] at hxe
     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (represents_unique (by simpa only [hxe] using hx) (represents_add_tail (represents_add_tail (ha) hb) hc))))))))
 
-theorem represents_next_nonzero_of_incoming_two_cases
+public theorem represents_next_nonzero_of_incoming_two_cases
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
     {x : E.Page 2 (q+E.diffDeg r)} {a : E.Page (r+1) (q+E.diffDeg r)}
@@ -1376,7 +1380,7 @@ theorem represents_next_nonzero_of_incoming_two_cases
   · exact hbc (sub_eq_zero.mpr (hv.symm.trans hvc))
 
 /-- Keep the source degree explicit when specializing the page passage lemma. -/
-theorem represents_next_nonzero_of_incoming_zero_at
+public theorem represents_next_nonzero_of_incoming_zero_at
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ}
     {p q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
     (hin : E.d r q=0)
@@ -1389,7 +1393,7 @@ theorem represents_next_nonzero_of_incoming_zero_at
   exact represents_next_nonzero_of_incoming_zero hr0 hr hin' ha hb hne
 
 /-- Separate the target degree from its arithmetic description during elaboration. -/
-theorem represents_next_nonzero_of_incoming_two_cases_at
+public theorem represents_next_nonzero_of_incoming_two_cases_at
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p q : ℤ × ℤ} (hdeg : q+E.diffDeg r=p)
     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
@@ -1404,7 +1408,7 @@ theorem represents_next_nonzero_of_incoming_two_cases_at
   exact represents_next_nonzero_of_incoming_two_cases hr0 hr ha hb himage hbne hbc
 
 /-- An explicit target degree keeps the two complete coordinate systems separate. -/
-theorem fourth_frame_of_four_basis_at
+public theorem fourth_frame_of_four_basis_at
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {p q : ℤ × ℤ} (hdeg : p+E.diffDeg 2=q) (hstart : E.r₀ ≤ 2)
     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 4 →₀ F2))
@@ -1426,7 +1430,7 @@ theorem fourth_frame_of_four_basis_at
   simp only [eqToHom_refl,Category.comp_id] at d0 d1
   exact fourth_frame_of_four_basis hstart e f a b c ha hb hc d0 d1 d2 d3 z
 
-theorem represents_next_nonzero_of_not_incoming
+public theorem represents_next_nonzero_of_not_incoming
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
     {x : E.Page 2 (q+E.diffDeg r)} {a : E.Page (r+1) (q+E.diffDeg r)}
@@ -1465,7 +1469,7 @@ theorem represents_next_nonzero_of_not_incoming
   obtain ⟨v,hv⟩ := hm
   exact havoid v hv
 
-theorem represents_next_nonzero_of_not_incoming_at
+public theorem represents_next_nonzero_of_not_incoming_at
     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
     {r : ℤ} {p q : ℤ × ℤ} (hdeg : q+E.diffDeg r=p)
     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
@@ -1477,7 +1481,7 @@ theorem represents_next_nonzero_of_not_incoming_at
   simp only [eqToHom_refl,Category.comp_id] at havoid
   exact represents_next_nonzero_of_not_incoming hr0 hr ha hb havoid
 
-theorem basis_vector_ne_zero
+public theorem basis_vector_ne_zero
     {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}
     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (i : Fin N) : e.symm (Finsupp.single i 1)≠0 := by
   intro h
@@ -1485,7 +1489,7 @@ theorem basis_vector_ne_zero
   exact one_ne_zero (by simpa only [LinearEquiv.apply_symm_apply,map_zero,
     Finsupp.single_eq_same,Finsupp.zero_apply] using hh)
 
-theorem basis_pair_sum_ne_zero
+public theorem basis_pair_sum_ne_zero
     {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}
     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (i j : Fin N) (hij : i≠j) :
     e.symm (Finsupp.single i 1)+e.symm (Finsupp.single j 1)≠0 := by

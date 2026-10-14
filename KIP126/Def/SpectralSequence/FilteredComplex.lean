@@ -1,12 +1,12 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.Data
-public import KIP126.Def.SpectralSequence.FilteredComplex.SSData
-public import KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
-public import KIP126.Def.SpectralSequence.FilteredComplex.Crossing
-public import KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData
+import all KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing
+import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Filtered complexes and their nested-subobject spectral sequences

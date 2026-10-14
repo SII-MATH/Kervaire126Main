@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Truncation.Data
+import all KIP126.Def.SpectralSequence.Truncation.Data
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Completeness predicate for nested-subobject filtrations

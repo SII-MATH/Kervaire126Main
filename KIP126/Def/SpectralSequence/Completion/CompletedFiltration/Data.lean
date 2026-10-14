@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Completion.Proofs
+import all KIP126.Def.SpectralSequence.Completion.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # The filtration on a completion

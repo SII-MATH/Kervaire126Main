@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Historical filtered-complex morphism API

@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Basic.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Successor-page homology identification
@@ -23,7 +24,7 @@ set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 3
 
 /-- The homology of page `r` at grading `k` is canonically isomorphic to page `r + 1`. -/
-noncomputable def pageHomologyIso
+@[no_expose] public noncomputable def pageHomologyIso
     {C : Type u} [Category.{v} C] [Abelian C]
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (k : ι) (hr : E.r₀ ≤ r) :

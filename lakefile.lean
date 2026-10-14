@@ -10,4 +10,8 @@ require mathlib from git
 
 @[default_target]
 lean_lib KIP126 where
-  globs := #[.one `KIP126, .submodules `KIP126.Def.SpectralSequence]
+  globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence]
+
+@[default_target]
+lean_lib Module02Checks where
+  roots := #[`Tests.Module02, `Tests.Module02Private]

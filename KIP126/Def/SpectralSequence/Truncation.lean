@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.Truncation.Data
-public import KIP126.Def.SpectralSequence.Truncation.Predicates
-public import KIP126.Def.SpectralSequence.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.Truncation.Data
+import all KIP126.Def.SpectralSequence.Truncation.Predicates
+import all KIP126.Def.SpectralSequence.Truncation.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-! Public entry point for truncations in the nested-subobject filtration API. -/

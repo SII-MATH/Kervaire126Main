@@ -1,10 +1,10 @@
 module
 
-public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
-public import KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
-public import KIP126.Def.SpectralSequence.Crossing.Predicates
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
+import all KIP126.Def.SpectralSequence.Crossing.Predicates
 
-@[expose] public section
+@[expose] section
 
 namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
 

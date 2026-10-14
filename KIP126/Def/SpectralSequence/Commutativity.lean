@@ -1,11 +1,11 @@
 module
 
-public import KIP126.Def.SpectralSequence.Commutativity.Basic.Proofs
-public import KIP126.Def.SpectralSequence.Commutativity.Predicates
-public import KIP126.Def.SpectralSequence.Commutativity.Square.Proofs
-public import KIP126.Def.SpectralSequence.Commutativity.Detection.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity.Predicates
+import all KIP126.Def.SpectralSequence.Commutativity.Square.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity.Detection.Proofs
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Commutativity for extension spectral-sequence data

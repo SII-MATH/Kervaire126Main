@@ -1,8 +1,8 @@
 module
 
-public import KIP126.Def.SpectralSequence.Completion.Predicates
+import all KIP126.Def.SpectralSequence.Completion.Predicates
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Basic completion proofs
@@ -39,7 +39,7 @@ lemma Filtration.completionProj'_factor {ω : Type w} {A : ω → C}
   · omega
 
 omit [HasLimitsOfShape ℕᵒᵖ C] in
-private lemma imageSubobject_ofLE_eq_bot_of_eq_bot {B : C} (X Y : Subobject B) (h : X ≤ Y)
+lemma imageSubobject_ofLE_eq_bot_of_eq_bot {B : C} (X Y : Subobject B) (h : X ≤ Y)
     (hX : X = ⊥) : imageSubobject (Subobject.ofLE X Y h) = ⊥ := by
   subst hX
   have : Subobject.ofLE ⊥ Y h = 0 := by

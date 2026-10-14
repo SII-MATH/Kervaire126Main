@@ -1,9 +1,9 @@
 module
 
-public import KIP126.Def.Algebra.Graded.Data
+import all KIP126.Def.Algebra.Graded.Data
 public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
 
-@[expose] public section
+@[expose] section
 
 /-!
 # Filtered graded objects

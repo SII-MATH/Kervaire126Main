@@ -1,8 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Computation.Predicates
+import all KIP126.Def.SpectralSequence.Computation.Predicates
 
-@[expose] public section
+@[expose] section
 
 
 /-! Short, reusable names for the actual page-level computation predicates.
@@ -13,14 +14,14 @@ namespace KIP126.Core.SpectralSequence
 
 universe u v
 
-abbrev Differential
+public abbrev Differential
     {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (r : ℤ) {p q : ℤ × ℤ}
     (x : E.Page 2 p) (y : E.Page 2 q) : Prop :=
   HasDifferential E r p q x y
 
-abbrev NonzeroDifferential
+public abbrev NonzeroDifferential
     {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (r : ℤ) {p q : ℤ × ℤ}
