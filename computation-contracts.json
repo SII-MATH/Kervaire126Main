@@ -1,0 +1,864 @@
+{
+  "schema_version": 1,
+  "module": "Computation",
+  "entry_module": "KIP126.Def.Computation",
+  "principle": "给定同一模型上相关的显式接口即可消费；具体实例构造和输入证明后补；派生结论使用定理。",
+  "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
+  "obligation_review_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+  "type_authority": "computation-api.json",
+  "capabilities": [
+    {
+      "id": "computation-basis",
+      "mathematical_purpose": "档案生成元和单项式的次数、标准原子身份、完整F₂坐标及每个基向量的实际E₂比较；完整数组实例后补。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Presentation.lean",
+          "sha256": "877fb9103f5fb14a6e755c407c8b94f6ce23c34fe4ca83b0d1ce1a0c028cb469"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/LinProgram/Interpretation/Near126/Names/Data.lean",
+          "sha256": "700303c179f55dc4114806454c3ae35cf66296f423ea5e133562b2cbf8303a2c"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.GeneratorCatalogue",
+          "line": 20
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.GeneratorCatalogue.degree",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceMonomial",
+          "line": 29
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SphereArchive",
+          "line": 38
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SphereArchive.atom_degree",
+          "line": 45
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceMonomial.value",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SourceBasisSpecification",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.coordinates",
+          "line": 85
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.coordinates_basis",
+          "line": 92
+        },
+        {
+          "path": "KIP126/Def/Computation/Basis.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparison_symm_coordinates_basis",
+          "line": 101
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-classes",
+      "mathematical_purpose": "非标准原子经同一比较解释，所有组合、平方和目标是实际E₂的加法/乘法。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/LinProgram/Interpretation/Route/Certification.lean",
+          "sha256": "d675c468b1de131e84289d567b1887910e379c04773ad3c84f4bea4ab55bd5c7"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings",
+          "line": 22
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom",
+          "line": 31
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h0",
+          "line": 36
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h1",
+          "line": 37
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h2",
+          "line": 38
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h4",
+          "line": 39
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h5",
+          "line": 40
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h6",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h6Square",
+          "line": 42
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.product",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h0Square",
+          "line": 50
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h0Six",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.h5Square",
+          "line": 54
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.W",
+          "line": 56
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.U",
+          "line": 58
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.T",
+          "line": 60
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.V",
+          "line": 62
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.Y",
+          "line": 64
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.X",
+          "line": 66
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.P",
+          "line": 68
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.Q",
+          "line": 70
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.correction",
+          "line": 72
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.highClass",
+          "line": 74
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.d2Target",
+          "line": 77
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.d7Source",
+          "line": 79
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.d3Candidate",
+          "line": 82
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.d3OtherCandidate",
+          "line": 84
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h0",
+          "line": 87
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h1",
+          "line": 88
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h2",
+          "line": 89
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h4",
+          "line": 90
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h5",
+          "line": 91
+        },
+        {
+          "path": "KIP126/Def/Computation/Classes.lean",
+          "declaration": "KIP126.Computation.Bindings.atom_h6",
+          "line": 92
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-cofiber",
+      "mathematical_purpose": "实际ν余纤维、底胞/顶胞/塔悬移比较及其真实谱页微分和范围。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/LinProgram/Interpretation/Route/Certification.lean",
+          "sha256": "d675c468b1de131e84289d567b1887910e379c04773ad3c84f4bea4ab55bd5c7"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.cofiberSequence",
+          "line": 20
+        },
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.bottom",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.TopCellComparison",
+          "line": 30
+        },
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.CofiberBindings",
+          "line": 47
+        },
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.CofiberBindings.source",
+          "line": 54
+        },
+        {
+          "path": "KIP126/Def/Computation/Cofiber.lean",
+          "declaration": "KIP126.Computation.CofiberResults",
+          "line": 60
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-delivery",
+      "mathematical_purpose": "同一背景与来源的bindings/results相关交付；计算依赖给定文献，具体producer后补。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.DetectorData",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.DetectorPresentation",
+          "line": 32
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationBindings",
+          "line": 44
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationResults",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationInterface",
+          "line": 61
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationInterface.near126",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationInterface.d2_h6",
+          "line": 74
+        },
+        {
+          "path": "KIP126/Def/Computation/Delivery.lean",
+          "declaration": "KIP126.Computation.ComputationInterface.detector_d3",
+          "line": 86
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-near126",
+      "mathematical_purpose": "Fact7.6和Tables2/3/7/9的完整有限/无限条件、全页incoming排除及E₅穷尽。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Route/Consequences.lean",
+          "sha256": "f9145e2e51bf204c6a0af6935c0b83bc7afc97e617cb0682ec444ca5f65371cf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        },
+        {
+          "commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+          "path": "KIPBase/Section7/BjmBxCriterion.lean",
+          "sha256": "b8dc9ec6bcf9af1f1d2fa3adad5b4c527e5f77209da72e36f1495c7d061747c4"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.HighComponent",
+          "line": 24
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.OnlyIncomingT",
+          "line": 33
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.FactSevenSix",
+          "line": 41
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results",
+          "line": 51
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results.table3",
+          "line": 68
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results.table7",
+          "line": 75
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results.table2",
+          "line": 79
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results.table9",
+          "line": 86
+        },
+        {
+          "path": "KIP126/Def/Computation/Near126.lean",
+          "declaration": "KIP126.Computation.Near126Results.no_other_incoming",
+          "line": 99
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-route",
+      "mathematical_purpose": "原审核路线消费的额外微分、候选、非零存活、乘积和消失区；不输入Main同伦结论。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Route/Consequences.lean",
+          "sha256": "f9145e2e51bf204c6a0af6935c0b83bc7afc97e617cb0682ec444ca5f65371cf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Route.lean",
+          "declaration": "KIP126.Computation.RouteResults",
+          "line": 28
+        },
+        {
+          "path": "KIP126/Def/Computation/Route.lean",
+          "declaration": "KIP126.Computation.RouteResults.toNear126Results",
+          "line": 85
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    },
+    {
+      "id": "computation-source",
+      "mathematical_purpose": "显式给定的外部数据分次对象，与同一实际球E₂的t≤261比较、范围内乘法及标准hᵢ标定。",
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Presentation.lean",
+          "sha256": "877fb9103f5fb14a6e755c407c8b94f6ce23c34fe4ca83b0d1ce1a0c028cb469"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+          "sha256": "dfabd2456c5a65e9b4feff7999069b4fd91ff67961c55e6eac9e4455154b4c1f"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom.record",
+          "line": 25
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.Atom.degree",
+          "line": 63
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.ProgramData",
+          "line": 69
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation",
+          "line": 83
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparisonF2",
+          "line": 104
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.comparison_mul",
+          "line": 112
+        },
+        {
+          "path": "KIP126/Def/Computation/Source.lean",
+          "declaration": "KIP126.Computation.SpherePresentation.h6_square",
+          "line": 120
+        }
+      ],
+      "consumers": [
+        "Tests.Computation.Consumers",
+        "Tests.Delivery"
+      ],
+      "remaining_producer_obligations": [
+        "构造来源实例并证明相应结果与实际模型的比较；输入类型本身不证明实例存在。"
+      ],
+      "interface_state": "parameterized source contract or proved operation"
+    }
+  ],
+  "retained_obligations": [
+    "ProgramData是显式源对象槽，固定档案商与正确性producer未构造；范围和标准类比较是数学输入。",
+    "五个无消费者的旧tableN : Prop名称退役；纸面182行仅作溯源，不作为已交付证明。"
+  ],
+  "exclusions": [
+    "No Main conclusion or global witness axiom.",
+    "No README/AGENTS/Blueprint changes."
+  ],
+  "checks": [
+    "ComputationChecks",
+    "KIP126.Def.Computation.InternalAudit"
+  ],
+  "source_disposition": {
+    "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
+    "legacy_inventory_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+    "scope": "Pure mathematical consumer delivery on one Model and the same LiteratureInterface; producer instances remain deferred.",
+    "source_dispositions": [
+      {
+        "source": "KIP126/Interface/Challenge/Computation/Presentation.lean",
+        "target": "KIP126/Def/Computation/Source.lean",
+        "status": "adapted",
+        "retained": [
+          "One source ProgramData, bounded comparison t <= 261, bounded multiplication comparison on total t+t' <= 261",
+          "F2-linearity derived from the existing additive structure",
+          "Actual h6 square identification derived from multiplication and standard h6 calibration"
+        ],
+        "omitted": [
+          {
+            "item": "global native quotient algebra hom and its NativeAt-to-truncated equivalence construction",
+            "reason": "Producer implementation depending on the raw polynomial quotient, original relation archive and graded decomposition; forbidden concrete-data dependencies in this main-proof module. The consumer receives the full bounded mathematical comparison as an explicit input."
+          }
+        ]
+      },
+      {
+        "source": "KIP126/LinProgram/Interpretation/Near126/Names/Data.lean",
+        "target": "KIP126/Def/Computation/Source.lean",
+        "status": "adapted",
+        "retained": [
+          "All 31 original selected atom constructors and exact archived id/name/degree records; added h0/h1/h6 source addresses 0/1/69 used by original Classes/Data"
+        ],
+        "omitted": []
+      },
+      {
+        "source": "KIP126/LinProgram/Interpretation/Near126/Classes/Data.lean",
+        "target": "KIP126/Def/Computation/Classes.lean",
+        "status": "adapted",
+        "retained": [
+          "W,U,T,V,Y,X,P,Q,correction,highClass,d7Source,d3Candidate,d3OtherCandidate; fixed source atoms interpreted by one comparison, composites use actual same-model multiplication"
+        ],
+        "omitted": []
+      },
+      {
+        "source": "KIP126/Main/Solution/Computation/Route/Consequences.lean",
+        "target": [
+          "KIP126/Def/Computation/Near126.lean",
+          "KIP126/Def/Computation/Route.lean",
+          "KIP126/Def/Computation/Cofiber.lean"
+        ],
+        "status": "theorem-facing contract migrated",
+        "retained": [
+          "SphereFacts differential, incoming, finite/nonzero permanent survival, product exclusion, boundary and vanishing clauses",
+          "High125Component whole actual E5 exhaustion",
+          "OnlyIncomingT complete actual HitOnPage classification, not equality of arbitrary E2 lifts",
+          "CnuDifferential on full three-summand source",
+          "CnuTargetThrough5 only finite E6 survival and pages2--5 non-hit"
+        ],
+        "derived_instead_of_duplicated": [
+          "p/q permanent cycle conclusions derived from explicit stronger nonzero E-infinity results",
+          "d2_h6 supplied by the same LiteratureInterface.classicalRange.adamsOneLine_d2, not requested a second time from computation",
+          "Table9 no differential from x126_6 is derived from complete incoming-page classification and actual differential degree (forced r=8, allowed only6/12); no repeated input field."
+        ],
+        "producer_obligation": "Prove each result from the pinned finite certificates plus the supplied literature range conditions; level9000 alone gives no permanent result."
+      },
+      {
+        "source": "KIP126/LinProgram/Interpretation/Route/Predicates.lean",
+        "target": "KIP126/Def/Computation/Cofiber.lean",
+        "status": "consumer comparison migrated",
+        "retained": [
+          "Same actual nu cofiber and bottom inclusion",
+          "TopCellComparison through actual connecting arrow and all four tower desuspensions",
+          "Original source indices [0,3,4] become chosen compared top cell + actual bottom x126_8_2 + actual bottom x126_8"
+        ],
+        "omitted": [
+          {
+            "item": "generic raw differential/staircase lookup and executable decode",
+            "reason": "Producer algorithm layer. Mathematical archive basis monomials and full source/actual coordinate comparison are retained in Basis.lean; no missing raw row is interpreted as zero."
+          }
+        ]
+      },
+      {
+        "source": "KIP126/Interface/Challenge/Computation/Delivery.lean",
+        "target": "KIP126/Def/Computation/Delivery.lean",
+        "status": "bindings/results/interface architecture preserved",
+        "retained": [
+          "ComputationInterface depends on the same LiteratureInterface D",
+          "One sphere source presentation and actual standard labels",
+          "g and deltaH1g equal the same literature source labels",
+          "Bounded detector source comparison and both exact BR21 class identifications",
+          "SphereSquareInterface nonzero/exhaustion on actual designated h6 square",
+          "Detector d3 derived by transport of the same literature result"
+        ],
+        "omitted": [
+          {
+            "item": "Raw SphereStaircaseInterface, sphereTable_sound, CertifiedRealization raw certification records",
+            "reason": "These are producer-level ways to construct the theorem-facing delivery. Consumer-facing complete page exhaustion and required actual mathematical results are retained, not inferred from absent rows or source hashes."
+          },
+          {
+            "item": "SphereMultiplicativeInterface concrete HF2 first-layer representative product",
+            "reason": "The supplied AdamsSynthetic.Model already fixes the actual sphere E2 multiplication; the bounded data comparison is bound to that same multiplication. Concrete tower-product construction/comparison belongs to construction of that model."
+          },
+          {
+            "item": "tmf coordinate product comparison against concrete first-layer/cobar implementation",
+            "reason": "No consumer here unfolds a concrete tmf algebra. The required BR21 source and target are identified with the same literature classes via actual source isomorphism. Concrete tmf coordinate ring/product certification remains a producer obligation."
+          }
+        ]
+      },
+      {
+        "source": "KIPBase/Section7/BjmBxCriterion.lean",
+        "target": "KIP126/Def/Computation/Near126.lean",
+        "status": "7 substantive tracked computation obligations parameterized",
+        "retained": [
+          "fact7_6,table9,table3,table7,table2 actual mathematical contracts"
+        ],
+        "semantic_repair": "Legacy fact7_6 asserted equality of every E2 source lift. The reviewed bbac contract correctly classifies actual incoming page hits instead, allowing addition of earlier boundaries to a source. This preserves downstream incoming exclusion ability."
+      },
+      {
+        "source": "KIPBase/Section8/Table4,8,10,11,12.lean",
+        "target": null,
+        "status": "inactive legacy Prop placeholders",
+        "reason": "No concrete mathematical statement or downstream mathematical consumer in old source. Paper rows contain genuine mathematics and unknown targets; metadata/source transcription is retained separately and is not claimed as mathematical coverage. See appendix-archaeology audit."
+      },
+      {
+        "source": "KIP126/Interface/Challenge/Computation/Delivery.lean:SphereBasisInterface",
+        "target": "KIP126/Def/Computation/Basis.lean",
+        "status": "mathematical basis contract migrated",
+        "retained": [
+          "Complete supplied archive generator catalogue with exact selected Atom.record id/name/degree equalities",
+          "Degree-checked archived basis monomials; evaluation is defined from the same source product/unit/generators",
+          "Full coordinate linear equivalence for every s,t with t<=261, proving spanning and independence",
+          "Every source unit coordinate equals its archived monomial; every actual unit coordinate is derived via the same presentation",
+          "Original cm1 inverse-comparison-of-actual-basis equals source monomial is a derived theorem"
+        ],
+        "producer_obligation": "Construct the archive data value from the fixed files and instantiate SourceBasisSpecification. This migration does not silently claim an archive instance was read and certified inside Lean."
+      }
+    ],
+    "validation": {
+      "core_combined_lean": "passed",
+      "core_public_consumer_lean": "passed",
+      "all_computation_sources_and_all_consumers_combined_readonly_lean": "passed (source,basis,classes,near126,route,cofiber,delivery and consumers; ordinary public Literature import)",
+      "full_separate_module_build": "root serial build pending",
+      "full_facade_consumers": "passed in default lake build"
+    },
+    "construction_boundary": "Parameterized contracts are provided. No concrete archived data source instance, comparison proof, raw-data correctness proof, literature theorem proof, or Main conclusion is constructed by this migration.",
+    "legacy_consumer_mapping": {
+      "KIPBase.Section7.Near126E2.fact7_6": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "factSevenSix",
+            "line": 20
+          },
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "allIncomingPages",
+            "line": 26
+          }
+        ]
+      },
+      "KIPBase.Section7.Near126E2.table9": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "tableNine",
+            "line": 32
+          }
+        ]
+      },
+      "KIPBase.Section7.Near126E2.table3": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "tableThree",
+            "line": 36
+          }
+        ]
+      },
+      "KIPBase.Section7.Near126E2.table7": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "tableSeven",
+            "line": 42
+          }
+        ]
+      },
+      "KIPBase.Section7.Near126E2.table2": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "tableTwo",
+            "line": 46
+          }
+        ]
+      },
+      "KIPBase.StableHomotopy.SphereAdamsE2.comparison": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "sourceCoordinates",
+            "line": 53
+          },
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "archivedBasis",
+            "line": 59
+          }
+        ]
+      },
+      "KIPBase.StableHomotopy.SphereAdamsE2.comparison_mul": {
+        "status": "parameterized mathematical consumer",
+        "tests": [
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "productComparison",
+            "line": 67
+          },
+          {
+            "path": "Tests/Computation/Consumers.lean",
+            "name": "squareIdentification",
+            "line": 77
+          }
+        ]
+      },
+      "KIPBase.Section8.table4": {
+        "status": "inactive opaque Prop placeholder",
+        "tests": [],
+        "reason": "No old mathematical consumer or statement to test; actual paper row archive remains separately audited, not counted as closed theorem coverage."
+      },
+      "KIPBase.Section8.table8": {
+        "status": "inactive opaque Prop placeholder",
+        "tests": [],
+        "reason": "No old mathematical consumer or statement to test; actual paper row archive remains separately audited, not counted as closed theorem coverage."
+      },
+      "KIPBase.Section8.table10": {
+        "status": "inactive opaque Prop placeholder",
+        "tests": [],
+        "reason": "No old mathematical consumer or statement to test; actual paper row archive remains separately audited, not counted as closed theorem coverage."
+      },
+      "KIPBase.Section8.table11": {
+        "status": "inactive opaque Prop placeholder",
+        "tests": [],
+        "reason": "No old mathematical consumer or statement to test; actual paper row archive remains separately audited, not counted as closed theorem coverage."
+      },
+      "KIPBase.Section8.table12": {
+        "status": "inactive opaque Prop placeholder",
+        "tests": [],
+        "reason": "No old mathematical consumer or statement to test; actual paper row archive remains separately audited, not counted as closed theorem coverage."
+      }
+    },
+    "duplicate_input_audit": {
+      "resolved": [
+        "comparisonF2 derived from integer-linear comparison and the actual F2 module",
+        "h6_square from comparison_mul plus h6 calibration",
+        "actual page coordinates and cm1 identity derived from source basis plus same comparison",
+        "legacy p/q cycles derived from common nonzero permanent representatives",
+        "d2_h6 derived from same literature one-line theorem",
+        "detector_d3 derived from same literature source d3 and coordinate bindings",
+        "table9 derived from OnlyIncomingT and actual differential degree"
+      ],
+      "remaining_material_duplicates": [],
+      "clarification": "Named g/delta bindings remain explicit source identification obligations, as required by the delivery architecture; they are not globally chosen standard-class uniqueness axioms."
+    }
+  },
+  "validation": {
+    "command": "lake build",
+    "result": "passed",
+    "jobs": 2188,
+    "internal_axiom_audit": 570,
+    "concrete_producers_constructed": false
+  }
+}

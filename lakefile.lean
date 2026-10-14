@@ -11,7 +11,10 @@ require mathlib from git
 @[default_target]
 lean_lib KIP126 where
   globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence,
-    .andSubmodules `KIP126.Def.AdamsSynthetic]
+    .andSubmodules `KIP126.Def.AdamsSynthetic,
+    .andSubmodules `KIP126.Def.Literature,
+    .andSubmodules `KIP126.Def.Computation,
+    .one `KIP126.Interface.Challenge2]
 
 @[default_target]
 lean_lib SpectralSequenceChecks where
@@ -24,3 +27,17 @@ lean_lib AdamsSyntheticChecks where
     `Tests.AdamsSynthetic.Detection, `Tests.AdamsSynthetic.System,
     `Tests.AdamsSynthetic.Background, `Tests.AdamsSynthetic.Filtration,
     `Tests.AdamsSynthetic.Mapping, `Tests.AdamsSynthetic.Structural]
+
+@[default_target]
+lean_lib LiteratureChecks where
+  roots := #[`Tests.Literature.Interface, `Tests.Literature.Consumers,
+    `Tests.Literature.RouteConsumers, `Tests.Literature.Secondary,
+    `Tests.Literature.Lift]
+
+@[default_target]
+lean_lib ComputationChecks where
+  roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers]
+
+@[default_target]
+lean_lib DeliveryChecks where
+  roots := #[`Tests.Delivery]
