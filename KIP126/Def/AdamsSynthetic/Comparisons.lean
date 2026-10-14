@@ -45,16 +45,27 @@ public structure E2Comparison
       2 (s,t,t-1-k) (nuE2 X (-1) s t k x))
       (nuE2 X 0 s t (k+1) x)
 
-/-- The given ν takes the specified triangle to a triangle only under the
-stated exactness premise. This preserves the backup declaration's actual
-Function.Exact hypothesis, rather than strengthening its prose to a short
-exact sequence or unconditional preservation of triangles. -/
+/-- Complete short exactness of the actual mod-two homology maps in every
+degree. The endpoint conditions are essential in Pstrągowski Lemma 4.23;
+middle exactness alone is insufficient for ν to preserve a cofiber triangle.
+Reviewed source: bbac1fc05843, StableHomotopy/Implementation/Data:474. -/
+public def HomologyShortExact (H : ModTwoCoefficients C)
+    (T : CategoryTheory.Pretriangulated.Triangle C) : Prop :=
+  ∀ n : ℤ,
+    Function.Injective (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₁) n) ∧
+    Function.Exact
+      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₁) n)
+      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n) ∧
+    Function.Surjective (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n)
+
+/-- The same ν preserves this distinguished triangle under the complete
+homology short-exactness premise. This intentionally corrects the historical
+signature that omitted injectivity and surjectivity. The converse criterion
+is a separate literature result on the same coefficients and ν. -/
 public structure NuExactTriangleInput (H : ModTwoCoefficients C) (N : NuFunctorData C Syn) where
   preserves : ∀ (T : CategoryTheory.Pretriangulated.Triangle C),
     T ∈ distTriang C →
-    (∀ n, Function.Exact
-      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₁) n)
-      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n)) →
+    HomologyShortExact H T →
     ∃ h : N.functor.obj T.obj₃ ⟶ (shiftFunctor Syn (1 : ℤ)).obj (N.functor.obj T.obj₁),
       CategoryTheory.Pretriangulated.Triangle.mk
         (N.functor.map T.mor₁) (N.functor.map T.mor₂) h ∈

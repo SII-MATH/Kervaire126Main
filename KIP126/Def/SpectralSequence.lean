@@ -11,6 +11,7 @@ public import KIP126.Def.SpectralSequence.Convergence.Vanishing.Proofs
 public import KIP126.Def.SpectralSequence.Consumer.BoundedExtension
 public import KIP126.Def.SpectralSequence.MultiplicativeCategory
 public import KIP126.Def.SpectralSequence.Transport
+public import KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
 
 /-! Public spectral-sequence language: pages, representatives, differentials,
 survival, morphisms, filtered convergence, detection and extension equations.

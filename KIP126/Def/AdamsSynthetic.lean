@@ -1,5 +1,7 @@
 module
 
+public import KIP126.Def.AdamsSynthetic.ConsumerOperations
+
 public import KIP126.Def.AdamsSynthetic.PageExtensions
 public import KIP126.Def.AdamsSynthetic.ExtensionZero
 public import KIP126.Def.AdamsSynthetic.Realization

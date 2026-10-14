@@ -561,7 +561,7 @@
     },
     {
       "id": "conditional-nu-triangle",
-      "mathematical_purpose": "在原HF₂同调Function.Exact条件下提供ν三角。",
+      "mathematical_purpose": "在完整HF₂同调短正合条件下提供同一ν三角；修正原仅Function.Exact的过强条件。",
       "roles": [
         "structural-law"
       ],
@@ -577,16 +577,16 @@
         {
           "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
           "declaration": "NuExactTriangleInput",
-          "line": 52
+          "line": 65
         }
       ],
       "constraints": [
-        "Retains Function.Exact of the two named HF2 homology maps in every integer degree.",
-        "Does not silently strengthen the hypothesis to an independently chosen short exact sequence or drop it.",
+        "Requires injectivity, middle Function.Exact and surjectivity of the same HF2 homology maps in every integer degree; the old premise was incomplete.",
+        "All three short-exactness clauses concern the same actual HF2 homology maps; this is an explicit correction of the legacy signature.",
         "Does not assert arbitrary triangle preservation by nu."
       ],
       "consumers": [
-        "selected nu-cofiber triangle consumers"
+        "Tests.Literature.Lift"
       ],
       "remaining_producer_obligations": [],
       "interface_state": "implemented as a public consumer interface; elaborated type and trust checks are tracked by the repository build",
@@ -845,7 +845,7 @@
         "finite_cycle_translation": "IsCycle(level) is translated to ReachesPage(level+1). Thus source page r and target page r-n+e retain the old r-1 and r-1-n+e cycle levels. Target page >=2 follows from length_upper.",
         "permanent_translation": "Old permanentCycles is the range of the common Z-infinity representative into E2; IsPermanentCycle preserves that semantics including zero.",
         "normalization": "e(f)=1 iff the same actual target tower admits a stage-one factorization, otherwise zero; no independently supplied filtration integer.",
-        "homology_exactness": "NuExactTriangleInput uses inducedMap (H.object whiskerLeft f), exactly backup Mod2Homology.pushforward; Function.Exact is retained."
+        "homology_exactness": "NuExactTriangleInput uses the actual inducedMap (H.object whiskerLeft f); complete injective/exact/surjective conditions correct the old middle-only premise."
       }
     },
     {
@@ -1521,7 +1521,7 @@
     {
       "id": "obligation-einfty-nu-x-weight-map",
       "legacy_obligation": "KIPBase.Synthetic.einfty_nuX_weight_map",
-      "mathematical_purpose": "显式参数是同一个 Model；范围为既定 ClassicalObject 闭包。 保留 w₁≤w₂≤t；包含恒等、复合及同一 ν(f) 诱导 E∞ 映射的自然性。 用同一 classical E₂ 类 x 的 HasInfinityRepresentative 绑定两个权重的像；保留共同 Z∞ 代表语义。 不加入 Epi；einfty_nuX_weight_map_epi 仍由 Literature 交付。",
+      "mathematical_purpose": "显式参数是同一个 Model；范围为既定 ClassicalObject 闭包。 保留 w₁≤w₂≤t；包含恒等、复合及同一 ν(f) 诱导 E∞ 映射的自然性。 用同一 classical E₂ 类 x 的 HasInfinityRepresentative 绑定两个权重的像；保留共同 Z∞ 代表语义。 不加入 Epi；einfty_nuX_weight_map_epi 仍由 Literature 交付。 本轮纠正方向为w₂→w₁；Literature将它绑定实际λ并从同一商公式推导Epi。",
       "roles": [
         "explicit-input-or-derived-consumer-contract"
       ],
@@ -1546,7 +1546,8 @@
         }
       ],
       "constraints": [
-        "显式参数是同一个 Model；范围为既定 ClassicalObject 闭包。 保留 w₁≤w₂≤t；包含恒等、复合及同一 ν(f) 诱导 E∞ 映射的自然性。 用同一 classical E₂ 类 x 的 HasInfinityRepresentative 绑定两个权重的像；保留共同 Z∞ 代表语义。 不加入 Epi；einfty_nuX_weight_map_epi 仍由 Literature 交付。"
+        "显式参数是同一个 Model；范围为既定 ClassicalObject 闭包。 保留 w₁≤w₂≤t；包含恒等、复合及同一 ν(f) 诱导 E∞ 映射的自然性。 用同一 classical E₂ 类 x 的 HasInfinityRepresentative 绑定两个权重的像；保留共同 Z∞ 代表语义。 不加入 Epi；einfty_nuX_weight_map_epi 仍由 Literature 交付。",
+        "The map lowers w2 to w1; the original reversed boundary-inclusion argument is not retained."
       ],
       "statement_disposition": "same responsibility, parameterized on the supplied background",
       "consumers": [
@@ -2797,6 +2798,63 @@
         "Concrete inputs remain deferred."
       ],
       "interface_state": "public support for reviewed obligations, not a separate existence promise"
+    },
+    {
+      "id": "literature-representative-support",
+      "mathematical_purpose": "本轮真实Literature消费者所需的完整前提及操作，不新增模型实例或已证存在性。",
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.Synthetic.Context.susp_invariance",
+          "line": 16
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticRepresentsOnPage",
+          "line": 26
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/ConsumerOperations.lean",
+          "declaration": "KIP126.AdamsSynthetic.SyntheticHasDifferential",
+          "line": 37
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.RouteConsumers"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        }
+      ]
+    },
+    {
+      "id": "nu-cofiber-short-exactness",
+      "mathematical_purpose": "完整HF2同调短正合与同一nu的余纤维三角；纠正旧仅中间Exact的过强输入。",
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "KIP126.AdamsSynthetic.HomologyShortExact",
+          "line": 52
+        },
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Comparisons.lean",
+          "declaration": "KIP126.AdamsSynthetic.NuExactTriangleInput",
+          "line": 65
+        }
+      ],
+      "consumers": [
+        "Tests.Literature.Lift"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Data.lean",
+          "sha256": "101ebd16117094443078ab39d91d52c9b1c098dac2359aaea2a7780125fb300f"
+        }
+      ]
     }
   ],
   "retained_obligations": [
@@ -2867,5 +2925,17 @@
     "raw CSV/Generated/checkers"
   ],
   "obligation_review_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
-  "obligation_inventory": "Fixed 111-item inventory; this addition closes the 21 previously uncovered AdamsSynthetic obligations. Partial items are not silently reclassified."
+  "obligation_inventory": "Fixed 111-item inventory; this addition closes the 21 previously uncovered AdamsSynthetic obligations. Partial items are not silently reclassified.",
+  "weight_direction_correction": {
+    "statement": "For w1≤w2≤t, the quotient and actual lambda map lower weight w2→w1.",
+    "reason": "B_(1+t-w2) ≤ B_(1+t-w1); the old reverse quotient map was not well-defined in general.",
+    "affected_type": "KIP126.AdamsSynthetic.NuInfinityWeightMaps",
+    "compatibility": "Intentional signature correction; former type freeze updated and tracking retained."
+  },
+  "nu_cofiber_condition_correction": {
+    "statement": "NuExactTriangleInput requires injectivity, middle exactness and surjectivity in every HF2-homology degree.",
+    "reason": "Middle exactness of a distinguished triangle alone does not imply that nu preserves its cofiber.",
+    "affected_type": "KIP126.AdamsSynthetic.NuExactTriangleInput.preserves",
+    "compatibility": "Intentional correction of an overly strong legacy input; the same predicate is reused by the full Literature iff."
+  }
 }

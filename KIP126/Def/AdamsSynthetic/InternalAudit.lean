@@ -30,6 +30,7 @@ import all KIP126.Def.AdamsSynthetic.MappingEnrichment
 import all KIP126.Def.AdamsSynthetic.ESSShift
 import all KIP126.Def.AdamsSynthetic.Enrichment
 import all KIP126.Def.AdamsSynthetic.Weight
+import all KIP126.Def.AdamsSynthetic.ConsumerOperations
 import Lean
 
 /-! Internal trust audit. This module exports nothing. It inspects private

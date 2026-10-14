@@ -59,9 +59,9 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C]
 example (W : NuInfinityWeightMaps D) (X : ClassicalObject) (s t w₁ w₂ : ℤ)
     (hw : w₁ ≤ w₂) (ht : w₂ ≤ t)
     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
-    (z : ((D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).sequence.ssData (s,t,w₁)).eInfty)
-    (h : HasInfinityRepresentative _ 2 (s,t,w₁) (nuWeightLabel D X s t w₁ (hw.trans ht) x) z) :
-    HasInfinityRepresentative _ 2 (s,t,w₂) (nuWeightLabel D X s t w₂ ht x)
+    (z : ((D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).sequence.ssData (s,t,w₂)).eInfty)
+    (h : HasInfinityRepresentative _ 2 (s,t,w₂) (nuWeightLabel D X s t w₂ ht x) z) :
+    HasInfinityRepresentative _ 2 (s,t,w₁) (nuWeightLabel D X s t w₁ (hw.trans ht) x)
       (W.map X s t w₁ w₂ hw ht z) := W.representative X s t w₁ w₂ hw ht x z h
 
 example (_D' : Model C Syn) (_W : NuInfinityWeightMaps D) : True := by

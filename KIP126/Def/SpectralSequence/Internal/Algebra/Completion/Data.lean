@@ -1,7 +1,9 @@
 module
 
 import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
+public import KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data
 public import Mathlib.CategoryTheory.Limits.Constructions.EventuallyConstant
+public import Mathlib.CategoryTheory.GradedObject
 
 @[expose] section
 
@@ -28,16 +30,16 @@ variable {ι : Type w} {A : CategoryTheory.GradedObject ι C}
 namespace Filtration
 
 /-- The quotient `Aᵢ / Fˢ Aᵢ` at one filtration and grading degree. -/
-noncomputable def quotientAt (F : Filtration A) (s : ℤ) (i : ι) : C :=
+public noncomputable def quotientAt (F : Filtration A) (s : ℤ) (i : ι) : C :=
   cokernel (F.F s i).arrow
 
 /-- The canonical projection `Aᵢ ⟶ Aᵢ / Fˢ Aᵢ`. -/
-noncomputable def quotientProjection (F : Filtration A) (s : ℤ) (i : ι) :
+public noncomputable def quotientProjection (F : Filtration A) (s : ℤ) (i : ι) :
     A i ⟶ F.quotientAt s i :=
   cokernel.π (F.F s i).arrow
 
 /-- If `t ≤ s`, the quotient by `Fˢ` maps to the quotient by `Fᵗ`. -/
-noncomputable def quotientTransition (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
+public noncomputable def quotientTransition (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
     F.quotientAt s i ⟶ F.quotientAt t i :=
   cokernel.desc (F.F s i).arrow (F.quotientProjection t i) (by
     change (F.F s i).arrow ≫ cokernel.π (F.F t i).arrow = 0
@@ -45,13 +47,13 @@ noncomputable def quotientTransition (F : Filtration A) {t s : ℤ} (h : t ≤ s
 
 /-- The quotient transition commutes with the quotient projections. -/
 @[reassoc]
-lemma quotientProjection_transition (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
+public lemma quotientProjection_transition (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
     F.quotientProjection s i ≫ F.quotientTransition h i = F.quotientProjection t i := by
   exact cokernel.π_desc _ _ _
 
 /-- Quotient transitions compose in the evident order. -/
 @[reassoc]
-lemma quotientTransition_comp (F : Filtration A) {r s t : ℤ}
+public lemma quotientTransition_comp (F : Filtration A) {r s t : ℤ}
     (hrs : r ≤ s) (hst : s ≤ t) (i : ι) :
     F.quotientTransition hst i ≫ F.quotientTransition hrs i =
       F.quotientTransition (hrs.trans hst) i := by
@@ -72,7 +74,7 @@ lemma quotientTransition_comp (F : Filtration A) {r s t : ℤ}
 
 /-- The identity quotient transition is the identity. -/
 @[simp]
-lemma quotientTransition_id (F : Filtration A) (s : ℤ) (i : ι) :
+public lemma quotientTransition_id (F : Filtration A) (s : ℤ) (i : ι) :
     F.quotientTransition (le_rfl : s ≤ s) i = 𝟙 _ := by
   letI : Epi (F.quotientProjection s i) := by
     change Epi (cokernel.π (F.F s i).arrow)
@@ -84,7 +86,7 @@ lemma quotientTransition_id (F : Filtration A) (s : ℤ) (i : ι) :
 
 It is indexed by `OrderDual ℤ`: a morphism `s ⟶ t` has `t ≤ s`, and hence
 is precisely the quotient transition from level `s` to level `t`. -/
-noncomputable def quotientTower (F : Filtration A) (i : ι) :
+public noncomputable def quotientTower (F : Filtration A) (i : ι) :
     (OrderDual ℤ) ⥤ C where
   obj s := F.quotientAt s i
   map f := F.quotientTransition f.le i
@@ -93,7 +95,7 @@ noncomputable def quotientTower (F : Filtration A) (i : ι) :
     simpa only [Functor.comp_map] using (F.quotientTransition_comp g.le f.le i).symm
 
 /-- The canonical cone from `Aᵢ` to its tower of filtration quotients. -/
-noncomputable def quotientTowerCone (F : Filtration A) (i : ι) :
+public noncomputable def quotientTowerCone (F : Filtration A) (i : ι) :
     Cone (F.quotientTower i) where
   pt := A i
   π :=
@@ -109,7 +111,7 @@ noncomputable def quotientTowerCone (F : Filtration A) (i : ι) :
 /-- A degreewise completeness witness: the canonical cone from `Aᵢ` to the
 quotient tower is a limit cone.  This is the categorical statement
 `Aᵢ ≅ lim_s Aᵢ/FˢAᵢ`, retaining the canonical comparison maps. -/
-structure CompletionWitness (F : Filtration A) (i : ι) where
+public structure CompletionWitness (F : Filtration A) (i : ι) where
   isLimit : IsLimit (F.quotientTowerCone i)
 
 end Filtration

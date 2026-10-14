@@ -16,8 +16,8 @@ import KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
 #check_failure KIP126.Core.SpectralSequence.Filtration.toAlgebra
 #check_failure KIP126.Core.SpectralSequence.Filtration.toSpectralSequence
 #check_failure KIP126.Core.SpectralSequence.Filtration.inclusion
-#check_failure KIP126.Core.SpectralSequence.Filtration.quotientAt
+#check KIP126.Core.SpectralSequence.Filtration.quotientAt
 #check_failure KIP126.Core.SpectralSequence.Filtration.quotientFiltration
-#check_failure KIP126.Core.SpectralSequence.Filtration.CompletionWitness
+#check KIP126.Core.SpectralSequence.Filtration.CompletionWitness
 #check_failure KIP126.Core.SpectralSequence.InternalFilteredMorphism
 #check_failure KIP126.Core.SpectralSequence.Filtration.IsEventuallyZero
