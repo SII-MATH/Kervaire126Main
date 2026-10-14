@@ -29,7 +29,7 @@ theorem submodule_ofLE_underlyingIso (B Z : Submodule R M) (h : B ≤ Z) :
   simp
 
 /-- The categorical image has exactly the ordinary linear-map range. -/
-theorem subobjectModule_image {L : ModuleCat.{v} R} (f : L ⟶ M) :
+public theorem subobjectModule_image {L : ModuleCat.{v} R} (f : L ⟶ M) :
     (ModuleCat.subobjectModule M) (imageSubobject f) = LinearMap.range f.hom := by
   have h : imageSubobject f =
       (ModuleCat.subobjectModule M).symm (LinearMap.range f.hom) :=
@@ -38,7 +38,7 @@ theorem subobjectModule_image {L : ModuleCat.{v} R} (f : L ⟶ M) :
   rw [h, OrderIso.apply_symm_apply]
 
 /-- The categorical kernel has exactly the ordinary linear-map kernel. -/
-theorem subobjectModule_kernel {N : ModuleCat.{v} R} (f : M ⟶ N) :
+public theorem subobjectModule_kernel {N : ModuleCat.{v} R} (f : M ⟶ N) :
     (ModuleCat.subobjectModule M) (kernelSubobject f) = LinearMap.ker f.hom := by
   have h : kernelSubobject f =
       (ModuleCat.subobjectModule M).symm (LinearMap.ker f.hom) :=
@@ -46,7 +46,7 @@ theorem subobjectModule_kernel {N : ModuleCat.{v} R} (f : M ⟶ N) :
   rw [h, OrderIso.apply_symm_apply]
 
 /-- A categorical cokernel class is zero exactly on the ordinary range. -/
-theorem cokernel_π_eq_zero_iff_mem_range {L N : ModuleCat.{v} R}
+public theorem cokernel_π_eq_zero_iff_mem_range {L N : ModuleCat.{v} R}
     (f : L ⟶ N) (x : N) :
     cokernel.π f x = 0 ↔ x ∈ LinearMap.range f.hom := by
   rw [← (ModuleCat.cokernelIsoRangeQuotient f).toLinearEquiv.map_eq_zero_iff]
@@ -56,7 +56,7 @@ theorem cokernel_π_eq_zero_iff_mem_range {L N : ModuleCat.{v} R}
 
 /-- The class of a cycle is zero exactly when its ambient representative
 belongs to the boundary subobject. -/
-theorem subobject_cokernel_π_eq_zero_iff (B Z : Subobject M) (h : B ≤ Z)
+public theorem subobject_cokernel_π_eq_zero_iff (B Z : Subobject M) (h : B ≤ Z)
     (z : (Subobject.underlying.obj Z : ModuleCat R)) :
     cokernel.π (Subobject.ofLE B Z h) z = 0 ↔
       Z.arrow z ∈ (ModuleCat.subobjectModule M) B := by

@@ -50,7 +50,11 @@ run_cmd do
 #check_failure KIP126.Core.SpectralSequence.Subobject.thirdIso
 #check_failure KIP126.Core.SpectralSequence.PageHomology.factor_cokernelMap
 #check_failure KIP126.Core.SpectralSequence.submoduleCokernelIso
-#check_failure KIP126.Core.SpectralSequence.subobjectModule_kernel
+-- Main page calculus consumes these existing proved representative operations.
+#check KIP126.Core.SpectralSequence.subobjectModule_kernel
+#check KIP126.Core.SpectralSequence.subobjectModule_image
+#check KIP126.Core.SpectralSequence.cokernel_π_eq_zero_iff_mem_range
+#check KIP126.Core.SpectralSequence.subobject_cokernel_π_eq_zero_iff
 #check_failure KIP126.Core.SpectralSequence.FilteredComplex
 #check_failure KIP126.Core.SpectralSequence.Filtration.completion
 #check_failure KIP126.Core.SpectralSequence.FilteredComplex.DifferentialHelpers.kernelSubobject_epiDesc'

@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "created_date_utc": "2026-10-14",
-  "stage": "fixed-upstream-objects-and-callable-theorems-frozen",
+  "stage": "main-fixed-interfaces-and-paper-assets-migrated; partial-proof-port",
   "source_repository": {
     "url": "https://github.com/SII-MATH/Kervaire126.git",
     "local_path": "../Kervaire126",
@@ -49,7 +49,8 @@
     ],
     "first_code_slice": "SpectralSequence and complete AdamsSynthetic consumer interfaces",
     "external_repository_layout": "deferred",
-    "delivery_slice": "Fixed Literature and Computation interfaces on AdamsSynthetic.Standard; no caller-supplied result packages."
+    "delivery_slice": "Fixed Literature and Computation interfaces on AdamsSynthetic.Standard; no caller-supplied result packages.",
+    "paper_slice": "AimPaper sources; Main fixed statements and proof assembly; ProofTools exact callable laws; partial adaptation of existing proof bodies."
   },
   "status": {
     "lean_code_migrated": true,
@@ -63,12 +64,18 @@
       "SpectralSequence",
       "AdamsSynthetic",
       "Literature",
-      "Computation"
+      "Computation",
+      "ProofTools",
+      "Main"
     ],
     "concrete_adams_synthetic_model_constructed": false,
     "main_permanence_proved": false,
     "concrete_literature_producer_constructed": false,
-    "concrete_computation_producer_constructed": false
+    "concrete_computation_producer_constructed": false,
+    "main_entry_available": true,
+    "main_proof_port_complete": false,
+    "paper_assets_migrated": true,
+    "blueprint_migrated": false
   },
   "spectralSequence": {
     "source_manifest": "spectral-sequence-sources.json",
@@ -78,13 +85,13 @@
     "root_import": "KIP126.Def.SpectralSequence",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2197,
+    "build_jobs": 2232,
     "source_files": 135,
     "visibility": {
       "default": "private; explicit public declarations",
-      "named_public_declarations": 308,
+      "named_public_declarations": 312,
       "generated_declarations": 685,
-      "exports_including_generated_declarations": 993,
+      "exports_including_generated_declarations": 997,
       "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
@@ -136,13 +143,13 @@
       "module": "ProofTools",
       "name_zh": "通用证明工具",
       "responsibility": "Reusable stretching, generalized Leibniz and generalized Mahowald theorems.",
-      "status": "named-boundary-only; no placeholder directory"
+      "status": "fixed-direct-api-frozen; original gaps and existing-proof ports tracked separately"
     },
     {
       "module": "Main",
       "name_zh": "论文主证明",
-      "responsibility": "Consume the common inputs to prove intermediate results and the final nonzero permanence target.",
-      "status": "named-boundary-only; no placeholder directory"
+      "responsibility": "Paper-local deductions on the fixed upstream system, including intermediate results and the final nonzero permanence target; upstream constructions and external results remain upstream.",
+      "status": "fixed-direct-api-frozen; original gaps and existing-proof ports tracked separately"
     }
   ],
   "delivery_boundary": {
@@ -160,7 +167,7 @@
     "root_import": "KIP126.Def.AdamsSynthetic",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2197,
+    "build_jobs": 2232,
     "source_files": 38,
     "visibility": {
       "default": "private; explicit public declarations",
@@ -197,13 +204,15 @@
   "verification": {
     "default_command": "lake build",
     "result": "passed",
-    "jobs": 2197,
-    "checked_at_utc": "2026-10-14T15:50:12.499122+00:00",
+    "jobs": 2232,
+    "checked_at_utc": "2026-10-14T16:28:48.121369+00:00",
     "separate_module_checks": [
       "SpectralSequenceChecks",
       "AdamsSyntheticChecks",
       "LiteratureChecks",
       "ComputationChecks",
+      "ProofToolsChecks",
+      "MainChecks",
       "IntegrationChecks"
     ],
     "normal_public_import_consumers": true,
@@ -213,15 +222,17 @@
     "no_synthetic_sorry": true,
     "spectral_sequence_sorry_free": true,
     "pending_obligations": {
-      "total": 271,
+      "total": 285,
       "by_module": {
         "AdamsSynthetic": 77,
         "Computation": 72,
-        "Literature": 122
+        "Literature": 124,
+        "Main": 9,
+        "ProofTools": 3
       },
       "by_kind": {
         "pending-construction": 81,
-        "pending-proof": 190
+        "pending-proof": 204
       }
     },
     "pending_registry": "proof-obligations.json",
@@ -261,13 +272,39 @@
     "cache_reused": true,
     "readme_agents_unchanged": true,
     "blueprint_checked": false,
-    "main_six_parked_responsibilities_unchanged": true,
+    "main_six_parked_responsibilities_unchanged": false,
     "unrestricted_theta5_transport_not_assumed": true,
     "retained_scope_limits": [
       "Finite and infinite statements remain distinct.",
       "Convergence remains on the specified object closure.",
       "Projectivity, page/range, nonzero and full short-exactness conditions remain.",
-      "Earlier partial mappings are not promoted merely because fixed signatures are callable."
+      "Earlier partial mappings are not promoted merely because fixed signatures are callable.",
+      "The final Main proof body is present but still depends on registered upstream and article-local holes.",
+      "Finite stretching is the pinned strengthened sufficient condition preserving lambda layers; not the full paper equivalence or an infinite lift.",
+      "Archived original proof bodies are not compiled proof ports."
+    ],
+    "main_old_six_tracking": "Reviewed conservatively; interface coverage is independent of proof completion.",
+    "original_271_obligation_rows_preserved": true,
+    "main_final_has_no_caller_parameters": true,
+    "main_final_direct_proof_present": true,
+    "main_final_transitive_sorry": true,
+    "proof_port_complete": false,
+    "mathematical_scope_review": "Conditions, actual standard product, nonzero semantics, arbitrary-choice hypotheses and exact tool page/crossing/shift bounds checked against pinned source and AimPaper.",
+    "main_migration_negative_checks": [
+      {
+        "case": "main-unregistered-obligation",
+        "target": "KIP126.Main.InternalAudit",
+        "exit_code": 1,
+        "rejected": true,
+        "expected_diagnostic": "Unregistered proof/construction obligation"
+      },
+      {
+        "case": "main-api-type-lock",
+        "target": "MainChecks",
+        "exit_code": 1,
+        "rejected": true,
+        "expected_diagnostic": "Public type or universe parameters changed"
+      }
     ]
   },
   "literature": {
@@ -278,13 +315,13 @@
     "root_import": "KIP126.Def.Literature",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2197,
-    "source_files": 18,
+    "build_jobs": 2232,
+    "source_files": 19,
     "visibility": {
       "default": "private; explicit public declarations",
-      "named_public_declarations": 369,
+      "named_public_declarations": 371,
       "generated_declarations": 362,
-      "exports_including_generated_declarations": 731,
+      "exports_including_generated_declarations": 733,
       "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "checks": [
@@ -296,9 +333,9 @@
     ],
     "axiom_audit": {
       "target": "KIP126.Def.Literature.InternalAudit",
-      "declarations_checked": 1248,
+      "declarations_checked": 1250,
       "project_axiom_declarations": [],
-      "registered_direct_sorry": 122,
+      "registered_direct_sorry": 124,
       "registry": "proof-obligations.json",
       "no_synthetic_sorry": true,
       "scope": "All own public/private declarations, including facade; source inventory verifies every source is included."
@@ -317,7 +354,7 @@
     "root_import": "KIP126.Def.Computation",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2197,
+    "build_jobs": 2232,
     "source_files": 5,
     "visibility": {
       "default": "private; explicit public declarations",
@@ -345,5 +382,202 @@
     "readme_and_agents_modified": false,
     "blueprint": "Deferred by user instruction."
   },
-  "interface_migration_map": "fixed-interface-migration.json"
+  "interface_migration_map": "fixed-interface-migration.json",
+  "verification_before_main_migration": {
+    "default_command": "lake build",
+    "result": "passed",
+    "jobs": 2232,
+    "checked_at_utc": "2026-10-14T16:28:48.121369+00:00",
+    "separate_module_checks": [
+      "SpectralSequenceChecks",
+      "AdamsSyntheticChecks",
+      "LiteratureChecks",
+      "ComputationChecks",
+      "ProofToolsChecks",
+      "MainChecks",
+      "IntegrationChecks"
+    ],
+    "normal_public_import_consumers": true,
+    "fixed_api_has_no_model_or_result_package_binders": true,
+    "genuine_mathematical_hypotheses_retained": true,
+    "no_project_axioms": true,
+    "no_synthetic_sorry": true,
+    "spectral_sequence_sorry_free": true,
+    "pending_obligations": {
+      "total": 285,
+      "by_module": {
+        "AdamsSynthetic": 77,
+        "Computation": 72,
+        "Literature": 124,
+        "Main": 9,
+        "ProofTools": 3
+      },
+      "by_kind": {
+        "pending-construction": 81,
+        "pending-proof": 204
+      }
+    },
+    "pending_registry": "proof-obligations.json",
+    "consumer_local_sorry_rejected": true,
+    "source_inventory_guard": "scripts/check-source-inventory.py",
+    "json_cache_dependencies": "Lake input_file targets connected by needs; proof registry uses Checks.Registry to avoid rebuilding mathematical modules.",
+    "negative_checks": [
+      {
+        "case": "pending-registry-cache",
+        "target": "KIP126.Def.Computation.InternalAudit",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Unregistered proof/construction obligation"
+      },
+      {
+        "case": "api-cache",
+        "target": "Tests.Computation.Interface",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Public type or universe parameters changed"
+      },
+      {
+        "case": "untracked-source",
+        "target": "sourceInventory",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "audit source mismatch"
+      },
+      {
+        "case": "consumer-local-hole",
+        "target": "sourceInventory",
+        "rejected": true,
+        "exit_code": 1,
+        "expected_diagnostic": "Consumer source contains a local sorry/axiom"
+      }
+    ],
+    "cache_reused": true,
+    "readme_agents_unchanged": true,
+    "blueprint_checked": false,
+    "main_six_parked_responsibilities_unchanged": false,
+    "unrestricted_theta5_transport_not_assumed": true,
+    "retained_scope_limits": [
+      "Finite and infinite statements remain distinct.",
+      "Convergence remains on the specified object closure.",
+      "Projectivity, page/range, nonzero and full short-exactness conditions remain.",
+      "Earlier partial mappings are not promoted merely because fixed signatures are callable.",
+      "The final Main proof body is present but still depends on registered upstream and article-local holes.",
+      "Finite stretching is the pinned strengthened sufficient condition preserving lambda layers; not the full paper equivalence or an infinite lift.",
+      "Archived original proof bodies are not compiled proof ports."
+    ],
+    "main_old_six_tracking": "Reviewed conservatively; interface coverage is independent of proof completion.",
+    "original_271_obligation_rows_preserved": true,
+    "main_final_has_no_caller_parameters": true,
+    "main_final_direct_proof_present": true,
+    "main_final_transitive_sorry": true,
+    "proof_port_complete": false,
+    "mathematical_scope_review": "Conditions, actual standard product, nonzero semantics, arbitrary-choice hypotheses and exact tool page/crossing/shift bounds checked against pinned source and AimPaper.",
+    "main_migration_negative_checks": [
+      {
+        "case": "main-unregistered-obligation",
+        "target": "KIP126.Main.InternalAudit",
+        "exit_code": 1,
+        "rejected": true,
+        "expected_diagnostic": "Unregistered proof/construction obligation"
+      },
+      {
+        "case": "main-api-type-lock",
+        "target": "MainChecks",
+        "exit_code": 1,
+        "rejected": true,
+        "expected_diagnostic": "Public type or universe parameters changed"
+      }
+    ]
+  },
+  "proofTools": {
+    "source_manifest": "proof-tools-sources.json",
+    "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+    "api_contract": "proof-tools-api.json",
+    "capability_ledger": "proof-tools-contracts.json",
+    "root_import": "KIP126.Def.ProofTools",
+    "source_files": 8,
+    "default_build": "lake build",
+    "build_result": "passed",
+    "build_jobs": 2232,
+    "cache_reused": true,
+    "visibility": {
+      "default": "private; explicit public declarations",
+      "named_public_declarations": 25,
+      "generated_declarations": 2,
+      "exports_including_generated_declarations": 27,
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
+    },
+    "axiom_audit": {
+      "target": "KIP126.Def.ProofTools.InternalAudit",
+      "registered_direct_sorry": 3,
+      "registry": "proof-obligations.json",
+      "project_axiom_declarations": [],
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included.",
+      "declarations_checked": 64
+    },
+    "proof_completion_claimed": false,
+    "proof_status": "partial-proof-port; direct declarations and original source status separately tracked",
+    "checks": [
+      "Tests.ProofTools.Interface",
+      "Tests.ProofTools.Consumers"
+    ],
+    "direct_obligation_classification": {
+      "original-paper-proof-gaps-retained": 1,
+      "existing-proof-archived-port-pending": 1,
+      "original-paper-proof-gaps-and-proof-port-pending": 1
+    },
+    "original_text_sorry_sites": 4,
+    "current_text_sorry_sites": 4
+  },
+  "main": {
+    "source_manifest": "main-sources.json",
+    "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+    "api_contract": "main-api.json",
+    "capability_ledger": "main-contracts.json",
+    "root_import": "KIP126.Main",
+    "source_files": 17,
+    "default_build": "lake build",
+    "build_result": "passed",
+    "build_jobs": 2232,
+    "cache_reused": true,
+    "visibility": {
+      "default": "private; explicit public declarations",
+      "named_public_declarations": 51,
+      "generated_declarations": 19,
+      "exports_including_generated_declarations": 70,
+      "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
+    },
+    "axiom_audit": {
+      "target": "KIP126.Main.InternalAudit",
+      "registered_direct_sorry": 9,
+      "registry": "proof-obligations.json",
+      "project_axiom_declarations": [],
+      "no_synthetic_sorry": true,
+      "scope": "All own public/private declarations, including facade; source inventory verifies every source is included.",
+      "declarations_checked": 120
+    },
+    "proof_completion_claimed": false,
+    "proof_status": "partial-proof-port; direct declarations and original source status separately tracked",
+    "checks": [
+      "Tests.Main.Interface",
+      "Tests.Main.Consumers",
+      "Tests.Main.Boundary"
+    ],
+    "final_entry": "KIP126.Main.h6_sq_permanent",
+    "direct_obligation_classification": {
+      "original-paper-target-without-proof": 3,
+      "existing-proof-archived-port-pending": 6
+    },
+    "upstream_obligations_duplicated": false
+  },
+  "aimPaper": {
+    "source_manifest": "aim-paper-sources.json",
+    "directory": "AimPaper",
+    "source_files": 7,
+    "byte_identical_to_pinned_source": true,
+    "original_proof_archive": "Sources/Kervaire126Proofs.tar.gz",
+    "archive_manifest": "main-sources.json",
+    "archive_is_compiled": false
+  }
 }

@@ -1,0 +1,1334 @@
+{
+  "schema_version": 3,
+  "module": "ProofTools",
+  "entry_module": "KIP126.Def.ProofTools",
+  "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+  "capability_ledger": "proof-tools-contracts.json",
+  "source_manifest": "proof-tools-sources.json",
+  "type_fingerprint_algorithm": "Lean hash (toString ConstantInfo.type), checked with universe parameter names",
+  "type_rendering": "Elaborated full type, universe parameters shown; inferred arguments use Lean implicit notation. Fingerprint locks the exact kernel expression, including elaborated proof terms.",
+  "classification": "Explicit named public source commands are separated from generated fields, constructors, recursors, instances and generated proof helpers. Generated declarations are not independent mathematical promises.",
+  "public_source_commands": 25,
+  "named_public_declarations": 25,
+  "generated_declaration_count": 2,
+  "declarations": [
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            KIP126.Kervaire.Route.Model.{u, v, w} C Syn →\n              KIP126.Kervaire.Route.ClassicalObject → Prod.{0, 0} ℤ ℤ → ModuleCat.{v, 0} ℤ",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.Ambient",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Prod",
+        "Int",
+        "ModuleCat",
+        "Int.instRing"
+      ],
+      "type_fingerprint": "14573936905328857953",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.Congruent",
+        "KIP126.ProofTools.DifferentialAt",
+        "KIP126.ProofTools.IsBoundary",
+        "KIP126.ProofTools.IsCycle",
+        "KIP126.ProofTools.IsPermanent",
+        "KIP126.ProofTools.differentialAt_of_congruent",
+        "KIP126.ProofTools.isCycle_iff_reaches",
+        "KIP126.ProofTools.representsOnPage_of_congruent"
+      ],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "abbrev",
+      "line": 21,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X : KIP126.Kervaire.Route.ClassicalObject) →\n                ℤ →\n                  (p : Prod.{0, 0} ℤ ℤ) →\n                    ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.Congruent",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient"
+      ],
+      "type_fingerprint": "10790103165128807973",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.differentialAt_of_congruent",
+        "KIP126.ProofTools.representsOnPage_of_congruent"
+      ],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 39,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X : KIP126.Kervaire.Route.ClassicalObject) →\n                ℤ →\n                  (p q : Prod.{0, 0} ℤ ℤ) →\n                    ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → ↑(KIP126.ProofTools.Ambient.{u, v, w} D X q) → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.DifferentialAt",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient"
+      ],
+      "type_fingerprint": "6104915108438415545",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.differentialAt_of_congruent"
+      ],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 44,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  ℕ → ℕ → ℤ → ℤ → ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.FiniteExtensionNonliftableCrossing",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "Nat",
+        "Int"
+      ],
+      "type_fingerprint": "12952967061830633062",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 119,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  ℕ → ℤ → ℤ → ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.FiniteHasCrossing",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "Nat",
+        "Int"
+      ],
+      "type_fingerprint": "5407672972432529603",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 72,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  ℕ → ℤ → ℤ → ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.FiniteNoCrossing",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "Nat",
+        "Int"
+      ],
+      "type_fingerprint": "341576270754583855",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 86,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Laws",
+      "name": "KIP126.ProofTools.FinitePageExtensionStretchingLaw",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData"
+      ],
+      "type_fingerprint": "1982036937227231259",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Laws.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.Standard.finitePageExtensionStretching"
+      ],
+      "capability_evidence": [
+        "proof-tools-laws"
+      ],
+      "source_kind": "def",
+      "line": 98,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Laws",
+      "name": "KIP126.ProofTools.GeneralizedLeibnizLaw",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData"
+      ],
+      "type_fingerprint": "13843000049629075926",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Laws.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.Standard.generalizedLeibniz"
+      ],
+      "capability_evidence": [
+        "proof-tools-laws"
+      ],
+      "source_kind": "def",
+      "line": 26,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              KIP126.Kervaire.Route.TriangleData.{u, v}\n                  (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                    (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D)) →\n                Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Laws",
+      "name": "KIP126.ProofTools.GeneralizedMahowaldLaw",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.TriangleData",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData"
+      ],
+      "type_fingerprint": "17961891687992261899",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Laws.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.Standard.generalizedMahowald"
+      ],
+      "capability_evidence": [
+        "proof-tools-laws"
+      ],
+      "source_kind": "def",
+      "line": 55,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            KIP126.Kervaire.Route.Model.{u, v, w} C Syn →\n              KIP126.Kervaire.Route.ClassicalObject → ℤ → ℤ → Prod.{0, 0} ℤ ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.HasCrossingOn",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod"
+      ],
+      "type_fingerprint": "2866008154976298922",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 53,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  ℤ → ℤ → ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.InfiniteHasCrossing",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "Int"
+      ],
+      "type_fingerprint": "10765640481000868674",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 93,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X Y : KIP126.Kervaire.Route.ClassicalObject) →\n                Quiver.Hom.{v, u}\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      X)\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                        (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                      Y) →\n                  ℤ → ℤ → ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.InfiniteNoCrossing",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "Int"
+      ],
+      "type_fingerprint": "4678517660081732902",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 105,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X : KIP126.Kervaire.Route.ClassicalObject) →\n                ℤ → (p : Prod.{0, 0} ℤ ℤ) → ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.IsBoundary",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient"
+      ],
+      "type_fingerprint": "13600051322573837217",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 31,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X : KIP126.Kervaire.Route.ClassicalObject) →\n                ℤ → (p : Prod.{0, 0} ℤ ℤ) → ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.IsCycle",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient"
+      ],
+      "type_fingerprint": "495690114902221247",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [
+        "KIP126.ProofTools.isCycle_iff_reaches"
+      ],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 27,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →\n              (X : KIP126.Kervaire.Route.ClassicalObject) →\n                (p : Prod.{0, 0} ℤ ℤ) → ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p) → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.IsPermanent",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Prod",
+        "Int",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient"
+      ],
+      "type_fingerprint": "2333798908429955808",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 35,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            KIP126.Kervaire.Route.Model.{u, v, w} C Syn →\n              KIP126.Kervaire.Route.ClassicalObject → ℤ → ℤ → Prod.{0, 0} ℤ ℤ → Prop",
+      "kind": "definition",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.NoCrossingOn",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod"
+      ],
+      "type_fingerprint": "4041431569653143303",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "def",
+      "line": 62,
+      "category": "mathematical-definition",
+      "responsibility": "fixed-mathematical-object-or-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext",
+        "sorryAx"
+      ],
+      "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y)),\n  KIP126.ProofTools.FinitePageExtensionStretchingLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Standard",
+      "name": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
+      "type_dependencies": [
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "KIP126.AdamsSynthetic.Standard.Spectrum",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+        "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+        "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.AdamsSynthetic.Standard.model",
+        "KIP126.ProofTools.FinitePageExtensionStretchingLaw"
+      ],
+      "type_fingerprint": "11264491635714062830",
+      "universes": [],
+      "proof_status": "pending-direct",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Standard.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-stretching-and-mahowald"
+      ],
+      "source_kind": "theorem",
+      "line": 22,
+      "category": "operation-theorem",
+      "responsibility": "pending-paper-proof"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext",
+        "sorryAx"
+      ],
+      "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y)),\n  KIP126.ProofTools.GeneralizedLeibnizLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.GeneralizedLeibniz",
+      "name": "KIP126.ProofTools.Standard.generalizedLeibniz",
+      "type_dependencies": [
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Quiver.Hom",
+        "KIP126.AdamsSynthetic.Standard.Spectrum",
+        "CategoryTheory.CategoryStruct.toQuiver",
+        "CategoryTheory.Category.toCategoryStruct",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+        "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+        "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.AdamsSynthetic.Standard.model",
+        "KIP126.ProofTools.GeneralizedLeibnizLaw"
+      ],
+      "type_fingerprint": "16172807452524726602",
+      "universes": [],
+      "proof_status": "pending-direct",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/GeneralizedLeibniz.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-generalized-leibniz"
+      ],
+      "source_kind": "theorem",
+      "line": 45,
+      "category": "operation-theorem",
+      "responsibility": "pending-paper-proof"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext",
+        "sorryAx"
+      ],
+      "full_type": "∀\n  (T :\n    KIP126.Kervaire.Route.TriangleData.{1, 0}\n      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))),\n  KIP126.ProofTools.GeneralizedMahowaldLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Standard",
+      "name": "KIP126.ProofTools.Standard.generalizedMahowald",
+      "type_dependencies": [
+        "KIP126.Kervaire.Route.TriangleData",
+        "KIP126.AdamsSynthetic.Standard.Spectrum",
+        "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+        "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+        "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+        "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.AdamsSynthetic.Standard.model",
+        "KIP126.ProofTools.GeneralizedMahowaldLaw"
+      ],
+      "type_fingerprint": "12297579626073384622",
+      "universes": [],
+      "proof_status": "pending-direct",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Standard.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-stretching-and-mahowald"
+      ],
+      "source_kind": "theorem",
+      "line": 38,
+      "category": "operation-theorem",
+      "responsibility": "pending-paper-proof"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {Syn : Type w}\n  [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn]\n  [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn)\n  (X : KIP126.Kervaire.Route.ClassicalObject) {R : ℤ} {p q : Prod.{0, 0} ℤ ℤ}\n  {x : ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p)} {y z : ↑(KIP126.ProofTools.Ambient.{u, v, w} D X q)},\n  KIP126.ProofTools.DifferentialAt.{u, v, w} D X R p q x y →\n    KIP126.ProofTools.Congruent.{u, v, w} D X (HSub.hSub.{0, 0, 0} R 1) q z y →\n      KIP126.ProofTools.DifferentialAt.{u, v, w} D X R p q x z",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Representatives",
+      "name": "KIP126.ProofTools.differentialAt_of_congruent",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient",
+        "KIP126.ProofTools.DifferentialAt",
+        "KIP126.ProofTools.Congruent",
+        "HSub.hSub",
+        "instHSub",
+        "Int.instSub",
+        "OfNat.ofNat",
+        "instOfNat"
+      ],
+      "type_fingerprint": "3158043870081533809",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Representatives.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "theorem",
+      "line": 117,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {A : Type u_1} {A' : Type u_2} {B : Type u_3} [inst : AddCommGroup.{u_1} A] [inst_1 : AddCommGroup.{u_2} A']\n  [inst_2 : AddCommGroup.{u_3} B] (ρ : AddMonoidHom.{u_2, u_1} A' A) (g : AddMonoidHom.{u_1, u_3} A B)\n  (E : ℤ → AddSubgroup.{u_1} A) (L : ℤ → AddSubgroup.{u_2} A') (T : AddSubgroup.{u_3} B),\n  Antitone.{0, u_2} L →\n    ∀ (s : ℤ) (N : ℕ),\n      (∀ (k : ℤ),\n          LE.le.{0} s k →\n            LT.lt.{0} k (HAdd.hAdd.{0, 0, 0} s ↑N) →\n              ∀ (δ : A),\n                Membership.mem.{u_1, u_1} (E k) δ →\n                  (∃ ε,\n                      Membership.mem.{u_2, u_2} (L k) ε ∧\n                        Membership.mem.{u_1, u_1} (E (HAdd.hAdd.{0, 0, 0} k 1)) (HSub.hSub.{u_1, u_1, u_1} δ (ρ ε))) ∨\n                    Membership.mem.{u_3, u_3} T (g δ)) →\n        (∀ (δ : A), Membership.mem.{u_1, u_1} (E (HAdd.hAdd.{0, 0, 0} s ↑N)) δ → Membership.mem.{u_3, u_3} T (g δ)) →\n          ∀ (α₀ : A) (α : A'),\n            Membership.mem.{u_1, u_1} (E s) (HSub.hSub.{u_1, u_1, u_1} α₀ (ρ α)) →\n              ∃ α',\n                Membership.mem.{u_2, u_2} (L s) (HSub.hSub.{u_2, u_2, u_2} α' α) ∧\n                  Membership.mem.{u_3, u_3} T (g (HSub.hSub.{u_1, u_1, u_1} α₀ (ρ α')))",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.FiniteFiltration",
+      "name": "KIP126.ProofTools.finite_filtration_correction",
+      "type_dependencies": [
+        "AddCommGroup",
+        "AddMonoidHom",
+        "AddZeroClass.toAddZero",
+        "AddMonoid.toAddZeroClass",
+        "SubNegMonoid.toAddMonoid",
+        "AddGroup.toSubNegMonoid",
+        "AddCommGroup.toAddGroup",
+        "Int",
+        "AddSubgroup",
+        "Antitone",
+        "PartialOrder.toPreorder",
+        "SemilatticeInf.toPartialOrder",
+        "Lattice.toSemilatticeInf",
+        "instLatticeInt",
+        "AddSubgroup.instPartialOrder",
+        "Nat",
+        "LE.le",
+        "Int.instLEInt",
+        "LT.lt",
+        "Int.instLTInt",
+        "HAdd.hAdd",
+        "instHAdd",
+        "Int.instAdd",
+        "Nat.cast",
+        "instNatCastInt",
+        "Membership.mem",
+        "SetLike.instMembership",
+        "AddSubgroup.instSetLike",
+        "Or",
+        "Exists",
+        "And",
+        "OfNat.ofNat",
+        "instOfNat",
+        "HSub.hSub",
+        "instHSub",
+        "SubNegMonoid.toSub",
+        "DFunLike.coe",
+        "AddMonoidHom.instFunLike"
+      ],
+      "type_fingerprint": "9284824125866967666",
+      "universes": [
+        "u_1",
+        "u_2",
+        "u_3"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-finite-filtration"
+      ],
+      "source_kind": "theorem",
+      "line": 14,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    },
+    {
+      "axioms": [
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {B' : Type u_1} {B : Type u_2} [inst : AddCommGroup.{u_1} B'] [inst_1 : AddCommGroup.{u_2} B]\n  (ρ : AddMonoidHom.{u_1, u_2} B' B) (L : ℤ → AddSubgroup.{u_1} B') (E : ℤ → AddSubgroup.{u_2} B),\n  Antitone.{0, u_2} E →\n    ∀ (s : ℤ) (N : ℕ),\n      (∀ (k : ℤ),\n          LE.le.{0} s k →\n            LT.lt.{0} k (HAdd.hAdd.{0, 0, 0} s ↑N) →\n              ∀ (b : B'),\n                Membership.mem.{u_1, u_1} (L k) b →\n                  Membership.mem.{u_2, u_2} (E (HAdd.hAdd.{0, 0, 0} k 1)) (ρ b) →\n                    Membership.mem.{u_1, u_1} (L (HAdd.hAdd.{0, 0, 0} k 1)) b) →\n        ∀ (b : B'),\n          Membership.mem.{u_1, u_1} (L s) b →\n            Membership.mem.{u_2, u_2} (E (HAdd.hAdd.{0, 0, 0} s ↑N)) (ρ b) →\n              Membership.mem.{u_1, u_1} (L (HAdd.hAdd.{0, 0, 0} s ↑N)) b",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.FiniteFiltration",
+      "name": "KIP126.ProofTools.finite_filtration_reflection",
+      "type_dependencies": [
+        "AddCommGroup",
+        "AddMonoidHom",
+        "AddZeroClass.toAddZero",
+        "AddMonoid.toAddZeroClass",
+        "SubNegMonoid.toAddMonoid",
+        "AddGroup.toSubNegMonoid",
+        "AddCommGroup.toAddGroup",
+        "Int",
+        "AddSubgroup",
+        "Antitone",
+        "PartialOrder.toPreorder",
+        "SemilatticeInf.toPartialOrder",
+        "Lattice.toSemilatticeInf",
+        "instLatticeInt",
+        "AddSubgroup.instPartialOrder",
+        "Nat",
+        "LE.le",
+        "Int.instLEInt",
+        "LT.lt",
+        "Int.instLTInt",
+        "HAdd.hAdd",
+        "instHAdd",
+        "Int.instAdd",
+        "Nat.cast",
+        "instNatCastInt",
+        "Membership.mem",
+        "SetLike.instMembership",
+        "AddSubgroup.instSetLike",
+        "OfNat.ofNat",
+        "instOfNat",
+        "DFunLike.coe",
+        "AddMonoidHom.instFunLike"
+      ],
+      "type_fingerprint": "2800186026117832976",
+      "universes": [
+        "u_1",
+        "u_2"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-finite-filtration"
+      ],
+      "source_kind": "theorem",
+      "line": 48,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {B : Type u_1} [inst : AddCommGroup.{u_1} B] (E : ℤ → AddSubgroup.{u_1} B) (s : ℤ) (N : ℕ) (b : B),\n  Membership.mem.{u_1, u_1} (E s) b →\n    b ∉ E (HAdd.hAdd.{0, 0, 0} s ↑N) →\n      ∃ k,\n        LE.le.{0} s k ∧\n          LT.lt.{0} k (HAdd.hAdd.{0, 0, 0} s ↑N) ∧ Membership.mem.{u_1, u_1} (E k) b ∧ b ∉ E (HAdd.hAdd.{0, 0, 0} k 1)",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.FiniteFiltration",
+      "name": "KIP126.ProofTools.first_nonzero_filtration_grade",
+      "type_dependencies": [
+        "AddCommGroup",
+        "Int",
+        "AddSubgroup",
+        "AddCommGroup.toAddGroup",
+        "Nat",
+        "Membership.mem",
+        "SetLike.instMembership",
+        "AddSubgroup.instSetLike",
+        "Not",
+        "HAdd.hAdd",
+        "instHAdd",
+        "Int.instAdd",
+        "Nat.cast",
+        "instNatCastInt",
+        "Exists",
+        "And",
+        "LE.le",
+        "Int.instLEInt",
+        "LT.lt",
+        "Int.instLTInt",
+        "OfNat.ofNat",
+        "instOfNat"
+      ],
+      "type_fingerprint": "13082729206476575429",
+      "universes": [
+        "u_1"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-finite-filtration"
+      ],
+      "source_kind": "theorem",
+      "line": 69,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {Syn : Type w}\n  [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn]\n  [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn)\n  (X : KIP126.Kervaire.Route.ClassicalObject) (r : ℤ),\n  LE.le.{0} 2 r →\n    ∀ (p : Prod.{0, 0} ℤ ℤ) (x : ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p)),\n      KIP126.ProofTools.IsCycle.{u, v, w} D X (HSub.hSub.{0, 0, 0} r 1) p x ↔\n        KIP126.Core.SpectralSequence.ReachesPage.{0, v}\n          (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{u, v}\n            (KIP126.Kervaire.Route.ModelData.classical.{u, v, w} (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n              X))\n          r p x",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Representatives",
+      "name": "KIP126.ProofTools.isCycle_iff_reaches",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "LE.le",
+        "Int.instLEInt",
+        "OfNat.ofNat",
+        "instOfNat",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient",
+        "Iff",
+        "KIP126.ProofTools.IsCycle",
+        "HSub.hSub",
+        "instHSub",
+        "Int.instSub",
+        "KIP126.Core.SpectralSequence.ReachesPage",
+        "KIP126.Classical.Adams.ClassicalAdamsFamily.obj",
+        "KIP126.Kervaire.Route.ModelData.classical",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary"
+      ],
+      "type_fingerprint": "15008496760517253240",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Representatives.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "theorem",
+      "line": 46,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {Syn : Type w}\n  [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn]\n  [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn)\n  (X : KIP126.Kervaire.Route.ClassicalObject) {R : ℤ},\n  LE.le.{0} 2 R →\n    ∀ {p : Prod.{0, 0} ℤ ℤ} {x y : ↑(KIP126.ProofTools.Ambient.{u, v, w} D X p)}\n      {xr :\n        ↑(KIP126.Core.SpectralSequence.Page.{v + 1, v, 0}\n            (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{u, v}\n              (KIP126.Kervaire.Route.ModelData.classical.{u, v, w}\n                (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                  (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                X))\n            R p)},\n      KIP126.Core.SpectralSequence.RepresentsOnPage.{0, v}\n          (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{u, v}\n            (KIP126.Kervaire.Route.ModelData.classical.{u, v, w} (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n              X))\n          R p x xr →\n        KIP126.ProofTools.Congruent.{u, v, w} D X (HSub.hSub.{0, 0, 0} R 1) p y x →\n          KIP126.Core.SpectralSequence.RepresentsOnPage.{0, v}\n            (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{u, v}\n              (KIP126.Kervaire.Route.ModelData.classical.{u, v, w}\n                (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}\n                  (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))\n                X))\n            R p y xr",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Representatives",
+      "name": "KIP126.ProofTools.representsOnPage_of_congruent",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Int",
+        "LE.le",
+        "Int.instLEInt",
+        "OfNat.ofNat",
+        "instOfNat",
+        "Prod",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.ProofTools.Ambient",
+        "KIP126.Core.SpectralSequence.Page",
+        "ModuleCat",
+        "ModuleCat.moduleCategory",
+        "ModuleCat.abelian",
+        "KIP126.Classical.Adams.Bidegree",
+        "Prod.instAddCommGroup",
+        "Int.instAddCommGroup",
+        "instDecidableEqProd",
+        "Int.instDecidableEq",
+        "KIP126.Classical.Adams.ClassicalAdamsFamily.obj",
+        "KIP126.Kervaire.Route.ModelData.classical",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "KIP126.Core.SpectralSequence.RepresentsOnPage",
+        "KIP126.ProofTools.Congruent",
+        "HSub.hSub",
+        "instHSub",
+        "Int.instSub"
+      ],
+      "type_fingerprint": "647509929913277438",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Representatives.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "source_kind": "theorem",
+      "line": 73,
+      "category": "operation-theorem",
+      "responsibility": "proved-operation"
+    }
+  ],
+  "generated_declarations": [
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext"
+      ],
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {Syn : Type w}\n  [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn]\n  [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn)\n  (X : KIP126.Kervaire.Route.ClassicalObject) (q : ℕ) (hq : LT.lt.{0} 0 q) (s t : ℤ)\n  (a a_1 :\n    KIP126.Synthetic.Context.BiHom.{w, v} (HSub.hSub.{0, 0, 0} t s) t\n      (KIP126.Synthetic.Context.XModLambdaN.{w, v} (KIP126.Literature.nuZero.{u, v, w} D X) q)),\n  Eq.{v + 1} a a_1 →\n    Eq.{v + 1} (KIP126.Literature.bocksteinLabel.{u, v, w} D X q hq s t a)\n      (KIP126.Literature.bocksteinLabel.{u, v, w} D X q hq s t a_1)",
+      "kind": "theorem",
+      "module": "KIP126.Def.ProofTools.GeneralizedLeibniz",
+      "name": "KIP126.Literature.bocksteinLabel.congr_simp",
+      "type_dependencies": [
+        "KIP126.StableHomotopy.StableHomotopyCategory",
+        "KIP126.StableHomotopy.HasFunctorialCofiber",
+        "KIP126.Synthetic.Context.SyntheticCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.Kervaire.Route.Model",
+        "KIP126.Kervaire.Route.ClassicalObject",
+        "Nat",
+        "LT.lt",
+        "instLTNat",
+        "OfNat.ofNat",
+        "instOfNatNat",
+        "Int",
+        "KIP126.Synthetic.Context.BiHom",
+        "HSub.hSub",
+        "instHSub",
+        "Int.instSub",
+        "KIP126.Synthetic.Context.XModLambdaN",
+        "KIP126.Literature.nuZero",
+        "Eq",
+        "ModuleCat.carrier",
+        "Int.instRing",
+        "KIP126.Core.SpectralSequence.Page",
+        "ModuleCat",
+        "ModuleCat.moduleCategory",
+        "ModuleCat.abelian",
+        "KIP126.Classical.Adams.Bidegree",
+        "Prod.instAddCommGroup",
+        "Int.instAddCommGroup",
+        "instDecidableEqProd",
+        "Int.instDecidableEq",
+        "KIP126.Classical.Adams.ClassicalAdamsFamily.obj",
+        "KIP126.Kervaire.Route.ModelData.classical",
+        "KIP126.Kervaire.Route.Model.toModelData",
+        "KIP126.Kervaire.Route.ClassicalObject.obj",
+        "KIP126.Kervaire.Route.ModelData.auxiliary",
+        "instOfNat",
+        "Prod.mk",
+        "HAdd.hAdd",
+        "instHAdd",
+        "Int.instAdd",
+        "Nat.cast",
+        "instNatCastInt",
+        "KIP126.Literature.bocksteinLabel"
+      ],
+      "type_fingerprint": "5907364584798482859",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/GeneralizedLeibniz.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-generalized-leibniz"
+      ],
+      "category": "generated-declaration",
+      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+    },
+    {
+      "axioms": [],
+      "full_type": "∀ (rEarlier rLater : ℕ),\n  LE.le.{0} rEarlier rLater → LE.le.{0} (HSub.hSub.{0, 0, 0} rEarlier 1) (HSub.hSub.{0, 0, 0} rLater 1)",
+      "kind": "generated",
+      "module": "KIP126.Def.ProofTools.Language",
+      "name": "KIP126.ProofTools.FiniteExtensionNonliftableCrossing._proof_1",
+      "type_dependencies": [
+        "Nat",
+        "LE.le",
+        "instLENat",
+        "HSub.hSub",
+        "instHSub",
+        "instSubNat",
+        "OfNat.ofNat",
+        "instOfNatNat"
+      ],
+      "type_fingerprint": "15157322429873117686",
+      "universes": [],
+      "proof_status": "provided",
+      "directly_callable": true,
+      "responsibility_owner": "ProofTools",
+      "source": "KIP126/Def/ProofTools/Language.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "proof-tools-representatives"
+      ],
+      "category": "generated-declaration",
+      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+    }
+  ],
+  "proof_obligation_registry": "proof-obligations.json",
+  "proof_status_meaning": "provided-with-pending-dependencies means this declaration has a body/proof but uses declarations whose proofs or constructions remain pending. Each direct obligation belongs to its defining module; transitive upstream dependencies are not new Main obligations. It does not assert that the theorem is sorry-free.",
+  "exports": [
+    "KIP126.Literature.bocksteinLabel.congr_simp",
+    "KIP126.ProofTools.Ambient",
+    "KIP126.ProofTools.Congruent",
+    "KIP126.ProofTools.DifferentialAt",
+    "KIP126.ProofTools.FiniteExtensionNonliftableCrossing",
+    "KIP126.ProofTools.FiniteExtensionNonliftableCrossing._proof_1",
+    "KIP126.ProofTools.FiniteHasCrossing",
+    "KIP126.ProofTools.FiniteNoCrossing",
+    "KIP126.ProofTools.FinitePageExtensionStretchingLaw",
+    "KIP126.ProofTools.GeneralizedLeibnizLaw",
+    "KIP126.ProofTools.GeneralizedMahowaldLaw",
+    "KIP126.ProofTools.HasCrossingOn",
+    "KIP126.ProofTools.InfiniteHasCrossing",
+    "KIP126.ProofTools.InfiniteNoCrossing",
+    "KIP126.ProofTools.IsBoundary",
+    "KIP126.ProofTools.IsCycle",
+    "KIP126.ProofTools.IsPermanent",
+    "KIP126.ProofTools.NoCrossingOn",
+    "KIP126.ProofTools.Standard.finitePageExtensionStretching",
+    "KIP126.ProofTools.Standard.generalizedLeibniz",
+    "KIP126.ProofTools.Standard.generalizedMahowald",
+    "KIP126.ProofTools.differentialAt_of_congruent",
+    "KIP126.ProofTools.finite_filtration_correction",
+    "KIP126.ProofTools.finite_filtration_reflection",
+    "KIP126.ProofTools.first_nonzero_filtration_grade",
+    "KIP126.ProofTools.isCycle_iff_reaches",
+    "KIP126.ProofTools.representsOnPage_of_congruent"
+  ]
+}

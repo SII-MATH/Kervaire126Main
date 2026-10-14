@@ -25,6 +25,12 @@ input_file literatureApi where
 input_file computationApi where
   path := "computation-api.json"
   text := true
+input_file proofToolsApi where
+  path := "proof-tools-api.json"
+  text := true
+input_file mainApi where
+  path := "main-api.json"
+  text := true
 
 lean_lib BuildCheckInputs where
   roots := #[`Checks.Registry]
@@ -46,7 +52,9 @@ lean_lib KIP126 where
   globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence,
     .andSubmodules `KIP126.Def.AdamsSynthetic,
     .andSubmodules `KIP126.Def.Literature,
-    .andSubmodules `KIP126.Def.Computation]
+    .andSubmodules `KIP126.Def.Computation,
+    .andSubmodules `KIP126.Def.ProofTools,
+    .andSubmodules `KIP126.Main]
 
 @[default_target]
 lean_lib SpectralSequenceChecks where
@@ -73,6 +81,16 @@ lean_lib LiteratureChecks where
 lean_lib ComputationChecks where
   needs := #[.packageTarget .anonymous `computationApi]
   roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers]
+
+@[default_target]
+lean_lib ProofToolsChecks where
+  needs := #[.packageTarget .anonymous `proofToolsApi]
+  roots := #[`Tests.ProofTools.Interface, `Tests.ProofTools.Consumers]
+
+@[default_target]
+lean_lib MainChecks where
+  needs := #[.packageTarget .anonymous `mainApi]
+  roots := #[`Tests.Main.Interface, `Tests.Main.Consumers, `Tests.Main.Boundary]
 
 @[default_target]
 lean_lib IntegrationChecks where

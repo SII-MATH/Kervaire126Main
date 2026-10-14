@@ -53,10 +53,18 @@ import all KIP126.Def.Literature.Moss
 import all KIP126.Def.Literature.RealizationTransport
 import all KIP126.Def.Literature.Rigidity
 import all KIP126.Def.Literature.Secondary
+import all KIP126.Def.Literature.Standard.Secondary
 import all KIP126.Def.Literature.Standard
 import all KIP126.Def.Literature.Toda
 import all KIP126.Def.Literature.Triangles
 import all KIP126.Def.Literature
+import all KIP126.Def.ProofTools.FiniteFiltration
+import all KIP126.Def.ProofTools.GeneralizedLeibniz
+import all KIP126.Def.ProofTools.Language
+import all KIP126.Def.ProofTools.Laws
+import all KIP126.Def.ProofTools.Representatives
+import all KIP126.Def.ProofTools.Standard
+import all KIP126.Def.ProofTools
 import all KIP126.Def.SpectralSequence.Basic.Category.Data
 import all KIP126.Def.SpectralSequence.Basic.Category.Predicates
 import all KIP126.Def.SpectralSequence.Basic.Category.Proofs
@@ -191,6 +199,22 @@ import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Data
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Proofs
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSequence.Data
 import all KIP126.Def.SpectralSequence
+import all KIP126.Main.ChoiceIndependence
+import all KIP126.Main.ClassicalReduction
+import all KIP126.Main.Conditions
+import all KIP126.Main.DifferentialReduction
+import all KIP126.Main.H6SquarePermanent
+import all KIP126.Main.Internal.PageCalculus
+import all KIP126.Main.PropositionSevenEight
+import all KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.CofiberRigidity
+import all KIP126.Main.SectionSeven.Final
+import all KIP126.Main.SectionSeven.Indeterminacy
+import all KIP126.Main.SectionSeven.NormalizedNu
+import all KIP126.Main.SectionSeven.NuTarget
+import all KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.TodaNonempty
+import all KIP126.Main
 import Lean
 open Lean Elab Command
 set_option maxHeartbeats 0
@@ -204,16 +228,25 @@ run_cmd do
   for (name, info) in env.constants.toList do
     let some idx := env.getModuleIdxFor? name | continue
     let mod := env.header.moduleNames[idx.toNat]!
-    unless (`KIP126.Def).isPrefixOf mod do continue
+    unless (`KIP126.Def).isPrefixOf mod || (`KIP126.Main).isPrefixOf mod do continue
     let body := info.value? (allowOpaque := true)
     let direct := info.type.hasSorry || body.any (·.hasSorry)
     let synthetic := info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry)
     let mut deps := info.type.getUsedConstants
     if let some value := body then deps := deps ++ value.getUsedConstants
     let ty ← if direct then liftTermElabM (Meta.ppExpr info.type) else pure Format.nil
+    let ranges ← findDeclarationRanges? name
+    let kind := match info with
+      | .thmInfo _ => "theorem"
+      | .defnInfo _ => "def"
+      | .inductInfo _ => "inductive"
+      | .ctorInfo _ => "constructor"
+      | _ => "generated"
     let axioms ← collectAxioms name
     rows := rows.push <| Json.mkObj [
       ("name", toJson name.toString), ("module", toJson mod.toString),
+      ("declaration_kind", toJson kind),
+      ("line", toJson (ranges.map (·.selectionRange.pos.line))),
       ("is_axiom", toJson info.isAxiom), ("direct_sorry", toJson direct),
       ("synthetic_sorry", toJson synthetic),
       ("full_type", toJson ty.pretty),

@@ -1,5 +1,7 @@
 module
 
+public import KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+
 public import KIP126.Def.SpectralSequence.Basic
 public import KIP126.Def.SpectralSequence.Computation.API.Predicates
 public import KIP126.Def.SpectralSequence.Computation.State.Proofs

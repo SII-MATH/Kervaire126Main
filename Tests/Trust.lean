@@ -16,6 +16,11 @@ import all Tests.Literature.Interface
 import all Tests.Literature.Lift
 import all Tests.Literature.RouteConsumers
 import all Tests.Literature.Secondary
+import all Tests.Main.Boundary
+import all Tests.Main.Consumers
+import all Tests.Main.Interface
+import all Tests.ProofTools.Consumers
+import all Tests.ProofTools.Interface
 import all Tests.SpectralSequence.Consumers
 import all Tests.SpectralSequence.Interface
 import all Tests.SpectralSequence.Visibility
@@ -32,6 +37,6 @@ run_cmd do
     unless (`Tests).isPrefixOf mod || mod == `KIP126 do continue
     if info.isAxiom || info.type.hasSorry ||
         (info.value? (allowOpaque := true)).any (·.hasSorry) then
-      throwError "Consumer must use the upstream API, not a local axiom or sorry: {name}"
+      throwError "Consumer test contains a local axiom or sorry: {name}"
     checked := checked + 1
   logInfo m!"Consumer trust audit: {checked} declarations; no local axioms or sorry"
