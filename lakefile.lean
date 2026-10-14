@@ -21,4 +21,6 @@ lean_lib SpectralSequenceChecks where
 @[default_target]
 lean_lib AdamsSyntheticChecks where
   roots := #[`Tests.AdamsSynthetic.Interface, `Tests.AdamsSynthetic.Consumers,
-    `Tests.AdamsSynthetic.Detection, `Tests.AdamsSynthetic.System]
+    `Tests.AdamsSynthetic.Detection, `Tests.AdamsSynthetic.System,
+    `Tests.AdamsSynthetic.Background, `Tests.AdamsSynthetic.Filtration,
+    `Tests.AdamsSynthetic.Mapping, `Tests.AdamsSynthetic.Structural]

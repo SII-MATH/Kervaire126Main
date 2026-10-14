@@ -130,6 +130,9 @@ import all KIP126.Def.SpectralSequence.Truncation
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Data
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Proofs
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSequence.Data
+import all KIP126.Def.SpectralSequence.Multiplicative
+import all KIP126.Def.SpectralSequence.MultiplicativeCategory
+import all KIP126.Def.SpectralSequence.Transport
 import Lean
 
 /-! Internal trust audit. This module exports nothing. It inspects private

@@ -72,7 +72,7 @@
     "root_import": "KIP126.Def.SpectralSequence",
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 1775,
+    "build_jobs": 2114,
     "source_files_byte_identical_to_review_commit": false,
     "cache_reuse": {
       "dependency_packages": "Local symlinks under .lake/packages to ../Kervaire126/.lake/packages; all 9 retained package revisions verified against lake-manifest.json.",
@@ -86,10 +86,10 @@
     "api_contract": "spectral-sequence-api.json",
     "visibility": {
       "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 269,
-      "named_public_declarations": 267,
-      "generated_declarations": 475,
-      "exports_including_generated_declarations": 742,
+      "explicit_public_source_commands": 303,
+      "named_public_declarations": 299,
+      "generated_declarations": 662,
+      "exports_including_generated_declarations": 961,
       "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
       "dependency_boundary": "Only KIP126.Def.SpectralSequence modules, including internal algebra support, and Mathlib/Lean dependencies"
     },
@@ -100,7 +100,7 @@
     ],
     "axiom_audit": {
       "target": "KIP126.Def.SpectralSequence.InternalAudit",
-      "declarations_checked": 2134,
+      "declarations_checked": 2305,
       "scope": "All internal and public declarations of SpectralSequence, including Internal/Algebra support.",
       "transitive_axioms": [
         "propext",
@@ -111,7 +111,7 @@
       "project_axiom_declarations": []
     },
     "capability_ledger": "spectral-sequence-contracts.json",
-    "source_files": 132,
+    "source_files": 135,
     "mathematical_change": "Original mathematical models and proof strength retained; new consumer operations proved and unused implementation conversions made private.",
     "internal_algebra_files": 8,
     "internal_algebra_directory": "KIP126/Def/SpectralSequence/Internal/Algebra",
@@ -170,13 +170,13 @@
     "root_import": "KIP126.Def.AdamsSynthetic",
     "default_build": "lake build",
     "build_result": "passed",
-    "source_files": 21,
+    "source_files": 32,
     "visibility": {
       "default": "private; explicit public source declarations",
-      "explicit_public_source_commands": 231,
-      "named_public_declarations": 231,
-      "generated_declarations": 881,
-      "exports_including_generated_declarations": 1112,
+      "explicit_public_source_commands": 327,
+      "named_public_declarations": 327,
+      "generated_declarations": 1253,
+      "exports_including_generated_declarations": 1580,
       "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
       "dependency_boundary": "Only KIP126.Def.AdamsSynthetic and its public upstream KIP126.Def.SpectralSequence dependency, plus Mathlib/Lean dependencies"
     },
@@ -184,11 +184,15 @@
       "Tests.AdamsSynthetic.Interface",
       "Tests.AdamsSynthetic.Consumers",
       "Tests.AdamsSynthetic.Detection",
-      "Tests.AdamsSynthetic.System"
+      "Tests.AdamsSynthetic.System",
+      "Tests.AdamsSynthetic.Background",
+      "Tests.AdamsSynthetic.Filtration",
+      "Tests.AdamsSynthetic.Mapping",
+      "Tests.AdamsSynthetic.Structural"
     ],
     "axiom_audit": {
       "target": "KIP126.Def.AdamsSynthetic.InternalAudit",
-      "declarations_checked": 1162,
+      "declarations_checked": 1662,
       "scope": "All internal and public declarations of AdamsSynthetic; the upstream SpectralSequence implementation is audited separately.",
       "transitive_axioms": [
         "propext",
@@ -206,13 +210,15 @@
       "Prove filtration separation where later consumers require it.",
       "Calibrate designated standard classes through the computation delivery."
     ],
-    "build_jobs": 1921,
-    "final_target": "Model.H6SquarePermanent uses NonzeroSurvival of the same classical sphere and standardH6Square defined by its actual E2 product."
+    "build_jobs": 2114,
+    "final_target": "Model.H6SquarePermanent uses NonzeroSurvival of the same classical sphere and standardH6Square defined by its actual E2 product.",
+    "obligation_review_commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+    "mathematical_change": "21 uncovered structural responsibilities now have explicit consumer contracts; corrected broad or ill-typed legacy claims are recorded in the capability ledger. Existing root Model and Challenge delivery boundaries remain unchanged."
   },
   "verification": {
     "default_command": "lake build",
     "result": "passed",
-    "jobs": 1993,
+    "jobs": 2114,
     "separate_module_checks": [
       "SpectralSequenceChecks",
       "AdamsSyntheticChecks"
@@ -231,6 +237,24 @@
       "internal_visibility_checked": true,
       "handwritten_public_types_preserved": true,
       "generated_export_changes_reviewed": true,
+      "cache_reused": true
+    },
+    "missing_interface_completion": {
+      "inventory_baseline": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
+      "responsibilities_completed": 21,
+      "consumer_checks": [
+        "Tests.AdamsSynthetic.Background",
+        "Tests.AdamsSynthetic.Filtration",
+        "Tests.AdamsSynthetic.Mapping",
+        "Tests.AdamsSynthetic.Structural"
+      ],
+      "explicit_optional_inputs": true,
+      "root_model_fields_added": false,
+      "corrected_statements_tracked": true,
+      "existing_public_types_preserved": true,
+      "derived_laws": "Finite exact filtration, nonzero detection, homology cardinal bound, E-infinity and abutment composition laws, graded lambda enrichment associativity/unit, and ESS transport operations are proved.",
+      "concrete_models_constructed": false,
+      "separation_proof_retained": true,
       "cache_reused": true
     }
   }

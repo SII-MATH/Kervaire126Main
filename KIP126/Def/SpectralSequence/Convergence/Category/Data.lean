@@ -1,5 +1,6 @@
 module
 
+public import KIP126.Def.SpectralSequence.Convergence.Proofs
 import all KIP126.Def.SpectralSequence.Convergence.Proofs
 
 @[expose] section
@@ -17,14 +18,14 @@ universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- The category whose objects are convergent nested-subobject spectral sequences. -/
-noncomputable instance
+public noncomputable instance
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω] {ω' : Type w} :
     Category.{max w v} (ConvergingSS C ω ω') where
   Hom X Y := ConvergenceMorphism X.conv Y.conv
   id X := ⟨
     { eMap := fun _ => 𝟙 _
       aMap := fun _ => 𝟙 _
-      filtration_compat := X.F.fcId },
+      filtration_compat := by exact X.F.fcId },
     rfl,
     fun k => by
       simp only [Category.id_comp, Filtration.transportGraded_self,
@@ -33,7 +34,7 @@ noncomputable instance
   comp {X Y Z} f g := ⟨
     { eMap := fun k => f.eMap k ≫ g.eMap k
       aMap := fun k' => f.aMap k' ≫ g.aMap k'
-      filtration_compat := ConvergenceMorphismData.fcComp f g },
+      filtration_compat := by exact ConvergenceMorphismData.fcComp f g },
     f.reindex_eq.trans g.reindex_eq,
     fun k => by
       show (f.eMap k ≫ g.eMap k) ≫ (Z.conv.iso k).hom ≫

@@ -123,7 +123,7 @@ public noncomputable def FilteredMorphism.inducedGrMap
   Filtration.inducedAssocGradedMap f.map f.compat s k
 
 /-- A spectral sequence packaged with its filtered target and convergence data. -/
-structure ConvergingSS
+public structure ConvergingSS
     (C : Type u) [Category.{v} C] [Abelian C]
     (ω : Type w) [AddCommGroup ω] [DecidableEq ω] (ω' : Type w) where
   /-- Underlying spectral sequence. -/
