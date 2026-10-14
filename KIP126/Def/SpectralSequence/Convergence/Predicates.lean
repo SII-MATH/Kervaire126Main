@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
 
 import all KIP126.Def.SpectralSequence.Convergence.Data
 
@@ -17,48 +18,6 @@ open CategoryTheory
 universe u v w
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
-
-/-- A filtration is bounded on both sides degreewise. -/
-public structure Filtration.IsBounded
-    {ω : Type w} {A : ω → C} (F : Filtration A) where
-  /-- Lower bound. -/
-  lo : ω → ℤ
-  /-- Upper bound. -/
-  hi : ω → ℤ
-  /-- Bounds occur in the expected order. -/
-  lo_le_hi : ∀ k, lo k ≤ hi k
-  /-- The filtration is top below the lower bound. -/
-  boundedBelow : ∀ (k : ω) (s : ℤ), s ≤ lo k → F.F s k = ⊤
-  /-- The filtration is bottom above the upper bound. -/
-  boundedAbove : ∀ (k : ω) (s : ℤ), hi k ≤ s → F.F s k = ⊥
-
-/-- A filtration is bounded below degreewise. -/
-public structure Filtration.IsBoundedBelow
-    {ω : Type w} {A : ω → C} (F : Filtration A) where
-  /-- Lower bound. -/
-  lo : ω → ℤ
-  /-- The filtration is top below the bound. -/
-  boundedBelow : ∀ (k : ω) (s : ℤ), s ≤ lo k → F.F s k = ⊤
-
-/-- A filtration is bounded above degreewise. -/
-public structure Filtration.IsBoundedAbove
-    {ω : Type w} {A : ω → C} (F : Filtration A) where
-  /-- Upper bound. -/
-  hi : ω → ℤ
-  /-- The filtration is bottom above the bound. -/
-  boundedAbove : ∀ (k : ω) (s : ℤ), hi k ≤ s → F.F s k = ⊥
-
-/-- Degreewise exhaustiveness. -/
-public def Filtration.IsExhaustive
-    {ω : Type w} {A : ω → C} (F : Filtration A) : Prop :=
-  ∀ (k : ω), ∃ (s : ℤ), F.F s k = ⊤
-
-/-- Degreewise Hausdorffness: the intersection of the filtration levels is
-zero, expressed by its subobject universal property. No finite level is
-required to vanish. -/
-public def Filtration.IsHausdorff
-    {ω : Type w} {A : ω → C} (F : Filtration A) : Prop :=
-  ∀ (k : ω) (S : Subobject (A k)), (∀ s : ℤ, S ≤ F.F s k) → S = ⊥
 
 /-- The infinity-page class `y` detects the filtered class represented by `x`. -/
 public def Detects

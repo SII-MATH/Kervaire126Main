@@ -1,7 +1,7 @@
 module
 
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Data
-import all KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
 
 @[expose] section
 

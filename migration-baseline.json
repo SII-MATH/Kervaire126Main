@@ -68,8 +68,7 @@
   "spectralSequence": {
     "source_manifest": "spectral-sequence-sources.json",
     "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-    "spectral_sequence_files": 124,
-    "required_algebra_files": 8,
+    "spectral_sequence_files": 132,
     "root_import": "KIP126.Def.SpectralSequence",
     "default_build": "lake build",
     "build_result": "passed",
@@ -89,10 +88,10 @@
       "default": "private; explicit public source declarations",
       "explicit_public_source_commands": 269,
       "named_public_declarations": 267,
-      "generated_declarations": 474,
-      "exports_including_generated_declarations": 741,
+      "generated_declarations": 475,
+      "exports_including_generated_declarations": 742,
       "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "Only module-local public entry and approved upstream SpectralSequence/Algebra dependencies"
+      "dependency_boundary": "Only KIP126.Def.SpectralSequence modules, including internal algebra support, and Mathlib/Lean dependencies"
     },
     "checks": [
       "Tests.SpectralSequence.Interface",
@@ -101,8 +100,8 @@
     ],
     "axiom_audit": {
       "target": "KIP126.Def.SpectralSequence.InternalAudit",
-      "declarations_checked": 2232,
-      "scope": "All internal and public declarations of this module; SpectralSequence also includes its Algebra support.",
+      "declarations_checked": 2134,
+      "scope": "All internal and public declarations of SpectralSequence, including Internal/Algebra support.",
       "transitive_axioms": [
         "propext",
         "Classical.choice",
@@ -113,7 +112,11 @@
     },
     "capability_ledger": "spectral-sequence-contracts.json",
     "source_files": 132,
-    "mathematical_change": "Original mathematical models and proof strength retained; new consumer operations proved and unused implementation conversions made private."
+    "mathematical_change": "Original mathematical models and proof strength retained; new consumer operations proved and unused implementation conversions made private.",
+    "internal_algebra_files": 8,
+    "internal_algebra_directory": "KIP126/Def/SpectralSequence/Internal/Algebra",
+    "filtration_definition": "One public KIP126.Core.SpectralSequence.Filtration record is shared by algebra support, filtered complexes and convergence; no Algebra.Filtration duplicate or conversion wrappers remain.",
+    "internal_algebra_counting": "The 8 internal algebra files are included in the 132 SpectralSequence source files."
   },
   "module_boundaries": [
     {
@@ -175,7 +178,7 @@
       "generated_declarations": 881,
       "exports_including_generated_declarations": 1112,
       "type_signature_lock": "Complete elaborated type fingerprints and universe names for every export",
-      "dependency_boundary": "Only module-local public entry and approved upstream SpectralSequence/Algebra dependencies"
+      "dependency_boundary": "Only KIP126.Def.AdamsSynthetic and its public upstream KIP126.Def.SpectralSequence dependency, plus Mathlib/Lean dependencies"
     },
     "checks": [
       "Tests.AdamsSynthetic.Interface",
@@ -186,7 +189,7 @@
     "axiom_audit": {
       "target": "KIP126.Def.AdamsSynthetic.InternalAudit",
       "declarations_checked": 1162,
-      "scope": "All internal and public declarations of this module; SpectralSequence also includes its Algebra support.",
+      "scope": "All internal and public declarations of AdamsSynthetic; the upstream SpectralSequence implementation is audited separately.",
       "transitive_axioms": [
         "propext",
         "Classical.choice",
@@ -220,6 +223,15 @@
     "zero_length_actual_map_theorem": true,
     "no_new_sorry_or_project_axiom": true,
     "readme_agents_unchanged": true,
-    "blueprint_checked": false
+    "blueprint_checked": false,
+    "algebra_internal_refactor": {
+      "single_filtration_record": true,
+      "shared_associated_graded": true,
+      "category_only_filtration_consumers": true,
+      "internal_visibility_checked": true,
+      "handwritten_public_types_preserved": true,
+      "generated_export_changes_reviewed": true,
+      "cache_reused": true
+    }
   }
 }

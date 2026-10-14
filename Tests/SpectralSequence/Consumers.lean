@@ -7,6 +7,39 @@ open KIP126.Core KIP126.Core.SpectralSequence
 
 universe u v w
 
+section Filtration
+
+variable {C : Type u} [Category.{v} C] {ω : Type w} {A : ω → C}
+
+-- The shared filtration remains constructible through its public fields in
+-- an arbitrary category; moving its implementation must not require Abelian.
+example (levels : ℤ → (k : ω) → Subobject (A k))
+    (decreases : ∀ s k, levels (s + 1) k ≤ levels s k) : Filtration A where
+  F := levels
+  mono := decreases
+
+example (F : Filtration A) {s t : ℤ} (h : s ≤ t) (k : ω) :
+    F.F t k ≤ F.F s k := F.le_of_le h k
+
+example {B : ω → C} (F : Filtration A) (G : Filtration B)
+    (map : ∀ k, A k ⟶ B k)
+    (compat : ∀ s k, ∃ φ : Subobject.underlying.obj (F.F s k) ⟶
+      Subobject.underlying.obj (G.F s k),
+      φ ≫ (G.F s k).arrow = (F.F s k).arrow ≫ map k) : FilteredMorphism F G where
+  map := map
+  compat := compat
+
+-- A consumer can detect a deeper representative through the public quotient
+-- theorem without importing the internal algebra implementation.
+example {R : Type u} [Ring R] {A : ω → ModuleCat.{v} R}
+    (F : Filtration A) (s : ℤ) (k : ω)
+    (x : (Subobject.underlying.obj (F.F s k) : ModuleCat R))
+    (hx : F.toAssociatedGraded s k x = 0) :
+    (F.F s k).arrow x ∈ (ModuleCat.subobjectModule (A k)) (F.F (s + 1) k) :=
+  (F.toAssociatedGraded_eq_zero_iff s k x).mp hx
+
+end Filtration
+
 section Detection
 
 variable {C : Type u} [Category.{v} C] [Abelian C]

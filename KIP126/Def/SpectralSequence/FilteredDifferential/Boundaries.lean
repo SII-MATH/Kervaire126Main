@@ -35,13 +35,13 @@ theorem pageDifferential_B_succ (FC : FilteredComplex C)
             (by exact_mod_cast Nat.le_succ n))) ≫
         FC.pageπ (s + ↑n) (k - 1) ↑n) := by
   -- === Reconstruct the internal abbreviations of pageDifferential ===
-  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k) with hι_s_def
+  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k) with hι_s_def
   set πV := FC.filtration.toAssociatedGraded s k with hπV_def
   set f_n := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow) with hf_n_def
   set kerZ := kernelSubobject f_n with hkerZ_def
   set ι_t := Subobject.ofLE (FC.filtration.F (s + ↑n + 1) (k - 1)) (FC.filtration.F (s + ↑n) (k - 1))
-    (FC.filtration.decreasing (s + ↑n) (k - 1)) with hι_t_def
+    (FC.filtration.mono (s + ↑n) (k - 1)) with hι_t_def
   set πV' := FC.filtration.toAssociatedGraded (s + ↑n) (k - 1) with hπV'_def
   set f_n' := (FC.filtration.F (s + ↑n) (k - 1)).arrow ≫ FC.complex.d (k - 1) (k - 1 - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow) with hf_n'_def
@@ -114,7 +114,7 @@ theorem pageDifferential_B_succ (FC : FilteredComplex C)
       set α' := Abelian.monoLift ι_s (kernel.ι p ≫ kerZ.arrow) h1'
       have hα'_spec : α' ≫ ι_s = kernel.ι p ≫ kerZ.arrow := Abelian.monoLift_comp _ _ _
       have h_ι_arrow' : ι_s ≫ (FC.filtration.F s k).arrow = (FC.filtration.F (s + 1) k).arrow :=
-        Subobject.ofLE_arrow (FC.filtration.decreasing s k)
+        Subobject.ofLE_arrow (FC.filtration.mono s k)
       have h_rewrite' : kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =
           α' ≫ ((FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1)) := by
         conv_lhs => rw [show kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =

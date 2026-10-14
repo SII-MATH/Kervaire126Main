@@ -17,9 +17,9 @@ theorem equation_natural (f : Morphism FC GD) (T : C) (r s k : ℤ)
     (z : Representatives FC T r s k) :
     equation GD T r s k (representativesMap f T r s k z) =
       equationsMap f T r s k (equation FC T r s k z) := by
-  have hs := Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+  have hs := InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
     f.toFilteredMorphism s k
-  have ht := Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+  have ht := InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
     f.toFilteredMorphism (s + r) (k - 1)
   apply Prod.ext
   · change (z.1 ≫ (f.preserves s k).choose) ≫ GD.filToAssocGraded s k =

@@ -1,7 +1,7 @@
 module
 
 import all KIP126.Def.SpectralSequence.Truncation.Predicates
-import all KIP126.Def.Algebra.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Proofs
 import Mathlib.Tactic.Ring
 
 @[expose] section
@@ -22,44 +22,15 @@ omit [Abelian C] in
 /-- Extend the one-step descending-filtration map to arbitrary comparable indices. -/
 lemma Filtration.mono_of_le {ω : Type w} {A : ω → C}
     (fil : Filtration A) {s₁ s₂ : ℤ} (h : s₁ ≤ s₂) (k : ω) :
-    fil.F s₂ k ≤ fil.F s₁ k := by
-  have key : ∀ n : ℕ, fil.F (s₁ + ↑n) k ≤ fil.F s₁ k := by
-    intro n
-    induction n with
-    | zero =>
-        simp only [Nat.cast_zero, add_zero]
-        exact le_rfl
-    | succ n ih =>
-        have step : fil.F (s₁ + ↑(n + 1)) k ≤ fil.F (s₁ + ↑n) k := by
-          have : s₁ + ↑(n + 1) = (s₁ + ↑n) + 1 := by
-            push_cast
-            ring
-          rw [this]
-          exact fil.mono _ k
-        exact le_trans step ih
-  have h2 : s₂ = s₁ + ↑(s₂ - s₁).toNat := by omega
-  rw [h2]
-  exact key _
-
-/-- Convert historical bounded-below data to the canonical predicate. -/
-def Filtration.IsBoundedBelow.toAlgebra
-    {ω : Type w} {A : ω → C} {fil : Filtration A}
-    (hbb : fil.IsBoundedBelow) : fil.toAlgebra.IsBoundedBelow where
-  lower := hbb.lo
-  eq_top_of_le := hbb.boundedBelow
+    fil.F s₂ k ≤ fil.F s₁ k :=
+  fil.le_of_le h k
 
 /-- The truncated filtration is bounded when the original is bounded below. -/
 noncomputable def Filtration.truncatedFiltration_isBounded
     {ω : Type w} {A : ω → C} {fil : Filtration A}
     (hbb : fil.IsBoundedBelow) (s₀ : ℤ) :
     (fil.truncatedFiltration s₀).IsBounded := by
-  let hb := fil.toAlgebra.quotientFiltration_isBounded hbb.toAlgebra (s₀ + 1)
-  exact
-    { lo := hb.lower
-      hi := hb.upper
-      lo_le_hi := hb.lower_le_upper
-      boundedBelow := hb.eq_top_of_le
-      boundedAbove := hb.eq_bot_of_le }
+  exact fil.quotientFiltration_isBounded hbb (s₀ + 1)
 
 /-- Transition maps compose. -/
 theorem Filtration.truncationTransition_comp
@@ -68,7 +39,7 @@ theorem Filtration.truncationTransition_comp
     fil.truncationTransition h₁₂ k ≫ fil.truncationTransition h₀₁ k =
       fil.truncationTransition (le_trans h₀₁ h₁₂) k := by
   simpa only [Filtration.truncationTransition] using
-    fil.toAlgebra.quotientTransition_comp
+    fil.quotientTransition_comp
       (show s₀ + 1 ≤ s₁ + 1 by omega)
       (show s₁ + 1 ≤ s₂ + 1 by omega) k
 
@@ -78,7 +49,7 @@ theorem Filtration.truncationProj_transition
     {s₀ s₁ : ℤ} (h : s₀ ≤ s₁) (k : ω) :
     fil.truncationProj s₁ k ≫ fil.truncationTransition h k =
       fil.truncationProj s₀ k := by
-  exact fil.toAlgebra.quotientProjection_transition
+  exact fil.quotientProjection_transition
     (show s₀ + 1 ≤ s₁ + 1 by omega) k
 
 /-- The original target map commutes with the two truncation projections. -/

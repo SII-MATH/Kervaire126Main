@@ -38,28 +38,14 @@ lemma Filtration.completionProj'_factor {ω : Type w} {A : ω → C}
   · rfl
   · omega
 
-omit [HasLimitsOfShape ℕᵒᵖ C] in
-lemma imageSubobject_ofLE_eq_bot_of_eq_bot {B : C} (X Y : Subobject B) (h : X ≤ Y)
-    (hX : X = ⊥) : imageSubobject (Subobject.ofLE X Y h) = ⊥ := by
-  subst hX
-  have : Subobject.ofLE ⊥ Y h = 0 := by
-    rw [← cancel_mono Y.arrow, Subobject.ofLE_arrow, Subobject.bot_arrow, zero_comp]
-  rw [this, imageSubobject_zero]
-
 /-! ### Mittag-Leffler condition -/
 
--- Keep the original instance parameters of this public theorem.
+-- Keep the original instance parameters of this theorem.
 set_option linter.unusedSectionVars false in
 /-- Bounded-above filtrations satisfy Mittag-Leffler. -/
 theorem Filtration.IsBoundedAbove.toIsMittagLeffler {ω : Type w} {A : ω → C}
-    {fil : Filtration A} (hba : fil.IsBoundedAbove) : fil.IsMittagLeffler := by
-  intro k s
-  use (hba.hi k - s).toNat
-  intro n hn
-  have hN : hba.hi k ≤ s + ↑((hba.hi k - s).toNat) := by omega
-  have hn' : hba.hi k ≤ s + ↑n := by omega
-  rw [imageSubobject_ofLE_eq_bot_of_eq_bot _ _ _ (hba.boundedAbove k _ hn'),
-      imageSubobject_ofLE_eq_bot_of_eq_bot _ _ _ (hba.boundedAbove k _ hN)]
+    {fil : Filtration A} (hba : fil.IsBoundedAbove) : fil.IsMittagLeffler :=
+  hba.isMittagLeffler
 
 /-- Bounded filtrations satisfy Mittag-Leffler. -/
 theorem Filtration.IsBounded.toIsMittagLeffler {ω : Type w} {A : ω → C}

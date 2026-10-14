@@ -54,7 +54,7 @@ theorem pageDifferential_Z_succ_ge (FC : FilteredComplex C)
   set f_n := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)
   set kerZ := kernelSubobject f_n
-  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)
+  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)
   set πV := FC.filtration.toAssociatedGraded s k
   set p := factorThruImageSubobject (kerZ.arrow ≫ πV)
   haveI : Epi p := inferInstance
@@ -119,7 +119,7 @@ theorem pageDifferential_Z_succ_ge (FC : FilteredComplex C)
   rw [Abelian.comp_epiDesc]
   -- Goal: β ≫ ψ = 0 where ψ = (to_Z_n_t) ≫ pageπ'
   set ι_t := Subobject.ofLE (FC.filtration.F (s + ↑n + 1) (k - 1)) (FC.filtration.F (s + ↑n) (k - 1))
-    (FC.filtration.decreasing (s + ↑n) (k - 1))
+    (FC.filtration.mono (s + ↑n) (k - 1))
   set πV' := FC.filtration.toAssociatedGraded (s + ↑n) (k - 1)
   -- Suffices: β ≫ to_Z_n_t = 0, then β ≫ ψ = (β ≫ to_Z_n_t) ≫ pageπ' = 0 ≫ pageπ' = 0
   suffices h : β ≫ _ = (0 : _ ⟶ Subobject.underlying.obj
@@ -258,8 +258,8 @@ theorem pageDifferential_Z_succ_ge (FC : FilteredComplex C)
       Subobject.ofLE_arrow]
   rw [h_factor, Category.assoc]
   dsimp [πV']
-  unfold KIP126.Core.Algebra.Filtration.toAssociatedGraded
-    KIP126.Core.Algebra.Filtration.associatedGraded
+  unfold KIP126.Core.SpectralSequence.Filtration.toAssociatedGraded
+    KIP126.Core.SpectralSequence.Filtration.associatedGraded
   rw [cokernel.condition, comp_zero]
 
 
@@ -275,13 +275,13 @@ theorem pageDifferential_Z_succ_le (FC : FilteredComplex C)
         (FC.cycleSubobject_antitone s k (by exact_mod_cast Nat.le_succ n)) ≫
       FC.pageπ s k ↑n) := by
   -- Reconstruct the internal abbreviations of pageDifferential
-  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k) with hι_s_def
+  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k) with hι_s_def
   set πV := FC.filtration.toAssociatedGraded s k with hπV_def
   set f_n := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow) with hf_n_def
   set kerZ := kernelSubobject f_n with hkerZ_def
   set ι_t := Subobject.ofLE (FC.filtration.F (s + ↑n + 1) (k - 1)) (FC.filtration.F (s + ↑n) (k - 1))
-    (FC.filtration.decreasing (s + ↑n) (k - 1)) with hι_t_def
+    (FC.filtration.mono (s + ↑n) (k - 1)) with hι_t_def
   set πV' := FC.filtration.toAssociatedGraded (s + ↑n) (k - 1) with hπV'_def
   set f_n' := (FC.filtration.F (s + ↑n) (k - 1)).arrow ≫ FC.complex.d (k - 1) (k - 1 - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow) with hf_n'_def
@@ -579,7 +579,7 @@ theorem pageDifferential_Z_succ_le (FC : FilteredComplex C)
         cokernel.π ((FC.filtration.F (s + ↑(n + 1)) (k - 1)).arrow) = 0 := by
       have h1 : ι_t ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow =
           (FC.filtration.F (s + ↑n + 1) (k - 1)).arrow :=
-        Subobject.ofLE_arrow (FC.filtration.decreasing (s + ↑n) (k - 1))
+        Subobject.ofLE_arrow (FC.filtration.mono (s + ↑n) (k - 1))
       have h2 : (FC.filtration.F (s + ↑n + 1) (k - 1)).arrow =
           eqToHom (congr_arg (fun i => Subobject.underlying.obj (FC.filtration.F i (k - 1)))
             h_sn1_eq) ≫ (FC.filtration.F (s + ↑(n + 1)) (k - 1)).arrow := by
@@ -605,7 +605,7 @@ theorem pageDifferential_Z_succ_le (FC : FilteredComplex C)
     have h_σ_arrow : σ ≫ (FC.filtration.F s k).arrow =
         pb2_fst ≫ eqH ≫ (FC.filtration.F (s + 1) k).arrow := by
       simp only [hσ_def, Category.assoc]
-      congr 2; exact Subobject.ofLE_arrow (FC.filtration.decreasing s k)
+      congr 2; exact Subobject.ofLE_arrow (FC.filtration.mono s k)
     -- (7) eqH ≫ F^{s+1}.arrow ≫ d(k) = imgD_src
     have h_eqH_d : eqH ≫ (FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1) = imgD_src := by
       conv_lhs => rw [← eqToHom_arrow_dToK_local FC (s + 1) k]

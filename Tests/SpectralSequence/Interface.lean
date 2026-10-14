@@ -19,8 +19,7 @@ run_cmd do
   let exported := env.setExporting true
   for mod in env.header.moduleNames do
     if (`KIP126).isPrefixOf mod &&
-        !(`KIP126.Def.SpectralSequence).isPrefixOf mod &&
-        !(`KIP126.Def.Algebra).isPrefixOf mod then
+        !(`KIP126.Def.SpectralSequence).isPrefixOf mod then
       throwError "SpectralSequence crossed its dependency boundary: {mod}"
   for decl in declarations do
     let name ← ofExcept <| decl.getObjValAs? String "name"

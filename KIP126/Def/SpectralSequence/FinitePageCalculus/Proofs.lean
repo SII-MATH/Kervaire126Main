@@ -8,8 +8,8 @@ import all KIP126.Def.SpectralSequence.Permanence.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 import all KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 import all KIP126.Def.SpectralSequence.ModuleQuotient.Proofs
-public import KIP126.Def.Algebra.Coefficients.Data
-import all KIP126.Def.Algebra.Coefficients.Data
+public import KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
 
 @[expose] section
 

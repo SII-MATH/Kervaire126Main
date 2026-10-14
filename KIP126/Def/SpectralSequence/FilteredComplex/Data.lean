@@ -1,6 +1,6 @@
 module
 
-import all KIP126.Def.Algebra.Filtration.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
 public import Mathlib.Algebra.Homology.HomologicalComplex
 public import Mathlib.Algebra.Homology.CochainComplexOpposite
 
@@ -30,7 +30,7 @@ structure FilteredComplex (C : Type u) [Category.{v} C] [Abelian C] where
   /-- The underlying Mathlib chain complex. -/
   complex : ChainComplex C ℤ
   /-- A decreasing filtration of the underlying graded object. -/
-  filtration : Algebra.Filtration complex.X
+  filtration : Filtration complex.X
   /-- The differential maps every filtration level into the same level in the
 next chain degree. -/
   differential_preserves : ∀ (s k : ℤ),
@@ -65,7 +65,7 @@ lemma homologyObj_apply (FC : FilteredComplex C) (k : ℤ) :
 /-! ### The induced filtration on homology -/
 
 noncomputable def homologyFiltration (FC : FilteredComplex C) :
-    Algebra.Filtration FC.homologyObj where
+    Filtration FC.homologyObj where
   F s k :=
     let S := FC.homologyShortComplex k
     let I := kernelSubobject S.g ⊓ FC.filtration.F s k
@@ -74,12 +74,12 @@ noncomputable def homologyFiltration (FC : FilteredComplex C) :
         (kernelSubobject S.g).arrow from (Subobject.ofLE_arrow inf_le_left).symm]
       rw [Category.assoc, kernelSubobject_arrow_comp, comp_zero]
     imageSubobject (S.liftCycles I.arrow hzero ≫ S.homologyπ)
-  decreasing := by
+  mono := by
     intro s k
     let S := FC.homologyShortComplex k
     let I₁ := kernelSubobject S.g ⊓ FC.filtration.F (s + 1) k
     let I₀ := kernelSubobject S.g ⊓ FC.filtration.F s k
-    have hle : I₁ ≤ I₀ := inf_le_inf_left _ (FC.filtration.decreasing s k)
+    have hle : I₁ ≤ I₀ := inf_le_inf_left _ (FC.filtration.mono s k)
     have hzero₁ : I₁.arrow ≫ S.g = 0 := by
       rw [show I₁.arrow = Subobject.ofLE I₁ (kernelSubobject S.g) inf_le_left ≫
         (kernelSubobject S.g).arrow from (Subobject.ofLE_arrow inf_le_left).symm]
@@ -152,7 +152,7 @@ theorem B_le_Z_aux (FC : FilteredComplex C) (s k : ℤ)
   rcases r with _ | n
   · simp only [boundarySubobject, cycleSubobject]
     let ι := Subobject.ofLE (FC.filtration.F (s + 1) k)
-      (FC.filtration.F s k) (FC.filtration.decreasing s k)
+      (FC.filtration.F s k) (FC.filtration.mono s k)
     let πV := cokernel.π ι
     let imgD := imageSubobject (FC.dToK k)
     let I := imgD ⊓ FC.filtration.F s k
@@ -181,7 +181,7 @@ theorem B_le_Z_aux (FC : FilteredComplex C) (s k : ℤ)
           imageSubobject_comp_le _ _
   · simp only [boundarySubobject, cycleSubobject]
     let ι := Subobject.ofLE (FC.filtration.F (s + 1) k)
-      (FC.filtration.F s k) (FC.filtration.decreasing s k)
+      (FC.filtration.F s k) (FC.filtration.mono s k)
     let πV := cokernel.π ι
     let imgD := imageSubobject
       ((FC.filtration.F (s - ↑n + 1) (k + 1)).arrow ≫ FC.dToK k)
@@ -245,7 +245,7 @@ lemma ext {f g : Morphism FC GD} (h : f.map = g.map) : f = g := by
 /-- View a filtered chain map as a filtered morphism of the underlying graded
 objects. -/
 def toFilteredMorphism (f : Morphism FC GD) :
-    Algebra.FilteredMorphism FC.filtration GD.filtration where
+    InternalFilteredMorphism FC.filtration GD.filtration where
   map := fun k => f.map.f k
   preserves := f.preserves
 
@@ -289,23 +289,23 @@ noncomputable def associatedGradedDifferential (FC : FilteredComplex C)
     (s k : ℤ) :
     FC.filtration.associatedGraded s k ⟶
       FC.filtration.associatedGraded s (k - 1) := by
-  unfold Algebra.Filtration.associatedGraded
+  unfold Filtration.associatedGraded
   exact cokernel.desc _
     ((FC.differential_preserves s k).choose ≫
       cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) (k - 1))
-        (FC.filtration.F s (k - 1)) (FC.filtration.decreasing s (k - 1))))
+        (FC.filtration.F s (k - 1)) (FC.filtration.mono s (k - 1))))
     (by
       have factor :
           Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k)
-              (FC.filtration.decreasing s k) ≫
+              (FC.filtration.mono s k) ≫
             (FC.differential_preserves s k).choose =
           (FC.differential_preserves (s + 1) k).choose ≫
             Subobject.ofLE (FC.filtration.F (s + 1) (k - 1))
-              (FC.filtration.F s (k - 1)) (FC.filtration.decreasing s (k - 1)) := by
+              (FC.filtration.F s (k - 1)) (FC.filtration.mono s (k - 1)) := by
         have mono_arrow : Mono (FC.filtration.F s (k - 1)).arrow := inferInstance
         have lhs_eq :
             (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k)
-                (FC.filtration.decreasing s k) ≫
+                (FC.filtration.mono s k) ≫
               (FC.differential_preserves s k).choose) ≫
                 (FC.filtration.F s (k - 1)).arrow =
               (FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1) := by
@@ -314,7 +314,7 @@ noncomputable def associatedGradedDifferential (FC : FilteredComplex C)
         have rhs_eq :
             ((FC.differential_preserves (s + 1) k).choose ≫
               Subobject.ofLE (FC.filtration.F (s + 1) (k - 1))
-                (FC.filtration.F s (k - 1)) (FC.filtration.decreasing s (k - 1))) ≫
+                (FC.filtration.F s (k - 1)) (FC.filtration.mono s (k - 1))) ≫
                 (FC.filtration.F s (k - 1)).arrow =
               (FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1) := by
           rw [Category.assoc, Subobject.ofLE_arrow,
@@ -327,10 +327,10 @@ theorem associatedGradedDifferential_sq (FC : FilteredComplex C)
     (s k : ℤ) :
     FC.associatedGradedDifferential s k ≫
       FC.associatedGradedDifferential s (k - 1) = 0 := by
-  unfold associatedGradedDifferential Algebra.Filtration.associatedGraded
+  unfold associatedGradedDifferential Filtration.associatedGraded
   apply (cancel_epi (cokernel.π (Subobject.ofLE
     (FC.filtration.F (s + 1) k) (FC.filtration.F s k)
-    (FC.filtration.decreasing s k)))).mp
+    (FC.filtration.mono s k)))).mp
   simp only [comp_zero, id_eq]
   rw [← Category.assoc, cokernel.π_desc, Category.assoc, cokernel.π_desc]
   suffices h : (FC.differential_preserves s k).choose ≫
@@ -613,7 +613,7 @@ lemma toAssociatedGraded_comp_associatedGradedDifferential
         FC.associatedGradedDifferential s k =
       (FC.differential_preserves s k).choose ≫
         FC.filtration.toAssociatedGraded s (k - 1) := by
-  unfold Algebra.Filtration.toAssociatedGraded associatedGradedDifferential
+  unfold Filtration.toAssociatedGraded associatedGradedDifferential
   exact cokernel.π_desc _ _ _
 
 /-- The filtration-level factorisations of a filtered chain map commute with
@@ -823,13 +823,13 @@ filtration degree. -/
 noncomputable def Morphism.associatedGradedMap (f : Morphism FC GD) (s k : ℤ) :
     FC.filtration.associatedGraded s k ⟶
       GD.filtration.associatedGraded s k :=
-  Algebra.FilteredMorphism.associatedGradedMap f.toFilteredMorphism s k
+  InternalFilteredMorphism.associatedGradedMap f.toFilteredMorphism s k
 
 @[simp]
 lemma Morphism.associatedGradedMap_id (FC : FilteredComplex C) (s k : ℤ) :
     (Morphism.id FC).associatedGradedMap s k = 𝟙 _ := by
   unfold Morphism.associatedGradedMap Morphism.toFilteredMorphism
-  exact Algebra.FilteredMorphism.associatedGradedMap_id _ _ _
+  exact InternalFilteredMorphism.associatedGradedMap_id _ _ _
 
 @[simp]
 lemma Morphism.associatedGradedMap_comp (f : Morphism FC GD)
@@ -837,7 +837,7 @@ lemma Morphism.associatedGradedMap_comp (f : Morphism FC GD)
     (Morphism.comp f g).associatedGradedMap s k =
       f.associatedGradedMap s k ≫ g.associatedGradedMap s k := by
   unfold Morphism.associatedGradedMap Morphism.toFilteredMorphism
-  exact Algebra.FilteredMorphism.associatedGradedMap_comp
+  exact InternalFilteredMorphism.associatedGradedMap_comp
     f.toFilteredMorphism g.toFilteredMorphism s k
 
 /-- The map induced on associated graded pieces commutes with the induced
@@ -849,12 +849,12 @@ lemma Morphism.associatedGradedMap_comm (f : Morphism FC GD) (s k : ℤ) :
         f.associatedGradedMap s (k - 1) := by
   unfold Morphism.associatedGradedMap
   apply (cancel_epi (cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k)
-    (FC.filtration.F s k) (FC.filtration.decreasing s k)))).mp
+    (FC.filtration.F s k) (FC.filtration.mono s k)))).mp
   have hmap :=
-    Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+    InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
       f.toFilteredMorphism s k
   have hmap' :=
-    Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+    InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
       f.toFilteredMorphism s (k - 1)
   have hdiffF :=
     toAssociatedGraded_comp_associatedGradedDifferential FC s k

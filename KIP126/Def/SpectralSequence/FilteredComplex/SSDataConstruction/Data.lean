@@ -34,9 +34,9 @@ namespace FilteredComplex
   Z_zero := FC.cycleSubobject_zero s k
   B_le_Z := FC.B_le_Z_aux s k
   Z_top_greatest := FC.cycleSubobject_top_greatest
-    bnd.toAlgebra.toIsBoundedAbove s k
+    bnd.toFiltration.toIsBoundedAbove s k
   B_top_least := FC.boundarySubobject_top_least
-    bnd.toAlgebra.toIsBoundedBelow s k
+    bnd.toFiltration.toIsBoundedBelow s k
 
 set_option maxHeartbeats 6400000 in
 /-- The data-only pre-spectral sequence of a bounded filtered complex. -/

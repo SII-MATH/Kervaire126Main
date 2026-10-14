@@ -1,6 +1,6 @@
 module
 
-import all KIP126.Def.Algebra.Filtration.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
 public import Mathlib.CategoryTheory.Limits.Constructions.EventuallyConstant
 
 @[expose] section
@@ -11,13 +11,12 @@ public import Mathlib.CategoryTheory.Limits.Constructions.EventuallyConstant
 For a decreasing filtration `F` of a graded object, this file constructs the
 canonical inverse system of quotient objects
 `Aᵢ / Fˢ Aᵢ`.  The universal-property predicate `CompletionWitness` records
-exactly when the canonical cone from `Aᵢ` is limiting.  It is a proved
-interface:
-the final section proves the predicate for a degreewise eventually-zero
-filtration, using Mathlib's eventually-constant-limit construction.
+exactly when the canonical cone from `Aᵢ` is limiting. Completeness is an
+explicit witness required from the caller; this file does not assert it for
+an arbitrary filtration.
 -/
 
-namespace KIP126.Core.Algebra
+namespace KIP126.Core.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -115,4 +114,4 @@ structure CompletionWitness (F : Filtration A) (i : ι) where
 
 end Filtration
 
-end KIP126.Core.Algebra
+end KIP126.Core.SpectralSequence

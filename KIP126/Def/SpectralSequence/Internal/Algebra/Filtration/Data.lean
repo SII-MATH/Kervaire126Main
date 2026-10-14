@@ -1,22 +1,21 @@
 module
 
-import all KIP126.Def.Algebra.Graded.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Graded.Data
 public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
 
 @[expose] section
 
 /-!
-# Filtered graded objects
+# Filtrations underlying spectral sequences
 
-This file supplies the part of the shared Core that is not already a Mathlib
-object: decreasing filtrations by subobjects of a graded object, their
-associated graded pieces, and filtration-preserving maps.  Filtrations and
-filtered maps work in an arbitrary category; quotient-based associated graded
-pieces work in an abelian category.  Neither layer assumes a field or an
-elementwise presentation.
+The public filtration record and associated-graded operations are defined once
+at this foundation layer. Filtered complexes, convergence, completion and
+truncation use this same record. Other algebra constructions remain private.
+Filtrations require only a category; quotients additionally require an abelian
+category.
 -/
 
-namespace KIP126.Core.Algebra
+namespace KIP126.Core.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -24,13 +23,43 @@ universe u v w
 
 variable {C : Type u} [Category.{v} C]
 
-/-- A decreasing filtration of a graded object.  `F s i` denotes the
-subobject $F^s A_i$, and `decreasing` says $F^{s+1} A_i \le F^s A_i$. -/
-structure Filtration {ι : Type w} (A : CategoryTheory.GradedObject ι C) where
-  /-- The filtration subobject at a filtration level and grading index. -/
-  F : ℤ → (i : ι) → Subobject (A i)
-  /-- The filtration is decreasing. -/
-  decreasing : ∀ (s : ℤ) (i : ι), F (s + 1) i ≤ F s i
+/-- A decreasing filtration with the historical `mono` field name. -/
+public structure Filtration {ω : Type w} (A : ω → C) where
+  /-- Filtration subobject at level `s` and grading `k`. -/
+  F : ℤ → (k : ω) → Subobject (A k)
+  /-- Successive levels form a decreasing family. -/
+  mono : ∀ (s : ℤ) (k : ω), F (s + 1) k ≤ F s k
+
+section
+
+variable [Abelian C]
+
+/-- Associated graded piece `F^s A^k / F^(s+1) A^k`. -/
+public noncomputable def Filtration.associatedGraded
+    {ω : Type w} {A : ω → C} (F : Filtration A) (s : ℤ) (k : ω) : C :=
+  cokernel (Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k))
+
+/-- Projection from a filtration level to its associated graded piece. -/
+public noncomputable def Filtration.toAssociatedGraded
+    {ω : Type w} {A : ω → C} (F : Filtration A) (s : ℤ) (k : ω) :
+    Subobject.underlying.obj (F.F s k) ⟶ F.associatedGraded s k :=
+  cokernel.π (Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k))
+
+/-- Transport associated graded pieces along equality of their indices. -/
+public noncomputable def Filtration.transportGraded
+    {ω' : Type w} {A : ω' → C} (F : Filtration A)
+    {r₁ r₂ : ℤ × ω'} (h : r₁ = r₂) :
+    F.associatedGraded r₁.1 r₁.2 ⟶ F.associatedGraded r₂.1 r₂.2 :=
+  eqToHom (by rw [h])
+
+end
+
+/-- A filtration decreases between any two ordered integer levels. -/
+public theorem Filtration.le_of_le {ω : Type w} {A : ω → C}
+    (F : Filtration A) {s t : ℤ} (h : s ≤ t) (k : ω) : F.F t k ≤ F.F s k := by
+  induction t, h using Int.leInduction with
+  | base => exact le_rfl
+  | succ t _ ih => exact (F.mono t k).trans ih
 
 namespace Filtration
 
@@ -38,20 +67,12 @@ variable {ι : Type w} {A : CategoryTheory.GradedObject ι C}
 
 /-! ### Maps between arbitrary filtration levels
 
-The successor inequality in `Filtration.decreasing` is the compact datum from
+The successor inequality in `Filtration.mono` is the compact datum from
 which all of the maps in the filtration diagram are obtained.  Keeping this
 construction here (rather than re-proving it in the filtered-complex layer)
 also fixes the variance convention once and for all: for `t ≤ s`, the
 decreasing filtration has an inclusion `F s ↪ F t`.
 -/
-
-/-- Monotonicity of a decreasing filtration at arbitrary integer levels. -/
-lemma le_of_le (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
-    F.F s i ≤ F.F t i := by
-  induction s, h using Int.leInduction with
-  | base => exact le_rfl
-  | succ s _ ih =>
-      exact (F.decreasing s i).trans ih
 
 /-- The canonical inclusion `Fˢ Aᵢ ⟶ Fᵗ Aᵢ` when `t ≤ s`. -/
 noncomputable def inclusion (F : Filtration A) {t s : ℤ} (h : t ≤ s) (i : ι) :
@@ -95,41 +116,18 @@ lemma inclusion_naturality (F : Filtration A) {t s : ℤ} (h : t ≤ s)
   simp
 
 
-/-- The associated graded piece
-$\operatorname{gr}^s_F A_i = F^s A_i/F^{s+1} A_i$. -/
-noncomputable def associatedGraded [Abelian C] (F : Filtration A) (s : ℤ) (i : ι) : C :=
-  cokernel (Subobject.ofLE (F.F (s + 1) i) (F.F s i) (F.decreasing s i))
-
-/-- The quotient map from a filtration level to its associated graded piece. -/
-noncomputable def toAssociatedGraded [Abelian C] (F : Filtration A) (s : ℤ) (i : ι) :
-    Subobject.underlying.obj (F.F s i) ⟶ F.associatedGraded s i :=
-  cokernel.π (Subobject.ofLE (F.F (s + 1) i) (F.F s i) (F.decreasing s i))
-
 /-- All associated graded pieces, graded by filtration degree and the original
 grading index. -/
 noncomputable def associatedGradedObject [Abelian C] (F : Filtration A) :
     CategoryTheory.GradedObject (ℤ × ι) C :=
   fun si => F.associatedGraded si.1 si.2
 
-/-! ### Index transport for associated graded pieces
-
-The associated graded object is indexed by a product, so equal reindexings
-must be transported explicitly when a construction changes the presentation
-of a bidegree.  This is the canonical replacement for the corresponding
-transport helper in the historical convergence file. -/
-
-/-- Transport an associated-graded piece along an equality of its indices. -/
-noncomputable def transportGraded [Abelian C] (F : Filtration A)
-    {r₁ r₂ : ℤ × ι} (h : r₁ = r₂) :
-    F.associatedGraded r₁.1 r₁.2 ⟶ F.associatedGraded r₂.1 r₂.2 :=
-  eqToHom (by rw [h])
-
 end Filtration
 
 /-- A morphism of filtered graded objects is a graded map whose restriction to
 each filtration subobject factors through the corresponding target
 subobject. -/
-structure FilteredMorphism {ι : Type w}
+structure InternalFilteredMorphism {ι : Type w}
     {A B : CategoryTheory.GradedObject ι C} (F : Filtration A) (G : Filtration B) where
   /-- The underlying degree-preserving map. -/
   map : A ⟶ B
@@ -138,20 +136,20 @@ structure FilteredMorphism {ι : Type w}
     ∃ φ : Subobject.underlying.obj (F.F s i) ⟶ Subobject.underlying.obj (G.F s i),
       φ ≫ (G.F s i).arrow = (F.F s i).arrow ≫ map i
 
-namespace FilteredMorphism
+namespace InternalFilteredMorphism
 
 variable {ι : Type w}
   {A B D : CategoryTheory.GradedObject ι C}
   {F : Filtration A} {G : Filtration B} {H : Filtration D}
 
 /-- The identity map of a filtered graded object. -/
-def id (F : Filtration A) : FilteredMorphism F F where
+def id (F : Filtration A) : InternalFilteredMorphism F F where
   map := 𝟙 A
   preserves := fun s i => ⟨𝟙 _, by simp⟩
 
 /-- Composition of filtration-preserving graded maps. -/
-def comp (f : FilteredMorphism F G) (g : FilteredMorphism G H) :
-    FilteredMorphism F H where
+def comp (f : InternalFilteredMorphism F G) (g : InternalFilteredMorphism G H) :
+    InternalFilteredMorphism F H where
   map := f.map ≫ g.map
   preserves := fun s i => by
     refine ⟨(f.preserves s i).choose ≫ (g.preserves s i).choose, ?_⟩
@@ -162,24 +160,24 @@ def comp (f : FilteredMorphism F G) (g : FilteredMorphism G H) :
     simp only [Category.assoc]
 
 lemma id_preserves_eq (F : Filtration A) (s : ℤ) (i : ι) :
-    ((FilteredMorphism.id F).preserves s i).choose = 𝟙 _ := by
+    ((InternalFilteredMorphism.id F).preserves s i).choose = 𝟙 _ := by
   apply (cancel_mono (F.F s i).arrow).mp
-  rw [(FilteredMorphism.id F).preserves s i |>.choose_spec]
-  dsimp [FilteredMorphism.id]
+  rw [(InternalFilteredMorphism.id F).preserves s i |>.choose_spec]
+  dsimp [InternalFilteredMorphism.id]
   simp
 
-lemma comp_preserves_eq (f : FilteredMorphism F G) (g : FilteredMorphism G H)
+lemma comp_preserves_eq (f : InternalFilteredMorphism F G) (g : InternalFilteredMorphism G H)
     (s : ℤ) (i : ι) :
-    ((FilteredMorphism.comp f g).preserves s i).choose =
+    ((InternalFilteredMorphism.comp f g).preserves s i).choose =
       (f.preserves s i).choose ≫ (g.preserves s i).choose := by
   apply (cancel_mono (H.F s i).arrow).mp
   calc
-    ((FilteredMorphism.comp f g).preserves s i).choose ≫
+    ((InternalFilteredMorphism.comp f g).preserves s i).choose ≫
           (H.F s i).arrow =
-        (F.F s i).arrow ≫ (FilteredMorphism.comp f g).map i :=
-      (FilteredMorphism.comp f g).preserves s i |>.choose_spec
+        (F.F s i).arrow ≫ (InternalFilteredMorphism.comp f g).map i :=
+      (InternalFilteredMorphism.comp f g).preserves s i |>.choose_spec
     _ = ((F.F s i).arrow ≫ f.map i) ≫ g.map i := by
-      simp only [FilteredMorphism.comp,
+      simp only [InternalFilteredMorphism.comp,
         GradedObject.categoryOfGradedObjects_comp]
       simp only [Category.assoc]
     _ = ((f.preserves s i).choose ≫ (G.F s i).arrow) ≫ g.map i := by
@@ -194,11 +192,11 @@ lemma comp_preserves_eq (f : FilteredMorphism F G) (g : FilteredMorphism G H)
 
 /-- The map on associated graded pieces induced by a filtration-preserving
 morphism. -/
-noncomputable def associatedGradedMap [Abelian C] (f : FilteredMorphism F G) (s : ℤ) (i : ι) :
+noncomputable def associatedGradedMap [Abelian C] (f : InternalFilteredMorphism F G) (s : ℤ) (i : ι) :
     F.associatedGraded s i ⟶ G.associatedGraded s i :=
   cokernel.map
-    (Subobject.ofLE (F.F (s + 1) i) (F.F s i) (F.decreasing s i))
-    (Subobject.ofLE (G.F (s + 1) i) (G.F s i) (G.decreasing s i))
+    (Subobject.ofLE (F.F (s + 1) i) (F.F s i) (F.mono s i))
+    (Subobject.ofLE (G.F (s + 1) i) (G.F s i) (G.mono s i))
     (f.preserves (s + 1) i).choose
     (f.preserves s i).choose
     (by
@@ -207,6 +205,6 @@ noncomputable def associatedGradedMap [Abelian C] (f : FilteredMorphism F G) (s 
       rw [(f.preserves s i).choose_spec, (f.preserves (s + 1) i).choose_spec,
         ← Category.assoc, Subobject.ofLE_arrow])
 
-end FilteredMorphism
+end InternalFilteredMorphism
 
-end KIP126.Core.Algebra
+end KIP126.Core.SpectralSequence

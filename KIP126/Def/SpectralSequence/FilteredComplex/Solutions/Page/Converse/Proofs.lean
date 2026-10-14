@@ -108,7 +108,7 @@ theorem nonempty_fiber_of_differentialRelation
     apply (cancel_mono (FC.fil s (k - 1)).arrow).mp
     simpa only [Category.assoc, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Algebra.Filtration.inclusion_arrow] using hxy
+      Filtration.inclusion_arrow] using hxy
   obtain ⟨zx', zy', hx', hy', hd'⟩ :=
     FC.pageDifferential_of_strict_lifts s k n xl yl hstrict
   have hzx : zx' = zx := by

@@ -32,7 +32,7 @@ theorem pageDifferential_comp (FC : FilteredComplex C)
   erw [cokernel.π_desc]
   set f_n₁ := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫ cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)
   set kerZ₁ := kernelSubobject f_n₁
-  set ι₁ := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)
+  set ι₁ := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)
   set πV₁ := cokernel.π ι₁
   set p₁ := factorThruImageSubobject (kerZ₁.arrow ≫ πV₁)
   haveI : Epi p₁ := inferInstance

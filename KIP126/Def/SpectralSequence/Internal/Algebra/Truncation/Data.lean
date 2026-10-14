@@ -1,7 +1,7 @@
 module
 
-import all KIP126.Def.Algebra.Completion.Data
-import all KIP126.Def.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
 
 @[expose] section
 
@@ -15,7 +15,7 @@ level itself; callers choosing the historical truncation at `s₀` pass
 `q = s₀ + 1`.
 -/
 
-namespace KIP126.Core.Algebra
+namespace KIP126.Core.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -30,13 +30,13 @@ namespace Filtration
 noncomputable def quotientFiltration (fil : Filtration A) (q : ℤ) :
     Filtration (fun i => fil.quotientAt q i) where
   F s i := imageSubobject ((fil.F s i).arrow ≫ fil.quotientProjection q i)
-  decreasing s i := by
+  mono s i := by
     rw [show (fil.F (s + 1) i).arrow ≫ fil.quotientProjection q i =
-      Subobject.ofLE _ _ (fil.decreasing s i) ≫
+      Subobject.ofLE _ _ (fil.mono s i) ≫
         (fil.F s i).arrow ≫ fil.quotientProjection q i
       from by rw [← Category.assoc, Subobject.ofLE_arrow]]
     exact imageSubobject_comp_le _ _
 
 end Filtration
 
-end KIP126.Core.Algebra
+end KIP126.Core.SpectralSequence

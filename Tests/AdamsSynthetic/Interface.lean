@@ -20,7 +20,6 @@ run_cmd do
   for mod in env.header.moduleNames do
     if (`KIP126).isPrefixOf mod &&
         !(`KIP126.Def.SpectralSequence).isPrefixOf mod &&
-        !(`KIP126.Def.Algebra).isPrefixOf mod &&
         !(`KIP126.Def.AdamsSynthetic).isPrefixOf mod then
       throwError "AdamsSynthetic crossed its dependency boundary: {mod}"
   for decl in declarations do

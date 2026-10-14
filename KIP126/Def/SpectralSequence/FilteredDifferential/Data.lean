@@ -75,13 +75,13 @@ set_option backward.isDefEq.respectTransparency false in
 @[no_expose] noncomputable def pageDifferential (FC : FilteredComplex C)
     (s k : ℤ) (n : ℕ) :
     FC.pageObj s k ↑n ⟶ FC.pageObj (s + ↑n) (k - 1) ↑n := by
-  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k) with hι_s_def
+  set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k) with hι_s_def
   let πV := FC.filtration.toAssociatedGraded s k
   let f_n := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)
   let kerZ := kernelSubobject f_n
   set ι_t := Subobject.ofLE (FC.filtration.F (s + ↑n + 1) (k - 1)) (FC.filtration.F (s + ↑n) (k - 1))
-    (FC.filtration.decreasing (s + ↑n) (k - 1)) with hι_t_def
+    (FC.filtration.mono (s + ↑n) (k - 1)) with hι_t_def
   let πV' := FC.filtration.toAssociatedGraded (s + ↑n) (k - 1)
   let f_n' := (FC.filtration.F (s + ↑n) (k - 1)).arrow ≫ FC.complex.d (k - 1) (k - 1 - 1) ≫
     cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow)
@@ -147,7 +147,7 @@ set_option backward.isDefEq.respectTransparency false in
       set α := Abelian.monoLift ι_s (kernel.ι p ≫ kerZ.arrow) h1' with hα_def
       have hα_spec : α ≫ ι_s = kernel.ι p ≫ kerZ.arrow := Abelian.monoLift_comp _ _ _
       have h_ι_arrow : ι_s ≫ (FC.filtration.F s k).arrow = (FC.filtration.F (s + 1) k).arrow := by
-        exact Subobject.ofLE_arrow (FC.filtration.decreasing s k)
+        exact Subobject.ofLE_arrow (FC.filtration.mono s k)
       have h_rewrite : kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =
           α ≫ ((FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1)) := by
         conv_lhs => rw [show kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =

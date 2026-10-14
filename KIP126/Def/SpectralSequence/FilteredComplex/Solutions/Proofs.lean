@@ -34,13 +34,13 @@ theorem nonempty_fiber_iff (hr : 0 ≤ r) :
     apply (cancel_mono (FC.fil s (k - 1)).arrow).mp
     simpa only [Category.assoc, filDiff, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Algebra.Filtration.inclusion_arrow] using hd
+      Filtration.inclusion_arrow] using hd
   · rintro ⟨xl, yl, hx, hy, hd⟩
     refine ⟨⟨(xl, yl), (mem_fiber_iff _).mpr ⟨hx, hy, ?_⟩⟩⟩
     have h := congrArg (fun a => a ≫ (FC.fil s (k - 1)).arrow) hd
     simpa only [Category.assoc, filDiff, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Algebra.Filtration.inclusion_arrow] using h
+      Filtration.inclusion_arrow] using h
 
 /-- Differences between solutions are actual homogeneous representative equations. -/
 theorem sub_mem_differences (a b : Fiber FC r s k x y) :

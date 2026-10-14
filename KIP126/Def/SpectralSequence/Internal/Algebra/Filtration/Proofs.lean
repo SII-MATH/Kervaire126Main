@@ -1,16 +1,53 @@
 module
 
-import all KIP126.Def.Algebra.Filtration.Predicates
+public import KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
 
 @[expose] section
 
-namespace KIP126.Core.Algebra
+namespace KIP126.Core.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
 universe u v w
 
 variable {C : Type u} [Category.{v} C]
+
+section
+
+variable [Abelian C]
+
+@[simp]
+public theorem Filtration.transportGraded_self
+    {ω' : Type w} {A : ω' → C} (F : Filtration A)
+    {r : ℤ × ω'} (h : r = r) :
+    F.transportGraded h = 𝟙 (F.associatedGraded r.1 r.2) :=
+  rfl
+
+public theorem Filtration.transportGraded_trans
+    {ω' : Type w} {A : ω' → C} (F : Filtration A)
+    {r₁ r₂ r₃ : ℤ × ω'} (h₁₂ : r₁ = r₂) (h₂₃ : r₂ = r₃) :
+    F.transportGraded h₁₂ ≫ F.transportGraded h₂₃ =
+      F.transportGraded (h₁₂.trans h₂₃) := by
+  subst h₁₂
+  subst h₂₃
+  simp only [Filtration.transportGraded_self, Category.id_comp]
+
+/-- A two-sided bounded filtration is bounded below. -/
+public def Filtration.IsBounded.toIsBoundedBelow
+    {ω : Type w} {A : ω → C} {F : Filtration A}
+    (h : F.IsBounded) : F.IsBoundedBelow where
+  lo := h.lo
+  boundedBelow := h.boundedBelow
+
+/-- A two-sided bounded filtration is bounded above. -/
+public def Filtration.IsBounded.toIsBoundedAbove
+    {ω : Type w} {A : ω → C} {F : Filtration A}
+    (h : F.IsBounded) : F.IsBoundedAbove where
+  hi := h.hi
+  boundedAbove := h.boundedAbove
+
+end
 
 namespace Filtration
 
@@ -30,41 +67,27 @@ lemma IsBoundedAbove.isMittagLeffler [Abelian C]
     {F : Filtration A} (hF : IsBoundedAbove F) :
     IsMittagLeffler F := by
   intro i s
-  refine ⟨(hF.upper i - s).toNat, ?_⟩
+  refine ⟨(hF.hi i - s).toNat, ?_⟩
   intro n hn
-  have hN : hF.upper i ≤ s + ((hF.upper i - s).toNat : ℤ) := by omega
-  have hn' : hF.upper i ≤ s + (n : ℤ) := by omega
+  have hN : hF.hi i ≤ s + ((hF.hi i - s).toNat : ℤ) := by omega
+  have hn' : hF.hi i ≤ s + (n : ℤ) := by omega
   have hs_n : s ≤ s + (n : ℤ) := by omega
-  have hs_N : s ≤ s + ((hF.upper i - s).toNat : ℤ) := by omega
+  have hs_N : s ≤ s + ((hF.hi i - s).toNat : ℤ) := by omega
   change imageSubobject
       (Subobject.ofLE (F.F (s + (n : ℤ)) i) (F.F s i)
         (F.le_of_le hs_n i)) =
     imageSubobject
-      (Subobject.ofLE (F.F (s + ((hF.upper i - s).toNat : ℤ)) i)
+      (Subobject.ofLE (F.F (s + ((hF.hi i - s).toNat : ℤ)) i)
         (F.F s i) (F.le_of_le hs_N i))
   rw [imageSubobject_ofLE_eq_bot_of_eq_bot _ _ (F.le_of_le hs_n i)
-      (hF.eq_bot_of_le i _ hn'),
+      (hF.boundedAbove i _ hn'),
     imageSubobject_ofLE_eq_bot_of_eq_bot _ _ (F.le_of_le hs_N i)
-      (hF.eq_bot_of_le i _ hN)]
+      (hF.boundedAbove i _ hN)]
 
 lemma IsBounded.isMittagLeffler [Abelian C]
     {F : Filtration A} (hF : IsBounded F) :
     IsMittagLeffler F :=
   hF.toIsBoundedAbove.isMittagLeffler
-
-@[simp]
-lemma transportGraded_self [Abelian C] (F : Filtration A)
-    {r : ℤ × ι} (h : r = r) :
-    F.transportGraded h = 𝟙 (F.associatedGraded r.1 r.2) :=
-  rfl
-
-lemma transportGraded_trans [Abelian C] (F : Filtration A)
-    {r₁ r₂ r₃ : ℤ × ι} (h₁₂ : r₁ = r₂) (h₂₃ : r₂ = r₃) :
-    F.transportGraded h₁₂ ≫ F.transportGraded h₂₃ =
-      F.transportGraded (h₁₂.trans h₂₃) := by
-  subst h₁₂
-  subst h₂₃
-  simp only [Filtration.transportGraded_self, Category.id_comp]
 
 /-- A generalized element of one filtration level maps to zero in the
 associated graded exactly when it lifts through the next filtration level. -/
@@ -74,7 +97,7 @@ lemma comp_toAssociatedGraded_eq_zero_iff_lifts [Abelian C]
     x ≫ F.toAssociatedGraded s i = 0 ↔
       ∃ x' : T ⟶ Subobject.underlying.obj (F.F (s + 1) i),
         x' ≫ Subobject.ofLE (F.F (s + 1) i) (F.F s i)
-          (F.decreasing s i) = x := by
+          (F.mono s i) = x := by
   unfold toAssociatedGraded associatedGraded
   constructor
   · intro h
@@ -90,7 +113,7 @@ lemma comp_toAssociatedGraded_eq_iff_sub_lifts [Abelian C]
     x ≫ F.toAssociatedGraded s i = x' ≫ F.toAssociatedGraded s i ↔
       ∃ z : T ⟶ Subobject.underlying.obj (F.F (s + 1) i),
         z ≫ Subobject.ofLE (F.F (s + 1) i) (F.F s i)
-          (F.decreasing s i) = x - x' := by
+          (F.mono s i) = x - x' := by
   rw [← sub_eq_zero, ← Preadditive.sub_comp]
   exact F.comp_toAssociatedGraded_eq_zero_iff_lifts s i (x - x')
 
@@ -98,17 +121,17 @@ lemma comp_toAssociatedGraded_eq_iff_sub_lifts [Abelian C]
 lemma IsBoundedBelow.isExhaustive {F : Filtration A} (hF : IsBoundedBelow F) :
     IsExhaustive F := by
   intro i
-  exact ⟨hF.lower i, hF.eq_top_of_le i (hF.lower i) le_rfl⟩
+  exact ⟨hF.lo i, hF.boundedBelow i (hF.lo i) le_rfl⟩
 
 /-- A bounded-above filtration is eventually zero. -/
 lemma IsBoundedAbove.isEventuallyZero [Abelian C] {F : Filtration A} (hF : IsBoundedAbove F) :
     IsEventuallyZero F := by
   intro i
-  exact ⟨hF.upper i, hF.eq_bot_of_le i (hF.upper i) le_rfl⟩
+  exact ⟨hF.hi i, hF.boundedAbove i (hF.hi i) le_rfl⟩
 
 end Filtration
 
-namespace FilteredMorphism
+namespace InternalFilteredMorphism
 
 variable {ι : Type w}
   {A B D : CategoryTheory.GradedObject ι C}
@@ -118,38 +141,38 @@ variable {ι : Type w}
 pieces.  This is the universal-property equation used by later filtered
 complex constructions. -/
 lemma toAssociatedGraded_comp_associatedGradedMap [Abelian C]
-    (f : FilteredMorphism F G) (s : ℤ) (i : ι) :
+    (f : InternalFilteredMorphism F G) (s : ℤ) (i : ι) :
     F.toAssociatedGraded s i ≫ f.associatedGradedMap s i =
       (f.preserves s i).choose ≫ G.toAssociatedGraded s i := by
-  unfold Filtration.toAssociatedGraded FilteredMorphism.associatedGradedMap
+  unfold Filtration.toAssociatedGraded InternalFilteredMorphism.associatedGradedMap
   dsimp only [cokernel.map]
   exact cokernel.π_desc _ _ _
 
 @[simp]
 lemma associatedGradedMap_id [Abelian C] (F : Filtration A) (s : ℤ) (i : ι) :
-    (FilteredMorphism.id F).associatedGradedMap s i = 𝟙 _ := by
+    (InternalFilteredMorphism.id F).associatedGradedMap s i = 𝟙 _ := by
   apply (cancel_epi (cokernel.π (Subobject.ofLE (F.F (s + 1) i)
-    (F.F s i) (F.decreasing s i)))).mp
+    (F.F s i) (F.mono s i)))).mp
   have h := toAssociatedGraded_comp_associatedGradedMap
-    (FilteredMorphism.id F) s i
+    (InternalFilteredMorphism.id F) s i
   have hi := id_preserves_eq F s i
   change F.toAssociatedGraded s i ≫
-      (FilteredMorphism.id F).associatedGradedMap s i =
+      (InternalFilteredMorphism.id F).associatedGradedMap s i =
     F.toAssociatedGraded s i ≫ 𝟙 _
   rw [h, hi]
   simp
 
 @[simp]
 lemma associatedGradedMap_comp [Abelian C]
-    (f : FilteredMorphism F G) (g : FilteredMorphism G H) (s : ℤ) (i : ι) :
-    (FilteredMorphism.comp f g).associatedGradedMap s i =
+    (f : InternalFilteredMorphism F G) (g : InternalFilteredMorphism G H) (s : ℤ) (i : ι) :
+    (InternalFilteredMorphism.comp f g).associatedGradedMap s i =
       f.associatedGradedMap s i ≫ g.associatedGradedMap s i := by
   apply (cancel_epi (cokernel.π (Subobject.ofLE (F.F (s + 1) i)
-    (F.F s i) (F.decreasing s i)))).mp
+    (F.F s i) (F.mono s i)))).mp
   calc
     F.toAssociatedGraded s i ≫
-          (FilteredMorphism.comp f g).associatedGradedMap s i =
-        ((FilteredMorphism.comp f g).preserves s i).choose ≫
+          (InternalFilteredMorphism.comp f g).associatedGradedMap s i =
+        ((InternalFilteredMorphism.comp f g).preserves s i).choose ≫
           H.toAssociatedGraded s i :=
       toAssociatedGraded_comp_associatedGradedMap _ _ _
     _ = (f.preserves s i).choose ≫ (g.preserves s i).choose ≫
@@ -170,6 +193,6 @@ lemma associatedGradedMap_comp [Abelian C]
           (f.associatedGradedMap s i ≫ g.associatedGradedMap s i) := by
       simp only [Category.assoc]
 
-end FilteredMorphism
+end InternalFilteredMorphism
 
-end KIP126.Core.Algebra
+end KIP126.Core.SpectralSequence

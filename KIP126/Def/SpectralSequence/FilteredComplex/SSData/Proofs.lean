@@ -33,35 +33,35 @@ theorem representativeRelation_of_lifts
   exact ⟨xl, yl, rfl, rfl, hd⟩
 
 /-- Convert historical boundedness to KIP126's canonical filtration predicate. -/
-def IsBounded.toAlgebra {FC : FilteredComplex C} (bnd : FC.IsBounded) :
+def IsBounded.toFiltration {FC : FilteredComplex C} (bnd : FC.IsBounded) :
     FC.filtration.IsBounded where
-  lower := bnd.lo
-  upper := bnd.hi
-  eq_top_of_le := bnd.boundedBelow
-  eq_bot_of_le := bnd.boundedAbove
-  lower_le_upper := bnd.lo_le_hi
+  lo := bnd.lo
+  hi := bnd.hi
+  boundedBelow := bnd.boundedBelow
+  boundedAbove := bnd.boundedAbove
+  lo_le_hi := bnd.lo_le_hi
 
 /-- Convert canonical boundedness to the historical record. -/
-def _root_.KIP126.Core.SpectralSequence.FilteredComplex.IsBounded.ofAlgebra
+def _root_.KIP126.Core.SpectralSequence.FilteredComplex.IsBounded.ofFiltration
     {FC : FilteredComplex C}
     (bnd : FC.filtration.IsBounded) : FC.IsBounded where
-  lo := bnd.lower
-  hi := bnd.upper
-  lo_le_hi := bnd.lower_le_upper
-  boundedBelow := bnd.eq_top_of_le
-  boundedAbove := bnd.eq_bot_of_le
+  lo := bnd.lo
+  hi := bnd.hi
+  lo_le_hi := bnd.lo_le_hi
+  boundedBelow := bnd.boundedBelow
+  boundedAbove := bnd.boundedAbove
 
 @[simp]
-theorem IsBounded.ofAlgebra_toAlgebra {FC : FilteredComplex C}
+theorem IsBounded.ofFiltration_toFiltration {FC : FilteredComplex C}
     (bnd : FC.filtration.IsBounded) :
-    (FilteredComplex.IsBounded.ofAlgebra bnd).toAlgebra = bnd := by
+    (FilteredComplex.IsBounded.ofFiltration bnd).toFiltration = bnd := by
   cases bnd
   rfl
 
 @[simp]
-theorem IsBounded.toAlgebra_ofAlgebra {FC : FilteredComplex C}
+theorem IsBounded.toFiltration_ofFiltration {FC : FilteredComplex C}
     (bnd : FC.IsBounded) :
-    FilteredComplex.IsBounded.ofAlgebra bnd.toAlgebra = bnd := by
+    FilteredComplex.IsBounded.ofFiltration bnd.toFiltration = bnd := by
   cases bnd
   rfl
 
@@ -83,7 +83,7 @@ theorem complex_d_comp_eqToHom (FC : FilteredComplex C)
 /-- Historical successor antitonicity statement for the filtration. -/
 theorem fil_anti (FC : FilteredComplex C) (s k : ℤ) :
     FC.fil (s + 1) k ≤ FC.fil s k :=
-  FC.filtration.decreasing s k
+  FC.filtration.mono s k
 
 /-- Historical filtration-preservation witness. -/
 theorem d_preserves_fil (FC : FilteredComplex C) (s k : ℤ) :

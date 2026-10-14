@@ -1,7 +1,7 @@
 module
 
 import all KIP126.Def.SpectralSequence.FilteredComplex.Data
-import all KIP126.Def.Algebra.Completion.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
 
 @[expose] section
 

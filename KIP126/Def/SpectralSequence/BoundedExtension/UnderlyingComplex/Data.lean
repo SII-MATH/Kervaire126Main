@@ -34,7 +34,7 @@ noncomputable def underlyingComplex
   complex := BoundedExtension.twoTermComplex (A₁ t) (A₂ t) (aMap t)
   filtration := {
     F := twoTermFil (fun s => F₁.F s t) (fun s => F₂.F s t)
-    decreasing := fun s k => by
+    mono := fun s k => by
       by_cases h₁ : k = 1
       · subst k
         simpa [BoundedExtension.twoTermComplex, BoundedExtension.twoTermObj,

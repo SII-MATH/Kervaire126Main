@@ -1,13 +1,13 @@
 module
 
-import all KIP126.Def.Algebra.Coefficients.Data
-import all KIP126.Def.Algebra.Completion.Data
-import all KIP126.Def.Algebra.Filtration.Data
-import all KIP126.Def.Algebra.Filtration.Predicates
-import all KIP126.Def.Algebra.Filtration.Proofs
-import all KIP126.Def.Algebra.Graded.Data
-import all KIP126.Def.Algebra.Truncation.Data
-import all KIP126.Def.Algebra.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Graded.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Proofs
 import all KIP126.Def.SpectralSequence.Basic.Category.Data
 import all KIP126.Def.SpectralSequence.Basic.Category.Predicates
 import all KIP126.Def.SpectralSequence.Basic.Category.Proofs

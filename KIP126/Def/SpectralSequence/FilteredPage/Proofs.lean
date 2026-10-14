@@ -148,7 +148,7 @@ theorem cycleSubobject_zero (FC : FilteredComplex C) (s k : ℤ) :
     simp only [hf0, kernelSubobject_zero]
   rw [imageSubobject_iso_comp]
   let π := cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k)
-    (FC.filtration.F s k) (FC.filtration.decreasing s k))
+    (FC.filtration.F s k) (FC.filtration.mono s k))
   haveI : Epi (image.ι π) := epi_image_of_epi _
   haveI : IsIso (image.ι π) := isIso_of_mono_of_epi _
   haveI : IsIso (imageSubobject π).arrow := by
@@ -166,8 +166,8 @@ theorem cycleSubobject_top_greatest (FC : FilteredComplex C)
     (hX : ∀ i : ℕ, X ≤ FC.cycleSubobject s k ↑i) :
     X ≤ FC.cycleSubobject s k ⊤ := by
   obtain ⟨N, hN⟩ : ∃ N : ℕ, FC.filtration.F (s + ↑N) (k - 1) = ⊥ := by
-    use (bnd.upper (k - 1) - s).toNat
-    apply bnd.eq_bot_of_le; omega
+    use (bnd.hi (k - 1) - s).toNat
+    apply bnd.boundedAbove; omega
   have h_zero : (FC.filtration.F (s + ↑N) (k - 1)).arrow = 0 := by
     rw [hN, Subobject.bot_arrow]
   haveI : IsIso (cokernel.π ((FC.filtration.F (s + ↑N) (k - 1)).arrow)) := by
@@ -189,15 +189,15 @@ theorem cycleSubobject_top_greatest (FC : FilteredComplex C)
   change imageSubobject
       ((kernelSubobject ((FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
         cokernel.π ((FC.filtration.F (s + ↑N) (k - 1)).arrow))).arrow ≫
-        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k))) ≤
+        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k))) ≤
     imageSubobject
       ((kernelSubobject ((FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1))).arrow ≫
-        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)))
+        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)))
   have heq : (kernelSubobject ((FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫
       cokernel.π ((FC.filtration.F (s + ↑N) (k - 1)).arrow))).arrow ≫
-      cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)) =
+      cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)) =
     Subobject.ofLE _ _ hle ≫ (kernelSubobject ((FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1))).arrow ≫
-      cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)) := by
+      cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)) := by
     conv_rhs => rw [← Category.assoc]
     congr 1
     exact (Subobject.ofLE_arrow hle).symm
@@ -211,8 +211,8 @@ theorem boundarySubobject_top_least (FC : FilteredComplex C)
     (hX : ∀ i : ℕ, FC.boundarySubobject s k ↑i ≤ X) :
     FC.boundarySubobject s k ⊤ ≤ X := by
   obtain ⟨N, hN⟩ : ∃ N : ℕ, FC.filtration.F (s - ↑N + 1) (k + 1) = ⊤ := by
-    use (s + 1 - bnd.lower (k + 1)).toNat
-    apply bnd.eq_top_of_le; omega
+    use (s + 1 - bnd.lo (k + 1)).toNat
+    apply bnd.boundedBelow; omega
   haveI : IsIso (FC.filtration.F (s - ↑N + 1) (k + 1)).arrow := by
     rw [Subobject.isIso_arrow_iff_eq_top]; exact hN
   have himgD : imageSubobject ((FC.filtration.F (s - ↑N + 1) (k + 1)).arrow ≫ FC.dToK k) =
@@ -222,11 +222,11 @@ theorem boundarySubobject_top_least (FC : FilteredComplex C)
     le_trans hsuff (hX N)
   change imageSubobject (Subobject.ofLE (imageSubobject (FC.dToK k) ⊓ FC.filtration.F s k)
         (FC.filtration.F s k) inf_le_right ≫
-        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k))) ≤
+        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k))) ≤
     imageSubobject (Subobject.ofLE
         (imageSubobject ((FC.filtration.F (s - ↑N + 1) (k + 1)).arrow ≫ FC.dToK k) ⊓ FC.filtration.F s k)
         (FC.filtration.F s k) inf_le_right ≫
-        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)))
+        cokernel.π (Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)))
   rw [himgD]
 
 /-! ### Basic quotient-page consequences

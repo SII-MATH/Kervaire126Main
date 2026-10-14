@@ -16,7 +16,7 @@ Unlike that source, this module uses the project's existing filtered and
 associated-graded functors and does not introduce a spectral-sequence engine.
 
 The leading-term projection used by these representative calculations is the
-existing `Algebra.Filtration.toAssociatedGraded`; no second spectral-sequence
+existing `Filtration.toAssociatedGraded`; no second spectral-sequence
 or associated-graded interface is introduced here.
 -/
 
@@ -46,7 +46,7 @@ theorem FilteredComplex.associatedGradedDifferential_iff_representative
   constructor
   · intro hab
     haveI : Epi (FC.filtration.toAssociatedGraded s k) := by
-      unfold Algebra.Filtration.toAssociatedGraded Algebra.Filtration.associatedGraded
+      unfold Filtration.toAssociatedGraded Filtration.associatedGraded
       infer_instance
     let x := Projective.factorThru a (FC.filtration.toAssociatedGraded s k)
     have hx : x ≫ FC.filtration.toAssociatedGraded s k = a :=
@@ -106,7 +106,7 @@ theorem FilteredComplex.associatedGradedDifferential_eq_zero_iff_representative
     calc
       dx' ≫ (FC.filtration.F (s + 1) (k - 1)).arrow =
           (dx' ≫ Subobject.ofLE (FC.filtration.F (s + 1) (k - 1))
-            (FC.filtration.F s (k - 1)) (FC.filtration.decreasing s (k - 1))) ≫
+            (FC.filtration.F s (k - 1)) (FC.filtration.mono s (k - 1))) ≫
             (FC.filtration.F s (k - 1)).arrow := by
               rw [Category.assoc, Subobject.ofLE_arrow]
       _ = dx ≫ (FC.filtration.F s (k - 1)).arrow := by rw [hdx']
@@ -114,12 +114,12 @@ theorem FilteredComplex.associatedGradedDifferential_eq_zero_iff_representative
   · rintro ⟨x, hx, dx, hdx⟩
     apply (FC.associatedGradedDifferential_iff_representative s k a 0).mpr
     let inclusion := Subobject.ofLE (FC.filtration.F (s + 1) (k - 1))
-      (FC.filtration.F s (k - 1)) (FC.filtration.decreasing s (k - 1))
+      (FC.filtration.F s (k - 1)) (FC.filtration.mono s (k - 1))
     refine ⟨x, hx, dx ≫ inclusion, ?_, ?_⟩
     · rw [Category.assoc, Subobject.ofLE_arrow, hdx]
     · have hinclusion :
           inclusion ≫ FC.filtration.toAssociatedGraded s (k - 1) = 0 := by
-        dsimp only [inclusion, Algebra.Filtration.toAssociatedGraded]
+        dsimp only [inclusion, Filtration.toAssociatedGraded]
         exact cokernel.condition _
       rw [Category.assoc, hinclusion, comp_zero]
 
