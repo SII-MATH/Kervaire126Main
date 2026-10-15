@@ -44,11 +44,20 @@ private theorem nu_three_actual_relation_and_unique :
   rw [he,Category.assoc,κ.hom_inv_id_assoc]
   exact hab
 
-private theorem nu_extension_in_fifth_quotient :
-    NuExtension5 KIP126.Computation.Standard.X KIP126.Computation.Standard.Y hopfNu := by
+/-- The same actual Q3 relation, extracted as in Kervaire126 f2f790267. -/
+private theorem nu_extension_in_third_quotient :
+    ∃ (x : BiHom 122 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 3))
+      (y : BiHom 125 134 (XModLambdaN (S_0_0 : SyntheticSpectrum) 3)),
+      FiniteDetected 3 (by decide) 8 130 0 KIP126.Computation.Standard.X x ∧
+      FiniteDetected 3 (by decide) 11 136 2 KIP126.Computation.Standard.Y y ∧
+      sphereAction hopfNu x = y := by
   obtain ⟨hu,κ,hκ,x,y,hxn,hx,hy,hxy⟩ := nu_three_actual_relation_and_unique
-  apply NuFifth.nu_five_of_three hopfNu KIP126.Literature.Standard.nuCofiber_normalized_label
   refine ⟨x,y,hx,hy,?_⟩
   exact (q3_sphere_action_actual_map hu κ hκ hopfNu x hxn).trans hxy
+
+private theorem nu_extension_in_fifth_quotient :
+    NuExtension5 KIP126.Computation.Standard.X KIP126.Computation.Standard.Y hopfNu := by
+  exact NuFifth.nu_five_of_three hopfNu KIP126.Literature.Standard.nuCofiber_normalized_label
+    nu_extension_in_third_quotient
 end
 end KIP126.Main.Internal.NuThree

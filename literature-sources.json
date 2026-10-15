@@ -294,7 +294,7 @@
     },
     {
       "path": "KIP126/Def/Literature/Standard.lean",
-      "sha256": "49dd7a836fd29b6ed5a3d465082c5cdb8dec507dc9bbfe88fafc44ebab321777",
+      "sha256": "fe70c39a8ec2813deee0b1baa8f7b5dd983071b1224301dddc6b1b0636827bcb",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -363,7 +363,25 @@
         }
       ],
       "role": "fixed-upstream-objects-and-direct-theorems",
-      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+      "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json.",
+      "newer_source_proof_adaptations": [
+        {
+          "name": "KIP126.Literature.Standard.realization_additive",
+          "target": "KIP126/Def/Literature/Standard.lean",
+          "source": {
+            "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+            "path": "KIP126/Main/Solution/StageInput/Toda/Low.lean",
+            "sha256": "96fce8b38a7bdbd57a3f1a3388c371a3d899abf5bea35b9a9d6276d63ce40994",
+            "archive_member": "KIP126/Main/Solution/StageInput/Toda/Low.lean"
+          },
+          "source_lines": [
+            254,
+            258
+          ],
+          "status": "proof-adapted-no-local-sorry",
+          "note": "Uses the existing actual LambdaRecovery adjunction; no new premise or source-model assumption."
+        }
+      ]
     },
     {
       "path": "KIP126/Def/Literature/Standard/Filtration.lean",
@@ -701,5 +719,6 @@
       "reason": "Restore original finite data, actual-object calibration or structural comparison consumed by the migrated Main proof. No paper-specific derived conclusion is assumed here; derived Main calculations remain compiled Main proofs.",
       "scope_review": "Same fixed actual objects and comparison. Finite tables retain original page/range/coordinate bounds; algebraic operations retain the original degree and positivity conditions."
     }
-  ]
+  ],
+  "newer_source_update_review": "upstream-update-review.json"
 }

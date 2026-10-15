@@ -10,7 +10,7 @@
   "capabilities": [
     {
       "id": "main-paper-conditions",
-      "mathematical_purpose": "论文命题 7.8 的 D12、C3、C4、C5 及同一固定系统上的检测条件。",
+      "mathematical_purpose": "论文命题 7.8 的 H6SquareSupportsD12、Stem126D6Vanishes、Theta5SquareNonzeroDetection、EtaExtensionDetection 及同一固定系统上的检测条件。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -35,13 +35,13 @@
       "implementation": [
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.D12",
+          "declaration": "KIP126.Main.H6SquareSupportsD12",
           "line": 17,
           "migration_status": "definition-or-language-migrated"
         },
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.C3",
+          "declaration": "KIP126.Main.Stem126D6Vanishes",
           "line": 22,
           "migration_status": "definition-or-language-migrated"
         },
@@ -53,13 +53,13 @@
         },
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.C4At",
+          "declaration": "KIP126.Main.Theta5SquareNonzeroDetectionAt",
           "line": 30,
           "migration_status": "definition-or-language-migrated"
         },
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.C4",
+          "declaration": "KIP126.Main.Theta5SquareNonzeroDetection",
           "line": 35,
           "migration_status": "definition-or-language-migrated"
         },
@@ -71,13 +71,13 @@
         },
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.C5At",
+          "declaration": "KIP126.Main.EtaExtensionDetectionAt",
           "line": 43,
           "migration_status": "definition-or-language-migrated"
         },
         {
           "path": "KIP126/Main/Conditions.lean",
-          "declaration": "KIP126.Main.C5",
+          "declaration": "KIP126.Main.EtaExtensionDetection",
           "line": 48,
           "migration_status": "definition-or-language-migrated"
         },
@@ -96,7 +96,7 @@
     },
     {
       "id": "main-classical-reduction",
-      "mathematical_purpose": "由固定计算接口证明 C3 与 T 到达 E12 的关系，以及 D12 的必要条件。",
+      "mathematical_purpose": "由固定计算接口证明 Stem126D6Vanishes 与 T 到达 E12 的关系，以及 H6SquareSupportsD12 的必要条件。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -133,7 +133,7 @@
         },
         {
           "path": "KIP126/Main/ClassicalReduction.lean",
-          "declaration": "KIP126.Main.c3_iff_target_survives_twelve",
+          "declaration": "KIP126.Main.d6_vanishes_iff_target_survives_twelve",
           "line": 46,
           "migration_status": "adapted-proof-body-present"
         },
@@ -206,25 +206,25 @@
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
-          "declaration": "KIP126.Main.c4_choice_invariant",
+          "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
           "line": 56,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
-          "declaration": "KIP126.Main.c4_choice_equivalence",
+          "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
           "line": 63,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
-          "declaration": "KIP126.Main.c5_choice_equivalence",
+          "declaration": "KIP126.Main.eta_extension_detection_choice_equivalence",
           "line": 74,
           "migration_status": "original-paper-target-without-proof"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
-          "declaration": "KIP126.Main.c4_c5_choice_equivalence",
+          "declaration": "KIP126.Main.square_and_eta_detection_choice_equivalence",
           "line": 78,
           "migration_status": "adapted-proof-body-present"
         }
@@ -245,15 +245,15 @@
           "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
         },
         {
-          "name": "KIP126.Main.c5_choice_equivalence",
+          "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
           "status": "original-paper-target-without-proof",
-          "note": "The actual-model C4/C5 choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
+          "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
         }
       ]
     },
     {
       "id": "main-proposition-seven-eight",
-      "mathematical_purpose": "证明 D12 与 C3/C4/C5 的联系及永久存活／D12 的二分；局部未完成部分属于本文证明责任。",
+      "mathematical_purpose": "证明 H6SquareSupportsD12 与 Stem126D6Vanishes/Theta5SquareNonzeroDetection/EtaExtensionDetection 的联系及永久存活／H6SquareSupportsD12 的二分；局部未完成部分属于本文证明责任。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -294,26 +294,26 @@
       ],
       "implementation": [
         {
-          "path": "KIP126/Main/PropositionSevenEight.lean",
+          "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.permanence_or_d12",
           "line": 20,
           "migration_status": "adapted-proof-body-present"
         },
         {
-          "path": "KIP126/Main/PropositionSevenEight.lean",
+          "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.d12_implies_square_and_eta",
           "line": 27,
           "migration_status": "adapted-proof-body-present"
         },
         {
-          "path": "KIP126/Main/PropositionSevenEight.lean",
+          "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.conditions_imply_d12",
           "line": 34,
           "migration_status": "adapted-proof-body-present"
         },
         {
-          "path": "KIP126/Main/PropositionSevenEight.lean",
-          "declaration": "KIP126.Main.proposition_7_8",
+          "path": "KIP126/Main/DifferentialCriterion.lean",
+          "declaration": "KIP126.Main.h6_square_differential_dichotomy_and_criterion",
           "line": 38,
           "migration_status": "adapted-proof-body-present"
         }
@@ -466,7 +466,7 @@
     },
     {
       "id": "main-nu-target",
-      "mathematical_purpose": "从 C3/C5 推导目标类的 nu 整除性；保留既有局部证明文本和待迁移步骤。",
+      "mathematical_purpose": "从 Stem126D6Vanishes/EtaExtensionDetection 推导目标类的 nu 整除性；保留既有局部证明文本和待迁移步骤。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -503,7 +503,7 @@
     },
     {
       "id": "main-cofiber-obstruction",
-      "mathematical_purpose": "由相同实际余纤维映射、非零检测与无短入射微分排除 C3 与 C5 同时成立。",
+      "mathematical_purpose": "由相同实际余纤维映射、非零检测与无短入射微分排除 Stem126D6Vanishes 与 EtaExtensionDetection 同时成立。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -557,7 +557,7 @@
         },
         {
           "path": "KIP126/Main/SectionSeven/Final.lean",
-          "declaration": "KIP126.Main.SectionSeven.c3_excludes_c5",
+          "declaration": "KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes",
           "line": 15,
           "migration_status": "adapted-proof-body-present"
         },
@@ -653,7 +653,7 @@
         },
         {
           "path": "KIP126/Main/H6SquarePermanent.lean",
-          "declaration": "KIP126.Main.proposition_7_9",
+          "declaration": "KIP126.Main.eta_extension_excluded_of_d6_vanishes",
           "line": 17,
           "migration_status": "adapted-proof-body-present"
         },
@@ -869,12 +869,12 @@
       "legacy_inventory_item": "KIPBase.Section7.lambda3_eta_h0Square_indeterminacy_AF_ge_15",
       "legacy_exact_coverage": "partial",
       "canonical_statement_coverage": "仅 F14 已证明，不是 F15；没有用权重130的误差界取消额外 λ3。",
-      "remaining_scope": "任意两项 UChoice 的 λ³η 差属于 F15 仍需局部权重131的有限窗证明。现有数据可用但新局部论证未完成；原 c5_choice_equivalence 责任保留，不新增上游契约或 Main sorry。",
+      "remaining_scope": "任意两项 UChoice 的 λ³η 差属于 F15 仍需局部权重131的有限窗证明。现有数据可用但新局部论证未完成；原 eta_extension_detection_choice_equivalence 责任保留，不新增上游契约或 Main sorry。",
       "new_upstream_contracts": [],
       "validation_status": "passed-default-build",
       "remaining_scope_class": "substantive-paper-proof; no missing computation input identified in this change",
       "related_existing_main_obligations": [
-        "KIP126.Main.c5_choice_equivalence"
+        "KIP126.Main.eta_extension_detection_choice_equivalence"
       ]
     },
     {
@@ -910,14 +910,14 @@
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.h0SquareX124_8_representative_exists",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "实际代表存在证明已公开，复用已迁入提升证明，不依赖待证 c5_choice_equivalence。",
+      "canonical_statement_coverage": "实际代表存在证明已公开，复用已迁入提升证明，不依赖待证 eta_extension_detection_choice_equivalence。",
       "remaining_scope": "旧 opaque 代表标签与实际 UChoice 的逐字身份输运尚未建立；标准实际系统的代表存在性已经交付。",
       "new_upstream_contracts": [],
       "validation_status": "passed-default-build"
     },
     {
       "id": "main-legacy-table-one",
-      "mathematical_purpose": "C3 与所有 U 代表满足 C5At 的矛盾；使用实际代表存在性和已迁入 Section7 链。",
+      "mathematical_purpose": "Stem126D6Vanishes 与所有 U 代表满足 EtaExtensionDetectionAt 的矛盾；使用实际代表存在性和已迁入 Section7 链。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -954,7 +954,7 @@
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.table1",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "实际系统 Table 1 结论有直接证明，不依赖待证 c5_choice_equivalence。",
+      "canonical_statement_coverage": "实际系统 Table 1 结论有直接证明，不依赖待证 eta_extension_detection_choice_equivalence。",
       "remaining_scope": "旧 Statement7_11_5prime 的 opaque 代表/检测谓词尚未逐字输运；NuTarget 和 cofiber rigidity 证明已迁入。",
       "new_upstream_contracts": [],
       "validation_status": "passed-default-build"
@@ -998,19 +998,19 @@
         "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
       },
       {
-        "name": "KIP126.Main.c5_choice_equivalence",
+        "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
         "path": "KIP126/Main/ChoiceIndependence.lean",
         "lines": [
           76
         ],
         "status": "original-paper-target-without-proof",
-        "note": "The actual-model C4/C5 choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
+        "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
       }
     ],
     "existing_proof_ports_remaining": [],
     "historical_route_moss_gap_active": false,
-    "source_files": 134,
-    "source_declarations": 888,
+    "source_files": 135,
+    "source_declarations": 895,
     "default_build_validation": {
       "status": "passed",
       "command": "lake build",
@@ -1054,8 +1054,41 @@
       "after_trailing_whitespace_cleanup": true
     },
     "legacy_result_public_additions": 9,
-    "private_helper_count": 828,
-    "public_interface_types": "Existing public types preserved; nine fixed conclusions added. main-api.json remains the independent type/export authority and is refreshed separately.",
+    "private_helper_count": 835,
+    "public_interface_types": "All 80 exports are preserved modulo the reviewed mathematical renames; this newer-source update adds no public declaration.",
     "proof_sources": "main-sources.json; declaration-level source blocks and hashes"
+  },
+  "mathematical_naming_restoration": "mathematical-naming-restoration.json",
+  "newer_source_update_review": "upstream-update-review.json",
+  "newer_source_update_validation": {
+    "status": "passed",
+    "command": "lake build",
+    "jobs": 2385,
+    "cache_reused": true,
+    "toolchain": "leanprover/lean4:v4.32.2",
+    "checked_at": "2026-10-15T06:19:27.329081+00:00",
+    "log_path": "/tmp/kervaire-updated-final-build.log",
+    "log_sha256": "674edfe5cd7c530d7f956c25264c602113a741f9d1c8e418fd30ef2ef821fd7c",
+    "source_inventory_project_files": 375,
+    "consumer_audit_files": 26,
+    "consumer_local_holes": 0,
+    "project_axioms": 0,
+    "pending_obligations": 306,
+    "pending_by_module": {
+      "AdamsSynthetic": 81,
+      "Computation": 88,
+      "Literature": 132,
+      "Main": 3,
+      "ProofTools": 2
+    },
+    "main_exports": 80,
+    "new_public_declarations": 0,
+    "new_pending_obligations": 0,
+    "completed_existing_obligations": [
+      "KIP126.Literature.Standard.realization_additive"
+    ],
+    "nu9_unrestricted_y_dependency_absent": true,
+    "renaming_source_inventory_check": "passed",
+    "diff_whitespace_check": "passed"
   }
 }

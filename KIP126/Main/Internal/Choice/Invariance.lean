@@ -5,7 +5,7 @@ import all KIP126.Main.Internal.Choice.Gap
 import all KIP126.Main.Internal.Choice.Filtration
 import all KIP126.Main.Internal.Choice.OrderTwo
 
-/-! Original C4 choice-transport proof in Selected/ChoiceInvariance:856–881,
+/-! Original Theta5SquareNonzeroDetection choice-transport proof in Selected/ChoiceInvariance:856–881,
 bbac1fc05843 (MIT). All external facts are fixed upstream declarations. -/
 @[expose] section
 namespace KIP126.Main.Internal.Choice
@@ -15,13 +15,13 @@ open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
-private theorem c4_invariance_of_pages
+private theorem theta5_square_nonzero_detection_invariance_of_pages
     (hpages : Subsingleton (model.classical.sphere.Page 3 (3,65)) ∧
       Subsingleton (model.classical.sphere.Page 3 (4,66)) ∧
       Subsingleton (model.classical.sphere.Page 4 (5,67)))
     (θ θ' : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
     (hθ : ThetaChoice θ) (hθ' : ThetaChoice θ')
-    (hc : C4At θ') : C4At θ := by
+    (hc : Theta5SquareNonzeroDetectionAt θ') : Theta5SquareNonzeroDetectionAt θ := by
   classical
   have hd := theta_choice_filtration_gap_of_pages hpages θ θ' hθ hθ'
   have hsq : FiltrationAtLeast model.syntheticTower 12

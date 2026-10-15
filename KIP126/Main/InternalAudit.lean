@@ -46,6 +46,7 @@ import all KIP126.Main.Internal.NuFifth.Lift
 import all KIP126.Main.Internal.NuNinth.Assembly
 import all KIP126.Main.Internal.NuNinth.Fourth
 import all KIP126.Main.Internal.NuNinth.Frames
+import all KIP126.Main.Internal.NuNinth.Incoming
 import all KIP126.Main.Internal.NuNinth.Lift
 import all KIP126.Main.Internal.NuNinth.Shift
 import all KIP126.Main.Internal.NuNinth.Unit
@@ -87,7 +88,7 @@ import all KIP126.Main.Internal.Theta.TodaCofiber
 import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy
 import all KIP126.Main.Internal.Theta.ZeroDegree
-import all KIP126.Main.PropositionSevenEight
+import all KIP126.Main.DifferentialCriterion
 import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.AnyYError
@@ -216,3 +217,27 @@ run_cmd do
         (expected.map Name.toString).qsort (· < ·) do
       throwError "Main proof dependencies changed for {root}: {actual}; expected {expected}"
   logInfo m!"Main legacy-result audit: {checks.size} public results have the exact reviewed local proof dependencies"
+
+-- The updated Nu9 proof uses only the finite Y incoming window.
+run_cmd do
+  let env ← getEnv
+  let roots := env.constants.toList.filter fun (name, _) =>
+    ((privateToUserName? name).getD name) ==
+      `KIP126.Main.Internal.NuNinth.nu_ninth_of_fifth_complete
+  unless roots.length == 1 do
+    throwError "Missing unique Nu9 finite-window proof"
+  let mut todo := roots.toArray.map (·.1)
+  let mut visited : NameSet := {}
+  while let some name := todo.back? do
+    todo := todo.pop
+    if name == `KIP126.Computation.Standard.y_not_hit then
+      throwError "Nu9 regained the unrestricted Y incoming assumption"
+    if visited.contains name then continue
+    visited := visited.insert name
+    let some info := env.find? name | continue
+    let some idx := env.getModuleIdxFor? name | continue
+    unless (`KIP126.Main).isPrefixOf env.header.moduleNames[idx.toNat]! do continue
+    todo := todo ++ info.type.getUsedConstants
+    if let some value := info.value? (allowOpaque := true) then
+      todo := todo ++ value.getUsedConstants
+  logInfo "Nu9 finite-window dependency audit: no unrestricted Y incoming assumption"

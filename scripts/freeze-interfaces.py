@@ -297,7 +297,7 @@ def freeze_trust():
         if owner == 'Main' and row['name'] not in {
                 'KIP126.Main.normalized_bx_finite',
                 'KIP126.Main.lambda_eta_theta_square_independent',
-                'KIP126.Main.c5_choice_equivalence'}:
+                'KIP126.Main.eta_extension_detection_choice_equivalence'}:
             raise ValueError('Main proof-port hole or new original gap is forbidden: ' + row['name'])
         migration=paper_migration_record(row,owner)
         source=row['module'].replace('.','/')+'.lean'

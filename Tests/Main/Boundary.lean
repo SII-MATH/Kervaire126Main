@@ -34,15 +34,15 @@ open Lean Elab Command
 run_cmd do
   let env ← getEnv
   let exported := env
-  for name in #[`KIP126.Main.proposition_7_8, `KIP126.Main.h6_sq_permanent] do
+  for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion, `KIP126.Main.h6_sq_permanent] do
     let some info := exported.find? name
       | throwError "Fixed paper endpoint is not exported: {name}"
     liftTermElabM <| Meta.forallTelescope info.type fun args _ => do
       unless args.isEmpty do
         throwError "Fixed paper endpoint acquired a caller premise: {name}"
-  for name in #[`KIP126.Main.proposition_7_8, `KIP126.Main.proposition_7_9,
-      `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.c3_excludes_c5,
-      `KIP126.Main.c4_choice_invariant,
+  for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion, `KIP126.Main.eta_extension_excluded_of_d6_vanishes,
+      `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes,
+      `KIP126.Main.theta5_square_nonzero_detection_choice_invariant,
       `KIP126.Main.permanence_or_d12,
       `KIP126.Main.d12_implies_square_and_eta,
       `KIP126.Main.conditions_imply_d12,
@@ -61,3 +61,15 @@ run_cmd do
       | throwError "Missing paper proof assembly: {name}"
     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then
       throwError "Paper proof assembly was replaced by a direct placeholder: {name}"
+
+-- The mathematical names replace the historical paper-number predicates.
+#check_failure KIP126.Main.D12
+#check_failure KIP126.Main.C3
+#check_failure KIP126.Main.C4At
+#check_failure KIP126.Main.C4
+#check_failure KIP126.Main.C5At
+#check_failure KIP126.Main.C5
+#check_failure KIP126.Main.proposition_7_8
+#check_failure KIP126.Main.proposition_7_9
+#check_failure KIP126.Main.SectionSeven.c3_excludes_c5
+#check_failure KIP126.Main.c4_c5_choice_equivalence

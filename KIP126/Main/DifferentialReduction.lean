@@ -32,9 +32,9 @@ public theorem only_d12_differential_reduction :
           model.standardClasses.standardH6Square y) ∧
     ((∃ y : model.classical.sphere.Page 2 (14,139),
       HasNonzeroDifferential model.classical.sphere 12 (2,128) (14,139)
-        model.standardClasses.standardH6Square y) ↔ D12) ∧
-    (¬ D12 ↔ H6SquarePermanent) := by
-  have hn : ¬ D12 := fun hd => (d12_necessary hd).1 h6_sq_permanent
+        model.standardClasses.standardH6Square y) ↔ H6SquareSupportsD12) ∧
+    (¬ H6SquareSupportsD12 ↔ H6SquarePermanent) := by
+  have hn : ¬ H6SquareSupportsD12 := fun hd => (d12_necessary hd).1 h6_sq_permanent
   refine ⟨fun r hr _ y => h6_square_no_outgoing r hr _ y, ?_, ?_⟩
   · constructor
     · rintro ⟨y, hy⟩

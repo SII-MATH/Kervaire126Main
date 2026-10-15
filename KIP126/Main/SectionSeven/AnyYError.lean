@@ -12,7 +12,7 @@ open KIP126.Literature.Standard (eta syntheticH0)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
-private theorem anyexact1_main_eta_right_three     (η : BiHom 1 2 (S_0_0 : SyntheticSpectrum))
+private theorem y_detection_toda_main_eta_right_three     (η : BiHom 1 2 (S_0_0 : SyntheticSpectrum))
     {X : SyntheticSpectrum} (c : BiHom 124 134 X) :
     sphereAction η (lambdaMultiply 3 c) = lambdaMultiply 3 (sphereAction η c) := by
   have ha := shift_assoc_inv model.quotients.coherence (1,2) (124,134) (0,-3)
@@ -30,7 +30,7 @@ private theorem anyexact1_main_eta_right_three     (η : BiHom 1 2 (S_0_0 : Synt
   rfl
 
 
-private theorem anyexact1_main_eta_right_six     (η : BiHom 1 2 (S_0_0 : SyntheticSpectrum))
+private theorem y_detection_toda_main_eta_right_six     (η : BiHom 1 2 (S_0_0 : SyntheticSpectrum))
     {X : SyntheticSpectrum} (c : BiHom 124 137 X) :
     sphereAction η (lambdaMultiply 6 c) = lambdaMultiply 6 (sphereAction η c) := by
   have ha := shift_assoc_inv model.quotients.coherence (1,2) (124,137) (0,-6)
@@ -48,7 +48,7 @@ private theorem anyexact1_main_eta_right_six     (η : BiHom 1 2 (S_0_0 : Synthe
   rfl
 
 
-private theorem anyexact1_main_lambda_six_one     {X:SyntheticSpectrum} (c : BiHom 125 140 X) :
+private theorem y_detection_toda_main_lambda_six_one     {X:SyntheticSpectrum} (c : BiHom 125 140 X) :
     lambdaMultiply 6 (lambdaMultiply 1 c) = lambdaMultiply 7 c := by
   have ha := shift_assoc_inv model.quotients.coherence (125,140) (0,-1) (0,-6)
     (125,139) (0,-7) (125,133) (by decide) (by decide) (by decide) (by decide) (S_0_0 : SyntheticSpectrum)
@@ -79,12 +79,12 @@ theorem anyy_toda_h0_error_formula
         (show BiHom 125 133 (XModLambdaN (S_0_0:SyntheticSpectrum) 9) from lambdaMultiply 7 a3) := by
   obtain ⟨a2,a3,hr,he⟩:=ha.2.2.1 u hu
   refine ⟨a3,?_⟩
-  rw [anyexact1_main_toda_h0_relation eta_unique_from_low_degrees eta syntheticH0
+  rw [y_detection_toda_main_toda_h0_relation eta_unique_from_low_degrees eta syntheticH0
     KIP126.Literature.Standard.toda_eta_squared KIP126.Literature.Standard.toda_low_indeterminacy _ ha.2.2.2 z hz,hr]
   have hadd (v w:BiHom 124 131 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)):
       sphereAction eta (v+w)=sphereAction eta v+sphereAction eta w := by
     simp only [sphereAction,Preadditive.comp_add]
-  rw [hadd,anyexact1_main_eta_right_three,anyexact1_main_eta_right_six,he,anyexact1_main_lambda_six_one]
+  rw [hadd,y_detection_toda_main_eta_right_three,y_detection_toda_main_eta_right_six,he,y_detection_toda_main_lambda_six_one]
   congr 1
   simp only [quotientClass,sphereProduct,sphereAction,lambdaMultiply,Category.assoc]
 end

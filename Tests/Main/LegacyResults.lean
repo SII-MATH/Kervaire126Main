@@ -25,7 +25,7 @@ example (u v : BiHom 124 134 (S_0_0 : SyntheticSpectrum))
         lambdaMultiply 3 (sphereProduct eta v)) :=
   lambda_three_eta_u_difference_filtration_fourteen u v hu hv
 
-example (hc3 : C3) (h : ∀ u, UChoice u → C5At u) : False := table1 hc3 h
+example (hc3 : Stem126D6Vanishes) (h : ∀ u, UChoice u → EtaExtensionDetectionAt u) : False := table1 hc3 h
 
 -- Recover the former three-possibility shape with actual representatives.
 example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (_htheta : ThetaChoice theta) :

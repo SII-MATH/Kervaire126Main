@@ -32,7 +32,7 @@ private theorem theta5_square_filtration_ten
 
 private theorem theta5_square_three_cases
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
-    C4At theta ∨ SphereDetected 13 137 9 correction (sphereProduct theta theta) ∨
+    Theta5SquareNonzeroDetectionAt theta ∨ SphereDetected 13 137 9 correction (sphereProduct theta theta) ∨
       ∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum), lambdaMultiply 10 a=sphereProduct theta theta :=
   Selected.theta_three_cases theta
 

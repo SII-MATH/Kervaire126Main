@@ -47,10 +47,15 @@ public def universal_coefficient :
     ModTwoCohomology model n X ≃+ (ModTwoHomology model.coefficients (-n) X →+ ZMod 2) := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+/-- The specified realization is additive by its actual adjunction.
+The same argument occurs in Kervaire126 8cb35dad5,
+Main/Solution/StageInput/Toda/Low.lean:254–258. -/
 public theorem realization_additive :
   model.recovery.realization.Additive := by
-  sorry
+  letI := model.recovery.adjunction.isLeftAdjoint
+  letI := Limits.preservesBinaryBiproducts_of_preservesBinaryCoproducts
+    model.recovery.realization
+  exact Functor.additive_of_preservesBinaryBiproducts _
 
 /-- The fixed mathematical object on the project background. -/
 public def realization_sphere :

@@ -99,7 +99,7 @@ theorem nonzero_detection_ne_zero (X : SyntheticObject) (i : Tridegree)
   exact hne ((he'.unique he).trans hez)
 
 theorem nu_target_lambda_eight_nonzero
-    (hc3 : C3) (t : BiHom 125 139 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
+    (hc3 : Stem126D6Vanishes) (t : BiHom 125 139 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (ht : FiniteDetected 9 (by decide) 14 139 0 KIP126.Computation.Standard.T t) :
     lambdaMultiply 8 t ≠ 0 := by
   have hd := lambda_eight_target_detected KIP126.Computation.Standard.T t ht.1
@@ -108,7 +108,7 @@ theorem nu_target_lambda_eight_nonzero
     KIP126.Computation.Standard.T (permanentCycles_le_cycles model .sphere (14,139) _ hp) (by
       intro hb
       exact survives_twelve_not_boundary_eleven .sphere (14,139) KIP126.Computation.Standard.T
-        (KIP126.Main.c3_iff_target_survives_twelve.mp hc3)
+        (KIP126.Main.d6_vanishes_iff_target_survives_twelve.mp hc3)
         (boundaries_monotone model .sphere (14,139) (by decide) hb)) _ hd
   exact nonzero_detection_ne_zero (.quotient 9 .sphere) (14,139,131) _ _ hn
 
@@ -131,7 +131,7 @@ theorem lambda_two_six_139
   rfl
 
 theorem weak_initial_twice_h0_nonzero
-    (hc3 : C3) (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum))
+    (hc3 : Stem126D6Vanishes) (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum))
     (z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (t : BiHom 125 139 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (ht : FiniteDetected 9 (by decide) 14 139 0 KIP126.Computation.Standard.T t)

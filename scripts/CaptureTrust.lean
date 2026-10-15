@@ -237,6 +237,7 @@ import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.ClassicalReduction
 import all KIP126.Main.Conditions
+import all KIP126.Main.DifferentialCriterion
 import all KIP126.Main.DifferentialReduction
 import all KIP126.Main.H6SquarePermanent
 import all KIP126.Main.Internal.AlphaOne.Classical
@@ -279,6 +280,7 @@ import all KIP126.Main.Internal.NuFifth.Lift
 import all KIP126.Main.Internal.NuNinth.Assembly
 import all KIP126.Main.Internal.NuNinth.Fourth
 import all KIP126.Main.Internal.NuNinth.Frames
+import all KIP126.Main.Internal.NuNinth.Incoming
 import all KIP126.Main.Internal.NuNinth.Lift
 import all KIP126.Main.Internal.NuNinth.Shift
 import all KIP126.Main.Internal.NuNinth.Unit
@@ -320,7 +322,6 @@ import all KIP126.Main.Internal.Theta.TodaCofiber
 import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy
 import all KIP126.Main.Internal.Theta.ZeroDegree
-import all KIP126.Main.PropositionSevenEight
 import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.AnyYError

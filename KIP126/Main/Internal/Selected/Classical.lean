@@ -85,7 +85,7 @@ private theorem survives_twelve_not_thirteen_d12
       RepresentsOnPage model.classical.sphere 12 (14,139) T b ∧
       ∀ y : model.classical.sphere.Page 12 (14,139), y=0 ∨ y=b)
     (h12 : SurvivesTo model.classical.sphere 12 (2,128) model.standardClasses.standardH6Square)
-    (h13 : ¬SurvivesTo model.classical.sphere 13 (2,128) model.standardClasses.standardH6Square) : D12 := by
+    (h13 : ¬SurvivesTo model.classical.sphere 13 (2,128) model.standardClasses.standardH6Square) : H6SquareSupportsD12 := by
   obtain ⟨a,ha,hdne⟩ := h6_twelve_outgoing_nonzero h12 h13
   obtain ⟨b,hb,hall⟩ := hframe
   have hdeg : (2,128)+model.classical.sphere.diffDeg 12=(14,139) := by
@@ -108,7 +108,7 @@ private theorem bx_lambda_nine_not_ten_d12
     (h9 : VanishesModLambda 9 (sphereProduct KIP126.Literature.Standard.eta
       (sphereProduct KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5)))
     (h10 : ¬VanishesModLambda 10 (sphereProduct KIP126.Literature.Standard.eta
-      (sphereProduct KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))) : D12 := by
+      (sphereProduct KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))) : H6SquareSupportsD12 := by
   have h12 := (KIP126.Literature.Standard.bx_finite 9 (by decide)).mpr h9
   have h13 : ¬SurvivesTo model.classical.sphere 13 (2,128) model.standardClasses.standardH6Square := by
     intro hh

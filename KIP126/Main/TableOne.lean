@@ -11,8 +11,8 @@ lift; the contradiction is the proved Section 7 argument. -/
 namespace KIP126.Main
 
 /-- The actual-system version of the former Table 1 axiom. -/
-public theorem table1 (hc3 : C3) (h : ∀ u, UChoice u → C5At u) : False := by
+public theorem table1 (hc3 : Stem126D6Vanishes) (h : ∀ u, UChoice u → EtaExtensionDetectionAt u) : False := by
   obtain ⟨u, hu⟩ := u_choice_exists
-  exact SectionSeven.c3_excludes_c5 hc3 ⟨u, hu, h u hu⟩
+  exact SectionSeven.eta_extension_excluded_of_d6_vanishes hc3 ⟨u, hu, h u hu⟩
 
 end KIP126.Main

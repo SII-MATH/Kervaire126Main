@@ -51,34 +51,34 @@ public theorem any_choice_criterion
   · rw [he]
     exact KIP126.Literature.Standard.bx_untruncated
 
-/-- The original finite-page, filtration, and exponent-two proof of C4
+/-- The original finite-page, filtration, and exponent-two proof of Theta5SquareNonzeroDetection
 invariance, using the fixed upstream table and comparison declarations. -/
-public theorem c4_choice_invariant
+public theorem theta5_square_nonzero_detection_choice_invariant
     (theta theta' : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
     (htheta : ThetaChoice theta) (htheta' : ThetaChoice theta')
-    (hc4 : C4At theta') : C4At theta := by
-  exact Internal.Choice.c4_invariance_of_pages Internal.Choice.theta_choice_finite_pages
+    (hc4 : Theta5SquareNonzeroDetectionAt theta') : Theta5SquareNonzeroDetectionAt theta := by
+  exact Internal.Choice.theta5_square_nonzero_detection_invariance_of_pages Internal.Choice.theta_choice_finite_pages
     theta theta' htheta htheta' hc4
 
-public theorem c4_choice_equivalence :
-    C4 ↔ ∀ theta, ThetaChoice theta → C4At theta := by
+public theorem theta5_square_nonzero_detection_choice_equivalence :
+    Theta5SquareNonzeroDetection ↔ ∀ theta, ThetaChoice theta → Theta5SquareNonzeroDetectionAt theta := by
   constructor
   · rintro ⟨theta', htheta', hc4⟩ theta htheta
-    exact c4_choice_invariant theta theta' htheta htheta' hc4
+    exact theta5_square_nonzero_detection_choice_invariant theta theta' htheta htheta' hc4
   · intro h
     obtain ⟨theta, htheta⟩ := KIP126.Literature.Standard.theta5_detected_exists
     exact ⟨theta, htheta, h theta htheta⟩
 
 /-- Lemma 7.11 retains the quantification over all U representatives.
 Its actual-model theorem was only a target definition in the pinned source. -/
-public theorem c5_choice_equivalence :
-    C5 ↔ ∀ u, UChoice u → C5At u := by
+public theorem eta_extension_detection_choice_equivalence :
+    EtaExtensionDetection ↔ ∀ u, UChoice u → EtaExtensionDetectionAt u := by
   sorry
 
-public theorem c4_c5_choice_equivalence :
-    (C4 ↔ ∀ theta, ThetaChoice theta → C4At theta) ∧
-    (C5 ↔ ∀ u, UChoice u → C5At u) :=
-  ⟨c4_choice_equivalence, c5_choice_equivalence⟩
+public theorem square_and_eta_detection_choice_equivalence :
+    (Theta5SquareNonzeroDetection ↔ ∀ theta, ThetaChoice theta → Theta5SquareNonzeroDetectionAt theta) ∧
+    (EtaExtensionDetection ↔ ∀ u, UChoice u → EtaExtensionDetectionAt u) :=
+  ⟨theta5_square_nonzero_detection_choice_equivalence, eta_extension_detection_choice_equivalence⟩
 
 end
 end KIP126.Main

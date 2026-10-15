@@ -29,8 +29,8 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
 /-- The P and Q branches give the exact λν divisibility equation for the
-fixed target class, under the genuine C3 and C5 hypotheses. -/
-public theorem target_nu_divisible (hc3 : C3) (hc5 : C5) :
+fixed target class, under the genuine Stem126D6Vanishes and EtaExtensionDetection hypotheses. -/
+public theorem target_nu_divisible (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
     TargetNuDivisible T hopfNu := by
   obtain ⟨a11,ha⟩ := AlphaOne.alpha_one_exists
   obtain ⟨z,hz⟩ := module_toda_nonempty_of_alpha a11 ha

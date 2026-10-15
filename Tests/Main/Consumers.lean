@@ -10,10 +10,10 @@ open KIP126.AdamsSynthetic.Standard (model)
 open KIP126.Main
 
 example :
-    ((H6SquarePermanent ∧ ¬ D12) ∨ (D12 ∧ ¬ H6SquarePermanent)) ∧
-      (D12 ↔ C3 ∧ C4 ∧ C5) := proposition_7_8
+    ((H6SquarePermanent ∧ ¬ H6SquareSupportsD12) ∨ (H6SquareSupportsD12 ∧ ¬ H6SquarePermanent)) ∧
+      (H6SquareSupportsD12 ↔ Stem126D6Vanishes ∧ Theta5SquareNonzeroDetection ∧ EtaExtensionDetection) := h6_square_differential_dichotomy_and_criterion
 
-example (hc3 : C3) : ¬ C5 := proposition_7_9 hc3
+example (hc3 : Stem126D6Vanishes) : ¬ EtaExtensionDetection := eta_extension_excluded_of_d6_vanishes hc3
 
 example : NonzeroSurvival model.classical.sphere (2,128)
     model.standardClasses.standardH6Square := h6_sq_permanent
@@ -25,18 +25,18 @@ example : NonzeroSurvival model.classical.sphere (2,128)
     model.standardClasses.standardH6Square
   exact h6_sq_permanent
 
-example : C3 ↔ SurvivesTo model.classical.sphere 12 (14,139)
-    KIP126.Computation.Standard.T := c3_iff_target_survives_twelve
+example : Stem126D6Vanishes ↔ SurvivesTo model.classical.sphere 12 (14,139)
+    KIP126.Computation.Standard.T := d6_vanishes_iff_target_survives_twelve
 
-example (hd : D12) : ¬ H6SquarePermanent ∧ C3 := d12_necessary hd
+example (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := d12_necessary hd
 
 /-- The paper's final reasoning consumes the two intermediate theorems
 without requesting a construction or a delivery package from the caller. -/
 theorem paperConclusion : H6SquarePermanent := by
-  obtain ⟨cases, criterion⟩ := proposition_7_8
+  obtain ⟨cases, criterion⟩ := h6_square_differential_dichotomy_and_criterion
   rcases cases with hp | hd
   · exact hp.1
   · obtain ⟨h3, _, h5⟩ := criterion.mp hd.1
-    exact False.elim (proposition_7_9 h3 h5)
+    exact False.elim (eta_extension_excluded_of_d6_vanishes h3 h5)
 
 end Tests.Main

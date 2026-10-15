@@ -12,7 +12,7 @@ remain in the corresponding SectionSeven stages, not in upstream result packs. -
 @[expose] section
 namespace KIP126.Main.SectionSeven
 
-public theorem c3_excludes_c5 (hc3 : C3) : ¬ C5 := by
+public theorem eta_extension_excluded_of_d6_vanishes (hc3 : Stem126D6Vanishes) : ¬ EtaExtensionDetection := by
   intro hc5
   obtain ⟨r, hr, hr', hhit⟩ :=
     target_divisibility_forces_cnu_incoming (target_nu_divisible hc3 hc5)

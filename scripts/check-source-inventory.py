@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Cover every source with an audit and enforce the mathematical module DAG."""
 from pathlib import Path
+import json
 import re
 
 root = Path(__file__).resolve().parent.parent
@@ -86,6 +87,19 @@ def imports(path):
             result.append((bool(match[1]), name))
     return result
 
+
+# Keep the individually reviewed mathematical names from the upstream cleanup.
+# Local coordinate variables (for example c3) are unrelated to declarations.
+naming_path = root / 'mathematical-naming-restoration.json'
+if naming_path.exists():
+    naming = json.loads(naming_path.read_text())
+    retired_names = set(naming['identifier_renames']) - {'PropositionSevenEight'}
+    for path in (root / 'KIP126/Main').rglob('*.lean'):
+        declared = re.findall(
+            r'\b(?:def|abbrev|theorem|lemma|structure|class|inductive)\s+([\w\']+)',
+            code_only(path.read_text()))
+        for name in sorted(retired_names.intersection(declared)):
+            errors.append(f'Retired numbered declaration restored: {path.relative_to(root)}: {name}')
 
 expected_project = {root / 'KIP126.lean'}
 for module, entry in entries.items():
