@@ -1,10 +1,10 @@
 module
 
 public import KIP126.Main.AdamsSynthetic.Context
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-public import KIP126.Main.AdamsSynthetic.SphereConvergence
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
+public import KIP126.Literature.Background.SphereConvergence
+public import KIP126.Def.ClassicalAdams.Convergence.Tower.Separation
 public import KIP126.Main.Literature.SourceComparisons.RealizationKernel
-
 import all KIP126.Main.AdamsSynthetic.NuSource.FromSuspension
 import all KIP126.Main.AdamsSynthetic.NuSource.Suspension
 
@@ -61,7 +61,8 @@ theorem nuSourceResults :
       (H := KIP126.Classical.Adams.standardFoundation.hf2)
       (M := KIP126.Classical.Adams.standardMilnorCooperations) adamsComparison
       c.cooperationStructure.ring c.cooperationStructure.kunneth c.cooperationStructure.basis
-      KIP126.Def.standardSphereSeparated literature.theorems.synthetic_triangle_lift
+      (KIP126.Classical.Adams.classicalSphereSeparated_of_strongConvergence _
+        KIP126.Def.standardSphereApplicability.strongly_convergent) literature.theorems.synthetic_triangle_lift
       (KIP126.Main.Literature.SourceComparisons.realizationKernel_of_source adamsComparison
         literature.sources.sourceComparisons.kernelSource literature.theorems.realizationKernel
         literature.sources.sourceComparisons.kernelComparison)

@@ -55,37 +55,6 @@ def IsPermanentCycle
   ∃ z : (Subobject.underlying.obj (D.Z ⊤) : ModuleCat R),
     (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ D.pageπ n) z = x
 
-/-- Membership in the final boundary subobject, expressed at the
-specified E₂ label. Zero is allowed, and no finite hitting page or
-nonzero incoming differential is selected by this predicate. -/
-def IsFinalBoundary
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
-    (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
-  let D := E.ssData p
-  let n : WithTop ℕ := ↑(2 - E.r₀).toNat
-  ∃ b : (Subobject.underlying.obj (D.B ⊤) : ModuleCat R),
-    (Subobject.ofLE (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) ≫
-      Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ D.pageπ n) b = x
-
-/-- Actual continuation and zero outgoing differential on every page
-in the specified nonempty window. Incoming boundaries and zero classes
-are allowed. Unlike a universal implication on continuations, this
-condition asserts that the continuations exist. -/
-def IsCycleOnWindow
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
-    (first last : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
-  2 ≤ first ∧ first ≤ last ∧
-    ∀ r : ℤ, first ≤ r → r ≤ last →
-      ∃ xr : E.Page r p, RepresentsOnPage E r p x xr ∧ IsPageCycle E r p xr
-
-/-- Nonzero continuation on all pages of the specified nonempty
-window. This only concerns the stated window, not E∞ survival. -/
-def SurvivesOnWindow
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
-    (first last : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
-  2 ≤ first ∧ first ≤ last ∧
-    ∀ r : ℤ, first ≤ r → r ≤ last → SurvivesTo E r p x
-
 /-- No nonzero incoming hit in the specified nonempty window. This
 does not assert existence of continuations or absence of outgoing
 differentials, and is not an unrestricted permanence claim. -/

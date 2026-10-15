@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.ClassicalAdams.TowerSmash.Step.Proofs
+public import KIP126.Def.ClassicalAdams.TowerSmash.Step.Data
 
 @[expose] public section
 
@@ -18,18 +18,6 @@ It is a comparison model for the existing tower, not a replacement SSData. -/
 def adamsSmashTower : ℕ → C
   | 0 => X
   | s + 1 => fiber unit ⊗ adamsSmashTower s
-
-/-- Remove the outer unit-fiber factor using its actual fiber inclusion. -/
-def adamsSmashTowerStep (s : ℕ) :
-    adamsSmashTower unit X (s + 1) ⟶ adamsSmashTower unit X s :=
-  (fiberι unit ▷ adamsSmashTower unit X s) ≫ (λ_ _).hom
-
-/-- Composite transitions in the iterated smash model. -/
-def adamsSmashTowerComposite (s : ℕ) :
-    (length : ℕ) → (adamsSmashTower unit X (s + length) ⟶ adamsSmashTower unit X s)
-  | 0 => 𝟙 _
-  | length + 1 =>
-      adamsSmashTowerStep unit X (s + length) ≫ adamsSmashTowerComposite s length
 
 variable [∀ Y : C, (tensorRight Y).CommShift ℤ]
   [∀ Y : C, (tensorRight Y).IsTriangulated]

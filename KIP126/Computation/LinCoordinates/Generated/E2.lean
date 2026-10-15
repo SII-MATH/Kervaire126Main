@@ -17,10 +17,6 @@ namespace KIP126.LinE2.RawData
 
 def generatorCount : Nat := 2914
 
-def relationCount : Nat := 231848
-
-def basisCount : Nat := 23822
-
 /-- (name, cohomological degree s, internal degree t), indexed by CSV id. -/
 
 def generatorChunk0 : Array (String × Nat × Nat) := #[("h_0", 1, 1), ("h_1", 1, 2), ("h_2", 1, 4), ("h_3", 1, 8), ("c_0", 3, 11), ("Ph_1", 5, 14), ("Ph_2", 5, 16), ("h_4", 1, 16), ("d_0", 4, 18), ("e_0", 4, 21), ("[f_0]", 4, 22), ("c_1", 3, 22), ("Pc_0", 7, 23), ("g", 4, 24), ("P^2h_1", 9, 26), ("P^2h_2", 9, 28), ("Pd_0", 8, 30), ("i", 7, 30), ("h_5", 1, 32), ("Pe_0", 8, 33), ("j", 7, 33), ("P^2c_0", 11, 35), ("k", 7, 36), ("\\Delta h_2^2", 6, 36), ("n", 5, 36), ("d_1", 4, 36), ("p", 4, 37), ("P^3h_1", 13, 38), ("\\Delta h_1h_3", 6, 38), ("l", 7, 39), ("P^3h_2", 13, 40), ("P^2d_0", 12, 42)]

@@ -20,9 +20,6 @@ noncomputable abbrev actualE2AtAddCommGroup :=
 noncomputable abbrev actualE2AtIntModule :=
   KIP126.Classical.Adams.Sphere.Algebra.actualE2AtIntModule KIP126.Def.standardHF2AdamsContext
 
-noncomputable abbrev actualE2ToCobarInt :=
-  KIP126.Classical.Adams.Sphere.Algebra.actualE2ToCobarInt KIP126.Def.standardHF2AdamsContext
-
 noncomputable abbrev actualE2AtModule :=
   KIP126.Classical.Adams.Sphere.Algebra.actualE2AtModule KIP126.Def.standardHF2AdamsContext
 
@@ -32,21 +29,12 @@ noncomputable abbrev actualE2AtScalarTower :=
 noncomputable abbrev actualE2AtIntSMulComm :=
   KIP126.Classical.Adams.Sphere.Algebra.actualE2AtIntSMulComm KIP126.Def.standardHF2AdamsContext
 
-noncomputable abbrev actualE2ToCobar :=
-  KIP126.Classical.Adams.Sphere.Algebra.actualE2ToCobar KIP126.Def.standardHF2AdamsContext
-
 noncomputable abbrev actualE2Product :=
   KIP126.Classical.Adams.Sphere.Algebra.actualE2Product KIP126.Def.standardHF2AdamsContext
 
 noncomputable abbrev actualE2Unit :=
   KIP126.Classical.Adams.Sphere.Algebra.actualE2Unit KIP126.Def.standardHF2AdamsContext
 
-noncomputable abbrev actualE2GradedOne :=
-  KIP126.Classical.Adams.Sphere.Algebra.actualE2GradedOne KIP126.Def.standardHF2AdamsContext
-
-noncomputable abbrev actualE2GradedMul :=
-  KIP126.Classical.Adams.Sphere.Algebra.actualE2GradedMul KIP126.Def.standardHF2AdamsContext
-
-attribute [instance] actualE2AtAddCommGroup actualE2AtIntModule actualE2AtModule actualE2AtScalarTower actualE2AtIntSMulComm actualE2GradedOne actualE2GradedMul
+attribute [instance] actualE2AtAddCommGroup actualE2AtIntModule actualE2AtModule actualE2AtScalarTower actualE2AtIntSMulComm
 
 end KIP126.Classical.Adams.Sphere.Internal

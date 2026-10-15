@@ -27,13 +27,6 @@ def adamsResolutionSequence (X : C) : HoCofiberSequence (C := C) where
   h := adamsResolutionConnecting H.unit X 0
   distinguished := adamsResolutionTriangle_distinguished H.unit X 0
 
-/-- The representative first differential in homology degree `n`, before
-reindexing to the Adams bidegrees. Both maps come from the actual tower. -/
-def adamsHomologyD1 (X : C) (n : ℤ) :
-    Mod2Homology H n X →ₗ[ℤ] Mod2Homology H (n - 1) (fiber (adamsUnit H.unit X)) :=
-  (inducedMap (adamsUnit H.unit (fiber (adamsUnit H.unit X))) (n - 1)).toIntLinearMap.comp
-    (adamsResolutionBoundary H.unit X 0 n).toIntLinearMap
-
 end
 
 end KIP126.Classical.Adams

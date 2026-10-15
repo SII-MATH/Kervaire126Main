@@ -44,21 +44,4 @@ structure FiniteExtensionWitness (r : ℕ) (n s t : ℤ)
     (D.convergence (.quotient (r - 1) (.nu Y)))
     (t - s, t + normalizedExponent H f) s n source target
 
-structure InfiniteExtensionWitness (n s t : ℤ)
-    (x : E2 H (X.obj D.hopfAndDetector) s t)
-    (y : E2 H (Y.obj D.hopfAndDetector) (s + n) (t + n)) where
-  length_lower : (normalizedExponent H f : ℤ) ≤ n
-  source_cycle : PageRepresentatives.IsPermanent H (X.obj D.hopfAndDetector) (s, t) x
-  target_cycle : PageRepresentatives.IsPermanent H (Y.obj D.hopfAndDetector) (s + n, t + n) y
-  source : ((D.family.obj ((extensionSourceObject D X Y f).obj D.nu D.hopfAndDetector)).sequence.ssData
-    (s, (t - s) + s, t + normalizedExponent H f)).eInfty
-  target : ((D.family.obj (D.nu.functor.obj (Y.obj D.hopfAndDetector))).sequence.ssData
-    (s + n, (t - s) + (s + n), t + normalizedExponent H f)).eInfty
-  source_rep : HasInfinityRepresentative _ 2 _ (infiniteSourceForExtension D X Y f s t x) source
-  target_rep : HasInfinityRepresentative _ 2 _
-    (infiniteTargetForExtension D X Y f n s t length_lower y) target
-  equation : ExtensionEquation (D.normalizedMap X Y f).map
-    (D.convergence (extensionSourceObject D X Y f)) (D.convergence (.nu Y))
-    (t - s, t + normalizedExponent H f) s n source target
-
 end KIP126.AdamsSynthetic

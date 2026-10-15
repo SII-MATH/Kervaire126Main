@@ -7,12 +7,10 @@ public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Computation.Hypotheses
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
 import all KIP126.Main.SectionSeven.AlphaOne.FiniteWindow
 
 @[expose] public section
-
 
 /-! Filtration and representative calculations for Proposition 7.8 and
 Lemma 7.14 (`lem:x_123_9`). The complete bases, products and differential

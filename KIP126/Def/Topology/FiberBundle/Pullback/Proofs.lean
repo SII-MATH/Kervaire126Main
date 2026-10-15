@@ -11,10 +11,6 @@ variable {E E' A B P F : Type*}
   [TopologicalSpace P] [TopologicalSpace F]
 set_option backward.isDefEq.respectTransparency false
 
-@[simp] theorem iteratedPullbackHomeomorph_snd (p : C(E,P)) (a : C(A,P)) (b : C(B,A))
-    (z : {z : {z : E × A // p z.1 = a z.2} × B // pullbackSndMap p a z.1 = b z.2}) :
-    (iteratedPullbackHomeomorph p a b z).val.2 = z.val.2 := rfl
-
 /-- Local charts transfer across an actual homeomorphism of total spaces
 commuting strictly with their projections. -/
 theorem localTriviality_of_total_homeomorph (p : C(E,B)) (q : C(E',B))

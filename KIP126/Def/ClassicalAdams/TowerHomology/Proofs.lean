@@ -34,13 +34,6 @@ theorem adamsHomologyAction_unit (R : Mod2RingStructure H) (X : C) (n : ℤ)
   change (x ≫ _) ≫ _ = x
   rw [Category.assoc, mod2FreeAction_unit, Category.comp_id]
 
-omit [HasFunctorialCofiber (C := C)] [(tensorLeft H.HF2).CommShift ℤ]
-    [(tensorLeft H.HF2).IsTriangulated] in
-/-- The unit-induced coefficient map is split injective. -/
-theorem adamsHomologyUnit_injective (R : Mod2RingStructure H) (X : C) (n : ℤ) :
-    Function.Injective (adamsHomologyUnit H X n) :=
-  Function.LeftInverse.injective (adamsHomologyAction_unit H R X n)
-
 /-- Exactness at the middle coefficient group, derived from the distinguished triangle. -/
 theorem adamsHomologyBoundary_exact (X : C) (n : ℤ)
     (x : Mod2Homology H n (H.HF2 ⊗ X)) :
@@ -59,12 +52,6 @@ theorem adamsHomologyBoundary_surjective (R : Mod2RingStructure H) (X : C) (n : 
 theorem adamsHomologyBoundary_unit (X : C) (n : ℤ) (x : Mod2Homology H n X) :
     adamsHomologyBoundary H X n (adamsHomologyUnit H X n x) = 0 :=
   (adamsHomologyBoundary_exact H X n _).mpr ⟨x, rfl⟩
-
-/-- The boundary kernel is exactly the unit image. -/
-theorem adamsHomologyBoundary_ker (X : C) (n : ℤ) :
-    LinearMap.ker (adamsHomologyBoundary H X n) = LinearMap.range (adamsHomologyUnit H X n) := by
-  ext x
-  exact adamsHomologyBoundary_exact H X n x
 
 /-- Restricting the boundary to the action kernel gives a bijection.
 For surjectivity subtract the unit of the action from any boundary lift. -/

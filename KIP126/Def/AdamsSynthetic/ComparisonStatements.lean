@@ -1,49 +1,102 @@
 module
 
-public import KIP126.Def.Comparison
+public import KIP126.Def.SpectralSequence.Basic.Category.Data
+public import KIP126.Def.SpectralSequence.Computation.Predicates
+public import KIP126.Def.ClassicalAdams.PageRepresentatives.Predicates
+public import KIP126.Def.Comparison.ClassicalSynthetic.Data
+public import KIP126.Def.Comparison.ClassicalSynthetic.FirstQuotient.Data
+public import KIP126.Def.Synthetic.QuotientMap.Data
+public import KIP126.Def.Synthetic.QuotientRestrictions.Data
+public import KIP126.Def.Synthetic.Sphere.Shift.Data
+public import KIP126.Def.StableHomotopy.Context.Data
+public import KIP126.Def.Synthetic.QuotientMap.Proofs
+public import KIP126.Def.Synthetic.Context.Coherence.Proofs
+public import KIP126.Def.ClassicalAdams.Convergence.Tower.Predicates
+public import KIP126.Def.ClassicalAdams.Completion.Predicates
+public import KIP126.Def.Comparison.ClassicalSynthetic.EInfty.Data
+public import KIP126.Def.Synthetic.ExtensionSS.Data
+public import KIP126.Def.Synthetic.NormalizedMap.Data
+public import KIP126.Def.Synthetic.PageExtension.Lambda.Data
+public import KIP126.Def.ClassicalAdams.PageRepresentatives.Data
+public import KIP126.Def.Synthetic.PageExtension.Relation.Data
+public import Mathlib.LinearAlgebra.Span.Basic
+public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Window.Data
+public import KIP126.Def.Synthetic.EInfty.Shift.Predicates
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
+public import KIP126.Def.ClassicalAdams.PageRepresentatives.Order.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Comparison.Data
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Multiplication.Data
+public import Mathlib.Algebra.Category.ModuleCat.Abelian
+public import Mathlib.Algebra.Category.ModuleCat.Colimits
+public import Mathlib.Algebra.Category.ModuleCat.Monoidal.Closed
+public import Mathlib.CategoryTheory.Monoidal.Closed.Braided
+public import Mathlib.CategoryTheory.GradedObject.Braiding
+public import Mathlib.CategoryTheory.Abelian.FunctorCategory
+public import Mathlib.CategoryTheory.Abelian.Transfer
+public import Mathlib.CategoryTheory.Linear.FunctorCategory
+public import Mathlib.CategoryTheory.Monoidal.Comon_
+public import Mathlib.CategoryTheory.Monad.Algebra
+public import Mathlib.CategoryTheory.GradedObject.Single
+public import Mathlib.CategoryTheory.Linear.LinearFunctor
+public import Mathlib.CategoryTheory.Limits.Preserves.Finite
+public import Mathlib.LinearAlgebra.Dimension.LinearMap
+public import Mathlib.CategoryTheory.Preadditive.LeftExact
+public import Mathlib.CategoryTheory.Preadditive.EilenbergMoore
+public import Mathlib.CategoryTheory.Monad.Limits
+public import Mathlib.CategoryTheory.Abelian.Basic
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Linear
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Full.Data
+public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Grading.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Full.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Normalization.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Multiplication.Proofs
+public import Mathlib.Algebra.CharP.Lemmas
+public import Mathlib.Algebra.BigOperators.Intervals
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Words.Equiv.Data
+public import Mathlib.LinearAlgebra.TensorProduct.Basic
+public import Mathlib.CategoryTheory.Abelian.Injective.Ext
 public import KIP126.Def.ClassicalAdams.Convergence.BHS.Predicates
 public import KIP126.Def.ClassicalAdams.SphereVanishing.Predicates
 public import KIP126.Def.Synthetic.EInfty.Presentation.Predicates
 public import KIP126.Def.SpectralSequence.Computation.CyclesAndBoundaries.Predicates
-public import KIP126.Def.SpectralSequence.Computation.Predicates
-public import KIP126.Def.Comparison.ClassicalSynthetic.Data
-public import KIP126.Def.Comparison.ClassicalSynthetic.FirstQuotient.Data
 public import KIP126.Def.ClassicalAdams.SphereClasses.Hi.Internal.Data
 public import KIP126.Def.ClassicalAdams.SphereClasses.Products.Data
 public import KIP126.Def.ClassicalAdams.MilnorCohomology.Comparison.CycleMap.Data
-public import KIP126.Def.ClassicalAdams.MilnorCohomology.Multiplication.Data
-public import KIP126.Def.Kervaire.Theta5.Predicates
-public import KIP126.Def.ClassicalAdams.PageRepresentatives.Predicates
-public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Window.Data
-public import KIP126.Def.Synthetic.EInfty.Shift.Predicates
-public import KIP126.Def.Synthetic.PageExtension.Ambiguity.Predicates
-public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Top.Data
-public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Top.Equivalence.Data
+public import Mathlib.Algebra.Group.Hom.Defs
 public import KIP126.Def.ClassicalAdams.Suspension.Predicates
-public import KIP126.Def.Synthetic.PageExtension.Crossing.Predicates
-public import KIP126.Def.Synthetic.PageExtension.Solutions.Data
-public import KIP126.Def.Synthetic.PageExtension.Solutions.Permanent.Data
-public import KIP126.Def.Synthetic.ExtensionSS.Square.Construction.Data
-public import KIP126.Def.ClassicalAdams.Moss.Statement.Predicates
-public import KIP126.Def.ClassicalAdams.Tmf.Model.Data
+public import KIP126.Def.ClassicalAdams.TowerSSData.Sequence.Data
+public import KIP126.Def.ClassicalAdams.Tower.Proofs
+public import Mathlib.Algebra.Category.ModuleCat.Subobject
+public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Data
+public import Mathlib.CategoryTheory.Monoidal.Closed.Basic
+public import KIP126.Def.ClassicalAdams.TowerLayer.Proofs
+public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Pairing.Data
+public import KIP126.Def.StableHomotopy.Context.TensorPairing.Data
+public import KIP126.Def.ClassicalAdams.TowerLongLayer.Data
+public import KIP126.Def.ClassicalAdams.TowerLongLayer.Proofs
+public import KIP126.Def.ClassicalAdams.TowerSSData.Differential.Proofs
+public import KIP126.Def.SpectralSequence.Permanence.Predicates
+public import KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.StableHomotopy.Toda.Predicates
+public import KIP126.Def.StableHomotopy.Cohomology.Data
+public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Data
+public import KIP126.Def.Synthetic.Sphere.Data
+public import Mathlib.CategoryTheory.Monoidal.Mon
 public import KIP126.Def.ClassicalAdams.SphereMultiplication.Data
-public import KIP126.Def.Steenrod.MilnorExt.Resolution.Data
-public import KIP126.Def.Synthetic.Bockstein.Hom.Data
-public import KIP126.Def.Synthetic.QuotientFunctor.Data
-public import KIP126.Def.ClassicalAdams.Convergence.Tower.Predicates
-public import KIP126.Def.ClassicalAdams.Completion.Predicates
 public import KIP126.Def.AdamsSynthetic.Extensions.Data
 public import KIP126.Def.AdamsSynthetic.Hopf.Data
 public import KIP126.Def.AdamsSynthetic.Conditions.Predicates
-public import KIP126.Def.AdamsSynthetic.Massey.Predicates
-public import KIP126.Def.AdamsSynthetic.Toda.Predicates
+public import KIP126.Def.AdamsSynthetic.SphereClasses.Data
+public import KIP126.Def.ClassicalAdams.Detection.Predicates
 public import KIP126.Def.Synthetic.Computation.Predicates
 public import KIP126.Def.AdamsSynthetic.SphereClasses.Tmf.Data
 public import Mathlib.CategoryTheory.Adjunction.Additive
 public import KIP126.Def.AdamsSynthetic.Multiplication.Comparison
-public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Data
 public import KIP126.Def.StableHomotopy.FiniteType.Predicates
-public import Mathlib.CategoryTheory.Monoidal.Mon
 public import KIP126.Def.AdamsSynthetic.Triangles.Predicates
 public import KIP126.Def.Comparison.ClassicalSynthetic.RealizationWeights.Data
 public import KIP126.Def.Comparison.ClassicalSynthetic.RealizationTower.AdamsSynthetic.Data
@@ -74,7 +127,6 @@ def ClassicalTheta (θ : HomotopyGroup (C := C) 62 SphereSpectrum) : Prop :=
     (Sphere.Internal.hiSquare H M 5) θ
 
 end KIP126.Literature.AdamsSynthetic
-
 
 namespace KIP126.Literature.AdamsSynthetic
 open CategoryTheory KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
@@ -122,9 +174,6 @@ noncomputable def detectorMap : (S_0_0 : Syn) ⟶ D.nu.functor.obj D.hopfAndDete
   D.nu.unitIso.inv ≫ D.nu.functor.map D.hopfAndDetector.detectorUnit
 
 end KIP126.Literature.AdamsSynthetic
-
-
-
 
 /-! BHS/Pstrągowski statements on the specified ν and Adams sequence family.
 Finite quotient assertions retain their more general scope. Untruncated BHS
@@ -241,7 +290,6 @@ structure BHSCompletionComparison (Q : BHSCompletionData D) : Prop where
 end
 end KIP126.Literature.AdamsSynthetic
 
-
 /-! Exact classical source existence on one actual sphere background.
 The cited classical theorem concerns these classes on the classical
 sphere. Their identification with the specified normalized synthetic maps
@@ -276,7 +324,6 @@ structure ClassicalHopfComparison (D : AdamsComparison H M Syn)
       (D.normalizedMap (.shift 1 .sphere) .sphere D.hopfAndDetector.etaMap).map ≫ D.nu.unitIso.hom
 end KIP126.Literature.AdamsSynthetic
 
-
 namespace KIP126.Literature.AdamsSynthetic
 open CategoryTheory CategoryTheory.MonoidalCategory KIP126.StableHomotopy
 open KIP126.Synthetic.Context
@@ -293,16 +340,7 @@ structure MayContext where
   leftExact : ∀ X : Syn, letI := leftShift X; (tensorLeft X).IsTriangulated
   rightExact : ∀ X : Syn, letI := rightShift X; (tensorRight X).IsTriangulated
 
-/-- Historical unsigned target. This is NOT May's source theorem: sign
-removal needs an additional premise on the actual boundary or on its image.
-It is retained as a named compatibility target, not an external input. -/
-def MayContext.Boundary (B : MayContext Syn) : Prop :=
-  letI := B.leftShift; letI := B.rightShift
-  letI := B.leftExact; letI := B.rightExact
-  KIP126.Stable.MaySmashBoundary (C := Syn)
-
 end KIP126.Literature.AdamsSynthetic
-
 
 /-! Low-dimensional and symmetric Toda relations.
 Their synthetic versions require comparisons with the classical relations:
@@ -369,9 +407,6 @@ structure TodaSecondaryComparison (η : BiHom 1 2 (S_0_0 : Syn))
 
 end
 end KIP126.Literature.AdamsSynthetic
-
-
-
 
 namespace KIP126.Literature.AdamsSynthetic
 open CategoryTheory KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
@@ -485,7 +520,6 @@ structure BHSRealizationComparison (R : RealizationCoordinates D)
 end
 end KIP126.Literature.AdamsSynthetic
 
-
 /-! Localization of the full synthetic category and comparison with its completion.
 
 Pstrągowski's `prop:tau_inversion_functor_exists` constructs localization as
@@ -556,7 +590,6 @@ structure RealizationKernelComparison (S : SyntheticCompletionAdjunction Syn) : 
 
 end
 end KIP126.Literature.AdamsSynthetic
-
 
 /-! The ordinary homotopy-category consequences of the external symmetric
 monoidal and λ-quotient algebra theorems. A commutative monoid object here
@@ -642,7 +675,6 @@ structure CompatibleAdamsAlgebras where
   quotients : letI := syntheticSymmetric; QuotientAlgebras D
   detector : letI := classicalSymmetric; letI := syntheticSymmetric; DetectorAlgebra D
 
-
 /-- Compatibility of the chosen quotient algebras with the specified sphere
 action and restriction maps. These equations are additional to the
 existence of the quotient algebra structures. -/
@@ -668,7 +700,6 @@ def AdamsAlgebraStructures.withCompatibility (I : AdamsAlgebraStructures D) (B :
   detector := I.detector
 
 end KIP126.Literature.AdamsSynthetic
-
 
 /-! Source data are chosen once. They contain actual spectra, unit maps,
 classes and convergence data, not an uninterpreted `isTmf` predicate.
@@ -740,19 +771,9 @@ def ClassicalProductDetection (D : AdamsComparison H M Syn) : Prop :=
         (by simp only [Nat.cast_add]; omega : ((t+t' : ℕ) : ℤ)-(s+s') = ((t : ℤ)-s)+((t' : ℤ)-s'))) ≫ classicalSphereProduct a b)
 
 -- Retain the same parameters as the accompanying detection statements.
-set_option linter.unusedVariables false in
-/-- This is the CLASSICAL tail obligation used to remove the ambiguity of a
-125-stem representative. It is a consequence of the computed E₅-exhaustion,
-Ravenel's vanishing line and the same tower's separated filtration. It is
-not a tmf source theorem and says nothing about synthetic lambda torsion. -/
-def ClassicalHigh125Tail (D : AdamsComparison H M Syn) : Prop :=
-  ∀ a : HomotopyGroup (C := C) 125 SphereSpectrum,
-    a ∈ TowerDetection.filtrationSubmodule H.unit SphereSpectrum 26 125 → a = 0
+
 end
 end KIP126.Literature.AdamsSynthetic
-
-
-
 
 /-! Multiplicative detection comparisons. These are structural realization
 obligations, kept separate from the statement that the source quotient
@@ -780,7 +801,6 @@ structure AlgebraDetectionCompatibility : Prop where
     ∀ (q : ℕ) (hq : 0 < q),
       FiniteQuotientFiltrationCompatible D q (I.quotients.algebra q hq)
 end KIP126.Literature.AdamsSynthetic
-
 
 /-! Comparisons of normalized ν-cofiber lifts.
 Existence of a compatible geometric lift does not imply that an arbitrary
@@ -904,7 +924,6 @@ structure NuCofiberLiftComparison (S : NuCofiberLifts D) : Prop where
   top : S.topLift.map =
     (D.normalizedMap D.hopfAndDetector.nuCofiberTriangle.Z (.shift 1 D.hopfAndDetector.nuCofiberTriangle.X)
       D.hopfAndDetector.nuCofiberTriangle.h).map
-
 
 end
 end KIP126.Literature.AdamsSynthetic

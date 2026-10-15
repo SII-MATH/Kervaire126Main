@@ -5,7 +5,6 @@ public import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 @[expose] public section
 
-
 namespace KIP126.Algebra.PolynomialTruncation
 open MvPolynomial
 noncomputable section

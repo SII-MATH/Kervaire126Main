@@ -6,11 +6,9 @@ public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Computation.Hypotheses
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
 
 @[expose] public section
-
 
 /-! Filtration and representative calculations for Proposition 7.8 and
 Lemma 7.14 (`lem:x_123_9`). The complete bases, products and differential
@@ -581,7 +579,6 @@ private theorem stem123_middle_nonzero7_target_page_four_nonzero (I : KIP126.Com
   change E.d 3 (15,138) v=0 ∨ E.d 3 (15,138) v=b2
   exact image3 v
 
-
 private theorem stem123_middle_nonzero7
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G) :
     HasNonzeroDifferential (sequence D' .sphere) 7 (11,134) (18,140)
@@ -682,7 +679,6 @@ private theorem stem123_filtration_bounds
       (I.interpretation.basis .sphere 15 138 2) (I.interpretation.basis .sphere 18 140 2) := by
   obtain ⟨source12,source13,source14⟩ := stem123_middle_low_pages I
   exact ⟨source12,source13,source14,stem123_middle_nonzero7 I,stem123_middle_nonzero3 I⟩
-
 
 private theorem stem123_weight130_finite_quotients_d3_s13_t137_basis2 (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G) : HasDifferential (sequence D' .sphere) 3 (13,137) (16,139)
     (I.interpretation.basis .sphere 13 137 2) (I.interpretation.basis .sphere 16 139 0) := by
@@ -947,8 +943,6 @@ private theorem stem123_weight130_finite_quotients_boundary_of_zero_representati
   rw [←hf,CategoryTheory.comp_apply,hy]
   exact hz
 
-
-
 private theorem stem123_weight130_finite_quotients_cycle_quotient_zero_of_page
     (r c b : ℤ) (p : ℤ×ℤ) (hr : 2≤r) (hc : r≤c+1) (hb : r-1≤b)
     (hz : Subsingleton ((adamsTowerInternalSpectralSequence H.unit SphereSpectrum).Page r p)) :
@@ -965,8 +959,6 @@ private theorem stem123_weight130_finite_quotients_cycle_quotient_zero_of_page
     exact hall x
   exact ⟨fun x y=>(hz' x).trans (hz' y).symm⟩
 
-
-
 private theorem stem123_weight130_finite_quotients_cycle_differential_zero
     {r c : ℤ} {p : ℤ×ℤ} {x : E2 H SphereSpectrum p.1 p.2}
     {a : (adamsTowerInternalSpectralSequence H.unit SphereSpectrum).Page r p}
@@ -979,8 +971,6 @@ private theorem stem123_weight130_finite_quotients_cycle_differential_zero
     ⟨by omega,by simpa using hx⟩
   exact represents_d_zero_of_later hr (by omega : r<c+1) ha ⟨y,hy⟩
 
-
-
 private theorem stem123_weight130_finite_quotients_nonzero_differential_not_cycle
     {r c : ℤ} {p q : ℤ×ℤ} {x : E2 H SphereSpectrum p.1 p.2} {y : E2 H SphereSpectrum q.1 q.2}
     (hr : 2≤r) (hc : r≤c)
@@ -992,8 +982,6 @@ private theorem stem123_weight130_finite_quotients_nonzero_differential_not_cycl
   simp only [eqToHom_refl,Category.comp_id] at hd
   exact hne (hd.symm.trans (stem123_weight130_finite_quotients_cycle_differential_zero hr hc hx ha))
 
-
-
 private theorem stem123_weight130_finite_quotients_cycle_quotient_zero_of_le
     {c b : ℤ} {p : ℤ×ℤ}
     (h : cycles H SphereSpectrum c p ≤ boundaries H SphereSpectrum b p) :
@@ -1003,8 +991,6 @@ private theorem stem123_weight130_finite_quotients_cycle_quotient_zero_of_le
     obtain ⟨x⟩ := x
     exact (NestedQuotient.projection_eq_zero x).mpr (h x.property)
   exact ⟨fun x y=>(hz x).trans (hz y).symm⟩
-
-
 
 private theorem stem123_weight130_finite_quotients_basis_mem_submodule
     {V : Type v} [AddCommGroup V] [Module ℤ V] {N : ℕ}
@@ -1023,8 +1009,6 @@ private theorem stem123_weight130_finite_quotients_basis_mem_submodule
       · change e.symm (Finsupp.single i (1:F2))∈B
         exact h i
   simpa only [LinearEquiv.symm_apply_apply] using all (e x)
-
-
 
 private theorem stem123_weight130_finite_quotients_stem123_af16_quotient (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G) :
     Subsingleton (CycleQuotient H SphereSpectrum 2 10 (16,139)) := by
@@ -1063,8 +1047,6 @@ private theorem stem123_weight130_finite_quotients_stem123_af16_quotient (I : KI
   · simpa only [he] using b0
   · simpa only [he] using b1
   · simpa only [he] using b2
-
-
 
 private theorem stem123_weight130_finite_quotients_stem123_af10_quotient (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G) :
     Subsingleton (CycleQuotient H SphereSpectrum 8 4 (10,133)) := by
@@ -1169,8 +1151,6 @@ private theorem stem123_weight130_finite_quotients_stem123_af10_quotient (I : KI
     rw [hxe]
     exact B.add_mem b01 b2
 
-
-
 private theorem stem123_weight130_finite_quotients_stem123_af15_quotient (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G)
     (h3 : HasNonzeroDifferential (sequence D' .sphere) 3 (15,138) (18,140)
       (I.interpretation.basis .sphere 15 138 2) (I.interpretation.basis .sphere 18 140 2)) :
@@ -1254,8 +1234,6 @@ private theorem stem123_weight130_finite_quotients_stem123_af15_quotient (I : KI
     have hh := C.sub_mem hx (C.add_mem c0 c1)
     rw [hxe] at hh
     simpa only [add_sub_cancel_left,add_sub_cancel_right,sub_zero] using hh
-
-
 
 private theorem stem123_weight130_finite_quotients_stem123_af11_quotient (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G)
     (h7 : HasNonzeroDifferential (sequence D' .sphere) 7 (11,134) (18,140)
@@ -1623,7 +1601,6 @@ private theorem stem123_weight130_finite_quotients_stem123_af11_quotient (I : KI
     change ((I.interpretation.basis .sphere 11 134 0+I.interpretation.basis .sphere 11 134 1+I.interpretation.basis .sphere 11 134 2+I.interpretation.basis .sphere 11 134 3+I.interpretation.basis .sphere 11 134 4)-(I.interpretation.basis .sphere 11 134 2+I.interpretation.basis .sphere 11 134 4) : E.Page 2 (11,134))∈C at hh
     rw [cancel] at hh
     exact hh
-
 
 private theorem stem123_weight130_finite_quotients (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D' L' G) :
     ∀ s : ℤ, 10≤s → s≤16 → Subsingleton

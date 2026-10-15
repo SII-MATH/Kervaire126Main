@@ -84,59 +84,6 @@ end CofiberChoices
 
 variable {C : Type u} [StableHomotopyCategory.{u, v} C]
 
-/-- A functorial cofiber compatible with tensoring on the right. -/
-class TensorTriangulatedCatWithFunctorialCofiber extends HasFunctorialCofiber (C := C) where
-  tensorCofibIso : ∀ {X Y : C} (f : X ⟶ Y) (W : C),
-    HasFunctorialCofiber.cofib (f ▷ W) ≅ HasFunctorialCofiber.cofib f ⊗ W
-
-/-- Closed symmetric tensor-triangulated compatibility data.
-
-The exactness and suspension fields are hypotheses of a chosen model, rather
-than properties of every abstract stable homotopy category.
--/
-class ClosedSymmetricTensorTriangulated where
-  symmetricCategory : SymmetricCategory C
-  monoidalClosed : MonoidalClosed C
-  /-- These are the selected suspension structures, not a quantification
-      over arbitrary boundary-sign choices. -/
-  smashShift : ∀ W : C, (tensorRight W).CommShift ℤ
-  leftShift : ∀ W : C, (tensorLeft W).CommShift ℤ
-  leftShift_eq : letI := symmetricCategory
-    ∀ W : C, letI := smashShift W
-      leftShift W = Functor.CommShift.ofIso (BraidedCategory.tensorLeftIsoTensorRight W).symm ℤ
-  ihomShift : letI := monoidalClosed; ∀ W : C, (ihom W).CommShift ℤ
-  /-- Internal-hom suspension is the mate under the SAME closed adjunction. -/
-  ihom_unit_shift : letI := monoidalClosed
-    ∀ W : C, letI := leftShift W; letI := ihomShift W
-      NatTrans.CommShift (ihom.adjunction W).unit ℤ
-  ihom_counit_shift : letI := monoidalClosed
-    ∀ W : C, letI := leftShift W; letI := ihomShift W
-      NatTrans.CommShift (ihom.adjunction W).counit ℤ
-  smashExact : ∀ W : C, letI := smashShift W
-    (tensorRight W).IsTriangulated
-  ihomExact : letI := monoidalClosed
-    ∀ W : C, letI := ihomShift W
-      (ihom W).IsTriangulated
-
-attribute [implicit_reducible] ClosedSymmetricTensorTriangulated.symmetricCategory
-attribute [implicit_reducible] ClosedSymmetricTensorTriangulated.monoidalClosed
-attribute [instance] ClosedSymmetricTensorTriangulated.symmetricCategory
-attribute [instance] ClosedSymmetricTensorTriangulated.monoidalClosed
-
-/-- The named suspension comparison is a projection of the selected
-right-tensor CommShift, rather than a second unrelated isomorphism. -/
-noncomputable def ClosedSymmetricTensorTriangulated.smashSuspIso
-    [ClosedSymmetricTensorTriangulated (C := C)] (X Y : C) :
-    (shiftFunctor C (1 : ℤ)).obj X ⊗ Y ≅
-      (shiftFunctor C (1 : ℤ)).obj (X ⊗ Y) :=
-  letI := ClosedSymmetricTensorTriangulated.smashShift Y
-  ((tensorRight Y).commShiftIso (1 : ℤ)).app X
-
-/-- The internal mapping spectrum supplied by a closed monoidal witness. -/
-noncomputable def MappingSpectrum (X Y : C)
-    [ClosedSymmetricTensorTriangulated (C := C)] : C :=
-  (ihom X).obj Y
-
 /-- The sphere spectrum is the monoidal unit. -/
 abbrev SphereSpectrum : C := 𝟙_ C
 
@@ -145,10 +92,6 @@ abbrev Sphere (n : ℤ) : C := (shiftFunctor C n).obj SphereSpectrum
 
 /-- Stable homotopy classes represented by maps from the `n`-sphere. -/
 abbrev HomotopyGroup (n : ℤ) (X : C) : Type v := Sphere n ⟶ X
-
-/-- The graded homotopy groups of a spectrum, as additive-group objects. -/
-noncomputable def HomotopyGroups (X : C) : ℤ → AddCommGrpCat.{v} :=
-  fun n => AddCommGrpCat.mk (HomotopyGroup n X)
 
 /-! ### Distinguished cofiber triangles and induced maps -/
 
@@ -170,14 +113,3 @@ def inducedMap {X Y : C} (f : X ⟶ Y) (n : ℤ) :
   map_add' := fun a b => Preadditive.add_comp _ _ _ a b f
 
 end KIP126.StableHomotopy
-
-namespace KIP126.Classical.Adams
-
-/-- The stable-homotopy operations used by the domain layer.  No homotopy
-groups or multiplication are assumed here. -/
-structure StableHomotopyContext where
-  Spectrum : Type
-  sphere : Spectrum
-  smash : Spectrum → Spectrum → Spectrum
-
-end KIP126.Classical.Adams

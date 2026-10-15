@@ -4,7 +4,8 @@ public import KIP126.Def.AdamsSynthetic.ComparisonStatements
 public import KIP126.Literature.AdamsSynthetic.Statements
 public import KIP126.Def.ClassicalAdams.TowerVanishing.Proofs
 public import KIP126.Def.ClassicalAdams.TowerNaturality.Proofs
-public import KIP126.Def.ClassicalAdams.MapFiltration.Proofs
+public import KIP126.Def.ClassicalAdams.MapFiltration.Predicates
+public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Action.Proofs
 public import KIP126.Def.ClassicalAdams.TowerResolution.Proofs
 public import KIP126.Def.ClassicalAdams.TowerNaturality.Unit.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs

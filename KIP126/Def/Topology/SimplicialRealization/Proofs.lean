@@ -19,14 +19,6 @@ set_option backward.isDefEq.respectTransparency false
 theorem compactSpace_stdSimplex (n : ℕ) : CompactSpace |(Δ[n] : SSet.{u})| :=
   (SimplexCategory.toTopHomeo ⦋n⦌).symm.compactSpace
 
-/-- The actual realization of a simplex-generated subcomplex is a
-continuous image of the corresponding compact standard simplex. -/
-theorem compactSpace_ofSimplex (X : SSet.{u}) {n : ℕ} (x : X.obj (op ⦋n⦌)) :
-    CompactSpace |(SSet.Subcomplex.ofSimplex x).toSSet| := by
-  letI := compactSpace_stdSimplex.{u} n
-  let f := SSet.toTop.map (SSet.Subcomplex.toOfSimplex x)
-  exact ((TopCat.epi_iff_surjective f).mp inferInstance).compactSpace f.hom.continuous
-
 /-- Every realization point lies in the image of an actual nondegenerate
 simplex, using the proved colimit over simplex-generated subcomplexes. -/
 theorem exists_nondegenerate_simplex (X : SSet.{u}) (x : |X|) :
@@ -56,24 +48,5 @@ theorem compactSpace_of_finite (X : SSet.{u}) [X.Finite] : CompactSpace |X| := b
     obtain ⟨s,t,ht⟩ := exists_nondegenerate_simplex X x
     exact ⟨⟨s,t⟩,ht⟩
   exact hs.compactSpace hf
-
-/-- Degreewise finite simplices give a genuinely finite simplicial skeleton. -/
-theorem finite_skeleton (X : SSet.{u}) (n : ℕ)
-    (hX : ∀ d : ℕ, Finite (X.obj (op ⦋d⦌))) :
-    SSet.Finite (X.skeleton n).toSSet := by
-  letI (d : ℕ) := hX d
-  change SSet.Finite (⨆ (i : Fin n) (x : X.nonDegenerate i),
-    SSet.Subcomplex.ofSimplex x.1).toSSet
-  apply (SSet.finite_iSup_iff _).mpr
-  intro i
-  apply (SSet.finite_iSup_iff _).mpr
-  intro x
-  exact SSet.finite_of_epi (SSet.Subcomplex.toOfSimplex x.1)
-
-/-- Every realized skeleton of a degreewise finite simplicial set is compact. -/
-theorem compactSpace_skeleton (X : SSet.{u}) (n : ℕ)
-    (hX : ∀ d : ℕ, Finite (X.obj (op ⦋d⦌))) : CompactSpace (skeleton X n) := by
-  letI := finite_skeleton X n hX
-  exact compactSpace_of_finite (X.skeleton n).toSSet
 
 end KIP126.Topology.SimplicialRealization

@@ -1,7 +1,15 @@
 module
 
 public import KIP126.Def.ClassicalAdams.Moss.Composition.CoefficientCycles.Proofs
-public import KIP126.Def.ClassicalAdams.Moss.Composition.Layer.Proofs
+public import KIP126.Def.ClassicalAdams.TowerSSData.Sequence.Data
+public import KIP126.Def.ClassicalAdams.Tower.Proofs
+public import Mathlib.Algebra.Category.ModuleCat.Subobject
+public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Data
+public import Mathlib.CategoryTheory.Monoidal.Closed.Basic
+public import KIP126.Def.ClassicalAdams.TowerLayer.Proofs
+public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Pairing.Data
+public import KIP126.Def.StableHomotopy.Context.TensorPairing.Data
+public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Pairing.Proofs
 public import KIP126.Def.ClassicalAdams.TowerLongLayer.Proofs
 
 @[expose] public section
@@ -83,45 +91,6 @@ theorem layerFirstBoundary_eq_zero_iff_unit_equalizer {U : C} (A : C) (s : ℕ)
 variable [MonoidalClosed C] [BraidedCategory C]
   [∀ A : C, (tensorRight A).CommShift ℤ]
   [∀ A : C, (tensorRight A).IsTriangulated]
-
-/-- The prescribed layer composition preserves the kernel of the first
-boundary on arbitrary morphisms into its two factors. -/
-theorem layerComposition_firstBoundary_eq_zero {U V : C}
-    (X Y Z : C) (s t : ℕ)
-    (a : U ⟶ adamsLayerAt H.unit (mappingObject X Y) s)
-    (b : V ⟶ adamsLayerAt H.unit (mappingObject Y Z) t)
-    (ha : a ≫ HasFunctorialCofiber.cofibδ
-        (adamsTowerMapAt H.unit (mappingObject X Y) (s : ℤ) ((s : ℤ) + 1) (by omega)) ≫
-      (HasFunctorialCofiber.cofibι
-        (adamsTowerMapAt H.unit (mappingObject X Y) ((s : ℤ) + 1)
-          (((s : ℤ) + 1) + 1) (by omega)))⟦(1 : ℤ)⟧' = 0)
-    (hb : b ≫ HasFunctorialCofiber.cofibδ
-        (adamsTowerMapAt H.unit (mappingObject Y Z) (t : ℤ) ((t : ℤ) + 1) (by omega)) ≫
-      (HasFunctorialCofiber.cofibι
-        (adamsTowerMapAt H.unit (mappingObject Y Z) ((t : ℤ) + 1)
-          (((t : ℤ) + 1) + 1) (by omega)))⟦(1 : ℤ)⟧' = 0) :
-    ((a ⊗ₘ b) ≫ layerComposition H R X Y Z s t) ≫
-      HasFunctorialCofiber.cofibδ
-        (adamsTowerMapAt H.unit (mappingObject X Z) ((t + s : ℕ) : ℤ)
-          (((t + s : ℕ) : ℤ) + 1) (by omega)) ≫
-      (HasFunctorialCofiber.cofibι
-        (adamsTowerMapAt H.unit (mappingObject X Z) (((t + s : ℕ) : ℤ) + 1)
-          ((((t + s : ℕ) : ℤ) + 1) + 1) (by omega)))⟦(1 : ℤ)⟧' = 0 := by
-  apply (layerFirstBoundary_eq_zero_iff_unit_equalizer H R
-    (mappingObject X Z) (t + s) _).mpr
-  have hcomp : ((a ⊗ₘ b) ≫ layerComposition H R X Y Z s t) ≫
-      (adamsLayerIso H.unit (mappingObject X Z) (t + s)).hom =
-      ((a ≫ (adamsLayerIso H.unit (mappingObject X Y) s).hom) ⊗ₘ
-        (b ≫ (adamsLayerIso H.unit (mappingObject Y Z) t).hom)) ≫
-        mod2CoefficientPairing H R (stageComposition H.unit X Y Z s t) := by
-    rw [Category.assoc, layerComposition_comparison, ← Category.assoc,
-      tensorHom_comp_tensorHom]
-  rw [hcomp]
-  exact coefficientPairing_preserves_unit_equalizer H R _ _ _
-    ((layerFirstBoundary_eq_zero_iff_unit_equalizer H R
-      (mappingObject X Y) s a).mp ha)
-    ((layerFirstBoundary_eq_zero_iff_unit_equalizer H R
-      (mappingObject Y Z) t b).mp hb)
 
 end
 end KIP126.Classical.Adams.Moss

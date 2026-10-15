@@ -66,18 +66,5 @@ def finiteTargetForExtension (q : ℕ) (n s t : ℤ)
     ext <;> simp only [Int.toNat_of_nonneg (sub_nonneg.mpr hn)] <;> omega)
     (finiteTargetLabel D Y q (s + n) (t + n) (n - normalizedExponent H f).toNat y)
 
-def infiniteSourceForExtension (s t : ℤ) (x : E2 H (X.obj D.hopfAndDetector) s t) :
-    (D.family.obj ((extensionSourceObject D X Y f).obj D.nu D.hopfAndDetector)).E₂
-      (s, (t - s) + s, t + normalizedExponent H f) :=
-  regradeE2 (by simp) (D.nuE2 X (normalizedExponent H f) s t 0 x)
-
-def infiniteTargetForExtension (n s t : ℤ)
-    (hn : (normalizedExponent H f : ℤ) ≤ n)
-    (y : E2 H (Y.obj D.hopfAndDetector) (s + n) (t + n)) :
-    (D.family.obj (D.nu.functor.obj (Y.obj D.hopfAndDetector))).E₂
-      (s + n, (t - s) + (s + n), t + normalizedExponent H f) :=
-  regradeE2 (by
-    ext <;> simp only [Int.toNat_of_nonneg (sub_nonneg.mpr hn)] <;> omega)
-    (targetNuLabel D Y (s + n) (t + n) (n - normalizedExponent H f).toNat y)
 end
 end KIP126.AdamsSynthetic

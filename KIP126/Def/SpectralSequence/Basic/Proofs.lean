@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.SpectralSequence.Basic.Predicates
+public import KIP126.Def.SpectralSequence.Basic.Data
 
 @[expose] public section
 
@@ -18,10 +18,6 @@ open CategoryTheory CategoryTheory.Limits
 universe u v w
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
-
-/-- Bottom-page boundaries lie in the cycles on every page. -/
-theorem SSData.B_bot_le_Z (D : SSData C) (r : WithTop ℕ) : D.B ⊥ ≤ D.Z r :=
-  le_trans (D.B_mono bot_le) (D.B_le_Z r)
 
 /-- If cycles and boundaries agree, the corresponding quotient page is zero. -/
 theorem SSData.page_isZero_of_eq
@@ -46,31 +42,6 @@ theorem SSData.eq_of_page_isZero
   exact Subobject.le_of_comm
     (inv (Subobject.ofLE (D.B r) (D.Z r) (D.B_le_Z r)))
     (by simp [Subobject.ofLE_arrow])
-
-/-- A spectral sequence with zero pages at one grading has zero infinity page there. -/
-theorem eInfty_isZero_of_page_isZero
-    {C : Type*} [Category C] [Abelian C]
-    {α : Type*} [AddCommGroup α] [DecidableEq α]
-    (E : SpectralSequence C α) (k : α)
-    (h : ∀ r : ℤ, E.r₀ ≤ r → IsZero (E.Page r k)) :
-    IsZero ((E.ssData k).eInfty) := by
-  unfold SSData.eInfty
-  apply SSData.page_isZero_of_eq
-  set D := E.ssData k
-  apply le_antisymm
-  · exact D.B_le_Z ⊤
-  · have hpage0 : IsZero (D.page (↑(0 : ℕ))) := by
-      have hfirst := h E.r₀ (le_refl _)
-      simp only [SpectralSequence.Page, SSData.page] at hfirst
-      have hrr : (E.r₀ - E.r₀).toNat = 0 := by omega
-      rw [hrr] at hfirst
-      exact hfirst
-    have hBZ : D.B ↑(0 : ℕ) = D.Z ↑(0 : ℕ) :=
-      D.eq_of_page_isZero _ hpage0
-    calc
-      D.Z ⊤ ≤ D.Z ↑(0 : ℕ) := D.Z_anti le_top
-      _ = D.B ↑(0 : ℕ) := hBZ.symm
-      _ ≤ D.B ⊤ := D.B_mono le_top
 
 /-- Extensionality for bare ambient morphisms. -/
 @[ext]
@@ -167,15 +138,6 @@ theorem pageMap_comp (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'')
   apply pageMap_unique
   simp [Category.assoc]
 
-/-- Naturality for generalized cycle representatives, without projectivity
-assumptions or a choice of a lift of an arbitrary quotient class. -/
-@[reassoc]
-theorem representative_naturality (f : SSDataMorphism ι D D') (k : ι)
-    (r : WithTop ℕ) {T : C} (x : T ⟶ Subobject.underlying.obj ((D k).Z r)) :
-    (x ≫ (D k).pageπ r) ≫ f.pageMap k r =
-      (x ≫ f.cycleMap k r) ≫ (D' k).pageπ r := by
-  simp [Category.assoc]
-
 @[simp]
 theorem pageMapAt_id (E : PreSS C ι) (r : ℤ) (k : ι) :
     (id E.ssData).pageMapAt (E := E) (E' := E) rfl r k = 𝟙 _ := by
@@ -221,27 +183,6 @@ theorem SpectralSequenceMorphism.ext
   rcases f with ⟨f_φ, _, _, _, _, _⟩
   rcases g with ⟨g_φ, _, _, _, _, _⟩
   congr!
-
-/-- Differential naturality refers to the page map induced by the ambient map. -/
-@[reassoc]
-theorem PreSSMorphism.pageMap_comm_d
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    {E E' : PreSS C ι} (f : PreSSMorphism E E') (r : ℤ) (k : ι) :
-    f.pageMap r k ≫ E'.d r k =
-      E.d r k ≫ f.pageMap r (k + E.diffDeg r) ≫
-        eqToHom (by rw [f.diffDeg_eq]) :=
-  f.comm_d r k
-
-/-- Differential naturality for the underlying canonical maps of spectral sequences. -/
-@[reassoc]
-theorem SpectralSequenceMorphism.pageMap_comm_d
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E')
-    (r : ℤ) (k : ι) :
-    f.pageMap r k ≫ E'.d r k =
-      E.d r k ≫ f.pageMap r (k + E.diffDeg r) ≫
-        eqToHom (by rw [f.diffDeg_eq]) :=
-  f.comm_d r k
 
 /-- Identity quotient maps commute with every page differential. -/
 theorem PreSSMorphism.id_comm_d
@@ -342,61 +283,6 @@ instance cokernelMap_ofLE_mono
 
 end PageHomology
 
-/-- Equal page classes of cycle representatives differ by a boundary in the ambient object. -/
-theorem SSData.sub_factors_boundary_of_page_eq (D : SSData C)
-    (n : WithTop ℕ) {T : C}
-    (u v : T ⟶ Subobject.underlying.obj (D.Z n))
-    (h : u ≫ D.pageπ n = v ≫ D.pageπ n) :
-    Subobject.Factors (D.B n)
-      (u ≫ (D.Z n).arrow - v ≫ (D.Z n).arrow) := by
-  let i := Subobject.ofLE (D.B n) (D.Z n) (D.B_le_Z n)
-  have hz : (u - v) ≫ cokernel.π i = 0 := by
-    change (u - v) ≫ D.pageπ n = 0
-    rw [Preadditive.sub_comp, h, sub_self]
-  let b := Abelian.monoLift i (u - v) hz
-  have hb : b ≫ (D.B n).arrow =
-      u ≫ (D.Z n).arrow - v ≫ (D.Z n).arrow := by
-    calc
-      b ≫ (D.B n).arrow = b ≫ i ≫ (D.Z n).arrow := by
-        rw [Subobject.ofLE_arrow]
-      _ = (u - v) ≫ (D.Z n).arrow := by
-        rw [← Category.assoc, Abelian.monoLift_comp]
-      _ = u ≫ (D.Z n).arrow - v ≫ (D.Z n).arrow := by
-        rw [Preadditive.sub_comp]
-  rw [← hb]
-  exact Subobject.factors_comp_arrow b
-
-/-- A nonzero page boundary has a first finite stage at which it enters the boundary tower. -/
-theorem SSData.first_boundary_page (D : SSData C) {T : C}
-    (v : T ⟶ D.V) (n : ℕ)
-    (hn : Subobject.Factors (D.B (↑n)) v)
-    (hzero : ¬ Subobject.Factors (D.B (↑(0 : ℕ))) v) :
-    ∃ m : ℕ, m < n ∧
-      Subobject.Factors (D.B (↑(m + 1))) v ∧
-      ¬ Subobject.Factors (D.B (↑m)) v := by
-  classical
-  let P : ℕ → Prop := fun j => Subobject.Factors (D.B (↑j)) v
-  have hex : ∃ j : ℕ, P j := ⟨n, hn⟩
-  let p := Nat.find hex
-  have hp : P p := Nat.find_spec hex
-  have hp0 : 0 < p := by
-    by_contra h
-    have h0 : p = 0 := by omega
-    exact hzero (by simpa only [P, h0] using hp)
-  have hple : p ≤ n := Nat.find_min' hex hn
-  refine ⟨p - 1, by omega, ?_, ?_⟩
-  · simpa only [show p - 1 + 1 = p by omega, P] using hp
-  · exact Nat.find_min hex (by omega)
-
-/-- The packaged infinity page vanishes when every finite page at the grading vanishes. -/
-theorem EInftyData.eInfty_isZero_of_page_isZero
-    {C : Type u} [Category.{v} C] [Abelian C]
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    (eData : EInftyData C ι) (k : ι)
-    (h : ∀ r : ℤ, eData.ss.r₀ ≤ r → IsZero (eData.ss.Page r k)) :
-    IsZero (eData.EInfty k) :=
-  SpectralSequence.eInfty_isZero_of_page_isZero eData.ss k h
-
 /-! Local stabilization, adapted from the generic proofs in
 `KIPBase/Synthetic/AdamsVanishing.lean`; no synthetic model is used. -/
 
@@ -487,7 +373,6 @@ theorem boundaries_succ_of_zero
   have hcomp := congrArg (fun f => f ≫ (D.Z ↑n).arrow)
     (Abelian.monoLift_comp b j hj)
   simpa only [Category.assoc, b, j, Subobject.ofLE_arrow] using hcomp
-
 
 /-- Vanishing of all later outgoing differentials stabilizes the cycles
 at this grading, including the actual intersection at infinity. -/

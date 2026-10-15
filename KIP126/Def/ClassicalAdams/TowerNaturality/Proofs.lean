@@ -27,17 +27,6 @@ theorem adamsTowerInduced_step {X Y : C} (f : X ⟶ Y) (s : ℕ) :
       adamsTowerStep unit X s ≫ adamsTowerInduced unit f s :=
   fiberMap_ι _ _ _ _ _
 
-theorem adamsTowerInduced_composite {X Y : C} (f : X ⟶ Y) (s l : ℕ) :
-    adamsTowerInduced unit f (s + l) ≫ adamsTowerComposite unit Y s l =
-      adamsTowerComposite unit X s l ≫ adamsTowerInduced unit f s := by
-  induction l with
-  | zero => simp [adamsTowerComposite]
-  | succ l ih =>
-    change adamsTowerInduced unit f (s + l + 1) ≫
-        (adamsTowerStep unit Y (s + l) ≫ adamsTowerComposite unit Y s l) =
-      (adamsTowerStep unit X (s + l) ≫ adamsTowerComposite unit X s l) ≫ _
-    rw [← Category.assoc, adamsTowerInduced_step, Category.assoc, ih, ← Category.assoc]
-
 theorem adamsTowerInduced_map {X Y : C} (f : X ⟶ Y) (s t : ℕ) (h : s ≤ t) :
     adamsTowerInduced unit f t ≫ adamsTowerMap unit Y s t h =
       adamsTowerMap unit X s t h ≫ adamsTowerInduced unit f s := by

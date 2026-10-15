@@ -7,7 +7,6 @@ import all Init.Data.List.SplitOn.Basic
 
 @[expose] public section
 
-
 /-! Total syntactic degree checking for the original polynomial parser.
 A successful check implies genuine weighted homogeneity of that same polynomial.
 No statement about a quotient, basis, or actual Adams comparison is used. -/
@@ -111,8 +110,7 @@ theorem chunksCheck_append (a b : List String)
   simp only [chunksCheck, List.all_append] at *
   simp only [ha, hb, Bool.and_self]
 
-attribute [local cbv_eval] generatorDegree_eq_row splitOn_comma splitOn_semicolon
-  splitOn_newline toNat?_eq_chars
+attribute [local cbv_eval] generatorDegree_eq_row splitOn_comma splitOn_semicolon splitOn_newline toNat?_eq_chars
 
 theorem firstRelations_check : RawData.firstRelations.all relationCheck = true := by cbv
 

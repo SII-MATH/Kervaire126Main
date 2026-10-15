@@ -58,40 +58,4 @@ theorem principalSimplex_isPullback {A B : SimplicialObject (ModuleCat.{u} R)}
     change ((kernel.ι p).app a).hom k + s = x
     rw [hk,sub_add_cancel]
 
-
-@[simp] theorem principalSimplexMap_app {A B : SimplicialObject (ModuleCat.{u} R)}
-    (p : A ⟶ B) {n : SimplexCategory} (z : A.obj (op n)) (a : SimplexCategoryᵒᵖ)
-    (k : (kernel p).obj a) (θ : (SSet.stdSimplex.obj n).obj a) :
-    (principalSimplexMap p z).app a (k,θ) =
-      ((kernel.ι p).app a).hom k + (A.map (SSet.stdSimplex.objEquiv θ).op).hom z := rfl
-
-@[simp] theorem principalSimplexMap_app_zero_kernel {A B : SimplicialObject (ModuleCat.{u} R)}
-    (p : A ⟶ B) {n : SimplexCategory} (z : A.obj (op n)) (a : SimplexCategoryᵒᵖ)
-    (θ : (SSet.stdSimplex.obj n).obj a) :
-    (principalSimplexMap p z).app a (0,θ) =
-      (A.map (SSet.stdSimplex.objEquiv θ).op).hom z := by
-  rw [principalSimplexMap_app,map_zero,zero_add]
-
-@[simp] theorem principalSimplexMap_app_zero_lift {A B : SimplicialObject (ModuleCat.{u} R)}
-    (p : A ⟶ B) {n : SimplexCategory} (a : SimplexCategoryᵒᵖ)
-    (k : (kernel p).obj a) (θ : (SSet.stdSimplex.obj n).obj a) :
-    (principalSimplexMap p (0 : A.obj (op n))).app a (k,θ) = ((kernel.ι p).app a).hom k := by
-  rw [principalSimplexMap_app,map_zero,add_zero]
-
-/-- Restricting the chosen lift along a simplex operator restricts the
-trivialization along exactly the same operator. -/
-theorem principalSimplexMap_natural_simplex {A B : SimplicialObject (ModuleCat.{u} R)}
-    (p : A ⟶ B) {m n : SimplexCategory} (φ : m ⟶ n) (z : A.obj (op n)) :
-    (𝟙 (kernel p ⋙ forget (ModuleCat R)) ⊗ₘ SSet.stdSimplex.map φ) ≫ principalSimplexMap p z =
-      principalSimplexMap p ((A.map φ.op).hom z) := by
-  ext a x
-  change ((kernel.ι p).app a).hom x.1 +
-      (A.map (SSet.stdSimplex.objEquiv ((SSet.stdSimplex.map φ).app a x.2)).op).hom z =
-    ((kernel.ι p).app a).hom x.1 +
-      (A.map (SSet.stdSimplex.objEquiv x.2).op).hom ((A.map φ.op).hom z)
-  congr 1
-  change (A.map ((SSet.stdSimplex.objEquiv x.2) ≫ φ).op).hom z = _
-  rw [op_comp,A.map_comp]
-  rfl
-
 end KIP126.Algebra.SimplicialModule

@@ -17,7 +17,4 @@ namespace KIP126.Algebra
 /-- The field of two elements. -/
 abbrev F2 := ZMod 2
 
-/-- The abelian category of vector spaces over the field of two elements. -/
-abbrev F2ModuleCat := ModuleCat F2
-
 end KIP126.Algebra

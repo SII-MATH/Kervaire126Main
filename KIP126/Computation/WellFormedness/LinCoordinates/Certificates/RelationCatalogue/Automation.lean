@@ -7,7 +7,6 @@ import all Init.Data.List.SplitOn.Basic
 
 @[expose] public section
 
-
 /-! Compose small kernel certificates against the original archive.
 The generated character lists are noncomputable proposal data: this prevents
 native code generation from duplicating every suffix of a long literal list.

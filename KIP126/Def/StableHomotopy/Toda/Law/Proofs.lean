@@ -120,69 +120,6 @@ theorem shuffle_iff [IsTriangulated C] {X Y Z W V : C}
     rw [← he]
     abel
 
-private theorem shifted_triangle_distinguished (n : ℤ) {X Y Q : C}
-    (f : X ⟶ Y) (i : Y ⟶ Q) (p : Q ⟶ X⟦(1 : ℤ)⟧)
-    (hT : Triangle.mk f i p ∈ distTriang C) :
-    Triangle.mk (f⟦n⟧') (i⟦n⟧')
-      (n.negOnePow • p⟦n⟧' ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X) ∈ distTriang C := by
-  let e : Y⟦n⟧ ≅ Y⟦n⟧ :=
-    { hom := n.negOnePow • 𝟙 _
-      inv := n.negOnePow • 𝟙 _
-      hom_inv_id := by simp [Linear.comp_units_smul, smul_smul]
-      inv_hom_id := by simp [Linear.comp_units_smul, smul_smul] }
-  apply isomorphic_distinguished _ (Triangle.shift_distinguished _ hT n)
-  refine Triangle.isoMk _ _ (Iso.refl _) e (Iso.refl _) ?_ ?_ ?_
-  · simp [Triangle.shiftFunctor, Triangle.mk, Category.id_comp, Category.comp_id, e, Linear.comp_units_smul]
-  · simp [Triangle.shiftFunctor, Triangle.mk, Category.id_comp, Category.comp_id, e, Linear.units_smul_comp, Linear.comp_units_smul, smul_smul]
-  · simp [Triangle.shiftFunctor, Triangle.mk]
-
-omit [HasZeroObject C] [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C] in
-private theorem shifted_connecting_comp (n : ℤ) {X Q W : C}
-    (p : Q ⟶ X⟦(1 : ℤ)⟧) (x : X⟦(1 : ℤ)⟧ ⟶ W) :
-    (n.negOnePow • p⟦n⟧' ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X) ≫
-      (n.negOnePow • ((shiftFunctorComm C (1 : ℤ) n).inv.app X ≫ x⟦n⟧')) =
-        (p ≫ x)⟦n⟧' := by
-  simp only [Linear.units_smul_comp, Linear.comp_units_smul, smul_smul,
-    Int.units_mul_self, one_smul, Category.assoc, Iso.hom_inv_id_app_assoc,
-    Functor.map_comp]
-
-/-- Suspension transports the entire Toda relation with its forced
-`(-1)^n` sign and the actual comparison of the two iterated shifts. -/
-theorem suspension_iff (n : ℤ) {X Y Z W : C}
-    {x : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} :
-    Relation
-      (n.negOnePow • ((shiftFunctorComm C (1 : ℤ) n).inv.app X ≫ x⟦n⟧'))
-      (f⟦n⟧') (g⟦n⟧') (h⟦n⟧') ↔ Relation x f g h := by
-  constructor
-  · rintro ⟨Q', i', p', hT', gbar', hg', hx'⟩
-    obtain ⟨Q, i, p, hT⟩ := distinguished_cocone_triangle f
-    let δ := n.negOnePow • p⟦n⟧' ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X
-    obtain ⟨c, hi, hp⟩ := complete_distinguished_triangle_morphism
-      (Triangle.mk (f⟦n⟧') (i⟦n⟧') δ) (Triangle.mk (f⟦n⟧') i' p')
-      (shifted_triangle_distinguished n f i p hT) hT' (𝟙 _) (𝟙 _) (by
-        change f⟦n⟧' ≫ 𝟙 _ = 𝟙 _ ≫ f⟦n⟧'
-        simp only [Category.comp_id, Category.id_comp])
-    dsimp only [Triangle.mk] at hi hp
-    have hi' : i⟦n⟧' ≫ c = i' := by simpa only [Category.id_comp] using hi
-    have hp' : δ = c ≫ p' := by
-      erw [(shiftFunctor C (1 : ℤ)).map_id, Category.comp_id] at hp
-      exact hp
-    let gbar := (shiftFunctor C n).preimage (c ≫ gbar')
-    have hgbar : gbar⟦n⟧' = c ≫ gbar' := Functor.map_preimage _ _
-    refine ⟨Q, i, p, hT, gbar, ?_, ?_⟩
-    · apply (shiftFunctor C n).map_injective
-      rw [Functor.map_comp, hgbar, ← Category.assoc, hi', hg']
-    · apply (shiftFunctor C n).map_injective
-      rw [← shifted_connecting_comp n p x]
-      change δ ≫ _ = _
-      rw [hp', Category.assoc, hx', Functor.map_comp, hgbar, Category.assoc]
-  · rintro ⟨Q, i, p, hT, gbar, hg, hx⟩
-    refine ⟨Q⟦n⟧, i⟦n⟧', n.negOnePow • p⟦n⟧' ≫
-      (shiftFunctorComm C (1 : ℤ) n).hom.app X,
-      shifted_triangle_distinguished n f i p hT, gbar⟦n⟧', ?_, ?_⟩
-    · rw [← Functor.map_comp, hg]
-    · rw [shifted_connecting_comp, hx, Functor.map_comp]
-
 variable {D : Type u'} [Category.{v'} D] [Preadditive D]
   [HasZeroObject D] [HasShift D ℤ]
   [∀ n : ℤ, Functor.Additive (shiftFunctor D n)] [Pretriangulated D]
@@ -204,27 +141,5 @@ theorem map (F : C ⥤ D) [F.CommShift ℤ] [F.IsTriangulated]
     rw [← F.map_comp, hx, F.map_comp]
 
 variable [MonoidalCategory C]
-
-/-- Tensoring on the right is a product containment when the actual
-tensor functor, with its given shift comparison, is exact. -/
-theorem tensor_right (V : C) [(tensorRight V).CommShift ℤ]
-    [(tensorRight V).IsTriangulated]
-    {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-    {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-    (hx : Relation x f g h) :
-    Relation (((tensorRight V).commShiftIso (1 : ℤ)).inv.app X ≫ (x ▷ V))
-      (f ▷ V) (g ▷ V) (h ▷ V) := by
-  exact map (tensorRight V) hx
-
-/-- Tensoring on the left is the corresponding product containment
-with the actual left-tensor shift comparison. -/
-theorem tensor_left (V : C) [(tensorLeft V).CommShift ℤ]
-    [(tensorLeft V).IsTriangulated]
-    {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-    {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-    (hx : Relation x f g h) :
-    Relation (((tensorLeft V).commShiftIso (1 : ℤ)).inv.app X ≫ (V ◁ x))
-      (V ◁ f) (V ◁ g) (V ◁ h) := by
-  exact map (tensorLeft V) hx
 
 end KIP126.StableHomotopy.Toda

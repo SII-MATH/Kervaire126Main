@@ -1,17 +1,17 @@
 module
 
-public import KIP126.Main.Computation.LowDegrees
+public import KIP126.Computation.LinCoordinates.Certificates.LowDegrees
 public import KIP126.Main.SectionSeven.ThetaMassey
-public import KIP126.Main.SectionSeven.ThetaNoCrossing
-public import KIP126.Main.Computation.Lambda
-
--- The following lemmas provide the representative and filtration calculations.
 import all KIP126.Main.SectionSeven.ThetaMassey
-
--- The CSV coordinate calculations use the defining string and list equations.
+public import KIP126.Main.SectionSeven.SphereClasses
+public import KIP126.Main.SectionSeven.Lambda
 import all Init.Data.String.Legacy
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
+
+-- The following lemmas provide the representative and filtration calculations.
+
+-- The CSV coordinate calculations use the defining string and list equations.
 
 @[expose] public section
 
@@ -25,11 +25,10 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
-local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
-local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 open private h5_square_times_entire_770_zero from KIP126.Main.SectionSeven.ThetaMassey
 
@@ -53,7 +52,6 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:
     {H : Mod2EilenbergMacLane (C:=C)} {M' : MilnorCooperations H} {D' : AdamsComparison H M' Syn}
 
 open KIP126.Literature.AdamsSynthetic
-
 
 open KIP126.Computation.SphereAndCofiber KIP126.Computation.Near126 KIP126.LinE2 KIP126.Algebra
 open CategoryTheory.MonoidalCategory KIP126.StableHomotopy.Toda
@@ -1431,7 +1429,6 @@ private theorem theta_b_complete_from_low_degrees
     (sphere_zero_weight_nonzero_detection A.synthetic.eInfty _ b hb (b_nonzero_from_inputs I')) hz
   rw [hqz,hql,hb]
 
-
 end
 end ThetaBSyntheticProof
 
@@ -1450,9 +1447,8 @@ theorem synthetic_theta_b_toda
   exact theta_b_complete_from_low_degrees literatureTheorems I sphereVanishing
     literature.sources.sourceComparisons.algebra literature.sources.sourceComparisons.quotientCompatibility
     literature.sources.sourceComparisons.algebraDetectionCompatibility
-    (KIP126.Main.Computation.sphere_zero_nonzero_unique KIP126.Main.externalHypotheses)
+    (KIP126.Computation.LinCoordinates.sphere_zero_nonzero_unique KIP126.Main.externalHypotheses)
     (h5_square_times_entire_770_zero I) theta htheta
-
 
 end
 end KIP126.Main.SectionSeven

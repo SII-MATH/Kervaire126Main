@@ -192,11 +192,6 @@ public import KIP126.Computation.LinCoordinates.Generated.Staircase.Shard186
 
 namespace KIP126.Computation.LinCalculations.StaircaseData
 
-def databaseSha256 : String := "518a2ed86af6d4f7bcdc5db135ab6252bd50df34492ae208663aa1c140a820ed"
-def sourceRowCount : Nat := 23822
-
-def shardCount : Nat := 187
-
 /-- Lossless, shard-local lookup in the entire fixed sphere snapshot. -/
 def lookup (shard offset : Nat) : Option Raw.StaircaseRow :=
   match shard with

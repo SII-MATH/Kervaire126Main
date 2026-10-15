@@ -44,17 +44,4 @@ theorem exists_attachmentCollar
   dsimp only [rA]
   rw [dif_pos (by rw [← haV]; exact hx)]
 
-/-- Every actual disk attachment carries the radial attachment collar.
-Its existence has no additional collar or local-triviality premise. -/
-theorem exists_disk_attachmentCollar
-    {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    {B P : TopCat.{u}} (b₀ : B)
-    {f : TopCat.of (Metric.sphere (0 : E) 1) ⟶ B}
-    {a : TopCat.of (Metric.closedBall (0 : E) 1) ⟶ P} {b : B ⟶ P}
-    (h : IsPushout (Ball.unitDiskBoundary E) f a b) :
-    Nonempty (AttachmentCollar (Ball.unitDiskBoundary E) f a b) :=
-  exists_attachmentCollar h Ball.unitDiskBoundary_isClosedEmbedding b₀
-    (Ball.unitDiskCollar E) Ball.unitDiskCollar_isOpen Ball.unitDiskBoundary_mem_collar
-    (Ball.unitDiskCollarProjection E) Ball.unitDiskCollarProjection_boundary
-
 end KIP126.Topology

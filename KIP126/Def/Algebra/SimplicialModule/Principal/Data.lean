@@ -31,5 +31,4 @@ noncomputable def principalSimplexMap {A B : SimplicialObject (ModuleCat.{u} R)}
     · exact ConcreteCategory.congr_hom ((kernel.ι p).naturality θ) x.1
     · exact ConcreteCategory.congr_hom (((SSet.yonedaEquiv (X := A ⋙ forget (ModuleCat R))).symm z).naturality θ) x.2
 
-
 end KIP126.Algebra.SimplicialModule

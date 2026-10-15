@@ -100,6 +100,5 @@ def e1Map (s t : ℤ) : adamsE1 unitS Y s t →ₗ[ℤ] adamsE1 unitC X s t :=
        Preadditive.add_comp] } :
     adamsE1 unitS Y s t →+ adamsE1 unitC X s t).toIntLinearMap
 
-
 end
 end KIP126.Comparison.ClassicalSynthetic.RealizationTower

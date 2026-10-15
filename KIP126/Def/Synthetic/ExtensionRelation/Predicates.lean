@@ -31,11 +31,4 @@ def EssentialExtension (p : ℤ × ℤ) (s n : ℤ)
     ¬ Subobject.Factors ((extensionComplex unit g p).boundarySubobject (s + n) 0 n.toNat)
       (elementMap ((extensionTargetIso unit g cy p (s + n)).hom y))
 
-/-- Complete target ambiguity, not a manually selected list or arbitrary
-subgroup. Membership is computed in the original two-term filtered complex. -/
-def ExtensionTargetCoset (p : ℤ × ℤ) (s n : ℤ)
-    (y : ((F.obj Y).sequence.ssData (s + n, p.1 + (s + n), p.2)).eInfty) :
-    Set (((F.obj Y).sequence.ssData (s + n, p.1 + (s + n), p.2)).eInfty) :=
-  {z | Subobject.Factors ((extensionComplex unit g p).boundarySubobject (s + n) 0 n.toNat)
-    (elementMap ((extensionTargetIso unit g cy p (s + n)).hom (y - z)))}
 end KIP126.Synthetic.SpectralSequence

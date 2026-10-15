@@ -12,24 +12,6 @@ namespace KIP126.StableHomotopy.Spectra
 open CategoryTheory CategoryTheory.Limits Opposite Simplicial
 open KIP126.Topology.SimplicialRealization
 
-/-- The actual Dold--Kan realization used for the coefficient space admits
-its proved Euclidean-cell CW structure. -/
-theorem hf2Realization_nonempty_cwComplex (n : ℕ) :
-    Nonempty (TopCat.CWComplex (TopCat.of (hf2RealizationLevel n))) :=
-  ⟨cwComplex (hf2SimplicialSet n)⟩
-
-/-- Each actual simplicial skeleton of the specified coefficient space
-is a CW complex with finitely many cells. -/
-theorem hf2Realization_finite_cw_skeleton (n r : ℕ) :
-    ∃ c : TopCat.CWComplex (skeleton (hf2SimplicialSet n) r), Finite c.Cells :=
-  ⟨cwComplex ((hf2SimplicialSet n).skeleton r).toSSet,
-    finite_cwComplex_skeleton_cells _ r (hf2SimplicialSet_finite n)⟩
-
-/-- These genuine finite coefficient-space skeleta are compact. -/
-theorem hf2Realization_compact_skeleton (n r : ℕ) :
-    CompactSpace (skeleton (hf2SimplicialSet n) r) :=
-  compactSpace_skeleton _ r (hf2SimplicialSet_finite n)
-
 /-- The actual Dold--Kan coefficient-space realization is Hausdorff. -/
 theorem hf2Realization_t2Space (n : ℕ) : T2Space (hf2RealizationLevel n) :=
   realization_t2Space (hf2SimplicialSet n)

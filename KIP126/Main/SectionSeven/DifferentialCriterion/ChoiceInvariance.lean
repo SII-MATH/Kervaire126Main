@@ -1,8 +1,7 @@
 module
 
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
-public import KIP126.Main.Computation.Lambda
-
+public import KIP126.Main.SectionSeven.Lambda
 
 @[expose] public section
 
@@ -144,47 +143,6 @@ private theorem theta_square_choice_differential_target_later_zero {E : KIP126.S
     rw [Subobject.ofLE_arrow]
     exact (ModuleCat.subobjectModule A.V).monotone (A.B_mono hnm) ⟨b',rfl⟩
 
-
-private theorem theta_square_choice_nonzero_differential_not_permanent {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q} (hr0 : E.r₀ ≤ r)
-    (h : HasNonzeroDifferential E r p q x y) : ¬ NonzeroSurvival E p x := by
-  classical
-  rintro ⟨z, hz, _⟩
-  let A := E.ssData p
-  let n : WithTop ℕ := ↑(r + 1 - E.r₀).toNat
-  let z' := (Subobject.ofLE (A.Z ⊤) (A.Z n) (A.Z_anti le_top)) z
-  obtain ⟨hdeg, xr, yr, hx, hy, hd, hne⟩ := h
-  have hr2 := hx.1
-  have hlater : ReachesPage E (r + 1) p x := by
-    refine ⟨A.pageπ n z', by omega, z', ?_, rfl⟩
-    dsimp only [z']
-    rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]
-    exact hz
-  have hd0 := represents_d_zero_of_later hr0 (by omega : r < r + 1) hx hlater
-  rw [ModuleCat.comp_apply, hd0, map_zero] at hd
-  exact hne hd.symm
-
-
-private theorem theta_square_choice_earlier_zero_of_target_survives {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
-    (hr0 : E.r₀ ≤ r) (hrt : r < t)
-    {y : E.Page 2 (p + E.diffDeg r)}
-    (hsource : SurvivesTo E r p x)
-    (htargets : DifferentialTargets E r p x y)
-    (htarget : SurvivesTo E t (p + E.diffDeg r) y) :
-    HasDifferential E r p (p + E.diffDeg r) x 0 := by
-  classical
-  obtain ⟨xr, hxr, _⟩ := hsource
-  have hd0 : E.d r p xr = 0 := by
-    rcases htargets xr hxr with hz | ⟨yr, hyr, hdr⟩
-    · exact hz
-    · have hd : HasDifferential E r p (p + E.diffDeg r) x y :=
-        ⟨rfl, xr, yr, hxr, hyr, by simpa only [eqToHom_refl, Category.comp_id] using hdr⟩
-      have hlater := theta_square_choice_differential_target_later_zero hr0 hrt hd
-      obtain ⟨yt, hyt, hne⟩ := htarget
-      exact False.elim (hne (represents_unique hyt hlater))
-  exact ⟨rfl, xr, 0, hxr, RepresentsOnPage.zero hxr.1,
-    by simpa only [eqToHom_refl, Category.comp_id] using hd0⟩
-
-
 private theorem theta_square_choice_next_projection_zero_iff_incoming
     (E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))
     (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)
@@ -233,7 +191,6 @@ private theorem theta_square_choice_next_projection_zero_iff_incoming
     dsimp only [i] at hh
     rwa [Subobject.ofLE_arrow] at hh
 
-
 private theorem theta_square_choice_next_nonzero_of_not_hit {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
     {a : E.Page (r+1) p} {b : E.Page r p}
@@ -275,136 +232,6 @@ private theorem theta_square_choice_next_nonzero_of_not_hit {E : KIP126.Spectral
   apply hnot
   refine ⟨q, rfl, c,b,hb,hne,?_⟩
   simpa only [eqToHom_refl, Category.comp_id] using hc.trans heb
-
-
-private theorem theta_square_choice_permanent_survives_of_no_early_hit {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {x : E.Page 2 p}
-    (hstart : E.r₀≤2) (N : ℕ) (hN : 2≤N)
-    (hperm : IsPermanentCycle E p x) (hne : x≠0)
-    (hnot : ∀ r : ℤ, 2≤r → r<N → ¬HitOnPage E r p x) :
-    SurvivesTo E N p x := by
-  classical
-  obtain ⟨z,hz⟩ := hperm
-  let A := E.ssData p
-  have hrep (r : ℤ) (hr : 2≤r) : ReachesPage E r p x := by
-    let zr := (Subobject.ofLE (A.Z ⊤) (A.Z ↑(r-E.r₀).toNat) (A.Z_anti le_top)) z
-    refine ⟨A.pageπ _ zr,hr,zr,?_,rfl⟩
-    dsimp only [zr]
-    rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]
-    exact hz
-  have hall (n : ℕ) : n+2≤N → SurvivesTo E ((n:ℤ)+2) p x := by
-    induction n with
-    | zero =>
-      intro hn
-      obtain ⟨a,ha⟩ := hrep 2 (by omega)
-      change SurvivesTo E 2 p x
-      exact ⟨a,ha,by rw [←ha.eq_on_page_two]; exact hne⟩
-    | succ n ih =>
-      intro hn
-      obtain ⟨b,hb,hbn⟩ := ih (by omega)
-      obtain ⟨a,ha⟩ := hrep ((n:ℤ)+2+1) (by omega)
-      have han := theta_square_choice_next_nonzero_of_not_hit (by omega) (by omega) ha hb hbn
-        (hnot _ (by omega) (by omega))
-      have he : ((n+1:ℕ):ℤ)+2=(n:ℤ)+2+1 := by omega
-      rw [he]
-      exact ⟨a,ha,han⟩
-  have h := hall (N-2) (by omega)
-  have he : ((N-2:ℕ):ℤ)+2=N := by omega
-  rwa [he] at h
-
-
-private theorem theta_square_choice_nonzero_differential_not_zero {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q}
-    (h : HasNonzeroDifferential E r p q x y)
-    (hzero : HasDifferential E r p q x 0) : False := by
-  classical
-  obtain ⟨he,a,b,ha,hb,hd,hbn⟩ := h
-  obtain ⟨he',a',b',ha',hb',hd'⟩ := hzero
-  have haa : a=a' := represents_unique ha ha'
-  have hbb : b'=0 := represents_unique hb' (RepresentsOnPage.zero hb'.1)
-  apply hbn
-  calc b = (E.d r p ≫ eqToHom (congrArg (E.Page r) he)) a := hd.symm
-       _ = b' := by simpa only [haa] using hd'
-       _ = 0 := hbb
-
-
-private theorem theta_square_choice_cycle_successor_lift
-    (E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))
-    (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)
-    (z : (Subobject.underlying.obj ((E.ssData p).Z ↑(r-E.r₀).toNat) : ModuleCat.{v} ℤ))
-    (hz : E.d r p ((E.ssData p).pageπ ↑(r-E.r₀).toNat z) = 0) :
-    ∃ zn : (Subobject.underlying.obj ((E.ssData p).Z ↑((r-E.r₀).toNat+1)) : ModuleCat.{v} ℤ),
-      (Subobject.ofLE _ _ ((E.ssData p).Z_anti (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat))) zn = z := by
-  classical
-  let D := E.ssData p
-  let n := (r-E.r₀).toNat
-  have hsucc : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n
-  let i := Subobject.ofLE (D.Z ↑(n+1)) (D.Z ↑n) (D.Z_anti hsucc)
-  have hker : D.pageπ ↑n z ∈ LinearMap.ker (E.d r p).hom := hz
-  rw [←subobjectModule_kernel,E.Z_succ r p hr,subobjectModule_image] at hker
-  obtain ⟨z',hz'⟩ := hker
-  change D.pageπ ↑n (i z') = D.pageπ ↑n z at hz'
-  have hzero : D.pageπ ↑n (z-i z')=0 := by rw [map_sub,hz',sub_self]
-  have hb : ∃ b : (Subobject.underlying.obj (D.B ↑n) : ModuleCat.{v} ℤ),
-      (Subobject.ofLE (D.B ↑n) (D.Z ↑n) (D.B_le_Z _)) b = z-i z' :=
-    (cokernel_π_eq_zero_iff_mem_range _ _).mp hzero
-  obtain ⟨b,hb⟩ := hb
-  have hBZ : D.B ↑n ≤ D.Z ↑(n+1) := (D.B_mono hsucc).trans (D.B_le_Z _)
-  let zn : (Subobject.underlying.obj (D.Z ↑(n+1)) : ModuleCat.{v} ℤ) :=
-    z' + (Subobject.ofLE (D.B ↑n) (D.Z ↑(n+1)) hBZ) b
-  have hnz : i zn=z := by
-    dsimp only [zn]
-    rw [map_add]
-    change i z' + (Subobject.ofLE (D.B ↑n) (D.Z ↑(n+1)) hBZ ≫ i) b = z
-    dsimp only [i]
-    rw [Subobject.ofLE_comp_ofLE,hb]
-    abel
-  exact ⟨zn,hnz⟩
-
-
-private theorem theta_square_choice_later_page_frame_of_earlier {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
-    (hr : 2≤r) (hrt : r≤t)
-    (hframe : ∃ a : E.Page r p, RepresentsOnPage E r p x a ∧ ∀ y:E.Page r p,y=0∨y=a)
-    (ht : ReachesPage E t p x) :
-    ∃ a : E.Page t p, RepresentsOnPage E t p x a ∧ ∀ y:E.Page t p,y=0∨y=a := by
-  classical
-  obtain ⟨ar,har,hall⟩ := hframe
-  obtain ⟨at',htrep⟩ := ht
-  have htrep' := htrep
-  obtain ⟨ht2,z,hzt,hat⟩ := htrep'
-  let A := E.ssData p
-  let nr : WithTop ℕ := ↑(r-E.r₀).toNat
-  let nt : WithTop ℕ := ↑(t-E.r₀).toNat
-  have hrt' : nr≤nt := by
-    dsimp only [nr,nt]
-    exact_mod_cast (show (r-E.r₀).toNat≤(t-E.r₀).toNat by omega)
-  let i := Subobject.ofLE (A.Z nt) (A.Z nr) (A.Z_anti hrt')
-  have har' : RepresentsOnPage E r p x (A.pageπ nr (i z)) := by
-    refine ⟨hr,i z,?_,rfl⟩
-    dsimp only [i]
-    rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]
-    exact hzt
-  have hzr : A.pageπ nr (i z)=ar := represents_unique har' har
-  have hzero (w : (Subobject.underlying.obj (A.Z nt) : ModuleCat ℤ))
-      (hw : A.pageπ nr (i w)=0) : A.pageπ nt w=0 := by
-    apply (subobject_cokernel_π_eq_zero_iff (A.B nt) (A.Z nt) (A.B_le_Z _) _).mpr
-    have hh := (subobject_cokernel_π_eq_zero_iff (A.B nr) (A.Z nr) (A.B_le_Z _) _).mp hw
-    have he : (A.Z nr).arrow (i w)=(A.Z nt).arrow w :=
-      ConcreteCategory.congr_hom (Subobject.ofLE_arrow (A.Z_anti hrt')) w
-    rw [he] at hh
-    exact (ModuleCat.subobjectModule A.V).monotone (A.B_mono hrt') hh
-  refine ⟨at',htrep,?_⟩
-  intro y
-  haveI : Epi (A.pageπ nt) := inferInstanceAs (Epi (cokernel.π _))
-  obtain ⟨w,hw⟩ := (ModuleCat.epi_iff_surjective (A.pageπ nt)).mp inferInstance y
-  rcases hall (A.pageπ nr (i w)) with h0|ha
-  · left
-    rw [←hw]
-    exact hzero w h0
-  · right
-    have hh : A.pageπ nr (i (w-z))=0 := by rw [map_sub,map_sub,ha,hzr,sub_self]
-    have hh' := hzero (w-z) hh
-    rw [map_sub,hw,hat,sub_eq_zero] at hh'
-    exact hh'
-
 
 private theorem theta_square_choice_theta_choice_late_page_generic
     (E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ))
@@ -504,7 +331,6 @@ private theorem theta_square_choice_theta_choice_late_page_generic
   exact choice_next_zero_of_single_frame_nonzero_differential (E:=E) (r:=3) (p:=(5,67)) (by decide : (2:ℤ)≤3)
     (by omega : E.r₀≤3) a3 hdn hall
 
-
 private theorem theta_square_choice_theta_choice_raw_relations (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     HasDifferential (sequence D .sphere) 2 (1,64) (3,65) (I.interpretation.basis .sphere 1 64 0) (I.interpretation.basis .sphere 3 65 0) ∧
     HasDifferential (sequence D .sphere) 2 (2,65) (4,66) (I.interpretation.basis .sphere 2 65 0) (I.interpretation.basis .sphere 4 66 0) ∧
@@ -546,7 +372,6 @@ private theorem theta_square_choice_theta_choice_raw_relations (I : KIP126.Compu
     exact hd
   exact ⟨h365,h466,h567,h3,h2out,h668,hcycle⟩
 
-
 private theorem theta_square_choice_theta_choice_late_page (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (e5 : (sequence D .sphere).Page 2 (5,67) ≃ₗ[ℤ] (Fin 3 →₀ F2))
     (he5 : ∀i:Fin 3, e5.symm (Finsupp.single i 1)=I.interpretation.basis .sphere 5 67 i.val)
@@ -569,7 +394,6 @@ private theorem theta_square_choice_theta_choice_late_page (I : KIP126.Computati
     (fun i=>I.interpretation.basis .sphere 7 68 i.val)
     (fun i=>I.interpretation.basis .sphere 8 69 i.val)
     e5 he5 e6 he6 e7 he7 e8 he8 h3 h2out hz567 hd60 hd61
-
 
 private theorem theta_square_choice_theta_choice_finite_pages (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     Subsingleton ((sequence D .sphere).Page 3 (3,65)) ∧
@@ -627,7 +451,6 @@ private theorem theta_square_choice_theta_choice_finite_pages (I : KIP126.Comput
   have hd61 := dz 3 (by decide) (6,68) _ ⟨0,hz668⟩
   exact theta_square_choice_theta_choice_late_page I e5 he5 e6 he6 e7 he7 e8 he8 h3 h2out hz567 hd60 hd61
 
-
 private theorem theta_square_choice_theta_square_difference (D : AdamsComparison H M Syn)
     (θ θ' : BiHom 62 64 (S_0_0 : Syn)) (h2 : θ'+θ'=0) :
     sphereProduct θ θ-sphereProduct θ' θ'=sphereProduct (θ-θ') (θ-θ') := by
@@ -655,7 +478,6 @@ private theorem theta_square_choice_theta_square_difference (D : AdamsComparison
   change sphereProduct θ θ-sphereProduct θ' θ'=sphereProduct d d
   rw [ht,hs,add_sub_cancel_left]
 
-
 private theorem theta_square_choice_detects_of_difference_in_next_filtration
     {H' : Syn} {unit : S_0_0 ⟶ H'} {F : SyntheticAdamsFamily Syn} {X : Syn}
     (c : TowerConvergence unit F X) (i : Tridegree)
@@ -682,13 +504,11 @@ private theorem theta_square_choice_detects_of_difference_in_next_filtration
     rw [hj,add_zero]
     exact hga
 
-
 private theorem theta_square_choice_realization_additive {D : AdamsComparison H M Syn} : D.recovery.realization.Additive := by
   classical
   letI := D.recovery.adjunction.isLeftAdjoint
   letI := Limits.preservesBinaryBiproducts_of_preservesBinaryCoproducts D.recovery.realization
   exact Functor.additive_of_preservesBinaryBiproducts _
-
 
 private theorem theta_square_choice_realization_injective_of_lambda_powers
     (kernel : KIP126.Literature.AdamsSynthetic.RealizationKernel D) (X : SyntheticObject) (m wt : ℤ)
@@ -702,7 +522,6 @@ private theorem theta_square_choice_realization_injective_of_lambda_powers
   obtain ⟨k, hk⟩ := (kernel X m wt (a-b)).mp (by simp only [Functor.map_sub, hab, sub_self])
   apply h k
   simpa only [lambdaMultiply, Category.comp_id, Category.assoc, Limits.comp_zero] using hk
-
 
 private theorem theta_square_choice_theta_degree_order_two (BHS : SyntheticComparisonTheorems D)
     (RL : RealizationDetectionData D) {η : BiHom 1 2 (S_0_0 : Syn)}
@@ -738,7 +557,6 @@ private theorem theta_square_choice_theta_degree_order_two (BHS : SyntheticCompa
     Limits.comp_zero,Limits.zero_comp,Limits.zero_comp]
   repeat erw [Category.assoc]
   exact h
-
 
 private theorem theta_square_choice_theta_choice_filtration_gap_of_pages
     (BHS : SyntheticComparisonTheorems D)
@@ -852,7 +670,6 @@ private theorem theta_square_choice_theta_choice_filtration_gap_of_pages
   apply (CategoryTheory.Limits.IsZero.iff_id_eq_zero _).mpr
   exact hfg.symm.trans (by rw [hnu.eq_of_src f 0,CategoryTheory.Limits.comp_zero])
 
-
 private theorem theta_square_choice_theta_choice_square_detection_invariance_of_pages
     (BHS : SyntheticComparisonTheorems D) (RL : RealizationDetectionData D)
     {η : BiHom 1 2 (S_0_0 : Syn)} (CL : ClassicalTheorems D η)
@@ -874,7 +691,6 @@ private theorem theta_square_choice_theta_choice_square_detection_invariance_of_
   exact towerFiltrationSubmodule_antitone (nuCoefficientUnit H.unit D.nu)
     (S_0_0 : Syn) (124,128) (by decide : (11:ℤ)≤12) hsq
 
-
 private theorem theta_square_choice_theta_choice_square_detection_invariance (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (BHS : SyntheticComparisonTheorems D) (RL : RealizationDetectionData D)
     {η : BiHom 1 2 (S_0_0 : Syn)} (CL : ClassicalTheorems D η)
@@ -884,7 +700,6 @@ private theorem theta_square_choice_theta_choice_square_detection_invariance (I 
     (hc : Theta5SquareNonzeroDetectionAt M D.toAdamsComparisonData L θ') : Theta5SquareNonzeroDetectionAt M D.toAdamsComparisonData L θ := by
   classical
   exact theta_square_choice_theta_choice_square_detection_invariance_of_pages BHS RL CL AF (theta_square_choice_theta_choice_finite_pages I) θ θ' hθ hθ' hc
-
 
 private theorem theta_square_choice_invariance (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (BHS : SyntheticComparisonTheorems D) (RL : RealizationDetectionData D) (CL : ClassicalTheorems D η)

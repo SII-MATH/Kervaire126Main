@@ -1,12 +1,19 @@
 module
 
 public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.RelationCertificates
+public import KIP126.Computation.LinCoordinates.Certificates.Model.RelationCertificates
 public import Batteries.Tactic.OpenPrivate
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Predicates
 public import Init.Data.String.Lemmas.Splits
-public import KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
+public import KIP126.Def.SpectralSequence.Basic.Data
+public import KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.SpectralSequence.Basic.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import Mathlib.CategoryTheory.Abelian.Exact
+public import Mathlib.CategoryTheory.Preadditive.Projective.Basic
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Proofs
@@ -22,9 +29,9 @@ public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs
 public import Mathlib.CategoryTheory.Triangulated.Functor
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
 public import KIP126.Def.ClassicalAdams.SphereVanishing.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.Classes.Proofs
+public import KIP126.Computation.LinCoordinates.Certificates.Model.Classes.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 public import KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Proofs
@@ -33,15 +40,14 @@ public import KIP126.Def.Algebra.NestedQuotient.Proofs
 public import KIP126.Def.Synthetic.Detection.Proofs
 public import KIP126.Def.SpectralSequence.Basic.Category.Proofs
 public import KIP126.Def.AdamsSynthetic.SectionSeven.Predicates
-
--- The CSV coordinate calculations use the defining string and list equations.
 import all Init.Data.List.SplitOn.Basic
 import all Init.Data.String.Legacy
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
 
-@[expose] public section
+-- The CSV coordinate calculations use the defining string and list equations.
 
+@[expose] public section
 
 namespace KIP126.Main.SectionSeven
 open CategoryTheory
@@ -51,7 +57,6 @@ open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.SectionSeven
 open KIP126.Literature.AdamsSynthetic
 noncomputable section
-
 
 section NuTargetProof
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
@@ -2812,8 +2817,6 @@ private theorem nu_target_full_of_nonzero
   exact nu_target_of_finite_nonzero I' BHS SF A ab nu hnu (nu_target_h2_af13_product_zero I') _ hF hn
 
 end NuTargetProof
-
-
 
 end
 end KIP126.Main.SectionSeven

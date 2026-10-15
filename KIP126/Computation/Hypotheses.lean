@@ -4,20 +4,19 @@ public import KIP126.Def.SpectralSequence.Computation.CyclesAndBoundaries.Predic
 public import KIP126.Literature.Standard.Sphere.Sequence
 public import KIP126.Literature.Standard.Sphere.Classes
 public import KIP126.Computation.LinCoordinates.Model.Classes.Data
-public import KIP126.Computation.LinCoordinates.Certificates.BasisCertification.Predicates
+public import KIP126.Computation.LinCoordinates.Model.BasisCatalogue.Data
 public import KIP126.Def.ClassicalAdams.SphereMultiplication.Data
 public import KIP126.Def.ClassicalAdams.Suspension.Predicates
 public import KIP126.Computation.LinCoordinates.Generated.Differentials.Table
 public import KIP126.Computation.LinCoordinates.Generated.Staircase.Table
 public import KIP126.Def.ComputationModel.Interpretation.Staircase.Data
-public import KIP126.Def.ComputationModel.Interpretation.ConditionalDifferentials.Predicates
+public import KIP126.Def.SpectralSequence.Computation.Predicates
 public import KIP126.Computation.LinCoordinates.Presentation
 public import KIP126.Computation.Tmf.Standard
 public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Certification
 public import KIP126.Literature.Hypotheses
 
 @[expose] public section
-
 
 namespace KIP126
 

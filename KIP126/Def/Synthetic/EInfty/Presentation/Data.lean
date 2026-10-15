@@ -64,5 +64,4 @@ noncomputable def finiteWindow (P : SyntheticEInftyPresentation H N F)
 
 end SyntheticEInftyPresentation
 
-
 end KIP126.Synthetic.SpectralSequence

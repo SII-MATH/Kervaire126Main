@@ -50,15 +50,6 @@ theorem adamsPage_two_nsmul_zero (r : ℕ) (hr : 1 ≤ r) (s t : ℤ)
       exact adamsE1_two_nsmul_zero H R X s t x.val
     rw [hx, map_zero]
 
-include R in
-/-- The internal SSData finite pages inherit the same two-torsion through the proved page isomorphism. -/
-theorem adamsInternalPage_two_nsmul_zero (r s t : ℤ)
-    (x : (adamsTowerInternalSpectralSequence H.unit X).Page r (s, t)) : 2 • x = 0 := by
-  apply (adamsTowerSSDataPageIso H.unit X s t (r - 2).toNat).toLinearEquiv.injective
-  simpa only [map_nsmul, map_zero] using
-    adamsPage_two_nsmul_zero H R X ((r - 2).toNat + 2) (by omega) s t
-      ((adamsTowerSSDataPageIso H.unit X s t (r - 2).toNat).toLinearEquiv x)
-
 end
 
 end KIP126.Classical.Adams

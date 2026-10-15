@@ -54,7 +54,6 @@ theorem milnor_differential_squared (s t : ℕ) (x : Steenrod.Milnor.cochains s 
   rw [← M.differential_coordinates, ← M.differential_coordinates,
     sphereFirstDifferential_squared, map_zero]
 
-
 end
 
 end KIP126.Classical.Adams

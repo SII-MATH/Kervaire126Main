@@ -19,13 +19,7 @@ variable {C : Type u} [StableHomotopyCategory.{u, v} C]
   [HasFunctorialCofiber (C := C)]
   (H : Mod2EilenbergMacLane (C := C)) (M : MilnorCooperations H)
 
-@[simp] theorem mem_cycles (s t : ℕ) (x : cochains s t) :
-    x ∈ cycles s t ↔ differential s t x = 0 := Iff.rfl
-
 @[simp] theorem boundaries_zero (t : ℕ) : boundaries 0 t = ⊥ := rfl
-
-@[simp] theorem boundaries_succ (s t : ℕ) :
-    boundaries (s + 1) t = LinearMap.range (differential s t) := rfl
 
 include H M in
 /-- There is no independent square-zero assumption here: the actual first

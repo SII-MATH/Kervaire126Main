@@ -1,9 +1,8 @@
 module
 
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
-public import KIP126.Main.Computation.Lambda
-public import KIP126.Main.DifferentialReduction.D12Criterion
-
+public import KIP126.Main.SectionSeven.Lambda
+public import KIP126.Def.AdamsSynthetic.Conditions.D12Criterion
 import all KIP126.Main.SectionSeven.DifferentialCriterion.ThetaSquareClassification
 import all KIP126.Main.SectionSeven.DifferentialCriterion.ClassicalDifferentials
 import all KIP126.Main.SectionSeven.DifferentialCriterion.ChoiceInvariance
@@ -40,7 +39,6 @@ private theorem h6_square_dichotomy_realization_additive {D : AdamsComparison H 
   letI := Limits.preservesBinaryBiproducts_of_preservesBinaryCoproducts D.recovery.realization
   exact Functor.additive_of_preservesBinaryBiproducts _
 
-
 private theorem h6_square_dichotomy_realize_detector {D : AdamsComparison H M Syn} {m wt : ℤ} (R : KIP126.Literature.AdamsSynthetic.RealizationCoordinates D)
     (a : BiHom m wt (S_0_0 : Syn)) :
     KIP126.Literature.AdamsSynthetic.realizeNu D R .sphere (a ≫ D.nu.unitIso.inv) ≫ D.hopfAndDetector.detectorUnit =
@@ -50,7 +48,6 @@ private theorem h6_square_dichotomy_realize_detector {D : AdamsComparison H M Sy
   dsimp only [Functor.comp_map, Functor.id_map] at hn
   simp only [KIP126.Literature.AdamsSynthetic.realizeNu, KIP126.Literature.AdamsSynthetic.detectorMap, ClassicalObject.obj, Functor.map_comp, Category.assoc]
   rw [← hn]
-
 
 private theorem h6_square_dichotomy_high125_detector_nonzero_parts {D : AdamsComparison H M Syn}
     (TM : KIP126.Literature.AdamsSynthetic.TmfDetectionTheorems D G) (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
@@ -64,7 +61,6 @@ private theorem h6_square_dichotomy_high125_detector_nonzero_parts {D : AdamsCom
     (by simpa only [high125_label I] using ha)
     (by simpa only [high125_label I] using hb)
   simpa only [heq] using hnonzero
-
 
 private theorem h6_square_dichotomy_theta_detector_zero_parts {D : AdamsComparison H M Syn}
     (BHS : KIP126.Literature.AdamsSynthetic.SyntheticComparisonTheorems D)
@@ -109,9 +105,6 @@ private theorem h6_square_dichotomy_theta_detector_zero_parts {D : AdamsComparis
     dsimp only [KIP126.Literature.AdamsSynthetic.realizeNu, ClassicalObject.obj] at hz
     erw [Limits.comp_zero, Limits.zero_comp, Category.assoc]
     exact hz
-
-
-
 
 private theorem h6_square_dichotomy (BHS : SyntheticComparisonTheorems D) (RL : RealizationDetectionData D)
     (CL : ClassicalTheorems D η) (AF : SphereActionFiltrationCompatible D)

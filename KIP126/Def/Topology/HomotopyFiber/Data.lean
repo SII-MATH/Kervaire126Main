@@ -35,17 +35,5 @@ instance (f : C(X, Y)) (y : Y) : TopologicalSpace (PathHomotopyFiber f y) :=
 def space (f : C(X, Y)) (y : Y) : TopCat.{max u v} :=
   TopCat.of (PathHomotopyFiber f y)
 
-/-- Forget the path, retaining the original source point. -/
-def projection (f : C(X, Y)) (y : Y) : C(PathHomotopyFiber f y, X) where
-  toFun z := z.val.1
-  continuous_toFun := continuous_fst.comp continuous_subtype_val
-
-/-- Forget the source point, retaining its continuous path to the fixed target.
-The codomain carries its compact-open topology. -/
-def path (f : C(X, Y)) (y : Y) :
-    C(PathHomotopyFiber f y, C(unitInterval, Y)) where
-  toFun z := z.val.2
-  continuous_toFun := continuous_snd.comp continuous_subtype_val
-
 end PathHomotopyFiber
 end KIP126.Topology

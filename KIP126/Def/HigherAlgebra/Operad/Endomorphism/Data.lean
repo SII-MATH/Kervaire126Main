@@ -36,24 +36,4 @@ def operad (P : Presentation M) (hP : TensorLaws P) (X : M) :
   outer_equivariance := (endomorphismLaws P hP X).outer_equivariance
   inner_equivariance := (endomorphismLaws P hP X).inner_equivariance
 
-/-- The actual nullary mapping space is homeomorphic to maps from the model's
-monoidal unit. The isomorphism acts by precomposition with `emptyIso.inv`. -/
-def nullaryHomeomorph (P : Presentation M) (X : M) :
-    P.Op X empty ≃ₜ MappingSpace (𝟙_ M) X :=
-  TopCat.homeoOfIso (Iso.eHomCongr TopCat.{v}
-    (P.emptyIso (fun _ => X)) (Iso.refl X))
-
-/-- Singleton operations are the model's actual enriched endomorphisms. -/
-def unaryHomeomorph (P : Presentation M) (X : M) :
-    P.Op X Arity.one ≃ₜ MappingSpace X X :=
-  TopCat.homeoOfIso (Iso.eHomCongr TopCat.{v}
-    (P.oneIso (fun _ => X)) (Iso.refl X))
-
-/-- Binary operations are maps from the same binary tensor already installed
-on the model category. -/
-def binaryHomeomorph (P : Presentation M) (X : M) :
-    P.Op X two ≃ₜ MappingSpace (X ⊗ X) X :=
-  TopCat.homeoOfIso (Iso.eHomCongr TopCat.{v}
-    (P.binaryIso (fun _ => X)) (Iso.refl X))
-
 end KIP126.HigherAlgebra.Operad.Endomorphism

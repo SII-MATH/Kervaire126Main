@@ -26,5 +26,4 @@ noncomputable def standardSimplexPullbackHomeomorph {X Y : SSet.{u}}
   pullbackRealizationHomeomorph f b (realizationStandardSimplexProductHomeomorph X n)
     (fun _ => rfl) (fun _ => rfl)
 
-
 end KIP126.Topology.SimplicialRealization

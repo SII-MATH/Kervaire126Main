@@ -33,5 +33,4 @@ noncomputable def principalRealizationHomeomorph
       (standardSimplexPullbackHomeomorph (Functor.whiskerRight p (forget (ModuleCat R))) n
         ((SSet.yonedaEquiv (X := B ⋙ forget (ModuleCat R))).symm b))
 
-
 end KIP126.Algebra.SimplicialModule

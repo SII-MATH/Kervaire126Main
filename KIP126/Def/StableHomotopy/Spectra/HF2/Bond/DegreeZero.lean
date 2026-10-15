@@ -55,7 +55,6 @@ noncomputable def coefficientZeroConstantIso : hf2SimplicialModule 0 ≅ constan
   CategoryTheory.Abelian.DoldKan.Γ.mapIso (asIso constantCoefficientChainMap) ≪≫
     (CategoryTheory.Abelian.DoldKan.equivalence.unitIso.app constantCoefficientModule).symm
 
-
 /-- The constant simplicial set on an actual type. -/
 abbrev constantSet (T : Type) : SSet.{0} := (Functor.const SimplexCategoryᵒᵖ).obj T
 
@@ -111,7 +110,6 @@ noncomputable def constantRealizationHomeomorph (T : Type) :
   right_inv x := constantRealizationMap_simplex T (op ⦋0⦌) x default
   continuous_toFun := (constantRealizationMap T).continuous
   continuous_invFun := continuous_of_discreteTopology
-
 
 /-- Forgetting the proved degree-zero module isomorphism. -/
 noncomputable def coefficientZeroConstantSetIso : hf2SimplicialSet 0 ≅ constantSet (ZMod 2) :=
@@ -174,57 +172,5 @@ theorem coefficientZeroPiPositive_subsingleton (r : ℕ) :
   refine ⟨fun x y => Quotient.inductionOn₂ x y (fun p q => ?_)⟩
   rw [cubicalLoop_eq_const_of_totallyDisconnected _ r p,
     cubicalLoop_eq_const_of_totallyDisconnected _ r q]
-
-
-/-- The degree-zero constant comparison is the actual normalized coefficient
-map under the fixed Dold--Kan counit. -/
-theorem coefficientZeroConstantIso_normalized :
-    (normalizedMooreComplex (ModuleCat (ZMod 2))).map coefficientZeroConstantIso.hom =
-      (hf2NormalizedComplexIso 0).hom ≫ constantCoefficientChainMap := by
-  let e := CategoryTheory.Abelian.DoldKan.equivalence (A := ModuleCat (ZMod 2))
-  change e.functor.map (e.inverse.map constantCoefficientChainMap ≫
-    e.unitInv.app constantCoefficientModule) = e.counit.app (hf2ChainComplex 0) ≫ _
-  rw [Functor.map_comp, ← e.counit_app_functor]
-  exact e.counit_naturality _
-
-/-- The specified coefficient in degree zero of the actual denormalization. -/
-noncomputable def coefficientZeroVertex : ModuleCat.of (ZMod 2) (ZMod 2) ⟶
-    (hf2SimplicialModule 0).obj (op ⦋0⦌) :=
-  (HomologicalComplex.singleObjXSelf (ComplexShape.down ℕ) 0
-    (ModuleCat.of (ZMod 2) (ZMod 2))).inv ≫
-      (hf2NormalizedComplexIso 0).inv.f 0 ≫
-        (NormalizedMooreComplex.objX (hf2SimplicialModule 0) 0).arrow
-
-/-- The simplicial constant comparison returns the specified coefficient
-exactly, rather than merely selecting some bijection of two-point sets. -/
-@[reassoc] theorem coefficientZeroVertex_constant :
-    coefficientZeroVertex ≫ coefficientZeroConstantIso.hom.app (op ⦋0⦌) = 𝟙 _ := by
-  have hn : (NormalizedMooreComplex.objX (hf2SimplicialModule 0) 0).arrow ≫
-      coefficientZeroConstantIso.hom.app (op ⦋0⦌) =
-      ((normalizedMooreComplex (ModuleCat (ZMod 2))).map coefficientZeroConstantIso.hom).f 0 ≫
-        (NormalizedMooreComplex.objX constantCoefficientModule 0).arrow := by
-    exact (Subobject.factorThru_arrow _ _ (Subobject.top_factors _)).symm
-  unfold coefficientZeroVertex
-  rw [Category.assoc, Category.assoc, hn, coefficientZeroConstantIso_normalized]
-  simp only [HomologicalComplex.comp_f, ← Category.assoc]
-  have hi := HomologicalComplex.congr_hom (hf2NormalizedComplexIso 0).inv_hom_id 0
-  simp only [HomologicalComplex.comp_f, HomologicalComplex.id_f] at hi
-  rw [Category.assoc _ ((hf2NormalizedComplexIso 0).inv.f 0), hi, Category.comp_id]
-  dsimp only [constantCoefficientChainMap]
-  rw [HomologicalComplex.mkHomFromSingle_f]
-  simp only [← Category.assoc, Iso.inv_hom_id, Category.id_comp, IsIso.inv_hom_id]
-
-/-- The actual realization homeomorphism carries every displayed normalized
-coefficient vertex to that same element of F₂. -/
-theorem coefficientZeroRealizationHomeomorph_coefficient (a : ZMod 2) :
-    coefficientZeroRealizationHomeomorph
-      (realizeSimplex (hf2SimplicialSet 0) (a := op ⦋0⦌) (coefficientZeroVertex a) default) = a := by
-  change constantRealizationMap (ZMod 2)
-    (SSet.toTop.map coefficientZeroConstantSetIso.hom
-      (realizeSimplex (hf2SimplicialSet 0) (a := op ⦋0⦌) (coefficientZeroVertex a) default)) = a
-  rw [realizeSimplex_map, constantRealizationMap_simplex]
-  change coefficientZeroConstantIso.hom.app (op ⦋0⦌) (coefficientZeroVertex a) = a
-  exact congrArg (fun f : ModuleCat.of (ZMod 2) (ZMod 2) ⟶
-    ModuleCat.of (ZMod 2) (ZMod 2) => f.hom a) coefficientZeroVertex_constant
 
 end KIP126.StableHomotopy.Spectra.HF2Bond

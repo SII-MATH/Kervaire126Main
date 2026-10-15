@@ -6,17 +6,13 @@ public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
-
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
-
 import all Init.Data.String.Legacy
 
 @[expose] public section
-
 
 /-! Filtration and representative calculations for Proposition 7.8 and
 Lemma 7.14 (`lem:x_123_9`). The complete bases, products and differential
@@ -211,7 +207,6 @@ private theorem alpha_all_finite_frames_boundary_of_zero_representative {H : Mod
   rw [←hf,CategoryTheory.comp_apply,hy]
   exact hz
 
-
 private theorem alpha_all_finite_frames_cycle_differential_zero {H : Mod2EilenbergMacLane (C:=C)}
     {r c : ℤ} {p : ℤ×ℤ} {x : E2 H SphereSpectrum p.1 p.2}
     {a : (adamsTowerInternalSpectralSequence H.unit SphereSpectrum).Page r p}
@@ -223,7 +218,6 @@ private theorem alpha_all_finite_frames_cycle_differential_zero {H : Mod2Eilenbe
   obtain ⟨y,hy⟩ := (isCycle_iff_represents H SphereSpectrum (c+1) (by omega) p x).mp
     ⟨by omega,by simpa using hx⟩
   exact represents_d_zero_of_later hr (by omega : r<c+1) ha ⟨y,hy⟩
-
 
 private theorem alpha_all_finite_frames_cycle_quotient_frame_of_boundary {H : Mod2EilenbergMacLane (C:=C)}
     {c b : ℤ} {p : ℤ×ℤ} (v : E2 H SphereSpectrum p.1 p.2)
@@ -241,7 +235,6 @@ private theorem alpha_all_finite_frames_cycle_quotient_frame_of_boundary {H : Mo
     rw [←map_sub]
     exact (NestedQuotient.projection_eq_zero (z-⟨v,hv⟩)).mpr hz
 
-
 private theorem alpha_all_finite_frames_rep_two {H : Mod2EilenbergMacLane (C:=C)} (p : ℤ×ℤ) (x : (adamsTowerInternalSpectralSequence H.unit SphereSpectrum).Page 2 p) :
     RepresentsOnPage (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) 2 p x x := by
   classical
@@ -249,7 +242,6 @@ private theorem alpha_all_finite_frames_rep_two {H : Mod2EilenbergMacLane (C:=C)
   haveI : Epi ((E.ssData p).pageπ 0) := inferInstanceAs (Epi (cokernel.π _))
   obtain ⟨z,rfl⟩ := (ModuleCat.epi_iff_surjective ((E.ssData p).pageπ 0)).mp inferInstance x
   exact ⟨by decide,z,by simp only [Subobject.ofLE_refl,Category.id_comp]; rfl,rfl⟩
-
 
 set_option maxHeartbeats 800000 in
 private theorem alpha_all_finite_frames_alpha_finite_frame_14 {D : AdamsComparison H M Syn} (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
@@ -535,7 +527,6 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_14 {D : AdamsComparis
     have hh := congrArg (fun z=>f z 2) hd
     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh
 
-
 private theorem alpha_all_finite_frames_alpha_finite_frame_15 {D : AdamsComparison H M Syn} (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (hc : (I.interpretation.basis .sphere 15 139 1 + I.interpretation.basis .sphere 15 139 3)∈cycles H SphereSpectrum 3 (15,139)) :
     ∀ q : CycleQuotient H SphereSpectrum 3 9 (15,139),
@@ -705,7 +696,6 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_15 {D : AdamsComparis
     have hh := congrArg (fun z=>f z 2) hd
     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh
 
-
 private theorem alpha_all_finite_frames_alpha_finite_frame_13 {D : AdamsComparison H M Syn} (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (facts : Derived.SphereFacts I.interpretation) :
     ∃ c : cycles H SphereSpectrum 5 (13,137), c.val=I.interpretation.sphere 13 137 correction ∧
       ∀ q : CycleQuotient H SphereSpectrum 5 7 (13,137),
@@ -858,7 +848,6 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_13 {D : AdamsComparis
     have hm := B.add_mem (lift_boundary hh) b0
     simpa only [sub_add_cancel] using hm
 
-
 private theorem alpha_all_finite_frames
     {L : SphereAdamsClasses H} {G : KIP126.Literature.AdamsSynthetic.TmfDetectionClasses H}
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (facts : Derived.SphereFacts I.interpretation)
@@ -895,13 +884,11 @@ private theorem alpha_exists_from_finite_frames_family_map_data {D : AdamsCompar
     simp only [eqToHom_refl,Category.id_comp,Category.comp_id]
   exact normalize PX.page PY.page (fun n => F.pageMap i n) nX nY (↑(r-2).toNat) hX hY _ _ _
 
-
 private theorem alpha_exists_from_finite_frames_family_page_comp {D : AdamsComparison H M Syn} {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z) (r : ℤ) (i : Tridegree) :
     familyPageMap D.family f r i ≫ familyPageMap D.family g r i = familyPageMap D.family (f ≫ g) r i := by
   classical
   rw [alpha_exists_from_finite_frames_family_map_data,alpha_exists_from_finite_frames_family_map_data,alpha_exists_from_finite_frames_family_map_data,Functor.map_comp]
   exact (SSDataMorphism.pageMap_comp _ _ _ _).symm
-
 
 private theorem alpha_exists_from_finite_frames_family_infinity_representative_map {D : AdamsComparison H M Syn}
     {X Y : Syn} (f : X ⟶ Y) (i : Tridegree)
@@ -925,7 +912,6 @@ private theorem alpha_exists_from_finite_frames_family_infinity_representative_m
   · exact (congrArg (fun a => a z) (F.pageπ_pageMap i ⊤)).symm.trans (by
       change F.pageMap i ⊤ (((D.family.obj X).sequence.ssData i).pageπ ⊤ z)=_
       rw [he])
-
 
 private theorem alpha_exists_from_finite_frames_sphere_quotient_label_to_nu {D : AdamsComparison H M Syn} (q k : ℕ) (s t : ℤ)
     (x : E2 H SphereSpectrum s t) :
@@ -968,7 +954,6 @@ private theorem alpha_exists_from_finite_frames_sphere_quotient_label_to_nu {D :
         (fun y => familyPageMap D.family (XModLambdaN.incl (D.nu.functor.obj SphereSpectrum) q) 2 (s,t,t-k) y) hbase
   exact hlabel
 
-
 private theorem alpha_exists_from_finite_frames_detection_exists_of_infinity {D : AdamsComparison H M Syn}
     {X : Syn} (c : TowerConvergence (nuCoefficientUnit H.unit D.nu) D.family X)
     (i : Tridegree) (x : (D.family.obj X).E₂ i)
@@ -981,7 +966,6 @@ private theorem alpha_exists_from_finite_frames_detection_exists_of_infinity {D 
   obtain ⟨a,ha⟩ := (ModuleCat.epi_iff_surjective (F.toAssociatedGraded i.1 (i.2.1-i.1,i.2.2))).mp
     inferInstance ((c.identification i).hom e)
   exact ⟨(F.F i.1 (i.2.1-i.1,i.2.2)).arrow a,⟨e,hx,a,rfl,ha.symm⟩,e,hx,hne⟩
-
 
 private theorem alpha_exists_from_finite_frames_finite_sphere_detection_exists {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (q : ℕ) (hq : 0<q) (s t : ℤ)
@@ -1041,7 +1025,6 @@ private theorem alpha_exists_from_finite_frames_finite_sphere_detection_exists {
     simpa only [ConcreteCategory.id_apply,map_zero] using hh
   exact alpha_exists_from_finite_frames_detection_exists_of_infinity (D:=D) (D.quotientConvergence q hq) (s,t,t-0) _ e' he' en'
 
-
 private theorem alpha_exists_from_finite_frames_detected_map {D : AdamsComparison H M Syn}
     (X Y : SyntheticObject) (f : X.obj D.nu D.hopfAndDetector ⟶ Y.obj D.nu D.hopfAndDetector)
     (i : Tridegree) (x : (D.family.obj (X.obj D.nu D.hopfAndDetector)).E₂ i)
@@ -1084,7 +1067,6 @@ private theorem alpha_exists_from_finite_frames_detected_map {D : AdamsCompariso
           (F.toAssociatedGraded i.1 m a') := by rw [hgr]
       _ = G.toAssociatedGraded i.1 m (k a') := ConcreteCategory.congr_hom hq a'
 
-
 private theorem alpha_exists_from_finite_frames_finite_sphere_infinity_nonzero {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (q : ℕ) (hq : 0<q) (s t : ℤ)
     (x : E2 H SphereSpectrum s t)
@@ -1108,7 +1090,6 @@ private theorem alpha_exists_from_finite_frames_finite_sphere_infinity_nonzero {
   change x∈PageRepresentatives.boundaries H SphereSpectrum (1+t-(t-0)) (s,t) at hm
   rw [hb,PageRepresentatives.boundaries_one,Submodule.mem_bot] at hm
   exact hne hm
-
 
 private theorem alpha_exists_from_finite_frames_finite_sphere_detected_rho {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (i j : ℕ) (hi : 0 < i) (hj : 0 < j) (hij : i ≤ j) (s t : ℤ)
@@ -1135,7 +1116,6 @@ private theorem alpha_exists_from_finite_frames_finite_sphere_detected_rho {D : 
   refine ⟨hd',?_⟩
   obtain ⟨e,he,_⟩ := hd'
   exact ⟨e,he,alpha_exists_from_finite_frames_finite_sphere_infinity_nonzero BHS i hi s t x hx hne e he⟩
-
 
 private theorem alpha_exists_from_finite_frames_alpha_one_detected_pair {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (V : E2 H SphereSpectrum 9 132)
@@ -1164,7 +1144,6 @@ private theorem alpha_exists_from_finite_frames_alpha_one_detected_pair {D : Ada
   refine ⟨a,ha,?_⟩
   apply alpha_exists_from_finite_frames_finite_sphere_detected_rho BHS 9 11 (by decide) (by decide) (by decide) 9 132 V _ hn a ha
   exact PageRepresentatives.cycles_antitone H SphereSpectrum (9,132) (by decide : (9:ℤ)≤11) hc
-
 
 private theorem alpha_exists_from_finite_frames_finite_detection_peel {D : AdamsComparison H M Syn}
     (q : ℕ) (hq : 0<q) (i : Tridegree)
@@ -1201,7 +1180,6 @@ private theorem alpha_exists_from_finite_frames_finite_detection_peel {D : Adams
     have hax : Detects (D.quotientConvergence q hq) i x a := ⟨e,hex,a',ha',he⟩
     exact detects_sub_filtration (D.quotientConvergence q hq) i hax hc
 
-
 private theorem alpha_exists_from_finite_frames_sphere_lift_finite_detection {D : AdamsComparison H M Syn}
     (q : ℕ) (hq : 0<q) (k : ℕ) (s t : ℤ)
     (x : E2 H SphereSpectrum s t) (c : BiHom (t-s) t (S_0_0 : Syn))
@@ -1220,7 +1198,6 @@ private theorem alpha_exists_from_finite_frames_sphere_lift_finite_detection {D 
     simp only [lambdaMultiply,quotientClass,Category.assoc]
   rw [hcomm] at hh
   exact hh
-
 
 private theorem alpha_exists_from_finite_frames_sphere_quotient_high_filtration_zero {D : AdamsComparison H M Syn} (BHS : EInftyComparison D)
     (q : ℕ) (hq : 0<q) (m w : ℤ) (N : ℕ) (hN : (q:ℤ)≤m+N-w)
@@ -1255,7 +1232,6 @@ private theorem alpha_exists_from_finite_frames_sphere_quotient_high_filtration_
   rw [←SpectralSequenceMorphism.eInftyMap_comp,←Functor.map_comp,hgf,
     CategoryTheory.Functor.map_id,SpectralSequenceMorphism.eInftyMap_id] at h
   simpa only [ConcreteCategory.id_apply,map_zero] using h
-
 
 private theorem alpha_exists_from_finite_frames_finite_sphere_frame {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (q k : ℕ) (hq : 0<q) (hkq : k<q) (s t : ℤ)
@@ -1305,7 +1281,6 @@ private theorem alpha_exists_from_finite_frames_finite_sphere_frame {D : AdamsCo
     rw [hl,heq] at h
     exact h
 
-
 private theorem alpha_exists_from_finite_frames_filtration_postcompose {D : AdamsComparison H M Syn} {X Y : Syn} (f : X⟶Y) (s m w : ℤ)
     (a : BiHom m w X) (ha : FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) s a) :
     FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) s (a≫f) := by
@@ -1317,7 +1292,6 @@ private theorem alpha_exists_from_finite_frames_filtration_postcompose {D : Adam
   change b≫adamsTowerMap (nuCoefficientUnit H.unit D.nu) X 0 s.toNat _=a at hb
   rw [Category.assoc,adamsTowerInduced_map,←Category.assoc,hb]
   rfl
-
 
 private theorem alpha_exists_from_finite_frames_alpha_three_layer_restriction {D : AdamsComparison H M Syn}
     {L : SphereAdamsClasses H} {G : KIP126.Literature.AdamsSynthetic.TmfDetectionClasses H}
@@ -1369,7 +1343,6 @@ private theorem alpha_exists_from_finite_frames_alpha_three_layer_restriction {D
   rw [sub_sub,sub_sub] at hzero
   simpa only [add_assoc] using (sub_eq_zero.mp hzero)
 
-
 private theorem alpha_exists_from_finite_frames_detects_infinity_equal {D : AdamsComparison H M Syn}
     (X : SyntheticObject) (i : Tridegree)
     (a : BiHom (i.2.1-i.1) i.2.2 (X.obj D.nu D.hopfAndDetector))
@@ -1384,7 +1357,6 @@ private theorem alpha_exists_from_finite_frames_detects_infinity_equal {D : Adam
   have hab : a'=b' := (ModuleCat.mono_iff_injective _).mp inferInstance (ha'.trans hb'.symm)
   have hef : e=f := (ModuleCat.mono_iff_injective _).mp inferInstance (by rw [hga,hgb,hab])
   exact ⟨e,he,hef.symm ▸ hf⟩
-
 
 private theorem alpha_exists_from_finite_frames_sphere_zero_weight_label {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (x : E2 H SphereSpectrum 10 134)
@@ -1430,7 +1402,6 @@ private theorem alpha_exists_from_finite_frames_sphere_zero_weight_label {D : Ad
   change x-y∈PageRepresentatives.boundaries H SphereSpectrum 1 (10,134) at hm
   rw [PageRepresentatives.boundaries_one,Submodule.mem_bot] at hm
   exact (sub_eq_zero.mp hm).symm
-
 
 private theorem alpha_exists_from_finite_frames_finite_boundary_detects_sub_filtration {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D)
@@ -1490,13 +1461,11 @@ private theorem alpha_exists_from_finite_frames_finite_boundary_detects_sub_filt
     (show Detects _ _ (D.quotientLabel 11 10 134 3 x) a from ⟨e,he,a',ha',hga⟩)
   exact ⟨e,he,b',hb',hef ▸ hgb⟩
 
-
 private def alpha_exists_from_finite_frames_shiftSwap (a b : ℤ × ℤ) (A : Syn) :
     (SyntheticCategory.biShift b).obj ((SyntheticCategory.biShift a).obj A) ≅
     (SyntheticCategory.biShift a).obj ((SyntheticCategory.biShift b).obj A) :=
   (biShiftAddIso a b (a+b) rfl).app A ≪≫
     ((biShiftAddIso b a (a+b) (add_comm _ _)).app A).symm
-
 
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_shiftSwap_add (coh : BiShiftCoherence Syn)
@@ -1539,7 +1508,6 @@ private theorem alpha_exists_from_finite_frames_shiftSwap_add (coh : BiShiftCohe
   erw [CategoryTheory.Category.id_comp,←Functor.map_comp,Iso.hom_inv_id_app,CategoryTheory.Functor.map_id]
   rfl
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_shiftSwap_add_eq (coh : BiShiftCoherence Syn)
     (a b c d : ℤ × ℤ) (h : b+c=d) (A : Syn) :
@@ -1552,7 +1520,6 @@ private theorem alpha_exists_from_finite_frames_shiftSwap_add_eq (coh : BiShiftC
   subst d
   exact alpha_exists_from_finite_frames_shiftSwap_add coh a b c A
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_shiftSwap_natural (a b : ℤ × ℤ) {A B : Syn} (f : A ⟶ B) :
     (SyntheticCategory.biShift b).map ((SyntheticCategory.biShift a).map f) ≫
@@ -1563,7 +1530,6 @@ private theorem alpha_exists_from_finite_frames_shiftSwap_natural (a b : ℤ × 
   exact ((biShiftAddIso a b (a+b) rfl) ≪≫
     (biShiftAddIso b a (a+b) (add_comm _ _)).symm).hom.naturality f
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_shiftSwap_hom_eq (a b d : ℤ × ℤ)
     (hab : a+b=d) (hba : b+a=d) (A : Syn) :
@@ -1572,7 +1538,6 @@ private theorem alpha_exists_from_finite_frames_shiftSwap_hom_eq (a b d : ℤ ×
   classical
   subst d
   rfl
-
 
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_lambda_pow_shift (coh : BiShiftCoherence Syn)
@@ -1618,7 +1583,6 @@ private theorem alpha_exists_from_finite_frames_lambda_pow_shift (coh : BiShiftC
     rw [reassoc_of% hh]
     rfl
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem alpha_exists_from_finite_frames_shift_assoc_inv (coh : BiShiftCoherence Syn)
     (a b c ab bc total : ℤ × ℤ) (hab : a+b=ab) (hbc : b+c=bc)
@@ -1635,7 +1599,6 @@ private theorem alpha_exists_from_finite_frames_shift_assoc_inv (coh : BiShiftCo
     Iso.ext (coh.associativity a b c ab bc total hab hbc habc habc' A)
   have hi := congrArg Iso.inv he
   exact hi
-
 
 private theorem alpha_exists_from_finite_frames_sphere_action_lambda_three (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn))
@@ -1676,7 +1639,6 @@ private theorem alpha_exists_from_finite_frames_sphere_action_lambda_three (D : 
   simpa only [Category.assoc,S,Smn,Int.reduceAdd,Int.reduceSub,Nat.cast_ofNat] using
     (congrArg (fun z => z ≫ (SyntheticCategory.biShift (123,132)).map η ≫ a) hp).symm
 
-
 private theorem alpha_exists_from_finite_frames_boundary_of_zero_representative {H : Mod2EilenbergMacLane (C:=C)}
     {r : ℤ} {p : ℤ×ℤ} {x : E2 H SphereSpectrum p.1 p.2}
     (hx : RepresentsOnPage (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) r p x 0) :
@@ -1700,7 +1662,6 @@ private theorem alpha_exists_from_finite_frames_boundary_of_zero_representative 
   rw [←hf,CategoryTheory.comp_apply,hy]
   exact hz
 
-
 private theorem alpha_exists_from_finite_frames_cycle_quotient_zero_of_page {H : Mod2EilenbergMacLane (C:=C)}
     (r c b : ℤ) (p : ℤ×ℤ) (hr : 2≤r) (hc : r≤c+1) (hb : r-1≤b)
     (hz : Subsingleton ((adamsTowerInternalSpectralSequence H.unit SphereSpectrum).Page r p)) :
@@ -1716,7 +1677,6 @@ private theorem alpha_exists_from_finite_frames_cycle_quotient_zero_of_page {H :
     obtain ⟨x⟩ := x
     exact hall x
   exact ⟨fun x y=>(hz' x).trans (hz' y).symm⟩
-
 
 private theorem alpha_exists_from_finite_frames_alpha_error_filtration_gap {D : AdamsComparison H M Syn}
     (BHS : SyntheticComparisonTheorems D)
@@ -1752,7 +1712,6 @@ private theorem alpha_exists_from_finite_frames_alpha_error_filtration_gap {D : 
       D.quotientFunctoriality.map_id,CategoryTheory.Functor.map_id,SpectralSequenceMorphism.eInftyMap_id]
   apply (CategoryTheory.Limits.IsZero.iff_id_eq_zero _).mpr
   exact hfg.symm.trans (by rw [hn.eq_of_src f 0,CategoryTheory.Limits.comp_zero])
-
 
 private theorem alpha_exists_from_finite_frames_alpha_error_filtration_thirteen {D : AdamsComparison H M Syn}
     (BHS : SyntheticComparisonTheorems D) (algebra : AdamsAlgebraStructures D) (compatibility : AlgebraDetectionCompatibility D algebra)
@@ -1813,7 +1772,6 @@ private theorem alpha_exists_from_finite_frames_alpha_error_filtration_thirteen 
   apply (alpha_exists_from_finite_frames_alpha_error_filtration_gap BHS h11 h12 _).mp
   exact alpha_exists_from_finite_frames_finite_boundary_detects_sub_filtration BHS.eInfty _ U hprod hU hbound4 _ _ hp huq
 
-
 private theorem alpha_exists_from_finite_frames_lambda_six_one (D : AdamsComparison H M Syn)
     (c : BiHom 124 138 (S_0_0 : Syn)) :
     lambdaMultiply 6 (lambdaMultiply 1 c) = lambdaMultiply 7 c := by
@@ -1832,7 +1790,6 @@ private theorem alpha_exists_from_finite_frames_lambda_six_one (D : AdamsCompari
     Iso.trans_inv, eqToIso.inv, eqToHom_refl,
     Category.id_comp, Category.assoc]
   rfl
-
 
 private theorem alpha_exists_from_finite_frames_lambda_six_two (D : AdamsComparison H M Syn)
     (c : BiHom 124 139 (S_0_0 : Syn)) :
@@ -1853,7 +1810,6 @@ private theorem alpha_exists_from_finite_frames_lambda_six_two (D : AdamsCompari
     Category.id_comp, Category.assoc]
   rfl
 
-
 private theorem alpha_exists_from_finite_frames_lambda_one_one (D : AdamsComparison H M Syn)
     (c : BiHom 125 141 (S_0_0 : Syn)) :
     lambdaMultiply 1 (lambdaMultiply 1 c) = lambdaMultiply 2 c := by
@@ -1873,7 +1829,6 @@ private theorem alpha_exists_from_finite_frames_lambda_one_one (D : AdamsCompari
     Category.id_comp, Category.assoc]
   rfl
 
-
 private theorem alpha_exists_from_finite_frames_sphere_action_right_one (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn))
     (c : BiHom 124 138 (S_0_0 : Syn)) :
@@ -1891,7 +1846,6 @@ private theorem alpha_exists_from_finite_frames_sphere_action_right_one (D : Ada
   erw [reassoc_of% ha]
   erw [← reassoc_of% ((SyntheticCategory.biShift_comp (124,138) (0,-1)).inv.naturality η)]
   rfl
-
 
 private theorem alpha_exists_from_finite_frames_sphere_action_right_two (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn))
@@ -1912,13 +1866,11 @@ private theorem alpha_exists_from_finite_frames_sphere_action_right_two (D : Ada
   erw [← reassoc_of% ((SyntheticCategory.biShift_comp (124,139) (0,-2)).inv.naturality η)]
   rfl
 
-
 private theorem alpha_exists_from_finite_frames_sphere_action_right_two_as_ones (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn)) (c : BiHom 124 139 (S_0_0 : Syn)) :
     sphereAction η (lambdaMultiply 2 c) = lambdaMultiply 1 (lambdaMultiply 1 (sphereAction η c)) := by
   classical
   exact (alpha_exists_from_finite_frames_sphere_action_right_two D η c).trans (alpha_exists_from_finite_frames_lambda_one_one D (sphereAction η c)).symm
-
 
 private theorem alpha_exists_from_finite_frames_lambda_one_division_of_quotient_zero
     {X : Syn} (m w : ℤ) (z : BiHom m (w-1) X) (hz : quotientClass 1 z=0) :
@@ -1946,7 +1898,6 @@ private theorem alpha_exists_from_finite_frames_lambda_one_division_of_quotient_
   rw [hb]
   simp only [Category.assoc,e.inv_hom_id_assoc]
   exact ha
-
 
 private theorem alpha_exists_from_finite_frames_sphere_zero_weight_label_14_139 {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (x : E2 H SphereSpectrum 14 139)
@@ -1992,7 +1943,6 @@ private theorem alpha_exists_from_finite_frames_sphere_zero_weight_label_14_139 
   change x-y∈PageRepresentatives.boundaries H SphereSpectrum 1 (14,139) at hm
   rw [PageRepresentatives.boundaries_one,Submodule.mem_bot] at hm
   exact (sub_eq_zero.mp hm).symm
-
 
 private theorem alpha_exists_from_finite_frames_eta_correction_lambda_divisible {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D)
@@ -2044,7 +1994,6 @@ private theorem alpha_exists_from_finite_frames_eta_correction_lambda_divisible 
     exact hfirst.trans (map_zero (D.sphereFirstQuotient 14 139)).symm
   exact alpha_exists_from_finite_frames_lambda_one_division_of_quotient_zero 125 140 (sphereAction η c) hzero
 
-
 private theorem alpha_exists_from_finite_frames_sphere_first_label_transport {D : AdamsComparison H M Syn} (s t : ℤ)
     (x : E2 H SphereSpectrum s t) :
     D.sphereFirstQuotient s t
@@ -2073,7 +2022,6 @@ private theorem alpha_exists_from_finite_frames_sphere_first_label_transport {D 
     exact cast_symm (t+0) t (Int.add_zero t) (D.firstQuotient SphereSpectrum 0 s t) x
   rw [hx,c.apply_symm_apply]
 
-
 private theorem alpha_exists_from_finite_frames_sphere_permanent_first_quotient_lift {D : AdamsComparison H M Syn}
     (synthetic : SyntheticComparisonTheorems D) (s t : ℤ) (x : E2 H SphereSpectrum s t)
     (hx : IsPermanentCycle (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) (s,t) x) :
@@ -2091,7 +2039,6 @@ private theorem alpha_exists_from_finite_frames_sphere_permanent_first_quotient_
   rw [hc,ha]
   exact alpha_exists_from_finite_frames_sphere_first_label_transport s t x
 
-
 private theorem alpha_exists_from_finite_frames_alpha_h0_rho_zero {D : AdamsComparison H M Syn}
     (hzero : ∀ a : BiHom 123 130 (XModLambdaN (S_0_0 : Syn) 9),
       FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 16 a → a=0)
@@ -2108,7 +2055,6 @@ private theorem alpha_exists_from_finite_frames_alpha_h0_rho_zero {D : AdamsComp
       (lambdaMultiply 3 (sphereAction h0 a)≫(D.quotientTower S_0_0).rho 9 11 (by decide)) :=
     towerFiltrationSubmodule_antitone _ _ _ (by decide : (16:ℤ)≤17) h
   simpa only [lambdaMultiply,sphereAction,Category.assoc] using h16
-
 
 private theorem alpha_exists_from_finite_frames_alpha_correction_sum (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn))
@@ -2159,7 +2105,6 @@ private theorem alpha_exists_from_finite_frames_alpha_correction_sum (D : AdamsC
   · have hh := congrArg (fun a=>a≫XModLambdaN.incl (S_0_0 : Syn) 9) heta
     simpa only [lambdaMultiply,sphereAction,quotientClass,Category.assoc] using hh
 
-
 private theorem alpha_one_correction_equations {D : AdamsComparison H M Syn}
     {L : SphereAdamsClasses H} {G : KIP126.Literature.AdamsSynthetic.TmfDetectionClasses H}
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (facts : Derived.SphereFacts I.interpretation) :
@@ -2188,7 +2133,6 @@ private theorem alpha_one_correction_equations {D : AdamsComparison H M Syn}
     dsimp only at hp
     rw [I.distinguishedClasses.h1] at hp
     exact hp.symm.trans facts.h1_correction_zero
-
 
 private theorem alpha_exists_from_finite_frames
     {L : SphereAdamsClasses H} {G : KIP126.Literature.AdamsSynthetic.TmfDetectionClasses H}

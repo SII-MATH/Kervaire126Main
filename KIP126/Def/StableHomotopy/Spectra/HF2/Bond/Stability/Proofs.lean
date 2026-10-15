@@ -20,12 +20,6 @@ theorem hf2PathProjection_hasCubicalLifting (n : ℕ) :
     (fun r => decalageProjection_app_surjective (hf2SimplicialModule (n+1))
       (op (SimplexCategory.mk r)))
 
-/-- The adjoint of the specified continuous structure map induces actual
-bijections on cubical homotopy in every nonnegative dimension. -/
-theorem bondAdjointHomotopyMap_bijective (n r : ℕ) :
-    Function.Bijective (bondAdjointHomotopyMap n r) :=
-  bondAdjointHomotopyMap_bijective_of_lifting n r (hf2PathProjection_hasCubicalLifting n)
-
 /-- The actual fixed coefficient prespectrum structure map gives
 π_r(K_n) ≃ π_(r+1)(K_(n+1)), with its specified first-coordinate convention. -/
 theorem bondHomotopyMap_bijective (n r : ℕ) :

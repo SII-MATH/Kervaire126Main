@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.SpectralSequence.Basic.Category.Predicates
+public import KIP126.Def.SpectralSequence.Basic.Category.Data
 
 @[expose] public section
 
@@ -59,19 +59,5 @@ theorem SpectralSequenceMorphism.eInftyMap_comp
     {E E' E'' : SpectralSequence C ι} (f : E ⟶ E') (g : E' ⟶ E'') (k : ι) :
     (f ≫ g).eInftyMap k = f.eInftyMap k ≫ g.eInftyMap k :=
   SSDataMorphism.pageMap_comp f.toSSDataMorphism g.toSSDataMorphism k ⊤
-
-/-- A square commutes exactly when its maps commute at every underlying grading. -/
-theorem commSq_iff_underlying
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    {W X Y Z : SpectralSequence C ι}
-    (f : W ⟶ X) (g : W ⟶ Y) (h : X ⟶ Z) (i : Y ⟶ Z) :
-    SpectralSequence.CommSq f g h i ↔
-      ∀ (k : ι), f.φ k ≫ h.φ k = g.φ k ≫ i.φ k := by
-  constructor
-  · intro hsq k
-    exact congrFun (congrArg SpectralSequenceMorphism.φ hsq.w) k
-  · intro hsq
-    constructor
-    exact SpectralSequenceMorphism.ext (funext hsq)
 
 end KIP126.SpectralSequence

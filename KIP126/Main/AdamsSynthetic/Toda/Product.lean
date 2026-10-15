@@ -185,5 +185,4 @@ theorem secondary_star_product (D' : AdamsComparison H M' Syn)
 end
 end SecondaryComparisonProof
 
-
 end KIP126.Main.AdamsSynthetic.Toda

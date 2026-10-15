@@ -27,7 +27,6 @@ theorem coneEvaluation_one (A : SSet.{0}) (x : |decalage A|) :
     rfl
   exact ConcreteCategory.congr_hom h x
 
-
 theorem realizeSimplex_zero (A : SimplicialObject (ModuleCat.{0} (ZMod 2)))
     (a : SimplexCategoryᵒᵖ) (u : stdSimplex ℝ (Fin (a.unop.len + 1))) :
     realizeSimplex (A ⋙ forget (ModuleCat (ZMod 2))) (0 : A.obj a) u =
@@ -74,7 +73,6 @@ theorem coneEvaluation_zero (A : SimplicialObject (ModuleCat.{0} (ZMod 2)))
     rw [coneEvaluation_realizeSimplex, conePoint_zero]
     exact realizeSimplex_vertex_zero A _ z
   exact ConcreteCategory.congr_hom h x
-
 
 theorem loopBond_zero (n : ℕ) (x : loopRealizationLevel n) :
     loopBond n (x, 0) = (hf2RealizationLevel (n + 1)).point := by

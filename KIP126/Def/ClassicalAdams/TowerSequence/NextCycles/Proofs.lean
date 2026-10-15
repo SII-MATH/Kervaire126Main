@@ -199,16 +199,6 @@ theorem adamsNextCycle_d_zero (r : ℕ) (hr : 1 ≤ r) (p : ℤ × ℤ)
   rw [hn, adamsPageD_target]
   exact adamsNextCycle_differential_zero unit X r hr p.1 p.2 x
 
-/-- A current-page cycle has a next-cycle representative of that same class. -/
-theorem adamsNextCycle_exists_of_differential_eq_zero (r : ℕ) (hr : 1 ≤ r) (s t : ℤ)
-    (z : adamsPage unit X r hr s t)
-    (hz : adamsDifferential unit X r hr s t z = 0) :
-    ∃ u : adamsCycles unit X (r + 1) (by omega) s t,
-      adamsNextCycleToPage unit X r hr s t u = z := by
-  obtain ⟨x, hx⟩ := (adamsCycleBoundaries unit X r hr s t).mkQ_surjective z
-  rw [← hx, adamsDifferential_mk] at hz
-  exact ⟨⟨x.val, (adamsDifferentialValue_eq_zero_iff unit X r hr s t x).mp hz⟩, hx⟩
-
 end
 
 end KIP126.Classical.Adams

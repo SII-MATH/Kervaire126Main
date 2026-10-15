@@ -2,7 +2,50 @@ module
 
 public import KIP126.Literature.Background.AlgebraRealization
 public import KIP126.Literature.Standard.Milnor
-public import KIP126.Def.Comparison.Cobar.Proofs
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Comparison.Data
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Multiplication.Data
+public import Mathlib.Algebra.Category.ModuleCat.Abelian
+public import Mathlib.Algebra.Category.ModuleCat.Colimits
+public import Mathlib.Algebra.Category.ModuleCat.Monoidal.Closed
+public import Mathlib.CategoryTheory.Monoidal.Closed.Braided
+public import Mathlib.CategoryTheory.GradedObject.Braiding
+public import Mathlib.CategoryTheory.Abelian.FunctorCategory
+public import Mathlib.CategoryTheory.Abelian.Transfer
+public import Mathlib.CategoryTheory.Linear.FunctorCategory
+public import Mathlib.CategoryTheory.Monoidal.Comon_
+public import Mathlib.CategoryTheory.Monad.Algebra
+public import Mathlib.CategoryTheory.GradedObject.Single
+public import Mathlib.CategoryTheory.Linear.LinearFunctor
+public import Mathlib.CategoryTheory.Limits.Preserves.Finite
+public import Mathlib.LinearAlgebra.Dimension.LinearMap
+public import Mathlib.CategoryTheory.Preadditive.LeftExact
+public import Mathlib.CategoryTheory.Preadditive.EilenbergMoore
+public import Mathlib.CategoryTheory.Monad.Limits
+public import Mathlib.CategoryTheory.Abelian.Basic
+public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Linear
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Full.Data
+public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Grading.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Full.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Normalization.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Multiplication.Proofs
+public import Mathlib.Algebra.CharP.Lemmas
+public import Mathlib.Algebra.BigOperators.Intervals
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Words.Equiv.Data
+public import Mathlib.LinearAlgebra.TensorProduct.Basic
+public import Mathlib.CategoryTheory.Abelian.Injective.Ext
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Comparison.Proofs
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Multiplication.Proofs
+public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
+public import Mathlib.RingTheory.MvPolynomial.Basic
+public import Mathlib.LinearAlgebra.TensorProduct.Basis
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Words.H6.Proofs
+public import KIP126.Def.ClassicalAdams.MilnorCooperations.Proofs
+public import Mathlib.Algebra.Module.ZMod
+public import Mathlib.Algebra.Category.ModuleCat.Injective
+public import Mathlib.RingTheory.SimpleModule.InjectiveProjective
+public import Mathlib.CategoryTheory.Limits.FunctorCategory.EpiMono
+public import KIP126.Def.ClassicalAdams.MilnorCohomology.Proofs
 public import KIP126.Def.Synthetic.NormalizedMap.SphereDegreeOne
 
 @[expose] public section
@@ -38,14 +81,5 @@ noncomputable def standardEta :
     (KIP126.Synthetic.Context.normalizedExponent_sphere_degree_one
       KIP126.Classical.Adams.standardFoundation.hf2 D.hopfAndDetector.etaMap)).hom ≫
     (D.normalizedMap (.shift 1 .sphere) .sphere D.hopfAndDetector.etaMap).map ≫ D.nu.unitIso.hom
-
-/-- The fixed comparison preserves the prescribed actual cobar cocycles. -/
-noncomputable def standardCobarDerivedExt :
-    KIP126.Comparison.CobarDerivedExtComparison
-      KIP126.Classical.Adams.standardFoundation.hf2
-      KIP126.Classical.Adams.standardMilnorCooperations :=
-  Classical.choice (KIP126.Comparison.cobarDerivedExtComparison
-    KIP126.Classical.Adams.standardFoundation.hf2
-    KIP126.Classical.Adams.standardMilnorCooperations)
 
 end KIP126.Def

@@ -32,6 +32,7 @@ def coneOperator {a b : SimplexCategory} (f : a ⟶ b) :
 
 @[simp] theorem coneOperator_zero {a b : SimplexCategory} (f : a ⟶ b) :
     (coneOperator f).toOrderHom 0 = 0 := rfl
+
 @[simp] theorem coneOperator_succ {a b : SimplexCategory} (f : a ⟶ b)
     (i : Fin (a.len + 1)) :
     (coneOperator f).toOrderHom i.succ = (f.toOrderHom i).succ := rfl
@@ -42,10 +43,6 @@ def coneFunctor : SimplexCategory ⥤ SimplexCategory where
   map f := coneOperator f
   map_id a := by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> rfl
   map_comp f g := by ext i; refine Fin.cases ?_ (fun j => ?_) i <;> rfl
-
-@[simp] theorem coneOperator_δ_zero {a b : SimplexCategory} (f : a ⟶ b) :
-    SimplexCategory.δ (0 : Fin (a.len + 2)) ≫ coneOperator f =
-      f ≫ SimplexCategory.δ (0 : Fin (b.len + 2)) := by ext i; rfl
 
 /-- The upper décalage, used as a concrete simplicial path object. -/
 def decalage {C : Type*} [Category C] (A : SimplicialObject C) : SimplicialObject C :=
@@ -204,7 +201,6 @@ noncomputable def loopBond (n : ℕ) : C(|loopSet n| × I, hf2RealizationLevel (
   (coneEvaluation (hf2SimplicialSet (n + 1))).comp
     (((SSet.toTop.map (loopSetInclusion n)).hom.comp ContinuousMap.fst).prodMk
       ContinuousMap.snd)
-
 
 /-- The zero vertex in a realized simplicial module. -/
 noncomputable def moduleRealizationPoint (A : SimplicialObject (ModuleCat.{0} (ZMod 2))) :

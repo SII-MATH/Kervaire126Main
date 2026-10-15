@@ -17,5 +17,4 @@ noncomputable def equalityHomeomorph {X Y : SSet.{u}} (f g : X ⟶ Y) :
   (equalityComparison_isClosedEmbedding f g).isEmbedding.toHomeomorphOfSurjective
     (equalityComparison_surjective f g)
 
-
 end KIP126.Topology.SimplicialRealization

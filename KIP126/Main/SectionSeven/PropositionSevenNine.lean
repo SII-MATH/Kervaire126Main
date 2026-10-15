@@ -23,11 +23,14 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
+
 local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
+
 local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 /-- Proposition 7.9: condition (3) excludes condition (5) of Proposition 7.8.
 The proof combines ν-divisibility with the ν-cofiber incoming-page exclusion. -/

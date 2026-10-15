@@ -6,7 +6,6 @@ public import Mathlib.LinearAlgebra.Basis.Basic
 
 @[expose] public section
 
-
 /-!
 # LinProgram/Model/BasisCatalogue/Data
 
@@ -36,15 +35,7 @@ abbrev BasisIndex (s t : ℕ) := Fin (basisRowsAt s t).size
 def basisRowAt (s t : ℕ) (i : BasisIndex s t) : BasisRow :=
   (basisRowsAt s t)[i]
 
-/-- Lookup by the original CSV index; absent coordinates return `none`. -/
-def findBasisIndex? (s t index : ℕ) : Option (BasisIndex s t) :=
-  (List.finRange (basisRowsAt s t).size).find?
-    (fun i => (basisRowAt s t i).index == index)
-
 noncomputable def basisValue (row : BasisRow) : E2 :=
   projection (monomialOfString row.monomial)
-
-noncomputable def basisElements (s t : ℕ) : List E2 :=
-  (basisRowsAt s t).toList.map basisValue
 
 end KIP126.LinE2

@@ -39,41 +39,5 @@ def classicalDifferential (E : InternalClassicalSequence.{v})
     E.d r b ≫ eqToHom (by
       simp only [classicalPage, firstPage, degree])
 
-structure ReindexedSpectralSequenceMap
-    (classical : InternalClassicalSequence.{v}) (synthetic : SyntheticAdamsSS.{v}) where
-  firstPage : classical.r₀ = 2
-  differentialDegree : ∀ r : ℤ, classical.diffDeg r = (r, r - 1)
-  ambient : ∀ w : ℤ, SSDataMorphism Bidegree classical.ssData
-    (fun b => synthetic.sequence.ssData (b.1, b.2, w))
-  comm_d : ∀ (w r : ℤ) (b : Bidegree),
-    (ambient w).pageMap b (↑(r - 2).toNat : WithTop ℕ) ≫
-        fixedWeightDifferential synthetic w r b =
-      classicalDifferential classical firstPage differentialDegree r b ≫
-        (ambient w).pageMap (b + (r, r - 1)) (↑(r - 2).toNat : WithTop ℕ)
-
-def sourcePageMap
-    {classical : InternalClassicalSequence.{v}} {synthetic : SyntheticAdamsSS.{v}}
-    (comparison : ReindexedSpectralSequenceMap classical synthetic)
-    (w r : ℤ) (b : Bidegree) :
-    classicalPage classical r b ⟶ fixedWeightPage synthetic w r b :=
-  (comparison.ambient w).pageMap b (↑(r - 2).toNat : WithTop ℕ)
-
-/-- The E∞ map is induced by exactly the same ambient map as the finite pages. -/
-def sourceEInftyMap
-    {classical : InternalClassicalSequence.{v}} {synthetic : SyntheticAdamsSS.{v}}
-    (comparison : ReindexedSpectralSequenceMap classical synthetic)
-    (w : ℤ) (b : Bidegree) :
-    (classical.ssData b).eInfty ⟶
-      (synthetic.sequence.ssData (b.1, b.2, w)).eInfty :=
-  (comparison.ambient w).pageMap b ⊤
-
-abbrev classicalH₄Degree : Bidegree := (1, 16)
-abbrev classicalH₀H₃SquaredDegree : Bidegree := (3, 17)
-abbrev syntheticH₄Degree : Tridegree := nuDegree classicalH₄Degree
-abbrev syntheticH₀H₃SquaredDegree : Tridegree :=
-  nuDegree classicalH₀H₃SquaredDegree
-abbrev syntheticH₄TargetDegree : Tridegree :=
-  lambdaTarget syntheticH₀H₃SquaredDegree
-
 end
 end KIP126.Comparison.ClassicalSynthetic

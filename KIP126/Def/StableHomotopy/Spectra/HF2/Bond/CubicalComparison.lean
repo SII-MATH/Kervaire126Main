@@ -24,7 +24,6 @@ noncomputable def coefficientFiberHomeomorph (n : ℕ) :
     hf2RealizationLevel n ≃ₜ pathProjectionFiber n :=
   (coefficientLoopRealizationHomeomorph n).trans (loopFiberHomeomorph n)
 
-
 end KIP126.StableHomotopy.Spectra.HF2Bond
 
 end
@@ -74,7 +73,6 @@ theorem bondHomotopyMap_bijective_of_lifting (n r : ℕ)
     Function.Bijective (bondHomotopyMap n r) :=
   (cubicalHomotopyLoopEquiv (hf2RealizationLevel (n+1)) r).bijective.comp
     (bondAdjointHomotopyMap_bijective_of_lifting n r hf)
-
 
 end KIP126.StableHomotopy.Spectra.HF2Bond
 

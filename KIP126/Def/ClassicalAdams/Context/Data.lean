@@ -8,7 +8,9 @@ public import KIP126.Def.ClassicalAdams.MapFiltration.Predicates
 public import KIP126.Def.Synthetic.Context.Data
 public import KIP126.Def.Synthetic.Localization.Recovery.Data
 public import KIP126.Def.Synthetic.QuotientTower.Predicates
-public import KIP126.Def.Synthetic.Completion.Predicates
+public import KIP126.Def.Synthetic.QuotientTower.Data
+public import KIP126.Def.StableHomotopy.InverseSequence.Data
+public import KIP126.Def.StableHomotopy.InverseSequence.Predicates
 public import KIP126.Def.ClassicalAdams.Completion.Predicates
 public import KIP126.Def.ClassicalAdams.TowerHomology.MilnorCoordinates.Data
 public import KIP126.Def.StableHomotopy.Cohomology.Cooperations.Kunneth.Suspension.Predicates
@@ -21,7 +23,7 @@ public import KIP126.Def.StableHomotopy.Toda.Predicates
 public import KIP126.Def.HigherAlgebra.Operad.Moduli.Data
 public import KIP126.Def.HigherAlgebra.Operad.Model.Data
 public import KIP126.Def.HigherAlgebra.Operad.Topological.Predicates
-public import KIP126.Def.Topology.WeakContractibility.Predicates
+public import Mathlib.Topology.Homotopy.HomotopyGroup
 public import Mathlib.AlgebraicTopology.ModelCategory.Instances
 public import Mathlib.AlgebraicTopology.ModelCategory.IsCofibrant
 public import Mathlib.CategoryTheory.Localization.Predicate
@@ -68,8 +70,7 @@ structure Mod2StableHomotopyContext where
   homotopy_vanishes : ∀ n : ℤ, n ≠ 0 →
     Subsingleton (@HomotopyGroup Spectrum stable n HF2)
 
-attribute [instance] Mod2StableHomotopyContext.stable Mod2StableHomotopyContext.cofiber Mod2StableHomotopyContext.countableProducts
-  Mod2StableHomotopyContext.countableCoproducts
+attribute [instance] Mod2StableHomotopyContext.stable Mod2StableHomotopyContext.cofiber Mod2StableHomotopyContext.countableProducts Mod2StableHomotopyContext.countableCoproducts
 
 /-- 此稳定同伦范畴中的指定模二 Eilenberg–Mac Lane 对象。 -/
 def Mod2StableHomotopyContext.hf2 (F : Mod2StableHomotopyContext) :
@@ -84,9 +85,6 @@ abbrev _root_.KIP126.Classical.Adams.StandardAdamsFoundation := Mod2StableHomoto
 
 /-- 将此稳定同伦背景视为 Adams 构造的背景，保持全部数据不变。 -/
 def Mod2StableHomotopyContext.toStandard (F : Mod2StableHomotopyContext) : StandardAdamsFoundation := F
-
-/-- Adams 背景所指定的模二稳定同伦背景。 -/
-def Mod2StableHomotopyContext.ofStandard (F : StandardAdamsFoundation) : Mod2StableHomotopyContext := F
 
 /-- 同一基础上的 Milnor 坐标与第一微分相容性。
 
@@ -142,13 +140,8 @@ class TensorTriangulatedStructure (F : Mod2StableHomotopyContext) where
   ihom_unit_shift : ∀ X : F.Spectrum, NatTrans.CommShift (ihom.adjunction X).unit ℤ
   ihom_counit_shift : ∀ X : F.Spectrum, NatTrans.CommShift (ihom.adjunction X).counit ℤ
 
-
-attribute [reducible] TensorTriangulatedStructure.symmetric TensorTriangulatedStructure.closed
-  TensorTriangulatedStructure.leftShift TensorTriangulatedStructure.rightShift TensorTriangulatedStructure.ihomShift
-attribute [instance] TensorTriangulatedStructure.triangulated TensorTriangulatedStructure.monoidalPreadditive
-  TensorTriangulatedStructure.symmetric TensorTriangulatedStructure.closed
-  TensorTriangulatedStructure.leftShift TensorTriangulatedStructure.rightShift TensorTriangulatedStructure.leftExact TensorTriangulatedStructure.rightExact
-  TensorTriangulatedStructure.ihomShift TensorTriangulatedStructure.ihomExact TensorTriangulatedStructure.unitShift
+attribute [reducible] TensorTriangulatedStructure.symmetric TensorTriangulatedStructure.closed TensorTriangulatedStructure.leftShift TensorTriangulatedStructure.rightShift TensorTriangulatedStructure.ihomShift
+attribute [instance] TensorTriangulatedStructure.triangulated TensorTriangulatedStructure.monoidalPreadditive TensorTriangulatedStructure.symmetric TensorTriangulatedStructure.closed TensorTriangulatedStructure.leftShift TensorTriangulatedStructure.rightShift TensorTriangulatedStructure.leftExact TensorTriangulatedStructure.rightExact TensorTriangulatedStructure.ihomShift TensorTriangulatedStructure.ihomExact TensorTriangulatedStructure.unitShift
 
 /-- H𝔽₂ 的环结构、Künneth 同构与约化 Milnor 基。
 这些数据与悬移、对角、单位和余乘法相容；`coordinates_eq` 要求它们诱导的
@@ -172,112 +165,11 @@ def MilnorCobarSquareZero : Prop :=
     Steenrod.Milnor.differential (s + 1) t
       (Steenrod.Milnor.differential s t x) = 0
 
-/-- Adams 滤过至少为 k 的映射可以分解为 k 个模二同调上为零的映射。
-这里要求 k > 0；k = 0 时，空复合只表示恒等映射。 -/
-def AdamsFiltrationDecomposition (F : Mod2StableHomotopyContext) : Prop :=
-  ∀ {X Y : F.Spectrum} (f : X ⟶ Y) (k : ℕ), 0 < k →
-    AdamsFiltrationAtLeast F.hf2 f k → HasMod2ZeroFactorization F.hf2 f k
-
 open CategoryTheory.Limits
 
 universe u v
 
-/-- 三角范畴中 Toda 括号的存在性、不定性及 juggling 恒等式。
-所有性质使用同一个由余纤维三角定义的 Toda 关系；juggling 保留悬移产生的负号。 -/
-structure TodaBracketLaws (C : Type u) [Category.{v} C] [Preadditive C]
-    [HasZeroObject C] [HasShift C ℤ]
-    [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]
-    [IsTriangulated C] : Prop where
-  composable : ∀ {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-    {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W},
-    StableHomotopy.Toda.Relation x f g h → f ≫ g = 0 ∧ g ≫ h = 0
-  exists_relation : ∀ {X Y Z W : C} (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W),
-    f ≫ g = 0 → g ≫ h = 0 → ∃ x : X⟦(1 : ℤ)⟧ ⟶ W,
-      StableHomotopy.Toda.Relation x f g h
-  coset : ∀ {X Y Z W : C} {x₀ x : X⟦(1 : ℤ)⟧ ⟶ W}
-    {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W},
-    StableHomotopy.Toda.Relation x₀ f g h →
-      (StableHomotopy.Toda.Relation x f g h ↔
-        ∃ (y : Y⟦(1 : ℤ)⟧ ⟶ W) (z : X⟦(1 : ℤ)⟧ ⟶ Z),
-          x - x₀ = f⟦(1 : ℤ)⟧' ≫ y + z ≫ h)
-  juggling : ∀ {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-    {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V},
-    StableHomotopy.Toda.Relation x f g h → h ≫ d = 0 →
-      ∃ y : Y⟦(1 : ℤ)⟧ ⟶ V,
-        StableHomotopy.Toda.Relation y g h d ∧ x ≫ d = (-f⟦(1 : ℤ)⟧') ≫ y
-
-
-/-- Toda 括号关于复合和悬移的自然性，以及 shuffle 等价。
-这些结论保留括号的不定性，均表述为同一 Toda 关系的包含或等价。 -/
-structure TodaNaturalityLaws (C : Type u) [Category.{v} C] [Preadditive C]
-    [HasZeroObject C] [HasShift C ℤ]
-    [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C] : Prop where
-  precompose {A X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-      (hx : StableHomotopy.Toda.Relation x f g h) (a : A ⟶ X) :
-      StableHomotopy.Toda.Relation (a⟦(1 : ℤ)⟧' ≫ x) (a ≫ f) g h
-  postcompose {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-      (hx : StableHomotopy.Toda.Relation x f g h) (d : W ⟶ V) :
-      StableHomotopy.Toda.Relation (x ≫ d) f g (h ≫ d)
-  absorb_first {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ V}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V}
-      (hx : StableHomotopy.Toda.Relation x (f ≫ g) h d) :
-      StableHomotopy.Toda.Relation x f (g ≫ h) d
-  absorb_last {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ V}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V}
-      (hx : StableHomotopy.Toda.Relation x f g (h ≫ d)) :
-      StableHomotopy.Toda.Relation x f (g ≫ h) d
-  shuffle_iff [IsTriangulated C] {X Y Z W V : C}
-      (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W) (d : W ⟶ V)
-      (hfg : f ≫ g = 0) (hgh : g ≫ h = 0) (hhd : h ≫ d = 0)
-      (z : X⟦(1 : ℤ)⟧ ⟶ V) :
-      (∃ x : X⟦(1 : ℤ)⟧ ⟶ W, StableHomotopy.Toda.Relation x f g h ∧ x ≫ d = z) ↔
-        ∃ y : Y⟦(1 : ℤ)⟧ ⟶ V,
-          StableHomotopy.Toda.Relation y g h d ∧ (-f⟦(1 : ℤ)⟧') ≫ y = z
-  suspension_iff (n : ℤ) {X Y Z W : C}
-      {x : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} :
-      StableHomotopy.Toda.Relation
-        (n.negOnePow • ((shiftFunctorComm C (1 : ℤ) n).inv.app X ≫ x⟦n⟧'))
-        (f⟦n⟧') (g⟦n⟧') (h⟦n⟧') ↔ StableHomotopy.Toda.Relation x f g h
-
 universe u' v'
-
-/-- 指定精确函子 F 保持 Toda 关系；精确性使用 F 的同一悬移比较。
-此性质给出 Toda 括号在函子作用下的包含关系。 -/
-structure TodaFunctoriality {C : Type u} [Category.{v} C] [Preadditive C]
-    [HasZeroObject C] [HasShift C ℤ]
-    [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]
-    {D : Type u'} [Category.{v'} D] [Preadditive D]
-    [HasZeroObject D] [HasShift D ℤ]
-    [∀ n : ℤ, Functor.Additive (shiftFunctor D n)] [Pretriangulated D]
-    (F : C ⥤ D) [F.CommShift ℤ] [F.IsTriangulated] : Prop where
-  map
-      {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-      (hx : StableHomotopy.Toda.Relation x f g h) :
-      StableHomotopy.Toda.Relation ((F.commShiftIso (1 : ℤ)).inv.app X ≫ F.map x)
-        (F.map f) (F.map g) (F.map h)
-
-/-- 左右张量作用保持 Toda 关系，悬移使用相应张量函子的指定比较。
-三相邻复合的 shuffle 等价见 `TodaNaturalityLaws`。 -/
-structure TodaTensorCompatibility (C : Type u) [Category.{v} C] [Preadditive C]
-    [HasZeroObject C] [HasShift C ℤ]
-    [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C] [MonoidalCategory C] : Prop where
-  tensor_right (V : C) [(tensorRight V).CommShift ℤ]
-      [(tensorRight V).IsTriangulated]
-      {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-      (hx : StableHomotopy.Toda.Relation x f g h) :
-      StableHomotopy.Toda.Relation (((tensorRight V).commShiftIso (1 : ℤ)).inv.app X ≫ (x ▷ V))
-        (f ▷ V) (g ▷ V) (h ▷ V)
-  tensor_left (V : C) [(tensorLeft V).CommShift ℤ]
-      [(tensorLeft V).IsTriangulated]
-      {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}
-      {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-      (hx : StableHomotopy.Toda.Relation x f g h) :
-      StableHomotopy.Toda.Relation (((tensorLeft V).commShiftIso (1 : ℤ)).inv.app X ≫ (V ◁ x))
-        (V ◁ f) (V ◁ g) (V ◁ h)
 
 end Foundation
 
@@ -313,55 +205,9 @@ def milnor (c : KIP126.HF2AdamsContext Q) :
   coordinates := c.milnorCoordinates.coordinates
   differential_coordinates := c.milnorCoordinates.differential_coordinates
 
-/-- 由指定的稳定同伦背景、Milnor 坐标、张量及余运算结构，连同
-HF₂-local 谱范畴和 smash 的比较，构成一个 HF₂ Adams 背景。 -/
-def ofFoundationMilnor (F : StandardAdamsFoundation)
-    (M : @MilnorCooperations F.Spectrum F.stable F.cofiber F.hf2)
-    (T : TensorTriangulatedStructure (Mod2StableHomotopyContext.ofStandard F))
-    (A : @MilnorCooperationStructure (Mod2StableHomotopyContext.ofStandard F) T
-      { coordinates := M.coordinates, differential_coordinates := M.differential_coordinates })
-    (S : StableHomotopy.Spectra.SourceComparison Q F.hf2)
-    (ST : letI : TensorTriangulatedStructure F := T; StableHomotopy.Spectra.TensorComparison S) :
-    KIP126.HF2AdamsContext Q where
-  stableContext := Mod2StableHomotopyContext.ofStandard F
-  milnorCoordinates :=
-    { coordinates := M.coordinates
-      differential_coordinates := M.differential_coordinates }
-  tensorStructure := T
-  cooperationStructure := A
-  sourceComparison := S
-  sourceTensor := ST
-
 end HF2AdamsContext
 
-namespace Stable
 
-open CategoryTheory MonoidalCategory
-open KIP126.StableHomotopy
-
-universe u v
-
-variable {C : Type u} [StableHomotopyCategory.{u, v} C]
-  [∀ W : C, (tensorLeft W).CommShift ℤ]
-  [∀ W : C, (tensorRight W).CommShift ℤ]
-  [∀ W : C, (tensorLeft W).IsTriangulated]
-  [∀ W : C, (tensorRight W).IsTriangulated]
-
-/-- Historical unsigned smash-boundary target on actual triangles.
-May's TC3 relation carries a minus sign; the argument uses the signed
-`MaySourceResults` in root ExternalHypotheses. This legacy predicate is not accepted
-as the source theorem, and sign removal requires an additional hypothesis. -/
-def MaySmashBoundary : Prop :=
-  ∀ (T U : HoCofiberSequence (C := C)) (n : ℤ)
-    (a : HomotopyGroup n (T.X ⊗ U.Z))
-    (b : HomotopyGroup n (T.Y ⊗ U.Y)),
-    inducedMap (T.f ▷ U.Z) n a = inducedMap (T.Y ◁ U.g) n b →
-    ∃ c : HomotopyGroup n (T.Z ⊗ U.X),
-      inducedMap (T.g ▷ U.Y) n b = inducedMap (T.Z ◁ U.f) n c ∧
-      connectingHomomorphism (U.map (tensorLeft T.X)) n a =
-        connectingHomomorphism (T.map (tensorRight U.X)) n c
-
-end Stable
 
 namespace Synthetic
 
@@ -418,16 +264,6 @@ noncomputable def LambdaQuotientOperadPresentation.moduli
   HigherAlgebra.Operad.EnrichedAlgebra.unitModuli I.tensor I.tensor_laws.toTensorLaws
     I.operad I.nullary (HomotopicalAlgebra.weakEquivalences M) I.quotient.unit
 
-/-- a09 的模型内唯一性目标，含非空性。来源目标为 Pstrągowski
-`cor:ctau_is_an_algebra`；把本文献结果传到这里仍需上述高阶模型比较。
-仅定义准确目标，不为任意上述输入无条件断言它成立。 -/
-def LambdaQuotientOperadPresentation.uniqueness
-    {M : Type (u + 1)} [Category.{u + 1} M] [MonoidalCategory M] [SymmetricCategory M]
-    [EnrichedOrdinaryCategory TopCat.{u + 1} M]
-    [HomotopicalAlgebra.ModelCategory M] [HasFunctorialCofiber (C := Syn)]
-    {L : M ⥤ Syn} (I : LambdaQuotientOperadPresentation L) : Prop :=
-  KIP126.Topology.WeaklyContractibleSpace I.moduli
-
 /-! ## λ 反演与 classical 稳定同伦范畴
 
 局部对象由 `lam.app` 为同构定义。反射函子、局部范畴与 classical 范畴的
@@ -436,41 +272,6 @@ def LambdaQuotientOperadPresentation.uniqueness
 `thm:tau_invertible_synthetic_spectra_are_just_spectra`，以及
 `prop:spectral_yoneda_embedding_the_tau_inversion_of_the_synthetic_analogue`。
 -/
-
-/-- λ 可逆对象构成反射子范畴，且等价于 classical 稳定同伦范畴。
-ν 经此反射得到该等价的逆函子；局部化单位及其泛性质由伴随给出。 -/
-structure LambdaInversionEquivalence (N : NuFunctorData C Syn) where
-  reflector : Syn ⥤ LambdaInvertibleObjects Syn
-  adjunction : reflector ⊣ lambdaInclusion Syn
-  equivalence : LambdaInvertibleObjects Syn ≌ C
-  nuLocalization : N.functor ⋙ reflector ≅ equivalence.inverse
-
-/-- 由指定反射函子及其伴随给出的 λ 局部化。 -/
-def LambdaInversionEquivalence.localization {N : NuFunctorData C Syn}
-    (I : LambdaInversionEquivalence N) : LambdaLocalization Syn where
-  reflector := I.reflector
-  adjunction := I.adjunction
-
-/-- 由同一 λ 局部化、范畴等价与 ν 比较给出的 classical 恢复。 -/
-def LambdaInversionEquivalence.recovery {N : NuFunctorData C Syn}
-    (I : LambdaInversionEquivalence N) : LambdaRecovery N where
-  localization := I.localization
-  equivalence := I.equivalence
-  nuLocalization := I.nuLocalization
-
-/-- a09 的独立对称幺半条件，直接约束实际 realization。
-来源：Pstrągowski
-`prop:tau_inversion_cocontinuous_symmetric_monoidal_left_inverse_to_synthetic_analogue`。
-局部单位不必是 ambient unit，因此不要求包含函子为 strong monoidal。 -/
-structure LambdaInversionEquivalence.SymmetricMonoidal {N : NuFunctorData C Syn}
-    (I : LambdaInversionEquivalence N) [SymmetricCategory C] [SymmetricCategory Syn] where
-  realization : (I.reflector ⋙ I.equivalence.functor).Braided
-
-/-- 此适配保留子组中指定的同一个 realization 幺半结构。 -/
-def LambdaInversionEquivalence.symmetricMonoidal {N : NuFunctorData C Syn}
-    (I : LambdaInversionEquivalence N) [SymmetricCategory C] [SymmetricCategory Syn]
-    (M : I.SymmetricMonoidal) : I.recovery.SymmetricMonoidal where
-  realization := M.realization
 
 /-! ## ν 保持余纤维的判据与 Adams 滤过提升
 
@@ -564,31 +365,6 @@ structure NuCofiberAndLiftTheorems (H : Mod2EilenbergMacLane (C := C))
   nu_cofiber : NuCofiberCriterion H N
   lift : SyntheticLiftComparison H N
   triangle_lift : SyntheticTriangleLiftComparison H N
-
-/-- νX 的有限 λ 商塔及其关于 X 的自然性。
-塔对象是同一 νX 的 λ 幂商，映射由指定余纤维构造给出。
-λ-adic 完备性另由 `LambdaAdicCompletionComparison` 陈述。 -/
-structure LambdaQuotientTowerFamily [HasFunctorialCofiber (C := Syn)]
-    (N : NuFunctorData C Syn) where
-  tower : ∀ X : C, FiniteLambdaQuotientTower (N.functor.obj X)
-  naturality : ∀ {X Y : C} (f : X ⟶ Y),
-    FiniteLambdaQuotientTower.Hom (tower X) (tower Y) (N.functor.map f)
-
-/-- BHS Proposition A.13 (`lemm:easy-e-compton`) 的 λ-adic 完备性比较。
-选定的同一 λ–ρ–δ 塔既满足映射自然性，也满足实际 cofiber boundary 方块。
-`completion` 的各投影固定为商映射，Milnor 三角保留 derived-limit 信息；
-没有把同伦极限改成 Ho 范畴的普通极限，也不对任意 X 无条件断言完备。
-此结构陈述上述自然性、完备性等价与同伦极限比较，不证明它们成立。 -/
-structure LambdaAdicCompletionComparison [HasFunctorialCofiber (C := Syn)]
-    [CategoryTheory.Limits.HasProductsOfShape ℕ C]
-    [CategoryTheory.Limits.HasProductsOfShape ℕ Syn]
-    (H : Mod2EilenbergMacLane (C := C)) (N : NuFunctorData C Syn)
-    extends LambdaQuotientTowerFamily N where
-  residual_compatible : ∀ X : C, (tower X).ResidualCompatible
-  complete_iff : ∀ X : C,
-    Classical.Adams.IsENilpotentComplete H.unit X ↔ IsLambdaComplete (N.functor.obj X)
-  completion : ∀ X : C,
-    Classical.Adams.IsENilpotentComplete H.unit X → LambdaAdicCompletion (tower X)
 
 end Synthetic
 

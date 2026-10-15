@@ -21,20 +21,6 @@ set_option backward.isDefEq.respectTransparency false
 variable {C : Type u} [StableHomotopyCategory.{u, v} C]
   [HasFunctorialCofiber (C := C)]
 
-/-- Complete the first two isomorphisms of distinguished triangles.
-The negative identity reconciles `fiberι` with inverse rotation. -/
-def cofiberFiberTriangleIso {X Y : C} (f : X ⟶ Y) :
-    Triangle.mk (fiberι f) (HasFunctorialCofiber.cofibι (fiberι f))
-      (HasFunctorialCofiber.cofibδ (fiberι f)) ≅ adamsFiberTriangle f :=
-  isoTriangleOfIso₁₂ _ _ (HasFunctorialCofiber.cofib_distinguished (fiberι f))
-    (adamsFiberTriangle_distinguished f) (-(Iso.refl _)) (Iso.refl _)
-    (by simp [Triangle.mk, adamsFiberTriangle_mor₁])
-
-/-- The chosen cofiber of the positive fiber inclusion is isomorphic to its target. -/
-def cofiberFiberIso {X Y : C} (f : X ⟶ Y) :
-    HasFunctorialCofiber.cofib (fiberι f) ≅ Y :=
-  Triangle.π₃.mapIso (cofiberFiberTriangleIso f)
-
 variable {H : C} (unit : 𝟙_ C ⟶ H) (X : C)
 
 /-- Compare the actual integer-indexed layer triangle with the inverse-rotated

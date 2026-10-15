@@ -57,37 +57,6 @@ theorem cupPolynomial_mem {s s' t t' : ℕ} (x : cochains s t) (y : cochains s' 
       rw [cupPolynomial, map_mul,
         augmentSlot_rename (Fin.natAdd s) (Fin.natAdd_injective s' s), hy, map_zero, mul_zero]
 
-theorem h6Polynomial_mem : IsCochain 64 h6Polynomial := by
-  constructor
-  · simpa [h6Polynomial, weight] using
-      (MvPolynomial.isWeightedHomogeneous_X (R := KIP126.Algebra.F2)
-        (@weight 1) (0, 0)).pow 64
-  · change h6Polynomial ∈ (⨅ slot : Fin 1, LinearMap.ker (augmentSlot slot).toLinearMap)
-    rw [Submodule.mem_iInf]
-    intro slot
-    have hslot : slot = 0 := Subsingleton.elim _ _
-    subst slot
-    simp [LinearMap.mem_ker, augmentSlot, h6Polynomial]
-
-/-- The primitive power representative is closed, independently of the
-restriction of the differential to normalized cochains. -/
-theorem h6Polynomial_differential : differentialPolynomial 1 h6Polynomial = 0 := by
-  have hp (x y : TensorPower 2) : (x + y) ^ 64 = x ^ 64 + y ^ 64 :=
-    add_pow_char_pow x y 2 6
-  simp [differentialPolynomial, h6Polynomial, insertLeft, insertRight,
-    splitSlot, coproductGenerator, xi, Finset.sum_range_succ, hp,
-    add_assoc, CharTwo.add_self_eq_zero, CharTwo.add_cancel_left]
-
-/-- The concatenated square is closed at the polynomial level. -/
-theorem h6SquarePolynomial_differential :
-    differentialPolynomial 2 (cupPolynomial h6Polynomial h6Polynomial) = 0 := by
-  have hp (x y : TensorPower 3) : (x + y) ^ 64 = x ^ 64 + y ^ 64 :=
-    add_pow_char_pow x y 2 6
-  simp [differentialPolynomial, cupPolynomial, h6Polynomial, insertLeft, insertRight,
-    splitSlot, coproductGenerator, xi, Fin.sum_univ_succ, Finset.sum_range_succ, hp]
-  ring_nf
-  simp [CharTwo.two_eq_zero]
-
 end
 
 end KIP126.Steenrod.Milnor

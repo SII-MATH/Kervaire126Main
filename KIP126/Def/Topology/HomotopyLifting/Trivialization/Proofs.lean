@@ -40,5 +40,4 @@ theorem exists_relativeLift_of_retraction
   rw [← hcomm z]
   exact T.symm_apply_mk_proj (hg z)
 
-
 end KIP126.Topology.HomotopyLifting

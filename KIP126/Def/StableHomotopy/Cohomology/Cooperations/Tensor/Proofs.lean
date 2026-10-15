@@ -25,18 +25,6 @@ theorem cooperationTensorAugmentation_ker (n : ℤ) :
   change coefficientTensorEquiv H R V n (cooperationTensorCounit H R V n x) = 0 ↔ _
   exact (coefficientTensorEquiv H R V n).map_eq_zero_iff
 
-/-- The reduced tensor is embedded by the original inclusions of counit kernels. -/
-theorem reducedCooperationTensorEquiv_coe (n : ℤ) (x : reducedCooperationTensor H R V n) :
-    letI : ∀ i, Module (ZMod 2) (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
-    letI : ∀ i, Module (ZMod 2) (HomotopyGroup i H.HF2) := fun i =>
-      mod2HF2HomotopyModule H R i
-    (reducedCooperationTensorEquiv H R V n x : cooperationTensor H R V n) =
-      gradedTensorMap (fun i => (LinearMap.ker (cooperationCounitF2 H R i)).subtype) V n x := by
-  letI : ∀ i, Module (ZMod 2) (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
-  letI : ∀ i, Module (ZMod 2) (HomotopyGroup i H.HF2) := fun i =>
-    mod2HF2HomotopyModule H R i
-  exact gradedTensorKernelEquiv_coe _ _ _ _
-
 /-- The coefficient identification uses exactly the prescribed π₀ coordinate. -/
 theorem coefficientTensorEquiv_zero_tmul (n : ℤ) (a : HomotopyGroup 0 H.HF2)
     (v : V (n - 0)) :

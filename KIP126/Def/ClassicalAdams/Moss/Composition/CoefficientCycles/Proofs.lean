@@ -106,23 +106,5 @@ theorem firstBoundary_eq_zero_iff_unit_equalizer {A U : C} (a : U ⟶ H.HF2 ⊗ 
       comp_distTriang_mor_zero₂₃ (Triangle.mk T.f T.g T.h) hT
     exact (congrArg (fun k => a ≫ k) hz).trans Limits.comp_zero
 
-/-- The actual coefficient product preserves first-boundary cycles on maps
-from arbitrary test objects. This uses the specified ring multiplication and
-unit triangle, without assuming a Leibniz rule for Adams pages. -/
-theorem coefficientPairing_firstBoundary_eq_zero [BraidedCategory C]
-    {A B D U V : C} (f : A ⊗ B ⟶ D)
-    (a : U ⟶ H.HF2 ⊗ A) (b : V ⟶ H.HF2 ⊗ B)
-    (ha : a ≫ (adamsResolutionSequence H A).h ≫
-      (adamsUnit H.unit (fiber (adamsUnit H.unit A)))⟦(1 : ℤ)⟧' = 0)
-    (hb : b ≫ (adamsResolutionSequence H B).h ≫
-      (adamsUnit H.unit (fiber (adamsUnit H.unit B)))⟦(1 : ℤ)⟧' = 0) :
-    ((a ⊗ₘ b) ≫ mod2CoefficientPairing H R f) ≫
-        (adamsResolutionSequence H D).h ≫
-          (adamsUnit H.unit (fiber (adamsUnit H.unit D)))⟦(1 : ℤ)⟧' = 0 := by
-  apply (firstBoundary_eq_zero_iff_unit_equalizer H R _).mpr
-  exact coefficientPairing_preserves_unit_equalizer H R f a b
-    ((firstBoundary_eq_zero_iff_unit_equalizer H R a).mp ha)
-    ((firstBoundary_eq_zero_iff_unit_equalizer H R b).mp hb)
-
 end
 end KIP126.Classical.Adams.Moss

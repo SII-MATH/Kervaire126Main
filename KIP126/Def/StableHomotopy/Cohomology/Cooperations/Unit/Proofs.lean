@@ -55,27 +55,6 @@ theorem cooperationTensorUnit_augmentation (n : ℤ) (x : V n) :
   rw [coefficientTensorEquiv_zero_tmul, cooperationCounitF2_apply, cooperationCounit_unit]
   simp
 
-theorem cooperationTensorUnit_injective (n : ℤ) :
-    Function.Injective (cooperationTensorUnit H R V n) :=
-  Function.LeftInverse.injective (cooperationTensorUnit_augmentation H R V n)
-
-theorem cooperationTensorUnit_naturality {W : ℤ → Type*}
-    [∀ i, AddCommGroup (W i)] [∀ i, Module (ZMod 2) (W i)]
-    (f : ∀ i, V i →ₗ[ZMod 2] W i) (n : ℤ) (x : V n) :
-    cooperationTensorMap H R V f n (cooperationTensorUnit H R V n x) =
-      cooperationTensorUnit H R W n (f n x) := by
-  letI : ∀ i, Module (ZMod 2) (Mod2Cooperations H i) :=
-    fun i => mod2HomologyModule H R i H.HF2
-  have hc (i j : ℤ) (h : i = j) (z : V i) :
-      f j ((LinearEquiv.cast (R := ZMod 2) (M := V) h) z) =
-        (LinearEquiv.cast (R := ZMod 2) (M := W) h) (f i z) := by
-    subst j
-    rfl
-  simp [cooperationTensorUnit, cooperationTensorMap, gradedTensorMapRight]
-  exact congrArg (fun z : W (n - 0) =>
-    DirectSum.lof (ZMod 2) ℤ (fun i => Mod2Cooperations H i ⊗[ZMod 2] W (n - i)) 0
-      (cooperationUnit H ⊗ₜ[ZMod 2] z)) (hc n (n - 0) (sub_zero n).symm x)
-
 end
 
 end KIP126.StableHomotopy.Cohomology

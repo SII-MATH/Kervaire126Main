@@ -88,37 +88,4 @@ theorem realizeSimplex_eq_yoneda (X : SSet.{0}) (n : ℕ) (x : X.obj (op ⦋n⦌
   have h := sSetTopAdj_unit_app_app_down X (op ⦋n⦌) x
   exact congrArg (fun f : SimplexCategory.toTop.obj ⦋n⦌ ⟶ SSet.toTop.obj X => f (ULift.up u)) h
 
-/-- The connecting loop supplied by the actual contraction of the path
-object, on its actual topological endpoint fiber. -/
-noncomputable def fiberLoopComparison (n : ℕ) :
-    C(pathProjectionFiber n,
-      Path (hf2RealizationLevel (n + 1)).point (hf2RealizationLevel (n + 1)).point) := by
-  letI : Subsingleton ((hf2SimplicialModule (n + 1)).obj (op ⦋0⦌)) :=
-    ModuleCat.subsingleton_of_isZero
-      (hf2SimplicialModule_isZero_below (n + 1) 0 (Nat.zero_lt_succ n))
-  exact
-    { toFun x :=
-        { toContinuousMap := (coneEvaluation (hf2SimplicialSet (n + 1))).curry x.val
-          source' := coneEvaluation_zero (hf2SimplicialModule (n + 1)) x.val
-          target' := (coneEvaluation_one _ x.val).trans x.property }
-      continuous_toFun := Path.continuous_uncurry_iff.mp
-        ((coneEvaluation (hf2SimplicialSet (n + 1))).continuous.comp
-          ((continuous_subtype_val.comp continuous_fst).prodMk continuous_snd)) }
-
-/-- The simplicial loop comparison factors through the actual topological
-fiber with the very same continuous loop parametrization. -/
-theorem fiberLoopComparison_loopFiberComparison (n : ℕ) (x : loopRealizationLevel n) :
-    fiberLoopComparison n (loopFiberComparison n x) = loopComparison n x := by
-  apply Path.ext
-  funext t
-  rfl
-
-/-- The actual topological fiber's loop is obtained by projecting its
-contraction path in the actual contractible total space. -/
-theorem fiberLoopComparison_contraction (n : ℕ) (x : pathProjectionFiber n) (t : I) :
-    fiberLoopComparison n x t =
-      SSet.toTop.map (decalageProjection (hf2SimplicialSet (n + 1)))
-        (pathContraction (hf2SimplicialModule (n + 1)) (x.val, t)) :=
-  (pathContraction_projection _ _ t).symm
-
 end KIP126.StableHomotopy.Spectra.HF2Bond

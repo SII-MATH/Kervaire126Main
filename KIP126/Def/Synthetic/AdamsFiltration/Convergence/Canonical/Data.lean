@@ -44,7 +44,5 @@ def familyInfiniteRepresentativeE1 {F : SyntheticAdamsFamily Syn}
     ((SyntheticCategory.biShift (0,-i.2.2)).obj X) (i.1,i.2.1)
     ((P.forward X i.2.2).cycleMap (i.1,i.2.1) ⊤ z)
 
-
-
 end
 end KIP126.Synthetic.SpectralSequence

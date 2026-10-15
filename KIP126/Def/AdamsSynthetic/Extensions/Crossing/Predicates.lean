@@ -38,23 +38,4 @@ def FiniteExtension.NoCrossing
     (r : ℕ) (n s t : ℤ) : Prop :=
   ¬ FiniteExtension.HasCrossing D X Y f r n s t
 
-/-- The infinite clause uses the same untruncated normalized map and actual
-permanent representatives. The bound a≤n-e follows from the length range,
-and is recorded explicitly; there is no finite-page upper bound on a. -/
-def InfiniteExtension.HasCrossing
-    (n s t : ℤ) : Prop :=
-  ∃ a b : ℕ, 0 < a ∧ (a : ℤ) ≤ n - normalizedExponent H f ∧
-    (b : ℤ) ≤ n - a - normalizedExponent H f ∧
-    ∃ (x' : PageRepresentatives.Ambient H (X.obj D.hopfAndDetector) (s + a, t + a))
-      (y' : PageRepresentatives.Ambient H (Y.obj D.hopfAndDetector)
-        (s + a + (n - a - b), t + a + (n - a - b))),
-      ∃ W' : InfiniteExtensionWitness D X Y f (n - a - b) (s + a) (t + a) x' y',
-        W'.Essential ∧ y' ∉ PageRepresentatives.boundaries H (Y.obj D.hopfAndDetector)
-          (1 + n - b - normalizedExponent H f)
-          (s + a + (n - a - b), t + a + (n - a - b))
-
-def InfiniteExtension.NoCrossing
-    (n s t : ℤ) : Prop :=
-  ¬ InfiniteExtension.HasCrossing D X Y f n s t
-
 end KIP126.AdamsSynthetic

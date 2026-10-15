@@ -61,14 +61,6 @@ theorem mod2Homology_two_nsmul_zero (n : ℤ) (X : C) (x : Mod2Homology H n X) :
   simpa only [two_nsmul] using mod2Homology_add_self H R n X x
 
 include R in
-/-- Represented cohomology is also killed by doubling. -/
-theorem mod2Cohomology_two_nsmul_zero (n : ℤ) (X : C) (x : Mod2Cohomology H n X) : 2 • x = 0 := by
-  rw [two_nsmul]
-  calc
-    x + x = x ≫ (𝟙 H.HF2 + 𝟙 H.HF2) := by simp [Preadditive.comp_add]
-    _ = 0 := by rw [mod2_id_add_self H R, Limits.comp_zero]
-
-include R in
 /-- The coefficient spectrum's actual homotopy groups retain their homological
 index. In particular this theorem does not identify πₙHF₂ with Hⁿ(S⁰). -/
 theorem mod2HF2Homotopy_two_nsmul_zero (n : ℤ)

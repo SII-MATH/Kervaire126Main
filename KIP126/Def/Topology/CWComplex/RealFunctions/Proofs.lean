@@ -33,13 +33,4 @@ theorem exists_real_extension_of_homotopyExtension
   have hh := congrArg ULift.down (hHi a 1)
   simpa [p] using hh
 
-/-- Every real-valued function on the base of an actual relative CW
-complex extends continuously across its genuine cell attachments. -/
-theorem relativeCWComplex_exists_real_extension
-    {A B : TopCat.{u}} {i : A ⟶ B}
-    (c : TopCat.RelativeCWComplex i) (f : C(A, ℝ)) :
-    ∃ g : C(B, ℝ), ∀ a, g (i a) = f a :=
-  exists_real_extension_of_homotopyExtension
-    (HomotopyExtension.relativeCWComplex_hasHomotopyExtension c) f
-
 end KIP126.Topology

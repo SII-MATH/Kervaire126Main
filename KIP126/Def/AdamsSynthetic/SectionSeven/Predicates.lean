@@ -59,25 +59,6 @@ def ModuleTripleToda {X : Syn} {a aw b bw c cw : ℤ}
     ((SyntheticCategory.biShift_comp (b,bw) (a,aw)).inv.app S_0_0 ≫
       (SyntheticCategory.biShift (a,aw)).map y) x
 
-/-- Only the lambda^2 h0 image of the indeterminacy of <theta,2,b>
-vanishes. The two summands have degree (125,134), and the image has
-degree (125,133). This does not assert that the original bracket is a singleton. -/
-def ThetaBMultipliedIndeterminacy
-    (h0 : BiHom 0 1 (S_0_0 : Syn)) (theta : BiHom 62 64 (S_0_0 : Syn))
-    (b : BiHom 62 70 (S_0_0 : Syn)) : Prop :=
-  ∀ (a : BiHom 63 70 (S_0_0 : Syn)) (c : BiHom 63 64 (S_0_0 : Syn)),
-    lambdaMultiply 2 (sphereProduct h0
-      ((show BiHom 125 134 (S_0_0 : Syn) from sphereProduct theta a) +
-        (show BiHom 125 134 (S_0_0 : Syn) from sphereProduct c b))) = 0
-
-/-- Only the lambda-and-b image of the indeterminacy of <2,theta,2>
-vanishes. Both unmultiplied summands lie in degree (63,64). -/
-def SymmetricTwoMultipliedIndeterminacy (b : BiHom 62 70 (S_0_0 : Syn)) : Prop :=
-  ∀ a c : BiHom 63 64 (S_0_0 : Syn),
-    lambdaMultiply 1 (sphereProduct
-      ((show BiHom 63 64 (S_0_0 : Syn) from sphereProduct syntheticTwo a) +
-        (show BiHom 63 64 (S_0_0 : Syn) from sphereProduct c syntheticTwo)) b) = 0
-
 /-- The exact quotient relation in Lemma `lem:nuext125`, with existential
 representatives. It is not an assertion about every representative of X. -/
 def NuExtension9 (X : E2 H SphereSpectrum 8 130)
@@ -109,17 +90,6 @@ def NuExtension5 (X : E2 H SphereSpectrum 8 130)
     FiniteDetected D 5 (by decide) 8 130 0 X x ∧
     FiniteDetected D 5 (by decide) 11 136 2 Y y ∧
     sphereAction h2 x = y
-
-/-- Corollary `cor:2ext125`: forall source representatives, there is a
-target representative depending on that source. No fixed target is chosen.
-Both representatives live in the same actual Q9, as in the corollary. -/
-def AnyYH0Extension (Y : E2 H SphereSpectrum 11 136)
-    (T : E2 H SphereSpectrum 14 139) (h0 : BiHom 0 1 (S_0_0 : Syn)) : Prop :=
-  ∀ y : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9),
-    FiniteDetected D 9 (by decide) 11 136 4 Y y →
-    ∃ t : BiHom 125 139 (XModLambdaN (S_0_0 : Syn) 9),
-      FiniteDetected D 9 (by decide) 14 139 0 T t ∧
-      sphereAction h0 y = lambdaMultiply 6 t ∧ lambdaMultiply 6 t ≠ 0
 
 /-- The common untruncated conclusion of the P and Q branches in
 `prop:state5false`. The preimage and detected T representative must both

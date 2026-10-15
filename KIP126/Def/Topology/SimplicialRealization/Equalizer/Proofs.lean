@@ -68,8 +68,6 @@ theorem simplex_interior_iff_positive (n : ℕ) (u : stdSimplex ℝ (Fin (n + 1)
   · intro h i
     exact ne_of_gt (h i)
 
-
-
 /-- A positive weight at a preimage contributes positively to its pushforward. -/
 theorem positive_weight_le_pushforward {n m : ℕ} (w : Fin n → ℝ)
     (hw : ∀ i, 0 ≤ w i) (f : Fin n → Fin m) (i : Fin n) :
@@ -129,7 +127,6 @@ theorem monotone_weight_pushforward_injective {n m : ℕ} (w : Fin n → ℝ)
     induction i using Fin.cases with
     | zero => exact h0
     | succ i => exact DFunLike.congr_fun he i
-
 
 /-- At strictly positive fixed barycentric coordinates, distinct simplices
 have distinct realization points, even when those simplices are degenerate. -/
@@ -215,6 +212,5 @@ theorem equalityComparison_surjective {X Y : SSet.{u}} (f g : X ⟶ Y) :
   intro x
   obtain ⟨y,hy⟩ := (equalitySubcomplex_realization_range f g x.val).mpr x.property
   exact ⟨y,Subtype.ext hy⟩
-
 
 end KIP126.Topology.SimplicialRealization

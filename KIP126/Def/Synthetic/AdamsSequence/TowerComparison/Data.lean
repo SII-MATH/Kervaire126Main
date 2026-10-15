@@ -32,8 +32,7 @@ def weightTowerE2Map {X Y : Syn} (f : X ⟶ Y) (w : ℤ) (p : ℤ × ℤ) :
 
 -- These are already typed maps.  Checking the comparison fields only needs
 -- their endpoints, retaining the same cokernel maps and differentials.
-attribute [local irreducible] weightTowerE2Map SSData.page SSDataMorphism.pageMap
-  classicalDifferential fixedWeightDifferential
+attribute [local irreducible] weightTowerE2Map SSData.page SSDataMorphism.pageMap classicalDifferential fixedWeightDifferential
 
 /-- Structural realization, not BHS's comparison to the *classical* tower.
 Both sides here are synthetic νHF₂-based Adams towers. -/

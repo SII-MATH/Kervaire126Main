@@ -27,7 +27,5 @@ def infiniteRepresentativeE1 (X : C) (p : ℤ × ℤ)
     (z : InfiniteRepresentative unit X p) : adamsE1 unit X p.1 p.2 :=
   ((((adamsTowerInternalSpectralSequence unit X).ssData p).Z ⊤).arrow z).val
 
-
-
 end
 end KIP126.Classical.Adams.TowerDetection

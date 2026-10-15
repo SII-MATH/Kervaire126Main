@@ -5,7 +5,6 @@ public import KIP126.Def.Algebra.GradedQuotient.PolynomialTruncation.Proofs
 
 @[expose] public section
 
-
 namespace KIP126.LinE2
 open KIP126.Algebra MvPolynomial
 open KIP126.Algebra.PolynomialTruncation
@@ -73,9 +72,6 @@ theorem homogeneousPart_eq_map (s t : ℕ) :
 def truncateAt (s t : ℕ) : RelationAt s t →ₗ[F2] E2At s t :=
   (truncate.toLinearMap.comp (relationHomogeneousPart s t).subtype).codRestrict _
     (fun x => truncate_mem x.property)
-
-@[simp] theorem truncateAt_val (s t : ℕ) (x : RelationAt s t) :
-    (truncateAt s t x).val = truncate x.val := rfl
 
  theorem truncateAt_surjective (s t : ℕ) : Function.Surjective (truncateAt s t) := by
   intro y

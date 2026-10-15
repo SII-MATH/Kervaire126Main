@@ -19,13 +19,6 @@ theorem hf2RealizationLevel_uCompactlyGeneratedSpace (n : ℕ) :
     UCompactlyGeneratedSpace.{0} (hf2RealizationLevel n) :=
   KIP126.Topology.SimplicialRealization.realization_uCompactlyGeneratedSpace _
 
-/-- Every actual simplicial skeleton of the specified coefficient level
-has compact realization, using its proved finite sets of simplices. -/
-theorem hf2RealizationLevel_compactSpace_skeleton (n k : ℕ) :
-    CompactSpace (KIP126.Topology.SimplicialRealization.skeleton (hf2SimplicialSet n) k) :=
-  KIP126.Topology.SimplicialRealization.compactSpace_skeleton _ k
-    (hf2SimplicialSet_finite n)
-
 /-- The actual zero vertex of each geometric coefficient level is a
 closed point inclusion with full homotopy extension. -/
 theorem hf2RealizationLevel_isWellBased (n : ℕ) :

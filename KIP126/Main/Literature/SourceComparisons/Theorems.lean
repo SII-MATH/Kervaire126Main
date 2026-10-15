@@ -4,7 +4,7 @@ public import KIP126.Main.Literature.SourceComparisons.BHS
 public import KIP126.Main.Literature.SourceComparisons.RealizationKernel
 public import KIP126.Main.Literature.SourceComparisons.Toda
 public import KIP126.Main.Literature.SourceComparisons.May
-public import KIP126.Main.ExternalHypotheses.Data
+public import KIP126.Computation.Hypotheses.Joint
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
 
 @[expose] public section
@@ -137,6 +137,5 @@ noncomputable def sourceTheorems (input : LiteratureTheorems sources)
     w_detection := input.tmf_w_detection
     high125_nonzero := input.tmf_high125_nonzero
   }
-
 
 end KIP126.ExternalHypotheses.LiteratureTheorems

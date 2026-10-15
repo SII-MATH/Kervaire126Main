@@ -17,11 +17,6 @@ universe u v
 variable {C : Type u} [CategoryTheory.Category.{v} C] [Abelian C]
 
 @[simp]
-lemma twoTermComplex_X (X₁ X₂ : C) (f : X₁ ⟶ X₂) (k : ℤ) :
-    (twoTermComplex X₁ X₂ f).X k = twoTermObj X₁ X₂ k := by
-  simp [twoTermComplex]
-
-@[simp]
 lemma twoTermComplex_d (X₁ X₂ : C) (f : X₁ ⟶ X₂) (k : ℤ) :
     (twoTermComplex X₁ X₂ f).d k (k - 1) = twoTermDiff X₁ X₂ f k := by
   unfold twoTermComplex

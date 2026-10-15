@@ -44,13 +44,6 @@ theorem mod2_adamsTowerStep_eq_zero (X : C) (s : ℕ) :
   mod2_fiberι_eq_zero H R (adamsTower H.unit X s)
 
 include R in
-theorem mod2_adamsTowerStep_homology_eq_zero (X : C) (s : ℕ) (n : ℤ) :
-    Mod2Homology.pushforward H (adamsTowerStep H.unit X s) n = 0 := by
-  ext x
-  change x ≫ (H.HF2 ◁ adamsTowerStep H.unit X s) = 0
-  rw [mod2_adamsTowerStep_eq_zero H R, Limits.comp_zero]
-
-include R in
 /-- Every strictly descending map of the natural-indexed tower is killed by `H ⊗ -`. -/
 theorem mod2_adamsTowerMap_eq_zero (X : C) (s t : ℕ) (hst : s < t) :
     H.HF2 ◁ adamsTowerMap H.unit X s t hst.le = 0 := by
@@ -59,18 +52,5 @@ theorem mod2_adamsTowerMap_eq_zero (X : C) (s t : ℕ) (hst : s < t) :
   | succ t =>
     rw [adamsTowerMap_succ H.unit X s t (by omega), whiskerLeft_comp,
       mod2_adamsTowerStep_eq_zero H R, Limits.zero_comp]
-
-include R in
-/-- The homological consequence of positive Adams filtration, stated using
-an actual lift through a positive tower stage rather than an unrelated
-numerical filtration oracle. -/
-theorem mod2_homology_eq_zero_of_tower_lift {X Y : C} (f : X ⟶ Y)
-    (s : ℕ) (hs : 0 < s) (lift : X ⟶ adamsTower H.unit Y s)
-    (hlift : lift ≫ adamsTowerMap H.unit Y 0 s (Nat.zero_le s) = f) (n : ℤ) :
-    Mod2Homology.pushforward H f n = 0 := by
-  ext x
-  change x ≫ (H.HF2 ◁ f) = 0
-  rw [← hlift, whiskerLeft_comp, mod2_adamsTowerMap_eq_zero H R Y 0 s hs,
-    Limits.comp_zero, Limits.comp_zero]
 
 end KIP126.StableHomotopy.Cohomology

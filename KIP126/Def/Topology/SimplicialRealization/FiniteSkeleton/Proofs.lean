@@ -24,13 +24,6 @@ theorem skeleton_eq_top_of_dimension (X : SSet.{u}) (d : ℕ) [X.HasDimensionLT 
     simpa only [X.nonDegenerate_eq_empty_of_hasDimensionLT d n hn,Set.mem_empty_iff_false] using hx
   exact X.mem_skeleton x.val hn
 
-/-- The actual inclusion from the terminal finite skeleton is an
-isomorphism, not merely a homotopy equivalence. -/
-theorem skeleton_inclusion_isIso_of_dimension (X : SSet.{u}) (d : ℕ)
-    [X.HasDimensionLT d] : IsIso (SSet.toTop.map (X.skeleton d).ι) := by
-  rw [skeleton_eq_top_of_dimension X d]
-  infer_instance
-
 /-- The specified simplex-attachment filtration reaches the actual
 target at every dimension bound. -/
 theorem cellComplex_inclusion_isIso_of_dimension (X : SSet.{u}) (d : ℕ)

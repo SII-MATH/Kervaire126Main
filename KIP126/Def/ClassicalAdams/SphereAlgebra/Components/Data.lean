@@ -10,7 +10,6 @@ public import Mathlib.Algebra.DirectSum.Algebra
 
 @[expose] public section
 
-
 /-! Homogeneous pieces and operations for the specified sphere E₂ algebra.
 The page and product are fixed before any native presentation is supplied.
 The scalar action is transported along the existing canonical cobar comparison;
@@ -80,9 +79,6 @@ def actualE2Product (p q : ℕ × ℕ) :
 def actualE2Unit : (ActualE2At c) 0 :=
   Suspension.classOfSecondCycle c.foundation.hf2 SphereSpectrum 0 0
     (Sphere.Multiplication.unitSecondCycle c.foundation.hf2)
-
-instance actualE2GradedOne : GradedMonoid.GOne (ActualE2At c) := ⟨(actualE2Unit c)⟩
-instance actualE2GradedMul : GradedMonoid.GMul (ActualE2At c) := ⟨fun {p q} x y => (actualE2Product c) p q x y⟩
 
 end
 end KIP126.Classical.Adams.Sphere.Algebra

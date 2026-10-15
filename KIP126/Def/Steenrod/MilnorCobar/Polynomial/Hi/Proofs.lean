@@ -40,8 +40,6 @@ theorem hiSquare_internalDegree (i : ℕ) : 2 ^ i + 2 ^ i = 2 ^ (i + 1) := by
   rw [pow_succ]
   omega
 
-@[simp] theorem hiPolynomial_six : hiPolynomial 6 = h6Polynomial := rfl
-
 end
 
 end KIP126.Steenrod.Milnor

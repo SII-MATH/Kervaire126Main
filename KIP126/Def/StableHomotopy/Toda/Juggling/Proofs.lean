@@ -77,7 +77,6 @@ theorem juggling [IsTriangulated C]
       _ = (O.m₁ ≫ q) ≫ y := by rw [Category.assoc]
       _ = (-f⟦(1 : ℤ)⟧') ≫ y := by rw [hmq]
 
-
 end
 
 end KIP126.StableHomotopy.Toda

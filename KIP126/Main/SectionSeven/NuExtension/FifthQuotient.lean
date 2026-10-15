@@ -2,13 +2,13 @@ module
 
 public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
 public import KIP126.Main.SectionSeven.SphereClasses
-public import KIP126.Main.Computation.SphereAndCofiber
+public import KIP126.Computation.LinCoordinates.Certificates.SphereAndCofiber
 public import KIP126.Main.ExtensionLaws.GeneralizedMahowald.Proofs
-
--- The CSV coordinate calculations use the defining string and list equations.
 import all Init.Data.String.Legacy
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
+
+-- The CSV coordinate calculations use the defining string and list equations.
 
 @[expose] public section
 
@@ -22,11 +22,8 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
-local notation "M" => standardMilnorCooperations
-local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
-local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 section NuThreeActualProof
 
@@ -49,7 +46,6 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:
     {Syn : Type w} [SyntheticCategory.{w,v} Syn] [HasFunctorialCofiber (C:=Syn)]
     {H : Mod2EilenbergMacLane (C:=C)} {M' : MilnorCooperations H} {D' : AdamsComparison H M' Syn}
     {L' : SphereAdamsClasses H} {G : TmfDetectionClasses H}
-
 
 set_option maxHeartbeats 16000000 in
 private theorem nu_three_actual_relation_and_unique
@@ -3499,7 +3495,6 @@ private theorem nu_five_of_three
 
 end
 end NuFiveFromThreeProof
-
 
 /-- The actual Q3 Hopf relation, extracted before the Q3-to-Q5 lifting step.
 Both detected classes and the equation use the same model and quotient. -/

@@ -39,19 +39,6 @@ theorem adamsHomologyKernelEquiv_symm_boundary (R : Mod2RingStructure H) (X : C)
     rw [map_sub, adamsHomologyBoundary_unit, sub_zero]
   rw [← he, LinearEquiv.symm_apply_apply]
 
-/-- The normalized equivalence is the restriction of the actual connecting map. -/
-theorem adamsHomologyKernelEquiv_apply (R : Mod2RingStructure H) (X : C) (n : ℤ)
-    (x : LinearMap.ker (adamsHomologyAction H R X n)) :
-    adamsHomologyKernelEquiv H R X n x = adamsHomologyBoundary H X n x := rfl
-
-/-- The quotient equivalence sends a representative to its actual boundary. -/
-theorem adamsHomologyQuotientEquiv_mkQ (R : Mod2RingStructure H) (X : C) (n : ℤ)
-    (x : Mod2Homology H n (H.HF2 ⊗ X)) :
-    adamsHomologyQuotientEquiv H R X n
-      ((LinearMap.range (adamsHomologyUnit H X n)).mkQ x) =
-        adamsHomologyBoundary H X n x := by
-  simp [adamsHomologyQuotientEquiv]
-
 /-- The sphere identification sends a boundary class to the normalized cooperation. -/
 theorem sphereFirstTowerHomologyEquiv_boundary (R : Mod2RingStructure H) (n : ℤ)
     (x : Mod2Homology H n (H.HF2 ⊗ SphereSpectrum)) :

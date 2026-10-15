@@ -44,5 +44,4 @@ instance coefficientPositivePiZero_subsingleton (n : ℕ) :
       (hf2RealizationLevel (n+1)).point) :=
   HomotopyGroup.pi0EquivZerothHomotopy.injective.subsingleton
 
-
 end KIP126.StableHomotopy.Spectra.HF2Bond

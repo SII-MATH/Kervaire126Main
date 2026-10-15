@@ -1,13 +1,10 @@
 module
 
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-public import KIP126.Main.Computation.SphereAndCofiber.CofiberAndFiltration
-
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
+public import KIP126.Main.SectionSeven.CofiberFiltration
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
-
 import all Init.Data.String.Legacy
 
 @[expose] public section
@@ -104,7 +101,6 @@ private theorem d12_criterion_nonzero_differential_not_permanent {E : KIP126.Spe
   rw [ModuleCat.comp_apply, hd0, map_zero] at hd
   exact hne hd.symm
 
-
 private theorem d12_criterion_earlier_zero_of_target_survives {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr0 : E.r₀ ≤ r) (hrt : r < t)
     {y : E.Page 2 (p + E.diffDeg r)}
@@ -124,7 +120,6 @@ private theorem d12_criterion_earlier_zero_of_target_survives {E : KIP126.Spectr
       exact False.elim (hne (represents_unique hyt hlater))
   exact ⟨rfl, xr, 0, hxr, RepresentsOnPage.zero hxr.1,
     by simpa only [eqToHom_refl, Category.comp_id] using hd0⟩
-
 
 private theorem d12_criterion_next_nonzero_of_not_hit {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
@@ -168,7 +163,6 @@ private theorem d12_criterion_next_nonzero_of_not_hit {E : KIP126.SpectralSequen
   refine ⟨q, rfl, c,b,hb,hne,?_⟩
   simpa only [eqToHom_refl, Category.comp_id] using hc.trans heb
 
-
 private theorem d12_criterion_permanent_survives_of_no_early_hit {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hstart : E.r₀≤2) (N : ℕ) (hN : 2≤N)
     (hperm : IsPermanentCycle E p x) (hne : x≠0)
@@ -203,7 +197,6 @@ private theorem d12_criterion_permanent_survives_of_no_early_hit {E : KIP126.Spe
   have he : ((N-2:ℕ):ℤ)+2=N := by omega
   rwa [he] at h
 
-
 private theorem d12_criterion_nonzero_differential_not_zero {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q}
     (h : HasNonzeroDifferential E r p q x y)
     (hzero : HasDifferential E r p q x 0) : False := by
@@ -216,7 +209,6 @@ private theorem d12_criterion_nonzero_differential_not_zero {E : KIP126.Spectral
   calc b = (E.d r p ≫ eqToHom (congrArg (E.Page r) he)) a := hd.symm
        _ = b' := by simpa only [haa] using hd'
        _ = 0 := hbb
-
 
 private theorem d12_criterion_cycle_successor_lift
     (E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))
@@ -251,7 +243,6 @@ private theorem d12_criterion_cycle_successor_lift
     abel
   exact ⟨zn,hnz⟩
 
-
 private theorem d12_criterion_reaches_before {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr : 2≤r) (hrt : r≤t) (ht : ReachesPage E t p x) : ReachesPage E r p x := by
   classical
@@ -264,7 +255,6 @@ private theorem d12_criterion_reaches_before {E : KIP126.SpectralSequence (Modul
   dsimp only [zr]
   rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]
   exact hz
-
 
 private theorem d12_criterion_later_page_frame_of_earlier {E : KIP126.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}
     (hr : 2≤r) (hrt : r≤t)
@@ -310,7 +300,6 @@ private theorem d12_criterion_later_page_frame_of_earlier {E : KIP126.SpectralSe
     have hh' := hzero (w-z) hh
     rw [map_sub,hw,hat,sub_eq_zero] at hh'
     exact hh'
-
 
 private theorem d12_criterion_target_page_six_frame (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     (∃ a : (sequence D .sphere).Page 6 (14,139),
@@ -463,7 +452,6 @@ private theorem d12_criterion_target_page_six_frame (I : KIP126.Computation.Sphe
   rw [hl]
   exact h342
 
-
 private theorem d12_criterion_h6_twelve_outgoing_nonzero
     (h12 : SurvivesTo (adamsTowerInternalSpectralSequence H.unit SphereSpectrum)
       12 (2,128) (Sphere.Internal.hiSquare H M 6))
@@ -507,7 +495,6 @@ private theorem d12_criterion_h6_twelve_outgoing_nonzero
     (by decide : (2:ℤ)≤12) hb ha hane hnot
   exact h13 ⟨b,hb,hbn⟩
 
-
 private theorem d12_criterion_target_page_twelve_frame (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     ∃ a : (sequence D .sphere).Page 12 (14,139),
       RepresentsOnPage (sequence D .sphere) 12 (14,139) (L.target M) a ∧
@@ -516,7 +503,6 @@ private theorem d12_criterion_target_page_twelve_frame (I : KIP126.Computation.S
   obtain ⟨hframe,hreach⟩ := d12_criterion_target_page_six_frame I
   exact d12_criterion_later_page_frame_of_earlier (by decide : (2:ℤ)≤6) (by decide : (6:ℤ)≤12)
     hframe (d12_criterion_reaches_before (by decide : (2:ℤ)≤12) (by decide : (12:ℤ)≤1000) hreach)
-
 
 private theorem d12_criterion_survives_twelve_not_thirteen_d12 (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (h12 : SurvivesTo (sequence D .sphere)
@@ -533,7 +519,6 @@ private theorem d12_criterion_survives_twelve_not_thirteen_d12 (I : KIP126.Compu
     exact hdb
   · intro hb0
     exact hdne (hdb.trans hb0)
-
 
 private theorem bx_lambda_nine_not_ten_d12
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)

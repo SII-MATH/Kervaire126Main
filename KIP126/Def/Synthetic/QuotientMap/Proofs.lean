@@ -21,24 +21,8 @@ theorem XModLambdaN.incl_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :
   HasFunctorialCofiber.cofibMap_ι (lambdaPow n X) (lambdaPow n Y)
     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)
 
-theorem XModLambdaN.proj_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :
-    XModLambdaN.map f n ≫ XModLambdaN.proj Y n =
-      XModLambdaN.proj X n ≫
-        (shiftFunctor Syn (1 : ℤ)).map
-          ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) :=
-  HasFunctorialCofiber.cofibMap_δ (lambdaPow n X) (lambdaPow n Y)
-    ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)
-
 theorem XModLambdaN.cofiberTriangle_distinguished (X : Syn) (n : ℕ) :
     XModLambdaN.cofiberTriangle X n ∈ distTriang Syn :=
   XModLambdaN.triangle_distinguished X n
-
-theorem XModLambdaN.lambdaPow_comp_incl (X : Syn) (n : ℕ) :
-    lambdaPow n X ≫ XModLambdaN.incl X n = 0 :=
-  comp_distTriang_mor_zero₁₂ _ (XModLambdaN.cofiberTriangle_distinguished X n)
-
-theorem XModLambdaN.incl_comp_proj (X : Syn) (n : ℕ) :
-    XModLambdaN.incl X n ≫ XModLambdaN.proj X n = 0 :=
-  comp_distTriang_mor_zero₂₃ _ (XModLambdaN.cofiberTriangle_distinguished X n)
 
 end KIP126.Synthetic.Context

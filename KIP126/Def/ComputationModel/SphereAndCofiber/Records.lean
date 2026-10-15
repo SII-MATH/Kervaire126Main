@@ -63,11 +63,4 @@ def coordinatesValid (degrees : List Degree) (o : Spectrum)
   | none => false
   | some d => indices.all (· < d.monomials.length) && strictlyIncreasing indices
 
-/-- Syntax/degree checking only, not certification of any differential. -/
-def Claim.valid (degrees : List Degree) (c : Claim) : Bool :=
-  2 ≤ c.r && coordinatesValid degrees c.spectrum c.s c.t c.x &&
-    match c.kind with
-    | .reaches | .boundaryBy => true
-    | .equation | .refutation => c.ts == c.s + c.r && c.tt == c.t + c.r - 1 &&
-        coordinatesValid degrees c.spectrum c.ts c.tt c.y
 end KIP126.Computation.SphereAndCofiber.Raw

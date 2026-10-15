@@ -19,5 +19,4 @@ def StandardTmfMultiplicationComparison
   T.coordinates.RespectsUnit ∧
     Tmf.E2Presentation.RespectsMultiplication c.cooperationStructure.ring T.coordinates
 
-
 end KIP126.Classical.Adams

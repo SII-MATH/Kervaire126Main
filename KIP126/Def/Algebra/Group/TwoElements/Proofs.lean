@@ -26,14 +26,4 @@ theorem equivTwo_map_mul {G : Type*} [Group G] (e : G ≃ ZMod 2) (he : e 1 = 0)
   rw [hmul,he,ha,hb]
   decide
 
-/-- Additive form of the two-element group calculation. -/
-theorem equivTwo_map_add {G : Type*} [AddGroup G] (e : G ≃ ZMod 2) (he : e 0 = 0)
-    (a b : G) : e (a+b) = e a + e b := by
-  let e' : Multiplicative G ≃ ZMod 2 :=
-    { toFun x := e x.toAdd
-      invFun x := Multiplicative.ofAdd (e.symm x)
-      left_inv x := e.symm_apply_apply x
-      right_inv x := e.apply_symm_apply x }
-  exact equivTwo_map_mul e' he (Multiplicative.ofAdd a) (Multiplicative.ofAdd b)
-
 end KIP126.Algebra

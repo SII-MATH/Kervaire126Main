@@ -25,5 +25,4 @@ noncomputable def cubeFacesGauge {n : ℕ} (faces : Set (Fin n × Bool))
 noncomputable def cubeFacesScale {n : ℕ} (faces : Set (Fin n × Bool))
     (z : I × (Fin n → I)) : ℝ := ‖cubeFacesGauge faces z‖
 
-
 end KIP126.Topology.HomotopyLifting

@@ -21,5 +21,4 @@ def decodeBasisRow (line : String) : Except String BasisRow := do
   let some index := index.toNat? | throw "invalid basis index"
   return ⟨s, t, index, code⟩
 
-
 end KIP126.LinE2

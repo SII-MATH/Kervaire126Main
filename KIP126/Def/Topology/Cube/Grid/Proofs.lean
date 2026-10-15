@@ -15,11 +15,6 @@ theorem gridVertex_monotone (m : ℕ) : Monotone (gridVertex m) := by
   change (i.val : ℝ) / (m+1) ≤ (j.val : ℝ) / (m+1)
   exact div_le_div_of_nonneg_right (by exact_mod_cast hij) (by positivity)
 
-theorem gridCellOrigin_mem (n m : ℕ) (k : Fin n → Fin (m+1)) :
-    gridCellOrigin n m k ∈ gridCell n m k := by
-  intro i
-  exact ⟨le_rfl,gridVertex_monotone m (by change (k i).val ≤ (k i).val+1; omega)⟩
-
 /-- Every interval point belongs to one of the finitely many closed pieces,
 including the right endpoint. -/
 theorem exists_grid_interval (m : ℕ) (t : I) :

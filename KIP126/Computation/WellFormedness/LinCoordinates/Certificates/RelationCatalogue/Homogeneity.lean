@@ -230,7 +230,6 @@ public import KIP126.Computation.WellFormedness.LinCoordinates.Certificates.Rela
 
 @[expose] public section
 
-
 /-! All 231848 original CSV polynomials are weighted homogeneous.
 This is syntactic polynomial homogeneity, not correctness of the relations
 in the actual Adams E₂. The first three rows and every archived chunk occur. -/

@@ -32,7 +32,6 @@ theorem simplex_interior_iff_positive (n : ℕ) (u : stdSimplex ℝ (Fin (n + 1)
   · intro h i
     exact ne_of_gt (h i)
 
-
 /-- A simplex with strictly positive barycentric coordinates realizes to the
 zero vertex only when the whole simplex is the zero simplex. -/
 theorem realizeSimplex_eq_zero_of_positive
@@ -106,18 +105,6 @@ noncomputable def loopFiberHomeomorph (n : ℕ) :
   (loopFiberComparison_isClosedEmbedding n).isEmbedding.toHomeomorphOfSurjective
     (loopFiberComparison_surjective n)
 
-@[simp] theorem loopFiberHomeomorph_apply (n : ℕ) (x : loopRealizationLevel n) :
-    loopFiberHomeomorph n x = loopFiberComparison n x := rfl
-
-/-- With the actual fiber homeomorphism, the simplicial comparison is exactly
-the topological connecting-loop map of the realized path projection. -/
-theorem loopComparison_eq_fiberLoopComparison (n : ℕ) :
-    loopComparison n = (fiberLoopComparison n).comp
-      ⟨loopFiberHomeomorph n, (loopFiberHomeomorph n).continuous⟩ := by
-  ext x t
-  rfl
-
-
 /-- The specified zero point of the actual topological endpoint fiber. -/
 noncomputable def pathProjectionFiberPoint (n : ℕ) : pathProjectionFiber n :=
   ⟨(pathRealizationLevel (hf2SimplicialModule (n + 1))).point, by
@@ -129,12 +116,5 @@ noncomputable def pathProjectionFiberPoint (n : ℕ) : pathProjectionFiber n :=
     loopFiberHomeomorph n (loopRealizationLevel n).point = pathProjectionFiberPoint n := by
   apply Subtype.ext
   exact loopRealizationInclusion_point n
-
-/-- The topological connecting map preserves the specified basepoint. -/
-@[simp] theorem fiberLoopComparison_point (n : ℕ) :
-    fiberLoopComparison n (pathProjectionFiberPoint n) =
-      Path.refl (hf2RealizationLevel (n + 1)).point := by
-  rw [← loopFiberHomeomorph_point]
-  exact (fiberLoopComparison_loopFiberComparison n _).trans (loopComparison_point n)
 
 end KIP126.StableHomotopy.Spectra.HF2Bond

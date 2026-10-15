@@ -38,13 +38,5 @@ standard class on the same internal Adams tower. -/
   exact (comparison_ofCocycle H M (hiCochain i) (hiCochain_isCycle i)).trans
     (internalClassOfCocycle_eq H M (hiCochain i) (hiCochain_isCycle i))
 
-/-- The same comparison preserves the already specified concatenation square
-for every index; it makes no additional nonvanishing assumption. -/
-@[simp] theorem comparison_hiSquare (i : ℕ) :
-    comparison H M 2 (2 ^ (i + 1)) (hiSquare H M i) =
-      Sphere.Internal.hiSquare H M i := by
-  exact (comparison_ofCocycle H M (hiSquareCochain i) (hiSquareCochain_isCycle i)).trans
-    (internalClassOfCocycle_eq H M (hiSquareCochain i) (hiSquareCochain_isCycle i))
-
 end
 end KIP126.Classical.Adams.MilnorCohomology

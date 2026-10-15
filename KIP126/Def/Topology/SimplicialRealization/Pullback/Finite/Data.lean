@@ -25,5 +25,4 @@ noncomputable def finitePullbackHomeomorph {X Y Z : SSet.{u}} [Y.Finite]
   pullbackRealizationHomeomorph f g (realizationFiniteProductHomeomorph X Y)
     (fun _ => rfl) (fun _ => rfl)
 
-
 end KIP126.Topology.SimplicialRealization

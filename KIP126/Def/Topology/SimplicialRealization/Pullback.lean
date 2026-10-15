@@ -20,7 +20,6 @@ def pullbackSubcomplex {X Y Z : SSet.{u}} (f : X ⟶ Z) (g : Y ⟶ Z) : (X ⊗ Y
   equalitySubcomplex (CartesianMonoidalCategory.fst X Y ≫ f)
     (CartesianMonoidalCategory.snd X Y ≫ g)
 
-
 end KIP126.Topology.SimplicialRealization
 
 end
@@ -47,7 +46,6 @@ theorem pullbackSubcomplex_isPullback {X Y Z : SSet.{u}} (f : X ⟶ Z) (g : Y �
     exact Prod.ext h.1 h.2
   · intro x y h
     exact ⟨⟨(x,y),h⟩,rfl,rfl⟩
-
 
 end KIP126.Topology.SimplicialRealization
 

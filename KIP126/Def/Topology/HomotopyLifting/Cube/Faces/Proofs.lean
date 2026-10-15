@@ -76,5 +76,4 @@ theorem cubeFacesScale_eq_one_of_horn {n : ℕ} (faces : Set (Fin n × Bool))
   · have h := cubeFacesGauge_le_scale faces z (some (i,b))
     cases b <;> norm_num [cubeFacesGauge,hface,hb] at h ⊢ <;> exact h
 
-
 end KIP126.Topology.HomotopyLifting

@@ -23,10 +23,6 @@ theorem hiSquareCochain_isCycle (i : ℕ) : IsCycle (hiSquareCochain i) := by
   exact transport _ _ (hiSquare_internalDegree i) _
     (cup_isCycle _ _ (hiCochain_isCycle i) (hiCochain_isCycle i))
 
-@[simp] theorem hiCochain_six : hiCochain 6 = h6Cochain := rfl
-
-@[simp] theorem hiSquareCochain_six : hiSquareCochain 6 = h6SquareCochain := rfl
-
 end
 
 end KIP126.Steenrod.Milnor

@@ -8,7 +8,6 @@ public import Mathlib.LinearAlgebra.BilinearMap
 
 @[expose] public section
 
-
 /-! A graded linear comparison from the relation algebra to the sphere E₂
 algebra, preserving multiplication and the unit, and bijective in internal
 degrees at most 261. The truncated quotient gives the same coordinates

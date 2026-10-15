@@ -23,11 +23,6 @@ variable {C : Type u} [Category.{v} C] [Abelian C]
 noncomputable def twoTermObj (X₁ X₂ : C) : ℤ → C :=
   BoundedExtension.twoTermObj X₁ X₂
 
-/-- The differential whose sole potentially nonzero component is `f`. -/
-noncomputable def twoTermDiff (X₁ X₂ : C) (f : X₁ ⟶ X₂) :
-    (k : ℤ) → twoTermObj X₁ X₂ k ⟶ twoTermObj X₁ X₂ (k - 1) :=
-  BoundedExtension.twoTermDiff X₁ X₂ f
-
 /-- The two-term filtration inherited from the source and target. -/
 noncomputable def twoTermFil {X₁ X₂ : C}
     (fil₁ : ℤ → Subobject X₁) (fil₂ : ℤ → Subobject X₂) :

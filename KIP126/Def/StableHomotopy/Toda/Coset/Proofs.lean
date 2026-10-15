@@ -64,26 +64,6 @@ theorem indeterminacy_complete {X Y Z W : C}
     x₁ - x₂ = e + z ≫ h := by dsimp [e]; abel
     _ = f⟦(1 : ℤ)⟧' ≫ (-y₀) + z ≫ h := by rw [hy₀']
 
-/-- With any chosen representative as origin, the Toda bracket is exactly
-its coset by the full left and right indeterminacy. No uniqueness or vanishing
-of either indeterminacy term is assumed. -/
-theorem relation_iff_indeterminacy {X Y Z W : C}
-    {x₀ x : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}
-    (hx₀ : Relation x₀ f g h) :
-    Relation x f g h ↔
-      ∃ (y : Y⟦(1 : ℤ)⟧ ⟶ W) (z : X⟦(1 : ℤ)⟧ ⟶ Z),
-        x - x₀ = f⟦(1 : ℤ)⟧' ≫ y + z ≫ h := by
-  constructor
-  · exact fun hx => indeterminacy_complete hx hx₀
-  · rintro ⟨y, z, hx⟩
-    have heq : x = (x₀ + f⟦(1 : ℤ)⟧' ≫ y) + z ≫ h := by
-      calc
-        x = (x - x₀) + x₀ := (sub_add_cancel x x₀).symm
-        _ = (f⟦(1 : ℤ)⟧' ≫ y + z ≫ h) + x₀ := by rw [hx]
-        _ = (x₀ + f⟦(1 : ℤ)⟧' ≫ y) + z ≫ h := by abel
-    rw [heq]
-    exact indeterminacy_right (indeterminacy_left hx₀ y) z
-
 end
 
 end KIP126.StableHomotopy.Toda

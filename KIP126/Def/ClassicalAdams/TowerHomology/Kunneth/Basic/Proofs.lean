@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Def.StableHomotopy.Cohomology.Cooperations.Kunneth.Data
-public import KIP126.Def.ClassicalAdams.Coefficients.Proofs
+public import KIP126.Def.ClassicalAdams.Coefficients.Data
 
 @[expose] public section
 

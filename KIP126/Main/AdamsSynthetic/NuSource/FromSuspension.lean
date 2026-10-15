@@ -4,7 +4,8 @@ public import KIP126.Def.AdamsSynthetic.ComparisonStatements
 public import KIP126.Literature.Source
 public import KIP126.Def.ClassicalAdams.TowerVanishing.Proofs
 public import KIP126.Def.ClassicalAdams.TowerNaturality.Proofs
-public import KIP126.Def.ClassicalAdams.MapFiltration.Proofs
+public import KIP126.Def.ClassicalAdams.MapFiltration.Predicates
+public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Action.Proofs
 public import KIP126.Def.ClassicalAdams.TowerResolution.Proofs
 public import KIP126.Def.ClassicalAdams.TowerNaturality.Unit.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs
@@ -15,7 +16,7 @@ public import KIP126.Def.SpectralSequence.Permanence.Proofs
 public import KIP126.Def.SpectralSequence.Basic.Proofs
 public import KIP126.Def.Comparison.ClassicalSynthetic.RealizationTower.Proofs
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.Classes.Proofs
+public import KIP126.Computation.LinCoordinates.Certificates.Model.Classes.Proofs
 public import KIP126.Computation.LinCoordinates.Model.BasisCatalogue.Data
 public import Mathlib.Data.Fintype.Basic
 

@@ -21,14 +21,4 @@ set_option backward.isDefEq.respectTransparency false
     (finitePullbackHomeomorph f g x).val.2 = SSet.toTop.map (pullback.snd f g) x :=
   pullbackRealizationHomeomorph_snd f g _ _ _ x
 
-/-- The square restricting any realized simplicial map to a finite
-simplicial subcomplex is an actual topological pullback square. -/
-theorem realization_finite_isPullback {X Y Z : SSet.{u}} [Y.Finite]
-    (f : X ⟶ Z) (g : Y ⟶ Z) :
-    IsPullback (SSet.toTop.map (pullback.fst f g)) (SSet.toTop.map (pullback.snd f g))
-      (SSet.toTop.map f) (SSet.toTop.map g) :=
-  realization_isPullback_of_product_homeomorph f g
-    (realizationFiniteProductHomeomorph X Y) (fun _ => rfl) (fun _ => rfl)
-
-
 end KIP126.Topology.SimplicialRealization

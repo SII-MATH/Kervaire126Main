@@ -6,7 +6,8 @@ import KIP126.Def.Comparison.ClassicalSynthetic.RealizationTower.Proofs
 import KIP126.Def.ClassicalAdams.TowerNaturality.Proofs
 import KIP126.Def.ClassicalAdams.TowerNaturality.Unit.Proofs
 import KIP126.Def.ClassicalAdams.TowerResolution.Proofs
-import KIP126.Def.ClassicalAdams.MapFiltration.Proofs
+import KIP126.Def.ClassicalAdams.MapFiltration.Predicates
+import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Action.Proofs
 import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 import KIP126.Def.Synthetic.Context.Coherence.Proofs
 import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
@@ -69,7 +70,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     rw [hb0, map_zero] at hb
     have hp := congrArg Subtype.val hb.symm
     exact pow_ne_zero _ (MvPolynomial.X_ne_zero ((0 : Fin 1), 0)) hp
-
 
   have low_support (d : ℕ →₀ ℕ) (hd : slotWeight d ≤ 4) :
       d = Finsupp.single 0 (d 0) + Finsupp.single 1 (d 1) := by
@@ -355,7 +355,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     rw [hi]
     ring
 
-
   have pure_word_exponents {s : ℕ} (e : Fin s → ℕ) :
       (slotExponentsEquiv s).symm (fun i => Finsupp.single 0 (e i)) =
         ∑ i : Fin s, Finsupp.single (i, 0) (e i) := by
@@ -517,7 +516,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       simpa only [e, LinearEquiv.symm_apply_apply] using hgen (e w)
     exact hw
 
-
   have cohomology_stem_one_zero (n : ℕ) :
       Subsingleton (MilnorCohomology.Cohomology H M (n + 2) (n + 3)) := by
     have hz (z : MilnorCohomology.Cohomology H M (n + 2) (n + 3)) : z = 0 := by
@@ -581,8 +579,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     exact cohomology_stem_one_nonzero_unique _ _
       (fun h => hx (e.symm.map_eq_zero_iff.mp h))
       (fun h => hy (e.symm.map_eq_zero_iff.mp h))
-
-
 
   let diagonalWord (s : ℕ) : MilnorWord s (s : ℤ) :=
     ⟨fun _ => Finsupp.single 0 1, by
@@ -834,7 +830,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       have he := D.infinity_projection_eq_of_page_projection_eq n z 0
         (by simpa only [map_zero] using hz)
       simpa only [map_zero] using he
-
 
   let E := D.family.sphere.sequence
   have page_zero_of_initial (T : SSData (ModuleCat ℤ))
@@ -1399,7 +1394,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     apply (cancel_epi e.hom).mp
     simpa only [comp_zero] using hz
 
-
   open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
     CategoryTheory.MonoidalCategory KIP126.StableHomotopy
     KIP126.StableHomotopy.Cohomology KIP126.Classical.Adams
@@ -1772,7 +1766,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
             cupPolynomial, AlgHom.toLinearMap_apply]
           rfl
 
-
         have milnorPairExponents_zero {n : ℤ} (d : MilnorPair n) (j : ℕ) :
             milnorPairExponents d (0, j) = d.2.1.val j := by
           have hi : Function.Injective (fun j : ℕ => ((0 : Fin 2), j)) := fun _ _ h =>
@@ -1860,7 +1853,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           simpa only [Function.comp_def, cooperationTensorMilnorPolynomial_basis,
             MvPolynomial.coe_basisMonomials] using hl
 
-
         have cooperationPolynomial_cast (i j : ℤ) (h : i = j)
             (a : Mod2Cooperations H i) :
             cooperationMilnorPolynomial H R B j
@@ -1927,7 +1919,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           exact (B.basis n).repr.trans
               ((Finsupp.domLCongr (R := F2) (singleWordEquiv n)).trans (cochainsWordEquiv 1 n).symm)
 
-
         have reducedCochainEquiv_val :
           letI : ∀ i, Module F2 (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
@@ -1974,7 +1965,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           intro n hn a
           exact reducedCochainEquiv n (positiveReduced n hn a)
 
-
         have positiveCochain_val :
           letI : ∀ i, Module F2 (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
@@ -1984,7 +1974,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
           intro n hn a
           exact reducedCochainEquiv_val n (positiveReduced n hn a)
-
 
         have reduced_coproduct :
           letI : ∀ i, Module F2 (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
@@ -2023,7 +2012,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
             DirectSum.lof F2 ℤ _ n (a ⊗ₜ[F2]
               (LinearEquiv.cast (R := F2) (M := fun i => mod2HomologyF2 H R i H.HF2)
                 (sub_self n).symm) (cooperationUnit H))
-
 
         have reducedDiagonal_eq_of (n : ℤ) (a : Mod2Cooperations H n)
             (d : cooperationTensor H R (fun i => mod2HomologyF2 H R i H.HF2) n) :
@@ -2164,7 +2152,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       apply firstLift_hurewicz_ne_zero H (d - 1) α hn a ha
       exact (sphereFirstTowerHomologyEquiv H R d).map_eq_zero_iff.mp hz
 
-
     have unique_nonzero_reduced {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [MonoidalPreadditive C] [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (R : Mod2RingStructure H)  (B : Mod2ReducedMilnorBasis H R) (d : ℤ)
         (p : PositiveMonomial d) (hp : ∀ q : PositiveMonomial d, q = p) :
         letI := mod2HomologyModule H R d H.HF2
@@ -2185,7 +2172,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       have hone : (B.basis d).repr b p = 1 := (htwo _).resolve_left hc
       ext q
       rw [hp q, hone, Finsupp.single_eq_same]
-
 
     have firstLift_cooperation_identification {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [MonoidalPreadditive C] [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (R : Mod2RingStructure H)
         (B : Mod2ReducedMilnorBasis H R) (d : ℤ)
@@ -2210,7 +2196,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         apply Subtype.ext
         exact congrArg Subtype.val hz
       exact congrArg Subtype.val (unique_nonzero_reduced H R B d p hp b₂ hb₂)
-
 
     let mod2HomologyConnecting {C : Type 1} [StableHomotopyCategory.{1,0} C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated]  (T : HoCofiberSequence (C := C)) (n : ℤ) :
         Mod2Homology H n T.Z →+ Mod2Homology H (n - 1) T.X :=
@@ -2277,7 +2262,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       letI := hx
       exact (homology_connecting_injective H T n hy).subsingleton
 
-
     let sphereHomologyShiftEquiv {C : Type 1} [StableHomotopyCategory.{1,0} C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ]  (n m : ℤ) :
         Mod2Homology H n (Sphere (C := C) m) ≃ HomotopyGroup (n - m) H.HF2 := by
       let F := shiftFunctor C m
@@ -2299,7 +2283,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       let e : Mod2Homology H n (SphereSpectrum : C) ≃+ HomotopyGroup n H.HF2 :=
         ((homotopyGroupFunctor n).mapIso (ρ_ H.HF2)).addCommGroupIsoToAddEquiv
       exact e.injective.subsingleton
-
 
     have twoCell_otherDegrees {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [MonoidalPreadditive C] [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated]
         (d : ℤ) (f : Sphere (C := C) (d - 1) ⟶ SphereSpectrum)
@@ -2326,7 +2309,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           mod2HomologyF2 H R (d - 1) (Sphere (C := C) (d - 1)) :=
       homology_top_equiv H R (HoCofiberSequence.ofMorphism f) d hf
         (sphereHomologySubsingleton H d hd)
-
 
     have twoCell_comparison_to_unit {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [MonoidalPreadditive C] [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated]  (d : ℤ)
         (α : Sphere (C := C) (d - 1) ⟶ SphereSpectrum)
@@ -2484,7 +2466,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         DirectSum.lof (ZMod 2) ℤ (fun i => Mod2Cooperations H i ⊗[ZMod 2] W (n - i)) 0
           (cooperationUnit H ⊗ₜ[ZMod 2] z)) (hc n (n - 0) (sub_zero n).symm x)
 
-
     have pureTensorCoefficient_injective
         {A W : Type} [AddCommGroup A] [AddCommGroup W]
         [Module (ZMod 2) A] [Module (ZMod 2) W]
@@ -2493,7 +2474,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       intro a b hab
       have h := congrArg (fun z => TensorProduct.rid (ZMod 2) A (ev.lTensor A z)) hab
       simpa [hy] using h
-
 
     have coaction_coefficient_identification {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (K : Mod2CooperationKunneth H R)
         {X : C} (φ : X ⟶ H.HF2) (d : ℤ)
@@ -2580,7 +2560,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       change H.pi0Equiv (cooperationCounit H R 0 (cooperationUnit H)) = 1
       rw [cooperationCounit_unit, AddEquiv.apply_symm_apply]
 
-
     have cooperation_twoCell_decompose {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (B : Mod2ReducedMilnorBasis H R)
         (V : ℤ → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module (ZMod 2) (V i)]
         (d : ℤ) (hd : d ≠ 0)
@@ -2657,7 +2636,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         cooperationCounitF2_eq_zero_of_ne H R k hk, LinearMap.zero_apply,
         TensorProduct.zero_tmul, map_zero]
 
-
     have twoCell_coaction_expansion {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (B : Mod2ReducedMilnorBasis H R)  (K : Mod2CooperationKunneth H R)
         (X : C) (d : ℤ) (hd : d ≠ 0)
         (hX : ∀ i, i ≠ 0 → i ≠ d → Subsingleton (Mod2Homology H i X))
@@ -2699,7 +2677,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           ((LinearEquiv.cast (R := ZMod 2) (M := fun k => mod2HomologyF2 H R k X) h.symm) x) = x := by
       subst j
       rfl
-
 
     have twoCell_actual_coaction {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (R : Mod2RingStructure H) (B : Mod2ReducedMilnorBasis H R) (K : Mod2CooperationKunneth H R)
         (d : ℤ) (hd : d ≠ 0) (p : PositiveMonomial d)
@@ -2809,7 +2786,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         Mod2Homology H n T.Z →+ Mod2Homology H (n - 1) T.X :=
       connectingHomomorphism (T.map (tensorLeft H.HF2)) n
 
-
     have bottom_injective_of_homology_zero {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated]  (T : HoCofiberSequence (C := C)) (n : ℤ)
         (hf : Mod2Homology.pushforward H T.f n = 0) :
         Function.Injective (Mod2Homology.pushforward H T.g n) := by
@@ -2863,7 +2839,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       rcases h with hx | hy
       · rw [hx.elim x 0, map_zero, AddMonoidHom.zero_apply]
       · exact hy.elim _ _
-
 
     have pushforward_zero_of_surjective_precomposition {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] [MonoidalPreadditive C]
         {A X Y : C} (j : A ⟶ X) (t : X ⟶ Y) (n : ℤ)
@@ -2988,7 +2963,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         exact (homology_boundary_factor H T i z).symm
       rw [← LinearMap.comp_apply, tensorLowerMap_comp, hg]
 
-
     have tensorCoaction_boundary {C : Type 1} [StableHomotopyCategory.{1,0} C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] [MonoidalPreadditive C] (R : Mod2RingStructure H) (K : Mod2CooperationKunneth H R)  [(mod2UnitNatTrans H).CommShift ℤ]
         (hK : Mod2KunnethSuspensionCompatible H R K)
         (T : HoCofiberSequence (C := C)) (n : ℤ) (x : Mod2Homology H n T.Z) :
@@ -3017,7 +2991,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       refine ⟨c, ?_, hδ⟩
       change HasFunctorialCofiber.cofibι f ≫ c = 𝟙 X ≫ HasFunctorialCofiber.cofibι g at hc
       simpa only [Category.id_comp] using hc
-
 
     have triple_cone_geometry {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)]
         {A B X Y : C} (f : A ⟶ B) (g : B ⟶ X) (h : X ⟶ Y)
@@ -3061,7 +3034,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       rw [TensorProduct.congr_tmul]
       simp only [LinearEquiv.refl_apply, LinearEquiv.apply_symm_apply,
         TensorProduct.rid_tmul, one_smul]
-
 
     have directSum_supported_decomposition
         (A : ℤ → Type) [∀ i, AddCommGroup (A i)] [∀ i, Module (ZMod 2) (A i)]
@@ -3122,7 +3094,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       subst k
       rfl
 
-
     have rowProjection_assoc {R : Type} [CommRing R] (A : ℤ → Type) (B : ℤ → Type) (V : ℤ → Type) [(i : ℤ) → AddCommGroup (A i)] [(i : ℤ) → Module R (A i)] [(i : ℤ) → AddCommGroup (B i)] [(i : ℤ) → Module R (B i)] [(i : ℤ) → AddCommGroup (V i)] [(i : ℤ) → Module R (V i)] (q : V 0 →ₗ[R] R)  (n : ℤ) :
         (gradedTensorMapRight A (rowProjection B V q) n).comp
             (gradedTensorAssoc A B V n) =
@@ -3143,7 +3114,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         simp only [TensorProduct.tmul_smul, map_smul]
       · rw [rowProjection_lof_ne _ _ _ _ _ (by omega), TensorProduct.tmul_zero, map_zero,
           rowProjection_lof_ne _ _ _ _ _ hkn]
-
 
     have rowProjection_map {R : Type} [CommRing R] (A : ℤ → Type) (B : ℤ → Type) (V : ℤ → Type) [(i : ℤ) → AddCommGroup (A i)] [(i : ℤ) → Module R (A i)] [(i : ℤ) → AddCommGroup (B i)] [(i : ℤ) → Module R (B i)] [(i : ℤ) → AddCommGroup (V i)] [(i : ℤ) → Module R (V i)] (q : V 0 →ₗ[R] R)  (f : ∀ i, A i →ₗ[R] B i) (n : ℤ) :
         (rowProjection B V q n).comp (gradedTensorMap f V n) =
@@ -3181,7 +3151,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
             (fun i => mod2HomologyF2 H R i H.HF2)) V q
           (cooperationTensorDiagonal H R K) n) z
 
-
     have actualRow_coaction {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (K : Mod2CooperationKunneth H R)  (hD : Mod2KunnethDiagonalCompatible H R K)
         (X : C) (q : mod2HomologyF2 H R 0 X →ₗ[ZMod 2] ZMod 2)
         (n : ℤ) (x : mod2HomologyF2 H R n X) :
@@ -3218,7 +3187,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       refine ⟨w, ?_⟩
       apply (TensorProduct.comm (ZMod 2) (mod2HomologyF2 H R 0 H.HF2) V).injective
       rw [hw, hq, TensorProduct.comm_tmul]
-
 
     have negative_cooperation_subsingleton {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (B : Mod2ReducedMilnorBasis H R)  (n : ℤ) (hn : n < 0) :
         Subsingleton (mod2HomologyF2 H R n H.HF2) := by
@@ -3325,7 +3293,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
           (cooperationTensorUnit H R V n x) = 0 :=
       rowProjection_lof_ne (fun i => mod2HomologyF2 H R i H.HF2) V q n 0 (Ne.symm hn) _ _
 
-
     have threeCell_matrix_023 {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (K : Mod2CooperationKunneth H R)  (hD : Mod2KunnethDiagonalCompatible H R K)
         (X : C) (q : mod2HomologyF2 H R 0 X →ₗ[ZMod 2] ZMod 2)
         (e0 : mod2HomologyF2 H R 0 X) (hq : q e0 = 1)
@@ -3395,7 +3362,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       have h := actualRow_coaction H R K hD X q 3 e4
       rw [hr3] at h
       exact h.trans hmap
-
 
     have toda_homology_geometry {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (R : Mod2RingStructure H)
         (η : Sphere (C := C) 1 ⟶ SphereSpectrum)
@@ -3694,7 +3660,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         rw [hr4] at h
         exact h.trans hmap
 
-
     have tensorTerm_coefficient_injective {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H)
         (V : ℤ → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module (ZMod 2) (V i)]
         (n k : ℤ) (x : V (n-k)) (q : V (n-k) →ₗ[ZMod 2] ZMod 2) (hq : q x = 1) :
@@ -3718,7 +3683,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
         fun i => mod2HomologyModule H R i H.HF2
       exact DirectSum.of_eq_of_ne
         (β := fun j => Mod2Cooperations H j ⊗[ZMod 2] V (n-j)) k i (a ⊗ₜ[ZMod 2] x) hik
-
 
     have tensorTerms_two_unique {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H)  (V : ℤ → Type)
         [∀ i, AddCommGroup (V i)] [∀ i, Module (ZMod 2) (V i)]
@@ -3781,7 +3745,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       apply ha
       simpa only [map_zero] using h.symm
 
-
     have coordinate_nonzero_unique   {V : Type} [AddCommGroup V] [Module (ZMod 2) V]
         (q : V ≃ₗ[ZMod 2] ZMod 2) (x : V) (hx : x ≠ 0) : x = q.symm 1 := by
       apply q.injective
@@ -3812,7 +3775,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       rw [pushforward_comp_apply, pushforward_comp_apply, hmid,
         ← pushforward_comp_apply, ← pushforward_comp_apply] at h
       exact congrArg (Mod2Homology.pushforward H T.g n) (hb (hU h))
-
 
     have comparison_twoCell_transfer {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (K : Mod2CooperationKunneth H R)
         (T U : HoCofiberSequence (C := C))
@@ -4044,7 +4006,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
             (u ⊗ₜ[ZMod 2] (desuspendEquiv H R X 1) ((desuspendEquiv H R X 1).symm e0))
         rw [LinearEquiv.apply_symm_apply, LinearEquiv.apply_symm_apply]
         exact hψ
-
 
     have iso_suspended_twoCell_coaction {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] [NatTrans.CommShift (mod2UnitNatTrans H) ℤ] (K : Mod2CooperationKunneth H R)  (hK : Mod2KunnethSuspensionCompatible H R K)
         {X Q : C} (e : Q ≅ X⟦(1 : ℤ)⟧) (d : ℤ) (hd : d = 1 ∨ d = 2)
@@ -4741,7 +4702,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     have h := congrArg F.map hM
     simpa only [Syn, C, Functor.map_nsmul, CategoryTheory.Functor.map_id, Functor.map_zero] using h
 
-
   have toda_finish
       (hs1 : ∀ a b : BiHom 1 0 (S_0_0 : Syn), a ≠ 0 → b ≠ 0 → a = b)
       (he : lambdaMultiply 2 etaClass ≠ 0)
@@ -4894,7 +4854,6 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
     refine ⟨Q, ir, px, hTX, gbar, hgbar', ?_⟩
     simpa only [Syn, S, Category.assoc] using hbar.symm
 
-
   obtain ⟨Moore, mooreIncl, mooreProj, epsilon, hMooreTriangle, hMooreFactor⟩ :=
     moore_factor (S_0_0 : Syn) sphere_end_no_two_torsion
   let R := D.recovery.realization
@@ -4913,6 +4872,5 @@ theorem symmetric_bracket : ∀ θ : BiHom 62 64 (S_0_0 : KIP126.Def.standardSyn
       classical_toda_nonzero
   exact toda_finish (small_synthetic 0 (by decide)) lambda_eta_nonzero
     Moore mooreIncl mooreProj epsilon hMooreTriangle hMooreFactor hMooreNonzero hstar
-
 
 end KIP126.Main.AdamsSynthetic.Toda

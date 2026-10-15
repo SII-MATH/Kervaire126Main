@@ -29,6 +29,19 @@ ALLOWED = {
     "Computation": {"Def", "Literature", "Computation"},
     "Main": LAYERS,
 }
+# These audited groups are fixed input certificates or independent background
+# checks. Section 7 applications extracted from them now live in SectionSeven.
+MIGRATED_OUT_OF_MAIN = (
+    "Computation",
+    "AdamsSynthetic/AlgebraRealization.lean",
+    "AdamsSynthetic/SphereAlgebra.lean",
+    "AdamsSynthetic/SphereConvergence.lean",
+    "AdamsSynthetic/WeightShift.lean",
+    "Literature/EtaRows",
+    "Literature/HopfCofiber",
+    "Literature/Near126",
+    "Literature/Near126.lean",
+)
 
 
 def code_only(text: str) -> str:
@@ -122,22 +135,41 @@ def main() -> int:
         return 0
 
     errors: list[str] = []
-    # Input algebras require a small, explicitly reviewed collection of
-    # well-formedness proofs. They certify the input objects, not the external
-    # Adams results. Pin their exact files instead of exempting whole folders.
+    # Distinguish minimal input-construction proofs from substantive, checked
+    # computation certificates. The latter were explicitly approved when Main
+    # was restricted to Sections 6 and 7. Neither inventory exempts a folder or
+    # replaces the external Adams comparison assumptions.
     try:
         boundaries = json.loads((ROOT / "metadata/layer-boundaries.json").read_text())
         construction_proofs = {entry["file"]: entry for entry in boundaries["input_construction_proofs"]}
+        computation_certificates = {entry["file"]: entry for entry in boundaries["computation_certificates"]}
+        if boundaries.get("schema_version") != 2:
+            errors.append("Layer-boundary inventory must use schema_version 2")
+        for key, entries in (("input_construction_proofs", construction_proofs),
+                             ("computation_certificates", computation_certificates)):
+            if len(entries) != len(boundaries[key]):
+                errors.append(f"Duplicate entries in {key}")
+        for file in construction_proofs.keys() & computation_certificates.keys():
+            errors.append(f"Proof classified as both construction and computation: {file}")
+        for file in computation_certificates:
+            if not file.startswith("KIP126/Computation/") or "Certificates" not in Path(file).parts:
+                errors.append(f"Computation certificate must have a separate Certificates module: {file}")
     except (OSError, ValueError, KeyError, TypeError) as exc:
-        errors.append(f"Cannot read input construction inventory: {exc}")
+        errors.append(f"Cannot read input proof inventories: {exc}")
         construction_proofs = {}
-    seen_construction_proofs: set[str] = set()
+        computation_certificates = {}
+    input_proofs = construction_proofs | computation_certificates
+    seen_input_proofs: set[str] = set()
     active_dirs = {p.name for p in (ROOT / "KIP126").iterdir() if p.is_dir()}
     if active_dirs != LAYERS:
         errors.append(f"KIP126 must have exactly four source directories: actual {sorted(active_dirs)}")
     for layer in sorted(LAYERS):
         if not (ROOT / "KIP126" / f"{layer}.lean").is_file():
             errors.append(f"Missing public entry KIP126/{layer}.lean")
+    for former in MIGRATED_OUT_OF_MAIN:
+        path = ROOT / "KIP126/Main" / former
+        if path.is_file() or (path.is_dir() and any(path.rglob("*.lean"))):
+            errors.append(f"Background/input verification restored inside Main: {path.relative_to(ROOT)}")
     for path in paths - {ROOT / "KIP126.lean"}:
         if owner(module_name(path)) is None:
             errors.append(f"Unowned project source: {path.relative_to(ROOT)}")
@@ -188,15 +220,15 @@ def main() -> int:
                 errors.append(f"External input contains a proof hole: {file}")
             proof_count = len(re.findall(r"(?<![\w`])(?:theorem|lemma|example)\b", code))
             if proof_count:
-                entry = construction_proofs.get(file)
+                entry = input_proofs.get(file)
                 if entry is None:
                     errors.append(f"Unregistered proof in an external input layer: {file}")
                 else:
-                    seen_construction_proofs.add(file)
+                    seen_input_proofs.add(file)
                     if entry.get("sha256") != hashlib.sha256(path.read_bytes()).hexdigest():
-                        errors.append(f"Input construction proof changed: {file}")
+                        errors.append(f"Registered input proof changed: {file}")
                     if entry.get("proof_declarations") != proof_count or not entry.get("reason"):
-                        errors.append(f"Input construction proof inventory is incomplete: {file}")
+                        errors.append(f"Input proof inventory is incomplete: {file}")
         if layer == "Def" and re.search(r"(?<![\w`])(?:axiom|sorry|sorryAx)\b", code):
             errors.append(f"Def must contain generic definitions/interfaces without external assumptions or proof holes: {path.relative_to(ROOT)}")
         if path in tests and re.search(r"(?<![\w`])(?:axiom|sorry|sorryAx)\b", code):
@@ -204,8 +236,8 @@ def main() -> int:
         if re.search(r"(?<![\w`])(?:sorryAx|admit)\b", code):
             errors.append(f"Untracked admission primitive: {path.relative_to(ROOT)}")
 
-    for stale in sorted(construction_proofs.keys() - seen_construction_proofs):
-        errors.append(f"Stale input construction proof entry: {stale}")
+    for stale in sorted(input_proofs.keys() - seen_input_proofs):
+        errors.append(f"Stale input proof entry: {stale}")
 
     visiting, visited = set(), set()
 

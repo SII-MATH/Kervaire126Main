@@ -41,11 +41,4 @@ noncomputable def hf2NormalizedComplexIso (n : ℕ) :
       (hf2SimplicialModule n) ≅ hf2ChainComplex n :=
   CategoryTheory.Abelian.DoldKan.equivalence.counitIso.app (hf2ChainComplex n)
 
-/-- The degree-`n` normalized homology is the specified coefficient module. -/
-noncomputable def hf2NormalizedHomologySelfIso (n : ℕ) :
-    ((AlgebraicTopology.normalizedMooreComplex (ModuleCat (ZMod 2))).obj
-      (hf2SimplicialModule n)).homology n ≅ ModuleCat.of (ZMod 2) (ZMod 2) :=
-  HomologicalComplex.homologyMapIso (hf2NormalizedComplexIso n) n ≪≫
-    HomologicalComplex.singleObjHomologySelfIso (ComplexShape.down ℕ) n _
-
 end KIP126.StableHomotopy.Spectra

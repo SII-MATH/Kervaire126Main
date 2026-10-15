@@ -2,7 +2,8 @@ module
 
 public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs
-public import KIP126.Def.AdamsSynthetic.ExtensionLaws.GeneralizedLeibniz.Predicates
+public import KIP126.Def.ClassicalAdams.PageRepresentatives.Predicates
+public import KIP126.Def.AdamsSynthetic.Extensions.Crossing.Predicates
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Order.Proofs
@@ -10,7 +11,7 @@ public import KIP126.Def.SpectralSequence.Basic.Proofs
 public import KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.Algebra.NestedQuotient.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
 public import KIP126.Def.ClassicalAdams.TowerVanishing.Proofs
 public import KIP126.Def.SpectralSequence.Permanence.Proofs
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
@@ -26,19 +27,18 @@ public import KIP126.Def.ClassicalAdams.TowerNaturality.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Def.Synthetic.Context.LambdaPowers.Proofs
 public import KIP126.Def.Synthetic.AdamsFiltration.Convergence.Proofs
-public import KIP126.Def.Algebra.Filtration.Proofs
+public import KIP126.Def.Algebra.Filtration.Data
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Predicates
 public import KIP126.Def.ClassicalAdams.SphereVanishing.Proofs
-public import KIP126.Main.ExternalHypotheses.Data
+public import KIP126.Computation.Hypotheses.Joint
 public import KIP126.Main.Literature.SourceComparisons.Theorems
-
--- The CSV coordinate calculations use the defining string and list equations.
 import all Init.Data.String.Legacy
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
 
-@[expose] public section
+-- The CSV coordinate calculations use the defining string and list equations.
 
+@[expose] public section
 
 namespace KIP126.Main.SectionSeven
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
