@@ -1,10 +1,19 @@
 module
-
 import all KIP126.Def.Computation
-
 import all KIP126.Def.Computation.Basis
 import all KIP126.Def.Computation.Source
 import all KIP126.Def.Computation.Standard
+import all KIP126.Def.Computation.Table
+import all KIP126.Def.Computation.Table.Archive
+import all KIP126.Def.Computation.Table.Data
+import all KIP126.Def.Computation.Table.Dimensions
+import all KIP126.Def.Computation.Table.Internal.ZeroDimension
+import all KIP126.Def.Computation.Table.Relations
+import all KIP126.Def.Computation.Table.Syntax
+import all KIP126.Def.Computation.Table.ThetaRelations
+import all KIP126.Def.Computation.Table.Values
+
+
 public meta import Checks.Registry
 import Lean
 

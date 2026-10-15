@@ -1,6 +1,8 @@
 module
 
 public import KIP126.Main.Conditions
+import all KIP126.Main.Internal.Choice.Invariance
+import all KIP126.Main.Internal.Choice.FinitePages
 
 /-! Paper-owned choice transport (Remark 7.4 and Lemmas 7.10–7.11).
 Sources: bbac1fc05843 Main/Solution/ChoiceIndependence and
@@ -49,13 +51,14 @@ public theorem any_choice_criterion
   · rw [he]
     exact KIP126.Literature.Standard.bx_untruncated
 
-/-- Port of the source's proved C4 invariance. The finite-page/filtration
-proof is preserved in the pinned proof archive and awaits adaptation. -/
+/-- The original finite-page, filtration, and exponent-two proof of C4
+invariance, using the fixed upstream table and comparison declarations. -/
 public theorem c4_choice_invariant
     (theta theta' : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
     (htheta : ThetaChoice theta) (htheta' : ThetaChoice theta')
     (hc4 : C4At theta') : C4At theta := by
-  sorry
+  exact Internal.Choice.c4_invariance_of_pages Internal.Choice.theta_choice_finite_pages
+    theta theta' htheta htheta' hc4
 
 public theorem c4_choice_equivalence :
     C4 ↔ ∀ theta, ThetaChoice theta → C4At theta := by

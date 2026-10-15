@@ -1,15 +1,6 @@
 module
-
 import all KIP126.Def.SpectralSequence
-
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Graded.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.Basic
 import all KIP126.Def.SpectralSequence.Basic.Category.Data
 import all KIP126.Def.SpectralSequence.Basic.Category.Predicates
 import all KIP126.Def.SpectralSequence.Basic.Category.Proofs
@@ -18,7 +9,7 @@ import all KIP126.Def.SpectralSequence.Basic.MorphismCriterion
 import all KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 import all KIP126.Def.SpectralSequence.Basic.Predicates
 import all KIP126.Def.SpectralSequence.Basic.Proofs
-import all KIP126.Def.SpectralSequence.Basic
+import all KIP126.Def.SpectralSequence.BoundedExtension
 import all KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
 import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Data
 import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Proofs
@@ -40,14 +31,13 @@ import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
 import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
 import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
 import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
-import all KIP126.Def.SpectralSequence.BoundedExtension
+import all KIP126.Def.SpectralSequence.Commutativity
 import all KIP126.Def.SpectralSequence.Commutativity.Basic.Proofs
 import all KIP126.Def.SpectralSequence.Commutativity.Detection.Data
 import all KIP126.Def.SpectralSequence.Commutativity.Detection.Proofs
 import all KIP126.Def.SpectralSequence.Commutativity.Predicates
 import all KIP126.Def.SpectralSequence.Commutativity.Square.Data
 import all KIP126.Def.SpectralSequence.Commutativity.Square.Proofs
-import all KIP126.Def.SpectralSequence.Commutativity
 import all KIP126.Def.SpectralSequence.Completion.Comparison.Data
 import all KIP126.Def.SpectralSequence.Completion.Comparison.Proofs
 import all KIP126.Def.SpectralSequence.Completion.CompletedFiltration.Data
@@ -77,14 +67,15 @@ import all KIP126.Def.SpectralSequence.Extension.Complex.Data
 import all KIP126.Def.SpectralSequence.Extension.Complex.Proofs
 import all KIP126.Def.SpectralSequence.Extension.Data
 import all KIP126.Def.SpectralSequence.Extension.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex
 import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing
+import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
 import all KIP126.Def.SpectralSequence.FilteredComplex.Data
 import all KIP126.Def.SpectralSequence.FilteredComplex.HomologyTarget.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Data
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
 import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Proofs
 import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Affine.Data
@@ -103,7 +94,6 @@ import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Restriction.Pro
 import all KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
 import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Comparison.Proofs
 import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
-import all KIP126.Def.SpectralSequence.FilteredComplex
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Boundaries
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Cycles
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
@@ -113,9 +103,19 @@ import all KIP126.Def.SpectralSequence.FilteredDifferential.SquareZero
 import all KIP126.Def.SpectralSequence.FilteredPage.Data
 import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
 import all KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Graded.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Proofs
 import all KIP126.Def.SpectralSequence.ModuleQuotient.Data
 import all KIP126.Def.SpectralSequence.ModuleQuotient.Proofs
 import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+import all KIP126.Def.SpectralSequence.Multiplicative
+import all KIP126.Def.SpectralSequence.MultiplicativeCategory
 import all KIP126.Def.SpectralSequence.PageComparison.Data
 import all KIP126.Def.SpectralSequence.PageComparison.Predicates
 import all KIP126.Def.SpectralSequence.PageComparison.Raw.Data
@@ -125,16 +125,16 @@ import all KIP126.Def.SpectralSequence.PageLevel.Proofs
 import all KIP126.Def.SpectralSequence.Permanence.Predicates
 import all KIP126.Def.SpectralSequence.Permanence.Proofs
 import all KIP126.Def.SpectralSequence.Representatives.Proofs
+import all KIP126.Def.SpectralSequence.Transport
+import all KIP126.Def.SpectralSequence.Truncation
 import all KIP126.Def.SpectralSequence.Truncation.Data
 import all KIP126.Def.SpectralSequence.Truncation.Predicates
 import all KIP126.Def.SpectralSequence.Truncation.Proofs
-import all KIP126.Def.SpectralSequence.Truncation
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Data
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Proofs
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSequence.Data
-import all KIP126.Def.SpectralSequence.Multiplicative
-import all KIP126.Def.SpectralSequence.MultiplicativeCategory
-import all KIP126.Def.SpectralSequence.Transport
+
+
 import Lean
 
 /-! Internal trust audit. This module exports nothing. It inspects private

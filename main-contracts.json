@@ -91,7 +91,7 @@
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": []
     },
     {
@@ -147,7 +147,7 @@
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": []
     },
     {
@@ -189,50 +189,50 @@
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.normalized_bx_finite",
-          "line": 19,
+          "line": 21,
           "migration_status": "original-paper-target-without-proof"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.lambda_eta_theta_square_independent",
-          "line": 29,
+          "line": 31,
           "migration_status": "original-paper-target-without-proof"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.any_choice_criterion",
-          "line": 37,
+          "line": 39,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.c4_choice_invariant",
-          "line": 54,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 56,
+          "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.c4_choice_equivalence",
-          "line": 60,
+          "line": 63,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.c5_choice_equivalence",
-          "line": 71,
+          "line": 74,
           "migration_status": "original-paper-target-without-proof"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.c4_c5_choice_equivalence",
-          "line": 75,
+          "line": 78,
           "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": [
         {
           "name": "KIP126.Main.normalized_bx_finite",
@@ -243,11 +243,6 @@
           "name": "KIP126.Main.lambda_eta_theta_square_independent",
           "status": "original-paper-target-without-proof",
           "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
-        },
-        {
-          "name": "KIP126.Main.c4_choice_invariant",
-          "status": "existing-proof-archived-port-pending",
-          "note": "Original Selected/ChoiceInvariance proves this via finite-page vanishing and the filtration of theta differences; that proof remains archived and its port is pending."
         },
         {
           "name": "KIP126.Main.c5_choice_equivalence",
@@ -290,55 +285,44 @@
           "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
           "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
           "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected.lean",
+          "sha256": "457ef5cab18f130b8a3c103f55da20708f6ef231c54da71ca5951e77a7ca16d6"
         }
       ],
       "implementation": [
         {
           "path": "KIP126/Main/PropositionSevenEight.lean",
           "declaration": "KIP126.Main.permanence_or_d12",
-          "line": 19,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 20,
+          "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/PropositionSevenEight.lean",
           "declaration": "KIP126.Main.d12_implies_square_and_eta",
-          "line": 24,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 27,
+          "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/PropositionSevenEight.lean",
           "declaration": "KIP126.Main.conditions_imply_d12",
-          "line": 29,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 34,
+          "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/PropositionSevenEight.lean",
           "declaration": "KIP126.Main.proposition_7_8",
-          "line": 33,
+          "line": 38,
           "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
-      "remaining_producer_obligations": [
-        {
-          "name": "KIP126.Main.permanence_or_d12",
-          "status": "existing-proof-archived-port-pending",
-          "note": "The final dichotomy block of Selected/Assembly has a proof body; finite theta-square frames and the F15 tmf detector argument await adaptation."
-        },
-        {
-          "name": "KIP126.Main.d12_implies_square_and_eta",
-          "status": "existing-proof-archived-port-pending",
-          "note": "The forward implication at the end of Selected/Assembly has a proof body; its frame, detection and filtration argument awaits adaptation."
-        },
-        {
-          "name": "KIP126.Main.conditions_imply_d12",
-          "status": "existing-proof-archived-port-pending",
-          "note": "The reverse implication at the end of Selected/Assembly has a proof body, using choice invariance and nonzero leading detection; its adaptation is pending."
-        }
-      ]
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
+      "remaining_producer_obligations": []
     },
     {
       "id": "main-local-toda-and-indeterminacy",
@@ -477,7 +461,7 @@
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": []
     },
     {
@@ -496,27 +480,26 @@
           "path": "KIP126/Main/Solution/Route/Section7/NuTarget.lean",
           "sha256": "7ae09ccb052567552c89ea926f33c608812bd40ba022fa4cc9a75ab5a063777e",
           "archive_member": "KIP126/Main/Solution/Route/Section7/NuTarget.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Section7/NuTarget.lean",
+          "sha256": "7ae09ccb052567552c89ea926f33c608812bd40ba022fa4cc9a75ab5a063777e"
         }
       ],
       "implementation": [
         {
           "path": "KIP126/Main/SectionSeven/NuTarget.lean",
           "declaration": "KIP126.Main.SectionSeven.target_nu_divisible",
-          "line": 23,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 33,
+          "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
-      "remaining_producer_obligations": [
-        {
-          "name": "KIP126.Main.SectionSeven.target_nu_divisible",
-          "status": "existing-proof-archived-port-pending",
-          "note": "Original NuTarget proof body has no direct sorry; its local Toda, alpha-one, lifting and choice arguments need adaptation to the fixed API. Their archive dependencies may themselves have pending proofs."
-        }
-      ]
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
+      "remaining_producer_obligations": []
     },
     {
       "id": "main-cofiber-obstruction",
@@ -557,19 +540,19 @@
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero",
-          "line": 24,
-          "migration_status": "existing-proof-archived-port-pending"
+          "line": 26,
+          "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.target_divisibility_contradiction",
-          "line": 33,
+          "line": 57,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.target_divisibility_forces_cnu_incoming",
-          "line": 41,
+          "line": 65,
           "migration_status": "adapted-proof-body-present"
         },
         {
@@ -606,14 +589,8 @@
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
-      "remaining_producer_obligations": [
-        {
-          "name": "KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero",
-          "status": "existing-proof-archived-port-pending",
-          "note": "Extracted from the existing CnuRigidity proof. The fixed-model E-infinity comparison and detection argument still require a proof port; this is not a new external fact."
-        }
-      ]
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
+      "remaining_producer_obligations": []
     },
     {
       "id": "main-standard-h6-square",
@@ -654,6 +631,11 @@
           "path": "KIP126/Main/Solution/h6_sq_permanent.lean",
           "sha256": "4cc4d28e6a40fd65bc2308d74b4df4235009e5cdb4bff920ec7543c3013722b3",
           "archive_member": "KIP126/Main/Solution/h6_sq_permanent.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected.lean",
+          "sha256": "457ef5cab18f130b8a3c103f55da20708f6ef231c54da71ca5951e77a7ca16d6"
         }
       ],
       "implementation": [
@@ -685,12 +667,12 @@
       "consumers": [
         "Tests.Main.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": []
     }
   ],
   "proof_obligation_registry": "proof-obligations.json",
-  "proof_status": "partial-proof-port; distinguish existing proof-port debt from original unproved article steps",
+  "proof_status": "existing-proof-bodies-ported; only three original unproved actual-model targets remain local",
   "exclusions": [
     "Reconstructing concrete Adams/Milnor/cobar or synthetic models as a Main obligation.",
     "Re-proving externally cited literature and computation correctness inside Main.",
@@ -703,5 +685,57 @@
     "Tests.Main.Consumers",
     "Tests.Main.Boundary"
   ],
-  "validation": "Exact type/export/trust locks are validated by the default build; this ledger records provenance and responsibility, not a separate proof certificate."
+  "validation": "The default build independently validates exact type/export/trust locks and all compiled proof bodies. This source/responsibility ledger does not assert transitive sorry-freedom. Historical unused route_moss is archived without a new Main sorry.",
+  "proof_implementation_summary": {
+    "counting_unit": "Named declarations containing a direct current sorry; no transitive upstream duties are duplicated here.",
+    "original_unproved_actual_model_targets": [
+      {
+        "name": "KIP126.Main.normalized_bx_finite",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          27
+        ],
+        "status": "original-paper-target-without-proof",
+        "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem."
+      },
+      {
+        "name": "KIP126.Main.lambda_eta_theta_square_independent",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          36
+        ],
+        "status": "original-paper-target-without-proof",
+        "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
+      },
+      {
+        "name": "KIP126.Main.c5_choice_equivalence",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          76
+        ],
+        "status": "original-paper-target-without-proof",
+        "note": "The actual-model C4/C5 choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
+      }
+    ],
+    "existing_proof_ports_remaining": [],
+    "historical_route_moss_gap_active": false,
+    "source_files": 130,
+    "source_declarations": 868,
+    "default_build_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2379,
+      "checked_at": "2026-10-15T03:34:41.708981+00:00",
+      "cache_reused": true,
+      "log_sha256": "baf1085bba4fec91183a9df5efdf127447138bac7b53cf7a365def0ac066e974",
+      "main_direct_pending": 3,
+      "main_existing_proof_ports_pending": 0,
+      "main_public_types_and_exports_unchanged": true,
+      "upstream_pending_not_duplicated_into_main": true,
+      "after_trailing_whitespace_cleanup": true
+    },
+    "private_helper_count": 817,
+    "public_interface_types": "Unchanged; main-api.json remains the independent exact type/export authority.",
+    "proof_sources": "main-sources.json; declaration-level source blocks and hashes"
+  }
 }

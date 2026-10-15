@@ -1,10 +1,11 @@
 module
-
+import all KIP126.Def.ProofTools
 import all KIP126.Def.ProofTools.ConvergenceOperations
 import all KIP126.Def.ProofTools.DetectionOperations
 import all KIP126.Def.ProofTools.FiltrationOperations
 import all KIP126.Def.ProofTools.FiniteFiltration
 import all KIP126.Def.ProofTools.GeneralizedLeibniz
+import all KIP126.Def.ProofTools.GeneralizedMahowald
 import all KIP126.Def.ProofTools.GeneralizedMahowald.Adjacent
 import all KIP126.Def.ProofTools.GeneralizedMahowald.BoundaryDetection
 import all KIP126.Def.ProofTools.GeneralizedMahowald.BoundaryLambda
@@ -18,14 +19,14 @@ import all KIP126.Def.ProofTools.GeneralizedMahowald.NoReturn
 import all KIP126.Def.ProofTools.GeneralizedMahowald.PageCalculus
 import all KIP126.Def.ProofTools.GeneralizedMahowald.Sphere
 import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereLabels
-import all KIP126.Def.ProofTools.GeneralizedMahowald
 import all KIP126.Def.ProofTools.Language
 import all KIP126.Def.ProofTools.Laws
+import all KIP126.Def.ProofTools.Operations
 import all KIP126.Def.ProofTools.Representatives
 import all KIP126.Def.ProofTools.Standard
 import all KIP126.Def.ProofTools.Stretching
 import all KIP126.Def.ProofTools.StretchingRepresentatives
-import all KIP126.Def.ProofTools
+
 
 public meta import Checks.Registry
 import Lean

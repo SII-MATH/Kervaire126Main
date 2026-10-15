@@ -70,7 +70,7 @@ theorem represents_sub {r : ℤ} {p : ℤ × ℤ}
     by simp only [map_sub, hzx, hwy]⟩
 
 /-- Cumulative second-page boundaries have the zero third-page representative. -/
-theorem boundary_represents_zero {p : ℤ × ℤ} {x : E.Page 2 p}
+public theorem boundary_represents_zero {p : ℤ × ℤ} {x : E.Page 2 p}
     (h : IsBoundaryBy E 2 p x) : RepresentsOnPage E 3 p x 0 := by
   let D := E.ssData p
   let n : WithTop ℕ := ↑(2 - E.r₀).toNat

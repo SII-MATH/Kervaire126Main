@@ -82,11 +82,38 @@ def reviewed_secondary_origin(row):
     return dict(SECONDARY_ORIGIN, line=line)
 
 
+def restored_main_port_obligation(row):
+    review = json.load(open('main-proof-port-review.json'))
+    matches = [r for r in review['obligations'] if r['name'] == row['name']]
+    if len(matches) != 1:
+        return None
+    evidence = matches[0]
+    source = Path(evidence['source'])
+    if (row['module'] != evidence['module']
+            or hashlib.sha256(source.read_bytes()).hexdigest() != evidence['source_sha256']
+            or not evidence['original_sources']
+            or any(o['commit'] != review['baseline_commit'] for o in evidence['original_sources'])):
+        raise ValueError('Restored upstream source review changed: ' + row['name'])
+    parsed = commands(source)[0].get(row['name'])
+    if not parsed or parsed['source_kind'] != evidence['kind']:
+        raise ValueError('Restored upstream declaration differs from its review: ' + row['name'])
+    owner = module_owner(row['module'])
+    return {k: row[k] for k in ['name','module','full_type','type_fingerprint','body_fingerprint']} | {
+        'source': str(source), 'line': parsed['line'], 'kind': evidence['kind'],
+        'status': 'pending-proof' if evidence['kind'] in ('theorem','lemma') else 'pending-construction',
+        'responsibility_owner': owner,
+        'responsibility_class': 'restored-existing-upstream-contract',
+        'migration_status': 'original-upstream-contract-pending',
+        'original_sources': evidence['original_sources'],
+        'reason': evidence['reason'] + ' ' + evidence['scope_review'],
+        'synthetic_sorry': False}
+
+
 def paper_migration_record(row, owner):
     """Require a reviewed per-declaration classification, not a module wildcard."""
     stem = 'main' if owner == 'Main' else 'proof-tools'
     manifest = json.load(open(stem + '-sources.json'))
-    records = [e for e in manifest['declaration_migration'] if e['name'] == row['name']]
+    records = [e for e in manifest['declaration_migration'] if e['name'] == row.get('source_name', row['name'])]
     if len(records) != 1:
         raise ValueError('Missing individual paper proof migration review: ' + row['name'])
     record = records[0]
@@ -123,7 +150,7 @@ def commands(path):
         if re.match(r'end(?:\s+[\w.]+)?\s*$',t):
             if stack:scope=stack.pop()
             continue
-        m=re.search(r'\bpublic\s+(?:noncomputable\s+)?(def|abbrev|theorem|lemma|structure|inductive|class|instance)\b\s*([^\s(:{\[]*)',t)
+        m=re.search(r'\bpublic\s+(?:noncomputable\s+)?(def|abbrev|theorem|lemma|structure|inductive|class|instance|alias)\b\s*([^\s(:{\[]*)',t)
         if not m:continue
         count+=1
         if not m[2]:continue
@@ -170,15 +197,15 @@ def freeze(stem,module,entry_module):
         if info:
             row.update(info)
             k=info['source_kind']
-            row['category']='operation-theorem' if k in ('theorem','lemma') else ('mathematical-definition' if k in ('def','abbrev') else 'type-support')
-            row['responsibility']='derived-theorem' if k in ('theorem','lemma') else ('input-signature' if k in ('structure','class') else 'defined-operation-or-predicate')
+            row['category']='operation-theorem' if k in ('theorem','lemma','alias') else ('mathematical-definition' if k in ('def','abbrev') else 'type-support')
+            row['responsibility']='derived-theorem' if k in ('theorem','lemma','alias') else ('input-signature' if k in ('structure','class') else 'defined-operation-or-predicate')
             if node['direct_sorry']:
                 if module in PAPER:
-                    row['responsibility']='pending-paper-proof' if k in ('theorem','lemma') else 'pending-paper-construction'
+                    row['responsibility']='pending-paper-proof' if k in ('theorem','lemma','alias') else 'pending-paper-construction'
                 else:
-                    row['responsibility']='pending-upstream-proof' if k in ('theorem','lemma') else 'pending-upstream-construction'
+                    row['responsibility']='pending-upstream-proof' if k in ('theorem','lemma','alias') else 'pending-upstream-construction'
             elif row['directly_callable']:
-                row['responsibility']='proved-operation' if k in ('theorem','lemma') else 'fixed-mathematical-object-or-operation'
+                row['responsibility']='proved-operation' if k in ('theorem','lemma','alias') else 'fixed-mathematical-object-or-operation'
             named.append(row)
         else:
             row['category']='generated-declaration'
@@ -248,6 +275,10 @@ def freeze_trust():
                     'reason': 'Restores the omitted homotopySeparated field of the pinned coherent model, on its original selected-object closure. The foundational proof remains upstream; it is not a new Mahowald gap or an external literature fact.',
                     'synthetic_sorry': False})
                 continue
+            restored = restored_main_port_obligation(row)
+            if restored is not None:
+                obligations.append(restored)
+                continue
             origin=reviewed_secondary_origin(row)
             info=commands(REVIEWED_SECONDARY_SOURCE)[0].get(row['name'],{})
             if info.get('source_kind') != 'theorem':
@@ -263,10 +294,15 @@ def freeze_trust():
             continue
         if owner not in PAPER:
             raise ValueError('Direct sorry is forbidden in this module: '+row['name'])
+        if owner == 'Main' and row['name'] not in {
+                'KIP126.Main.normalized_bx_finite',
+                'KIP126.Main.lambda_eta_theta_square_independent',
+                'KIP126.Main.c5_choice_equivalence'}:
+            raise ValueError('Main proof-port hole or new original gap is forbidden: ' + row['name'])
         migration=paper_migration_record(row,owner)
         source=row['module'].replace('.','/')+'.lean'
         parsed,_=commands(source)
-        info=parsed.get(row['name'],{})
+        info=parsed.get(row.get('source_name',row['name']),{})
         kind=info.get('source_kind',row.get('declaration_kind','generated'))
         obligations.append({k:row[k] for k in ['name','module','full_type','type_fingerprint','body_fingerprint']} | {
             'source':source,'line':info.get('line',row.get('line')), 'kind':kind,
@@ -298,6 +334,8 @@ def prepare():
         Path('.lake/Capture'+module+'.lean').write_text(template.replace('KIP126.Def.AdamsSynthetic',entry).replace('adams-synthetic',stem))
     path=Path('scripts/CaptureTrust.lean')
     body=path.read_text(); body=body[body.index('import Lean'):]
+    if '"source_name"' not in body:
+        body=body.replace('("declaration_kind", toJson kind),', '("source_name", toJson ((privateToUserName? name).getD name).toString),\n      ("declaration_kind", toJson kind),')
     sources=sorted(p for p in Path('KIP126').rglob('*.lean') if p.name!='InternalAudit.lean')
     path.write_text('module\n'+''.join('import all '+str(p.with_suffix('')).replace('/','.')+'\n' for p in sources)+body)
     print('Prepared .lake/Capture{Module}.lean and scripts/CaptureTrust.lean; run them with lake env lean before freezing.')

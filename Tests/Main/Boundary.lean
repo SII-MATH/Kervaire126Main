@@ -21,6 +21,12 @@ mechanism, source implementations, or private page-calculus helpers. -/
 #check_failure KIP126.Main.SectionSeven.negative_lift_zero_factorization
 #check_failure KIP126.Main.SectionSeven.lambda_h0_of_two_torsion
 
+#check_failure KIP126.Main.Internal.High125.detector_injective_filtration15
+#check_failure KIP126.Main.Internal.NuFifth.nu_five_of_three
+#check_failure KIP126.Main.Internal.AlphaOne.alpha_one_exists
+#check_failure KIP126.Main.SectionSeven.Internal.nu_target_full_of_nonzero
+#check_failure KIP126.Main.SectionSeven.Internal.main_weak_high_representative
+
 open Lean Elab Command
 
 run_cmd do
@@ -33,7 +39,13 @@ run_cmd do
       unless args.isEmpty do
         throwError "Fixed paper endpoint acquired a caller premise: {name}"
   for name in #[`KIP126.Main.proposition_7_8, `KIP126.Main.proposition_7_9,
-      `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.c3_excludes_c5] do
+      `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.c3_excludes_c5,
+      `KIP126.Main.c4_choice_invariant,
+      `KIP126.Main.permanence_or_d12,
+      `KIP126.Main.d12_implies_square_and_eta,
+      `KIP126.Main.conditions_imply_d12,
+      `KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero,
+      `KIP126.Main.SectionSeven.target_nu_divisible] do
     let some info := exported.find? name
       | throwError "Missing paper proof assembly: {name}"
     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then

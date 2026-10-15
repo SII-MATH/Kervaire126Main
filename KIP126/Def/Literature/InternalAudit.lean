@@ -1,5 +1,5 @@
 module
-
+import all KIP126.Def.Literature
 import all KIP126.Def.Literature.Applicability
 import all KIP126.Def.Literature.BHS
 import all KIP126.Def.Literature.BX
@@ -13,11 +13,13 @@ import all KIP126.Def.Literature.Moss
 import all KIP126.Def.Literature.RealizationTransport
 import all KIP126.Def.Literature.Rigidity
 import all KIP126.Def.Literature.Secondary
-import all KIP126.Def.Literature.Standard.Secondary
 import all KIP126.Def.Literature.Standard
+import all KIP126.Def.Literature.Standard.Filtration
+import all KIP126.Def.Literature.Standard.QuotientAlgebra
+import all KIP126.Def.Literature.Standard.Secondary
 import all KIP126.Def.Literature.Toda
 import all KIP126.Def.Literature.Triangles
-import all KIP126.Def.Literature
+
 
 public meta import Checks.Registry
 import Lean
