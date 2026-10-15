@@ -45,12 +45,14 @@ structure ExternalHypotheses where
 | Theorem 7.1 | `KIP126.Main.h6_sq_permanent` | [H6SquarePermanent](KIP126/Main/H6SquarePermanent.lean) |
 | Proposition 7.8 | `KIP126.Main.proposition_7_8` | [PropositionSevenEight](KIP126/Main/PropositionSevenEight.lean) |
 | Proposition 7.9 | `KIP126.Main.SectionSeven.proposition_7_9` | [PropositionSevenNine](KIP126/Main/SectionSeven/PropositionSevenNine.lean) |
+| Remarks 7.4–7.5 | `KIP126.Main.any_choice_criterion`（包含 `r = 0`） | [ChoiceIndependence/Standard](KIP126/Main/ChoiceIndependence/Standard.lean) |
+| Lemmas 7.10–7.11 | `KIP126.Main.theta5_square_nonzero_detection_choice_equivalence`、`KIP126.Main.eta_extension_detection_choice_equivalence` | [ChoiceIndependence/Standard](KIP126/Main/ChoiceIndependence/Standard.lean) |
 | Lemma 7.14 | `KIP126.Main.SectionSeven.lemma_7_14_alpha_one_exists` | [SectionSeven/AlphaOne](KIP126/Main/SectionSeven/AlphaOne.lean) |
 | Lemma 7.16 | `KIP126.Main.SectionSeven.lemma_7_16_toda_bracket_detected` | [TodaDetection](KIP126/Main/SectionSeven/TodaDetection.lean) |
 | Corollary 7.18 | `KIP126.Main.SectionSeven.corollary_7_18_h0_extension` | [H0Extension](KIP126/Main/SectionSeven/H0Extension.lean) |
 | Lemma 7.20 | `KIP126.Main.SectionSeven.lemma_7_20_nu_extension` | [NuExtension/NinthQuotient](KIP126/Main/SectionSeven/NuExtension/NinthQuotient.lean) |
 
-编号按本仓库论文核对；7.12 是 Remark。代码的证明依赖顺序不完全等同论文叙述顺序，具体说明见对应文件。`ChoiceIndependence` 下的两个 `Prop` 定义仍只是命题陈述，不作为已证明定理列入上表。
+编号按本仓库论文核对；7.12 是 Remark。代码的证明依赖顺序不完全等同论文叙述顺序，具体说明见对应文件。`ChoiceIndependence` 下保留原来的两个 `Prop` 定义，并分别由 `any_choice_criterion_of_theorems` 与 `square_and_eta_detection_choice_equivalence_proved` 从现有文献和计算输入证明。标准背景入口使用同一组相关见证；还导出任意合法 θ₅ 的 `delta_h6_square_eq_lambda_eta_theta_square` 边界公式。
 
 最终陈述保持 develop 的固定标准球面 Adams 谱序列中的非零永久存活：
 
@@ -70,7 +72,9 @@ python3 scripts/check-source-inventory.py
 lake build
 ```
 
-源代码检查覆盖目录、依赖关系及精确公理／待补清单；构建包含 `Tests.Architecture` 和 `Tests.Trust`，核验最终类型、两组假设的相关性并报告实际证明依赖。协作约定见 [AGENTS.md](AGENTS.md)。
+源代码检查覆盖目录、依赖关系及精确公理／待补清单；构建包含 `Tests.Architecture` 和 `Tests.Trust`，核验最终类型、两组假设的相关性并报告实际证明依赖。`Tests.RemoteMerge` 检查迁入结果的公共可见性、`r = 0` 端点和实际公理依赖，禁止这些新结果依赖 `sorry`。协作约定见 [AGENTS.md](AGENTS.md)。
+
+[remote-develop-merge.json](metadata/remote-develop-merge.json) 记录远程 develop 至 `edbb648` 的逐项合并、源文件校验和及公共接口映射。本地四层结构与已有证明保留；迁入选择无关性、全自然数参数判据、永久存活传输及 Milnor 单位与余循环代表构造。远程新增但尚未证明的源识别接口不用于替换本地固定完备化背景，也不引入其占位证明。
 
 [input-layer-migration.json](metadata/input-layer-migration.json) 记录本次内容分类、模块迁移和背景参数化；[mathematical-naming-audit.json](metadata/mathematical-naming-audit.json) 记录全仓逐主题审查、改名映射和保留数学术语的理由；[mathematical-names.json](metadata/mathematical-names.json) 保留首轮调整记录；[develop-migration.json](metadata/develop-migration.json) 记录此前迁入时的源文件映射与哈希，保留为历史记录。[external-inputs.json](metadata/external-inputs.json) 是活动来源清单；[develop-external-inputs.json](metadata/develop-external-inputs.json) 是上游原始快照，其中历史路径不是当前接口。文献材料保存在 [Sources](Sources)。Blueprint 的迁移与检查继续延后。
 

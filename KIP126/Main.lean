@@ -7,6 +7,7 @@ public import KIP126.Main.Computation.Vanishing
 public import KIP126.Main.H6SquarePermanent
 public import KIP126.Main.ChoiceIndependence.BJMInduction
 public import KIP126.Main.ChoiceIndependence.DetectionEquivalence
+public import KIP126.Main.ChoiceIndependence.Standard
 public import KIP126.Main.DifferentialReduction.D12Criterion
 public import KIP126.Main.DifferentialReduction.OnlyD12
 public import KIP126.Main.ExtensionObstruction.EtaExtension
