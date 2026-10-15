@@ -1,11 +1,9 @@
 module
 
 public import KIP126.Def.SpectralSequence.Computation.Proofs
-import all KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.SpectralSequence.Basic.Category.Proofs
-import all KIP126.Def.SpectralSequence.Basic.Category.Proofs
 
-@[expose] section
+@[expose] public section
 
 
 /-!
@@ -16,7 +14,7 @@ No injectivity is assumed, so these results deliberately make no assertion
 that a nonzero class stays nonzero.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -28,7 +26,7 @@ variable {R : Type u} [Ring R]
 through any reindexing of the degrees, provided the starting pages agree.
 Both displayed maps are the canonical quotient maps of this same `SSDataMorphism`.
 No additivity of the reindexing or compatibility with differentials is needed. -/
-public theorem SSDataMorphism.representsOnPage_reindexed
+theorem SSDataMorphism.representsOnPage_reindexed
     {E E' : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)}
     {τ : (ℤ × ℤ) → (ℤ × ℤ)}
     (f : SSDataMorphism (ℤ × ℤ) E.ssData (fun p => E'.ssData (τ p)))
@@ -73,7 +71,7 @@ public theorem SSDataMorphism.representsOnPage_reindexed
 induced quotient maps commute with the actual differentials. The reindexing
 need only respect each differential translation; it need not be additive.
 The commutation premise is a morphism law to be proved for any actual model. -/
-public theorem SSDataMorphism.hasDifferential_reindexed
+theorem SSDataMorphism.hasDifferential_reindexed
     {E E' : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)}
     {τ : (ℤ × ℤ) → (ℤ × ℤ)}
     (f : SSDataMorphism (ℤ × ℤ) E.ssData (fun p => E'.ssData (τ p)))
@@ -121,7 +119,7 @@ public theorem SSDataMorphism.hasDifferential_reindexed
     simpa only [ModuleCat.comp_apply, hd] using hz
 
 /-- A common cycle representative maps to a common cycle representative. -/
-public theorem SpectralSequenceMorphism.representsOnPage
+theorem SpectralSequenceMorphism.representsOnPage
     {E E' : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)}
     (f : SpectralSequenceMorphism E E') {r : ℤ} {p : ℤ × ℤ}
     {x : E.Page 2 p} {y : E.Page r p} (h : RepresentsOnPage E r p x y) :
@@ -131,7 +129,7 @@ public theorem SpectralSequenceMorphism.representsOnPage
 
 /-- Differential equations between named E₂ representatives are natural.
 The image equation can have zero source or target. -/
-public theorem SpectralSequenceMorphism.hasDifferential
+theorem SpectralSequenceMorphism.hasDifferential
     {E E' : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)}
     (f : SpectralSequenceMorphism E E') {r : ℤ} {p q : ℤ × ℤ}
     {x : E.Page 2 p} {y : E.Page 2 q} (h : HasDifferential E r p q x y) :
@@ -146,4 +144,4 @@ public theorem SpectralSequenceMorphism.hasDifferential
       convert f.pageMap_comm_d r p using 1 <;> rfl) h
   convert hf using 1 <;> rfl
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

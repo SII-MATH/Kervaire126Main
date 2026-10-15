@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Interface proofs for filtered-complex `PreSS` data
+# Cycle-boundary and differential identities for filtered-complex `PreSS` data
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -36,4 +36,4 @@ theorem toPreSS_d_nat (FC : FilteredComplex C) (bnd : FC.IsBounded)
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

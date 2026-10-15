@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.ModuleQuotient.Data
+public import KIP126.Def.SpectralSequence.ModuleQuotient.Data
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 universe u v
@@ -117,4 +117,4 @@ theorem subobject_quotient_iso_of_linearEquiv {N : ModuleCat.{v} R}
     simp only [q, cokernel.mapIso_hom, cokernel.map, cokernel.π_desc]
   exact congrArg (fun f => f.hom a) hq
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

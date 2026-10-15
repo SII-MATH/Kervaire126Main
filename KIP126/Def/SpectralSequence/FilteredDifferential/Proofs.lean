@@ -1,16 +1,16 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredDifferential.SquareZero
-import all KIP126.Def.SpectralSequence.FilteredDifferential.Cycles
-import all KIP126.Def.SpectralSequence.FilteredDifferential.Boundaries
+public import KIP126.Def.SpectralSequence.FilteredDifferential.SquareZero
+public import KIP126.Def.SpectralSequence.FilteredDifferential.Cycles
+public import KIP126.Def.SpectralSequence.FilteredDifferential.Boundaries
 
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
 
-@[expose] section
+@[expose] public section
 
 /-! Proofs for the canonical filtered-complex page differential. -/
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex
+namespace KIP126.SpectralSequence.FilteredComplex
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -189,4 +189,4 @@ theorem pageDifferential_of_strict_lifts (FC : FilteredComplex C)
         _ = yl ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow := hamb
     exact FC.pageDifferential_on_cycle_kernel s k n u yl hv hyl0
 
-end KIP126.Core.SpectralSequence.FilteredComplex
+end KIP126.SpectralSequence.FilteredComplex

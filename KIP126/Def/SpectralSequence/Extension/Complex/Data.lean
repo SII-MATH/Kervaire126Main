@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.Extension.Proofs
+public import KIP126.Def.SpectralSequence.Extension.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # The canonical two-term complex
 -/
 
-namespace KIP126.Core.SpectralSequence.BoundedExtension
+namespace KIP126.SpectralSequence.BoundedExtension
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -28,12 +28,11 @@ noncomputable def twoTermComplex (X₁ X₂ : C) (f : X₁ ⟶ X₂) : ChainComp
 
 /-- Data for a bounded two-term extension at one graded stem.
 
-The filtered complex is the canonical computational object.  The `two_term`
-field records that no other chain degree contributes; endpoint and convergence
-witnesses are supplied by the existing endpoint/convergence APIs when a
-downstream construction needs them. -/
+The `two_term` condition says that the filtered complex vanishes outside
+chain degrees 1 and 0. Convergence and identifications of its endpoint
+groups are separate mathematical properties. -/
 structure TwoTermData where
   complex : FilteredComplex C
   two_term : ∀ k : ℤ, k ≠ 1 → k ≠ 0 → IsZero (complex.complex.X k)
 
-end KIP126.Core.SpectralSequence.BoundedExtension
+end KIP126.SpectralSequence.BoundedExtension

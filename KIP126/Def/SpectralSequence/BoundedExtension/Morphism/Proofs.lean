@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Data
+public import KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Properties of the historical filtered-complex morphism API
+# Properties of filtration-preserving chain maps
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -52,4 +52,4 @@ theorem ext {FC₁ FC₂ : FilteredComplex C}
 
 end FilteredComplexMorphism
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

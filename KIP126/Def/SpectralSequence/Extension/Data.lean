@@ -1,9 +1,9 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import KIP126.Def.Algebra.Completion.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Bounded extension spectral sequences
@@ -11,14 +11,14 @@ import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
 This module records the bounded two-term filtered-complex data used by an
 extension spectral sequence.  The construction follows ESS-compile's
 `Truncation.lean` (commit `11b9ad8`) and KIP-infra's `BoundedExtension.lean`
-(commit `65de864`), translated to the canonical KIP126 `FilteredComplex` API.
+(commit `65de864`), expressed using the canonical KIP126 `FilteredComplex`.
 The corresponding Blueprint source is
 `blueprint/src/chapters/extension_spectral_sequences.tex`, node
 `def:filtered-two-term-complex`; endpoint and convergence witnesses are kept
 in the existing endpoint module rather than duplicated here.
 -/
 
-namespace KIP126.Core.SpectralSequence.BoundedExtension
+namespace KIP126.SpectralSequence.BoundedExtension
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -26,12 +26,11 @@ universe u v
 
 variable {C : Type u} [CategoryTheory.Category.{v} C] [Abelian C]
 
-/-! ### Two-term complex helpers
+/-! ### Two-term complexes
 
-These small constructions are the reusable part of the historical bounded
-extension file.  They are stated independently of the spectral-sequence
-adapter, so later ESS constructions can choose the canonical `FilteredComplex`
-representation without introducing a second filtered-complex type. -/
+A map `X₁ ⟶ X₂` determines a complex supported in degrees 1 and 0.
+Filtrations of the two objects induce the filtered complex used to define
+the extension spectral sequence. -/
 
 /-- The graded object supported in degrees `1` and `0`. -/
 noncomputable def twoTermObj (X₁ X₂ : C) : ℤ → C := fun k =>
@@ -53,4 +52,4 @@ noncomputable def twoTermFil {X₁ X₂ : C}
   else if h₀ : k = 0 then h₀ ▸ fil₂ s
   else ⊤
 
-end KIP126.Core.SpectralSequence.BoundedExtension
+end KIP126.SpectralSequence.BoundedExtension

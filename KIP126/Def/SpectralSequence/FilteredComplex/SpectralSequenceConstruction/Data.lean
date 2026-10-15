@@ -1,18 +1,18 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Proofs
-import all KIP126.Def.SpectralSequence.FilteredDifferential.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Proofs
+public import KIP126.Def.SpectralSequence.FilteredDifferential.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Spectral-sequence assembly for a filtered complex
+# The spectral sequence of a filtered complex
 
-The data are supplied by `FilteredComplex.toPreSS`; this layer discharges the
-three spectral-sequence laws using the finite-page proofs.
+The data of `FilteredComplex.toPreSS` satisfy the three spectral-sequence
+axioms by the finite-page lemmas.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -68,4 +68,4 @@ noncomputable def toSpectralSequence (FC : FilteredComplex C)
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

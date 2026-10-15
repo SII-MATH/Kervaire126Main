@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+public import KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 universe u v
@@ -32,4 +32,4 @@ noncomputable def submoduleCokernelIso (B Z : Submodule R M) (h : B ≤ Z) :
   (Submodule.quotEquivOfEq _ _ (by
     exact Submodule.range_inclusion B Z h)).toModuleIso
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

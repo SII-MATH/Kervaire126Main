@@ -1,8 +1,8 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Quotient pages of a filtered complex
@@ -11,7 +11,7 @@ The cycle and boundary subobjects determine these objects directly. This
 module adds no alternative spectral-sequence structure.
 -/
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex
+namespace KIP126.SpectralSequence.FilteredComplex
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -30,4 +30,4 @@ noncomputable def pageπ (FC : FilteredComplex C) (s k : ℤ) (r : WithTop ℕ) 
   cokernel.π (Subobject.ofLE (FC.boundarySubobject s k r)
     (FC.cycleSubobject s k r) (FC.B_le_Z_aux s k r))
 
-end KIP126.Core.SpectralSequence.FilteredComplex
+end KIP126.SpectralSequence.FilteredComplex

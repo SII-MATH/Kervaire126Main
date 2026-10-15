@@ -1,12 +1,11 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
-import all KIP126.Def.SpectralSequence.Basic.Data
 public import Mathlib.Algebra.Category.ModuleCat.Abelian
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -14,7 +13,7 @@ universe u v
 
 /-- Successor-page representatives in the internal nested-subobject model.
 This uses one next-cycle representative for both quotient classes. -/
-public def NextPageRelation {R : Type u} [Ring R]
+def NextPageRelation {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)) (r : ℤ)
     (p : ℤ × ℤ) (x : E.Page r p) (y : E.Page (r + 1) p) : Prop :=
   let D := E.ssData p
@@ -30,7 +29,7 @@ public def NextPageRelation {R : Type u} [Ring R]
 
 /-- A specified page class has a common Z∞ representative whose E∞ image is
 nonzero. This is internal SSData reasoning, with no Mathlib SS dependency. -/
-public def NonzeroSurvival {R : Type u} [Ring R]
+def NonzeroSurvival {R : Type u} [Ring R]
     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
     (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
   let D := E.ssData p
@@ -39,4 +38,4 @@ public def NonzeroSurvival {R : Type u} [Ring R]
     (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ D.pageπ n) z = x ∧
       D.pageπ ⊤ z ≠ 0
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

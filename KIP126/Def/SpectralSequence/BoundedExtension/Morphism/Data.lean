@@ -1,18 +1,17 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Historical filtered-complex morphism API
+# Filtration-preserving chain maps and associated-graded maps
 
-The old `FilteredComplexMorphism` is represented by KIP126's canonical
-`FilteredComplex.Morphism`.  Compatibility accessors preserve the former API
-without installing a second category structure on filtered complexes.
+`FilteredComplexMorphism` denotes a filtration-preserving chain map.
+Its maps on associated-graded objects are induced by the same chain map.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -20,14 +19,13 @@ universe u v
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
-/-- Compatibility name for KIP126's canonical filtration-preserving chain
-map. -/
+/-- A filtration-preserving chain map. -/
 abbrev FilteredComplexMorphism (FC₁ FC₂ : FilteredComplex C) :=
   FilteredComplex.Morphism FC₁ FC₂
 
 namespace FilteredComplexMorphism
 
-/-- Historical degreewise-map accessor. -/
+/-- The map in each chain degree. -/
 @[reducible] def f {FC₁ FC₂ : FilteredComplex C}
     (g : FilteredComplexMorphism FC₁ FC₂) (k : ℤ) :
     FC₁.A k ⟶ FC₂.A k :=
@@ -41,4 +39,4 @@ noncomputable def assocGradedMap
 
 end FilteredComplexMorphism
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

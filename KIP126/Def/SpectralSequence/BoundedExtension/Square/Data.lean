@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.BoundedExtension
+namespace KIP126.SpectralSequence.BoundedExtension
 open CategoryTheory
 universe u v
 variable {C : Type u} [Category.{v} C] [Abelian C]
@@ -19,4 +19,4 @@ noncomputable def twoTermMap {X₁ X₂ Y₁ Y₂ : C}
     eqToHom (by simp [twoTermObj, h]) ≫ b ≫ eqToHom (by simp [twoTermObj, h])
   else 0
 
-end KIP126.Core.SpectralSequence.BoundedExtension
+end KIP126.SpectralSequence.BoundedExtension

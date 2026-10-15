@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Construction of historical filtered-complex morphisms
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -19,7 +19,7 @@ variable {C : Type u} [Category.{v} C] [Abelian C]
 namespace FilteredComplexMorphism
 
 /-- Constructor with the argument order and one-index differential convention
-of the historical API. -/
+of the associated-graded construction. -/
 noncomputable def mk {FC₁ FC₂ : FilteredComplex C}
     (f : ∀ k, FC₁.A k ⟶ FC₂.A k)
     (comm_d : ∀ k, f k ≫ FC₂.d k = FC₁.d k ≫ f (k - 1))
@@ -34,4 +34,4 @@ noncomputable def mk {FC₁ FC₂ : FilteredComplex C}
 
 end FilteredComplexMorphism
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

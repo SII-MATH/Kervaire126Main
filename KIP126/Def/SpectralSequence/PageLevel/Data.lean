@@ -2,12 +2,12 @@ module
 
 public import Mathlib.Data.Int.Basic
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 /-- Adams 谱序列的有效显示页；下界作为数据的一部分保存。 -/
-public structure AdamsPage where
+structure AdamsPage where
   value : ℕ
   valid : 2 ≤ value
   deriving DecidableEq
@@ -15,38 +15,38 @@ public structure AdamsPage where
 namespace AdamsPage
 
 /-- Adams 谱序列的第二页。 -/
-public def two : AdamsPage := ⟨2, le_rfl⟩
+def two : AdamsPage := ⟨2, le_rfl⟩
 
-public def toNat (r : AdamsPage) : ℕ := r.value
+def toNat (r : AdamsPage) : ℕ := r.value
 
-public def toInt (r : AdamsPage) : ℤ := r.value
+def toInt (r : AdamsPage) : ℤ := r.value
 
 /-- 从自然数构造 Adams 页时必须显式提供有效性证明。 -/
-public def ofNat (r : ℕ) (hr : 2 ≤ r) : AdamsPage := ⟨r, hr⟩
+def ofNat (r : ℕ) (hr : 2 ≤ r) : AdamsPage := ⟨r, hr⟩
 
-/-- 整数页只在证明有效下界后才能进入 Adams 页接口。 -/
-public def ofInt (r : ℤ) (hr : 2 ≤ r) : AdamsPage :=
+/-- Adams 页的整数指标需要满足给定的有效下界。 -/
+def ofInt (r : ℤ) (hr : 2 ≤ r) : AdamsPage :=
   ⟨r.toNat, by simpa using Int.toNat_le_toNat hr⟩
 
 end AdamsPage
 
 /-- 扩张谱序列的长度；零长度是合法的，因此不带 Adams 页下界。 -/
-public structure ExtensionLength where
+structure ExtensionLength where
   value : ℕ
   deriving DecidableEq
 
 namespace ExtensionLength
 
-public def zero : ExtensionLength := ⟨0⟩
+def zero : ExtensionLength := ⟨0⟩
 
-public def ofNat (n : ℕ) : ExtensionLength := ⟨n⟩
+def ofNat (n : ℕ) : ExtensionLength := ⟨n⟩
 
-public def toNat (n : ExtensionLength) : ℕ := n.value
+def toNat (n : ExtensionLength) : ℕ := n.value
 
-public def toInt (n : ExtensionLength) : ℤ := n.value
+def toInt (n : ExtensionLength) : ℤ := n.value
 
 /-- 只有长度至少为二时，才能显式把扩张长度解释为 Adams 页。 -/
-public def toAdamsPage (n : ExtensionLength) (hn : 2 ≤ n.value) : AdamsPage :=
+def toAdamsPage (n : ExtensionLength) (hn : 2 ≤ n.value) : AdamsPage :=
   ⟨n.value, hn⟩
 
 end ExtensionLength
@@ -54,11 +54,11 @@ end ExtensionLength
 namespace AdamsPage
 
 /-- 把 Adams 页数值显式解释为扩张长度。 -/
-public def toExtensionLength (r : AdamsPage) : ExtensionLength := ⟨r.value⟩
+def toExtensionLength (r : AdamsPage) : ExtensionLength := ⟨r.value⟩
 
 end AdamsPage
 
-public structure PageLevelConvention where
+structure PageLevelConvention where
   firstPage : ℕ
   admissibleFrom : ℤ
   page : ℕ → ℤ
@@ -74,13 +74,13 @@ public structure PageLevelConvention where
 namespace PageLevelConvention
 
 /-- 在 Adams 页类型上读取底层整数页。 -/
-public def pageAtAdams (P : PageLevelConvention) (r : AdamsPage) : ℤ :=
+def pageAtAdams (P : PageLevelConvention) (r : AdamsPage) : ℤ :=
   P.page r.toNat
 
 /-- 在扩张长度类型上读取底层整数页。 -/
-public def pageAtExtension (P : PageLevelConvention) (n : ExtensionLength) : ℤ :=
+def pageAtExtension (P : PageLevelConvention) (n : ExtensionLength) : ℤ :=
   P.page n.toNat
 
 end PageLevelConvention
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

@@ -1,17 +1,16 @@
 module
 
-public import KIP126.Def.SpectralSequence.Computation.State.Proofs
-import all KIP126.Def.SpectralSequence.Computation.State.Proofs
-import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+public import KIP126.Def.SpectralSequence.Computation.CyclesAndBoundaries.Proofs
+public import KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
 
-@[expose] section
+@[expose] public section
 
 
 /-! Third-page representatives for the existing module-valued internal
 spectral sequence. All pages and representatives use the original SSData
 quotients. No computation output, coordinate comparison, or coverage premise
 enters these generic statements. -/
-namespace KIP126.Core.SpectralSequence.PageThree
+namespace KIP126.SpectralSequence.PageThree
 
 open CategoryTheory CategoryTheory.Limits
 universe u v
@@ -20,7 +19,7 @@ variable {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)}
 
 /-- Every actual E₃ element has an E₂ label with the same common cycle
 representative. No nonvanishing or basis assumption is required. -/
-public theorem exists_representative (p : ℤ × ℤ) (y : E.Page 3 p) :
+theorem exists_representative (p : ℤ × ℤ) (y : E.Page 3 p) :
     ∃ x : E.Page 2 p, RepresentsOnPage E 3 p x y := by
   let D := E.ssData p
   let n : WithTop ℕ := ↑(2 - E.r₀).toNat
@@ -34,7 +33,7 @@ public theorem exists_representative (p : ℤ × ℤ) (y : E.Page 3 p) :
 
 /-- A full E₂ label admits an E₃ representative exactly when its actual d₂
 is zero. This ranges over every degree and every label. -/
-public theorem reachesPage_iff_d2_eq_zero (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
+theorem reachesPage_iff_d2_eq_zero (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (x : E.Page 2 p) : ReachesPage E 3 p x ↔ E.d 2 p x = 0 := by
   have hm : (3 - E.r₀).toNat = (2 - E.r₀).toNat + 1 := by omega
   have hk := congrArg (ModuleCat.subobjectModule (E.Page 2 p)) (E.Z_succ 2 p hstart)
@@ -60,7 +59,7 @@ public theorem reachesPage_iff_d2_eq_zero (hstart : E.r₀ ≤ 2) (p : ℤ × �
     obtain ⟨z, hz⟩ := hmem
     exact ⟨(E.ssData p).pageπ ↑(3 - E.r₀).toNat z, by decide, z, hz, rfl⟩
 
-theorem represents_sub {r : ℤ} {p : ℤ × ℤ}
+private theorem represents_sub {r : ℤ} {p : ℤ × ℤ}
     {a b : E.Page 2 p} {x y : E.Page r p}
     (ha : RepresentsOnPage E r p a x) (hb : RepresentsOnPage E r p b y) :
     RepresentsOnPage E r p (a - b) (x - y) := by
@@ -70,7 +69,7 @@ theorem represents_sub {r : ℤ} {p : ℤ × ℤ}
     by simp only [map_sub, hzx, hwy]⟩
 
 /-- Cumulative second-page boundaries have the zero third-page representative. -/
-public theorem boundary_represents_zero {p : ℤ × ℤ} {x : E.Page 2 p}
+private theorem boundary_represents_zero {p : ℤ × ℤ} {x : E.Page 2 p}
     (h : IsBoundaryBy E 2 p x) : RepresentsOnPage E 3 p x 0 := by
   let D := E.ssData p
   let n : WithTop ℕ := ↑(2 - E.r₀).toNat
@@ -85,7 +84,7 @@ public theorem boundary_represents_zero {p : ℤ × ℤ} {x : E.Page 2 p}
 /-- The cumulative boundary condition after d₂ is precisely the image of
 that actual d₂. Indexing the target by `p + diffDeg 2` avoids choosing any
 unrelated grading transport; as p varies this covers every target degree. -/
-public theorem isBoundaryBy_iff_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
+theorem isBoundaryBy_iff_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     (x : E.Page 2 (p + E.diffDeg 2)) :
     IsBoundaryBy E 2 (p + E.diffDeg 2) x ↔ x ∈ LinearMap.range (E.d 2 p).hom := by
   have hm : (2 + 1 - E.r₀).toNat = (2 - E.r₀).toNat + 1 := by omega
@@ -114,7 +113,7 @@ public theorem isBoundaryBy_iff_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ ×
     exact ⟨by decide, b, by
       simpa only [← Category.assoc, Subobject.ofLE_comp_ofLE] using hx⟩
 
-theorem represents_add {r : ℤ} {p : ℤ × ℤ}
+private theorem represents_add {r : ℤ} {p : ℤ × ℤ}
     {a b : E.Page 2 p} {x y : E.Page r p}
     (ha : RepresentsOnPage E r p a x) (hb : RepresentsOnPage E r p b y) :
     RepresentsOnPage E r p (a + b) (x + y) := by
@@ -126,7 +125,7 @@ theorem represents_add {r : ℤ} {p : ℤ × ℤ}
 /-- Two E₂ labels represent the same specified E₃ element exactly when
 their difference is an incoming actual d₂ boundary. Only one label is
 assumed to represent that element; the converse constructs the other. -/
-public theorem represents_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
+theorem represents_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     {a b : E.Page 2 (p + E.diffDeg 2)} {y : E.Page 3 (p + E.diffDeg 2)}
     (ha : RepresentsOnPage E 3 (p + E.diffDeg 2) a y) :
     RepresentsOnPage E 3 (p + E.diffDeg 2) b y ↔
@@ -143,7 +142,7 @@ public theorem represents_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ 
 
 /-- Equality of the actual third-page classes is detected by the complete
 incoming d₂ image, without a finite-coordinate restriction. -/
-public theorem equal_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
+theorem equal_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)
     {a b : E.Page 2 (p + E.diffDeg 2)} {x y : E.Page 3 (p + E.diffDeg 2)}
     (ha : RepresentsOnPage E 3 (p + E.diffDeg 2) a x)
     (hb : RepresentsOnPage E 3 (p + E.diffDeg 2) b y) :
@@ -157,4 +156,4 @@ public theorem equal_iff_sub_mem_d2_range (hstart : E.r₀ ≤ 2) (p : ℤ × �
     _ ↔ a - b ∈ LinearMap.range (E.d 2 p).hom :=
       isBoundaryBy_iff_mem_d2_range hstart p (a - b)
 
-end KIP126.Core.SpectralSequence.PageThree
+end KIP126.SpectralSequence.PageThree

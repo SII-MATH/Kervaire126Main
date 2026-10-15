@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Data
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Data
+public import KIP126.Def.Algebra.Filtration.Predicates
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Predicates for the historical filtered-complex API
+# Boundedness and cycle-boundary predicates for filtered complexes
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -52,4 +52,4 @@ def RepresentativeRelation (FC : FilteredComplex C)
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

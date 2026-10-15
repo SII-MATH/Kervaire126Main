@@ -1,18 +1,17 @@
 module
 
-import all KIP126.Def.SpectralSequence.Extension.Data
+public import KIP126.Def.SpectralSequence.Extension.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Historical two-term extension data
+# Two-term extension complexes
 
-The public names are kept in `KIP126.Core.SpectralSequence`; their
-implementations delegate to the canonical two-term data already present in
-`BoundedExtension`.
+The two-term graded object, differential and filtration are the
+constructions defined in `BoundedExtension`.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -35,4 +34,4 @@ noncomputable def twoTermFil {X₁ X₂ : C}
     ℤ → (k : ℤ) → Subobject (twoTermObj X₁ X₂ k) :=
   BoundedExtension.twoTermFil fil₁ fil₂
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

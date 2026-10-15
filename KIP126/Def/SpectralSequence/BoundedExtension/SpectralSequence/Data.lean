@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
+public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # The bounded extension spectral sequence
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -77,4 +77,4 @@ noncomputable def BoundedExtensionSS.d0
     ext.e0PageAtOne t s ⟶ ext.e0PageAtZero t s :=
   (ext.complex t).assocGradedDiff s 1
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

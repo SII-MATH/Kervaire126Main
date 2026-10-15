@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 open CategoryTheory
 universe u v
@@ -27,4 +27,4 @@ noncomputable def equationsMap (f : Morphism FC GD) (T : C) (r s k : ℤ) :
   map_zero' := by simp
   map_add' _ _ := by simp [Preadditive.add_comp]
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

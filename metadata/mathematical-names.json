@@ -1,0 +1,2481 @@
+{
+  "schema_version": 1,
+  "renamed_at_utc": "2026-10-15T08:53:27.522100+00:00",
+  "purpose": "Mathematical API and organization; preserve all mathematical fields, statements and proof obligations.",
+  "module_mapping": {
+    "KIP126.Computation.Delivery": "KIP126.Computation.Hypotheses",
+    "KIP126.Def.Solution.Implementation": "KIP126.Def.AdamsSynthetic.Standard.ClassicalContext",
+    "KIP126.Def.Solution.StandardRoute": "KIP126.Def.AdamsSynthetic.Standard.SyntheticContext",
+    "KIP126.Def.Solution.StandardRouteBackground": "KIP126.Def.AdamsSynthetic.Standard.ComparisonLaws",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.AdjoinPoint.Data": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.AdjoinPoint.Data",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.AdjoinPoint.Inclusion": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.AdjoinPoint.Inclusion",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.AdjoinPoint.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.AdjoinPoint.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Colimit.Cells.Data": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Colimit.Cells.Data",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Colimit.Cells.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Colimit.Cells.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Colimit.Cells.Universal.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Colimit.Cells.Universal.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Colimit.Connected.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Colimit.Connected.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Colimit.Instances": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Colimit.Instances",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.HomotopyEquivalence.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.HomotopyEquivalence.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.HomotopyExtension.AdjoinPoint.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.HomotopyExtension.AdjoinPoint.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.HomotopyExtension.Suspension.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.HomotopyExtension.Suspension.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Loop.Data": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Loop.Data",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Suspension.Cell.Boundary": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Suspension.Cell.Boundary",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Suspension.Cell.Iterate.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Suspension.Cell.Iterate.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Suspension.Cell.Pushout.Proofs": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Suspension.Cell.Pushout.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Suspension.Cell": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Suspension.Cell",
+    "KIP126.Def.StableHomotopy.Implementation.BasedSpace.Under.Data": "KIP126.Def.StableHomotopy.Spectra.BasedSpace.Under.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Comparison": "KIP126.Def.StableHomotopy.Spectra.Comparison",
+    "KIP126.Def.StableHomotopy.Implementation.Completion": "KIP126.Def.StableHomotopy.Spectra.Completion",
+    "KIP126.Def.StableHomotopy.Implementation.Data": "KIP126.Def.ClassicalAdams.Context.Data",
+    "KIP126.Def.StableHomotopy.Implementation.FiniteSupport.CWType.Proofs": "KIP126.Def.StableHomotopy.Spectra.FiniteSupport.CWType.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.FiniteSupport.Data": "KIP126.Def.StableHomotopy.Spectra.FiniteSupport.Data",
+    "KIP126.Def.StableHomotopy.Implementation.FiniteSupport.Proofs": "KIP126.Def.StableHomotopy.Spectra.FiniteSupport.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Fixed": "KIP126.Def.ClassicalAdams.Context.Standard",
+    "KIP126.Def.StableHomotopy.Implementation.Generators": "KIP126.Def.StableHomotopy.Spectra.Generators",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Comparison": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Comparison",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Connected.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Connected.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Contraction": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Contraction",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.CubicalComparison": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.CubicalComparison",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Data": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Data",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.DegreeZero": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.DegreeZero",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Fiber": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Fiber",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.FiberIdentification": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.FiberIdentification",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Fibration": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Fibration",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Homotopy.Data": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Homotopy.Data",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Homotopy.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Homotopy.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.LoopCubical": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.LoopCubical",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.PathComparison": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.PathComparison",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Shift": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Shift",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.ShiftProofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.ShiftProofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.Stability.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.Stability.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.StableHomotopy.Equivalence": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.StableHomotopy.Equivalence",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Bond.StableHomotopy": "KIP126.Def.StableHomotopy.Spectra.HF2.Bond.StableHomotopy",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Simplicial.CW.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Simplicial.CW.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Simplicial.Data": "KIP126.Def.StableHomotopy.Spectra.HF2.Simplicial.Data",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Simplicial.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Simplicial.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.HF2.Topology.Proofs": "KIP126.Def.StableHomotopy.Spectra.HF2.Topology.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.PointSet": "KIP126.Def.StableHomotopy.Spectra.PointSet",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Colimit.Bond": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Colimit.Bond",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Colimit.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Colimit.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Colimit.Evaluation.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Colimit.Evaluation.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Colimit.Level.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Colimit.Level.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Colimit.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Colimit.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Free.CompactFactor.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Free.CompactFactor.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Free.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Free.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Free.Geometry.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Free.Geometry.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Free.Lifting.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Free.Lifting.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Free.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Free.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyFunctor.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyFunctor.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyFunctor.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyFunctor.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Abelian.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Abelian.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Abelian.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Abelian.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Colimit.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Colimit.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Colimit.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Colimit.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Comparison": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Comparison",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Map.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Map.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Map.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Map.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Map.Stability.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Map.Stability.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.HomotopyGroup.System": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.HomotopyGroup.System",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Loop.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Loop.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Path.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Path.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Path.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Path.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Evaluation.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Evaluation.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Geometry.Attachment.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Geometry.Attachment.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Geometry.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Geometry.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Geometry.Refinement.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Geometry.Refinement.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.HomotopyExtension.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.HomotopyExtension.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Lifting.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Lifting.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cells.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cells.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.CompactlyGenerated.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.CompactlyGenerated.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Good.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Good.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.HomotopyExtension.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.HomotopyExtension.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Order.Initial": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Order.Initial",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Order.Model.Comparison": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Order.Model.Comparison",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Order.Model.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Order.Model.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Order.Model.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Order.Model.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Order.Sequence": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Order.Sequence",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Replacement.Cubical.WellBased.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Replacement.Cubical.WellBased.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Representatives.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Representatives.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Representatives.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Representatives.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Bond.Existence.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Bond.Existence.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Bond": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Bond",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Map.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Map.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Map.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Map.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Diagonal.Tail.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Diagonal.Tail.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Good.Predicates": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Good.Predicates",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Smash.Good.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Smash.Good.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Tail.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Tail.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Tail.Proofs": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Tail.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum.Zero.Data": "KIP126.Def.StableHomotopy.Spectra.Prespectrum.Zero.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Prespectrum": "KIP126.Def.StableHomotopy.Spectra.Prespectrum",
+    "KIP126.Def.StableHomotopy.Implementation.Realization.Data": "KIP126.Def.StableHomotopy.Spectra.Realization.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Realization.Proofs": "KIP126.Def.StableHomotopy.Spectra.Realization.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Singular.Cylinder.Data": "KIP126.Def.StableHomotopy.Spectra.Singular.Cylinder.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Singular.Cylinder.Proofs": "KIP126.Def.StableHomotopy.Spectra.Singular.Cylinder.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Singular.Homotopy.Approximation.Proofs": "KIP126.Def.StableHomotopy.Spectra.Singular.Homotopy.Approximation.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Singular": "KIP126.Def.StableHomotopy.Spectra.Singular",
+    "KIP126.Def.StableHomotopy.Implementation.Smash": "KIP126.Def.StableHomotopy.Spectra.Smash",
+    "KIP126.Def.StableHomotopy.Implementation.Sphere.Representatives.Data": "KIP126.Def.StableHomotopy.Spectra.Sphere.Representatives.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Sphere.Representatives.Proofs": "KIP126.Def.StableHomotopy.Spectra.Sphere.Representatives.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Suspension.Compact.Proofs": "KIP126.Def.StableHomotopy.Spectra.Suspension.Compact.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Suspension.Data": "KIP126.Def.StableHomotopy.Spectra.Suspension.Data",
+    "KIP126.Def.StableHomotopy.Implementation.Suspension.Proofs": "KIP126.Def.StableHomotopy.Spectra.Suspension.Proofs",
+    "KIP126.Def.StableHomotopy.Implementation.Tensor": "KIP126.Def.StableHomotopy.Spectra.Tensor",
+    "KIP126.Def.StageInput.Foundation": "KIP126.Def.AdamsSynthetic.Standard.Foundation",
+    "KIP126.Def.StageInput.Milnor": "KIP126.Def.AdamsSynthetic.Standard.Milnor",
+    "KIP126.Def.StageInput.StandardSphere.Algebra.Components.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Algebra.Components.Data",
+    "KIP126.Def.StageInput.StandardSphere.Algebra.Components.Proofs": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Algebra.Components.Proofs",
+    "KIP126.Def.StageInput.StandardSphere.Algebra.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Algebra.Data",
+    "KIP126.Def.StageInput.StandardSphere.Algebra.Proofs": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Algebra.Proofs",
+    "KIP126.Def.StageInput.StandardSphere.Background.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Background.Data",
+    "KIP126.Def.StageInput.StandardSphere.Background.Fixed": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Background.Fixed",
+    "KIP126.Def.StageInput.StandardSphere.Background.Proofs": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Background.Proofs",
+    "KIP126.Def.StageInput.StandardSphere.Classes.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Classes.Data",
+    "KIP126.Def.StageInput.StandardSphere.Classes.Family": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Classes.Family",
+    "KIP126.Def.StageInput.StandardSphere.EInfty.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.EInfty.Data",
+    "KIP126.Def.StageInput.StandardSphere.EInfty.Proofs": "KIP126.Def.AdamsSynthetic.Standard.Sphere.EInfty.Proofs",
+    "KIP126.Def.StageInput.StandardSphere.Route.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.SyntheticContext.Data",
+    "KIP126.Def.StageInput.StandardSphere.Route.Fixed": "KIP126.Def.AdamsSynthetic.Standard.Sphere.SyntheticContext.Fixed",
+    "KIP126.Def.StageInput.StandardSphere.Sequence.Data": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Sequence.Data",
+    "KIP126.Def.StageInput.StandardSphere.Sequence.Proofs": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Sequence.Proofs",
+    "KIP126.Def.StageInput.StandardSphere.Tmf.Predicates": "KIP126.Def.AdamsSynthetic.Standard.Sphere.Tmf.Predicates",
+    "KIP126.Def.StageInput": "KIP126.Def.AdamsSynthetic.Standard",
+    "KIP126.Literature.Delivery": "KIP126.Literature.Hypotheses",
+    "KIP126.Main.Axiom.Challenge2": "KIP126.Main.ExternalHypotheses",
+    "KIP126.Main.Inputs.Challenge2": "KIP126.Main.ExternalHypotheses.Data",
+    "KIP126.Main.Solution.ChoiceIndependence.any_choice_criterion": "KIP126.Main.ChoiceIndependence.any_choice_criterion",
+    "KIP126.Main.Solution.ChoiceIndependence.square_and_eta_detection_choice_equivalence": "KIP126.Main.ChoiceIndependence.square_and_eta_detection_choice_equivalence",
+    "KIP126.Main.Solution.Computation.AdamsOneLine.H6": "KIP126.Main.Computation.AdamsOneLine.H6",
+    "KIP126.Main.Solution.Computation.Dimension": "KIP126.Main.Computation.Dimension",
+    "KIP126.Main.Solution.Computation.High125": "KIP126.Main.Computation.High125",
+    "KIP126.Main.Solution.Computation.Lambda": "KIP126.Main.Computation.Lambda",
+    "KIP126.Main.Solution.Computation.LinProgram.Basis.Data": "KIP126.Main.Computation.LinProgram.Basis.Data",
+    "KIP126.Main.Solution.Computation.LinProgram.Basis.Proofs": "KIP126.Main.Computation.LinProgram.Basis.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Differentials": "KIP126.Main.Computation.LinProgram.Differentials",
+    "KIP126.Main.Solution.Computation.LinProgram.E2": "KIP126.Main.Computation.LinProgram.E2",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Basis.Data": "KIP126.Main.Computation.LinProgram.Interpretation.Basis.Data",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Basis.Proofs": "KIP126.Main.Computation.LinProgram.Interpretation.Basis.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Classes.Data": "KIP126.Main.Computation.LinProgram.Interpretation.Classes.Data",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Classes.Proofs": "KIP126.Main.Computation.LinProgram.Interpretation.Classes.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Differentials.Certificate": "KIP126.Main.Computation.LinProgram.Interpretation.Differentials.Certificate",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Differentials.Predicates": "KIP126.Main.Computation.LinProgram.Interpretation.Differentials.Predicates",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Differentials.Proofs": "KIP126.Main.Computation.LinProgram.Interpretation.Differentials.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Presentation.Proofs": "KIP126.Main.Computation.LinProgram.Interpretation.Presentation.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Interpretation.Selected.Proofs": "KIP126.Main.Computation.LinProgram.Interpretation.Selected.Proofs",
+    "KIP126.Main.Solution.Computation.LinProgram.Presentation": "KIP126.Main.Computation.LinProgram.Presentation",
+    "KIP126.Main.Solution.Computation.LowDegrees": "KIP126.Main.Computation.LowDegrees",
+    "KIP126.Main.Solution.Computation.Nonvanishing": "KIP126.Main.Computation.Nonvanishing",
+    "KIP126.Main.Solution.Computation.Reduction": "KIP126.Main.Computation.Reduction",
+    "KIP126.Main.Solution.Computation.Route.Bounds": "KIP126.Main.Computation.Route.Bounds",
+    "KIP126.Main.Solution.Computation.Route.Candidates": "KIP126.Main.Computation.Route.Candidates",
+    "KIP126.Main.Solution.Computation.Route.CofiberAndFiltration": "KIP126.Main.Computation.Route.CofiberAndFiltration",
+    "KIP126.Main.Solution.Computation.Route.Consequences": "KIP126.Main.Computation.Route.Consequences",
+    "KIP126.Main.Solution.Computation.Route.High125": "KIP126.Main.Computation.Route.High125",
+    "KIP126.Main.Solution.Computation.Route.NamedSurvival": "KIP126.Main.Computation.Route.NamedSurvival",
+    "KIP126.Main.Solution.Computation.Route.SphereDifferentials": "KIP126.Main.Computation.Route.SphereDifferentials",
+    "KIP126.Main.Solution.Computation.Route.SphereIncoming": "KIP126.Main.Computation.Route.SphereIncoming",
+    "KIP126.Main.Solution.Computation.Route.SphereSurvival": "KIP126.Main.Computation.Route.SphereSurvival",
+    "KIP126.Main.Solution.Computation.Route.Staircase": "KIP126.Main.Computation.Route.Staircase",
+    "KIP126.Main.Solution.Computation.Route.Stem125Differentials": "KIP126.Main.Computation.Route.Stem125Differentials",
+    "KIP126.Main.Solution.Computation.Route.Stem125Vanishing": "KIP126.Main.Computation.Route.Stem125Vanishing",
+    "KIP126.Main.Solution.Computation.Route": "KIP126.Main.Computation.Route",
+    "KIP126.Main.Solution.Computation.Tmf.Br21": "KIP126.Main.Computation.Tmf.Br21",
+    "KIP126.Main.Solution.Computation.Tmf": "KIP126.Main.Computation.Tmf",
+    "KIP126.Main.Solution.Computation.Vanishing": "KIP126.Main.Computation.Vanishing",
+    "KIP126.Main.Solution.DifferentialReduction.Conclusion": "KIP126.Main.DifferentialReduction.Conclusion",
+    "KIP126.Main.Solution.DifferentialReduction.d12_dichotomy_and_condition_equivalence": "KIP126.Main.DifferentialReduction.d12_dichotomy_and_condition_equivalence",
+    "KIP126.Main.Solution.DifferentialReduction.only_d12_differential_reduction": "KIP126.Main.DifferentialReduction.only_d12_differential_reduction",
+    "KIP126.Main.Solution.ExtensionObstruction.eta_extension_excluded_of_d6_vanishes": "KIP126.Main.ExtensionObstruction.eta_extension_excluded_of_d6_vanishes",
+    "KIP126.Main.Solution.Literature.EtaRows.Proofs": "KIP126.Main.Literature.EtaRows.Proofs",
+    "KIP126.Main.Solution.Literature.HopfCofiber.Data": "KIP126.Main.Literature.HopfCofiber.Data",
+    "KIP126.Main.Solution.Literature.HopfCofiber.Pages.Data": "KIP126.Main.Literature.HopfCofiber.Pages.Data",
+    "KIP126.Main.Solution.Literature.HopfCofiber.Predicates": "KIP126.Main.Literature.HopfCofiber.Predicates",
+    "KIP126.Main.Solution.Literature.Near126.HopfCofiber.Fixed.Data": "KIP126.Main.Literature.Near126.HopfCofiber.Fixed.Data",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Boundaries.Data": "KIP126.Main.Literature.Near126.Sphere.Boundaries.Data",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Boundaries.Proofs": "KIP126.Main.Literature.Near126.Sphere.Boundaries.Proofs",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Conditions.Predicates": "KIP126.Main.Literature.Near126.Sphere.Conditions.Predicates",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Conditions.Proofs": "KIP126.Main.Literature.Near126.Sphere.Conditions.Proofs",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Data": "KIP126.Main.Literature.Near126.Sphere.Data",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Predicates": "KIP126.Main.Literature.Near126.Sphere.Predicates",
+    "KIP126.Main.Solution.Literature.Near126.Sphere.Proofs": "KIP126.Main.Literature.Near126.Sphere.Proofs",
+    "KIP126.Main.Solution.Literature.Near126": "KIP126.Main.Literature.Near126",
+    "KIP126.Main.Solution.Literature.Route.Applicability": "KIP126.Main.Literature.Route.Applicability",
+    "KIP126.Main.Solution.Literature.Route.Inputs": "KIP126.Main.Literature.Route.Inputs",
+    "KIP126.Main.Solution.Literature.Source.Applications": "KIP126.Main.Literature.Source.Applications",
+    "KIP126.Main.Solution.Literature.Source.Route.Adapters": "KIP126.Main.Literature.Source.Route.Adapters",
+    "KIP126.Main.Solution.Literature.Source.Route.BHS": "KIP126.Main.Literature.Source.Route.BHS",
+    "KIP126.Main.Solution.Literature.Source.Route.May": "KIP126.Main.Literature.Source.Route.May",
+    "KIP126.Main.Solution.Literature.Source.Route.RealizationKernel": "KIP126.Main.Literature.Source.Route.RealizationKernel",
+    "KIP126.Main.Solution.Literature.Source.Route.Toda": "KIP126.Main.Literature.Source.Route.Toda",
+    "KIP126.Main.Solution.Route.AlphaOne.Exhaustion": "KIP126.Main.SectionSeven.AlphaOne.Exhaustion",
+    "KIP126.Main.Solution.Route.AlphaOne.Existence": "KIP126.Main.SectionSeven.AlphaOne.Existence",
+    "KIP126.Main.Solution.Route.AlphaOne.Filtration": "KIP126.Main.SectionSeven.AlphaOne.Filtration",
+    "KIP126.Main.Solution.Route.AlphaOne.FiltrationTen": "KIP126.Main.SectionSeven.AlphaOne.FiltrationTen",
+    "KIP126.Main.Solution.Route.AlphaOne.FiniteWindow": "KIP126.Main.SectionSeven.AlphaOne.FiniteWindow",
+    "KIP126.Main.Solution.Route.AlphaOne.LowFiltration": "KIP126.Main.SectionSeven.AlphaOne.LowFiltration",
+    "KIP126.Main.Solution.Route.AlphaOne.Staircase": "KIP126.Main.SectionSeven.AlphaOne.Staircase",
+    "KIP126.Main.Solution.Route.AlphaOne.ThetaFrames": "KIP126.Main.SectionSeven.AlphaOne.ThetaFrames",
+    "KIP126.Main.Solution.Route.AlphaOne": "KIP126.Main.SectionSeven.AlphaOne",
+    "KIP126.Main.Solution.Route.Predicates": "KIP126.Main.Conditions",
+    "KIP126.Main.Solution.Route.Section7.AnyY": "KIP126.Main.SectionSeven.AnyY",
+    "KIP126.Main.Solution.Route.Section7.AnyYHelpers": "KIP126.Main.SectionSeven.AnyYHelpers",
+    "KIP126.Main.Solution.Route.Section7.CnuNoCrossing": "KIP126.Main.SectionSeven.CnuNoCrossing",
+    "KIP126.Main.Solution.Route.Section7.CnuRigidity": "KIP126.Main.SectionSeven.CofiberRigidity",
+    "KIP126.Main.Solution.Route.Section7.Common": "KIP126.Main.SectionSeven.Common",
+    "KIP126.Main.Solution.Route.Section7.ConditionalY": "KIP126.Main.SectionSeven.ConditionalY",
+    "KIP126.Main.Solution.Route.Section7.Final": "KIP126.Main.SectionSeven.Final",
+    "KIP126.Main.Solution.Route.Section7.Indeterminacy": "KIP126.Main.SectionSeven.Indeterminacy",
+    "KIP126.Main.Solution.Route.Section7.MainToda": "KIP126.Main.SectionSeven.MainToda",
+    "KIP126.Main.Solution.Route.Section7.NuFifth": "KIP126.Main.SectionSeven.NuFifth",
+    "KIP126.Main.Solution.Route.Section7.NuNinth": "KIP126.Main.SectionSeven.NuNinth",
+    "KIP126.Main.Solution.Route.Section7.NuTarget": "KIP126.Main.SectionSeven.NuTarget",
+    "KIP126.Main.Solution.Route.Section7.NuTargetHelpers": "KIP126.Main.SectionSeven.NuTargetHelpers",
+    "KIP126.Main.Solution.Route.Section7.ThetaMassey": "KIP126.Main.SectionSeven.ThetaMassey",
+    "KIP126.Main.Solution.Route.Section7.ThetaNoCrossing": "KIP126.Main.SectionSeven.ThetaNoCrossing",
+    "KIP126.Main.Solution.Route.Section7.ThetaShuffle": "KIP126.Main.SectionSeven.ThetaShuffle",
+    "KIP126.Main.Solution.Route.Section7.ThetaToda": "KIP126.Main.SectionSeven.ThetaToda",
+    "KIP126.Main.Solution.Route.Section7.TodaNonempty": "KIP126.Main.SectionSeven.TodaNonempty",
+    "KIP126.Main.Solution.Route.Section7.WeakInitialNonzero": "KIP126.Main.SectionSeven.WeakInitialNonzero",
+    "KIP126.Main.Solution.Route.Section7.WeakRepresentative": "KIP126.Main.SectionSeven.WeakRepresentative",
+    "KIP126.Main.Solution.Route.Section7.WeakYDetection": "KIP126.Main.SectionSeven.WeakYDetection",
+    "KIP126.Main.Solution.Route.Section7": "KIP126.Main.SectionSeven",
+    "KIP126.Main.Solution.Route.Selected.Assembly": "KIP126.Main.SectionSeven.DifferentialCriterion.Assembly",
+    "KIP126.Main.Solution.Route.Selected.ChoiceInvariance": "KIP126.Main.SectionSeven.DifferentialCriterion.ChoiceInvariance",
+    "KIP126.Main.Solution.Route.Selected.ClassicalData": "KIP126.Main.SectionSeven.DifferentialCriterion.ClassicalData",
+    "KIP126.Main.Solution.Route.Selected.DetectionData": "KIP126.Main.SectionSeven.DifferentialCriterion.DetectionData",
+    "KIP126.Main.Solution.Route.Selected.ThetaData": "KIP126.Main.SectionSeven.DifferentialCriterion.ThetaData",
+    "KIP126.Main.Solution.Route.Selected": "KIP126.Main.PropositionSevenEight",
+    "KIP126.Main.Solution.StageInput.Bindings": "KIP126.Main.AdamsSynthetic.Context",
+    "KIP126.Main.Solution.StageInput.NuSource.FromSuspension": "KIP126.Main.AdamsSynthetic.NuSource.FromSuspension",
+    "KIP126.Main.Solution.StageInput.NuSource.Suspension": "KIP126.Main.AdamsSynthetic.NuSource.Suspension",
+    "KIP126.Main.Solution.StageInput.NuSource": "KIP126.Main.AdamsSynthetic.NuSource",
+    "KIP126.Main.Solution.StageInput.Toda.Low": "KIP126.Main.AdamsSynthetic.Toda.Low",
+    "KIP126.Main.Solution.StageInput.Toda.Product": "KIP126.Main.AdamsSynthetic.Toda.Product",
+    "KIP126.Main.Solution.StageInput.Toda.Symmetric": "KIP126.Main.AdamsSynthetic.Toda.Symmetric",
+    "KIP126.Main.Solution.StageInput.Toda": "KIP126.Main.AdamsSynthetic.Toda",
+    "KIP126.Main.Solution.StageInput": "KIP126.Main.AdamsSynthetic",
+    "KIP126.Main.Solution.h6_sq_permanent": "KIP126.Main.H6SquarePermanent",
+    "KIP126.Main.Solution": "KIP126.Main",
+    "KIP126.Literature.Challenge": "KIP126.Literature.Assumptions",
+    "KIP126.Computation.Challenge": "KIP126.Computation.Assumptions"
+  },
+  "namespace_mapping": {
+    "KIP126.Main.Axiom.challenge2": "KIP126.Main.externalHypotheses",
+    "KIP126.Main.Axiom": "KIP126.Main",
+    "KIP126.Main.Solution.Route.Section7": "KIP126.Main.SectionSeven",
+    "KIP126.Main.Solution.Route": "KIP126.Main.SectionSeven.DifferentialCriterion",
+    "KIP126.Main.Solution": "KIP126.Main",
+    "KIP126.Main.StageInput.witness": "KIP126.Main.externalHypotheses",
+    "KIP126.Main.StageInput": "KIP126.Main.AdamsSynthetic",
+    "KIP126.Solution.Final.H6SquarePermanent": "KIP126.Main",
+    "KIP126.Solution.Near126": "KIP126.Main.Stem126",
+    "KIP126.Interface.Solution.Literature.Route": "KIP126.Main.Literature.SourceComparisons",
+    "KIP126.Interface.Solution.LinProgram": "KIP126.Main.Computation.ProgramCoordinates",
+    "KIP126.Def.StageInput.witness": "KIP126.AdamsSynthetic.Standard.classicalContext",
+    "KIP126.Def.StageInput": "KIP126.AdamsSynthetic.Standard",
+    "KIP126.Def.Solution": "KIP126.AdamsSynthetic",
+    "StableHomotopy.Implementation": "StableHomotopy.Spectra",
+    "KIP126.Implementation": "KIP126.HF2AdamsContext",
+    "KIP126.Literature.challenge": "KIP126.Literature.adamsSyntheticResults",
+    "KIP126.Computation.challenge": "KIP126.Computation.adamsComputations"
+  },
+  "identifier_mapping": {
+    "Challenge2": "ExternalHypotheses",
+    "challenge2": "externalHypotheses",
+    "LiteratureBindings": "LiteratureSources",
+    "LiteratureResults": "LiteratureTheorems",
+    "LiteratureInterface": "LiteratureHypotheses",
+    "ComputationBindings": "ComputationInterpretation",
+    "ComputationResults": "ComputationTheorems",
+    "ComputationInterface": "ComputationHypotheses",
+    "SphereBasisInterface": "SphereE2Basis",
+    "SphereMultiplicativeInterface": "SphereE2MultiplicationComparison",
+    "SphereStaircaseInterface": "SphereStaircaseSoundness",
+    "SphereSquareInterface": "H6SquareE2Facts",
+    "MossInterface": "MossConvergenceData",
+    "FoundationInput": "Mod2StableHomotopyContext",
+    "MilnorInput": "MilnorCoordinates",
+    "TensorInput": "TensorTriangulatedStructure",
+    "CooperationInput": "MilnorCooperationStructure",
+    "RouteInput": "SyntheticAdamsContext",
+    "fixedImplementation": "standardHF2AdamsContext",
+    "implementation_exists": "hf2AdamsContext_exists",
+    "StandardRouteInput": "StandardSyntheticContext",
+    "standardRouteInput": "standardSyntheticContext",
+    "standardRouteModel": "standardAdamsSyntheticModel",
+    "standardRouteEta": "standardEta",
+    "standardRouteBackground": "standardAdamsSyntheticComparisons",
+    "foundationInput": "stableContext",
+    "milnorInput": "milnorCoordinates",
+    "tensorInput": "tensorStructure",
+    "cooperationInput": "cooperationStructure",
+    "routeModel": "adamsSyntheticModel",
+    "routeLabels": "sphereClasses",
+    "routeEta": "etaClass",
+    "routeComputation": "computationTheorems",
+    "routeLiterature": "literatureTheorems",
+    "routeStatements": "sourceTheorems",
+    "routeApplication": "sourceApplicability",
+    "StandardTmfModelMultiplicativeInterface": "StandardTmfMultiplicationComparison"
+  },
+  "files": [
+    {
+      "before": "KIP126/Computation/Challenge.lean",
+      "after": "KIP126/Computation/Assumptions.lean",
+      "before_sha256": "a882f16fe7b439b2a610a0030d5493eea6894bc405c26ead44b13bd5eda4d9af",
+      "after_initial_rename_sha256": "44ad44dbf216667a59d8db0cb9338bc65f419f429e50748a665f8fbea68c4260",
+      "after_sha256": "df38e5d20cdf12241bc9c5eb7303478d560d1b4b4e9bce21fd413d108b429ffb"
+    },
+    {
+      "before": "KIP126/Computation/Delivery.lean",
+      "after": "KIP126/Computation/Hypotheses.lean",
+      "before_sha256": "e0cff3669b71c29b9bc7cbd8154899cc62c31ab18a34536260adfd24172d04bd",
+      "after_initial_rename_sha256": "fb3340d8a97c78a9f9c9662fc61ef194c56e069c620c61b225ea95c167e2103b",
+      "after_sha256": "710bca7e0b0e2152e97d8fd392b3ceb8b1674c39301a8029fd4c2728cb2def31"
+    },
+    {
+      "before": "KIP126/Def/ClassicalAdams/Tmf/Br21/Data.lean",
+      "after": "KIP126/Def/ClassicalAdams/Tmf/Br21/Data.lean",
+      "before_sha256": "5a4bf9b8e8b8a1c34ba81f2e9bd54a3ba326aaa7f4965e421de77aa9d962459a",
+      "after_initial_rename_sha256": "88e2a87ed8fbe8f241939d564a2268737c846f6e5d9a8013518192f89545ab62",
+      "after_sha256": "88e2a87ed8fbe8f241939d564a2268737c846f6e5d9a8013518192f89545ab62"
+    },
+    {
+      "before": "KIP126/Def/ClassicalAdams/Tmf/Model/Binding/Data.lean",
+      "after": "KIP126/Def/ClassicalAdams/Tmf/Model/Binding/Data.lean",
+      "before_sha256": "b6bb1991a4fe864f69b382dc15cf229ce6cf05ab7662489dc288e2681a8451b1",
+      "after_initial_rename_sha256": "8eb0757675a1433380eac913f5d1862c9bbe95fa97c6010966cacb0db4ec3beb",
+      "after_sha256": "8eb0757675a1433380eac913f5d1862c9bbe95fa97c6010966cacb0db4ec3beb"
+    },
+    {
+      "before": "KIP126/Def/Comparison/ClassicalSynthetic/EInfty/Data.lean",
+      "after": "KIP126/Def/Comparison/ClassicalSynthetic/EInfty/Data.lean",
+      "before_sha256": "2de5afa008c904e14e69b1d0ca8835b459449bf24c427b4db6b4cdeeb287c5b6",
+      "after_initial_rename_sha256": "69e511abbd30d5cef40cd6ca6574dbf36a067e64640a83bd472a9d2609f448cf",
+      "after_sha256": "69e511abbd30d5cef40cd6ca6574dbf36a067e64640a83bd472a9d2609f448cf"
+    },
+    {
+      "before": "KIP126/Def/Comparison/ClassicalSynthetic/EInfty/Proofs.lean",
+      "after": "KIP126/Def/Comparison/ClassicalSynthetic/EInfty/Proofs.lean",
+      "before_sha256": "8b69d57c934e99b54dd6ea1d2c577b054cae37cbba7684dea978a7fb278cc618",
+      "after_initial_rename_sha256": "470ff064e2c157d47b4c7ece9e4bf52f9e50e088c2e438910fac3b7686162054",
+      "after_sha256": "470ff064e2c157d47b4c7ece9e4bf52f9e50e088c2e438910fac3b7686162054"
+    },
+    {
+      "before": "KIP126/Def/Comparison/ClassicalSynthetic/FiniteBockstein/Data.lean",
+      "after": "KIP126/Def/Comparison/ClassicalSynthetic/FiniteBockstein/Data.lean",
+      "before_sha256": "e641f1c20cca7972079c75e78a01a17e31f4c03e5551e4f19c2d87b76e9ff69d",
+      "after_initial_rename_sha256": "abc9b0f3d74d7730887d4b7e5777aa543a16b72d61feb0e01f79400040121b8c",
+      "after_sha256": "abc9b0f3d74d7730887d4b7e5777aa543a16b72d61feb0e01f79400040121b8c"
+    },
+    {
+      "before": "KIP126/Def/Comparison/Cobar/Data.lean",
+      "after": "KIP126/Def/Comparison/Cobar/Data.lean",
+      "before_sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+      "after_initial_rename_sha256": "4d584589b5f58e7c0bb7d7dc12d5b31139e56ec55577bdca66bf4ee0e881c661",
+      "after_sha256": "4d584589b5f58e7c0bb7d7dc12d5b31139e56ec55577bdca66bf4ee0e881c661"
+    },
+    {
+      "before": "KIP126/Def/Comparison/Cobar/Proofs.lean",
+      "after": "KIP126/Def/Comparison/Cobar/Proofs.lean",
+      "before_sha256": "0e10ba9fbaf5526f1544b8c3c1f38054e4ee253bad6e4dc015047fecfb4aaf25",
+      "after_initial_rename_sha256": "9a292c03a618b6b944bd6facb5e07d6d302243fe21c1964baac7c341bcab4760",
+      "after_sha256": "9a292c03a618b6b944bd6facb5e07d6d302243fe21c1964baac7c341bcab4760"
+    },
+    {
+      "before": "KIP126/Def/Comparison/PageExtension/Ambiguity/Predicates.lean",
+      "after": "KIP126/Def/Comparison/PageExtension/Ambiguity/Predicates.lean",
+      "before_sha256": "d286bd8812787c4dabd4259db6621742c082bca960a5d6c93827294ae26e6b3c",
+      "after_initial_rename_sha256": "7cf884068db44d8c6ac219da9e3ff6c00efc8fcc69673d4565fbfdd2d2a58a1c",
+      "after_sha256": "7cf884068db44d8c6ac219da9e3ff6c00efc8fcc69673d4565fbfdd2d2a58a1c"
+    },
+    {
+      "before": "KIP126/Def/Comparison/PageExtension/Solutions/Data.lean",
+      "after": "KIP126/Def/Comparison/PageExtension/Solutions/Data.lean",
+      "before_sha256": "aa31b29d0d397724930baf75cbc5f1bb28982fb400d0c476ac70666b68adb4a4",
+      "after_initial_rename_sha256": "0b7c6b4d4fe2816e6704b5beb1bfb48f6c922df4030d785586278ec6ba266b48",
+      "after_sha256": "0b7c6b4d4fe2816e6704b5beb1bfb48f6c922df4030d785586278ec6ba266b48"
+    },
+    {
+      "before": "KIP126/Def/Comparison/PageExtension/Targets/Data.lean",
+      "after": "KIP126/Def/Comparison/PageExtension/Targets/Data.lean",
+      "before_sha256": "9237b8a688b84fa9f1d62c411da3ebba99e43cfef7794bb1ba03a8de8fc6c44a",
+      "after_initial_rename_sha256": "a88a1cb5787a76568dc1c7f48970f1e196b317bf5f43e075d41237950fc36b26",
+      "after_sha256": "a88a1cb5787a76568dc1c7f48970f1e196b317bf5f43e075d41237950fc36b26"
+    },
+    {
+      "before": "KIP126/Def/Comparison/Pages/Predicates.lean",
+      "after": "KIP126/Def/Comparison/Pages/Predicates.lean",
+      "before_sha256": "95128297c0c3319e53cf37f5a4fb1aaea58f7f138bd8798ff48aaa82723913f6",
+      "after_initial_rename_sha256": "80c64cdd98df0c7d2d3bc6f8049dbcb92ab552dde2796d29387c72981d0cc565",
+      "after_sha256": "80c64cdd98df0c7d2d3bc6f8049dbcb92ab552dde2796d29387c72981d0cc565"
+    },
+    {
+      "before": "KIP126/Def/ComputationModel/Interpretation/Branch/Predicates.lean",
+      "after": "KIP126/Def/ComputationModel/Interpretation/Branch/Predicates.lean",
+      "before_sha256": "a7fd3783034946cc0fb9d49987e49ce86639fc462f8f527a91167a1180cef3da",
+      "after_initial_rename_sha256": "bfce379e7fd4df0d855f49f7afa713c64a96c690a64e2dbd6135c3524e38e887",
+      "after_sha256": "bfce379e7fd4df0d855f49f7afa713c64a96c690a64e2dbd6135c3524e38e887"
+    },
+    {
+      "before": "KIP126/Def/ComputationModel/Presentation.lean",
+      "after": "KIP126/Def/ComputationModel/Presentation.lean",
+      "before_sha256": "3baca11c8c147c97a032759a3a3f579408a339df30edad343052700719d37724",
+      "after_initial_rename_sha256": "a03202aa307f4947cbd72856cee7c49953d9d05ac1b5a899619061190a935206",
+      "after_sha256": "a03202aa307f4947cbd72856cee7c49953d9d05ac1b5a899619061190a935206"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/SourceLanguage.lean",
+      "after": "KIP126/Def/Kervaire/Route/SourceLanguage.lean",
+      "before_sha256": "8fa4634e7d40f2baf4ea1060bddeda727d5683a06b8e17b822b65a7c53193abd",
+      "after_initial_rename_sha256": "5bd03362c0524acfacd9ce2418691600f9c5f250e86c3a125f6420c7fbba0358",
+      "after_sha256": "5bd03362c0524acfacd9ce2418691600f9c5f250e86c3a125f6420c7fbba0358"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/Tmf/Predicates.lean",
+      "after": "KIP126/Def/Kervaire/Route/Tmf/Predicates.lean",
+      "before_sha256": "eb2cbc8516031f55210260abc98f0035bfb05f807b2ba1112a1416d54c6367ff",
+      "after_initial_rename_sha256": "d80fc1d7ef9ef0d2dce94b3ad875ef8734a1f2d2f3d52e342fd326010cf07d29",
+      "after_sha256": "d80fc1d7ef9ef0d2dce94b3ad875ef8734a1f2d2f3d52e342fd326010cf07d29"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean",
+      "after": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean",
+      "before_sha256": "fe01b4d9c42db9e1a857a1cc527efdc94b34428c973ac94309f87576fab2203c",
+      "after_initial_rename_sha256": "a635475a8bb1ab3b9e7e1751e0c9f3b71a50f5ddc27af24a68889a96b6d845bd",
+      "after_sha256": "a635475a8bb1ab3b9e7e1751e0c9f3b71a50f5ddc27af24a68889a96b6d845bd"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Data.lean",
+      "after": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Data.lean",
+      "before_sha256": "ff84d71e7d09a1fe6dde8ceab6a6ed9cd260504457bc613b0c55a137f03b2d2b",
+      "after_initial_rename_sha256": "8a564e17e8573bc20d346a764b75bac8df42210dc6d4558a1a94c179c789f2e1",
+      "after_sha256": "8a564e17e8573bc20d346a764b75bac8df42210dc6d4558a1a94c179c789f2e1"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
+      "after": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
+      "before_sha256": "5c1461c5cb2a60e01509b728a86c661b203a6500f754271b9bbb94adaa1a75e8",
+      "after_initial_rename_sha256": "4a5efbb6a94cd09c8f56a8760329a68c2b360bf843825735a5f933594fe9ab37",
+      "after_sha256": "4a5efbb6a94cd09c8f56a8760329a68c2b360bf843825735a5f933594fe9ab37"
+    },
+    {
+      "before": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
+      "after": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
+      "before_sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
+      "after_initial_rename_sha256": "b3d06733f5e075f3f44b1f3e8307ed676c328e7375a830e3f8fb174ae08051df",
+      "after_sha256": "b3d06733f5e075f3f44b1f3e8307ed676c328e7375a830e3f8fb174ae08051df"
+    },
+    {
+      "before": "KIP126/Def/Solution/Implementation.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/ClassicalContext.lean",
+      "before_sha256": "8f0d2f42d54a13c43827c9699d5845872ceab5afd9572551093aa3bf814a80cd",
+      "after_initial_rename_sha256": "6c4b74683f4bbed48b5bef9718604244492029d58b81b37412655f1230a444a0",
+      "after_sha256": "fc462cf3e11481b63bf95ae4b6f29f95c3d71a47a72ab6ae20dec7ac65adaa81"
+    },
+    {
+      "before": "KIP126/Def/Solution/StandardRoute.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/SyntheticContext.lean",
+      "before_sha256": "5e443ac4c30e645a3bf8263a38e31c7b0003ee7d5f9d85548facd993a48b0024",
+      "after_initial_rename_sha256": "901de0034a8b97adcaa131e46262e583e7b25ae1899709984f405d6a6776ecdb",
+      "after_sha256": "2c54f5fecbd46d215cfa108397c2db2a5af1402a8e3e9600251e82de3b059b3c"
+    },
+    {
+      "before": "KIP126/Def/Solution/StandardRouteBackground.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/ComparisonLaws.lean",
+      "before_sha256": "61ce885fe6b88eb537293ab37a10970c8c12ba2070e9055dc284aac0219587b5",
+      "after_initial_rename_sha256": "7a5a0aafc1ae67926172053196a90bdd336caa8256f5564a591e25dc81d64e49",
+      "after_sha256": "26f5a0fa95819d877ae137088e2a0884146adfb1285231d12579001b42906513"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/AdjoinPoint/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/AdjoinPoint/Data.lean",
+      "before_sha256": "a08e2a986ce8b3954257699223adb6a9ea80e3a6e451dbe499cdb2feeb036757",
+      "after_initial_rename_sha256": "16244841ec1953647c1265d3ace7fe7abef8409fbd34cb538df4796cef5495e0",
+      "after_sha256": "16244841ec1953647c1265d3ace7fe7abef8409fbd34cb538df4796cef5495e0"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/AdjoinPoint/Inclusion.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/AdjoinPoint/Inclusion.lean",
+      "before_sha256": "f0a251335dc7ccd944f59f2dcdc3645c24a77b78d273212ab4a067272696680e",
+      "after_initial_rename_sha256": "cf363be7d989760c087876563435f8efcbf1b7bf9ad8bbe632e605ada8067d86",
+      "after_sha256": "cf363be7d989760c087876563435f8efcbf1b7bf9ad8bbe632e605ada8067d86"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/AdjoinPoint/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/AdjoinPoint/Proofs.lean",
+      "before_sha256": "7cf9ee0509150abea5acd78042ce0aabc72e348f5de1475ce7295c10f143168a",
+      "after_initial_rename_sha256": "9a795b4f2293dca13ad09ecbb493496e7b33e7a5daafebb9918d75df6f488c07",
+      "after_sha256": "9a795b4f2293dca13ad09ecbb493496e7b33e7a5daafebb9918d75df6f488c07"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Colimit/Cells/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Colimit/Cells/Data.lean",
+      "before_sha256": "1ecca7e53703fd03091a349bcad8ed145936017b42651779d755275c9adde721",
+      "after_initial_rename_sha256": "0725ee749f10e67d4bb22cc2d0806a056d3e5f2e20df56d790cf44c6ab61a8c7",
+      "after_sha256": "0725ee749f10e67d4bb22cc2d0806a056d3e5f2e20df56d790cf44c6ab61a8c7"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Colimit/Cells/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Colimit/Cells/Proofs.lean",
+      "before_sha256": "9674a9876e8f2a2faf752911f2535183b03150f7da07c6a6fae58b1f808cf0b1",
+      "after_initial_rename_sha256": "d57ac9188b513a10a5be8547bedc3af1c358c70f3a4099ed6bbab7cee2ad0537",
+      "after_sha256": "d57ac9188b513a10a5be8547bedc3af1c358c70f3a4099ed6bbab7cee2ad0537"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Colimit/Cells/Universal/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Colimit/Cells/Universal/Proofs.lean",
+      "before_sha256": "6970c395e63e1408a1a59c2a9c18cac435e84787f5ad9340c464aae1d8b11f50",
+      "after_initial_rename_sha256": "9f843d378cc816b0c04e17ab73606d29e5995bb73a50a277b286e22594f9b191",
+      "after_sha256": "9f843d378cc816b0c04e17ab73606d29e5995bb73a50a277b286e22594f9b191"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Colimit/Connected/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Colimit/Connected/Proofs.lean",
+      "before_sha256": "81b73e2394d8217bc509d24e31993355f0fc95da5f02a2664d751368a163c921",
+      "after_initial_rename_sha256": "d1f3039d18166b924f91a171ab36d05f494fe57540575acbd934c79af8377dcd",
+      "after_sha256": "d1f3039d18166b924f91a171ab36d05f494fe57540575acbd934c79af8377dcd"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Colimit/Instances.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Colimit/Instances.lean",
+      "before_sha256": "f90d9ffb5a29f4f75d3c51063baf3712b5dc7bb8e19b99eec433c3c01bff3327",
+      "after_initial_rename_sha256": "b35eca9271fa86d68b8dac015f54a4126c4aebb3f40f8151e2cd790d3da164b6",
+      "after_sha256": "b35eca9271fa86d68b8dac015f54a4126c4aebb3f40f8151e2cd790d3da164b6"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/HomotopyEquivalence/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/HomotopyEquivalence/Proofs.lean",
+      "before_sha256": "325d5a8a95cfeb3d0ac8276799672c2583065a6dbd6d3bfdf95a6dfd01254089",
+      "after_initial_rename_sha256": "7cabafc111b24495269feabdebaf84df934435fd0bf5ca01a6f89a26422cd72f",
+      "after_sha256": "7cabafc111b24495269feabdebaf84df934435fd0bf5ca01a6f89a26422cd72f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/HomotopyExtension/AdjoinPoint/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/HomotopyExtension/AdjoinPoint/Proofs.lean",
+      "before_sha256": "b36e41aadb3a9b3960ff47b69375750fd76b2d1e1c105b884296cf46484ad2da",
+      "after_initial_rename_sha256": "057d59b2816dec4d396c3d5abff9ebedee06b123c18883b87321fed68b8be2c0",
+      "after_sha256": "057d59b2816dec4d396c3d5abff9ebedee06b123c18883b87321fed68b8be2c0"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/HomotopyExtension/Suspension/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/HomotopyExtension/Suspension/Proofs.lean",
+      "before_sha256": "adaa71185d5b6e390e2c11cae8dbb5aaca6a47790cff3c274ee5636fecb809fe",
+      "after_initial_rename_sha256": "5486638b0ec0400e489f5ad5ebb334b5df87e8182032169ca8e4707a7ad17645",
+      "after_sha256": "5486638b0ec0400e489f5ad5ebb334b5df87e8182032169ca8e4707a7ad17645"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Loop/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Loop/Data.lean",
+      "before_sha256": "55c25ea575a52d84dbda6a8dd3d2e60bca829b7cdcd4de05619d698cf707a747",
+      "after_initial_rename_sha256": "8f901e2043a84bb4a855f646c5b30959d579cd2e2a0ce70ae91b590e7c52b466",
+      "after_sha256": "8f901e2043a84bb4a855f646c5b30959d579cd2e2a0ce70ae91b590e7c52b466"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Suspension/Cell/Boundary.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Suspension/Cell/Boundary.lean",
+      "before_sha256": "5a1493ab53bdc94a53f988be8cf46d3fea338a1cf033bc45e267ea79a8fe0b09",
+      "after_initial_rename_sha256": "fbad41a98a9d73048cf611dcc18aba79c77afb41249b4f3cc2e3aeca273acc9b",
+      "after_sha256": "fbad41a98a9d73048cf611dcc18aba79c77afb41249b4f3cc2e3aeca273acc9b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Suspension/Cell/Iterate/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Suspension/Cell/Iterate/Proofs.lean",
+      "before_sha256": "3659aa51e84bc20fba287fc72376cfaebe180518f0fd9801c73928fbfbb532a4",
+      "after_initial_rename_sha256": "14af910c2ae8346e2e84a46d6c28359b3f9c419095000b6c60a8d86da89e0b97",
+      "after_sha256": "14af910c2ae8346e2e84a46d6c28359b3f9c419095000b6c60a8d86da89e0b97"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Suspension/Cell/Pushout/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Suspension/Cell/Pushout/Proofs.lean",
+      "before_sha256": "2f89d3062023be1a08dadf84383cd126f36aad46aa735b46eec366fd61c7cd49",
+      "after_initial_rename_sha256": "fc7faef227550aa4f9fbf3d76cd9e7840c6d56a5b687d38011fe376fbd1cc9af",
+      "after_sha256": "fc7faef227550aa4f9fbf3d76cd9e7840c6d56a5b687d38011fe376fbd1cc9af"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Suspension/Cell.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Suspension/Cell.lean",
+      "before_sha256": "e01d9fb0a01a00073dd95936dc33b79ae476c66a5bdf666a5869b92316b78e37",
+      "after_initial_rename_sha256": "3eb25ff6457d613a7afafa9638de26137c9b175d486a8e327291f1c600116c90",
+      "after_sha256": "3eb25ff6457d613a7afafa9638de26137c9b175d486a8e327291f1c600116c90"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/BasedSpace/Under/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/BasedSpace/Under/Data.lean",
+      "before_sha256": "3e4a361e264aee164e14858153585d4fca42c63032d7ff35c9d388eced9c4b2f",
+      "after_initial_rename_sha256": "0e32faecf0a0c5b393802a25acca7bd8f7fea819e0c17c48f07694249aed3a5c",
+      "after_sha256": "0e32faecf0a0c5b393802a25acca7bd8f7fea819e0c17c48f07694249aed3a5c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Comparison.lean",
+      "before_sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+      "after_initial_rename_sha256": "989d772eb10d5a892b31326140bba91a5ef65cef6875a458cee7a15f1d749578",
+      "after_sha256": "989d772eb10d5a892b31326140bba91a5ef65cef6875a458cee7a15f1d749578"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Completion.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Completion.lean",
+      "before_sha256": "d9808de4513fc6f67228f9d2bc803fa44a05ae1147e972835268fa9addf82831",
+      "after_initial_rename_sha256": "3d713ad8c5957bac98f2626415ebddf5b49fa17872a6fbbc3efa8e266e7b7249",
+      "after_sha256": "3d713ad8c5957bac98f2626415ebddf5b49fa17872a6fbbc3efa8e266e7b7249"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Data.lean",
+      "after": "KIP126/Def/ClassicalAdams/Context/Data.lean",
+      "before_sha256": "868ce0dc0ba2d2b89f63d42a02fdaf9439097be6ecdd75eede9cc0ac75ef0024",
+      "after_initial_rename_sha256": "64fc174d2309d215d0c75001d9ece36ce8bbaf09f06d5dbdf719607fd59b181c",
+      "after_sha256": "dca94f1e869de3d096acc0ad38e382f020b73eb8efdf8fe5a7ef96126db35f88"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/FiniteSupport/CWType/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/FiniteSupport/CWType/Proofs.lean",
+      "before_sha256": "15ef5ec893726c7dfc2e803aa72843e030d97b1b500ca32ac6c6aea3921b9511",
+      "after_initial_rename_sha256": "b0a1ecf598405756a3210ee79dd47e3b8fb72f6301ebeaaa09d9099a0aa41674",
+      "after_sha256": "b0a1ecf598405756a3210ee79dd47e3b8fb72f6301ebeaaa09d9099a0aa41674"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/FiniteSupport/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/FiniteSupport/Data.lean",
+      "before_sha256": "cd8c562f163ad20e84e56a9243995461e99a80b79fe2b1fa585645672b940528",
+      "after_initial_rename_sha256": "46684ff25ad6c67af99be0a4ec8880bc323bcad6ed0ed53ac15af636a5d26b2c",
+      "after_sha256": "46684ff25ad6c67af99be0a4ec8880bc323bcad6ed0ed53ac15af636a5d26b2c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/FiniteSupport/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/FiniteSupport/Proofs.lean",
+      "before_sha256": "bcd8f531bace174d5f0d6db17df2d2b478ab6e06f36d876e7bbafad02936d2fb",
+      "after_initial_rename_sha256": "972b932be759f99b52723081665f1e8e35047e4e3e5a80c402e04293eb13154c",
+      "after_sha256": "972b932be759f99b52723081665f1e8e35047e4e3e5a80c402e04293eb13154c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Fixed.lean",
+      "after": "KIP126/Def/ClassicalAdams/Context/Standard.lean",
+      "before_sha256": "b3ff9e57685ed6fc59cb33d53e35d45f01bd6753f32f8083d8d9419651b8b9ab",
+      "after_initial_rename_sha256": "e62d029f275ad0930d710020dfebff44856b9bbf0c763a6c80df72ea5f90d0ca",
+      "after_sha256": "fbd147a9326cb05eb442a290d440e7b1ca574c057875e6d8c7ed40665df48111"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Generators.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Generators.lean",
+      "before_sha256": "2ceb78bf9b6b47159d227f1f3afe83e05768b15d37c2451e244eaad8ced89b06",
+      "after_initial_rename_sha256": "a89e25b64d6e68d7f7536236f71855b6826920e4628ac03c9fa35dd9bb7c0354",
+      "after_sha256": "a89e25b64d6e68d7f7536236f71855b6826920e4628ac03c9fa35dd9bb7c0354"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Comparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Comparison.lean",
+      "before_sha256": "7310eae94b1437b04400885c80761c7b931ac80611536d3a87dd9874ee106a54",
+      "after_initial_rename_sha256": "ec56ff316e1539a355af45a42df2cf4437aaf50eb4963d443e9278ac5b082068",
+      "after_sha256": "ec56ff316e1539a355af45a42df2cf4437aaf50eb4963d443e9278ac5b082068"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Connected/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Connected/Proofs.lean",
+      "before_sha256": "9f53ac7cf3c2cc5700d8722d4f44f2de0e2895d9139d6f3d864ca3f0f2706260",
+      "after_initial_rename_sha256": "6b5bd4a96a1700b7f146381facf39cfa6a0ca8d70bb2b55492fc857303c80270",
+      "after_sha256": "6b5bd4a96a1700b7f146381facf39cfa6a0ca8d70bb2b55492fc857303c80270"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Contraction.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Contraction.lean",
+      "before_sha256": "78a3c6cefc057111c15c18de3738c1eba6131bc04dc2913e9e6c408786f489ca",
+      "after_initial_rename_sha256": "3c0060bddbda5d002fd89f0597e6f718c9324bffea347de805d4ed1f24c81149",
+      "after_sha256": "3c0060bddbda5d002fd89f0597e6f718c9324bffea347de805d4ed1f24c81149"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/CubicalComparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/CubicalComparison.lean",
+      "before_sha256": "86b8e558e0fac6b2fcad61ee87cc5bdb9bf0d47e3b09059eecf2ed7e9c9e98e0",
+      "after_initial_rename_sha256": "e18bfdb73c379d0ef23eebfcb6763977a0147e8a304fc236f15c1560ad3f7104",
+      "after_sha256": "e18bfdb73c379d0ef23eebfcb6763977a0147e8a304fc236f15c1560ad3f7104"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Data.lean",
+      "before_sha256": "1fe95bd76c13e1ce5e6f087683ab4368fdc981453fe151b851a4f9340b3fa367",
+      "after_initial_rename_sha256": "708c006e8ad0472811be4c8497bcfd13d84b7c4764ce241ccbbc78a396495e39",
+      "after_sha256": "708c006e8ad0472811be4c8497bcfd13d84b7c4764ce241ccbbc78a396495e39"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/DegreeZero.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/DegreeZero.lean",
+      "before_sha256": "12305926e8ee5c00b22ad0ec86173aa549db9d4a57a0ed049c18ee1fa2bc1514",
+      "after_initial_rename_sha256": "d7eca7fdd3441e0419ec21d1b983c001511d4521735a43ffdd88ddbd6a28681d",
+      "after_sha256": "d7eca7fdd3441e0419ec21d1b983c001511d4521735a43ffdd88ddbd6a28681d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Fiber.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Fiber.lean",
+      "before_sha256": "376b4997f92c5f46f1ead7c8d9f5ac8f8df94b50e76dc88d0986a5585bfb4b69",
+      "after_initial_rename_sha256": "4c9a0b7af439ca522041f4c502d77c964f13cecbfaee3913b81ca0d6ccb0f6ce",
+      "after_sha256": "4c9a0b7af439ca522041f4c502d77c964f13cecbfaee3913b81ca0d6ccb0f6ce"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/FiberIdentification.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/FiberIdentification.lean",
+      "before_sha256": "666b03cbce5c90f81d59d23038e3772887245ffe95f951ff75f8d4991aab7d7e",
+      "after_initial_rename_sha256": "d4dc036ec3bd27159bd6feab321f28d6633890ea09cdbc4b78c543c9e1622d23",
+      "after_sha256": "d4dc036ec3bd27159bd6feab321f28d6633890ea09cdbc4b78c543c9e1622d23"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Fibration.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Fibration.lean",
+      "before_sha256": "120a89df5ab65db2512fc7f666dae74031a2f8f727d919a9f95b3294cabaf986",
+      "after_initial_rename_sha256": "67b412129eb2fa31a2c8534ef49c16f3357abca9b075978b3ca8449774899a7e",
+      "after_sha256": "67b412129eb2fa31a2c8534ef49c16f3357abca9b075978b3ca8449774899a7e"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Homotopy/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Homotopy/Data.lean",
+      "before_sha256": "bd48774b9d4af07071d5c60670a0413036a4b57c2f800f0fd333badad45c2ee1",
+      "after_initial_rename_sha256": "a68e3ede9ac04f96825f39b98b093c92aa15f178f2fc3e9452a5eda082204cf3",
+      "after_sha256": "a68e3ede9ac04f96825f39b98b093c92aa15f178f2fc3e9452a5eda082204cf3"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Homotopy/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Homotopy/Proofs.lean",
+      "before_sha256": "d14e7095e3072fb6bab71d748173fb40b3b01541ab5740be0ee56229a2fe8d07",
+      "after_initial_rename_sha256": "270dea3751007e3dc798e5794558cbe1fc4d6914b8d31cfdf324ed56c6ed0325",
+      "after_sha256": "270dea3751007e3dc798e5794558cbe1fc4d6914b8d31cfdf324ed56c6ed0325"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/LoopCubical.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/LoopCubical.lean",
+      "before_sha256": "c2316862686ff17c9302795ce628c14d632ec4768231e6ca1e18d6512f1182d3",
+      "after_initial_rename_sha256": "01c538ed637ee1ff74aa734f81a3ec842d1ee4c88da98ab6cbbbf04826091787",
+      "after_sha256": "01c538ed637ee1ff74aa734f81a3ec842d1ee4c88da98ab6cbbbf04826091787"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/PathComparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/PathComparison.lean",
+      "before_sha256": "d20d9deb028eaa67abc78840f01ce74b6b5356fe77e5ad41958c34783a091377",
+      "after_initial_rename_sha256": "17e7c08c6a867a66e9364521ba4b8e6e95f12f1862415f5a2d97cf07da5eaaeb",
+      "after_sha256": "17e7c08c6a867a66e9364521ba4b8e6e95f12f1862415f5a2d97cf07da5eaaeb"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Proofs.lean",
+      "before_sha256": "c9ad7eb10dafcc2d1b83f10b16636170ea513b01e53906cd501539f13412a751",
+      "after_initial_rename_sha256": "1e809983921e64ea1e816976a7607bfa97d65d80f9616e3f09cce07c34800a0e",
+      "after_sha256": "1e809983921e64ea1e816976a7607bfa97d65d80f9616e3f09cce07c34800a0e"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Shift.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Shift.lean",
+      "before_sha256": "2e4052f6d74b86c3f1f263c2abba6c964597595261ace439c3ee01638b38ff57",
+      "after_initial_rename_sha256": "05b6d564b320584c698db56eee1681d660fff94d6b03f19f8c4e2d83dc71c69e",
+      "after_sha256": "05b6d564b320584c698db56eee1681d660fff94d6b03f19f8c4e2d83dc71c69e"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/ShiftProofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/ShiftProofs.lean",
+      "before_sha256": "b229c6dbe046827b4f4f53a5e870bf4864c77abe62e5cb9f6efc3f089d50bd64",
+      "after_initial_rename_sha256": "a8f7126ee9601b4d13264643b261a5bfbbc06883e5d3770c1fb0979947f34c26",
+      "after_sha256": "a8f7126ee9601b4d13264643b261a5bfbbc06883e5d3770c1fb0979947f34c26"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/Stability/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/Stability/Proofs.lean",
+      "before_sha256": "03c6baa8473d4a516f43f64e507cefcbe9ca4c0adfb8af61040a8f4113408a27",
+      "after_initial_rename_sha256": "63a9611e5ae59a65d0a3ef3f67360ed9eecd135a10c344719c2c38991922020a",
+      "after_sha256": "63a9611e5ae59a65d0a3ef3f67360ed9eecd135a10c344719c2c38991922020a"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/StableHomotopy/Equivalence.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/StableHomotopy/Equivalence.lean",
+      "before_sha256": "1bc8722c101ee0358f52f755bffaf7b922f4371deda6d84bca315179f0dda1fe",
+      "after_initial_rename_sha256": "25b6c0881c4bd82cd57e8f6662f88529c42c219a9212838de72aabbabbdd174b",
+      "after_sha256": "25b6c0881c4bd82cd57e8f6662f88529c42c219a9212838de72aabbabbdd174b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Bond/StableHomotopy.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Bond/StableHomotopy.lean",
+      "before_sha256": "01be417fe0c58e254630ce0607636da1416bfa676329e5a37d492d7422587966",
+      "after_initial_rename_sha256": "99152926fe5996f729475b836ad688f478974c92f5c4fa2970ddc3dd4e20f99f",
+      "after_sha256": "99152926fe5996f729475b836ad688f478974c92f5c4fa2970ddc3dd4e20f99f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Simplicial/CW/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Simplicial/CW/Proofs.lean",
+      "before_sha256": "1ae809e836fb040084ec2065821193061d763929f7f5023156bc5a8fa1760fa7",
+      "after_initial_rename_sha256": "15d6ad74e3dc3d4e167676aad8fdef5772bbfbc06c5c92b454d1a978b7b5dbb3",
+      "after_sha256": "15d6ad74e3dc3d4e167676aad8fdef5772bbfbc06c5c92b454d1a978b7b5dbb3"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Simplicial/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Simplicial/Data.lean",
+      "before_sha256": "efd6708eb1f0310f495507b962af87bc8acd9fc0e3182ed42eae718048c1b773",
+      "after_initial_rename_sha256": "45c333b62359c44dac3fc3b1b2c2262ab13ceeb9cd71dc49d3b331e4847e6226",
+      "after_sha256": "45c333b62359c44dac3fc3b1b2c2262ab13ceeb9cd71dc49d3b331e4847e6226"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Simplicial/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Simplicial/Proofs.lean",
+      "before_sha256": "a3d2b4838fe8a415a80602300c225daddcd09453026c587c7158729442f3e937",
+      "after_initial_rename_sha256": "22b3a8ab4d11c642b2cbd0a862cd325730ecb8a3f068bb09433ae2b65a31ad6f",
+      "after_sha256": "22b3a8ab4d11c642b2cbd0a862cd325730ecb8a3f068bb09433ae2b65a31ad6f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/HF2/Topology/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/HF2/Topology/Proofs.lean",
+      "before_sha256": "4703d0c1ebecd7bd0877c7fe730b645fcd50a9a01cbaab0c68e4d32616683599",
+      "after_initial_rename_sha256": "f85d7b4887d069ded60f3028a30b71c8d4500c745f991a7fad1c722dfa386672",
+      "after_sha256": "f85d7b4887d069ded60f3028a30b71c8d4500c745f991a7fad1c722dfa386672"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/PointSet.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/PointSet.lean",
+      "before_sha256": "dc02d9c2b00fd528d7f9fbc92da7cb1cbb0b3ace69ed6cf547f17f83d25a6236",
+      "after_initial_rename_sha256": "e20d95eab0e13bc51c69d6cbdfee77e2a488034ee38de77ade523acd7a1f1d92",
+      "after_sha256": "e20d95eab0e13bc51c69d6cbdfee77e2a488034ee38de77ade523acd7a1f1d92"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Colimit/Bond.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Colimit/Bond.lean",
+      "before_sha256": "b9e8bf285090f59f1f2190df38becc044e99f74a9098ae47fff96bc351302940",
+      "after_initial_rename_sha256": "18f2e44afdf24e924b078e500c1108ebfdc698832c558cea7154bccf67310475",
+      "after_sha256": "18f2e44afdf24e924b078e500c1108ebfdc698832c558cea7154bccf67310475"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Colimit/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Colimit/Data.lean",
+      "before_sha256": "15087508ccced3d7ef9d478043e9b15bb8bd226c6fcbc733ad61f5420ddcada9",
+      "after_initial_rename_sha256": "7c14104b1b9af2be6b0a9d3932202f9881c0896a712d48f19d8865748eebcac1",
+      "after_sha256": "7c14104b1b9af2be6b0a9d3932202f9881c0896a712d48f19d8865748eebcac1"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Colimit/Evaluation/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Colimit/Evaluation/Proofs.lean",
+      "before_sha256": "0bfebd79ed3c10ece73566352caa66c733932e84c378b200f14d88be1fbf48a1",
+      "after_initial_rename_sha256": "3cc3fc0584c061fc5363e1252d2dfda8de848666b739df61bf3c4cb77cbe3e36",
+      "after_sha256": "3cc3fc0584c061fc5363e1252d2dfda8de848666b739df61bf3c4cb77cbe3e36"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Colimit/Level/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Colimit/Level/Data.lean",
+      "before_sha256": "1947c3c34193fdebb481d1f16829d458e42d7a3525060e8871673167dfd41812",
+      "after_initial_rename_sha256": "b4ff9c94bd031ab8ac9aa7e54c0f7fc4243dfde7c51639d2942810f3552f91e7",
+      "after_sha256": "b4ff9c94bd031ab8ac9aa7e54c0f7fc4243dfde7c51639d2942810f3552f91e7"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Colimit/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Colimit/Proofs.lean",
+      "before_sha256": "c41f3f454c898e061f3c801d00a354be2c3ee22a48f53c81b91842dd9c516123",
+      "after_initial_rename_sha256": "baf23a13b16ed51ad88b9edc71319f68df63d4ced0a40481f971c735d1918736",
+      "after_sha256": "baf23a13b16ed51ad88b9edc71319f68df63d4ced0a40481f971c735d1918736"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Free/CompactFactor/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Free/CompactFactor/Proofs.lean",
+      "before_sha256": "b71e2acd8b5c1486775120b646abcbbb689b3e33c40eb56690b1f8ba01c5466b",
+      "after_initial_rename_sha256": "b409acee78af3b57a1c9a46874d6a6c4a06d2d2fb9e4efb37a0c10dd8b3f7f73",
+      "after_sha256": "b409acee78af3b57a1c9a46874d6a6c4a06d2d2fb9e4efb37a0c10dd8b3f7f73"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Free/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Free/Data.lean",
+      "before_sha256": "42856caf131295d5304272e930b72afc83a782b3e67b7da96c2272ef4214f5bf",
+      "after_initial_rename_sha256": "6d89da64304f514af5ff7189bfcc273c3bcff3422995a9f618ceccec723d6bcd",
+      "after_sha256": "6d89da64304f514af5ff7189bfcc273c3bcff3422995a9f618ceccec723d6bcd"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Free/Geometry/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Free/Geometry/Proofs.lean",
+      "before_sha256": "71ac97deec2c4dcd594587b21efd9965f61dfe2a3123547b662f5669405be5a0",
+      "after_initial_rename_sha256": "d6b54c96061140df21f9e1cef8b8aea7900e6c96be6e3d322fc32c0b0ab3dd6b",
+      "after_sha256": "d6b54c96061140df21f9e1cef8b8aea7900e6c96be6e3d322fc32c0b0ab3dd6b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Free/Lifting/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Free/Lifting/Proofs.lean",
+      "before_sha256": "3572f2f4fba882c15305a4ab84f78bea10b7dc2e34971073543f8b768e846b99",
+      "after_initial_rename_sha256": "99b7bee4b0bec956653d82f96767cddaae8dd2564fd6fc5a858d6ed7f846bc0d",
+      "after_sha256": "99b7bee4b0bec956653d82f96767cddaae8dd2564fd6fc5a858d6ed7f846bc0d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Free/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Free/Proofs.lean",
+      "before_sha256": "f77319c1483cd43edb9602268c547db912168dd7cbe82d45b086457b967b3d56",
+      "after_initial_rename_sha256": "7134350cc261e72807fd1628e0a7e2e3e40d0293a43b176c048e59fbba9221b0",
+      "after_sha256": "7134350cc261e72807fd1628e0a7e2e3e40d0293a43b176c048e59fbba9221b0"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyFunctor/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyFunctor/Data.lean",
+      "before_sha256": "17881a4a754600addc0207c471b8614f57a1c548af6ee9c17e566af6773275e4",
+      "after_initial_rename_sha256": "0538c4ecd11c76bbf1c0a4fe96869ab1ed9bbe21c0020c28f59e9d05478f2f47",
+      "after_sha256": "0538c4ecd11c76bbf1c0a4fe96869ab1ed9bbe21c0020c28f59e9d05478f2f47"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyFunctor/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyFunctor/Proofs.lean",
+      "before_sha256": "5191bd9317e203c55fb6554919d086bdc15b8210c0b327bcf333df608ec8850d",
+      "after_initial_rename_sha256": "4ee1fcf3f69710fc4a9549c835527e395966bd936d3872049f993b4c170a26ff",
+      "after_sha256": "4ee1fcf3f69710fc4a9549c835527e395966bd936d3872049f993b4c170a26ff"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Abelian/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Abelian/Data.lean",
+      "before_sha256": "fbf43ced6420558eac284e739244d7bd880023b292b75bf9fc3e4832913e20fe",
+      "after_initial_rename_sha256": "b8d1338945c64365d978372e90aa64789608b59b9ee702c6b0f2ca964b24473b",
+      "after_sha256": "b8d1338945c64365d978372e90aa64789608b59b9ee702c6b0f2ca964b24473b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Abelian/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Abelian/Proofs.lean",
+      "before_sha256": "20308024c29454964020f7b028534f1853af0dcb7348ac7880f8f21b31e06088",
+      "after_initial_rename_sha256": "84cdd58643d1c04fa1fb285d80ff845c9fe2cc9c86574852ccbece2ec706131f",
+      "after_sha256": "84cdd58643d1c04fa1fb285d80ff845c9fe2cc9c86574852ccbece2ec706131f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Colimit/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Colimit/Data.lean",
+      "before_sha256": "f4441181b89100f7498e4bb93d63f3b08d278862a3ea56249503905f68d84716",
+      "after_initial_rename_sha256": "26f8e07d479c4be55c424ec0e9693783044189f9318560abbf1aec8c481fc96a",
+      "after_sha256": "26f8e07d479c4be55c424ec0e9693783044189f9318560abbf1aec8c481fc96a"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Colimit/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Colimit/Proofs.lean",
+      "before_sha256": "6541f11ce5c48dd2337cc2ba3db9fb2108f435c69251c1e8bca313d4e47fbaad",
+      "after_initial_rename_sha256": "6abbe2d7324b31246ad70d7a8d2381fbae88c2e601e7b2fdf07a706945e85935",
+      "after_sha256": "6abbe2d7324b31246ad70d7a8d2381fbae88c2e601e7b2fdf07a706945e85935"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Comparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Comparison.lean",
+      "before_sha256": "d93ca0afe70eb066fd59fc9e783c020478dd9d4ded1a8a1c4841a4de4be076aa",
+      "after_initial_rename_sha256": "6f2a138fa5a853bcc7983bff6b234edbc21a8dced9f97cc58343226462cab66d",
+      "after_sha256": "6f2a138fa5a853bcc7983bff6b234edbc21a8dced9f97cc58343226462cab66d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Data.lean",
+      "before_sha256": "e47cca69e459c89a009685a56141f73a92f4ba5fa2b7bc6b5b57788658957918",
+      "after_initial_rename_sha256": "2cf97878c9701d5617242a0bc38d1b9d17ecfcb46a780c0650b5e0d492684b2d",
+      "after_sha256": "2cf97878c9701d5617242a0bc38d1b9d17ecfcb46a780c0650b5e0d492684b2d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Map/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Map/Data.lean",
+      "before_sha256": "064c57f52950efb2bdacaf418d4a1d1004ce22b6bf895855cfa71dd00574f813",
+      "after_initial_rename_sha256": "42dcaa65f28f64882069da0761484ed44a5b05ff3ef7f608732b9fb8f5d5c732",
+      "after_sha256": "42dcaa65f28f64882069da0761484ed44a5b05ff3ef7f608732b9fb8f5d5c732"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Map/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Map/Proofs.lean",
+      "before_sha256": "e79edd311148aa26b5b4a9ad39a88ec29f62d258e47ce6ed4a87cbfd54ddf735",
+      "after_initial_rename_sha256": "ffe239389f3ea886b2f55e954b92f24ddfed380a4166679c5d0c73772bc47397",
+      "after_sha256": "ffe239389f3ea886b2f55e954b92f24ddfed380a4166679c5d0c73772bc47397"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Map/Stability/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Map/Stability/Proofs.lean",
+      "before_sha256": "9fe7e6439c1e9ff9ecb552ed9bc69dcb6b3592039ff7d993a23d6d70a4fc59e0",
+      "after_initial_rename_sha256": "e7c2403f1c3977248ca3253c61c3d52eb7a562bbcbd38c08d5fb356fbede8a3c",
+      "after_sha256": "e7c2403f1c3977248ca3253c61c3d52eb7a562bbcbd38c08d5fb356fbede8a3c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/Proofs.lean",
+      "before_sha256": "32d88e0adfb828ec921f3f9d85e69314bc04230147820275dbf704cf6e7120c3",
+      "after_initial_rename_sha256": "adf1fd8ad783a01fb727a7c5a644ec924f2ae5e5a6203dddbedaf0cbc45c231b",
+      "after_sha256": "adf1fd8ad783a01fb727a7c5a644ec924f2ae5e5a6203dddbedaf0cbc45c231b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/HomotopyGroup/System.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/HomotopyGroup/System.lean",
+      "before_sha256": "03245c870087222043e7d1f29678dafee91ecc30cee5cbdda96e87fdb4a260ad",
+      "after_initial_rename_sha256": "e6eab0079721a00a1f965882343349a2ee53c4f0fabf546a5ade30bb6fa6ee24",
+      "after_sha256": "e6eab0079721a00a1f965882343349a2ee53c4f0fabf546a5ade30bb6fa6ee24"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Loop/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Loop/Data.lean",
+      "before_sha256": "9b482b71dd548e50957f2832d5fb500127ac22c9d2a108d29c73bc0ecaab4a49",
+      "after_initial_rename_sha256": "7afa3032f76b02d3cf20ac98b9a0930a1b15917e2085d7996efe2fe4ea659345",
+      "after_sha256": "7afa3032f76b02d3cf20ac98b9a0930a1b15917e2085d7996efe2fe4ea659345"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Path/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Path/Data.lean",
+      "before_sha256": "56fa75e1e03634612b6eea886d2d6389c3ef3f02f6e92e08887527efebd9367a",
+      "after_initial_rename_sha256": "011dec3decfa03ad68e562b21310fb581b2ad24e0956d4f1d0da46e4bbd281cf",
+      "after_sha256": "011dec3decfa03ad68e562b21310fb581b2ad24e0956d4f1d0da46e4bbd281cf"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Path/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Path/Proofs.lean",
+      "before_sha256": "59b4218b19ac44a174633c1ea0f58e004620691e0f094202f08dda3cac778620",
+      "after_initial_rename_sha256": "89395506ba89dde992cd9f70a655114145a06b63ba380356317588411df0114c",
+      "after_sha256": "89395506ba89dde992cd9f70a655114145a06b63ba380356317588411df0114c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Proofs.lean",
+      "before_sha256": "3a1e35e1324a390277a8326697ddeb47ca2aa77d84a7093cfe5745f35bbe975b",
+      "after_initial_rename_sha256": "b5957e433d782f7214b8f2c7b53da34078a8b626a1c31cd7a22804066596fdc5",
+      "after_sha256": "b5957e433d782f7214b8f2c7b53da34078a8b626a1c31cd7a22804066596fdc5"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Data.lean",
+      "before_sha256": "09822bece84c5cd4332073d3ca4129c0ec0059a5c98b970070366ae8df1deba4",
+      "after_initial_rename_sha256": "99f14ca85f74d760e560f25ee18967da84cb4e49ba791cd66312b8a85bc1be83",
+      "after_sha256": "99f14ca85f74d760e560f25ee18967da84cb4e49ba791cd66312b8a85bc1be83"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Evaluation/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Evaluation/Data.lean",
+      "before_sha256": "2e36a10a800d9cf82298d7adb92ebebf5058127ef53a7d4cdc14020cb7255b6c",
+      "after_initial_rename_sha256": "f09ac0a8007a8448172d676ff39dfc4e0615bf0bbb93d0cb4fc8734097437129",
+      "after_sha256": "f09ac0a8007a8448172d676ff39dfc4e0615bf0bbb93d0cb4fc8734097437129"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Geometry/Attachment/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Geometry/Attachment/Proofs.lean",
+      "before_sha256": "d1743fdb1478d7aa58f16830747205e6120b6730c5be3ac70279edea351bf577",
+      "after_initial_rename_sha256": "b63c990161a5d9b4e2925a3e58aefc0ed7fe2ce0b5788d3e207016e0b55ed745",
+      "after_sha256": "b63c990161a5d9b4e2925a3e58aefc0ed7fe2ce0b5788d3e207016e0b55ed745"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Geometry/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Geometry/Proofs.lean",
+      "before_sha256": "e36102453f4a9a004f6b4909dda6e4ac5f4872a1c21010e4d93fe6b4184edac4",
+      "after_initial_rename_sha256": "941785067a1362861a87cd36bc7aaeae1c33c5f589696eb274b597f71c21876f",
+      "after_sha256": "941785067a1362861a87cd36bc7aaeae1c33c5f589696eb274b597f71c21876f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Geometry/Refinement/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Geometry/Refinement/Proofs.lean",
+      "before_sha256": "1bf093e4df5761ea437d101f1fb4decbade4de78d6e3b362d92932276611f6ce",
+      "after_initial_rename_sha256": "feda91330100cc3dddcbbc726ad2a673cf0d1e953c35b45a8fc9d4f5246b40c2",
+      "after_sha256": "feda91330100cc3dddcbbc726ad2a673cf0d1e953c35b45a8fc9d4f5246b40c2"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/HomotopyExtension/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/HomotopyExtension/Proofs.lean",
+      "before_sha256": "93fbaad25b66cb1d4c6efdc4cf19eff2275acee3ceff862c449885fbbf64662b",
+      "after_initial_rename_sha256": "73745d6c088fdb753ebf0512eb8427aea73181e38bfb11df9f4fc8e916f2129e",
+      "after_sha256": "73745d6c088fdb753ebf0512eb8427aea73181e38bfb11df9f4fc8e916f2129e"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Lifting/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Lifting/Proofs.lean",
+      "before_sha256": "afe7364f34b09aae7dc42b3a6e5d39916fe077b4b26059ed1d67d18b7453c531",
+      "after_initial_rename_sha256": "1ce2deb8d3f60df0c489559ef067e1fb44c0a05109682e6c59ae8c41711189e6",
+      "after_sha256": "1ce2deb8d3f60df0c489559ef067e1fb44c0a05109682e6c59ae8c41711189e6"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cells/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cells/Proofs.lean",
+      "before_sha256": "1bd7afadd9043af38ae1ed2e92cfe8ec2c0c7246467e34beed09d7cd2a468bf1",
+      "after_initial_rename_sha256": "f6933f06c77a5d3b7f039d69cef02a7668206ee3eaa263685f490a431c039071",
+      "after_sha256": "f6933f06c77a5d3b7f039d69cef02a7668206ee3eaa263685f490a431c039071"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/CompactlyGenerated/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/CompactlyGenerated/Proofs.lean",
+      "before_sha256": "5fd7098a16e820ef862e286ccc82ad5613fe2d1b5deec29b0013ad7d9b16d4e6",
+      "after_initial_rename_sha256": "cc8e7f05d9b02d6861df1238c60714e273b0b7603f66df9d85cecd9c71496318",
+      "after_sha256": "cc8e7f05d9b02d6861df1238c60714e273b0b7603f66df9d85cecd9c71496318"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Data.lean",
+      "before_sha256": "afe5122d6e80459caeb41872422efa46db9795b63ad0606da334643eb3f3d746",
+      "after_initial_rename_sha256": "a1b98f2242c5f5cdd3a92e5b3b6dbaae696257bfb9591eca8d30f69f61bb707c",
+      "after_sha256": "a1b98f2242c5f5cdd3a92e5b3b6dbaae696257bfb9591eca8d30f69f61bb707c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Good/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Good/Proofs.lean",
+      "before_sha256": "4a94e97cf0b8a806aaa6f8a46bc8e0af908f0d10f4397ff30a17d55d5bd11984",
+      "after_initial_rename_sha256": "0208a7761b92a0e37f9487013cb079a7666d3d9048db210c5bbea42cb91f27df",
+      "after_sha256": "0208a7761b92a0e37f9487013cb079a7666d3d9048db210c5bbea42cb91f27df"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/HomotopyExtension/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/HomotopyExtension/Proofs.lean",
+      "before_sha256": "ba6ad5679637543546e389b0737d16a92c02acd898c104027b2ce55134a1c28b",
+      "after_initial_rename_sha256": "9bf06c38bae5590877661b9411814f84d3be968564168923a9902837ca534a55",
+      "after_sha256": "9bf06c38bae5590877661b9411814f84d3be968564168923a9902837ca534a55"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Order/Initial.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Order/Initial.lean",
+      "before_sha256": "358c19935df48b7091355e15607088da64f9fe81ee75401e443bbe3154cc8245",
+      "after_initial_rename_sha256": "69c00a0e5000bf8c15b8b5f331dfd244ebfba2d16e8f7505f7c3e11ab17cfdd5",
+      "after_sha256": "69c00a0e5000bf8c15b8b5f331dfd244ebfba2d16e8f7505f7c3e11ab17cfdd5"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Order/Model/Comparison.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Order/Model/Comparison.lean",
+      "before_sha256": "078e4250e6d35692ab8dad70f6d9cc1acb64fcde13c4374b002c75d51e9668c1",
+      "after_initial_rename_sha256": "2243778adf312f9d5b5c7e2ef7ff2f86aee467a6c6631befb47be176065c3ccf",
+      "after_sha256": "2243778adf312f9d5b5c7e2ef7ff2f86aee467a6c6631befb47be176065c3ccf"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Order/Model/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Order/Model/Data.lean",
+      "before_sha256": "1ee4be9cc4c3c1330a36b0b18376dfd8a97a13c75f8285879238f787a6167ce3",
+      "after_initial_rename_sha256": "f73f4968035deacc9f7ce085d3ad37c0d8d8a8ddb2fd16307d1533269c108773",
+      "after_sha256": "f73f4968035deacc9f7ce085d3ad37c0d8d8a8ddb2fd16307d1533269c108773"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Order/Model/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Order/Model/Proofs.lean",
+      "before_sha256": "46b4cc62ba56f523007871b68a079aec3b8368f487d2efc9aab3b245fd2e9719",
+      "after_initial_rename_sha256": "6047b298e906dd46bf249c9c804f1d3e7671d4fb6ccc16e216bfd6f30d59b8d2",
+      "after_sha256": "6047b298e906dd46bf249c9c804f1d3e7671d4fb6ccc16e216bfd6f30d59b8d2"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Order/Sequence.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Order/Sequence.lean",
+      "before_sha256": "66da6ccb8cdfd13037a60c870dd31820d23eb96082eff4745980add403e7f7a9",
+      "after_initial_rename_sha256": "38135a30dcd470a7ea061bd523ebc26c2a962cf968c779034d3e18fae3201c27",
+      "after_sha256": "38135a30dcd470a7ea061bd523ebc26c2a962cf968c779034d3e18fae3201c27"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/Proofs.lean",
+      "before_sha256": "678e3c5b55d922c73f0fb01b7fafe104ac893e8917f9d1f91eb4f20ff648330e",
+      "after_initial_rename_sha256": "0574b9afd3e6dac4903c985e33d24f05361e878aa797aa58d28e7ec8f2c06b6b",
+      "after_sha256": "0574b9afd3e6dac4903c985e33d24f05361e878aa797aa58d28e7ec8f2c06b6b"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Replacement/Cubical/WellBased/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Replacement/Cubical/WellBased/Proofs.lean",
+      "before_sha256": "e7103efb204d12a77c87311c2bc1683438b3f4a7f4a05a3a0bf753601fe45b42",
+      "after_initial_rename_sha256": "3c83b5a92f7775e2c1d9b4932fdc17ae2c7950ce278c0d859316d4eb13cfbc9f",
+      "after_sha256": "3c83b5a92f7775e2c1d9b4932fdc17ae2c7950ce278c0d859316d4eb13cfbc9f"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Representatives/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Representatives/Data.lean",
+      "before_sha256": "e57166ffd2e75f103a84fa7ba73cab585e19ab51d92644655052b07f6c9de1ed",
+      "after_initial_rename_sha256": "c141ce41eb226d3507dd6f0c6b0aca5481eeb958f61b9ec9dfb6cd2ceaea72ef",
+      "after_sha256": "c141ce41eb226d3507dd6f0c6b0aca5481eeb958f61b9ec9dfb6cd2ceaea72ef"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Representatives/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Representatives/Proofs.lean",
+      "before_sha256": "a7905974ee8a59f7f692a12d27ef4b5fb7f529c07b2fdc61d9bde03a510116aa",
+      "after_initial_rename_sha256": "766606b4e6c3d840b1fde220b1beda091332f03eff7f7a4df9e9d1252c1cfa03",
+      "after_sha256": "766606b4e6c3d840b1fde220b1beda091332f03eff7f7a4df9e9d1252c1cfa03"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Bond/Existence/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Bond/Existence/Proofs.lean",
+      "before_sha256": "4881aef5c15b901a2c146fa6c8618b085581b3854cc3424cc738740851b168c2",
+      "after_initial_rename_sha256": "7ad81651270096830ee36a47ebb48207a62648fc1f0597765b37978be47669ed",
+      "after_sha256": "7ad81651270096830ee36a47ebb48207a62648fc1f0597765b37978be47669ed"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Bond.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Bond.lean",
+      "before_sha256": "4bc9bb8659f48f718a11337d35df5613b0e62cae9a6c5216a71efef9c8d36638",
+      "after_initial_rename_sha256": "f4bea7d47a0cee16a19e9cf5bf194c7b8f715ab86cde6b790952759c1945e7d3",
+      "after_sha256": "f4bea7d47a0cee16a19e9cf5bf194c7b8f715ab86cde6b790952759c1945e7d3"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Data.lean",
+      "before_sha256": "4509a77e24e12fd7969ec790db4a3fe9a2cdab16db2841b7a8c7dda7c98d0975",
+      "after_initial_rename_sha256": "bc40ffb0fc0f76f31f5893564f94b00d62739912b20c5606ffc87e45ac1b7b59",
+      "after_sha256": "bc40ffb0fc0f76f31f5893564f94b00d62739912b20c5606ffc87e45ac1b7b59"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Map/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Map/Data.lean",
+      "before_sha256": "e5757e8bb7daad73aa434d0acc92ae64a6348f4e20ad9a249a885fa67829c9c5",
+      "after_initial_rename_sha256": "63384dbcba8a47bbb521d445cd9ef2ede4d4a66f48e6bc7f2c711e2b4b0b9a8c",
+      "after_sha256": "63384dbcba8a47bbb521d445cd9ef2ede4d4a66f48e6bc7f2c711e2b4b0b9a8c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Map/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Map/Proofs.lean",
+      "before_sha256": "a02b4196e3b9fd8df5799a9346bd146882fcfc45b982dda20dd3c262567b062c",
+      "after_initial_rename_sha256": "d3496d7ff368e237cc575a2cfc56af44c3dbba86c5b2f70009bb30eaee017d5c",
+      "after_sha256": "d3496d7ff368e237cc575a2cfc56af44c3dbba86c5b2f70009bb30eaee017d5c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Diagonal/Tail/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Diagonal/Tail/Data.lean",
+      "before_sha256": "05ba276a823e2d77af758a517c0dc5bb04da2d955e315886985d674ba3ff8b64",
+      "after_initial_rename_sha256": "b0df77060ae1b037b9f52131c5a00fc99581759ee8088f80a173c18542946322",
+      "after_sha256": "b0df77060ae1b037b9f52131c5a00fc99581759ee8088f80a173c18542946322"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Good/Predicates.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Good/Predicates.lean",
+      "before_sha256": "75333c35f2228386eadc98312212c27e1ad03b0155fdbcfc1cb37000efcfadfa",
+      "after_initial_rename_sha256": "ea9d90ff4490a1bf0cdf861295f4356a3525076398fa164236f684c56789e959",
+      "after_sha256": "ea9d90ff4490a1bf0cdf861295f4356a3525076398fa164236f684c56789e959"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Smash/Good/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Smash/Good/Proofs.lean",
+      "before_sha256": "21c6fdb4d08cb6bde79f6c58d1c0d8c3f1262726b61ca201a6ce7a3ba1b037c6",
+      "after_initial_rename_sha256": "a9c735077953a512537943655a1b8d6fa861282c24061c6d3f0134a4bf73100d",
+      "after_sha256": "a9c735077953a512537943655a1b8d6fa861282c24061c6d3f0134a4bf73100d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Tail/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Tail/Data.lean",
+      "before_sha256": "364305e898b3d93332e90880f80712ddb92b201ff592d2fc565ca3f4b2a3eaa9",
+      "after_initial_rename_sha256": "ce73dffe3a10de369493f33e85d1fb8e5e1aea1f9dd4fe94f6372dd3536aefc6",
+      "after_sha256": "ce73dffe3a10de369493f33e85d1fb8e5e1aea1f9dd4fe94f6372dd3536aefc6"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Tail/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Tail/Proofs.lean",
+      "before_sha256": "f2dfd37a4fae1fecb3e52eff56a39fb77d20030fedaf90f463006474c8ced9fd",
+      "after_initial_rename_sha256": "e0b0d639168e7ee033d68581ff8c652e6c79def1f1f8d43f3536a26c3f882df8",
+      "after_sha256": "e0b0d639168e7ee033d68581ff8c652e6c79def1f1f8d43f3536a26c3f882df8"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum/Zero/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum/Zero/Data.lean",
+      "before_sha256": "e708f3c2e878c137da654a16c3f1e64b68f84e1589fa8b7ec31504ad64319223",
+      "after_initial_rename_sha256": "2cd0da13dbd12e6c92b3af1148aa9c453a848cc1e523c685e988a5e1f2ca7c42",
+      "after_sha256": "2cd0da13dbd12e6c92b3af1148aa9c453a848cc1e523c685e988a5e1f2ca7c42"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Prespectrum.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Prespectrum.lean",
+      "before_sha256": "5a9884e56b826cfff7823d641f5963183556ab1f06f4e9c9bb4bdf45a4d8e0b7",
+      "after_initial_rename_sha256": "0cf9178f2242854eb09fe39101393afa24e3d2e2fe17b120ec9cff8fc25d8b10",
+      "after_sha256": "0cf9178f2242854eb09fe39101393afa24e3d2e2fe17b120ec9cff8fc25d8b10"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Realization/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Realization/Data.lean",
+      "before_sha256": "bf9116de1bf4aeae1ea7184f677fb1e222541576e62b3f3ac578768af8cc67f2",
+      "after_initial_rename_sha256": "f9f7e1eafd2cd72726d8168b145682b6bbbebb51b76269cb31e63b2e7f1f4aad",
+      "after_sha256": "f9f7e1eafd2cd72726d8168b145682b6bbbebb51b76269cb31e63b2e7f1f4aad"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Realization/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Realization/Proofs.lean",
+      "before_sha256": "9cc33dd7877c47e1974760b8d607338e1a8d72c6ded48b54053f210396a085dd",
+      "after_initial_rename_sha256": "5b03943d412e7cf858da6bcfdf66fdd750ea4d5ece76801f9326505895d3c9e8",
+      "after_sha256": "5b03943d412e7cf858da6bcfdf66fdd750ea4d5ece76801f9326505895d3c9e8"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Singular/Cylinder/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Singular/Cylinder/Data.lean",
+      "before_sha256": "6aa32245e62e86ec7342594665214ca1baad131d2432f94d6634520c5fa2c0a6",
+      "after_initial_rename_sha256": "2f79cb1007aa224bc8320e36753961bff59dcbc3868cfc4ad71849f04f022f94",
+      "after_sha256": "2f79cb1007aa224bc8320e36753961bff59dcbc3868cfc4ad71849f04f022f94"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Singular/Cylinder/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Singular/Cylinder/Proofs.lean",
+      "before_sha256": "e6e9b8a5751cabd3dedabd1eec0631a9f5b59d78e5d200413bf89df65f2f6f43",
+      "after_initial_rename_sha256": "506725dcef111ac8d3584ca447e5e3d4b5734cb7d9fb5f4a147024c043ae6161",
+      "after_sha256": "506725dcef111ac8d3584ca447e5e3d4b5734cb7d9fb5f4a147024c043ae6161"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Singular/Homotopy/Approximation/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Singular/Homotopy/Approximation/Proofs.lean",
+      "before_sha256": "79f12827637e76b119da7ec4d14ce428aea2c9e6fdd88e317179f656f6e3bcee",
+      "after_initial_rename_sha256": "d1d1dbca9995b6faf57abb06e7e65d6fa3946a61b444233d244534a3d7f8c19d",
+      "after_sha256": "d1d1dbca9995b6faf57abb06e7e65d6fa3946a61b444233d244534a3d7f8c19d"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Singular.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Singular.lean",
+      "before_sha256": "cea6e7fef786d00f4352c05bf9fc0d06bda7cd9f03e4b8c93f3f59939ca26372",
+      "after_initial_rename_sha256": "846466fa2e8a3718858ba17efa885cb1720f93457a2960e7129c01ec1dae13f0",
+      "after_sha256": "846466fa2e8a3718858ba17efa885cb1720f93457a2960e7129c01ec1dae13f0"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Smash.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Smash.lean",
+      "before_sha256": "eab3bdd49d16e9896f0dea5873b0851ececd2f81340c535764398330d2e99ac1",
+      "after_initial_rename_sha256": "c35bb7a96f1f55c5f81b9e343199fa01b2fc7d3ac748720ae0a4419b155b7de7",
+      "after_sha256": "c35bb7a96f1f55c5f81b9e343199fa01b2fc7d3ac748720ae0a4419b155b7de7"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Sphere/Representatives/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Sphere/Representatives/Data.lean",
+      "before_sha256": "434f6e89a5c7ddf9067ee85a94d05b87198a1687baf3615446fcebd245eeab87",
+      "after_initial_rename_sha256": "d59abdcf1f58f307197da514b406b9308d31a524ddba4f87b846fe99c85b9646",
+      "after_sha256": "d59abdcf1f58f307197da514b406b9308d31a524ddba4f87b846fe99c85b9646"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Sphere/Representatives/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Sphere/Representatives/Proofs.lean",
+      "before_sha256": "ebae52658f53f0e6a531cdfb2fe5de93bbb0df425290f46d67791b3c4a5bf860",
+      "after_initial_rename_sha256": "fb5729cf4e66c063eacf5a711b90872d9afb386d5fc9829c76c9e31865357979",
+      "after_sha256": "fb5729cf4e66c063eacf5a711b90872d9afb386d5fc9829c76c9e31865357979"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Suspension/Compact/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Suspension/Compact/Proofs.lean",
+      "before_sha256": "974ee1867f2c741f5363f9b1ad355052930152a6a7e9f0b4c8eb567713c17520",
+      "after_initial_rename_sha256": "c6e70e34a0ad802a378285ce9721975bba5a906598a2d55f8236839729eaaa8a",
+      "after_sha256": "c6e70e34a0ad802a378285ce9721975bba5a906598a2d55f8236839729eaaa8a"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Suspension/Data.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Suspension/Data.lean",
+      "before_sha256": "b116ae8e050b66bef8b8f0fecd53ffac15dc6582778423156b0b2a2398840cee",
+      "after_initial_rename_sha256": "bd13f7327aafea64af5a4731fc67e8347d4499258351d3d8d860499577f2971c",
+      "after_sha256": "bd13f7327aafea64af5a4731fc67e8347d4499258351d3d8d860499577f2971c"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Suspension/Proofs.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Suspension/Proofs.lean",
+      "before_sha256": "404d7870a34292ef0abc0d6f814f9fa2e249890067d1daeea5332bf07c10b258",
+      "after_initial_rename_sha256": "46323b9d242828d969a677cd7a1652a439e2b6d736373f86b8eb24ccb6b7d656",
+      "after_sha256": "46323b9d242828d969a677cd7a1652a439e2b6d736373f86b8eb24ccb6b7d656"
+    },
+    {
+      "before": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+      "after": "KIP126/Def/StableHomotopy/Spectra/Tensor.lean",
+      "before_sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+      "after_initial_rename_sha256": "8550f9015782d5fbaba8a3022e2b3a78d1294521a7a6b27ced3c9e9226c24779",
+      "after_sha256": "8550f9015782d5fbaba8a3022e2b3a78d1294521a7a6b27ced3c9e9226c24779"
+    },
+    {
+      "before": "KIP126/Def/StageInput/Foundation.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Foundation.lean",
+      "before_sha256": "0e89b92a700f079cbdf34e601373884467feabac5bf278549d7d8ba40774dc32",
+      "after_initial_rename_sha256": "59c5bdd073dd46ebb6aa5d9c4ca9945e45699906e96bcfba4cc64c30a907b003",
+      "after_sha256": "59c5bdd073dd46ebb6aa5d9c4ca9945e45699906e96bcfba4cc64c30a907b003"
+    },
+    {
+      "before": "KIP126/Def/StageInput/Milnor.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Milnor.lean",
+      "before_sha256": "d9f120c9379437ad573872290641434d908f0c52b7a706b88c42261fae8c568e",
+      "after_initial_rename_sha256": "2399f569abe90c408e479bddaa1e3dfb361187dece31d49dc0d64ea8b0527c90",
+      "after_sha256": "2399f569abe90c408e479bddaa1e3dfb361187dece31d49dc0d64ea8b0527c90"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Algebra/Components/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Algebra/Components/Data.lean",
+      "before_sha256": "5f17bdc43f3743f97bac7361b9edd05cdec668434f661e65f4d84517c7821b6f",
+      "after_initial_rename_sha256": "7bc3ec96e1fd693b52a4aef961509bdfbeb92f863e73a6a3828fbad6d26e6e76",
+      "after_sha256": "7bc3ec96e1fd693b52a4aef961509bdfbeb92f863e73a6a3828fbad6d26e6e76"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Algebra/Components/Proofs.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Algebra/Components/Proofs.lean",
+      "before_sha256": "1ba75e33953155fc1731b16d2e933672677f44a41c841f88802ccd358eb4006d",
+      "after_initial_rename_sha256": "02a26bf7f70b8bed1ebf9d271706f283c5d3faa59a18df676fae666d79d9f67d",
+      "after_sha256": "02a26bf7f70b8bed1ebf9d271706f283c5d3faa59a18df676fae666d79d9f67d"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Algebra/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Algebra/Data.lean",
+      "before_sha256": "b25cd84d5ced8e3d02d7d0a1fab293b1e30ba866a0cf57f3d2f86b0c8caf78dc",
+      "after_initial_rename_sha256": "74b31cb79e0ec55e49b81d0a11ae970fde764bd2bfd951e5e94d0c8655e93bb2",
+      "after_sha256": "74b31cb79e0ec55e49b81d0a11ae970fde764bd2bfd951e5e94d0c8655e93bb2"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Algebra/Proofs.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Algebra/Proofs.lean",
+      "before_sha256": "87507b9c3b3b53effa73b4db5fae17ea9793bfe4d6ce5515f513b5bd9c70dcb9",
+      "after_initial_rename_sha256": "f1a0ea07479c6585a2b5c87180bd753659c4d1df838c8c227a3b5de47316bd40",
+      "after_sha256": "f1a0ea07479c6585a2b5c87180bd753659c4d1df838c8c227a3b5de47316bd40"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Background/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Background/Data.lean",
+      "before_sha256": "f7732630e9c1793b9b7268f34874e7f0aec4cd27ca39efb1d27b2072f8c1720f",
+      "after_initial_rename_sha256": "b0645b1f4c9da0ec0cf620e9274cd8b399666d2e756e356a17055d0e534c5640",
+      "after_sha256": "b0645b1f4c9da0ec0cf620e9274cd8b399666d2e756e356a17055d0e534c5640"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Background/Fixed.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Background/Fixed.lean",
+      "before_sha256": "0adddc0e6cd1f1e69967071b99a1f784d2c112483693c80cfeae0e42874768e6",
+      "after_initial_rename_sha256": "7f9299a5913cc9f05a600b5c785249b2905aa4be7729306f14e65dd8f3e7e45d",
+      "after_sha256": "793171b43a7b7c06075358474dc97e671750b39724f75196804d90c318a5c2ae"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Background/Proofs.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Background/Proofs.lean",
+      "before_sha256": "d41245ed8ec5030ea567679821298c036d0f55c34dfc0a3250f56d3c4fb42818",
+      "after_initial_rename_sha256": "6920bab37c83d3205befa85f798f1f7b1c100e3b13013612c3136e10af6653d3",
+      "after_sha256": "6920bab37c83d3205befa85f798f1f7b1c100e3b13013612c3136e10af6653d3"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Classes/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Classes/Data.lean",
+      "before_sha256": "1902df073304a458da72873e889b93eabbac28e877e29adeba96c4a1bb40e27a",
+      "after_initial_rename_sha256": "39c0bab7a3f4632486ba0d326a250349956cc97b23b6c1e1a58b621e08e2ce05",
+      "after_sha256": "551f9c555827b400b9bb96d8bf79523157108679001465b131c811b7a4110361"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Classes/Family.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Classes/Family.lean",
+      "before_sha256": "dd71b37f1a10229ec91017107a82be4b06e34cd67b848690c319b9a639d3b92f",
+      "after_initial_rename_sha256": "b10fb6279fcd3d06974d8e2e211eb861eb763af904bdf14ad27dee93f0820c3f",
+      "after_sha256": "b10fb6279fcd3d06974d8e2e211eb861eb763af904bdf14ad27dee93f0820c3f"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/EInfty/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/EInfty/Data.lean",
+      "before_sha256": "84f0d2ea878224ef8d181110bba11a9d5f7e56ab3a26b4cad656042162bf2f3c",
+      "after_initial_rename_sha256": "e3c11dbf675a7616be559368e7e45d29b9544aa7191644d1256ed7b62bc02587",
+      "after_sha256": "e3c11dbf675a7616be559368e7e45d29b9544aa7191644d1256ed7b62bc02587"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/EInfty/Proofs.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/EInfty/Proofs.lean",
+      "before_sha256": "388b1ad79651d151f795115a2b23bd2169bdcd748a66cb525bd11f9b309b0aba",
+      "after_initial_rename_sha256": "77555995f0adc751d7e2c82faadb08d25b756f3542df1175ba6be9140a4e71cd",
+      "after_sha256": "77555995f0adc751d7e2c82faadb08d25b756f3542df1175ba6be9140a4e71cd"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Route/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/SyntheticContext/Data.lean",
+      "before_sha256": "d484193c148c4fcb4720f9a01592389d5a1259550a2d59515a855d7c6485cff1",
+      "after_initial_rename_sha256": "8c60815429c7dbff1cfff347db957f63f80da2ea1734340e3677761248006267",
+      "after_sha256": "8c60815429c7dbff1cfff347db957f63f80da2ea1734340e3677761248006267"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Route/Fixed.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/SyntheticContext/Fixed.lean",
+      "before_sha256": "4141b7252a94a0870ae634d31ce9a53f2edf52c0af9ba11f7d3985f8f499079b",
+      "after_initial_rename_sha256": "65b5170fb33b0175db67c3cf13be3e15d8e5f47e27b98eac85530036ac42ee9c",
+      "after_sha256": "5d1b44e035412a21dd2d1aa11afd3c74103c6d885b6ba8b7b6929e9070d6a27a"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Sequence/Data.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Sequence/Data.lean",
+      "before_sha256": "23950f2852ed9a8ec0586478c152d6cdff541b9e52430283868fd5cd61fb359d",
+      "after_initial_rename_sha256": "8839b4d478b2784139272f8d1bbb0e96fe5e0aee43f529c2ed9525167c49a17c",
+      "after_sha256": "eec4eda7b5559c63a7604ef4cbb53da0105d33011ca6fe70daf1e6ab4e43c91d"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Sequence/Proofs.lean",
+      "before_sha256": "f3b6ff197c5f3f3345d732815f43e6449794f32ea165d1eca669358d7f19ef15",
+      "after_initial_rename_sha256": "915b970cc64e1a3bce2ed411df487b14de6b2c4d690f8d5fc3f62b1a3792799b",
+      "after_sha256": "915b970cc64e1a3bce2ed411df487b14de6b2c4d690f8d5fc3f62b1a3792799b"
+    },
+    {
+      "before": "KIP126/Def/StageInput/StandardSphere/Tmf/Predicates.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Tmf/Predicates.lean",
+      "before_sha256": "3dd7a789aa8ad12377bb2551f73972c1025a00f199938255f859b6c566d819f4",
+      "after_initial_rename_sha256": "4c5647e6920332f4a875a2a2efbe1295a57bbd906a90f6011be92acae8cf6061",
+      "after_sha256": "f518dc0f6e0ddc7a63979eaceadc2aa1433991cde9c9be53eb8b21bc52bd067d"
+    },
+    {
+      "before": "KIP126/Def/StageInput.lean",
+      "after": "KIP126/Def/AdamsSynthetic/Standard.lean",
+      "before_sha256": "a56f36ea16fb779cfd34f6bcba289152c451b42d55f1f632fea3d51f90a3544a",
+      "after_initial_rename_sha256": "0beea17be6e95d07c7b716c6ae18b69332445129c5b780d1a593eadb728bbd25",
+      "after_sha256": "aa9171edb0610e9d594475edec95a09f4a5ce19b16713aca3223ac899ca20453"
+    },
+    {
+      "before": "KIP126/Def/Topology/Pushout/Equivalence/OrderMappingCylinder/Proofs.lean",
+      "after": "KIP126/Def/Topology/Pushout/Equivalence/OrderMappingCylinder/Proofs.lean",
+      "before_sha256": "f2b1926a5a8e6d48d4316db9903fd67d6ff44e21456e0f3761a2f9b646b35055",
+      "after_initial_rename_sha256": "746c7c0a1aac7be3650828f7bf31eb3d3b40f36331c990f234365b081dbbd476",
+      "after_sha256": "746c7c0a1aac7be3650828f7bf31eb3d3b40f36331c990f234365b081dbbd476"
+    },
+    {
+      "before": "KIP126/Def/Topology/SimplicialRealization/OrderComplex/MappingCylinder/Homotopy/Data.lean",
+      "after": "KIP126/Def/Topology/SimplicialRealization/OrderComplex/MappingCylinder/Homotopy/Data.lean",
+      "before_sha256": "98bf633573c32ec4e17a189fa32104a135219a974409a9817676f7b11d66bcce",
+      "after_initial_rename_sha256": "07b77c971c274917152c2a417f70f3f1587706e52ba892b743b10ea1721066ed",
+      "after_sha256": "07b77c971c274917152c2a417f70f3f1587706e52ba892b743b10ea1721066ed"
+    },
+    {
+      "before": "KIP126/Def/Topology/SimplicialRealization/OrderComplex/MappingCylinder/Homotopy/Proofs.lean",
+      "after": "KIP126/Def/Topology/SimplicialRealization/OrderComplex/MappingCylinder/Homotopy/Proofs.lean",
+      "before_sha256": "90b17a26abc9934e9d34125e1aab518c650b413ea70b88e16d11919d45d76edf",
+      "after_initial_rename_sha256": "f3a6d5fee2226c672a2a3f7cb0d62621c83b18ae9612ae09378d1a7cf5efd024",
+      "after_sha256": "f3a6d5fee2226c672a2a3f7cb0d62621c83b18ae9612ae09378d1a7cf5efd024"
+    },
+    {
+      "before": "KIP126/Def.lean",
+      "after": "KIP126/Def.lean",
+      "before_sha256": "980cf3f9ec7c6f1283d4afecf60313a816147628e5aa9b67cfa81946ef71d083",
+      "after_initial_rename_sha256": "ae350811cbdd70de5f88e18cd74583cada4a41d48d24a2d6dea3b502fb33bc4c",
+      "after_sha256": "ae350811cbdd70de5f88e18cd74583cada4a41d48d24a2d6dea3b502fb33bc4c"
+    },
+    {
+      "before": "KIP126/Literature/Challenge.lean",
+      "after": "KIP126/Literature/Assumptions.lean",
+      "before_sha256": "af1d25cc2eaf929d65919ccbe50f122e92879cd8da9eed1852e2860b0a35509b",
+      "after_initial_rename_sha256": "b96f32d0076338aae812f5115ff12ad9cb5bb811604d51c997099a86e80ef585",
+      "after_sha256": "6db465093d2e2a914c5c8e6d7f2411e3035013ed09b1369ad36c79ee116d3257"
+    },
+    {
+      "before": "KIP126/Literature/Delivery.lean",
+      "after": "KIP126/Literature/Hypotheses.lean",
+      "before_sha256": "516719634f2c782c1e90a59b99a3a54ccd12f9093ed8fab959313a12a77d5d9b",
+      "after_initial_rename_sha256": "526d2bc75cacfc7a3e94b421ada3b52cd1b3019a24780a9688fc17a772c192fd",
+      "after_sha256": "84588a33a80b47dd54cb2ed8aab000fc0865de115055aa7fd59722b256ee0c3b"
+    },
+    {
+      "before": "KIP126/Literature/Source.lean",
+      "after": "KIP126/Literature/Source.lean",
+      "before_sha256": "ab3b3438d7556f769fc3cdf70ae36a3650807ef6c391ad8da7a1f0bacd8ead3e",
+      "after_initial_rename_sha256": "c57cc701f08b78e1abf6274470d4e937c5952d491854233140ef3477796d131a",
+      "after_sha256": "a861cb8f56e8aaf4735db382d06d4139036a01f456ff992a783f14da5f3658bb"
+    },
+    {
+      "before": "KIP126/Main/Axiom/Challenge2.lean",
+      "after": "KIP126/Main/ExternalHypotheses.lean",
+      "before_sha256": "4cb1432ddf4b525f5a14d566251b7dfab91ad650edcbf65e526483766528d7b5",
+      "after_initial_rename_sha256": "bb645828be56f5a52052c853996790bdb3ad3ad4df77beb00db322aca6588566",
+      "after_sha256": "5b7aa38963ef67e94fbeeb5db4752ea5a62acd27faad227feb6e84b9d437aec9"
+    },
+    {
+      "before": "KIP126/Main/Inputs/Challenge2.lean",
+      "after": "KIP126/Main/ExternalHypotheses/Data.lean",
+      "before_sha256": "e967359b7d302ae40e99602d0c1df1194e4f8d21b3dc7bfe85c75337cd1e5c42",
+      "after_initial_rename_sha256": "18a41c4a48a09a4edef36632af48d389f1ff57fcfb20afc7aa622c87b50317f0",
+      "after_sha256": "735d985affb7024700376ec437a2126ce4a2b06d791bd9c03944d3e0f53117db"
+    },
+    {
+      "before": "KIP126/Main/Solution/ChoiceIndependence/any_choice_criterion.lean",
+      "after": "KIP126/Main/ChoiceIndependence/any_choice_criterion.lean",
+      "before_sha256": "c1d15ab55c0c4989312b073b5895bf7f638b44a8bf37e17bd0a863de9bd3fd50",
+      "after_initial_rename_sha256": "d5ef925c3bd1e87feb67c4c16f5019a3c9fb7cd707cb0cb139aec206526050a9",
+      "after_sha256": "0c94e45f1ca6ab1aeba31ea6a5643be9ff5ba161c6f348f4b8cbdb1b480d396e"
+    },
+    {
+      "before": "KIP126/Main/Solution/ChoiceIndependence/square_and_eta_detection_choice_equivalence.lean",
+      "after": "KIP126/Main/ChoiceIndependence/square_and_eta_detection_choice_equivalence.lean",
+      "before_sha256": "7400b0edf462f27cc9932204af307167ccce28a367351a3cc8ff860047f28b3d",
+      "after_initial_rename_sha256": "bc6dfd672523cf87e6ed169c818840b7723b61a8a7a114619c31194327184c3d",
+      "after_sha256": "e768b754059ad1e4a7e5eb5ed6f93a677ad3d6368deee92874b0887a3da4bfac"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/AdamsOneLine/H6.lean",
+      "after": "KIP126/Main/Computation/AdamsOneLine/H6.lean",
+      "before_sha256": "ba0fc3a126dd2293be6f88de0a256e015c580299e3bce6dc9cb7f7247a190448",
+      "after_initial_rename_sha256": "32771efdc9f97f1b6baca204dbf6ca4526fc6c9ffba36007cac26f2483f349ed",
+      "after_sha256": "d803bf693b5afbd23acd1dfca5a16fce801066865bacb2f05e38c1db0f4f7417"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Dimension.lean",
+      "after": "KIP126/Main/Computation/Dimension.lean",
+      "before_sha256": "fe87fa0c03a43ba9445d480ce36d7322cd1023e06b456c39c2c22b0149fb73a4",
+      "after_initial_rename_sha256": "f9c32b025b565f5b0ec635ce837d95dff77a1ba0d93e0f20a1f08f23d5968c86",
+      "after_sha256": "f9c32b025b565f5b0ec635ce837d95dff77a1ba0d93e0f20a1f08f23d5968c86"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/High125.lean",
+      "after": "KIP126/Main/Computation/High125.lean",
+      "before_sha256": "59c37827069a3b352406b7f435917626acf10f351f837803d9307e9f382fbd33",
+      "after_initial_rename_sha256": "bf1ec91a33489f894db88fcc61bcd1bafd8d7429e074a8c65215f8176d75d792",
+      "after_sha256": "bf1ec91a33489f894db88fcc61bcd1bafd8d7429e074a8c65215f8176d75d792"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Lambda.lean",
+      "after": "KIP126/Main/Computation/Lambda.lean",
+      "before_sha256": "ddb4437899007cc76c4d894374c4204c9f3f0df805598d8415466bf89d39bf82",
+      "after_initial_rename_sha256": "b252b71934df49b4f6e1d2e1eda257272266ac9618fe5ac2df62267ec112bc90",
+      "after_sha256": "b252b71934df49b4f6e1d2e1eda257272266ac9618fe5ac2df62267ec112bc90"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Basis/Data.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Basis/Data.lean",
+      "before_sha256": "875a305ac0db9e98d02c76b24efedb057bc073ec7292a9f71a3c9153bbbd4dc0",
+      "after_initial_rename_sha256": "c5652d73f50b6a856bdf83f854707cd639ba9d4add1a7f02946cf2ff30674a01",
+      "after_sha256": "9014c89ae73c3d79844905bfdf9bd6d874db002739f06b85f039df6c36d60a17"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Basis/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Basis/Proofs.lean",
+      "before_sha256": "eb91ef626c16c4c362ea929df4f772332bf9155f3e7e2ba94b1b2f706542f886",
+      "after_initial_rename_sha256": "67069b8db35f831dd0c1698bfcc581102275d9510975b036e9f732bd49da62d0",
+      "after_sha256": "290462ec76206a88142cce5e81d2770f61d31e4b350acd59e394f7ec4a4c615d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Differentials.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Differentials.lean",
+      "before_sha256": "87e5c75e65a2b3c28dde521ee3b19cbed70171ffa517bf694425a33604f74e9d",
+      "after_initial_rename_sha256": "2eb551bcb638a2362d667a8401750800cb98c75f7dcc759c7a1433c4f4a1bdba",
+      "after_sha256": "2eb551bcb638a2362d667a8401750800cb98c75f7dcc759c7a1433c4f4a1bdba"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/E2.lean",
+      "after": "KIP126/Main/Computation/LinProgram/E2.lean",
+      "before_sha256": "18e55cb060b669d67703c831d691643e845860c2f1988ec73e05a37ab50f7c3b",
+      "after_initial_rename_sha256": "4d3864b288613694d9da951e21029784b97667a1dc4bed22278c5e44d5539e60",
+      "after_sha256": "4d3864b288613694d9da951e21029784b97667a1dc4bed22278c5e44d5539e60"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Basis/Data.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Basis/Data.lean",
+      "before_sha256": "a63e3334211c265f2ddb1135dc35f18d6209844d8989fec073ddba1e361aa4cb",
+      "after_initial_rename_sha256": "6fdba167b255c72bd6f49c9401ba2cdafb14747bc39e566f7458f53a83fad5a5",
+      "after_sha256": "6fdba167b255c72bd6f49c9401ba2cdafb14747bc39e566f7458f53a83fad5a5"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Basis/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Basis/Proofs.lean",
+      "before_sha256": "d52eedf09036b0cad0789fcd1d74f305a21246656107d6b517551b0efa63f6b4",
+      "after_initial_rename_sha256": "921986dc75848ced04b9b4601b5e9df11525f906f7b7a2a59c791f75b2bdebc7",
+      "after_sha256": "921986dc75848ced04b9b4601b5e9df11525f906f7b7a2a59c791f75b2bdebc7"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Classes/Data.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Classes/Data.lean",
+      "before_sha256": "c26e9dc2d7c08c1517da5287b947c068e3ad59992a952cc17b5f49f5740ad0b1",
+      "after_initial_rename_sha256": "04ed61c3d2848eec0bd524e575be89858eb061203f5856dd92623befb6644782",
+      "after_sha256": "04ed61c3d2848eec0bd524e575be89858eb061203f5856dd92623befb6644782"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Classes/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Classes/Proofs.lean",
+      "before_sha256": "4f1e1bfdb0b1ba8a2e892659f3a5b7cf05c79887ef035cb95b768670edbf6128",
+      "after_initial_rename_sha256": "f3776accf15e4ef05a475a0a7af1520931614df69067f06d420fb98e88614832",
+      "after_sha256": "f3776accf15e4ef05a475a0a7af1520931614df69067f06d420fb98e88614832"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Differentials/Certificate.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Differentials/Certificate.lean",
+      "before_sha256": "dcb2e03de9faa2cfdcc815a9b7d1c8e0d88da66fdcf5d4078e48c1738a542966",
+      "after_initial_rename_sha256": "003502be7835648c79d5af42880aa1ac5941aec6fab1081efeb83249b4ff906b",
+      "after_sha256": "e876e63118ff80419c2e8add006c7fd7b145337c8abd5ab50b3fbce683ab793d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Differentials/Predicates.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Differentials/Predicates.lean",
+      "before_sha256": "32aaf16af7f1776d688dac0ad4ca431e899f46a2036122a9cbe635c947d3ed82",
+      "after_initial_rename_sha256": "90d9aa69bb54e9ff8304734d37d5800387e1093993730bbd6f74546c352eeee7",
+      "after_sha256": "627db4385b6cb7c5b7a7329dfb77fb774ee24c5a3a009cac24218e8df70dda21"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Differentials/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Differentials/Proofs.lean",
+      "before_sha256": "8e368ebf6e4128f8fb8a3d5d0f192462953ed8eb961ac65c7f004f2755ba22d1",
+      "after_initial_rename_sha256": "adee52227863b0c9262a100fea36956e6498076df95537db1a3215c1e1eb8852",
+      "after_sha256": "adee52227863b0c9262a100fea36956e6498076df95537db1a3215c1e1eb8852"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Presentation/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Presentation/Proofs.lean",
+      "before_sha256": "da4191675f84eaf409c57c42300a8276de6f0aa1894aeba25fa9cb7edf13d6e3",
+      "after_initial_rename_sha256": "a70d208ad0e61676bc6a50a31c3d738f1589cb74e54749fa879b09e3265d9fa3",
+      "after_sha256": "a70d208ad0e61676bc6a50a31c3d738f1589cb74e54749fa879b09e3265d9fa3"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Interpretation/Selected/Proofs.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Interpretation/Selected/Proofs.lean",
+      "before_sha256": "ace015fc31055c2b5ff59642edbf380650645f61807a4f7bf6e7a26bb7992e2a",
+      "after_initial_rename_sha256": "e19a2fe3a98340473679fa5c59339734ad5bb22b83465efbd9fe6ff82c0e01a6",
+      "after_sha256": "4c4e996587eebd69cf91804378c48a66f4f9785fb131d66e668a7213c4f11fad"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LinProgram/Presentation.lean",
+      "after": "KIP126/Main/Computation/LinProgram/Presentation.lean",
+      "before_sha256": "a10ce032b85c12d94eaf30fb600018c0b08a8afe8cb89d418084c81bec9a411a",
+      "after_initial_rename_sha256": "ad06d4a7b442da9ca08e4e21ee2ccaf9562cf11b1f1d6acab5610cf6d7635324",
+      "after_sha256": "6e5ef78bbcb38085a64b7c60f1202e3bbb9629adf6635acdc78be84c88acdaea"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/LowDegrees.lean",
+      "after": "KIP126/Main/Computation/LowDegrees.lean",
+      "before_sha256": "5f35d838406203cb721e3ef1047f3943ffc6a1aea5cb57a19f44cf2c87530aba",
+      "after_initial_rename_sha256": "55633f60af4cea6614b0b3b80185201d4d8044bea08c50b7a4bbb038a1282abb",
+      "after_sha256": "55633f60af4cea6614b0b3b80185201d4d8044bea08c50b7a4bbb038a1282abb"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Nonvanishing.lean",
+      "after": "KIP126/Main/Computation/Nonvanishing.lean",
+      "before_sha256": "dabe027e9525970040e307bd71a0d84b2601b07dd091528951d3d9700ed69163",
+      "after_initial_rename_sha256": "b284b82b90a27d07af3949f13975937d1fd3d18b93cd3deafb1dce5e468a4298",
+      "after_sha256": "531ca6e3af243380041604e94f8f330e560ddc11dfb32072549d884a4600fd7b"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Reduction.lean",
+      "after": "KIP126/Main/Computation/Reduction.lean",
+      "before_sha256": "e3189ca78c09139f70a547cc769f1601bb8fb59e36f2bc4d17abf82d92fffcc9",
+      "after_initial_rename_sha256": "0e44b1ab1a93d96359bb9c0ca48d494499ce8ed26c50172edca9207828ac7f62",
+      "after_sha256": "0e44b1ab1a93d96359bb9c0ca48d494499ce8ed26c50172edca9207828ac7f62"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Bounds.lean",
+      "after": "KIP126/Main/Computation/Route/Bounds.lean",
+      "before_sha256": "7dc7f7094adb59b75542b8570db9895adb4f5253dd23bec847e86dbcf2f50cc6",
+      "after_initial_rename_sha256": "5d3c4b075cef5bdc309a6b79210a3b1bcb7abc7003133445cc478ee2ca44f13d",
+      "after_sha256": "5d3c4b075cef5bdc309a6b79210a3b1bcb7abc7003133445cc478ee2ca44f13d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Candidates.lean",
+      "after": "KIP126/Main/Computation/Route/Candidates.lean",
+      "before_sha256": "cf43cc728731809e31fe78af7abac266978e1b39aeb2e30a6ea0306a078af46b",
+      "after_initial_rename_sha256": "c3f483377ed83c45c29ce95c741191409952c44a657807c006f4daeadc71211e",
+      "after_sha256": "c3f483377ed83c45c29ce95c741191409952c44a657807c006f4daeadc71211e"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/CofiberAndFiltration.lean",
+      "after": "KIP126/Main/Computation/Route/CofiberAndFiltration.lean",
+      "before_sha256": "1ec783f0415ce517b2a3dd585d564dc860983562a7acadc1ca052b37c57389b9",
+      "after_initial_rename_sha256": "b8c59a022155f3fdce6dcc289afabbf1f4f31c56e43fa12f128741ce8bfa0138",
+      "after_sha256": "b8c59a022155f3fdce6dcc289afabbf1f4f31c56e43fa12f128741ce8bfa0138"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Consequences.lean",
+      "after": "KIP126/Main/Computation/Route/Consequences.lean",
+      "before_sha256": "2f2f6b528d0065226e5024e81e2587e44e8ba0b773abbe6ded05bd9233c06344",
+      "after_initial_rename_sha256": "37a6fda8b209a1cca4f53c65a5b8a9980ae2ba1d173276d03fc081dc45fe6927",
+      "after_sha256": "37a6fda8b209a1cca4f53c65a5b8a9980ae2ba1d173276d03fc081dc45fe6927"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/High125.lean",
+      "after": "KIP126/Main/Computation/Route/High125.lean",
+      "before_sha256": "7a071883283cf279c6ac22836d3b92141e63c235610c844e94510bfae26b4509",
+      "after_initial_rename_sha256": "d1ed15041603a25f6bc4d9930db6f6814c400add4751ee19bf241791b3aa897d",
+      "after_sha256": "d1ed15041603a25f6bc4d9930db6f6814c400add4751ee19bf241791b3aa897d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/NamedSurvival.lean",
+      "after": "KIP126/Main/Computation/Route/NamedSurvival.lean",
+      "before_sha256": "7c9705e3574374f253e6cca752c5b76a9e8c94978389328b5725a643a6308150",
+      "after_initial_rename_sha256": "440223da24af9b46bb44802dd6841fe9f98b7dfdc59bb1ecd798ebc6dd0e8870",
+      "after_sha256": "440223da24af9b46bb44802dd6841fe9f98b7dfdc59bb1ecd798ebc6dd0e8870"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/SphereDifferentials.lean",
+      "after": "KIP126/Main/Computation/Route/SphereDifferentials.lean",
+      "before_sha256": "287a3f0bf75984b8a8e08e7612e01774bcfd628c4d8c490094bddee58adf75a1",
+      "after_initial_rename_sha256": "1d204328ab0c9e65fe2c2b1058a0e5dad85b3af03ee572637a141c645e8f28be",
+      "after_sha256": "1d204328ab0c9e65fe2c2b1058a0e5dad85b3af03ee572637a141c645e8f28be"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/SphereIncoming.lean",
+      "after": "KIP126/Main/Computation/Route/SphereIncoming.lean",
+      "before_sha256": "ff9f48e552ef99a49a9f8599c8b939f330211379cb4939b7973405fdff8391ce",
+      "after_initial_rename_sha256": "9a16795c52767116f3a4d71c82083911de4b7999b2d730a51504c882c4961c50",
+      "after_sha256": "9a16795c52767116f3a4d71c82083911de4b7999b2d730a51504c882c4961c50"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/SphereSurvival.lean",
+      "after": "KIP126/Main/Computation/Route/SphereSurvival.lean",
+      "before_sha256": "6ab587db56f3b31141b4da78c3136b9f49099bb65f2f8e2e5ef08b585d77022f",
+      "after_initial_rename_sha256": "aa5c93f7060cee31f3cfae3133d250d6e7e04cf170a1b5b45389227809755392",
+      "after_sha256": "aa5c93f7060cee31f3cfae3133d250d6e7e04cf170a1b5b45389227809755392"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Staircase.lean",
+      "after": "KIP126/Main/Computation/Route/Staircase.lean",
+      "before_sha256": "de01d1e1d87306acd56bfb2c23a5ce1d41cbaf531d656d02761961af0326142f",
+      "after_initial_rename_sha256": "ce5da941127a728dc354fc7f884ff3c8a4bb9aefeae3d804ff90fcb89dc33786",
+      "after_sha256": "ce5da941127a728dc354fc7f884ff3c8a4bb9aefeae3d804ff90fcb89dc33786"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Stem125Differentials.lean",
+      "after": "KIP126/Main/Computation/Route/Stem125Differentials.lean",
+      "before_sha256": "c5d49d6f31269cc536adc505f30e490e48db7b3b9778fac9338ebc78a5952aeb",
+      "after_initial_rename_sha256": "9932502b6d720ca06e099816690ad415003a9d559761e497984b048b0f076ae5",
+      "after_sha256": "9932502b6d720ca06e099816690ad415003a9d559761e497984b048b0f076ae5"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route/Stem125Vanishing.lean",
+      "after": "KIP126/Main/Computation/Route/Stem125Vanishing.lean",
+      "before_sha256": "5bd521282e4a37ae2ef944db13927960ea023f2f4d2b9a473b186f6db1cea387",
+      "after_initial_rename_sha256": "f66045ed5c50b844ed42c9fed10e634061373d1f767c501b551e1b3c1adcecfa",
+      "after_sha256": "f66045ed5c50b844ed42c9fed10e634061373d1f767c501b551e1b3c1adcecfa"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Route.lean",
+      "after": "KIP126/Main/Computation/Route.lean",
+      "before_sha256": "8a1f14d2c07abe4f0bc8d32edb394c5ddbf4406706a3af460860a6f2e2cb262c",
+      "after_initial_rename_sha256": "4d4f5ef7fa36a2d759937b4591976375bef72c20bcdf837c3fa962b53c3c99d7",
+      "after_sha256": "4d4f5ef7fa36a2d759937b4591976375bef72c20bcdf837c3fa962b53c3c99d7"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Tmf/Br21.lean",
+      "after": "KIP126/Main/Computation/Tmf/Br21.lean",
+      "before_sha256": "88a98ce4df758e4250cd27f80b56d5de2b808e3943437428e9eeef53d9d45bc0",
+      "after_initial_rename_sha256": "419572104b3c5615bf1354b07087a58eb0c31687fadcdb1c16fa60c39ea63ef6",
+      "after_sha256": "419572104b3c5615bf1354b07087a58eb0c31687fadcdb1c16fa60c39ea63ef6"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Tmf.lean",
+      "after": "KIP126/Main/Computation/Tmf.lean",
+      "before_sha256": "76a15e2eb42e295edbed29ee1809791f234186d4e8d974a41ee0b4d576d0bc88",
+      "after_initial_rename_sha256": "c17c705341159dbc15f43c16f0ec250075fff92a7ec6ca76474972e50947d377",
+      "after_sha256": "5e3199efbaf8c00c465abefa97cb1b9d940ca296992995b0d3e3fd8a80474042"
+    },
+    {
+      "before": "KIP126/Main/Solution/Computation/Vanishing.lean",
+      "after": "KIP126/Main/Computation/Vanishing.lean",
+      "before_sha256": "77d4dd72f780aa17108da34e5e25127d4f1900d33d03a19eea3fff02061e532e",
+      "after_initial_rename_sha256": "b39096ddba590bcd08c6500a65eb1f57597bc9ecd2fc6062f2e7376146674fd7",
+      "after_sha256": "b39096ddba590bcd08c6500a65eb1f57597bc9ecd2fc6062f2e7376146674fd7"
+    },
+    {
+      "before": "KIP126/Main/Solution/DifferentialReduction/Conclusion.lean",
+      "after": "KIP126/Main/DifferentialReduction/Conclusion.lean",
+      "before_sha256": "404f089ec43e6ae82c4d83bdf2f4580f3d69f1ba35c13edddf1026af2377ea13",
+      "after_initial_rename_sha256": "3dccb8370923b841c2d5c5233d02d64774779239684b9626f2fa24154655af05",
+      "after_sha256": "ca36a405da3be2813740b847056939bddd00384f487ac114cc94319084367be2"
+    },
+    {
+      "before": "KIP126/Main/Solution/DifferentialReduction/d12_dichotomy_and_condition_equivalence.lean",
+      "after": "KIP126/Main/DifferentialReduction/d12_dichotomy_and_condition_equivalence.lean",
+      "before_sha256": "68c8d80549cede4c43151e2d416cf0292eea96f31cc5da2a6b4f568ee531782f",
+      "after_initial_rename_sha256": "f8ff46147c7b47644a80aa4ffdf9c10478ebca228c07b76f10e4cce65f12607f",
+      "after_sha256": "3467ed72bb4013e39f5db188a1bb75d8a88a9de5ee868430c5a2b708576031af"
+    },
+    {
+      "before": "KIP126/Main/Solution/DifferentialReduction/only_d12_differential_reduction.lean",
+      "after": "KIP126/Main/DifferentialReduction/only_d12_differential_reduction.lean",
+      "before_sha256": "edd429bff9c2f8fa1ca2233fafafa1dcdf6d6eeffb1667bf0eddaba709196e77",
+      "after_initial_rename_sha256": "26924a77d4069a8d38f7a3e8a5e958828e7bd517aa45447e6affea9ec0d321e8",
+      "after_sha256": "41fd2b43c76cecb6581fb7b175573bddcbcbccd3645a2cb36d067d00baed6b0e"
+    },
+    {
+      "before": "KIP126/Main/Solution/ExtensionObstruction/eta_extension_excluded_of_d6_vanishes.lean",
+      "after": "KIP126/Main/ExtensionObstruction/eta_extension_excluded_of_d6_vanishes.lean",
+      "before_sha256": "6376468ba73393534200269d30df884218c9a5f2da0e90950a27d8b6e52e51be",
+      "after_initial_rename_sha256": "766c52c7a5f72f9d191f24bba69fe64615371e1fa134aadb9db87bdaac70e089",
+      "after_sha256": "bce6136f36e379d59a4de3a2c6f3dd654a61af51c92fc16e27c5ca4e9bce6395"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/EtaRows/Proofs.lean",
+      "after": "KIP126/Main/Literature/EtaRows/Proofs.lean",
+      "before_sha256": "f18666b33a3dccd1613c671970c259575128f840518e4cd1e16da54cfc65f4ef",
+      "after_initial_rename_sha256": "f18666b33a3dccd1613c671970c259575128f840518e4cd1e16da54cfc65f4ef",
+      "after_sha256": "f18666b33a3dccd1613c671970c259575128f840518e4cd1e16da54cfc65f4ef"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/HopfCofiber/Data.lean",
+      "after": "KIP126/Main/Literature/HopfCofiber/Data.lean",
+      "before_sha256": "affab86273e43f358e33df61afa9a6e7a6538febd49c960679b9ad500d4fdd7f",
+      "after_initial_rename_sha256": "572a4fad2339f9be5adaf8b59034c52feb93f22b334e5942dc2326a79724792a",
+      "after_sha256": "572a4fad2339f9be5adaf8b59034c52feb93f22b334e5942dc2326a79724792a"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/HopfCofiber/Pages/Data.lean",
+      "after": "KIP126/Main/Literature/HopfCofiber/Pages/Data.lean",
+      "before_sha256": "1905a8ffb31595f6f14c1dd226ec10419f263ac3c76dbbff90f428fcb0e1342f",
+      "after_initial_rename_sha256": "368f589e2bcd1e1132b87fee8c8fba6a3559833b71071d357be01e687b7c0cf2",
+      "after_sha256": "368f589e2bcd1e1132b87fee8c8fba6a3559833b71071d357be01e687b7c0cf2"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/HopfCofiber/Predicates.lean",
+      "after": "KIP126/Main/Literature/HopfCofiber/Predicates.lean",
+      "before_sha256": "de5e50052055260c1af0dd19fe43037254872eac1a6212df579b353127abf732",
+      "after_initial_rename_sha256": "93390222f2d2df74285b14a403ee492d37dea8eb1244e3ddcfc77fb1a1f17d25",
+      "after_sha256": "93390222f2d2df74285b14a403ee492d37dea8eb1244e3ddcfc77fb1a1f17d25"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/HopfCofiber/Fixed/Data.lean",
+      "after": "KIP126/Main/Literature/Near126/HopfCofiber/Fixed/Data.lean",
+      "before_sha256": "2bad3622e2b5ffcc1751671585600a6f85e1fca4f2ab0480fa170c975f32caa2",
+      "after_initial_rename_sha256": "dcf89929edf7ee729fd993993abb3b7c425428cef98a7198f1957ee54db9b002",
+      "after_sha256": "dcf89929edf7ee729fd993993abb3b7c425428cef98a7198f1957ee54db9b002"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Boundaries/Data.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Boundaries/Data.lean",
+      "before_sha256": "ecd930280cd842d955d992d65d07ac6d6f3854a91f99ce5b6418342c099b6dae",
+      "after_initial_rename_sha256": "8930a1cbcf00ef6c6b15ed8a9d2f18b8a8b7f2c23708aecb5949a68506942f5c",
+      "after_sha256": "8930a1cbcf00ef6c6b15ed8a9d2f18b8a8b7f2c23708aecb5949a68506942f5c"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Boundaries/Proofs.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Boundaries/Proofs.lean",
+      "before_sha256": "017ab326c997d055dde427d83f8b2df0158bcaa5446e8a6b8558f1b0fbcae631",
+      "after_initial_rename_sha256": "5431ca1575d436d118c72c5d8d4bb1d001c86829fa903d2fb035496307b3a6ae",
+      "after_sha256": "5431ca1575d436d118c72c5d8d4bb1d001c86829fa903d2fb035496307b3a6ae"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Conditions/Predicates.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Conditions/Predicates.lean",
+      "before_sha256": "d133030e69dd967de271ff0eb851e7e56d8bdc5139cc9835bc08620feb8afd1c",
+      "after_initial_rename_sha256": "e5cb92220b5f369cb27f01e32b0c9f55517dfb475361add2397fe82e6fb1c17f",
+      "after_sha256": "e5cb92220b5f369cb27f01e32b0c9f55517dfb475361add2397fe82e6fb1c17f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Conditions/Proofs.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Conditions/Proofs.lean",
+      "before_sha256": "3afbd40f94c59b1e54c8acdce187dc6a57c596724c47acc4fe895217a499f91f",
+      "after_initial_rename_sha256": "125def75b09109377ff6a7232a771743cd8e1f89ca8e67ae329b6e3a45738d10",
+      "after_sha256": "125def75b09109377ff6a7232a771743cd8e1f89ca8e67ae329b6e3a45738d10"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Data.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Data.lean",
+      "before_sha256": "d628bb816df022b21be78edaaa7e3b2ce04042b92b64d54e94b81b294dc4d195",
+      "after_initial_rename_sha256": "f1eae7da52b061aabf743078984be539f577b02d1d2fa606121ed024386fdef5",
+      "after_sha256": "f1eae7da52b061aabf743078984be539f577b02d1d2fa606121ed024386fdef5"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Predicates.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Predicates.lean",
+      "before_sha256": "14a04a36f36bcbcc32994de60a4848b061f2c6707fc9e887f20c8d50cd42d6a8",
+      "after_initial_rename_sha256": "7c26a7863160ccfa4a4182782c46cf2b9efd1f0a3e22bb74534f1438e3c184ad",
+      "after_sha256": "7c26a7863160ccfa4a4182782c46cf2b9efd1f0a3e22bb74534f1438e3c184ad"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126/Sphere/Proofs.lean",
+      "after": "KIP126/Main/Literature/Near126/Sphere/Proofs.lean",
+      "before_sha256": "056b8aec6db9e50552f8d05d8eba61e76e3662b65576aeffd19d7c037de3e0c7",
+      "after_initial_rename_sha256": "c4361f8aec140f5bea6884b403ae8331a4ca28d3d28127d8dda99f8b6e000c66",
+      "after_sha256": "c4361f8aec140f5bea6884b403ae8331a4ca28d3d28127d8dda99f8b6e000c66"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Near126.lean",
+      "after": "KIP126/Main/Literature/Near126.lean",
+      "before_sha256": "5ef52b14dbaf9ee62e0afcf6e51ece522ab651f7279d1b6969ce1626855ed362",
+      "after_initial_rename_sha256": "e95e33d35d5c97ce8835f41cdea62958e7c27451a9189a5efafc1249f1f91a63",
+      "after_sha256": "e95e33d35d5c97ce8835f41cdea62958e7c27451a9189a5efafc1249f1f91a63"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Route/Applicability.lean",
+      "after": "KIP126/Main/Literature/Route/Applicability.lean",
+      "before_sha256": "dc3591c2fdcc64cfed3e2e9ea2990507886a62f904610f5356dccfc6afc94531",
+      "after_initial_rename_sha256": "a9c93eb0da828069c8c971cbc5eea3b2135f6d97b97ec80a26d312cc597fb08b",
+      "after_sha256": "a9c93eb0da828069c8c971cbc5eea3b2135f6d97b97ec80a26d312cc597fb08b"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Route/Inputs.lean",
+      "after": "KIP126/Main/Literature/Route/Inputs.lean",
+      "before_sha256": "fe1e2a2ddbfb15c8f43785693275df76b565fe6e6677a4adfdfa94e856e6f64a",
+      "after_initial_rename_sha256": "270094014ea8bd3877fbc2e1369d5fb14ef7147d6e18f8f6ccd20d719c848c84",
+      "after_sha256": "270094014ea8bd3877fbc2e1369d5fb14ef7147d6e18f8f6ccd20d719c848c84"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Applications.lean",
+      "after": "KIP126/Main/Literature/Source/Applications.lean",
+      "before_sha256": "6a12659cf289966a6767d8a2816a3430786479b6cb08eb89132dc23ba58936ea",
+      "after_initial_rename_sha256": "1759ec3ea96ad506ceaed045a806c1ece335055759b157fced7aad93c657eecd",
+      "after_sha256": "e3571b0d8ef3483d207eb2114222e99c24be9cdae4ca88081a59cc521ba7b44e"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Route/Adapters.lean",
+      "after": "KIP126/Main/Literature/Source/Route/Adapters.lean",
+      "before_sha256": "a701ed7b37947439f8a817f628fa40f71809704c5ab3a6c2eae3418315fe8a7e",
+      "after_initial_rename_sha256": "60374b08ea73a1a7e0e0c88c315e7c83d8a67952fe3157e498d6d2bffd9ed09f",
+      "after_sha256": "60374b08ea73a1a7e0e0c88c315e7c83d8a67952fe3157e498d6d2bffd9ed09f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Route/BHS.lean",
+      "after": "KIP126/Main/Literature/Source/Route/BHS.lean",
+      "before_sha256": "120de8bc0ac324b13830ac6873a618840c537788eb9170184d8ef03142d3c03a",
+      "after_initial_rename_sha256": "28b940fbadfbf9f0eafc79d88a06d52875fc21371707eccde71b3ff8484eb56d",
+      "after_sha256": "28b940fbadfbf9f0eafc79d88a06d52875fc21371707eccde71b3ff8484eb56d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Route/May.lean",
+      "after": "KIP126/Main/Literature/Source/Route/May.lean",
+      "before_sha256": "dd816c42ac621c230e54b40e09394aea5bf034e259e67ef82cb474f7637bc3bd",
+      "after_initial_rename_sha256": "d67ff16aa65a94f10ce0b8bd1046f416b693978b4fcbef5174abb3aec12c9efa",
+      "after_sha256": "d67ff16aa65a94f10ce0b8bd1046f416b693978b4fcbef5174abb3aec12c9efa"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Route/RealizationKernel.lean",
+      "after": "KIP126/Main/Literature/Source/Route/RealizationKernel.lean",
+      "before_sha256": "4b811f974e322ecb50bec2982880bdae3cdb8c44e0a9d8a926b63690343978f9",
+      "after_initial_rename_sha256": "bef35bce0ae0e19cf98844198b7e8c7194697897e1a346c2ec8272757622e192",
+      "after_sha256": "bef35bce0ae0e19cf98844198b7e8c7194697897e1a346c2ec8272757622e192"
+    },
+    {
+      "before": "KIP126/Main/Solution/Literature/Source/Route/Toda.lean",
+      "after": "KIP126/Main/Literature/Source/Route/Toda.lean",
+      "before_sha256": "6f183887560fe58f31bb1877a55bf408623c96c3336914be13f0a1c82ddf94b8",
+      "after_initial_rename_sha256": "c248da6a65aefc8c93b89e5631ed845532d7c03a58134bc285ef124f19c1170a",
+      "after_sha256": "c248da6a65aefc8c93b89e5631ed845532d7c03a58134bc285ef124f19c1170a"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/Exhaustion.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/Exhaustion.lean",
+      "before_sha256": "f4a47975e001b6ea8b3bcd496e7aafd265595f2f651171d8400dc9b0c52ccded",
+      "after_initial_rename_sha256": "993f6ec246cf777142ddae4df8e46f712286cb9d809d6dcd44f6218b2efb7f1f",
+      "after_sha256": "fefbc698fa8e677c571a1326bd784288b5f5473057a00fed13f0a99f1bddc967"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/Existence.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/Existence.lean",
+      "before_sha256": "6c32e0961a0fa50d4e69b1bef5d8790c7f3febac096efca99e0f9551590097f4",
+      "after_initial_rename_sha256": "20a49a3b0cc32d1d80613bd6c1c20144290cf2568b8c204aa97f6ef4520419cd",
+      "after_sha256": "d3fe6c7bece52a46748e5700456c186ed4079a9882208ce310470f843698c859"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/Filtration.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/Filtration.lean",
+      "before_sha256": "e66394eca73540b3eaa527973bf44f47707998152d8219ee21d5fd12504cc608",
+      "after_initial_rename_sha256": "c8674e4eaacf757a061267cbcf1cd986f747d0ed664365336ac3ed26f8206fc1",
+      "after_sha256": "086b00d72aad3ee1c7b9550cd284a004e32a7259146a8d790b0c07fc150bc8b1"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/FiltrationTen.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/FiltrationTen.lean",
+      "before_sha256": "f721b6707ab858bd02ed656e4bb4afed3e1ef71df87ef24e106736a2b9cd049c",
+      "after_initial_rename_sha256": "d8e8d3acc930425e1d03cb9018658da1c850d561250eac5f33074521a0ebd744",
+      "after_sha256": "dc2001d4aee2d6fe1aeb00f8e5463d19d611f73f25c1a5b72d5f7688cc09d255"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/FiniteWindow.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/FiniteWindow.lean",
+      "before_sha256": "96c09a18e8aec7282510d1a619caa7fba113f3a467668b1e097ff8712772514f",
+      "after_initial_rename_sha256": "49fca181f2c1c1e8d8b6d1e9442d92f581bee32483aae5cf567d45bab9fd4fb8",
+      "after_sha256": "8c80d23d00f9d24eb15fd59bd50fe2c36b4374edff796f35ff907f1f24a46bfb"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/LowFiltration.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/LowFiltration.lean",
+      "before_sha256": "4d6afdd44a70cd57e576ffd5a87f7dbf135656115652ae109df3a37b770c7e5f",
+      "after_initial_rename_sha256": "a29305f53fb98449c62a6b17f8274fa72f5805013238fb866d264e1a18a49ae1",
+      "after_sha256": "39a91810ffa690aa07e353af24b06dbe2eeae68638f417bff5c9f8efb305ee48"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/Staircase.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/Staircase.lean",
+      "before_sha256": "57c172f988bdb15916b995f7fac09d1064b90c9f957a799f9086a953d039c9bf",
+      "after_initial_rename_sha256": "b4a9d2ac92a077f30ff8a9a8d63af111027b14be0c15f1316e1df097aade4cf7",
+      "after_sha256": "273dd50fe85e499ed4358012a37f3ddf218a27c09c4021eb26d561073a743930"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne/ThetaFrames.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne/ThetaFrames.lean",
+      "before_sha256": "505310ad034086c929f6b8c83d43c4ed2b11d49d8274bf63588fac2aee65cdc1",
+      "after_initial_rename_sha256": "90b757087fe015b5d5a2884afb258722523b6035470d9083e7b0c403bb752c98",
+      "after_sha256": "6304395360e3f6a7ca73997c175bd34119d3152525e2773f2c055f615634e834"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/AlphaOne.lean",
+      "after": "KIP126/Main/SectionSeven/AlphaOne.lean",
+      "before_sha256": "0d531efe09e8a4ae06d140d2f2a083f96605512511b37a05f21dcf098897b035",
+      "after_initial_rename_sha256": "c0c45f43780f14cd5e30e85da7b5ccb0b0a2c2050754b60556457c03131d319f",
+      "after_sha256": "1461ebfc9048275c87e5051d8564a5fa23839b7b740d47a9aa0bcfb00f6c302f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Predicates.lean",
+      "after": "KIP126/Main/Conditions.lean",
+      "before_sha256": "2651b2c5e798ab4a69b0a7cf4afbe34a7f6b10a11cba4ad5409e295531b800cc",
+      "after_initial_rename_sha256": "fc06dbe9183eab3aadaf1160b0b7f206e0c92e735556d149ca6392e500f8ddf6",
+      "after_sha256": "0c39bfff5d98910404c19425d0b4bfa6908df84477250535e65b916d25fab17f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/AnyY.lean",
+      "after": "KIP126/Main/SectionSeven/AnyY.lean",
+      "before_sha256": "55cbb2c0e3eab483c87bd0532608b78494fd03b30bc8aaff9715fd919ed7dfce",
+      "after_initial_rename_sha256": "b2660e50c8a09e899546dc8f9c49fa01d638b77377ca58f301b7fcac09c8a2f5",
+      "after_sha256": "87733d1218ca2e92004a8b7d9692e2d8938d3f454d1762ccbaa7470fab0742b3"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/AnyYHelpers.lean",
+      "after": "KIP126/Main/SectionSeven/AnyYHelpers.lean",
+      "before_sha256": "51b815378c6863aef469d1b5c348c7922e99668bc2ebaac0120b94cb7f5e4cd1",
+      "after_initial_rename_sha256": "e501e5b6086c641770eb7b61cc701960083dd5ef1813d62dc5c45405896c47b7",
+      "after_sha256": "e501e5b6086c641770eb7b61cc701960083dd5ef1813d62dc5c45405896c47b7"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/CnuNoCrossing.lean",
+      "after": "KIP126/Main/SectionSeven/CnuNoCrossing.lean",
+      "before_sha256": "c4add2a7a0fba0096a35a6910f0816cbe26ac7d51382a0b0600bcbe8d7cac83b",
+      "after_initial_rename_sha256": "e114bdc7527eb04887f80ea44e523e850547119f158b6966a2e6b9baca6d75a3",
+      "after_sha256": "e114bdc7527eb04887f80ea44e523e850547119f158b6966a2e6b9baca6d75a3"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/CnuRigidity.lean",
+      "after": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
+      "before_sha256": "8fff35f15f1fc10e60b382fb9d87dc1f56a6145a5f8ce67c2d84849e70c2352b",
+      "after_initial_rename_sha256": "3a3759c756412b6190e4a528025fa150454ab05580789c55c8b7c0cf5199e0a9",
+      "after_sha256": "3a3759c756412b6190e4a528025fa150454ab05580789c55c8b7c0cf5199e0a9"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/Common.lean",
+      "after": "KIP126/Main/SectionSeven/Common.lean",
+      "before_sha256": "24d9e92e83d95ddcc79af76a9b6672b2019efde53ed46c05c097f97fd1c739d6",
+      "after_initial_rename_sha256": "7f8cb8fe8c70b0e56312df2367ec8b869ea50fc82b41a9ca29f8e0f249a0e72f",
+      "after_sha256": "7f8cb8fe8c70b0e56312df2367ec8b869ea50fc82b41a9ca29f8e0f249a0e72f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/ConditionalY.lean",
+      "after": "KIP126/Main/SectionSeven/ConditionalY.lean",
+      "before_sha256": "84279bac843f2f6b153831ba140a65a381a54fff857658981993799c55203b51",
+      "after_initial_rename_sha256": "da8ee81c37950b0bebf9998eae37d70eaf9814ccd9e23b6f614e97540fa4423e",
+      "after_sha256": "f28cbdbc3ef921a67f4cd4aa829fbb5b593ea563ce8b0b141a19d376b3801fb8"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/Final.lean",
+      "after": "KIP126/Main/SectionSeven/Final.lean",
+      "before_sha256": "4bbe3614d896ba3e2d2b2117066e3859eaa83ddff8280e388c946c6bfc71db49",
+      "after_initial_rename_sha256": "9ac6faee0b3679446edf9dc86ca500b463b4480d831fe526beffcdcfd4d00a83",
+      "after_sha256": "760a8e5073f2e880c95f196fb84af142b15c076196f03e166fb9cba13a345ed0"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/Indeterminacy.lean",
+      "after": "KIP126/Main/SectionSeven/Indeterminacy.lean",
+      "before_sha256": "af92f99e550c462992ba8df25c81725d8de777b9272b0d0e205116de482a728e",
+      "after_initial_rename_sha256": "db897cd41b8a98fcc015c016b635ab4ed0cc59e0b12bebf482a3e815272d2308",
+      "after_sha256": "db897cd41b8a98fcc015c016b635ab4ed0cc59e0b12bebf482a3e815272d2308"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/MainToda.lean",
+      "after": "KIP126/Main/SectionSeven/MainToda.lean",
+      "before_sha256": "ee6b56a8a2f3ff4d723501444bb588010632272834a2c65a119a7cda7f3a2a91",
+      "after_initial_rename_sha256": "6d4f940c2729a5f1e16fc2159434757662855d661f0cc86bb7e7bad49472cf04",
+      "after_sha256": "3afddd344905545a8596ca9f4600a25f52a67abfa335b9d342721fea85266457"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/NuFifth.lean",
+      "after": "KIP126/Main/SectionSeven/NuFifth.lean",
+      "before_sha256": "657e682cd7d3689af899046c4c85cfbfe979e4099e394a14ed64b349ac42ad2b",
+      "after_initial_rename_sha256": "9f707522ab453bb3233d89dc33b8aa00b0e7519df6894e8647c7ea81fb3363b2",
+      "after_sha256": "9f707522ab453bb3233d89dc33b8aa00b0e7519df6894e8647c7ea81fb3363b2"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/NuNinth.lean",
+      "after": "KIP126/Main/SectionSeven/NuNinth.lean",
+      "before_sha256": "1260c8787df905b2044e8a350443947001ae957526cf0e11ffc553fc8f5ace1e",
+      "after_initial_rename_sha256": "c109e9b51d4ae1343f40990e237acfce1bdd820b75d5c778742bc39f7169453c",
+      "after_sha256": "6077ae72f566bac4755d22d8fc8b0d2d4af821f26765d159e79d5ed169bf750a"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/NuTarget.lean",
+      "after": "KIP126/Main/SectionSeven/NuTarget.lean",
+      "before_sha256": "96de046d286b05b070d204c6fdfd0a024e67966daa6e42f4afd96a552d462c2f",
+      "after_initial_rename_sha256": "74a48d98e2f5f7ed871c78810b88a94dda966261d3936c85d54403d76cabe5f2",
+      "after_sha256": "cdb0b504d5e985d645a447471cad1d252bd05d66d8325895dfebd0ee1dc14483"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/NuTargetHelpers.lean",
+      "after": "KIP126/Main/SectionSeven/NuTargetHelpers.lean",
+      "before_sha256": "52454ba66b6dca860311db068597dff6554c9520b5fbafab06579857abaa7405",
+      "after_initial_rename_sha256": "f395c27e22c45b07f7c5c19b6cbeb6e3e8e9d418e5f11bb013b2a3c8fdf52328",
+      "after_sha256": "f395c27e22c45b07f7c5c19b6cbeb6e3e8e9d418e5f11bb013b2a3c8fdf52328"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/ThetaMassey.lean",
+      "after": "KIP126/Main/SectionSeven/ThetaMassey.lean",
+      "before_sha256": "85bea54b11d64b812c40632a546c4bc566d4e61b373f7ffd54752542a3e746e3",
+      "after_initial_rename_sha256": "01dfa2b0be093ad2554ec0673280bfe940e99f5b96eecd8a4f845985113b68c7",
+      "after_sha256": "01dfa2b0be093ad2554ec0673280bfe940e99f5b96eecd8a4f845985113b68c7"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/ThetaNoCrossing.lean",
+      "after": "KIP126/Main/SectionSeven/ThetaNoCrossing.lean",
+      "before_sha256": "bf11d1dcd9758059347e826e9ff9fc549d8e5a0e668866892a0669d59478993b",
+      "after_initial_rename_sha256": "74660594db12ded56af1116e16755429ae55c145ee61d7261d712ab577505914",
+      "after_sha256": "74660594db12ded56af1116e16755429ae55c145ee61d7261d712ab577505914"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/ThetaShuffle.lean",
+      "after": "KIP126/Main/SectionSeven/ThetaShuffle.lean",
+      "before_sha256": "c41132e37cba01d672613101106456ab6849040732cc366c080a767a4a1fc34b",
+      "after_initial_rename_sha256": "9d5cf0430d350b5b0215a38722664ee78bfbd5d4fbc9c5f4b9d7650b226d522d",
+      "after_sha256": "9d5cf0430d350b5b0215a38722664ee78bfbd5d4fbc9c5f4b9d7650b226d522d"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/ThetaToda.lean",
+      "after": "KIP126/Main/SectionSeven/ThetaToda.lean",
+      "before_sha256": "b9009b6624a309d737ee3da6505a61f27e7cc9c1cb50fbf1e3298f9e28ae9af7",
+      "after_initial_rename_sha256": "1a59e20b585b4eb3f76787dc0ebd4bbcda7e2160803afbe5f68ee1d7f734c6be",
+      "after_sha256": "1a59e20b585b4eb3f76787dc0ebd4bbcda7e2160803afbe5f68ee1d7f734c6be"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/TodaNonempty.lean",
+      "after": "KIP126/Main/SectionSeven/TodaNonempty.lean",
+      "before_sha256": "8b76fb17d2aa6ab0ce39a724667d8e11fa1dc9ae6815d8675d57cb54308273b3",
+      "after_initial_rename_sha256": "185f38ff2c670b80ccd611b2af9e0382f9df8afcf9d16c16aecd70bff21df3b2",
+      "after_sha256": "185f38ff2c670b80ccd611b2af9e0382f9df8afcf9d16c16aecd70bff21df3b2"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/WeakInitialNonzero.lean",
+      "after": "KIP126/Main/SectionSeven/WeakInitialNonzero.lean",
+      "before_sha256": "f0bca22e596232805bf3026985980412599bcdb71d60236ebb174c66ad56c0be",
+      "after_initial_rename_sha256": "14d33a06f8b8d556e73f78eb5feba7b3a0860c65fb0d309a56b61eec2fdf5adf",
+      "after_sha256": "14d33a06f8b8d556e73f78eb5feba7b3a0860c65fb0d309a56b61eec2fdf5adf"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/WeakRepresentative.lean",
+      "after": "KIP126/Main/SectionSeven/WeakRepresentative.lean",
+      "before_sha256": "2406cb05cc3988da5bff3dd1c4f1a83ef007186cbee0aa5e501508b6781691ff",
+      "after_initial_rename_sha256": "3d57c9dda134e57b06765d2e96bef4108271ce5fc256419aed715af943e6c6c2",
+      "after_sha256": "3d57c9dda134e57b06765d2e96bef4108271ce5fc256419aed715af943e6c6c2"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7/WeakYDetection.lean",
+      "after": "KIP126/Main/SectionSeven/WeakYDetection.lean",
+      "before_sha256": "63cf8ac57eb63433498be889343a47007bd309dca7a451e468555ace2b445e6f",
+      "after_initial_rename_sha256": "0938e5d8f2f4447fe901cfb302d2816c9439ab2120cc6410d1b860324010d927",
+      "after_sha256": "0938e5d8f2f4447fe901cfb302d2816c9439ab2120cc6410d1b860324010d927"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Section7.lean",
+      "after": "KIP126/Main/SectionSeven.lean",
+      "before_sha256": "55fea525b7be078ad00c2ad10033ae80758078e86983e5f73670cbd686634fd6",
+      "after_initial_rename_sha256": "74a34c4ab9cf13da861c213153b39fd94560f2837ab8779d039f0c6892c4adc1",
+      "after_sha256": "6832819452e498af076483ce528c972b9518b57f027b177e065560f0a6492518"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected/Assembly.lean",
+      "after": "KIP126/Main/SectionSeven/DifferentialCriterion/Assembly.lean",
+      "before_sha256": "068adf1a17da7168488f035b8f1733f6f5e744a490fdbc4f3491c18ed6c8fc84",
+      "after_initial_rename_sha256": "0a7af4fd9918950a440b0104c4418fae4aeec4011113d9f72489b8f73a7db9a1",
+      "after_sha256": "0a7af4fd9918950a440b0104c4418fae4aeec4011113d9f72489b8f73a7db9a1"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected/ChoiceInvariance.lean",
+      "after": "KIP126/Main/SectionSeven/DifferentialCriterion/ChoiceInvariance.lean",
+      "before_sha256": "269a7ca215959ba0c554fbf6aed86d7d2634288008b6711d257de20507dc7364",
+      "after_initial_rename_sha256": "8f41bcb8fa36f6bc2f271dfa91e2fc56e3e1f611d89369457964c7dfda402a24",
+      "after_sha256": "8f41bcb8fa36f6bc2f271dfa91e2fc56e3e1f611d89369457964c7dfda402a24"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected/ClassicalData.lean",
+      "after": "KIP126/Main/SectionSeven/DifferentialCriterion/ClassicalData.lean",
+      "before_sha256": "e6a384d25916c8c9ce58b80a3b876e04a41ed26bcb13939d1cfeb2980e00d3d1",
+      "after_initial_rename_sha256": "dbba9108a290916eed9be7fea6f556f24433cf431d1b25e2399cafed20e4e4f8",
+      "after_sha256": "dbba9108a290916eed9be7fea6f556f24433cf431d1b25e2399cafed20e4e4f8"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+      "after": "KIP126/Main/SectionSeven/DifferentialCriterion/DetectionData.lean",
+      "before_sha256": "61a6cc2cf826a83c6c01e8f4a082c12c451d1b5a81fcac4d3f2f1909590dd301",
+      "after_initial_rename_sha256": "03a46a7d2fbdd9882b13e0911ad315e321486f2fde8312c7667c952bcda6428f",
+      "after_sha256": "03a46a7d2fbdd9882b13e0911ad315e321486f2fde8312c7667c952bcda6428f"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+      "after": "KIP126/Main/SectionSeven/DifferentialCriterion/ThetaData.lean",
+      "before_sha256": "10d6968ecee9d744f42f864a74b5102dc9f8bc175eafb500b45bf200af1927a1",
+      "after_initial_rename_sha256": "3fb1ededf106bbec9194a8b9f79c3793d6f724ecc947b705441c6bcb1a86cbb6",
+      "after_sha256": "3fb1ededf106bbec9194a8b9f79c3793d6f724ecc947b705441c6bcb1a86cbb6"
+    },
+    {
+      "before": "KIP126/Main/Solution/Route/Selected.lean",
+      "after": "KIP126/Main/PropositionSevenEight.lean",
+      "before_sha256": "61494540e8232699add6cdfb4308d5ba56c62cc180e4e7a8ae543551cd746088",
+      "after_initial_rename_sha256": "df5e086afa9de45e31452198d7526f2a45e9c54f61c14f6566387cf601a7f030",
+      "after_sha256": "d73e0c3caf7403d1d0068ae617b1465c42ae35c266c22b74bc4f14671c625c92"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/Bindings.lean",
+      "after": "KIP126/Main/AdamsSynthetic/Context.lean",
+      "before_sha256": "3c5773083fd0fe7b471ac9fe14800b6f8d3df417d5adbc802ae5e78c7d789457",
+      "after_initial_rename_sha256": "1ceb387891e760cd167a2b2dfeea564e141e96a10852785abc8378a9c58326ff",
+      "after_sha256": "e649901a1ad304a3d285dc63a00ec6844c65bc20c09b503c238c88dc0af9be45"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/NuSource/FromSuspension.lean",
+      "after": "KIP126/Main/AdamsSynthetic/NuSource/FromSuspension.lean",
+      "before_sha256": "e16e2cff0ccc51ff0e8fb2bf450e36909c5ef9ac98bf499f37126ecb2e6b4d28",
+      "after_initial_rename_sha256": "735c4b2de0fdaa99b2c1ede83d6baca20238b911acb07b0e8e45473c4f2ec466",
+      "after_sha256": "735c4b2de0fdaa99b2c1ede83d6baca20238b911acb07b0e8e45473c4f2ec466"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/NuSource/Suspension.lean",
+      "after": "KIP126/Main/AdamsSynthetic/NuSource/Suspension.lean",
+      "before_sha256": "db0399265cd0069f997fe32bbca3d5c277127a8fd86a8f0652ee1cb14db92064",
+      "after_initial_rename_sha256": "814517c0b82849bb3fb2ad6a27647750131b5891861a2a02933102884b210320",
+      "after_sha256": "814517c0b82849bb3fb2ad6a27647750131b5891861a2a02933102884b210320"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/NuSource.lean",
+      "after": "KIP126/Main/AdamsSynthetic/NuSource.lean",
+      "before_sha256": "edfbb824272eb0af441f5bf9a739d973e032e24292d994b71d46dbd5ba39b18a",
+      "after_initial_rename_sha256": "eab2584b4265cb0452fe808f8bf47c150c910e30ccc8d851983d7de2158f2ddb",
+      "after_sha256": "eab2584b4265cb0452fe808f8bf47c150c910e30ccc8d851983d7de2158f2ddb"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/Toda/Low.lean",
+      "after": "KIP126/Main/AdamsSynthetic/Toda/Low.lean",
+      "before_sha256": "87e1b2dbca88acf9d2bb7e707f360dfe563742a6448c9ccd3f94db6bdba0b509",
+      "after_initial_rename_sha256": "04e80adbdec8bea61d6ebd700888b38b6ff8006fd0caff33101c0d581e3c8e04",
+      "after_sha256": "288a2a99822dfb03565bd7eacc33e6fd5e68221dae11f2e72d0786263098d255"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/Toda/Product.lean",
+      "after": "KIP126/Main/AdamsSynthetic/Toda/Product.lean",
+      "before_sha256": "5172c7dddc4173078ff56ba5e2177c3c36d982ed52d1a0d41d6807e3d6d90126",
+      "after_initial_rename_sha256": "6624bdddd21bebf9ec4bc871f646a2b67ba83ecba8209c18564d6c6fc2eed66c",
+      "after_sha256": "6624bdddd21bebf9ec4bc871f646a2b67ba83ecba8209c18564d6c6fc2eed66c"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/Toda/Symmetric.lean",
+      "after": "KIP126/Main/AdamsSynthetic/Toda/Symmetric.lean",
+      "before_sha256": "a4793d794c7e79efd89657bbec740c7b93355547c5c5e1c7552c44ae70a92f49",
+      "after_initial_rename_sha256": "f0ef92a28420153067677d9c6cd981b3f0e7a793a79f34f293994dfb9e26a61f",
+      "after_sha256": "f0ef92a28420153067677d9c6cd981b3f0e7a793a79f34f293994dfb9e26a61f"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput/Toda.lean",
+      "after": "KIP126/Main/AdamsSynthetic/Toda.lean",
+      "before_sha256": "919d0ec541f747a727c98e3915f8bf5afddc92c6d536ecfd2739afa154d837cc",
+      "after_initial_rename_sha256": "018d817eca2706e0581f1c39e0580b4db614ce42f20a801be6a0c072da8b9bc2",
+      "after_sha256": "018d817eca2706e0581f1c39e0580b4db614ce42f20a801be6a0c072da8b9bc2"
+    },
+    {
+      "before": "KIP126/Main/Solution/StageInput.lean",
+      "after": "KIP126/Main/AdamsSynthetic.lean",
+      "before_sha256": "ed1c32c228a4c4083bb82447b014b6270ad4d6f9b7bc6af69e56502f2b8b28af",
+      "after_initial_rename_sha256": "a8aa8dbfee095f146803c65eb2e9e54dc8309e0fdf1ecfb28b6eddee8c893c28",
+      "after_sha256": "2e19ba5fa1684759eff53d52289f8cd77a95ab416e6a3bc0e7e364ff861cd2f0"
+    },
+    {
+      "before": "KIP126/Main/Solution/h6_sq_permanent.lean",
+      "after": "KIP126/Main/H6SquarePermanent.lean",
+      "before_sha256": "1302f9ffc9fbae8db74911869792b0b7334bcc1ad18fd7d258c020c547137c70",
+      "after_initial_rename_sha256": "8a07bd935b5bccf2d55829a35045d4ffecf964b1ee7f18a5e1e8ea13a44ef1da",
+      "after_sha256": "b25e2082ff9ea6b79aaa3581dd283a96881ae1874d8f2f78d7a1003371bbae6f"
+    },
+    {
+      "before": "KIP126/Main/Solution.lean",
+      "after": "KIP126/Main.lean",
+      "before_sha256": "7f18c3c852e90fe8921d7dbc4d9a52fd2acd2619a589a5eb632ceb0dce2411de",
+      "after_initial_rename_sha256": "64e85868316facd1a01ac4bc26ed59ac27d1b762cb579fe7853e5ed2389e503f",
+      "after_sha256": "64e85868316facd1a01ac4bc26ed59ac27d1b762cb579fe7853e5ed2389e503f"
+    },
+    {
+      "before": "Tests/Architecture.lean",
+      "after": "Tests/Architecture.lean",
+      "before_sha256": "ecfdc9f434800ffb8e7e717b16bce5eeb5d741552a453899119fbddc4123a290",
+      "after_initial_rename_sha256": "f2c5269e3f6de40705f34132fedc8bc91c800004e1cc337e79da773ce6143ef7",
+      "after_sha256": "1ea6db31406706c20f5031f83e87e290d66072a4d56f2c431d9e5a5f29405cab"
+    },
+    {
+      "before": "Tests/Trust.lean",
+      "after": "Tests/Trust.lean",
+      "before_sha256": "8b1f18179f0c670022cdedf401d38c6df9f6e8127f05dd143f39a26030f716e0",
+      "after_initial_rename_sha256": "d3db225f210bf35abc12cf2d6cc9c662d961e8623e6c96089073a9081c2e4a57",
+      "after_sha256": "6ca4d8a5371898263754025a5552d0234fa490d29e0088becd78a0b5ca45e5cb"
+    }
+  ],
+  "backup_before_renaming": "/inspire/hdd/global_user/baokangjie-CZXS25250151/Kervaire126Main-before-mathematical-names-20261015T085206Z/workspace.tar.gz",
+  "paper_declaration_mapping": {
+    "KIP126.Main.Solution.Route.h6_square_differential_dichotomy_and_criterion": "KIP126.Main.proposition_7_8",
+    "KIP126.Main.Solution.Route.Section7.eta_extension_excluded_of_d6_vanishes": "KIP126.Main.SectionSeven.proposition_7_9",
+    "KIP126.Main.Solution.Route.Section7.alpha_one_exists": "KIP126.Main.SectionSeven.lemma_7_14_alpha_one_exists",
+    "KIP126.Main.Solution.Route.Section7.main_toda_bracket_detected": "KIP126.Main.SectionSeven.lemma_7_16_toda_bracket_detected",
+    "KIP126.Main.Solution.Route.Section7.any_y_h0_extension": "KIP126.Main.SectionSeven.corollary_7_18_h0_extension",
+    "KIP126.Main.Solution.Route.Section7.nu_extension_in_ninth_quotient": "KIP126.Main.SectionSeven.lemma_7_20_nu_extension",
+    "KIP126.Solution.Final.H6SquarePermanent.h6_sq_permanent": "KIP126.Main.h6_sq_permanent"
+  },
+  "removed_redundant_facades": [
+    {
+      "file": "KIP126/Main.lean",
+      "reason": "Its one import of Main.Solution was replaced by the content of that actual public facade."
+    }
+  ],
+  "removed_redundant_declarations": [
+    {
+      "declaration": "KIP126.Main.StageInput.witness",
+      "replacement": "KIP126.Main.externalHypotheses",
+      "reason": "The two names denoted the same combined pair of external hypotheses."
+    }
+  ],
+  "preserved_mathematics": {
+    "final_statement": "NonzeroSurvival sphereAdamsData (2, 128) standardH6Square",
+    "accepted_background_axioms": 6,
+    "external_challenge_axioms": 2,
+    "section_six_sorries": 4,
+    "legacy_main_model_restored": false,
+    "reason": "The current model ties the actual Adams tower and Milnor coordinates to synthetic comparison, canonical detection and separation; the former Main total model was not a replacement preserving these obligations."
+  },
+  "source_comparison": {
+    "baseline": "/inspire/hdd/global_user/baokangjie-CZXS25250151/Kervaire126Main-before-mathematical-names-20261015T085206Z/workspace.tar.gz",
+    "scope": "All 1636 active project Lean files and 2 consumer tests; comments and whitespace normalized, import paths and listed names transformed.",
+    "matched_after_bulk_names": 1630,
+    "remaining_changes_reviewed": [
+      {
+        "file": "KIP126/Def/AdamsSynthetic/Standard/Sphere/Background/Fixed.lean",
+        "edits": [
+          {
+            "before": "Solution.standardAdamsSyntheticComparisons",
+            "after": "KIP126.AdamsSynthetic.standardAdamsSyntheticComparisons"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Def/AdamsSynthetic/Standard/Sphere/SyntheticContext/Fixed.lean",
+        "edits": [
+          {
+            "before": "Solution.standardSyntheticContext",
+            "after": "KIP126.AdamsSynthetic.standardSyntheticContext"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Main/SectionSeven/AnyY.lean",
+        "edits": [
+          {
+            "before": "(eta_extension_excluded_of_d6_vanishes",
+            "after": "(proposition_7_9"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Main/SectionSeven/Final.lean",
+        "edits": [
+          {
+            "before": "eta_extension_excluded_of_d6_vanishes",
+            "after": "proposition_7_9"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Main/SectionSeven/MainToda.lean",
+        "edits": [
+          {
+            "before": "(eta_extension_excluded_of_d6_vanishes",
+            "after": "(proposition_7_9"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Main/PropositionSevenEight.lean",
+        "edits": [
+          {
+            "before": "Section7.eta_extension_excluded_of_d6_vanishes",
+            "after": "KIP126.Main.SectionSeven.proposition_7_9"
+          },
+          {
+            "before": "h6_square_differential_dichotomy_and_criterion",
+            "after": "_root_.KIP126.Main.proposition_7_8"
+          }
+        ]
+      },
+      {
+        "file": "KIP126/Main/H6SquarePermanent.lean",
+        "edits": [
+          {
+            "before": "(KIP126.Main.SectionSeven.DifferentialCriterion.h6_square_differential_dichotomy_and_criterion",
+            "after": "(KIP126.Main.proposition_7_8"
+          }
+        ]
+      },
+      {
+        "file": "Tests/Architecture.lean",
+        "edits": [
+          {
+            "before": "",
+            "after": "for obsolete in [`KIP126.Implementation, `KIP126.Challenge2, `KIP126.Main.Axiom.challenge2, `KIP126.Main.StageInput.witness] do if (env.find? obsolete).isSome then throwError for result in [``KIP126.Main.proposition_7_8, ``KIP126.Main.SectionSeven.proposition_7_9] do unless wasOriginallyTheorem env result do throwError"
+          }
+        ]
+      }
+    ],
+    "conclusion": "The seven project-file differences are namespace qualification and the recorded paper theorem names. The remaining test difference checks the new theorem API and removal of obsolete names. Mathematical statements, structure fields and proof terms are preserved modulo these renames and the documented redundant witness alias.",
+    "additional_user_requested_renames": [
+      "Literature.challenge → Literature.adamsSyntheticResults",
+      "Computation.challenge → Computation.adamsComputations",
+      "Both external Challenge modules → Assumptions modules"
+    ]
+  },
+  "external_axiom_names": {
+    "literature": "KIP126.Literature.adamsSyntheticResults",
+    "computation": "KIP126.Computation.adamsComputations",
+    "dependent_type": "KIP126.ExternalHypotheses.ComputationHypotheses KIP126.Literature.adamsSyntheticResults",
+    "reason": "External-result assumptions retain their axiom status but their names state their mathematical role; challenge was only a historical naming convention."
+  },
+  "record_status": "Historical first-pass naming record; subsequent whole-repository mathematical naming is recorded in metadata/mathematical-naming-audit.json."
+}

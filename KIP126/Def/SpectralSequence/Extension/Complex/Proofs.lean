@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.Extension.Complex.Data
+public import KIP126.Def.SpectralSequence.Extension.Complex.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Proofs for the canonical two-term complex
 -/
 
-namespace KIP126.Core.SpectralSequence.BoundedExtension
+namespace KIP126.SpectralSequence.BoundedExtension
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -38,4 +38,4 @@ lemma twoTermComplex_d_one (X₁ X₂ : C) (f : X₁ ⟶ X₂) :
     (twoTermComplex X₁ X₂ f).d 1 0 = f := by
   simpa [twoTermDiff, twoTermObj] using twoTermComplex_d X₁ X₂ f 1
 
-end KIP126.Core.SpectralSequence.BoundedExtension
+end KIP126.SpectralSequence.BoundedExtension

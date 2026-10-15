@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Data
-import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Data
+public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Boundedness proof for extension spectral sequences
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -39,4 +39,4 @@ noncomputable def BoundedExtensionSS.bounded
     (ext.complex t).IsBounded :=
   underlyingComplexBounded cm.aMap cm.filtration_compat t bnd₁ bnd₂
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

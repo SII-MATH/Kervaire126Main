@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
-import all KIP126.Def.SpectralSequence.Convergence.Predicates
+public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
+public import KIP126.Def.SpectralSequence.Convergence.Predicates
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Boundedness of the filtered two-term complex
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -139,7 +139,7 @@ theorem underlyingComplex_assocGradedDiff_compat_one
   simp only [underlyingComplex_filDiff_one,
     underlyingComplex_filToAssocGraded_zero]
 
-lemma subobject_eq_bot_of_isZero {X : C} (hX : IsZero X)
+private lemma subobject_eq_bot_of_isZero {X : C} (hX : IsZero X)
     (P : Subobject X) : P = ⊥ := by
   have hP_zero : IsZero (Subobject.underlying.obj P) := hX.of_mono P.arrow
   apply le_antisymm
@@ -202,4 +202,4 @@ noncomputable def underlyingComplexBounded
         simp [twoTermFil, BoundedExtension.twoTermFil, h₁, h₀]
         exact subobject_eq_bot_of_isZero hz ⊤
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

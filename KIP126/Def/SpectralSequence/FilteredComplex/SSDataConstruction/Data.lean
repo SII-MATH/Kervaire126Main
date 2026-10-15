@@ -1,19 +1,19 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
-import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredDifferential.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Nested-subobject spectral sequence of a filtered complex
 
-This is the construction layer connecting KIP126's canonical filtered complex
-to the migrated `SSData`/`PreSS`/`SpectralSequence` API.  Its proof fields reuse
-the already separated finite-page results; no property is postulated.
+The cycle and boundary subobjects of a bounded filtered complex define
+`SSData` and `PreSS`. The finite-page differential identities prove the
+spectral-sequence axioms.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -34,9 +34,9 @@ namespace FilteredComplex
   Z_zero := FC.cycleSubobject_zero s k
   B_le_Z := FC.B_le_Z_aux s k
   Z_top_greatest := FC.cycleSubobject_top_greatest
-    bnd.toFiltration.toIsBoundedAbove s k
+    bnd.toAlgebra.toIsBoundedAbove s k
   B_top_least := FC.boundarySubobject_top_least
-    bnd.toFiltration.toIsBoundedBelow s k
+    bnd.toAlgebra.toIsBoundedBelow s k
 
 set_option maxHeartbeats 6400000 in
 /-- The data-only pre-spectral sequence of a bounded filtered complex. -/
@@ -64,4 +64,4 @@ noncomputable def toPreSS (FC : FilteredComplex C)
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

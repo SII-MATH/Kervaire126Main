@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Predicates
+public import KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Predicates
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Bounded extension spectral-sequence input data
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -29,4 +29,4 @@ noncomputable def BoundedExtensionSS.complex
     FilteredComplex C :=
   underlyingComplex cm.aMap cm.filtration_compat t
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

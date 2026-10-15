@@ -1,18 +1,18 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Historical homology target of a filtered complex
 
 The current KIP126 homology target uses Mathlib's normalized chain degrees.
 This layer retains the definitionally indexed target used by the historical
-weak-convergence proof, without changing the canonical `homologyObj` API.
+weak-convergence proof, using the canonical `homologyObj`.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -72,4 +72,4 @@ noncomputable def homologySSFiltration (FC : FilteredComplex C) :
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

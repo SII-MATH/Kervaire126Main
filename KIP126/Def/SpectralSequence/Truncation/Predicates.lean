@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.Truncation.Data
+public import KIP126.Def.SpectralSequence.Truncation.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Completeness predicate for nested-subobject filtrations
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -25,4 +25,4 @@ def Filtration.IsComplete {ω : Type w} {A : ω → C}
       f s₁ ≫ fil.truncationTransition h k = f s₀) →
     ∃! (g : T ⟶ A k), ∀ s₀ : ℤ, g ≫ fil.truncationProj s₀ k = f s₀
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

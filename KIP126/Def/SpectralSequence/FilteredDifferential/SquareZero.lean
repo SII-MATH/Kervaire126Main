@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredDifferential.Helpers
-import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
+public import KIP126.Def.SpectralSequence.FilteredDifferential.KernelImage
+public import KIP126.Def.SpectralSequence.FilteredPage.Proofs
 
 import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
 
-@[expose] section
+@[expose] public section
 
 /-! The finite-page differential squares to zero. -/
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex
+namespace KIP126.SpectralSequence.FilteredComplex
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -17,7 +17,7 @@ universe u v
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
-open DifferentialHelpers
+open DifferentialKernelImage
 
 set_option backward.isDefEq.respectTransparency false in
 theorem pageDifferential_comp (FC : FilteredComplex C)
@@ -32,7 +32,7 @@ theorem pageDifferential_comp (FC : FilteredComplex C)
   erw [cokernel.π_desc]
   set f_n₁ := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫ cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)
   set kerZ₁ := kernelSubobject f_n₁
-  set ι₁ := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k)
+  set ι₁ := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.decreasing s k)
   set πV₁ := cokernel.π ι₁
   set p₁ := factorThruImageSubobject (kerZ₁.arrow ≫ πV₁)
   haveI : Epi p₁ := inferInstance
@@ -61,4 +61,4 @@ theorem pageDifferential_comp (FC : FilteredComplex C)
   conv_lhs => erw [← Category.assoc, Abelian.monoLift_comp]
   erw [Category.assoc, Category.assoc, FC.complex.d_comp_d k, comp_zero, comp_zero]
 
-end KIP126.Core.SpectralSequence.FilteredComplex
+end KIP126.SpectralSequence.FilteredComplex

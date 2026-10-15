@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.Extension.Data
+public import KIP126.Def.SpectralSequence.Extension.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Proofs for two-term extension data
 -/
 
-namespace KIP126.Core.SpectralSequence.BoundedExtension
+namespace KIP126.SpectralSequence.BoundedExtension
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -59,4 +59,4 @@ lemma twoTermDiff_sq_transport (X₁ X₂ : C) (f : X₁ ⟶ X₂)
   simpa only [eqToHom_refl, Category.comp_id, Category.assoc] using
     twoTermDiff_sq X₁ X₂ f a
 
-end KIP126.Core.SpectralSequence.BoundedExtension
+end KIP126.SpectralSequence.BoundedExtension

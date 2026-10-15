@@ -1,9 +1,9 @@
 module
 
-import all KIP126.Def.SpectralSequence.Crossing.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Converse.Proofs
+public import KIP126.Def.SpectralSequence.Crossing.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Converse.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # 过滤复形的代表元 crossing
@@ -12,7 +12,7 @@ import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Converse.P
 并证明同一源的两个不同目标代表元必然产生精确 crossing。
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -266,4 +266,4 @@ theorem representativeRelation_target_eq_of_not_crossed
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

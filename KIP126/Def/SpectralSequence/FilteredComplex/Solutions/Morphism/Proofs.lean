@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Data
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory
@@ -17,9 +17,9 @@ theorem equation_natural (f : Morphism FC GD) (T : C) (r s k : ℤ)
     (z : Representatives FC T r s k) :
     equation GD T r s k (representativesMap f T r s k z) =
       equationsMap f T r s k (equation FC T r s k z) := by
-  have hs := InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+  have hs := Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
     f.toFilteredMorphism s k
-  have ht := InternalFilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
+  have ht := Algebra.FilteredMorphism.toAssociatedGraded_comp_associatedGradedMap
     f.toFilteredMorphism (s + r) (k - 1)
   apply Prod.ext
   · change (z.1 ≫ (f.preserves s k).choose) ≫ GD.filToAssocGraded s k =
@@ -56,4 +56,4 @@ theorem representativesMap_comp (f : Morphism FC GD) (g : Morphism GD GE)
       representativesMap g T r s k (representativesMap f T r s k z) := by
   simp [representativesMap, Morphism.comp_preserves_eq, Category.assoc]
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

@@ -1,13 +1,12 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Data
-import all KIP126.Def.SpectralSequence.Basic.Data
 
-@[expose] section
+@[expose] public section
 
 /-! Data carried by a differential in a nested-subobject spectral sequence. -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -42,4 +41,4 @@ def DifferentialDatum.ofSpectralSequence
     filtDeg := filtDeg
     is_essential := hess }
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

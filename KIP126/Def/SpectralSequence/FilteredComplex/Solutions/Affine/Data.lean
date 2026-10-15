@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 open CategoryTheory
 universe u v
@@ -31,4 +31,4 @@ noncomputable def coordinateEquiv (a : Fiber FC r s k x y) :
   left_inv g := by apply Subtype.ext; simp [displacement, translate]
   right_inv b := by apply Subtype.ext; simp [displacement, translate]
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

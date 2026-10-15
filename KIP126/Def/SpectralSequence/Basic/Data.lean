@@ -10,7 +10,7 @@ public import Mathlib.CategoryTheory.Abelian.Subobject
 public import Mathlib.CategoryTheory.Abelian.Pseudoelements
 public import Mathlib.Tactic.Abel
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Nested-subobject spectral-sequence data
@@ -27,14 +27,14 @@ and defines `E_r = Z_r / B_r`.  This file contains data and operations only;
 predicates and named proofs live in the adjacent layers.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
 universe u v w
 
 /-- Nested cycle and boundary subobjects at one grading of a spectral sequence. -/
-public structure SSData (C : Type u) [Category.{v} C] [Abelian C] where
+structure SSData (C : Type u) [Category.{v} C] [Abelian C] where
   /-- Ambient object. -/
   V : C
   /-- The decreasing family of cycle subobjects. -/
@@ -57,19 +57,19 @@ public structure SSData (C : Type u) [Category.{v} C] [Abelian C] where
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
 /-- The page `E_r = Z_r / B_r`. -/
-public noncomputable def SSData.page (D : SSData C) (r : WithTop ℕ) : C :=
+noncomputable def SSData.page (D : SSData C) (r : WithTop ℕ) : C :=
   cokernel (Subobject.ofLE (D.B r) (D.Z r) (D.B_le_Z r))
 
 /-- The infinity page `Z_∞ / B_∞`. -/
-public noncomputable def SSData.eInfty (D : SSData C) : C := D.page ⊤
+noncomputable def SSData.eInfty (D : SSData C) : C := D.page ⊤
 
 /-- The quotient projection `Z_r ⟶ E_r`. -/
-public noncomputable def SSData.pageπ (D : SSData C) (r : WithTop ℕ) :
+noncomputable def SSData.pageπ (D : SSData C) (r : WithTop ℕ) :
     Subobject.underlying.obj (D.Z r) ⟶ D.page r :=
   cokernel.π (Subobject.ofLE (D.B r) (D.Z r) (D.B_le_Z r))
 
 /-- A graded complex in an abelian category with a fixed differential degree. -/
-public structure GradedComplex (C : Type u) [Category.{v} C] [Abelian C]
+structure GradedComplex (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] where
   /-- Graded object. -/
   obj : ι → C
@@ -81,7 +81,7 @@ public structure GradedComplex (C : Type u) [Category.{v} C] [Abelian C]
   d_sq : ∀ k, d k ≫ d (k + d_deg) = 0
 
 /-- The short complex centered at grading `k`. -/
-public noncomputable def GradedComplex.shortComplex
+noncomputable def GradedComplex.shortComplex
     {ι : Type w} [AddCommGroup ι]
     (G : GradedComplex C ι) (k : ι) : ShortComplex C :=
   { X₁ := G.obj (k - G.d_deg)
@@ -105,13 +105,13 @@ public noncomputable def GradedComplex.shortComplex
       rw [key, ← Category.assoc, G.d_sq, zero_comp] }
 
 /-- Homology of a graded complex at grading `k`. -/
-public noncomputable def GradedComplex.homology
+noncomputable def GradedComplex.homology
     {ι : Type w} [AddCommGroup ι]
     (G : GradedComplex C ι) (k : ι) : C :=
   (G.shortComplex k).homology
 
 /-- The data-only part of a spectral sequence. -/
-public structure PreSS (C : Type u) [Category.{v} C] [Abelian C]
+structure PreSS (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
   /-- First displayed page. -/
   r₀ : ℤ
@@ -125,20 +125,20 @@ public structure PreSS (C : Type u) [Category.{v} C] [Abelian C]
       (ssData (k + diffDeg r)).page ↑(r - r₀).toNat)
 
 /-- The page object derived from a `PreSS`. -/
-@[reducible] public noncomputable def PreSS.Page
+@[reducible] noncomputable def PreSS.Page
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : PreSS C ι) (r : ℤ) (k : ι) : C :=
   (E.ssData k).page ↑(r - E.r₀).toNat
 
 /-- A bare family of maps between the ambient objects of two `SSData` families. -/
-public structure UnderlyingMorphism
+structure UnderlyingMorphism
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
     (D D' : ι → SSData C) where
   /-- Map on each ambient object. -/
   φ : ∀ (k : ι), (D k).V ⟶ (D' k).V
 
 /-- A morphism preserving the cycle and boundary towers. -/
-public structure SSDataMorphism
+structure SSDataMorphism
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
     (D D' : ι → SSData C) extends UnderlyingMorphism ι D D' where
   /-- The ambient maps preserve cycles. -/
@@ -160,7 +160,7 @@ def SSDataMorphism.toUnderlying
   φ := f.φ
 
 /-- Identity on the ambient objects and their cycle and boundary towers. -/
-public def SSDataMorphism.id
+def SSDataMorphism.id
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι] (D : ι → SSData C) :
     SSDataMorphism ι D D where
   φ := fun _ => 𝟙 _
@@ -168,7 +168,7 @@ public def SSDataMorphism.id
   preserves_B := fun _ _ => ⟨𝟙 _, by simp⟩
 
 /-- Composition of ambient maps preserving both towers. -/
-public def SSDataMorphism.comp
+def SSDataMorphism.comp
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' D'' : ι → SSData C}
     (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'') :
@@ -185,7 +185,7 @@ public def SSDataMorphism.comp
 
 /-- The restriction of the ambient map to cycles.  The subobject arrow is mono,
 so the preservation witness determines this map uniquely. -/
-public noncomputable def SSDataMorphism.cycleMap
+noncomputable def SSDataMorphism.cycleMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' : ι → SSData C} (f : SSDataMorphism ι D D')
     (k : ι) (r : WithTop ℕ) :
@@ -194,7 +194,7 @@ public noncomputable def SSDataMorphism.cycleMap
 
 /-- The canonical quotient map induced by the ambient map on `Z_r / B_r`.
 This includes the infinity page and makes no independent choice of page maps. -/
-public noncomputable def SSDataMorphism.pageMap
+noncomputable def SSDataMorphism.pageMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {D D' : ι → SSData C} (f : SSDataMorphism ι D D')
     (k : ι) (r : WithTop ℕ) : (D k).page r ⟶ (D' k).page r :=
@@ -210,14 +210,14 @@ public noncomputable def SSDataMorphism.pageMap
 
 /-- The same quotient map with the displayed page numbering transported along
 equality of starting pages. -/
-public noncomputable def SSDataMorphism.pageMapAt
+noncomputable def SSDataMorphism.pageMapAt
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : PreSS C ι} (f : SSDataMorphism ι E.ssData E'.ssData)
     (h : E.r₀ = E'.r₀) (r : ℤ) (k : ι) : E.Page r k ⟶ E'.Page r k :=
   f.pageMap k ↑(r - E.r₀).toNat ≫ eqToHom (by rw [h])
 
 /-- A morphism of pre-spectral sequences. -/
-public structure PreSSMorphism
+structure PreSSMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E E' : PreSS C ι) extends SSDataMorphism ι E.ssData E'.ssData where
   /-- Ordinary morphisms use the same displayed page numbering. -/
@@ -231,7 +231,7 @@ public structure PreSSMorphism
         eqToHom (by rw [diffDeg_eq])
 
 /-- Forget differential compatibility from a `PreSSMorphism`. -/
-public def PreSSMorphism.ssDataMorphism
+def PreSSMorphism.ssDataMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : PreSS C ι} (f : PreSSMorphism E E') :
     SSDataMorphism ι E.ssData E'.ssData where
@@ -240,22 +240,22 @@ public def PreSSMorphism.ssDataMorphism
   preserves_B := f.preserves_B
 
 /-- The canonical page map of a pre-spectral-sequence morphism. -/
-public noncomputable def PreSSMorphism.pageMap
+noncomputable def PreSSMorphism.pageMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : PreSS C ι} (f : PreSSMorphism E E') (r : ℤ) (k : ι) :
     E.Page r k ⟶ E'.Page r k :=
   f.toSSDataMorphism.pageMapAt f.r₀_eq r k
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence
 
-namespace KIP126.Core
+namespace KIP126
 
 open CategoryTheory CategoryTheory.Limits
 
 universe u v w
 
 /-- A nested-subobject spectral sequence. -/
-public structure SpectralSequence (C : Type u) [Category.{v} C] [Abelian C]
+structure SpectralSequence (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
     extends SpectralSequence.PreSS C ι where
   /-- Every page differential squares to zero. -/
@@ -279,9 +279,9 @@ public structure SpectralSequence (C : Type u) [Category.{v} C] [Abelian C]
           ((ssData (k + diffDeg r)).Z_anti (by exact_mod_cast Nat.le_succ n))) ≫
         (ssData (k + diffDeg r)).pageπ ↑n)
 
-end KIP126.Core
+end KIP126
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -318,13 +318,13 @@ noncomputable def ofPreSS
   B_succ := B_succ
 
 /-- The page object derived from a spectral sequence. -/
-@[reducible] public noncomputable def Page
+@[reducible] noncomputable def Page
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (k : ι) : C :=
   (E.ssData k).page ↑(r - E.r₀).toNat
 
 /-- A page as a graded object. -/
-public noncomputable def pageGraded
+noncomputable def pageGraded
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) : GradedObject ι C :=
   E.Page r
@@ -385,14 +385,14 @@ noncomputable def Subobject.thirdIso {V : C}
         Subobject.cokernelDesc_ofLE, cokernel.π_desc] }
 
 /-- The short complex centered at grading `k + diffDeg r` on page `r`. -/
-public noncomputable def pageShortComplex
+noncomputable def pageShortComplex
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (k : ι) : ShortComplex C :=
   ShortComplex.mk (E.d r k) (E.d r (k + E.diffDeg r)) (E.d_comp_d r k)
 
 /-- A morphism of spectral sequences.  Its page maps are derived from `φ`,
 not supplied independently. -/
-public structure SpectralSequenceMorphism
+structure SpectralSequenceMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E E' : SpectralSequence C ι) where
   /-- Map on each ambient object. -/
@@ -420,7 +420,7 @@ public structure SpectralSequenceMorphism
         r₀_eq r (k + E.diffDeg r) ≫ eqToHom (by rw [diffDeg_eq])
 
 /-- Forget the differential law without changing the ambient map. -/
-public def SpectralSequenceMorphism.toSSDataMorphism
+def SpectralSequenceMorphism.toSSDataMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E') :
     SSDataMorphism ι E.ssData E'.ssData where
@@ -429,7 +429,7 @@ public def SpectralSequenceMorphism.toSSDataMorphism
   preserves_B := f.preserves_B
 
 /-- The same morphism between the underlying pre-spectral sequences. -/
-public def SpectralSequenceMorphism.toPreSSMorphism
+def SpectralSequenceMorphism.toPreSSMorphism
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E') :
     PreSSMorphism E.toPreSS E'.toPreSS where
@@ -439,14 +439,14 @@ public def SpectralSequenceMorphism.toPreSSMorphism
   comm_d := f.comm_d
 
 /-- The canonical map on each displayed page. -/
-public noncomputable def SpectralSequenceMorphism.pageMap
+noncomputable def SpectralSequenceMorphism.pageMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E')
     (r : ℤ) (k : ι) : E.Page r k ⟶ E'.Page r k :=
   f.toPreSSMorphism.pageMap r k
 
 /-- The map induced by a spectral-sequence morphism on the infinity page. -/
-public noncomputable def SpectralSequenceMorphism.eInftyMap
+noncomputable def SpectralSequenceMorphism.eInftyMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E') (k : ι) :
     (E.ssData k).eInfty ⟶ (E'.ssData k).eInfty :=
@@ -471,4 +471,4 @@ structure GradedSSData (C : Type u) [Category.{v} C] [Abelian C]
   /-- Nested-subobject data at each grading. -/
   data : ι → SSData C
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

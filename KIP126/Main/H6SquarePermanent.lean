@@ -1,31 +1,32 @@
 module
 
 public import KIP126.Main.PropositionSevenEight
-public import KIP126.Main.SectionSeven.Final
+public import KIP126.Literature.Standard.Sphere.Classes
+public import KIP126.Def.SpectralSequence.Permanence.Predicates
 
-/-! The final proof follows bbac1fc05843 Main/Solution/h6_sq_permanent and
-DifferentialReduction/Conclusion (MIT; see the retained source LICENSE). Upstream facts are directly
-callable. There is no Challenge, result package or extra acceptance premise.
-The theorem still depends on the separately tracked upstream and paper gaps.
+@[expose] public section
+
+/-! LWX Theorem 7.1 (`thm:126survives`).
+
+Proposition 7.8 reduces failure of permanence to three conditions;
+Proposition 7.9 excludes their conjunction. Both results concern the same
+standard sphere and the same external literature and computation hypotheses.
+The theorem inherits the recorded background axioms and the four remaining
+Section 6 proof obligations.
 -/
-
-@[expose] section
 namespace KIP126.Main
-open KIP126.Core.SpectralSequence
-open KIP126.AdamsSynthetic.Standard (model)
 
-public theorem proposition_7_9 : C3 → ¬ C5 :=
-  SectionSeven.c3_excludes_c5
+open KIP126.Classical.Adams KIP126.SpectralSequence
 
-/-- LWX Theorem 7.1, retaining the common Z∞ representative and nonzero
-E∞ image of the actual product h6*h6 in the fixed sphere sequence. -/
-public theorem h6_sq_permanent :
-    NonzeroSurvival model.classical.sphere (2,128)
-      model.standardClasses.standardH6Square := by
-  obtain ⟨cases, criteria⟩ := proposition_7_8
-  rcases cases with h | h
-  · exact h.1
-  · obtain ⟨h3, _, h5⟩ := criteria.mp h.1
-    exact False.elim (proposition_7_9 h3 h5)
+/-- LWX Theorem 7.1. The standard h₆² has a common Z∞ representative projecting to it on E₂,
+whose E∞ image is nonzero, in bidegree (s,t) = (2,128). -/
+theorem h6_sq_permanent :
+    NonzeroSurvival sphereAdamsData (2, 128) standardH6Square := by
+  exact KIP126.Main.h6_square_permanent_of_differential_criterion_and_eta_obstruction
+    standardMilnorCooperations KIP126.Main.AdamsSynthetic.adamsComparison
+    KIP126.Main.AdamsSynthetic.sphereClasses KIP126.Main.AdamsSynthetic.etaClass
+    KIP126.Main.AdamsSynthetic.literatureTheorems.classical.hopf.1
+    (KIP126.Main.proposition_7_8 KIP126.Main.externalHypotheses)
+    KIP126.Main.SectionSeven.DifferentialCriterion.eta_extension_excluded_of_d6_vanishes
 
 end KIP126.Main

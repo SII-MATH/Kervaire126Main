@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
-import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
+public import KIP126.Def.SpectralSequence.FilteredPage.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Proofs for the historical filtered-complex API
+# Filtration, differential and associated-graded identities
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -33,35 +33,35 @@ theorem representativeRelation_of_lifts
   exact ⟨xl, yl, rfl, rfl, hd⟩
 
 /-- Convert historical boundedness to KIP126's canonical filtration predicate. -/
-def IsBounded.toFiltration {FC : FilteredComplex C} (bnd : FC.IsBounded) :
+def IsBounded.toAlgebra {FC : FilteredComplex C} (bnd : FC.IsBounded) :
     FC.filtration.IsBounded where
-  lo := bnd.lo
-  hi := bnd.hi
-  boundedBelow := bnd.boundedBelow
-  boundedAbove := bnd.boundedAbove
-  lo_le_hi := bnd.lo_le_hi
+  lower := bnd.lo
+  upper := bnd.hi
+  eq_top_of_le := bnd.boundedBelow
+  eq_bot_of_le := bnd.boundedAbove
+  lower_le_upper := bnd.lo_le_hi
 
 /-- Convert canonical boundedness to the historical record. -/
-def _root_.KIP126.Core.SpectralSequence.FilteredComplex.IsBounded.ofFiltration
+def _root_.KIP126.SpectralSequence.FilteredComplex.IsBounded.ofAlgebra
     {FC : FilteredComplex C}
     (bnd : FC.filtration.IsBounded) : FC.IsBounded where
-  lo := bnd.lo
-  hi := bnd.hi
-  lo_le_hi := bnd.lo_le_hi
-  boundedBelow := bnd.boundedBelow
-  boundedAbove := bnd.boundedAbove
+  lo := bnd.lower
+  hi := bnd.upper
+  lo_le_hi := bnd.lower_le_upper
+  boundedBelow := bnd.eq_top_of_le
+  boundedAbove := bnd.eq_bot_of_le
 
 @[simp]
-theorem IsBounded.ofFiltration_toFiltration {FC : FilteredComplex C}
+theorem IsBounded.ofAlgebra_toAlgebra {FC : FilteredComplex C}
     (bnd : FC.filtration.IsBounded) :
-    (FilteredComplex.IsBounded.ofFiltration bnd).toFiltration = bnd := by
+    (FilteredComplex.IsBounded.ofAlgebra bnd).toAlgebra = bnd := by
   cases bnd
   rfl
 
 @[simp]
-theorem IsBounded.toFiltration_ofFiltration {FC : FilteredComplex C}
+theorem IsBounded.toAlgebra_ofAlgebra {FC : FilteredComplex C}
     (bnd : FC.IsBounded) :
-    FilteredComplex.IsBounded.ofFiltration bnd.toFiltration = bnd := by
+    FilteredComplex.IsBounded.ofAlgebra bnd.toAlgebra = bnd := by
   cases bnd
   rfl
 
@@ -83,7 +83,7 @@ theorem complex_d_comp_eqToHom (FC : FilteredComplex C)
 /-- Historical successor antitonicity statement for the filtration. -/
 theorem fil_anti (FC : FilteredComplex C) (s k : ℤ) :
     FC.fil (s + 1) k ≤ FC.fil s k :=
-  FC.filtration.mono s k
+  FC.filtration.decreasing s k
 
 /-- Historical filtration-preservation witness. -/
 theorem d_preserves_fil (FC : FilteredComplex C) (s k : ℤ) :
@@ -141,4 +141,4 @@ theorem isLift_sub_factors (FC : FilteredComplex C) {T : C}
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

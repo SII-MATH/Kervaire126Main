@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Proofs
 public import Mathlib.CategoryTheory.Preadditive.Projective.Basic
 
-@[expose] section
+@[expose] public section
 
 /-! A page relation can be strictified on a projective test object. The
 correction is lifted from the actual boundary image and lies in the next
 source filtration; no comparison map or new differential is assumed. -/
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -108,7 +108,7 @@ theorem nonempty_fiber_of_differentialRelation
     apply (cancel_mono (FC.fil s (k - 1)).arrow).mp
     simpa only [Category.assoc, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Filtration.inclusion_arrow] using hxy
+      Algebra.Filtration.inclusion_arrow] using hxy
   obtain ⟨zx', zy', hx', hy', hd'⟩ :=
     FC.pageDifferential_of_strict_lifts s k n xl yl hstrict
   have hzx : zx' = zx := by
@@ -197,4 +197,4 @@ theorem differentialRelation_iff_representativeRelation
   rw [differentialRelation_iff_nonempty_fiber,
     nonempty_fiber_iff (Int.natCast_nonneg n)]
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

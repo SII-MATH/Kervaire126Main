@@ -1,42 +1,14 @@
 import Lake
 open Lake DSL
 
-package Kervaire126Main where
+package KIP126 where
   version := v!"0.1.0"
 
 require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @
     "905b95818eb32af7874a58b427f50c1711a5e96c"
 
-
--- JSON locks participate in Lake traces; changing a lock reruns its check.
-input_file proofObligations where
-  path := "proof-obligations.json"
-  text := true
-input_file spectralSequenceApi where
-  path := "spectral-sequence-api.json"
-  text := true
-input_file adamsSyntheticApi where
-  path := "adams-synthetic-api.json"
-  text := true
-input_file literatureApi where
-  path := "literature-api.json"
-  text := true
-input_file computationApi where
-  path := "computation-api.json"
-  text := true
-input_file proofToolsApi where
-  path := "proof-tools-api.json"
-  text := true
-input_file mainApi where
-  path := "main-api.json"
-  text := true
-
-lean_lib BuildCheckInputs where
-  roots := #[`Checks.Registry]
-  needs := #[.packageTarget .anonymous `proofObligations]
-
--- Run on every build so a newly added, unimported file cannot bypass auditing.
+-- Check every source, including modules that no facade happens to import.
 @[default_target]
 target sourceInventory pkg : Unit := do
   let result ← IO.Process.output {
@@ -44,55 +16,13 @@ target sourceInventory pkg : Unit := do
     args := #[(pkg.dir / "scripts/check-source-inventory.py").toString]
   }
   unless result.exitCode == 0 do
-    error result.stderr
+    error (result.stdout ++ result.stderr)
   return Job.pure ()
 
 @[default_target]
 lean_lib KIP126 where
-  globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence,
-    .andSubmodules `KIP126.Def.AdamsSynthetic,
-    .andSubmodules `KIP126.Def.Literature,
-    .andSubmodules `KIP126.Def.Computation,
-    .andSubmodules `KIP126.Def.ProofTools,
-    .andSubmodules `KIP126.Main]
+  globs := #[.andSubmodules `KIP126]
 
 @[default_target]
-lean_lib SpectralSequenceChecks where
-  needs := #[.packageTarget .anonymous `spectralSequenceApi]
-  roots := #[`Tests.SpectralSequence.Interface, `Tests.SpectralSequence.Visibility,
-    `Tests.SpectralSequence.Consumers]
-
-@[default_target]
-lean_lib AdamsSyntheticChecks where
-  needs := #[.packageTarget .anonymous `adamsSyntheticApi]
-  roots := #[`Tests.AdamsSynthetic.Interface, `Tests.AdamsSynthetic.Consumers,
-    `Tests.AdamsSynthetic.Detection, `Tests.AdamsSynthetic.System,
-    `Tests.AdamsSynthetic.Background, `Tests.AdamsSynthetic.Filtration,
-    `Tests.AdamsSynthetic.Mapping, `Tests.AdamsSynthetic.Structural]
-
-@[default_target]
-lean_lib LiteratureChecks where
-  needs := #[.packageTarget .anonymous `literatureApi]
-  roots := #[`Tests.Literature.Interface, `Tests.Literature.Consumers,
-    `Tests.Literature.RouteConsumers, `Tests.Literature.Secondary,
-    `Tests.Literature.Lift]
-
-@[default_target]
-lean_lib ComputationChecks where
-  needs := #[.packageTarget .anonymous `computationApi]
-  roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers]
-
-@[default_target]
-lean_lib ProofToolsChecks where
-  needs := #[.packageTarget .anonymous `proofToolsApi]
-  roots := #[`Tests.ProofTools.Interface, `Tests.ProofTools.Consumers]
-
-@[default_target]
-lean_lib MainChecks where
-  needs := #[.packageTarget .anonymous `mainApi]
-  roots := #[`Tests.Main.Interface, `Tests.Main.Consumers, `Tests.Main.Boundary,
-    `Tests.Main.LegacyResults]
-
-@[default_target]
-lean_lib IntegrationChecks where
-  roots := #[`Tests.Integration, `Tests.Trust]
+lean_lib ArchitectureChecks where
+  roots := #[`Tests.Architecture, `Tests.Trust]

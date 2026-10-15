@@ -1,22 +1,20 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
 public import KIP126.Def.SpectralSequence.Basic.Data
-import all KIP126.Def.SpectralSequence.Basic.Data
-import all KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.SpectralSequence.Convergence.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
-# Historical filtered-complex data API
+# Filtered objects, differentials and associated-graded quotients
 
-This module exposes the data names used by `KIPBase.SpectralSequence.FilteredComplex`
-on top of KIP126's canonical Mathlib `ChainComplex`-based implementation.  It does
-not introduce a second filtered-complex structure: the old fields are compatibility
-accessors for `complex` and `filtration`.
+The underlying graded objects and differentials come from a Mathlib
+`ChainComplex`; the filtration subobjects determine its cycle, boundary
+and associated-graded objects.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -26,16 +24,16 @@ variable {C : Type u} [Category.{v} C] [Abelian C]
 
 namespace FilteredComplex
 
-/-- Historical name for the underlying graded object. -/
+/-- The underlying graded object. -/
 @[reducible] def A (FC : FilteredComplex C) : ℤ → C :=
   FC.complex.X
 
-/-- Historical one-index presentation of the chain differential. -/
+/-- The chain differential indexed by its source degree. -/
 noncomputable def d (FC : FilteredComplex C) (k : ℤ) :
     FC.A k ⟶ FC.A (k - 1) :=
   FC.complex.d k (k - 1)
 
-/-- Historical name for the filtration subobjects. -/
+/-- The filtration subobjects. -/
 @[reducible] def fil (FC : FilteredComplex C) (s k : ℤ) : Subobject (FC.A k) :=
   FC.filtration.F s k
 
@@ -61,4 +59,4 @@ noncomputable def filDiff (FC : FilteredComplex C) (s k : ℤ) :
 
 end FilteredComplex
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

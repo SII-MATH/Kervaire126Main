@@ -1,12 +1,12 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
-import all KIP126.Def.SpectralSequence.Crossing.Predicates
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
+public import KIP126.Def.SpectralSequence.Crossing.Predicates
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 set_option backward.isDefEq.respectTransparency false
 open CategoryTheory
@@ -29,4 +29,4 @@ theorem differentialRelation_of_fiber (FC : FilteredComplex C) (bnd : FC.IsBound
   rw [FC.toPreSS_d_nat bnd]
   exact hdiff
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

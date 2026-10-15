@@ -1,18 +1,18 @@
 module
 
-import all KIP126.Def.SpectralSequence.Convergence.Proofs
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
+public import KIP126.Def.SpectralSequence.Convergence.Proofs
+public import KIP126.Def.Algebra.Truncation.Data
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Truncation data for nested-subobject filtrations
 
-The historical API is retained, while the quotient objects and transition
-maps are delegated to KIP126's canonical algebra-filtration implementation.
+The quotient `A/F^(s+1)` carries the image filtration. Inclusions of
+filtration subobjects induce the canonical transition maps.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -23,26 +23,26 @@ variable {C : Type u} [Category.{v} C] [Abelian C]
 /-- The truncated object `A(k) / F^(s₀+1)(A(k))`. -/
 @[reducible] noncomputable def Filtration.truncatedObj
     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) (k : ω) : C :=
-  fil.quotientAt (s₀ + 1) k
+  fil.toAlgebra.quotientAt (s₀ + 1) k
 
-/-- The quotient projection to the historical truncation level. -/
+/-- The quotient projection to truncation level `s₀`. -/
 @[reducible] noncomputable def Filtration.truncationProj
     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) (k : ω) :
     A k ⟶ fil.truncatedObj s₀ k :=
-  fil.quotientProjection (s₀ + 1) k
+  fil.toAlgebra.quotientProjection (s₀ + 1) k
 
 /-- The image filtration induced on a truncated object. -/
 @[reducible] noncomputable def Filtration.truncatedFiltration
     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) :
     Filtration (fil.truncatedObj s₀) :=
-  fil.quotientFiltration (s₀ + 1)
+  (fil.toAlgebra.quotientFiltration (s₀ + 1)).toSpectralSequence
 
 /-- Transition `A/F^(s₁+1) ⟶ A/F^(s₀+1)` for `s₀ ≤ s₁`. -/
 noncomputable def Filtration.truncationTransition
     {ω : Type w} {A : ω → C} (fil : Filtration A)
     {s₀ s₁ : ℤ} (h : s₀ ≤ s₁) (k : ω) :
     fil.truncatedObj s₁ k ⟶ fil.truncatedObj s₀ k :=
-  fil.quotientTransition (show s₀ + 1 ≤ s₁ + 1 by omega) k
+  fil.toAlgebra.quotientTransition (show s₀ + 1 ≤ s₁ + 1 by omega) k
 
 /-- Map on truncated target objects induced by a convergence morphism. -/
 noncomputable def ConvergenceMorphism.truncatedAMap
@@ -60,4 +60,4 @@ noncomputable def ConvergenceMorphism.truncatedAMap
       obtain ⟨φ, hφ⟩ := cm.filtration_compat (s₀ + 1) k'
       rw [← Category.assoc, ← hφ, Category.assoc, cokernel.condition, comp_zero])
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

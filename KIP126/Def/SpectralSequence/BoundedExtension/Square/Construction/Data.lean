@@ -1,11 +1,11 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.Square.Proofs
-import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Data
+public import KIP126.Def.SpectralSequence.BoundedExtension.Square.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Data
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 open CategoryTheory
 universe u v w
 variable {C : Type u} [Category.{v} C] [Abelian C]
@@ -19,10 +19,10 @@ set_option backward.defeqAttrib.useBackward true
 /-- A commuting square of actual filtered morphisms induces its actual
 two-term filtered chain map. No map of pages is chosen independently. -/
 noncomputable def underlyingComplexMap
-    (f : KIP126.Core.SpectralSequence.FilteredMorphism F₁ F₂)
-    (g : KIP126.Core.SpectralSequence.FilteredMorphism G₁ G₂)
-    (a : KIP126.Core.SpectralSequence.FilteredMorphism F₁ G₁)
-    (b : KIP126.Core.SpectralSequence.FilteredMorphism F₂ G₂)
+    (f : KIP126.SpectralSequence.FilteredMorphism F₁ F₂)
+    (g : KIP126.SpectralSequence.FilteredMorphism G₁ G₂)
+    (a : KIP126.SpectralSequence.FilteredMorphism F₁ G₁)
+    (b : KIP126.SpectralSequence.FilteredMorphism F₂ G₂)
     (h : ∀ i, a.map i ≫ g.map i = f.map i ≫ b.map i) (i : ι) :
     FilteredComplex.Morphism (underlyingComplex f.map f.compat i)
       (underlyingComplex g.map g.compat i) :=
@@ -47,4 +47,4 @@ noncomputable def underlyingComplexMap
         · refine ⟨0, ?_⟩
           simp [underlyingComplex, BoundedExtension.twoTermMap, hk, hk₀])
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

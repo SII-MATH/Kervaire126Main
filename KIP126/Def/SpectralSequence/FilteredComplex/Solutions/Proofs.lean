@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex
+namespace KIP126.SpectralSequence.FilteredComplex
 
 set_option backward.isDefEq.respectTransparency false
 
@@ -34,13 +34,13 @@ theorem nonempty_fiber_iff (hr : 0 ≤ r) :
     apply (cancel_mono (FC.fil s (k - 1)).arrow).mp
     simpa only [Category.assoc, filDiff, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Filtration.inclusion_arrow] using hd
+      Algebra.Filtration.inclusion_arrow] using hd
   · rintro ⟨xl, yl, hx, hy, hd⟩
     refine ⟨⟨(xl, yl), (mem_fiber_iff _).mpr ⟨hx, hy, ?_⟩⟩⟩
     have h := congrArg (fun a => a ≫ (FC.fil s (k - 1)).arrow) hd
     simpa only [Category.assoc, filDiff, fil, d,
       (FC.differential_preserves s k).choose_spec,
-      Filtration.inclusion_arrow] using h
+      Algebra.Filtration.inclusion_arrow] using h
 
 /-- Differences between solutions are actual homogeneous representative equations. -/
 theorem sub_mem_differences (a b : Fiber FC r s k x y) :
@@ -54,4 +54,4 @@ theorem add_mem_fiber (g : differences FC T r s k) (a : Fiber FC r s k x y) :
     zero_add, a.property]
 
 end Solutions
-end KIP126.Core.SpectralSequence.FilteredComplex
+end KIP126.SpectralSequence.FilteredComplex

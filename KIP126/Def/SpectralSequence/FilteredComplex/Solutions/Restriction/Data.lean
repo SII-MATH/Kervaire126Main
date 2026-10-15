@@ -1,11 +1,11 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Affine.Data
-import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Affine.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Proofs
 
-@[expose] section
+@[expose] public section
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+namespace KIP126.SpectralSequence.FilteredComplex.Solutions
 
 open CategoryTheory
 universe u v
@@ -32,4 +32,4 @@ noncomputable def restrictDifferences (f : Morphism FC GD) (T : C) (r s k : ℤ)
   map_zero' := by apply Subtype.ext; exact map_zero _
   map_add' a b := by apply Subtype.ext; exact map_add _ a.val b.val
 
-end KIP126.Core.SpectralSequence.FilteredComplex.Solutions
+end KIP126.SpectralSequence.FilteredComplex.Solutions

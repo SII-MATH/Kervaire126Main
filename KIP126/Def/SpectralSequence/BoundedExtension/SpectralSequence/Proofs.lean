@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Data
-import all KIP126.Def.SpectralSequence.Convergence.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Data
+public import KIP126.Def.SpectralSequence.Convergence.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Page-zero calculations for bounded extensions
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -75,4 +75,4 @@ theorem BoundedExtensionSS.d0_eq_inducedAssocGradedMap
   unfold Filtration.inducedAssocGradedMap cokernel.map
   simp only [Filtration.toAssociatedGraded, cokernel.π_desc]
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

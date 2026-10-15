@@ -1,16 +1,16 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
-import all KIP126.Def.SpectralSequence.Extension.Complex.Proofs
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
+public import KIP126.Def.SpectralSequence.Extension.Complex.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # The filtered two-term complex of a filtration-compatible map
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -34,7 +34,7 @@ noncomputable def underlyingComplex
   complex := BoundedExtension.twoTermComplex (A₁ t) (A₂ t) (aMap t)
   filtration := {
     F := twoTermFil (fun s => F₁.F s t) (fun s => F₂.F s t)
-    mono := fun s k => by
+    decreasing := fun s k => by
       by_cases h₁ : k = 1
       · subst k
         simpa [BoundedExtension.twoTermComplex, BoundedExtension.twoTermObj,
@@ -54,4 +54,4 @@ noncomputable def underlyingComplex
       simp [BoundedExtension.twoTermDiff, BoundedExtension.twoTermFil,
         twoTermFil, h]
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

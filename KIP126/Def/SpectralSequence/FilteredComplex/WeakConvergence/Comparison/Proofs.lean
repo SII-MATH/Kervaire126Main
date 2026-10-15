@@ -1,10 +1,10 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.HomologyTarget.Data
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
-import all KIP126.Def.SpectralSequence.Convergence.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.HomologyTarget.Data
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
+public import KIP126.Def.SpectralSequence.Convergence.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Infinity-page comparison for weak convergence
@@ -14,7 +14,7 @@ spectral sequence with the associated graded of its homology filtration.
 The convergence record is assembled in the parent `Data.lean` module.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -920,4 +920,4 @@ theorem FilteredComplex.weakConvergenceIso_nonempty (FC : FilteredComplex C)
       simp [eqToHom_trans]
     exact ⟨fwd, inv, h_hom_inv, h_inv_hom⟩
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
-import all KIP126.Def.SpectralSequence.Extension.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
+public import KIP126.Def.SpectralSequence.Extension.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Proofs for historical two-term extension data
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -45,4 +45,4 @@ lemma twoTermFil_zero' {X₁ X₂ : C}
     twoTermFil fil₁ fil₂ s 0 = fil₂ s := by
   exact BoundedExtension.twoTermFil_zero fil₁ fil₂ s
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

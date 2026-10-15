@@ -1,14 +1,14 @@
 module
 
-import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
 public import Mathlib.Algebra.Group.Subgroup.Ker
 
-@[expose] section
+@[expose] public section
 
 /-! Actual fibers of the filtered representative equation. Neither the
 solution set nor its group of differences is an independently chosen input. -/
 
-namespace KIP126.Core.SpectralSequence.FilteredComplex
+namespace KIP126.SpectralSequence.FilteredComplex
 
 open CategoryTheory
 
@@ -54,4 +54,4 @@ noncomputable def differences (FC : FilteredComplex C) (T : C) (r s k : ℤ) :
   (equation FC T r s k).ker
 
 end Solutions
-end KIP126.Core.SpectralSequence.FilteredComplex
+end KIP126.SpectralSequence.FilteredComplex

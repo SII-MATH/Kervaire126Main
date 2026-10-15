@@ -1,15 +1,14 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Proofs
-import all KIP126.Def.SpectralSequence.Basic.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Categories of nested-subobject spectral sequences
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -29,7 +28,7 @@ instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     UnderlyingMorphism.ext (funext fun k => Category.assoc (f.φ k) (g.φ k) (h.φ k))
 
 /-- The category of pre-spectral sequences. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Category.{max w v} (PreSS C ι) where
   Hom E E' := PreSSMorphism E E'
   id E := {
@@ -61,7 +60,7 @@ instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
   map_injective h := PreSSMorphism.ext (congrArg UnderlyingMorphism.φ h)
 
 /-- The category of nested-subobject spectral sequences. -/
-public instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
+instance {ι : Type w} [AddCommGroup ι] [DecidableEq ι] :
     Category.{max w v} (SpectralSequence C ι) where
   Hom E E' := SpectralSequenceMorphism E E'
   id E := {
@@ -128,4 +127,4 @@ noncomputable def inclusionFullyFaithful
     (SpectralSequence.inclusion (C := C) (ι := ι)).FullyFaithful :=
   Functor.FullyFaithful.ofFullyFaithful _
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

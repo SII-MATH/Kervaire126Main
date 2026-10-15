@@ -1,9 +1,8 @@
 module
 
 public import KIP126.Def.SpectralSequence.Basic.Proofs
-import all KIP126.Def.SpectralSequence.Basic.Proofs
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Successor-page homology identification
@@ -12,7 +11,7 @@ This construction is separated from the foundational records because it uses
 the quotient and image lemmas proved in `Basic.Proofs`.
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 open PageHomology
@@ -24,7 +23,7 @@ set_option backward.isDefEq.respectTransparency false
 set_option maxSynthPendingDepth 3
 
 /-- The homology of page `r` at grading `k` is canonically isomorphic to page `r + 1`. -/
-@[no_expose] public noncomputable def pageHomologyIso
+noncomputable def pageHomologyIso
     {C : Type u} [Category.{v} C] [Abelian C]
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (k : ι) (hr : E.r₀ ≤ r) :
@@ -187,4 +186,4 @@ set_option maxSynthPendingDepth 3
     exact hk_eq.symm ▸ rfl
   exact eqToIso hPageH ≪≫ h.homologyIso.symm
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

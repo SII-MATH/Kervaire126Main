@@ -1,15 +1,15 @@
 module
 
-import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
-import all KIP126.Def.SpectralSequence.Convergence.Predicates
+public import KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
+public import KIP126.Def.SpectralSequence.Convergence.Predicates
 
-@[expose] section
+@[expose] public section
 
 /-!
 # Predicate selecting bounded extension input data
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory
 
@@ -27,4 +27,4 @@ structure BoundedExtensionSS
     (cm : ConvergenceMorphism conv₁ conv₂)
     (bnd₁ : F₁.IsBounded) (bnd₂ : F₂.IsBounded) : Prop where
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence

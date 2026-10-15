@@ -1,21 +1,15 @@
 module
 
 public import KIP126.Def.SpectralSequence.Convergence.Predicates
+public import KIP126.Def.Algebra.Filtration.Predicates
 
-import all KIP126.Def.SpectralSequence.Convergence.Predicates
-public import KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
-import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
-import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
-public import Mathlib.Algebra.Category.ModuleCat.Subobject
-public import Mathlib.Algebra.Category.ModuleCat.Abelian
-
-@[expose] section
+@[expose] public section
 
 /-!
 # Proofs for convergence of nested-subobject spectral sequences
 -/
 
-namespace KIP126.Core.SpectralSequence
+namespace KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 
@@ -23,18 +17,40 @@ universe u v w
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
-/-- A filtration representative has zero graded class precisely when its
-actual ambient element belongs to the next filtration level. -/
-public theorem Filtration.toAssociatedGraded_eq_zero_iff
-    {R : Type u} [Ring R] {ω : Type w} {A : ω → ModuleCat.{v} R}
-    (F : Filtration A) (s : ℤ) (k : ω)
-    (x : (Subobject.underlying.obj (F.F s k) : ModuleCat R)) :
-    F.toAssociatedGraded s k x = 0 ↔
-      (F.F s k).arrow x ∈ (ModuleCat.subobjectModule (A k)) (F.F (s + 1) k) :=
-  subobject_cokernel_π_eq_zero_iff (F.F (s + 1) k) (F.F s k) (F.mono s k) x
+@[simp]
+theorem Filtration.transportGraded_self
+    {ω' : Type w} {A : ω' → C} (F : Filtration A)
+    {r : ℤ × ω'} (h : r = r) :
+    F.transportGraded h = 𝟙 (F.associatedGraded r.1 r.2) :=
+  rfl
+
+theorem Filtration.transportGraded_trans
+    {ω' : Type w} {A : ω' → C} (F : Filtration A)
+    {r₁ r₂ r₃ : ℤ × ω'} (h₁₂ : r₁ = r₂) (h₂₃ : r₂ = r₃) :
+    F.transportGraded h₁₂ ≫ F.transportGraded h₂₃ =
+      F.transportGraded (h₁₂.trans h₂₃) := by
+  subst h₁₂
+  subst h₂₃
+  simp only [Filtration.transportGraded_self, Category.id_comp]
+
+omit [Abelian C] in
+@[simp]
+theorem Filtration.toAlgebra_toSpectralSequence
+    {ω : Type w} {A : ω → C} (F : Filtration A) :
+    F.toAlgebra.toSpectralSequence = F := by
+  cases F
+  rfl
+
+omit [Abelian C] in
+@[simp]
+theorem _root_.KIP126.Algebra.Filtration.toSpectralSequence_toAlgebra
+    {ω : Type w} {A : ω → C} (F : KIP126.Algebra.Filtration A) :
+    F.toSpectralSequence.toAlgebra = F := by
+  cases F
+  rfl
 
 /-- Detection by zero is equivalent to lifting one filtration level deeper. -/
-public theorem detect_zero
+theorem detect_zero
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F)
@@ -57,7 +73,7 @@ public theorem detect_zero
     rw [← hx', Category.assoc, cokernel.condition, Limits.comp_zero]
 
 /-- Two representatives detected by the same class differ by a deeper-filtration lift. -/
-public theorem detect_difference
+theorem detect_difference
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
     (conv : Convergence E A F)
@@ -105,26 +121,40 @@ public theorem detect_difference
       rfl
     rw [hx'eq, Preadditive.sub_comp, hd, hz0, sub_zero]
 
+/-- A two-sided bounded filtration is bounded below. -/
+def Filtration.IsBounded.toIsBoundedBelow
+    {ω : Type w} {A : ω → C} {F : Filtration A}
+    (h : F.IsBounded) : F.IsBoundedBelow where
+  lo := h.lo
+  boundedBelow := h.boundedBelow
+
+/-- A two-sided bounded filtration is bounded above. -/
+def Filtration.IsBounded.toIsBoundedAbove
+    {ω : Type w} {A : ω → C} {F : Filtration A}
+    (h : F.IsBounded) : F.IsBoundedAbove where
+  hi := h.hi
+  boundedAbove := h.boundedAbove
+
 omit [Abelian C] in
 /-- A bounded-below filtration is exhaustive. -/
-public theorem Filtration.IsBoundedBelow.toIsExhaustive
+theorem Filtration.IsBoundedBelow.toIsExhaustive
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBoundedBelow) : F.IsExhaustive := by
   intro k
   exact ⟨h.lo k, h.boundedBelow k (h.lo k) le_rfl⟩
 
 /-- Eventual vanishing implies separatedness. The stronger premise uses
-the eventual-vanishing predicate on the same filtration. -/
+the existing algebra-filtration predicate on the same filtration. -/
 theorem Filtration.isHausdorff_of_isEventuallyZero
     {ω : Type w} {A : ω → C} {F : Filtration A}
-    (h : F.IsEventuallyZero) : F.IsHausdorff := by
+    (h : F.toAlgebra.IsEventuallyZero) : F.IsHausdorff := by
   intro k S hS
   obtain ⟨s, hs⟩ := h k
   change F.F s k = ⊥ at hs
   exact le_antisymm (by simpa only [hs] using hS s) bot_le
 
 /-- A bounded-above filtration is Hausdorff. -/
-public theorem Filtration.IsBoundedAbove.toIsHausdorff
+theorem Filtration.IsBoundedAbove.toIsHausdorff
     {ω : Type w} {A : ω → C} {F : Filtration A}
     (h : F.IsBoundedAbove) : F.IsHausdorff := by
   apply Filtration.isHausdorff_of_isEventuallyZero
@@ -133,7 +163,7 @@ public theorem Filtration.IsBoundedAbove.toIsHausdorff
 
 /-- Extensionality for convergence morphisms. -/
 @[ext]
-public theorem ConvergenceMorphism.ext
+theorem ConvergenceMorphism.ext
     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
     {E₁ E₂ : SpectralSequence C ω} {ω' : Type w}
     {A₁ A₂ : ω' → C} {F₁ : Filtration A₁} {F₂ : Filtration A₂}
@@ -413,4 +443,4 @@ theorem ConvergenceMorphism.iso_compat_comp
   rw [← Filtration.inducedAssocGradedMap_comp f g
     (X.conv.reindex k).1 (X.conv.reindex k).2]
 
-end KIP126.Core.SpectralSequence
+end KIP126.SpectralSequence
