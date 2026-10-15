@@ -65,16 +65,4 @@ theorem stdSimplex_right_productComparison_isIso (X : SSet.{u}) (q : ℕ) :
   rw [h]
   infer_instance
 
-/-- Realization commutes with product by any standard simplex, as a
-homeomorphism that is exactly the two realized simplicial projections. -/
-theorem exists_product_stdSimplex_homeomorph (X : SSet.{u}) (q : ℕ) :
-    ∃ e : |X ⊗ Δ[q]| ≃ₜ (|X| × stdSimplex ℝ (Fin (q+1))),
-      ∀ z, e z = (SSet.toTop.map (fst X Δ[q]) z,
-        SimplexCategory.toTopHomeo ⦋q⦌ (SSet.toTop.map (snd X Δ[q]) z)) := by
-  letI := stdSimplex_right_productComparison_isIso X q
-  let e := TopCat.homeoOfIso (asIso (CartesianMonoidalCategory.prodComparison SSet.toTop X Δ[q]))
-  refine ⟨e.trans ((Homeomorph.refl |X|).prodCongr (SimplexCategory.toTopHomeo ⦋q⦌)),?_⟩
-  intro z
-  rfl
-
 end KIP126.Topology.SimplicialRealization

@@ -36,5 +36,4 @@ noncomputable def equalityComparison {X Y : SSet.{u}} (f g : X ⟶ Y) :
       exact ConcreteCategory.congr_hom h x⟩
   continuous_toFun := (SSet.toTop.map (equalitySubcomplex f g).ι).hom.continuous.subtype_mk _
 
-
 end KIP126.Topology.SimplicialRealization

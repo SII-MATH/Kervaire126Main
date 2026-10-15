@@ -4,7 +4,6 @@ public import KIP126.Def.Algebra.GradedQuotient.PolynomialTruncation.Data
 
 @[expose] public section
 
-
 /-! Artificial truncation does not change components below its cutoff. -/
 namespace KIP126.Algebra.PolynomialTruncation
 open MvPolynomial

@@ -14,11 +14,6 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
-local notation "M" => standardMilnorCooperations
-local notation "L" => sphereClasses
-local notation "I" => computationTheorems
-local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 section NuNinthProof
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
@@ -1946,7 +1941,6 @@ private theorem nu_ninth_of_fifth_complete
 
 end
 end NuNinthProof
-
 
 /-- Lift specified Q5 representatives to the required Q9 relation using the
 actual lambda^4 map and the existing filtration correction argument. -/

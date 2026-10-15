@@ -1,6 +1,9 @@
 module
 
-public import KIP126.Def.SpectralSequence.Truncation.Proofs
+public import KIP126.Def.SpectralSequence.Convergence.Proofs
+public import KIP126.Def.Algebra.Completion.Data
+public import KIP126.Def.Algebra.Filtration.Data
+public import Mathlib.Tactic.Ring
 
 @[expose] public section
 

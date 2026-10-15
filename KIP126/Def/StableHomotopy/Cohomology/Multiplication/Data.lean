@@ -32,17 +32,6 @@ structure Mod2RingStructure (H : Mod2EilenbergMacLane (C := C)) where
 abbrev Mod2Cooperations (H : Mod2EilenbergMacLane (C := C)) (n : ℤ) :=
   Mod2Homology H n H.HF2
 
-/-- Insertion of the unit into the middle factor. After a Künneth
-identification this induces the cooperation coproduct. -/
-def cooperationDiagonal (H : Mod2EilenbergMacLane (C := C)) :
-    H.HF2 ⊗ H.HF2 ⟶ H.HF2 ⊗ (H.HF2 ⊗ H.HF2) :=
-  H.HF2 ◁ ((λ_ H.HF2).inv ≫ H.unit ▷ H.HF2)
-
-/-- The map on homotopy groups before applying a Künneth identification. -/
-def cooperationDiagonalMap (H : Mod2EilenbergMacLane (C := C)) (n : ℤ) :
-    Mod2Cooperations H n →+ HomotopyGroup n (H.HF2 ⊗ (H.HF2 ⊗ H.HF2)) :=
-  inducedMap (cooperationDiagonal H) n
-
 /-- Multiplication induces the cooperation counit. -/
 def cooperationCounit (H : Mod2EilenbergMacLane (C := C))
     (R : Mod2RingStructure H) (n : ℤ) :

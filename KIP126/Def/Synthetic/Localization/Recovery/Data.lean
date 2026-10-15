@@ -45,13 +45,6 @@ def LambdaRecovery.realization (R : LambdaRecovery N) : Syn ⥤ C :=
 def LambdaRecovery.spectralYoneda (R : LambdaRecovery N) : C ⥤ Syn :=
   R.equivalence.inverse ⋙ lambdaInclusion Syn
 
-/-- The spectral Yoneda embedding is fully faithful by the equivalence and
-the actual full-subcategory inclusion. -/
-def LambdaRecovery.fullyFaithfulSpectralYoneda (R : LambdaRecovery N) :
-    R.spectralYoneda.FullyFaithful :=
-  R.equivalence.fullyFaithfulInverse.comp
-    (IsLambdaInvertible (Syn := Syn)).fullyFaithfulι
-
 /-- Realization is left adjoint to spectral Yoneda, not to ν. -/
 def LambdaRecovery.adjunction (R : LambdaRecovery N) :
     R.realization ⊣ R.spectralYoneda :=
@@ -62,13 +55,6 @@ def LambdaRecovery.nuRealizationIso (R : LambdaRecovery N) :
     N.functor ⋙ R.realization ≅ 𝟭 C :=
   (Functor.associator N.functor R.localization.reflector R.equivalence.functor).symm ≪≫
     Functor.isoWhiskerRight R.nuLocalization R.equivalence.functor ≪≫ R.equivalence.counitIso
-
-/-- The canonical map from ν to spectral Yoneda factors through the actual
-localization unit and the supplied natural comparison. -/
-def LambdaRecovery.nuToSpectralYoneda (R : LambdaRecovery N) :
-    N.functor ⟶ R.spectralYoneda :=
-  Functor.whiskerLeft N.functor R.localization.unit ≫
-    (Functor.isoWhiskerRight R.nuLocalization (lambdaInclusion Syn)).hom
 
 /-- The additional symmetric monoidal input on the actual realization.
 No monoidal structure on the full subcategory is presupposed. In the source,

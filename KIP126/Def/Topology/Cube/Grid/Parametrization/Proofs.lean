@@ -25,20 +25,9 @@ theorem gridCellMap_bijective (n m : ℕ) (k : Fin n → Fin (m+1)) :
   change ((k.val : ℝ) + 0) / (m+1) = (k.val : ℝ) / (m+1)
   simp
 
-@[simp] theorem gridCoordinate_one (m : ℕ) (k : Fin (m+1)) :
-    gridCoordinate m k 1 = gridVertex m k.succ := by
-  apply Subtype.ext
-  change ((k.val : ℝ) + 1) / (m+1) = ((k.val+1 : ℕ) : ℝ) / (m+1)
-  simp
-
 theorem gridCoordinate_eq_lower_iff (m : ℕ) (k : Fin (m+1)) (t : I) :
     gridCoordinate m k t = gridVertex m k.castSucc ↔ t = 0 := by
   rw [← gridCoordinate_zero m k]
-  exact (gridCoordinate_injective m k).eq_iff
-
-theorem gridCoordinate_eq_upper_iff (m : ℕ) (k : Fin (m+1)) (t : I) :
-    gridCoordinate m k t = gridVertex m k.succ ↔ t = 1 := by
-  rw [← gridCoordinate_one m k]
   exact (gridCoordinate_injective m k).eq_iff
 
 /-- A coordinate reaches the global lower face exactly in the first cell

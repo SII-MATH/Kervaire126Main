@@ -60,10 +60,6 @@ variable {E A B F : Type*} [TopologicalSpace E] [TopologicalSpace A]
   [TopologicalSpace B] [TopologicalSpace F]
 set_option backward.isDefEq.respectTransparency false
 
-@[simp] theorem pullbackChartHomeomorph_fst (p : C(E,B)) (a : C(A,B))
-    (T : Bundle.Trivialization F p) (z : pullbackSndMap p a ⁻¹' (a ⁻¹' T.baseSet)) :
-    (pullbackChartHomeomorph p a T z).1.val = z.val.val.2 := rfl
-
 /-- Pulling back actual local charts along a continuous base map preserves
 local triviality for the literal topological fiber product. -/
 theorem localTriviality_pullback [Nonempty F] (p : C(E,B)) (a : C(A,B))

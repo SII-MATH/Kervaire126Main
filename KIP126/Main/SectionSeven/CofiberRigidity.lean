@@ -1,11 +1,11 @@
 module
 
 public import KIP126.Main.SectionSeven.SphereClasses
-
--- The CSV coordinate calculations use the defining string and list equations.
 import all Init.Data.String.Legacy
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
+
+-- The CSV coordinate calculations use the defining string and list equations.
 
 @[expose] public section
 
@@ -19,11 +19,12 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
+
 local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
-local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 section CnuRigidityProof
 open CategoryTheory.Limits CategoryTheory.Pretriangulated
@@ -365,7 +366,6 @@ private theorem target_divisibility_contradiction
     rw [PageRepresentatives.boundaries_one,Submodule.mem_bot] at hm
     exact (sub_eq_zero.mp hm).symm
 
-
   have sphere_to_nu_label (X : ClassicalObject)
       (f : SphereSpectrum ⟶ X.obj D'.hopfAndDetector)
       (x : E2 H SphereSpectrum 14 139) :
@@ -438,7 +438,6 @@ private theorem target_divisibility_contradiction
     (14,139,139-(4:ℕ))).hom).mp inferInstance
   rw [hgr,ha0,map_zero,map_zero]
 
-
 open KIP126.Computation.SphereAndCofiber KIP126.Computation.Near126 KIP126.LinE2 KIP126.Algebra
 attribute [local irreducible] KIP126.LinE2.homogeneousPart
 variable {L' : SphereAdamsClasses H} {G : TmfDetectionClasses H}
@@ -500,7 +499,6 @@ private theorem cnu_target_permanent_context (I' : AdamsComputationTheorems D' L
     ext x
     exact Subsingleton.elim _ _
 
-
   have hp := t_permanent_cycle I' V
   rw [(distinguished_expression_comparisons I').2.2] at hp
   obtain ⟨x,y,hx,hy,hbottom⟩ := I'.cofiberInclusion ⟨14,139,[1],[2]⟩ (by
@@ -536,7 +534,6 @@ theorem target_divisibility_forces_cnu_incoming
   apply target_divisibility_contradiction literatureTheorems.synthetic.eInfty
     literatureTheorems.applicability.nuCofiber ((L).target M) hp _ hdiv
   exact hbottom.symm ▸ hs
-
 
 end
 end KIP126.Main.SectionSeven

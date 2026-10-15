@@ -34,5 +34,4 @@ theorem toNat?_eq_chars (s : String) : s.toNat? = charsToNat? s.toList := by
     charsToNat?, charsAreNat, String.Slice.forIn_eq_forIn_toList,
     String.Slice.foldl_eq_foldl_toList, String.copy_toSlice]
 
-
 end KIP126.LinE2.SquareDetection

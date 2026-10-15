@@ -1,7 +1,7 @@
 module
 
-public import KIP126.Main.DifferentialReduction.D12Criterion
-public import KIP126.Main.ExtensionObstruction.EtaExtension
+public import KIP126.Def.AdamsSynthetic.Conditions.D12Criterion
+public import KIP126.Def.AdamsSynthetic.Conditions.EtaExtension
 public import KIP126.Def.AdamsSynthetic.Conditions.Predicates
 public import KIP126.Def.AdamsSynthetic.Comparison.Coherent.Data
 

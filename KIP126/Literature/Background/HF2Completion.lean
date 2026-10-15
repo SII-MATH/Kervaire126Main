@@ -19,8 +19,4 @@ axiom completionModel_exists : Nonempty CompletionModel
 /-- The one reflection selected from the external existence hypothesis. -/
 noncomputable def completionModel : CompletionModel := Classical.choice completionModel_exists
 
-/-- The localization functor of that same selected reflection. -/
-noncomputable def completedLocalization : Prespectrum.{0} ⥤ CompletedSpectrum :=
-  completionModel.localization
-
 end KIP126.StableHomotopy.Spectra

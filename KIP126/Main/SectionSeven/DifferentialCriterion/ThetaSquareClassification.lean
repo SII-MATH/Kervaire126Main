@@ -1,13 +1,10 @@
 module
 
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-public import KIP126.Main.Computation.Lambda
-
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
+public import KIP126.Main.SectionSeven.Lambda
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
-
 import all Init.Data.String.Legacy
 
 @[expose] public section
@@ -132,7 +129,6 @@ private theorem stem124_finite_pages_low124_d2_10 (I : KIP126.Computation.Sphere
   ext x
   simpa only [LinearEquiv.symm_apply_apply,ModuleCat.hom_zero,LinearMap.zero_apply] using hall (e x)
 
-
 private theorem stem124_finite_pages_f2_three (f : Fin 3 →₀ F2) :
     f = 0 ∨ f = Finsupp.single 0 1 ∨ f = Finsupp.single 1 1 ∨
     f = Finsupp.single 2 1 ∨ f = Finsupp.single 0 1 + Finsupp.single 1 1 ∨
@@ -149,7 +145,6 @@ private theorem stem124_finite_pages_f2_three (f : Fin 3 →₀ F2) :
   fin_cases a <;> fin_cases b <;> fin_cases c
   all_goals simp only [show (⟨0,by decide⟩ : F2) = 0 from rfl, show (⟨1,by decide⟩ : F2) = 1 from rfl, Finsupp.single_zero, zero_add, add_zero] at hf
   all_goals subst f; tauto
-
 
 private theorem stem124_finite_pages_low124_af9_four (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     Subsingleton ((sequence D .sphere).Page 4 (9,133)) ∧
@@ -358,7 +353,6 @@ private theorem stem124_finite_pages_low124_af9_four (I : KIP126.Computation.Sph
   all_goals simp only [LinearEquiv.symm_apply_apply,map_zero,map_add,e0,e1,e2] at hh
   all_goals simp only [hh,map_zero,map_add,d20,d21,d22,ht2,zero_add]; tauto
 
-
 private theorem stem124_finite_pages_s8_d2 (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     (sequence D .sphere).d 2 (8,132) (I.interpretation.basis .sphere 8 132 0) =
       I.interpretation.basis .sphere 10 133 2 := by
@@ -386,7 +380,6 @@ private theorem stem124_finite_pages_s8_d2 (I : KIP126.Computation.SphereAndCofi
     exact hd'
   exact hd
 
-
 private theorem stem124_finite_pages_s8_basis (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) : ∃ e : (sequence D .sphere).Page 2 (8,132) ≃ₗ[ℤ] (Fin 1 →₀ KIP126.Algebra.F2), ∀i, e.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 8 132 i.val := by
   classical
   let E := sequence D .sphere
@@ -396,7 +389,6 @@ private theorem stem124_finite_pages_s8_basis (I : KIP126.Computation.SphereAndC
   change ∀ i : Fin 1, e.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 8 132 i.val at he
   exact ⟨e,he⟩
 
-
 private theorem stem124_finite_pages_s10_basis (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) : ∃ f : (sequence D .sphere).Page 2 (10,133) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Algebra.F2), ∀i, f.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 10 133 i.val := by
   classical
   let E := sequence D .sphere
@@ -405,7 +397,6 @@ private theorem stem124_finite_pages_s10_basis (I : KIP126.Computation.SphereAnd
   change E.Page 2 (10,133) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Algebra.F2) at f
   change ∀ i : Fin 3, f.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 10 133 i.val at hf
   exact ⟨f,hf⟩
-
 
 private theorem stem124_finite_pages_low124_af8_three (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) : Subsingleton ((sequence D .sphere).Page 3 (8,132)) := by
   classical
@@ -447,7 +438,6 @@ private theorem stem124_finite_pages_low124_af8_three (I : KIP126.Computation.Sp
   have hzero := (S.exact_iff_isZero_homology).mp hsex
   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 2 (8,132)
     (by change (2:ℤ)≤2; omega)).isZero_iff.mpr hzero)
-
 
 private theorem stem124_finite_pages_low124_s7_four (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) :
     ∃ b : (sequence D .sphere).Page 4 (7,131),
@@ -587,7 +577,6 @@ private theorem stem124_finite_pages_low124_s7_four (I : KIP126.Computation.Sphe
   · rw [hx]
     exact represents_d_zero_of_later (by change (2:ℤ)≤4; omega) (by decide : (4:ℤ)<5) hb4save ⟨b5,hb5⟩
 
-
 private theorem stem124_finite_pages_low124_s7_six (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (h8 : Subsingleton ((sequence D .sphere).Page 4 (8,132)))
     (htarget : ∀ y : (sequence D .sphere).Page 4 (12,135),
@@ -646,7 +635,6 @@ private theorem stem124_finite_pages_low124_s7_six (I : KIP126.Computation.Spher
     exact ⟨0,by rw [ker5 x hx,map_zero]⟩)
   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 5 (7,131)
     (by change (2:ℤ)≤5; omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hex))
-
 
 private theorem stem124_finite_pages_low124_af6_six (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (h74 : (sequence D .sphere).d 4 (7,131) = 0) : Subsingleton ((sequence D .sphere).Page 6 (6,130)) := by
@@ -720,7 +708,6 @@ private theorem stem124_finite_pages_low124_af6_six (I : KIP126.Computation.Sphe
   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 5 (6,130)
     (by change (2:ℤ)≤5; omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hs))
 
-
 private theorem stem124_finite_pages
     {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:=C)]
     {Syn : Type w} [SyntheticCategory.{w,v} Syn] [HasFunctorialCofiber (C:=Syn)]
@@ -774,7 +761,6 @@ private theorem stem124_weight128_filtration_ten_permanent_quotient_zero_of_stab
     exact (KIP126.Algebra.NestedQuotient.projection_eq_zero x).mpr (hcycles x.property)
   exact ⟨fun a b => (hall a).trans (hall b).symm⟩
 
-
 private theorem stem124_weight128_filtration_ten_nu124_low_zero
     (A : KIP126.Literature.AdamsSynthetic.SyntheticComparisonTheorems D) (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
     (s : ℤ) (hs : s < 10)
@@ -806,7 +792,6 @@ private theorem stem124_weight128_filtration_ten_nu124_low_zero
       simp only [nuEInftyModel,hw,ite_false]
       infer_instance
     exact (A.eInfty.presentation.nu SphereSpectrum (s,124+s) 128).injective.subsingleton
-
 
 private theorem stem124_weight128_filtration_ten
     (A : KIP126.Literature.AdamsSynthetic.SyntheticComparisonTheorems D) (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G)
@@ -879,7 +864,6 @@ private theorem stem124_af13_exhaustion_af13_labels (I : KIP126.Computation.Sphe
       norm_num [polynomialOfPowers, RawData.generatorCount, generator, map_mul]
     rw [heq]
     exact he
-
 
 private theorem stem124_af13_exhaustion
     {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:=C)]
@@ -1747,7 +1731,6 @@ private theorem theta_quotient_frame
     rw [←hz',←hz,←map_sub]
     exact zero_of_infinity_zero (z'-z) (by rw [map_sub,h1,sub_self])
 
-
 private theorem theta_sphere_frame_family_map_data {X Y : Syn} (f : X ⟶ Y) (i : Tridegree) :
     familyPageMap D.family f 2 i = (D.family.functor.map f).toSSDataMorphism.pageMap i 0 := by
   classical
@@ -1770,7 +1753,6 @@ private theorem theta_sphere_frame_family_map_data {X Y : Syn} (f : X ⟶ Y) (i 
     simp only [eqToHom_refl,Category.id_comp,Category.comp_id]
   exact normalize PX.page PY.page (fun n => F.pageMap i n) nX nY hX hY _ _ _
 
-
 private theorem theta_sphere_frame_map_infinity {X Y : Syn} (f : X ⟶ Y) (i : Tridegree)
     (y : (D.family.obj X).E₂ i) (e : ((D.family.obj X).sequence.ssData i).eInfty)
     (hy : HasInfinityRepresentative (D.family.obj X) 2 i y e) :
@@ -1792,7 +1774,6 @@ private theorem theta_sphere_frame_map_infinity {X Y : Syn} (f : X ⟶ Y) (i : T
   · exact (congrArg (fun a => a z) (F.pageπ_pageMap i ⊤)).symm.trans (by
       change F.pageMap i ⊤ (((D.family.obj X).sequence.ssData i).pageπ ⊤ z)=_
       rw [he])
-
 
 private theorem theta_sphere_frame
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (BHS : SyntheticComparisonTheorems D)
@@ -1849,7 +1830,6 @@ private theorem theta_sphere_frame
     rw [hback,hlabel] at hh
     exact hh
 
-
 private theorem theta_three_cases_from_frames_permanentQuotient_zero_of_page_six_zero (s t b : ℤ) (hb : 5 ≤ b)
     (hpage : Subsingleton ((sequence D .sphere).Page 6 (s, t))) :
     Subsingleton (PageRepresentatives.PermanentQuotient H SphereSpectrum b (s, t)) := by
@@ -1881,8 +1861,6 @@ private theorem theta_three_cases_from_frames_permanentQuotient_zero_of_page_six
       apply (KIP126.Algebra.NestedQuotient.projection_eq_zero x).mpr
       exact PageRepresentatives.boundaries_monotone H SphereSpectrum (s, t) hb (hcycles x.property)
     exact ⟨fun x y => (hall x).trans (hall y).symm⟩
-
-
 
 private theorem theta_three_cases_from_frames
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (BHS : SyntheticComparisonTheorems D)

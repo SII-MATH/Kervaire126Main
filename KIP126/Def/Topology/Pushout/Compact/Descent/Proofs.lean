@@ -36,5 +36,4 @@ theorem continuous_of_compact_pushout_pullback
   apply hq.continuous_iff.mpr
   exact continuous_sum_dom.mpr ⟨ha,hb⟩
 
-
 end KIP126.Topology

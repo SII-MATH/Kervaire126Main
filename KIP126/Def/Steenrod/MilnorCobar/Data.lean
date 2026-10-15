@@ -28,12 +28,6 @@ def cup {s s' t t' : ℕ} (x : cochains s t) (y : cochains s' t') :
     cochains (s + s') (t + t') :=
   ⟨cupPolynomial x.val y.val, cupPolynomial_mem x y⟩
 
-/-- The standard normalized cocycle representing `h₆`. -/
-def h6Cochain : cochains 1 64 := ⟨h6Polynomial, h6Polynomial_mem⟩
-
-/-- The square is the actual cochain concatenation product. -/
-def h6SquareCochain : cochains 2 128 := cup h6Cochain h6Cochain
-
 end
 
 end KIP126.Steenrod.Milnor

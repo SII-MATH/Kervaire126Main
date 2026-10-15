@@ -18,10 +18,4 @@ def IsLambdaLocalEquivalence {X Y : Syn} (f : X ⟶ Y) : Prop :=
   ∀ (Z : Syn), IsLambdaInvertible Z →
     Function.Bijective (fun g : Y ⟶ Z => f ≫ g)
 
-/-- A localization unit has an actual λ-invertible target and the displayed
-unique-factorization property. This is not an unspecified proposition. -/
-def IsLambdaLocalizationMap {X Y : Syn} (f : X ⟶ Y) : Prop :=
-  IsLambdaInvertible Y ∧ ∀ (Z : Syn), IsLambdaInvertible Z →
-    ∀ g : X ⟶ Z, ∃! h : Y ⟶ Z, f ≫ h = g
-
 end KIP126.Synthetic.Context

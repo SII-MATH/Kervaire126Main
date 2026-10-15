@@ -11,8 +11,8 @@ public import KIP126.Def.SpectralSequence.Permanence.Predicates
 Proposition 7.8 reduces failure of permanence to three conditions;
 Proposition 7.9 excludes their conjunction. Both results concern the same
 standard sphere and the same external literature and computation hypotheses.
-The theorem inherits the recorded background axioms and the four remaining
-Section 6 proof obligations.
+The theorem inherits the recorded background axioms and the remaining MH2
+proof obligation in the generalized Mahowald argument.
 -/
 namespace KIP126.Main
 

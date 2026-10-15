@@ -44,8 +44,6 @@ structure RealizationWeightComparison where
     L.realization.map ((SyntheticCategory.biShift (0,a)).map (N.functor.map f)) ≫
       (iso Y a).hom = (iso X a).hom ≫ f
 
-
-
 /-- The two shifts appearing in a fixed-weight Adams tower use this SAME
 comparison and the existing biShift_comp. No new basepoint iso is selected. -/
 def RealizationWeightComparison.doubleShift
@@ -53,19 +51,6 @@ def RealizationWeightComparison.doubleShift
     L.realization.obj ((SyntheticCategory.biShift (0,b)).obj (weightObject N X a)) ≅ X :=
   L.realization.mapIso ((SyntheticCategory.biShift_comp (0,a) (0,b)).app
     (N.functor.obj X)) ≪≫ W.iso X (a+b)
-
-def realizationCoefficientIso (H : Mod2EilenbergMacLane (C := C)) :
-    L.realization.obj (N.functor.obj H.HF2) ≅ H.HF2 :=
-  L.nuRealizationIso.app H.HF2
-
-/-- Exact unit square required for the strong-monoidal Adams tower map.
-An arbitrary monoidal structure on the realization is not sufficient. -/
-def RealizationCoefficientCompatible (H : Mod2EilenbergMacLane (C := C))
-    (F : L.realization.Monoidal) : Prop :=
-  letI := F
-  Functor.LaxMonoidal.ε L.realization ≫
-    L.realization.map (nuCoefficientUnit H.unit N) ≫
-      (realizationCoefficientIso N L H).hom = H.unit
 
 end
 end KIP126.Comparison.ClassicalSynthetic

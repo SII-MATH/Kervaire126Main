@@ -15,11 +15,6 @@ universe u
 local instance : PreservesWellOrderContinuousOfShape ℕ SSet.toTop.{u} where
   preservesColimitsOfShape _ _ := inferInstance
 
-/-- The actual realization of the simplicial skeleton generated in degrees
-strictly below `n`. -/
-noncomputable def skeleton (X : SSet.{u}) (n : ℕ) : TopCat.{u} :=
-  SSet.toTop.obj (X.skeleton n).toSSet
-
 /-- Geometric realization sends the actual simplicial cell filtration to
 a topological filtration attaching realized simplex boundaries. Identification
 of these boundary pairs with disks is a separate geometric assertion. -/

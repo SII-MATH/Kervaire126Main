@@ -226,49 +226,6 @@ instance coefficientToLoop_isIso (n : ℕ) : IsIso (coefficientToLoop n) := by
 noncomputable def coefficientLoopIso (n : ℕ) : hf2SimplicialModule n ≅ loopModule n :=
   asIso (coefficientToLoop n)
 
-/-- Normalization of the actual simplicial comparison recovers exactly the
-chain map used in the bond construction, via the fixed Dold--Kan counit. -/
-theorem coefficientToLoop_normalized (n : ℕ) :
-    (normalizedMooreComplex (ModuleCat (ZMod 2))).map (coefficientToLoop n) =
-      (hf2NormalizedComplexIso n).hom ≫ coefficientLoopChainMap n := by
-  let e := CategoryTheory.Abelian.DoldKan.equivalence (A := ModuleCat (ZMod 2))
-  change e.functor.map (e.inverse.map (coefficientLoopChainMap n) ≫
-    e.unitInv.app (loopModule n)) = e.counit.app (hf2ChainComplex n) ≫ _
-  rw [Functor.map_comp, ← e.counit_app_functor]
-  exact e.counit_naturality _
-
-/-- The normalized generator of the simplicial comparison is the chosen
-coefficient under the explicit shift comparison. -/
-theorem coefficientToLoop_normalized_generator (n : ℕ) :
-    (HomologicalComplex.singleObjXSelf (ComplexShape.down ℕ) n
-      (ModuleCat.of (ZMod 2) (ZMod 2))).inv ≫
-    (hf2NormalizedComplexIso n).inv.f n ≫
-    ((normalizedMooreComplex (ModuleCat (ZMod 2))).map (coefficientToLoop n)).f n ≫
-    normalizedLoopToShift n n = (normalizedCoefficientIso n).hom := by
-  rw [coefficientToLoop_normalized]
-  simp only [HomologicalComplex.comp_f, ← Category.assoc]
-  have hi := HomologicalComplex.congr_hom (hf2NormalizedComplexIso n).inv_hom_id n
-  simp only [HomologicalComplex.comp_f, HomologicalComplex.id_f] at hi
-  rw [Category.assoc _ ((hf2NormalizedComplexIso n).inv.f n), hi, Category.comp_id]
-  dsimp only [coefficientLoopChainMap]
-  rw [HomologicalComplex.mkHomFromSingle_f]
-  simp only [← Category.assoc, Iso.inv_hom_id, Category.id_comp]
-  exact coefficientNormalizedLoop_shift n
-
-/-- The fully constructed bond on each actual simplex is the geometric cone
-of its image under the proved simplicial loop comparison. -/
-theorem bond_realizeSimplex (n r : ℕ)
-    (x : (hf2SimplicialModule n).obj (op ⦋r⦌))
-    (u : stdSimplex ℝ (Fin (r + 1))) (t : unitInterval) :
-    bond n (realizeSimplex (hf2SimplicialSet n) x u, t) =
-      realizeSimplex (hf2SimplicialSet (n + 1))
-        ((loopInclusion n).app (op ⦋r⦌) ((coefficientToLoop n).app (op ⦋r⦌) x))
-        (conePoint u t) := by
-  change coneEvaluation _ (SSet.toTop.map (loopSetInclusion n)
-    (SSet.toTop.map (coefficientToLoopSet n) (realizeSimplex _ x u)), t) = _
-  rw [realizeSimplex_map, realizeSimplex_map, coneEvaluation_realizeSimplex]
-  rfl
-
 /-- Geometric realization of the proved simplicial loop comparison. -/
 noncomputable def coefficientLoopRealizationHomeomorph (n : ℕ) :
     hf2RealizationLevel n ≃ₜ loopRealizationLevel n :=

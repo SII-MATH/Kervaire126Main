@@ -2,8 +2,7 @@ module
 
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
-public import KIP126.Main.Computation.Lambda
-
+public import KIP126.Main.SectionSeven.Lambda
 
 @[expose] public section
 
@@ -47,13 +46,11 @@ private theorem eta_detection_family_map_data {D : AdamsComparison H M Syn} {X Y
     simp only [eqToHom_refl,Category.id_comp,Category.comp_id]
   exact normalize PX.page PY.page (fun n => F.pageMap i n) nX nY (↑(r-2).toNat) hX hY _ _ _
 
-
 private theorem eta_detection_family_page_comp {D : AdamsComparison H M Syn} {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z) (r : ℤ) (i : Tridegree) :
     familyPageMap D.family f r i ≫ familyPageMap D.family g r i = familyPageMap D.family (f ≫ g) r i := by
   classical
   rw [eta_detection_family_map_data,eta_detection_family_map_data,eta_detection_family_map_data,Functor.map_comp]
   exact (SSDataMorphism.pageMap_comp _ _ _ _).symm
-
 
 private theorem eta_detection_family_infinity_representative_map {D : AdamsComparison H M Syn}
     {X Y : Syn} (f : X ⟶ Y) (i : Tridegree)
@@ -77,7 +74,6 @@ private theorem eta_detection_family_infinity_representative_map {D : AdamsCompa
   · exact (congrArg (fun a => a z) (F.pageπ_pageMap i ⊤)).symm.trans (by
       change F.pageMap i ⊤ (((D.family.obj X).sequence.ssData i).pageπ ⊤ z)=_
       rw [he])
-
 
 private theorem eta_detection_sphere_quotient_label_to_nu {D : AdamsComparison H M Syn} (q k : ℕ) (s t : ℤ)
     (x : E2 H SphereSpectrum s t) :
@@ -119,7 +115,6 @@ private theorem eta_detection_sphere_quotient_label_to_nu {D : AdamsComparison H
       _ = finiteTargetLabel D .sphere q s t k x := congrArg
         (fun y => familyPageMap D.family (XModLambdaN.incl (D.nu.functor.obj SphereSpectrum) q) 2 (s,t,t-k) y) hbase
   exact hlabel
-
 
 private theorem eta_detection_detected_map {D : AdamsComparison H M Syn}
     (X Y : SyntheticObject) (f : X.obj D.nu D.hopfAndDetector ⟶ Y.obj D.nu D.hopfAndDetector)
@@ -163,7 +158,6 @@ private theorem eta_detection_detected_map {D : AdamsComparison H M Syn}
           (F.toAssociatedGraded i.1 m a') := by rw [hgr]
       _ = G.toAssociatedGraded i.1 m (k a') := ConcreteCategory.congr_hom hq a'
 
-
 private theorem eta_detection_detects_infinity_equal {D : AdamsComparison H M Syn}
     (X : SyntheticObject) (i : Tridegree)
     (a : BiHom (i.2.1-i.1) i.2.2 (X.obj D.nu D.hopfAndDetector))
@@ -178,7 +172,6 @@ private theorem eta_detection_detects_infinity_equal {D : AdamsComparison H M Sy
   have hab : a'=b' := (ModuleCat.mono_iff_injective _).mp inferInstance (ha'.trans hb'.symm)
   have hef : e=f := (ModuleCat.mono_iff_injective _).mp inferInstance (by rw [hga,hgb,hab])
   exact ⟨e,he,hef.symm ▸ hf⟩
-
 
 private theorem eta_detection_sphere_zero_weight_label_10_134 {D : AdamsComparison H M Syn}
     (BHS : EInftyComparison D) (x : E2 H SphereSpectrum 10 134)
@@ -225,7 +218,6 @@ private theorem eta_detection_sphere_zero_weight_label_10_134 {D : AdamsComparis
   rw [PageRepresentatives.boundaries_one,Submodule.mem_bot] at hm
   exact (sub_eq_zero.mp hm).symm
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem eta_detection_shift_assoc_inv (coh : BiShiftCoherence Syn)
     (a b c ab bc total : ℤ × ℤ) (hab : a+b=ab) (hbc : b+c=bc)
@@ -243,14 +235,12 @@ private theorem eta_detection_shift_assoc_inv (coh : BiShiftCoherence Syn)
   have hi := congrArg Iso.inv he
   exact hi
 
-
 private def eta_detection_push3 {m w : ℤ} {X Y : Syn}
     (f : (SyntheticCategory.biShift (0,-3)).obj X ⟶ Y) (a : BiHom m w X) :
     BiHom m (w-3) Y :=
   eqToHom (by congr 1; simp) ≫
     (SyntheticCategory.biShift_comp (m,w) (0,-3)).inv.app (S_0_0 : Syn) ≫
       (SyntheticCategory.biShift (0,-3)).map a ≫ f
-
 
 private theorem eta_detection_eta_push3 (D : AdamsComparison H M Syn) {X Y : Syn}
     (f : (SyntheticCategory.biShift (0,-3)).obj X ⟶ Y)
@@ -274,7 +264,6 @@ private theorem eta_detection_eta_push3 (D : AdamsComparison H M Syn) {X Y : Syn
   erw [reassoc_of% ((SyntheticCategory.biShift_comp (124,134) (0,-3)).inv.naturality ν)]
   erw [← reassoc_of% ha]
 
-
 private theorem eta_detection_eta_lambda3_right (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn)) (u : BiHom 124 134 (S_0_0 : Syn)) :
     sphereProduct η (lambdaMultiply 3 u)=lambdaMultiply 3 (sphereProduct η u) := by
@@ -288,14 +277,12 @@ private theorem eta_detection_eta_lambda3_right (D : AdamsComparison H M Syn)
   rw [heq,heq] at h
   exact h
 
-
 private def eta_detection_push6 {m w : ℤ} {X Y : Syn}
     (f : (SyntheticCategory.biShift (0,-6)).obj X ⟶ Y) (a : BiHom m w X) :
     BiHom m (w-6) Y :=
   eqToHom (by congr 1; simp) ≫
     (SyntheticCategory.biShift_comp (m,w) (0,-6)).inv.app (S_0_0 : Syn) ≫
       (SyntheticCategory.biShift (0,-6)).map a ≫ f
-
 
 private theorem eta_detection_eta_push6 (D : AdamsComparison H M Syn) {X Y : Syn}
     (f : (SyntheticCategory.biShift (0,-6)).obj X ⟶ Y)
@@ -319,7 +306,6 @@ private theorem eta_detection_eta_push6 (D : AdamsComparison H M Syn) {X Y : Syn
   erw [reassoc_of% ((SyntheticCategory.biShift_comp (124,134) (0,-6)).inv.naturality ν)]
   erw [← reassoc_of% ha]
 
-
 private theorem eta_detection_eta_lambda6_right (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn)) (u : BiHom 124 134 (S_0_0 : Syn)) :
     sphereProduct η (lambdaMultiply 6 u)=lambdaMultiply 6 (sphereProduct η u) := by
@@ -332,7 +318,6 @@ private theorem eta_detection_eta_lambda6_right (D : AdamsComparison H M Syn)
   have h := eta_detection_eta_push6 D (lambdaPow 6 (S_0_0 : Syn)) η u
   rw [heq,heq] at h
   exact h
-
 
 private theorem eta_detection_lambda_three_3_136 (D : AdamsComparison H M Syn)
     (c : BiHom 125 136 (S_0_0 : Syn)) :
@@ -353,7 +338,6 @@ private theorem eta_detection_lambda_three_3_136 (D : AdamsComparison H M Syn)
     Category.id_comp,Category.assoc]
   rfl
 
-
 private theorem eta_detection_lambda_three_7_140 (D : AdamsComparison H M Syn)
     (c : BiHom 125 140 (S_0_0 : Syn)) :
     lambdaMultiply 3 (lambdaMultiply 7 c)=lambdaMultiply 10 c := by
@@ -373,7 +357,6 @@ private theorem eta_detection_lambda_three_7_140 (D : AdamsComparison H M Syn)
     Category.id_comp,Category.assoc]
   rfl
 
-
 private theorem eta_detection_lambda_three_6_139 (D : AdamsComparison H M Syn)
     (c : BiHom 125 139 (S_0_0 : Syn)) :
     lambdaMultiply 3 (lambdaMultiply 6 c)=lambdaMultiply 9 c := by
@@ -392,7 +375,6 @@ private theorem eta_detection_lambda_three_6_139 (D : AdamsComparison H M Syn)
     Iso.trans_inv,eqToIso.inv,eqToHom_refl,
     Category.id_comp,Category.assoc]
   rfl
-
 
 private theorem eta_detection_vanishes_mod_lambda_iff_multiple
     (n : ℕ) {X : Syn} (m w : ℤ) (z : BiHom m (w-(n:ℤ)) X) :
@@ -427,7 +409,6 @@ private theorem eta_detection_vanishes_mod_lambda_iff_multiple
     apply (vanishesModLambda_iff_factors n (lambdaMultiply n b)).mpr
     exact ⟨e.inv≫F.map b,by rw [Category.assoc,←he]⟩
 
-
 private theorem eta_detection_map_filtration {D : AdamsComparison H M Syn} {X Y : Syn} (f : X ⟶ Y) {m w s : ℤ} (x : BiHom m w X)
     (hx : FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) s x) :
     FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) s (x ≫ f) := by
@@ -439,7 +420,6 @@ private theorem eta_detection_map_filtration {D : AdamsComparison H M Syn} {X Y 
   change z ≫ adamsTowerMap (nuCoefficientUnit H.unit D.nu) X 0 s.toNat _ = x at hz
   rw [Category.assoc,adamsTowerInduced_map,←Category.assoc,hz]
   rfl
-
 
 private theorem eta_detection_lambda_9_iff_filtration_14 {D : AdamsComparison H M Syn}
     (BHS : SyntheticComparisonTheorems D) (a : BiHom 125 130 (S_0_0 : Syn)) :
@@ -463,7 +443,6 @@ private theorem eta_detection_lambda_9_iff_filtration_14 {D : AdamsComparison H 
     simpa only [lambdaMultiply,Category.assoc,Iso.inv_hom_id,Category.comp_id] using
       congrArg (fun z=>z ≫ D.nu.unitIso.hom) hb
 
-
 private theorem eta_detection_lambda_10_iff_filtration_15 {D : AdamsComparison H M Syn}
     (BHS : SyntheticComparisonTheorems D) (a : BiHom 125 130 (S_0_0 : Syn)) :
     VanishesModLambda 10 a ↔ FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 15 a := by
@@ -485,7 +464,6 @@ private theorem eta_detection_lambda_10_iff_filtration_15 {D : AdamsComparison H
     refine ⟨b ≫ D.nu.unitIso.hom,?_⟩
     simpa only [lambdaMultiply,Category.assoc,Iso.inv_hom_id,Category.comp_id] using
       congrArg (fun z=>z ≫ D.nu.unitIso.hom) hb
-
 
 private theorem eta_detection_theta_quotient_frame {D : AdamsComparison H M Syn}
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (s t : ℤ) (k : ℕ) (hst : t=s+124) (hsk : s-(k+2)≤4)
@@ -542,8 +520,6 @@ private theorem eta_detection_theta_quotient_frame {D : AdamsComparison H M Syn}
     change y.val-x ∈ _
     rw [←hz',←hz,←map_sub]
     exact zero_of_infinity_zero (z'-z) (by rw [map_sub,h1,sub_self])
-
-
 
 private theorem eta_detection_theta_sphere_frame {D : AdamsComparison H M Syn}
     (I : KIP126.Computation.SphereAndCofiber.AdamsComputationTheorems D L G) (BHS : SyntheticComparisonTheorems D)
@@ -637,7 +613,6 @@ private theorem eta_detection_theta_sphere_frame {D : AdamsComparison H M Syn}
     change HasInfinityRepresentative D.family.sphere 2 i _ (f (g e)) at hh
     rw [hback,hlabel] at hh
     exact hh
-
 
 private theorem eta_detection_theta_detection_step {D : AdamsComparison H M Syn}
     (i : Tridegree) (x : (D.family.sphere).E₂ i)

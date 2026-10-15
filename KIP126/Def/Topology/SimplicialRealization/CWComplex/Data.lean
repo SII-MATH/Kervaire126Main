@@ -35,22 +35,4 @@ noncomputable def cwComplex (X : SSet.{u}) : TopCat.CWComplex (SSet.toTop.obj X)
     toTransfiniteCompositionOfShape := c.toTransfiniteCompositionOfShape.ofArrowIso E
     attachCells := c.attachCells }
 
-/-- The cells of the constructed CW structure are precisely the actual
-nondegenerate simplices; dimensions and indexing are unchanged by the disk
-pair homeomorphisms. -/
-noncomputable def cwComplexCellsEquiv (X : SSet.{u}) : (cwComplex X).Cells ≃ X.N where
-  toFun c := SSet.N.mk _ c.k.nonDegenerate
-  invFun s :=
-    { j := s.dim
-      hj := by simp
-      k := { simplex := s.simplex, nonDegenerate := s.nonDegenerate, notMem := by simp } }
-  left_inv := fun ⟨j,hj,k⟩ => by cases k; rfl
-  right_inv := fun s => by cases s; rfl
-
-/-- Each stage of the constructed CW filtration is the realization of
-the genuine simplicial skeleton, generated in dimensions below `n`. -/
-noncomputable def cwComplexSkeletonIso (X : SSet.{u}) (n : ℕ) :
-    (cwComplex X).F.obj n ≅ skeleton X n :=
-  SSet.toTop.mapIso (SSet.Subcomplex.eqToIso (by simp [SSet.skeletonOfMono]))
-
 end KIP126.Topology.SimplicialRealization

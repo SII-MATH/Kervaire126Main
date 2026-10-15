@@ -23,13 +23,4 @@ def Detects (c : Convergence unit X) (p : ℤ × ℤ)
       (c.identification p).hom (D.pageπ ⊤ z) =
         (filtration unit X).toAssociatedGraded p.1 (p.2 - p.1) a
 
-/-- The residual tower condition needed in a Moss input. No tower stages
-or restriction maps are supplied separately. This is a predicate, not an
-assumption silently added to the mathematical model. -/
-def ResidualInjectivity (unit : 𝟙_ C ⟶ H) (X : C) : Prop :=
-  ∀ (s : ℕ) (n : ℤ) (f : HomotopyGroup n (adamsTower unit X (s + 1))),
-    (∀ (t : ℕ) (hst : s + 1 ≤ t),
-      ∃ g : HomotopyGroup n (adamsTower unit X t),
-        g ≫ adamsTowerMap unit X (s + 1) t hst = f) →
-    f ≫ adamsTowerMap unit X s (s + 1) (Nat.le_succ s) = 0 → f = 0
 end KIP126.Classical.Adams.TowerDetection

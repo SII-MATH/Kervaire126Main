@@ -1,24 +1,24 @@
 module
 
-public import KIP126.Main.Computation.LowDegrees
+public import KIP126.Computation.LinCoordinates.Certificates.LowDegrees
 public import KIP126.Main.SectionSeven.NuExtension.NinthQuotient
 public import KIP126.Main.SectionSeven.ThetaToda
 public import KIP126.Main.SectionSeven.ThetaShuffle
 public import KIP126.Main.SectionSeven.H0Extension.RepresentativeCalculus
+import all KIP126.Main.SectionSeven.H0Extension.RepresentativeCalculus
 public import KIP126.Main.SectionSeven.TodaNonempty
+import all KIP126.Main.SectionSeven.TodaNonempty
 public import KIP126.Main.SectionSeven.TodaNonvanishing
+import all KIP126.Main.SectionSeven.TodaNonvanishing
 public import KIP126.Main.SectionSeven.FiltrationElevenRepresentative
+import all KIP126.Main.SectionSeven.FiltrationElevenRepresentative
 public import KIP126.Main.SectionSeven.FiltrationElevenDetection
+import all KIP126.Main.SectionSeven.FiltrationElevenDetection
 public import KIP126.Main.SectionSeven.NuDivisibility.Filtration
+import all KIP126.Main.SectionSeven.NuDivisibility.Filtration
 public import KIP126.Main.SectionSeven.AlphaOne
 
 -- The following lemmas provide the representative and filtration calculations.
-import all KIP126.Main.SectionSeven.H0Extension.RepresentativeCalculus
-import all KIP126.Main.SectionSeven.TodaNonempty
-import all KIP126.Main.SectionSeven.TodaNonvanishing
-import all KIP126.Main.SectionSeven.FiltrationElevenRepresentative
-import all KIP126.Main.SectionSeven.FiltrationElevenDetection
-import all KIP126.Main.SectionSeven.NuDivisibility.Filtration
 
 @[expose] public section
 
@@ -32,26 +32,25 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
+
 local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
+
 local notation "η" => etaClass
+
 local notation "h₀" => literatureTheorems.toda.h0
 
 attribute [local irreducible] KIP126.LinE2.homogeneousPart
 
-open private anyy_eta_unique_from_low_degrees anyy_bracket_exact_target
-  from KIP126.Main.SectionSeven.H0Extension.RepresentativeCalculus
-open private main_module_toda_nonempty_of_alpha
-  from KIP126.Main.SectionSeven.TodaNonempty
-open private toda_representative_lambda_two_h0_nonzero
-  from KIP126.Main.SectionSeven.TodaNonvanishing
-open private exists_filtration_eleven_representative
-  from KIP126.Main.SectionSeven.FiltrationElevenRepresentative
-open private y_detected_of_filtration_bounds
-  from KIP126.Main.SectionSeven.FiltrationElevenDetection
-open private nu_target_full_of_nonzero
-  from KIP126.Main.SectionSeven.NuDivisibility.Filtration
+open private anyy_eta_unique_from_low_degrees anyy_bracket_exact_target from KIP126.Main.SectionSeven.H0Extension.RepresentativeCalculus
+open private main_module_toda_nonempty_of_alpha from KIP126.Main.SectionSeven.TodaNonempty
+open private toda_representative_lambda_two_h0_nonzero from KIP126.Main.SectionSeven.TodaNonvanishing
+open private exists_filtration_eleven_representative from KIP126.Main.SectionSeven.FiltrationElevenRepresentative
+open private y_detected_of_filtration_bounds from KIP126.Main.SectionSeven.FiltrationElevenDetection
+open private nu_target_full_of_nonzero from KIP126.Main.SectionSeven.NuDivisibility.Filtration
 
 set_option backward.isDefEq.respectTransparency false in
 set_option maxRecDepth 10000 in
@@ -68,8 +67,8 @@ theorem target_nu_divisible
     literatureTheorems.toda.eta_squared a11 ha
   have unique := anyy_eta_unique_from_low_degrees literatureTheorems.synthetic.eInfty
     sphereVanishing
-    (KIP126.Main.Computation.sphere_eta_nonzero_unique KIP126.Main.externalHypotheses)
-    (KIP126.Main.Computation.sphere_e2_two_three_subsingleton KIP126.Main.externalHypotheses)
+    (KIP126.Computation.LinCoordinates.sphere_eta_nonzero_unique KIP126.Main.externalHypotheses)
+    (KIP126.Computation.LinCoordinates.sphere_e2_two_three_subsingleton KIP126.Main.externalHypotheses)
   obtain ⟨t,ht,he,_⟩ := anyy_bracket_exact_target I SF
     literatureTheorems.synthetic literatureTheorems.realization unique η h₀
     literatureTheorems.toda.eta_squared literatureTheorems.toda.low_indeterminacy

@@ -19,11 +19,6 @@ variable {S A B P : TopCat.{u}} {i : S ⟶ A} {f : S ⟶ B} {a : A ⟶ P} {b : B
 variable (he : ∀ z, (e z).2 = z.val.2)
 
 include he in
-theorem inverseCellTransport_projection (t : c.Target p) (x : A) (hx : a x = t.val.2.val) :
-    p (c.inverseCellTransport h p e t x hx) = t.val.2.val :=
-  (fiberChartTransport_projection p a.hom e he (c.inverseBoundaryLift h p t x hx) x).trans hx
-
-include he in
 theorem inverseCellTransport_boundary (t : c.Target p) (s : S) (hs : a (i s) = t.val.2.val) :
     c.inverseCellTransport h p e t (i s) hs = t.val.1 := by
   unfold inverseCellTransport inverseBoundaryLift
@@ -35,19 +30,6 @@ theorem inverseTransport_old (t : c.Target p) (ht : t.val.2.val ∈ Set.range b)
     c.inverseTransport h p e t = t.val.1 := by
   classical
   simp only [inverseTransport,dif_pos ht]
-
-include he in
-theorem inverseTransport_projection (t : c.Target p) :
-    p (c.inverseTransport h p e t) = t.val.2.val := by
-  classical
-  by_cases ht : t.val.2.val ∈ Set.range b
-  · rw [c.inverseTransport_old h p e t ht]
-    obtain ⟨y,hy⟩ := ht
-    have hg : c.g t.val.2 = y :=
-      (congrArg c.g (Subtype.ext hy.symm)).trans (c.g_b y (hy ▸ t.val.2.property))
-    exact t.property.trans ((congrArg b hg).trans hy)
-  · simp only [inverseTransport,dif_neg ht]
-    exact c.inverseCellTransport_projection h p e he t _ _
 
 include he in
 /-- On every cell representative, including boundary representatives,
@@ -116,7 +98,6 @@ theorem inverseTransport_continuous [CompactSpace A] [CompactSpace B] [T2Space P
     rw [heq]
     exact continuous_fst.comp (continuous_subtype_val.comp (continuous_snd.comp continuous_subtype_val))
 
-
 end AttachmentCollar
 
 @[simp] theorem attachmentCollarInverse_snd
@@ -137,6 +118,5 @@ theorem attachmentCollarInverse_continuous
     (he : ∀ z, (e z).2 = z.val.2) : Continuous (attachmentCollarInverse h c p e he) :=
   ((c.inverseTransport_continuous h p e he hi).prodMk
     (continuous_snd.comp continuous_subtype_val)).subtype_mk _
-
 
 end KIP126.Topology

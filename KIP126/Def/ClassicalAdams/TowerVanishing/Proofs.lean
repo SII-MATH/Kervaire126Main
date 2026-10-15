@@ -89,32 +89,5 @@ theorem adamsTowerInternal_page_subsingleton_of_le (r q s t : ℤ)
     ((r - 2).toNat + 2) ((q - 2).toNat + 2) (by omega) (by omega) (by omega) s t hraw
   exact (adamsTowerSSDataPageIso unit X s t (q - 2).toNat).toLinearEquiv.injective.subsingleton
 
-/-- A zero incoming differential prevents any new boundaries at its target,
-even when its source is nonzero. -/
-theorem adamsBoundaries_succ_eq_of_differential_zero (r : ℕ) (hr : 1 ≤ r)
-    (s t : ℤ) (h : ∀ y, adamsDifferential unit X r hr s t y = 0) :
-    adamsBoundaries unit X (r + 1) (by omega) (s + r) (t + r - 1) =
-      adamsBoundaries unit X r hr (s + r) (t + r - 1) := by
-  apply le_antisymm
-  · intro x hx
-    let z : adamsCycles unit X (r + 1) (by omega) (s + r) (t + r - 1) :=
-      ⟨x, adamsBoundaries_le_cycles unit X (r + 1) (by omega) _ _ hx⟩
-    obtain ⟨y, hy⟩ := adamsNextBoundary_is_differential unit X r hr s t z hx
-    have hz : adamsNextCycleToPage unit X r hr (s + r) (t + r - 1) z = 0 := by
-      rw [← hy]
-      exact h y
-    exact (adamsPage_mk_eq_zero unit X r hr (s + r) (t + r - 1)
-      ⟨x, adamsCycles_le_of_le unit X _ _ r (r + 1) hr (by omega) (by omega)
-        z.property⟩).mp hz
-  · exact adamsBoundaries_le_succ unit X r hr (s + r) (t + r - 1)
-
-/-- A zero incoming source is a special case of a zero incoming differential. -/
-theorem adamsBoundaries_succ_eq_of_source_subsingleton (r : ℕ) (hr : 1 ≤ r)
-    (s t : ℤ) (h : Subsingleton (adamsPage unit X r hr s t)) :
-    adamsBoundaries unit X (r + 1) (by omega) (s + r) (t + r - 1) =
-      adamsBoundaries unit X r hr (s + r) (t + r - 1) :=
-  adamsBoundaries_succ_eq_of_differential_zero unit X r hr s t fun y => by
-    rw [h.elim y 0, map_zero]
-
 end
 end KIP126.Classical.Adams

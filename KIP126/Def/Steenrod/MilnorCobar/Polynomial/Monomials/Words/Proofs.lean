@@ -37,10 +37,6 @@ theorem wordDegree_cons {s : ℕ} (a : ℕ →₀ ℕ) (d : Fin s → ℕ →₀
     wordDegree (Fin.cons a d) = (slotWeight a : ℤ) + wordDegree d := by
   simp [wordDegree, Fin.sum_univ_succ]
 
-theorem milnorWord_degree_nonneg {s : ℕ} {t : ℤ} (d : MilnorWord s t) : 0 ≤ t := by
-  rw [← d.property.1]
-  exact Finset.sum_nonneg fun _ _ => Nat.cast_nonneg _
-
 theorem milnorWord_zero_degree {t : ℤ} (d : MilnorWord 0 t) : t = 0 := by
   simpa [wordDegree] using d.property.1.symm
 

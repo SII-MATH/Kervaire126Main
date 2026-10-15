@@ -1,7 +1,7 @@
 module
 
-public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Proofs
-public import KIP126.Def.ClassicalAdams.TowerSmash.Proofs
+public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Data
+public import KIP126.Def.ClassicalAdams.TowerSmash.Data
 
 @[expose] public section
 

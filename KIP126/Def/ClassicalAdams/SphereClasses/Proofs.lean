@@ -1,7 +1,14 @@
 module
 
 public import KIP126.Def.ClassicalAdams.SphereClasses.Data
-public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Detection.Boundary.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Data
+public import Mathlib.Algebra.MvPolynomial.Coeff
+public import KIP126.Def.Algebra.Coefficients.Data
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+public import Mathlib.Data.Nat.Choose.Lucas
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Detection.Projection.Monomials.Proofs
+public import KIP126.Def.Steenrod.MilnorCobar.Polynomial.Monomials.Basis.Proofs
 public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat
 
 @[expose] public section
@@ -100,14 +107,6 @@ theorem classOfMilnorCocycle_eq_zero_iff (s t : ℕ) (x : cochains (s + 1) t)
         M.coordinates (s + 1) t ((M.coordinates (s + 1) t).symm x)
     rw [M.differential_coordinates, LinearEquiv.apply_symm_apply,
       LinearEquiv.apply_symm_apply, hb]
-
-/-- The standard square is nonzero, independently of the Lin table and
-the specified-class comparison. The Milnor coordinates remain explicit input. -/
-theorem h6Square_ne_zero : h6Square H M ≠ 0 := by
-  intro h
-  obtain ⟨b, hb⟩ := (classOfMilnorCocycle_eq_zero_iff H M 1 128
-    h6SquareCochain h6SquareCochain_isCycle).1 h
-  exact h6SquareCochain_not_boundary b hb
 
 end Sphere
 

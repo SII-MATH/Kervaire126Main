@@ -48,17 +48,6 @@ def classOfMilnorCocycle (s t : ℕ) (x : KIP126.Steenrod.Milnor.cochains s t)
   exact (adamsPageHomologyIso H.unit SphereSpectrum 1 (by decide) p).hom
     ((K.homologyπ p).hom (K.cyclesMk a q hpq ha))
 
-/-- The standard sphere Adams class `h₆`, represented by `[ξ₁^64]`. -/
-def h6 : adamsPage H.unit SphereSpectrum 2 (by decide) 1 64 :=
-  classOfMilnorCocycle H M 1 64 KIP126.Steenrod.Milnor.h6Cochain
-    KIP126.Steenrod.Milnor.h6Cochain_isCycle
-
-/-- The square of the standard `h₆`: the class of the concatenation product
-`[ξ₁^64 | ξ₁^64]`, in filtration two and internal degree 128. -/
-def h6Square : adamsPage H.unit SphereSpectrum 2 (by decide) 2 128 :=
-  classOfMilnorCocycle H M 2 128 KIP126.Steenrod.Milnor.h6SquareCochain
-    KIP126.Steenrod.Milnor.h6SquareCochain_isCycle
-
 end Sphere
 
 end

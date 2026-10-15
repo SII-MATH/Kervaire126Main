@@ -36,9 +36,6 @@ theorem gridHornHomeomorph_val (n : ℕ)
     (z : CylinderHorn (Fin n → I) (_root_.Cube.boundary (Fin n))) :
     (gridHornHomeomorph n z).val = cubeCylinderHomeomorph n z.val := rfl
 
-theorem gridHornHomeomorph_symm_val (n : ℕ) (x : Cube.gridGlobalHorn n) :
-    ((gridHornHomeomorph n).symm x).val = (cubeCylinderHomeomorph n).symm x.val := rfl
-
 /-- A chart cover of a cubical homotopy image supplies an actual relative
 lift, fixed on its prescribed bottom and its entire spatial boundary. -/
 theorem exists_relativeLift_of_chart_cover
@@ -83,17 +80,6 @@ theorem hasCubicalLifting_of_locally_trivial
     HasCubicalLifting f :=
   hasCubicalLifting_of_chart_cover f (fun T : Bundle.Trivialization F f => T)
     (Set.iUnion_eq_univ_iff.mpr hlocal)
-
-/-- The projection of a topological fiber bundle has actual relative
-homotopy lifting for all finite cube boundaries. -/
-theorem fiberBundle_hasCubicalLifting {B : Type*} [TopologicalSpace B]
-    (F : Type*) [TopologicalSpace F] (E : B → Type*)
-    [TopologicalSpace (Bundle.TotalSpace F E)] [∀ b, TopologicalSpace (E b)]
-    [FiberBundle F E] :
-    HasCubicalLifting ⟨Bundle.TotalSpace.proj, FiberBundle.continuous_proj F E⟩ := by
-  apply hasCubicalLifting_of_locally_trivial (F := F)
-  intro b
-  exact ⟨FiberBundle.trivializationAt F E b, FiberBundle.mem_baseSet_trivializationAt F E b⟩
 
 end KIP126.Topology.HomotopyLifting
 

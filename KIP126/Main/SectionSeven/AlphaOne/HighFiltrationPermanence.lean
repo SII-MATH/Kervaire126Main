@@ -4,17 +4,13 @@ public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.SpectralSequence.Basic.Category.Proofs
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.BasisCatalogue.FiniteCertificates
-public import KIP126.Main.Computation.SphereAndCofiber.Staircase
-
-
+public import KIP126.Computation.LinCoordinates.Certificates.Model.BasisCatalogue.FiniteCertificates
+public import KIP126.Computation.LinCoordinates.Certificates.SphereAndCofiber.Staircase
 import all Init.Data.String.Search
 import all Init.Data.String.Slice
-
 import all Init.Data.String.Legacy
 
 @[expose] public section
-
 
 /-! Filtration and representative calculations for Proposition 7.8 and
 Lemma 7.14 (`lem:x_123_9`). The complete bases, products and differential

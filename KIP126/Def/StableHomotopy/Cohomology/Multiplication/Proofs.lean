@@ -21,10 +21,4 @@ theorem adamsUnit_mul : adamsUnit H.unit H.HF2 ≫ R.monoid.mul = 𝟙 H.HF2 := 
   letI := R.monoid
   simp only [adamsUnit, Category.assoc, ← R.one_eq, MonObj.one_mul, Iso.inv_hom_id]
 
-/-- Multiplying the final two factors undoes insertion of the unit. -/
-theorem cooperationDiagonal_counit_right :
-    cooperationDiagonal H ≫ H.HF2 ◁ R.monoid.mul = 𝟙 (H.HF2 ⊗ H.HF2) := by
-  change H.HF2 ◁ adamsUnit H.unit H.HF2 ≫ H.HF2 ◁ R.monoid.mul = _
-  rw [← MonoidalCategory.whiskerLeft_comp, adamsUnit_mul, MonoidalCategory.whiskerLeft_id]
-
 end KIP126.StableHomotopy.Cohomology

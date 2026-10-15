@@ -107,19 +107,4 @@ theorem endomorphismLaws (P : Presentation M) (hP : TensorLaws P) (X : M) :
     simp only [Category.assoc, ← hP.map_comp, Iso.hom_inv_id,
       hP.map_id, Category.id_comp]
 
-/-- The point-set formula for substitution uses the same ordinary maps and
-the same flattening isomorphism as the enriched continuous construction. -/
-theorem compose_arrow (P : Presentation M) (X : M)
-    (I : FintypeCat.{0}) (J : I → FintypeCat.{0})
-    (f : P.Op X I) (g : (i : I) → P.Op X (J i)) :
-    arrow (P.compose X I J (f, g)) =
-      (P.flatten I J (fun _ _ => X)).hom ≫
-        P.map I (fun i => arrow (g i)) ≫ arrow f := by
-  apply (eHomEquiv TopCat.{v}).injective
-  ext x
-  cases x
-  simp [arrow, point, Presentation.compose, Presentation.map, eHomEquiv_comp,
-    eHomWhiskerRight]
-  rfl
-
 end KIP126.HigherAlgebra.EnrichedTensor

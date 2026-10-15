@@ -57,11 +57,6 @@ noncomputable def SyntheticObject.obj [HasFunctorialCofiber (C := C)]
   | .shift p X => (SyntheticCategory.biShift p).obj (X.obj N A)
   | .quotient n X => XModLambdaN (X.obj N A) n
 
-/-- The actual ν cofiber triangle, with actual bottom/top cell maps. -/
-noncomputable def HopfAndDetectorData.nuTriangle [HasFunctorialCofiber (C := C)]
-    (A : HopfAndDetectorData C) : HoCofiberSequence (C := C) :=
-  HoCofiberSequence.ofMorphism A.nuMap
-
 /-- A distinguished triangle within the selected classical object closure.
 The connecting map lands in the actual suspension of X. -/
 structure ClassicalCofiberTriangle [HasFunctorialCofiber (C := C)] (A : HopfAndDetectorData C) where

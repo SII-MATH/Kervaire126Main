@@ -31,6 +31,5 @@ def CanonicalIdentification (X : C)
     (e p).hom (((adamsTowerInternalSpectralSequence unit X).ssData p).pageπ ⊤ z) =
       (filtration unit X).toAssociatedGraded p.1 (p.2-p.1) b
 
-
 end
 end KIP126.Classical.Adams.TowerDetection

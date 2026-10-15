@@ -43,6 +43,5 @@ def TowerConvergence.Canonical {F : SyntheticAdamsFamily Syn} {X : Syn}
     (c.identification i).hom (((F.obj X).sequence.ssData i).pageπ ⊤ z) =
       (towerFiltration unit X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) b
 
-
 end
 end KIP126.Synthetic.SpectralSequence

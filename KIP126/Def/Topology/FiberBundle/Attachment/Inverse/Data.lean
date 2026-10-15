@@ -40,7 +40,6 @@ noncomputable def inverseTransport (t : c.Target p) : E := by
     c.inverseCellTransport h p e t (pushoutCellRepresentative h t.val.2.val ht)
       (pushoutCellRepresentative_projection h t.val.2.val ht)
 
-
 end AttachmentCollar
 
 /-- The actual inverse collar transport, retaining the specified neighborhood
@@ -67,6 +66,5 @@ by
         (pushoutCellRepresentative_projection h t.val.2.val ht))
       (pushoutCellRepresentative h t.val.2.val ht)).trans
         (pushoutCellRepresentative_projection h t.val.2.val ht)
-
 
 end KIP126.Topology

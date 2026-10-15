@@ -23,5 +23,4 @@ noncomputable def principalSimplexIso {A B : SimplicialObject (ModuleCat.{u} R)}
       rw [← hz]
       exact principalSimplex_isPullback p z).isoPullback
 
-
 end KIP126.Algebra.SimplicialModule

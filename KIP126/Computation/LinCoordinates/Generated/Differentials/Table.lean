@@ -91,10 +91,6 @@ public import KIP126.Computation.LinCoordinates.Generated.Differentials.Shard085
 
 namespace KIP126.Computation.LinCalculations.RawData
 
-def databaseSha256 : String := "3a460683c023ee2d8f7e8f904ecef9044a474d88bb7184731e54978ba7dac248"
-def sourceRowCount : Nat := 2672275
-def differentialRowCount : Nat := 10907
-
 /-- Lookup is shard-local so kernel checks need not unfold the whole table. -/
 def lookup (shard offset : Nat) : Option DifferentialRow :=
   match shard with

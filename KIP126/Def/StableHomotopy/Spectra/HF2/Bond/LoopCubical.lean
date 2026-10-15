@@ -91,14 +91,6 @@ noncomputable def bondAdjointLoop (n r : ℕ)
   ⟨(bondAdjoint n).comp p.val, fun t ht =>
     (congrArg (bondAdjoint n) (p.property t ht)).trans (bondAdjoint_point n)⟩
 
-/-- The genuine prespectrum stabilization is precisely the uncurrying of the
-map induced by the displayed continuous bond adjoint. -/
-theorem stabilizeLoop_eq_loopUncurry (n r : ℕ)
-    (p : GenLoop (Fin r) (hf2RealizationLevel n) (hf2RealizationLevel n).point) :
-    Prespectrum.stabilizeLoop hf2RealizationPrespectrum n r p =
-      loopUncurry (hf2RealizationLevel (n + 1)) r (bondAdjointLoop n r p) := rfl
-
-
 /-- First-coordinate uncurrying carries actual based relative homotopies to
 actual relative homotopies of the enlarged cube. -/
 def loopUncurryHomotopy (X : BasedSpace.{0}) (r : ℕ)
@@ -173,7 +165,6 @@ def cubicalHomotopyLoopEquiv (X : BasedSpace.{0}) (r : ℕ) :
     HomotopyGroup.Pi r (topologicalLoopLevel X) (topologicalLoopLevel X).point ≃
       HomotopyGroup.Pi (r + 1) X X.point :=
   Quotient.congr (cubicalLoopEquiv X r) fun p q => (loopUncurry_homotopic_iff X r p q).symm
-
 
 /-- The map on actual cubical homotopy sets induced by the continuous bond
 adjoint. No equivalence claim is built into this definition. -/

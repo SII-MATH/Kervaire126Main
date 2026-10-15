@@ -1,14 +1,15 @@
 module
 
+public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
+public import Mathlib.CategoryTheory.Abelian.Subobject
+public import Mathlib.CategoryTheory.Abelian.Pseudoelements
+public import Mathlib.Tactic.Abel
+
 /-
 Copyright (c) 2026 KIP126 contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: KIP126 contributors
 -/
-public import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
-public import Mathlib.CategoryTheory.Abelian.Subobject
-public import Mathlib.CategoryTheory.Abelian.Pseudoelements
-public import Mathlib.Tactic.Abel
 
 @[expose] public section
 
@@ -68,48 +69,6 @@ noncomputable def SSData.pageπ (D : SSData C) (r : WithTop ℕ) :
     Subobject.underlying.obj (D.Z r) ⟶ D.page r :=
   cokernel.π (Subobject.ofLE (D.B r) (D.Z r) (D.B_le_Z r))
 
-/-- A graded complex in an abelian category with a fixed differential degree. -/
-structure GradedComplex (C : Type u) [Category.{v} C] [Abelian C]
-    (ι : Type w) [AddCommGroup ι] where
-  /-- Graded object. -/
-  obj : ι → C
-  /-- Degree of the differential. -/
-  d_deg : ι
-  /-- Differential. -/
-  d : (k : ι) → obj k ⟶ obj (k + d_deg)
-  /-- The differential squares to zero. -/
-  d_sq : ∀ k, d k ≫ d (k + d_deg) = 0
-
-/-- The short complex centered at grading `k`. -/
-noncomputable def GradedComplex.shortComplex
-    {ι : Type w} [AddCommGroup ι]
-    (G : GradedComplex C ι) (k : ι) : ShortComplex C :=
-  { X₁ := G.obj (k - G.d_deg)
-    X₂ := G.obj k
-    X₃ := G.obj (k + G.d_deg)
-    f := G.d (k - G.d_deg) ≫ eqToHom (show G.obj (k - G.d_deg + G.d_deg) = G.obj k by
-      congr 1
-      abel)
-    g := G.d k
-    zero := by
-      simp only [Category.assoc]
-      have key : eqToHom (show G.obj (k - G.d_deg + G.d_deg) = G.obj k by
-          congr 1
-          abel) ≫ G.d k =
-        G.d (k - G.d_deg + G.d_deg) ≫ eqToHom
-          (show G.obj (k - G.d_deg + G.d_deg + G.d_deg) = G.obj (k + G.d_deg) by
-            congr 1
-            abel) := by
-        rw [eqToHom_comp_iff]
-        simp
-      rw [key, ← Category.assoc, G.d_sq, zero_comp] }
-
-/-- Homology of a graded complex at grading `k`. -/
-noncomputable def GradedComplex.homology
-    {ι : Type w} [AddCommGroup ι]
-    (G : GradedComplex C ι) (k : ι) : C :=
-  (G.shortComplex k).homology
-
 /-- The data-only part of a spectral sequence. -/
 structure PreSS (C : Type u) [Category.{v} C] [Abelian C]
     (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
@@ -151,13 +110,6 @@ structure SSDataMorphism
     ∃ (lift : Subobject.underlying.obj ((D k).B r) ⟶
       Subobject.underlying.obj ((D' k).B r)),
       lift ≫ ((D' k).B r).arrow = ((D k).B r).arrow ≫ φ k
-
-/-- Forget the preservation witnesses of an `SSDataMorphism`. -/
-def SSDataMorphism.toUnderlying
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    {D D' : ι → SSData C} (f : SSDataMorphism ι D D') :
-    UnderlyingMorphism ι D D' where
-  φ := f.φ
 
 /-- Identity on the ambient objects and their cycle and boundary towers. -/
 def SSDataMorphism.id
@@ -230,15 +182,6 @@ structure PreSSMorphism
       E.d r k ≫ toSSDataMorphism.pageMapAt r₀_eq r (k + E.diffDeg r) ≫
         eqToHom (by rw [diffDeg_eq])
 
-/-- Forget differential compatibility from a `PreSSMorphism`. -/
-def PreSSMorphism.ssDataMorphism
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    {E E' : PreSS C ι} (f : PreSSMorphism E E') :
-    SSDataMorphism ι E.ssData E'.ssData where
-  φ := f.φ
-  preserves_Z := f.preserves_Z
-  preserves_B := f.preserves_B
-
 /-- The canonical page map of a pre-spectral-sequence morphism. -/
 noncomputable def PreSSMorphism.pageMap
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
@@ -289,45 +232,11 @@ universe u v w
 
 variable {C : Type u} [Category.{v} C] [Abelian C]
 
-/-- Assemble a spectral sequence from its data and explicit compatibility proofs. -/
-noncomputable def ofPreSS
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    (P : PreSS C ι)
-    (d_comp_d : ∀ (r : ℤ) (k : ι),
-      P.d r k ≫ P.d r (k + P.diffDeg r) = 0)
-    (Z_succ : ∀ (r : ℤ) (k : ι) (_ : P.r₀ ≤ r),
-      let n := (r - P.r₀).toNat
-      kernelSubobject (P.d r k) =
-        imageSubobject (Subobject.ofLE
-          ((P.ssData k).Z ↑(n + 1)) ((P.ssData k).Z ↑n)
-          ((P.ssData k).Z_anti (by exact_mod_cast Nat.le_succ n)) ≫
-          (P.ssData k).pageπ ↑n))
-    (B_succ : ∀ (r : ℤ) (k : ι) (_ : P.r₀ ≤ r),
-      let n := (r - P.r₀).toNat
-      imageSubobject (P.d r k) =
-        imageSubobject (Subobject.ofLE
-          ((P.ssData (k + P.diffDeg r)).B ↑(n + 1))
-          ((P.ssData (k + P.diffDeg r)).Z ↑n)
-          (le_trans ((P.ssData (k + P.diffDeg r)).B_le_Z ↑(n + 1))
-            ((P.ssData (k + P.diffDeg r)).Z_anti (by exact_mod_cast Nat.le_succ n))) ≫
-          (P.ssData (k + P.diffDeg r)).pageπ ↑n)) :
-    SpectralSequence C ι where
-  toPreSS := P
-  d_comp_d := d_comp_d
-  Z_succ := Z_succ
-  B_succ := B_succ
-
 /-- The page object derived from a spectral sequence. -/
 @[reducible] noncomputable def Page
     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
     (E : SpectralSequence C ι) (r : ℤ) (k : ι) : C :=
   (E.ssData k).page ↑(r - E.r₀).toNat
-
-/-- A page as a graded object. -/
-noncomputable def pageGraded
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    (E : SpectralSequence C ι) (r : ℤ) : GradedObject ι C :=
-  E.Page r
 
 /-- The canonical quotient map `R/P ⟶ R/Q` for `P ≤ Q ≤ R`. -/
 noncomputable def Subobject.cokernelDesc_ofLE {V : C}
@@ -451,24 +360,5 @@ noncomputable def SpectralSequenceMorphism.eInftyMap
     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E') (k : ι) :
     (E.ssData k).eInfty ⟶ (E'.ssData k).eInfty :=
   f.toSSDataMorphism.pageMap k ⊤
-
-/-- A spectral sequence packaged with a convenient infinity-page accessor. -/
-structure EInftyData (C : Type u) [Category.{v} C] [Abelian C]
-    (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
-  /-- Underlying spectral sequence. -/
-  ss : SpectralSequence C ι
-
-/-- The infinity page at grading `k`. -/
-noncomputable def EInftyData.EInfty
-    {C : Type u} [Category.{v} C] [Abelian C]
-    {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
-    (eData : EInftyData C ι) (k : ι) : C :=
-  (eData.ss.ssData k).eInfty
-
-/-- A graded family of `SSData`, used as the target of the forgetful functor. -/
-structure GradedSSData (C : Type u) [Category.{v} C] [Abelian C]
-    (ι : Type w) [AddCommGroup ι] [DecidableEq ι] where
-  /-- Nested-subobject data at each grading. -/
-  data : ι → SSData C
 
 end KIP126.SpectralSequence

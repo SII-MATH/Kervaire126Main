@@ -4,7 +4,14 @@ public import Batteries.Tactic.OpenPrivate
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Predicates
 public import Init.Data.String.Lemmas.Splits
-public import KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
+public import KIP126.Def.SpectralSequence.Basic.Data
+public import KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.SpectralSequence.Basic.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import Mathlib.CategoryTheory.Abelian.Exact
+public import Mathlib.CategoryTheory.Preadditive.Projective.Basic
 public import KIP126.Main.ExtensionLaws.GeneralizedMahowald.Proofs
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
@@ -21,9 +28,9 @@ public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs
 public import Mathlib.CategoryTheory.Triangulated.Functor
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
 public import KIP126.Def.ClassicalAdams.SphereVanishing.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.Classes.Proofs
+public import KIP126.Computation.LinCoordinates.Certificates.Model.Classes.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 public import KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Proofs
@@ -46,11 +53,10 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
-local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
-local notation "η" => etaClass
-local notation "h₀" => literatureTheorems.toda.h0
 
 /-- This h2 is D's normalized lift of the very nu whose actual cofiber is
 used by the computation, with its first-quotient h₂ identification
@@ -63,7 +69,6 @@ abbrev eY := (I).interpretation.sphere 11 136 KIP126.Computation.Near126.Y
 abbrev eH6B := Sphere.Internal.product standardFoundation.hf2 M
   (s := 1) (t := 64) (s' := 8) (t' := 70)
   (Sphere.Internal.hi standardFoundation.hf2 M 6) eB
-
 
 end
 end KIP126.Main.SectionSeven

@@ -4,7 +4,14 @@ public import Batteries.Tactic.OpenPrivate
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
 public import KIP126.Def.Synthetic.Sphere.Homotopy.Predicates
 public import Init.Data.String.Lemmas.Splits
-public import KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
+public import KIP126.Def.SpectralSequence.Basic.Data
+public import KIP126.Def.SpectralSequence.Convergence.Data
+public import KIP126.Def.SpectralSequence.Basic.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+public import KIP126.Def.SpectralSequence.FilteredComplex.Data
+public import Mathlib.CategoryTheory.Abelian.Exact
+public import Mathlib.CategoryTheory.Preadditive.Projective.Basic
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Quotient.Proofs
@@ -20,11 +27,11 @@ public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Proofs
 public import KIP126.Def.Synthetic.Context.Coherence.Proofs
 public import Mathlib.CategoryTheory.Triangulated.Functor
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
-public import KIP126.Main.Computation.SphereAndCofiber.Stem125Differentials
-public import KIP126.Main.Computation.SphereAndCofiber.CofiberAndFiltration
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
+public import KIP126.Computation.LinCoordinates.Certificates.SphereAndCofiber.Stem125Differentials
+public import KIP126.Main.SectionSeven.CofiberFiltration
 public import KIP126.Def.ClassicalAdams.SphereVanishing.Proofs
-public import KIP126.Main.Computation.LinCoordinates.Model.Classes.Proofs
+public import KIP126.Computation.LinCoordinates.Certificates.Model.Classes.Proofs
 public import KIP126.Def.SpectralSequence.Basic.PageHomology.Data
 public import KIP126.Def.SpectralSequence.Computation.Proofs
 public import KIP126.Def.ClassicalAdams.PageRepresentatives.Proofs
@@ -64,11 +71,6 @@ private theorem y_detection_page_represents_unique {a b : E.Page r p}
       (D.Z m).arrow (z-z') := ConcreteCategory.congr_hom (Subobject.ofLE_arrow (D.Z_anti hnm)) _
   rw [he] at hh
   exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hh
-
-private theorem y_detection_page_represents_smul {a : E.Page r p} (ha : RepresentsOnPage E r p x a) (c : R) :
-    RepresentsOnPage E r p (c • x) (c • a) := by
-  obtain ⟨hr, z, hz, hza⟩ := ha
-  refine ⟨hr, c • z, ?_, ?_⟩ <;> simp only [map_smul, hz, hza]
 
 private theorem y_detection_page_represents_d_zero_of_later {t : ℤ} (hr0 : E.r₀ ≤ r) (hrt : r < t)
     {a : E.Page r p} (ha : RepresentsOnPage E r p x a)
@@ -152,65 +154,7 @@ private theorem y_detection_page_next_projection_zero_iff_incoming
     rwa [Subobject.ofLE_arrow] at hh
 end KIP126.SpectralSequence
 
-namespace KIP126.SpectralSequence
-open CategoryTheory CategoryTheory.Limits
-private theorem y_detection_page_page_generated_from_representatives
-    {E : SpectralSequence (ModuleCat ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r)
-    {N : ℕ} (e : E.Page 2 p ≃ₗ[ℤ] (Fin N →₀ KIP126.Algebra.F2))
-    (v : Fin N → E.Page r p)
-    (hv : ∀ i, RepresentsOnPage E r p (e.symm (Finsupp.single i 1)) (v i))
-    (a : E.Page r p) :
-    ∃ c : Fin N → KIP126.Algebra.F2, a = ∑ i, if c i = 0 then 0 else v i := by
-  classical
-  have hadd {x y : E.Page 2 p} {xr yr : E.Page r p}
-      (hx : RepresentsOnPage E r p x xr) (hy : RepresentsOnPage E r p y yr) :
-      RepresentsOnPage E r p (x+y) (xr+yr) := by
-    obtain ⟨hr, zx, hx, hxr⟩ := hx
-    obtain ⟨_, zy, hy, hyr⟩ := hy
-    exact ⟨hr, zx+zy, by rw [map_add,hx,hy], by rw [map_add,hxr,hyr]⟩
-  let D := E.ssData p
-  let n : WithTop ℕ := ↑(r-E.r₀).toNat
-  haveI : Epi (D.pageπ n) := inferInstanceAs (Epi (cokernel.π _))
-  obtain ⟨z, hz⟩ := (ModuleCat.epi_iff_surjective (D.pageπ n)).mp inferInstance a
-  let x : E.Page 2 p := (Subobject.ofLE _ _ (D.Z_anti (by
-    dsimp only [n]
-    exact_mod_cast (show (2-E.r₀).toNat ≤ (r-E.r₀).toNat by omega))) ≫ D.pageπ _) z
-  have hxa : RepresentsOnPage E r p x a := ⟨hr,z,rfl,hz⟩
-  let c : Fin N → KIP126.Algebra.F2 := e x
-  have hsum (s : Finset (Fin N)) :
-      RepresentsOnPage E r p
-        (∑ i ∈ s, if c i = 0 then 0 else e.symm (Finsupp.single i 1))
-        (∑ i ∈ s, if c i = 0 then 0 else v i) := by
-    induction s using Finset.induction_on with
-    | empty => simpa using (RepresentsOnPage.zero (E := E) (p := p) hr)
-    | @insert i s hi ih =>
-      simp only [Finset.sum_insert hi]
-      apply hadd _ ih
-      by_cases hc : c i = 0
-      · simpa only [hc,ite_true] using (RepresentsOnPage.zero (E := E) (p := p) hr)
-      · simpa only [hc,ite_false] using hv i
-  have hx : (∑ i : Fin N, if c i = 0 then 0 else e.symm (Finsupp.single i 1)) = x := by
-    apply e.injective
-    rw [map_sum]
-    ext i
-    simp only [Finsupp.finsetSum_apply]
-    rw [Finset.sum_eq_single i]
-    · change (e (if c i = 0 then 0 else e.symm (Finsupp.single i 1))) i = c i
-      generalize c i = b
-      fin_cases b
-      · change (e 0) i = 0
-        simp
-      · change (e (e.symm (Finsupp.single i 1))) i = 1
-        simp
-    · intro j hj hji
-      by_cases hc : c j = 0
-      · simp [hc]
-      · simp [hc,hji]
-    · simp
-  refine ⟨c, y_detection_page_represents_unique hxa ?_⟩
-  have hh := hsum Finset.univ
-  simpa only [hx] using hh
-end KIP126.SpectralSequence
+
 namespace KIP126.SpectralSequence
 open CategoryTheory CategoryTheory.Limits
 universe u v
@@ -230,88 +174,7 @@ private theorem y_detection_page_represents_before
   rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]
   exact hz
 end KIP126.SpectralSequence
-namespace KIP126.SpectralSequence
-open CategoryTheory CategoryTheory.Limits
-universe u v
-variable {R : Type u} [Ring R]
-private theorem y_detection_page_next_page_two_of_kernel
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)) (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)
-    (v : (Subobject.underlying.obj ((E.ssData p).Z ↑((r-E.r₀).toNat+1)) : ModuleCat R))
-    (hcases : ∀ a : E.Page r p, E.d r p a = 0 → a = 0 ∨
-      a = (Subobject.ofLE _ _ ((E.ssData p).Z_anti
-        (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat)) ≫
-          (E.ssData p).pageπ ↑(r-E.r₀).toNat) v) :
-    ∀ a : ((E.ssData p).page ↑((r-E.r₀).toNat+1) : ModuleCat R),
-      a = 0 ∨ a = (E.ssData p).pageπ ↑((r-E.r₀).toNat+1) v := by
-  let D := E.ssData p
-  let n := (r-E.r₀).toNat
-  have hnm : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n
-  let i := Subobject.ofLE (D.Z ↑(n+1)) (D.Z ↑n) (D.Z_anti hnm)
-  let down := i ≫ D.pageπ ↑n
-  have hzero (z : (Subobject.underlying.obj (D.Z ↑(n+1)) : ModuleCat R))
-      (hz : down z = 0) : D.pageπ ↑(n+1) z = 0 := by
-    apply (subobject_cokernel_π_eq_zero_iff (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _) _).mpr
-    have hb := (subobject_cokernel_π_eq_zero_iff (D.B ↑n) (D.Z ↑n) (D.B_le_Z _) (i z)).mp hz
-    change (i ≫ (D.Z ↑n).arrow) z ∈ _ at hb
-    dsimp only [i] at hb
-    rw [Subobject.ofLE_arrow] at hb
-    exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hb
-  intro a
-  haveI : Epi (D.pageπ ↑(n+1)) := inferInstanceAs (Epi (cokernel.π _))
-  obtain ⟨z, rfl⟩ := (ModuleCat.epi_iff_surjective (D.pageπ ↑(n+1))).mp inferInstance a
-  have hcycle : E.d r p (down z) = 0 := by
-    change down z ∈ LinearMap.ker (E.d r p).hom
-    rw [← subobjectModule_kernel,E.Z_succ r p hr,subobjectModule_image]
-    exact ⟨z,rfl⟩
-  obtain hz | hz := hcases (down z) hcycle
-  · exact Or.inl (hzero z hz)
-  · right
-    apply sub_eq_zero.mp
-    rw [← map_sub]
-    apply hzero
-    rw [map_sub,hz,sub_self]
-end KIP126.SpectralSequence
-namespace KIP126.SpectralSequence
-open CategoryTheory CategoryTheory.Limits
-universe u v
-variable {R : Type u} [Ring R]
-private theorem y_detection_page_represents_next_nonzero_of_incoming_zero
-    {E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}
-    (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)
-    (hin : E.d r (p-E.diffDeg r) = 0)
-    {x : E.Page 2 p} {a : E.Page (r+1) p} {b : E.Page r p}
-    (ha : RepresentsOnPage E (r+1) p x a) (hb : RepresentsOnPage E r p x b)
-    (hne : b ≠ 0) : a ≠ 0 := by
-  obtain ⟨_, z, hz, hza⟩ := ha
-  let D := E.ssData p
-  let n : WithTop ℕ := ↑(r-E.r₀).toNat
-  let m : WithTop ℕ := ↑(r+1-E.r₀).toNat
-  have hnm : n ≤ m := by
-    dsimp only [n,m]
-    exact_mod_cast (show (r-E.r₀).toNat ≤ (r+1-E.r₀).toNat by omega)
-  have hB : D.B m = D.B n := by
-    have hh := boundaries_succ_of_zero E r hr0 (p-E.diffDeg r) hin
-    have hi : (r+1-E.r₀).toNat = (r-E.r₀).toNat+1 := by omega
-    have hp : p-E.diffDeg r+E.diffDeg r = p := by abel
-    rw [hp] at hh
-    simpa only [D,n,m,hi] using hh
-  let i := Subobject.ofLE (D.Z m) (D.Z n) (D.Z_anti hnm)
-  have hb' : RepresentsOnPage E r p x (D.pageπ n (i z)) := by
-    refine ⟨hr,i z,?_,rfl⟩
-    change ((Subobject.ofLE _ _ (D.Z_anti hnm)) ≫
-      Subobject.ofLE _ _ _ ≫ D.pageπ _) z = x
-    rw [← Category.assoc,Subobject.ofLE_comp_ofLE]
-    exact hz
-  intro ha0
-  apply hne
-  rw [y_detection_page_represents_unique hb hb']
-  apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mpr
-  have hm := (subobject_cokernel_π_eq_zero_iff (D.B m) (D.Z m) (D.B_le_Z m) z).mp (hza.trans ha0)
-  rw [hB] at hm
-  change (i ≫ (D.Z n).arrow) z ∈ _
-  dsimp only [i]
-  rwa [Subobject.ofLE_arrow]
-end KIP126.SpectralSequence
+
 
 
 namespace KIP126.SpectralSequence
@@ -396,147 +259,7 @@ private theorem y_detection_page_represents_add_tail
   obtain ⟨_,w,hw,hb⟩ := hy
   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩
 
-
 open PageRepresentatives
-
-private theorem y_detection_page_af14_source_frame (I : AdamsComputationTheorems D L G)
-    (x : (sequence D .sphere).Page 2 (14,139))
-    (hc : x ∈ cycles H SphereSpectrum 9 (14,139)) :
-    x=0 ∨ x=I.interpretation.basis .sphere 14 139 1 ∨ x=I.interpretation.basis .sphere 14 139 2 ∨ x=I.interpretation.basis .sphere 14 139 1+I.interpretation.basis .sphere 14 139 2 := by
-  let E := sequence D .sphere
-  have h342 : ReachesPage E 1000 (14,139) (I.interpretation.basis .sphere 14 139 1) := by
-    have hrow := I.adamsStatements ⟨.sphere,.reaches,1000,14,139,[1],14,139,[],"S0_AdamsE2_ss",3080⟩ (by
-      unfold Raw.claims
-      iterate 342 apply List.mem_cons_of_mem
-      exact List.mem_cons_self)
-    dsimp only [AdamsStatement] at hrow
-    obtain ⟨x,hx,hd⟩ := hrow
-    change ReachesPage E 1000 (14,139) x at hd
-    have vx : Raw.coordinatesValid Raw.degrees .sphere 14 139 [1] = true := rfl
-    simp only [E2Interpretation.coordinateSum,vx,if_true,List.map_cons,List.map_nil,
-      List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx
-    rw [←hx] at hd
-    simpa only [add_assoc] using hd
-  have h341 : HasDifferential E 2 (12,138) (14,139)
-      (I.interpretation.basis .sphere 12 138 1) (I.interpretation.basis .sphere 14 139 2) := by
-    have hrow := I.adamsStatements ⟨.sphere,.equation,2,12,138,[1],14,139,[2],"S0_AdamsE2_ss",3079⟩ (by
-      unfold Raw.claims
-      iterate 341 apply List.mem_cons_of_mem
-      exact List.mem_cons_self)
-    dsimp only [AdamsStatement] at hrow
-    obtain ⟨x,hx,y,hy,hd⟩ := hrow
-    change HasDifferential E 2 (12,138) (14,139) x y at hd
-    have vx : Raw.coordinatesValid Raw.degrees .sphere 12 138 [1] = true := rfl
-    have vy : Raw.coordinatesValid Raw.degrees .sphere 14 139 [2] = true := rfl
-    simp only [E2Interpretation.coordinateSum,vx,vy,if_true,List.map_cons,List.map_nil,
-      List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy
-    rw [←hx,←hy] at hd
-    simpa only [add_assoc] using hd
-  have h343 : HasDifferential E 2 (14,139) (16,140)
-      (I.interpretation.basis .sphere 14 139 0) (I.interpretation.basis .sphere 16 140 2) := by
-    have hrow := I.adamsStatements ⟨.sphere,.equation,2,14,139,[0],16,140,[2],"S0_AdamsE2_ss",3081⟩ (by
-      unfold Raw.claims
-      iterate 343 apply List.mem_cons_of_mem
-      exact List.mem_cons_self)
-    dsimp only [AdamsStatement] at hrow
-    obtain ⟨x,hx,y,hy,hd⟩ := hrow
-    change HasDifferential E 2 (14,139) (16,140) x y at hd
-    have vx : Raw.coordinatesValid Raw.degrees .sphere 14 139 [0] = true := rfl
-    have vy : Raw.coordinatesValid Raw.degrees .sphere 16 140 [2] = true := rfl
-    simp only [E2Interpretation.coordinateSum,vx,vy,if_true,List.map_cons,List.map_nil,
-      List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy
-    rw [←hx,←hy] at hd
-    simpa only [add_assoc] using hd
-  obtain ⟨e,he⟩ := I.basis ⟨.sphere,14,139,["449,1", "1,1,7,1,275,1", "0,2,425,1"]⟩ (by
-    unfold Raw.degrees
-    iterate 217 apply List.mem_cons_of_mem
-    exact List.mem_cons_self)
-  change E.Page 2 (14,139) ≃ₗ[ℤ] (Fin 3 →₀ F2) at e
-  change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 14 139 i.val at he
-  have he0 : e.symm (Finsupp.single (0:Fin 3) 1) = I.interpretation.basis .sphere 14 139 0 := he 0
-  have he1 : e.symm (Finsupp.single (1:Fin 3) 1) = I.interpretation.basis .sphere 14 139 1 := he 1
-  have he2 : e.symm (Finsupp.single (2:Fin 3) 1) = I.interpretation.basis .sphere 14 139 2 := he 2
-  obtain ⟨f,hf⟩ := I.basis ⟨.sphere,16,140,["9,1,261,1", "1,1,438,1", "0,1,448,1", "0,2,440,1", "0,2,439,1"]⟩ (by
-    unfold Raw.degrees
-    iterate 231 apply List.mem_cons_of_mem
-    exact List.mem_cons_self)
-  change E.Page 2 (16,140) ≃ₗ[ℤ] (Fin 5 →₀ F2) at f
-  change ∀ i : Fin 5, f.symm (Finsupp.single i 1) = I.interpretation.basis .sphere 16 140 i.val at hf
-  have hf0 : f.symm (Finsupp.single (0:Fin 5) 1) = I.interpretation.basis .sphere 16 140 0 := hf 0
-  have hf1 : f.symm (Finsupp.single (1:Fin 5) 1) = I.interpretation.basis .sphere 16 140 1 := hf 1
-  have hf2 : f.symm (Finsupp.single (2:Fin 5) 1) = I.interpretation.basis .sphere 16 140 2 := hf 2
-  have hf3 : f.symm (Finsupp.single (3:Fin 5) 1) = I.interpretation.basis .sphere 16 140 3 := hf 3
-  have hf4 : f.symm (Finsupp.single (4:Fin 5) 1) = I.interpretation.basis .sphere 16 140 4 := hf 4
-  obtain ⟨a1000,ha1000⟩ := h342
-  obtain ⟨a,ha⟩ := y_detection_page_represents_before (by decide : (2:ℤ)≤6) (by decide : (6:ℤ)≤1000) ha1000
-  have hz2 : RepresentsOnPage E 6 (14,139) (I.interpretation.basis .sphere 14 139 2) 0 :=
-    y_detection_page_differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide) h341
-  have dz {x : E.Page 2 (14,139)} {b : E.Page 6 (14,139)}
-      (hb : RepresentsOnPage E 6 (14,139) x b) : E.d 2 (14,139) x=0 := by
-    obtain ⟨b2,hb2⟩ := y_detection_page_represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤6) hb
-    have hh := y_detection_page_represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)<6) hb2 ⟨b,hb⟩
-    simpa only [hb2.eq_on_page_two] using hh
-  have hd0 : E.d 2 (14,139) (I.interpretation.basis .sphere 14 139 0)=I.interpretation.basis .sphere 16 140 2 := h343.eq_on_page_two.2
-  have hd1 : E.d 2 (14,139) (I.interpretation.basis .sphere 14 139 1)=0 := dz ha
-  have hd2 : E.d 2 (14,139) (I.interpretation.basis .sphere 14 139 2)=0 := dz hz2
-  obtain ⟨xc,hxc⟩ := (isCycle_iff_represents H SphereSpectrum 10 (by decide) (14,139) x).mp ⟨by decide,hc⟩
-  change RepresentsOnPage E 10 (14,139) x xc at hxc
-  have hx : E.d 2 (14,139) x=0 := by
-    obtain ⟨x2,hx2⟩ := y_detection_page_represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤10) hxc
-    have h := y_detection_page_represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)<10) hx2 ⟨xc,hxc⟩
-    simpa only [hx2.eq_on_page_two] using h
-  have heq : e x = Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2) := by
-    apply Finsupp.ext
-    intro i
-    fin_cases i <;> simp
-  have hxe : x=e.symm (Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2)) := by rw [←heq,LinearEquiv.symm_apply_apply]
-  generalize hc0 : e x 0=c0 at hxe
-  generalize hc1 : e x 1=c1 at hxe
-  generalize hc2 : e x 2=c2 at hxe
-  fin_cases c0 <;> fin_cases c1 <;> fin_cases c2
-  · change x = e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2)) at hxe
-    simp only [Finsupp.single_zero,map_zero,add_zero] at hxe
-    exact Or.inl hxe
-  · change x = e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2)) at hxe
-    simp only [Finsupp.single_zero,zero_add,add_zero] at hxe
-    simp only [he2] at hxe
-    exact Or.inr (Or.inr (Or.inl hxe))
-  · change x = e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2)) at hxe
-    simp only [Finsupp.single_zero,zero_add,add_zero] at hxe
-    simp only [he1] at hxe
-    exact Or.inr (Or.inl hxe)
-  · change x = e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2)) at hxe
-    simp only [Finsupp.single_zero,map_add,zero_add] at hxe
-    simp only [he1, he2] at hxe
-    exact Or.inr (Or.inr (Or.inr hxe))
-  · change x = e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2)) at hxe
-    simp only [Finsupp.single_zero,add_zero] at hxe
-    rw [hxe] at hx
-    simp only [he0, hd0] at hx
-    have hval := congrArg (fun y => f y 2) hx
-    simp only [map_zero,←hf2,LinearEquiv.apply_symm_apply,Finsupp.zero_apply] at hval
-    norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
-  · change x = e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2)) at hxe
-    simp only [Finsupp.single_zero,map_add,add_zero] at hxe
-    rw [hxe] at hx
-    simp only [map_add, he0, he2, hd0, hd2, add_zero] at hx
-    have hval := congrArg (fun y => f y 2) hx
-    simp only [map_zero,←hf2,LinearEquiv.apply_symm_apply,Finsupp.zero_apply] at hval
-    norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
-  · change x = e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2)) at hxe
-    simp only [Finsupp.single_zero,map_add,add_zero] at hxe
-    rw [hxe] at hx
-    simp only [map_add, he0, he1, hd0, hd1, add_zero] at hx
-    have hval := congrArg (fun y => f y 2) hx
-    simp only [map_zero,←hf2,LinearEquiv.apply_symm_apply,Finsupp.zero_apply] at hval
-    norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
-  · change x = e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2)) at hxe
-    simp only [map_add] at hxe
-    rw [hxe] at hx
-    simp only [map_add, he0, he1, he2, hd0, hd1, hd2, add_zero] at hx
-    have hval := congrArg (fun y => f y 2) hx
-    simp only [map_zero,←hf2,LinearEquiv.apply_symm_apply,Finsupp.zero_apply] at hval
-    norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
 
 private theorem y_detection_page_af16_source_frame (I : AdamsComputationTheorems D L G)
     (x : (sequence D .sphere).Page 2 (16,141))
@@ -1107,7 +830,6 @@ private theorem y_detection_page_af15_source_frame (I : AdamsComputationTheorems
     simp only [map_add,map_zero,←hf1, ←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.zero_apply] at hval
     norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
 
-
 open KIP126.Synthetic.SpectralSequence KIP126.Literature.AdamsSynthetic KIP126.AdamsSynthetic.SectionSeven KIP126.Algebra
 private theorem y_detection_page_represents_zero_iff_boundary (X : C) (r : ℤ) (hr : 2≤r)
     (p : ℤ×ℤ) (x : PageRepresentatives.Ambient H X p) :
@@ -1404,7 +1126,6 @@ private theorem y_detection_page_finite_sphere_filtration_has_cycle_label
   obtain ⟨x,hc,hx⟩ := y_detection_page_finite_sphere_infinity_cycle_label_exists BHS q k hq hkq s t e
   exact ⟨x,hc,e,hx,a',ha',he⟩
 
-
 private theorem y_detection_page_detected_map
     (X Y : SyntheticObject) (f : X.obj D.nu D.hopfAndDetector ⟶ Y.obj D.nu D.hopfAndDetector)
     (i : Tridegree) (x : (D.family.obj (X.obj D.nu D.hopfAndDetector)).E₂ i)
@@ -1661,7 +1382,6 @@ private theorem y_detection_page_lambda_six_filtration_fifteen_zero
   exact hab.symm.trans (hbc.symm.trans hz)
 
 end KIP126.Computation.SphereAndCofiber
-
 
 namespace KIP126.StableHomotopy.Toda
 open CategoryTheory CategoryTheory.Limits
@@ -1947,7 +1667,6 @@ private theorem y_detection_toda_module_low_shuffle_exact
   simp only [Preadditive.neg_comp,Category.id_comp] at hneg
   exact ((congrArg Neg.neg he).trans (neg_neg _)).symm.trans hneg
 
-
 open KIP126.StableHomotopy.Cohomology KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic
 universe uc
@@ -2005,7 +1724,6 @@ private theorem y_detection_toda_eta_action_right_three (D : AdamsComparison H M
   erw [← reassoc_of% ((SyntheticCategory.biShift_comp (123,132) (0,-3)).inv.naturality η)]
   rfl
 
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem y_detection_toda_eta_double_action (coh:BiShiftCoherence Syn)
     (eta:BiHom 1 2 (S_0_0:Syn)) {X:Syn} (a:BiHom 123 129 X) :
@@ -2036,7 +1754,6 @@ private theorem y_detection_toda_main_toda_h0_relation (D:AdamsComparison H M Sy
   have he:=y_detection_toda_module_low_shuffle_exact D.shiftCoherence unique eta h0 hlow hind (lambdaMultiply 3 a) hh z hz
   rw [y_detection_toda_eta_double_action D.shiftCoherence,y_detection_toda_eta_action_right_three D] at he
   exact he
-
 
 open KIP126.Algebra PageRepresentatives KIP126.SpectralSequence
 variable {D:AdamsComparison H M Syn}
@@ -2222,7 +1939,6 @@ private theorem y_detection_toda_main_eta_right_three (D : AdamsComparison H M S
   erw [← reassoc_of% ((SyntheticCategory.biShift_comp (124,134) (0,-3)).inv.naturality η)]
   rfl
 
-
 private theorem y_detection_toda_main_eta_right_six (D : AdamsComparison H M Syn)
     (η : BiHom 1 2 (S_0_0 : Syn))
     {X : Syn} (c : BiHom 124 137 X) :
@@ -2241,7 +1957,6 @@ private theorem y_detection_toda_main_eta_right_six (D : AdamsComparison H M Syn
   erw [← reassoc_of% ((SyntheticCategory.biShift_comp (124,137) (0,-6)).inv.naturality η)]
   rfl
 
-
 private theorem y_detection_toda_main_lambda_six_one (D : AdamsComparison H M Syn)
     {X:Syn} (c : BiHom 125 140 X) :
     lambdaMultiply 6 (lambdaMultiply 1 c) = lambdaMultiply 7 c := by
@@ -2259,7 +1974,6 @@ private theorem y_detection_toda_main_lambda_six_one (D : AdamsComparison H M Sy
     Iso.trans_inv, eqToIso.inv, eqToHom_refl,
     Category.id_comp, Category.assoc]
   rfl
-
 
 private theorem y_detection_toda_main_toda_h0_error_formula (D:AdamsComparison H M Syn)
     (unique:∀x y:BiHom 1 2 (S_0_0:Syn),x≠0→y≠0→x=y)
@@ -2407,7 +2121,6 @@ private theorem y_detection_toda_survives_twelve_not_boundary_eleven (X : C) (p 
   apply hne
   rw [← hzr]
   exact (subobject_cokernel_π_eq_zero_iff (P.B 10) (P.Z 10) (P.B_le_Z 10) z).mpr hz'
-
 
 namespace MainTodaCycles
 variable {R:Type u} [Ring R] {E:KIP126.SpectralSequence (ModuleCat.{v} R) (ℤ×ℤ)}
@@ -2760,7 +2473,6 @@ private theorem y_detection_exact_target_lambda_six_one (D : AdamsComparison H M
     Category.id_comp, Category.assoc]
   rfl
 
-
 private theorem y_detection_exact_target_sphere_exact_target_split
     (BHS : SyntheticComparisonTheorems D) (T : E2 H SphereSpectrum 14 139)
     (hT : IsPermanentCycle (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) (14,139) T)
@@ -2916,7 +2628,6 @@ private theorem anyy_bracket_exact_target
   rw [←heq]
   exact anyy_detected_ne_zero (D.quotientConvergence 9 (by decide)) (14,139,133) hzdet
 
-
 open KIP126.LinE2 KIP126.Algebra
 private theorem anyy_lambda_one_division_of_quotient_zero
     {X : Syn} (m w : ℤ) (z : BiHom m (w-1) X) (hz : quotientClass 1 z=0) :
@@ -3009,139 +2720,4 @@ private theorem anyy_eta_unique_from_low_degrees {D : AdamsComparison H M Syn} (
   apply hf
   exact eta_nonzero_unique _ _ (hn x hx) (hn y hy)
 
-private theorem anyy_from_exact_one_and_kernel
-    (Y : E2 H SphereSpectrum 11 136) (T : E2 H SphereSpectrum 14 139)
-    (h0 : BiHom 0 1 (S_0_0 : Syn))
-    (z : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9))
-    (hz : FiniteDetected D 9 (by decide) 11 136 4 Y z)
-    (hone : ∃ t : BiHom 125 139 (XModLambdaN (S_0_0 : Syn) 9),
-      FiniteDetected D 9 (by decide) 14 139 0 T t ∧
-      sphereAction h0 z=lambdaMultiply 6 t ∧ lambdaMultiply 6 t≠0)
-    (hkernel : ∀ a : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9),
-      FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 12 a → sphereAction h0 a=0) :
-    AnyYH0Extension D Y T h0 := by
-  obtain ⟨t,ht,het,hnt⟩ := hone
-  intro y hy
-  have hd := detects_sub_filtration (D.quotientConvergence 9 (by decide))
-    (11,136,132) hy.1 hz.1
-  have hdiff := hkernel (y-z) hd
-  have heq : sphereAction h0 y=sphereAction h0 z := by
-    apply sub_eq_zero.mp
-    simpa only [sphereAction,Preadditive.comp_sub] using hdiff
-  exact ⟨t,ht,heq.trans het,hnt⟩
-
-end KIP126.Main.SectionSeven
-
-namespace KIP126.Main.SectionSeven
-open CategoryTheory CategoryTheory.Limits
-open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
-open KIP126.Classical.Adams KIP126.SpectralSequence
-open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
-open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.SectionSeven
-universe u v w
-noncomputable section
-set_option backward.isDefEq.respectTransparency false
-set_option maxHeartbeats 1000000
-variable {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:=C)]
-    {Syn : Type w} [SyntheticCategory.{w,v} Syn] [HasFunctorialCofiber (C:=Syn)]
-    {H : Mod2EilenbergMacLane (C:=C)} {M : MilnorCooperations H} {D : AdamsComparison H M Syn}
-private theorem anykernel_detects_of_difference
-    {H' : Syn} {unit : S_0_0 ⟶ H'} {F : SyntheticAdamsFamily Syn} {X : Syn}
-    (c : TowerConvergence unit F X) (i : Tridegree)
-    {x : (F.obj X).E₂ i} {a b : BiHom (i.2.1-i.1) i.2.2 X}
-    (ha : Detects c i x a) (hb : FiltrationAtLeast unit (i.1+1) (b-a)) :
-    Detects c i x b := by
-  obtain ⟨e,he,a',ha',hga⟩ := ha
-  let P := towerFiltration unit X
-  let p := (i.2.1-i.1,i.2.2)
-  have hmem : b-a∈(ModuleCat.subobjectModule (syntheticHomotopy X p)) (P.F (i.1+1) p) := by
-    simpa only [P,p,FiltrationAtLeast,towerFiltration,OrderIso.apply_symm_apply] using hb
-  obtain ⟨z,hz⟩ := hmem
-  let j := Subobject.ofLE (P.F (i.1+1) p) (P.F i.1 p) (P.mono i.1 p)
-  refine ⟨e,he,a'+j z,?_,?_⟩
-  · rw [map_add]
-    have hj : (P.F i.1 p).arrow (j z)=(P.F (i.1+1) p).arrow z :=
-      ConcreteCategory.congr_hom (Subobject.ofLE_arrow (P.mono i.1 p)) z
-    rw [hj,ha',hz]
-    abel
-  · rw [map_add]
-    have hj : P.toAssociatedGraded i.1 p (j z)=0 :=
-      ConcreteCategory.congr_hom (cokernel.condition j) z
-    rw [hj,add_zero]
-    exact hga
-
-
-private theorem anykernel_high_correction_has_high_lambda_preimage
-    (Y : E2 H SphereSpectrum 11 136) (T : E2 H SphereSpectrum 14 139)
-    (h0 : BiHom 0 1 (S_0_0 : Syn))
-    (hall : AnyYH0Extension D Y T h0)
-    (y a : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9))
-    (hy : FiniteDetected D 9 (by decide) 11 136 4 Y y)
-    (ha : FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 12 a) :
-    ∃ b : BiHom 125 139 (XModLambdaN (S_0_0 : Syn) 9),
-      FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 15 b ∧
-      sphereAction h0 a = lambdaMultiply 6 b := by
-  have hya : FiniteDetected D 9 (by decide) 11 136 4 Y (y+a) := by
-    refine ⟨?_,hy.2⟩
-    apply anykernel_detects_of_difference (D.quotientConvergence 9 (by decide)) (11,136,132) hy.1
-    change FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 12 ((y+a)-y)
-    simpa only [add_sub_cancel_left] using ha
-  obtain ⟨t,ht,het,hnt⟩ := hall y hy
-  obtain ⟨t',ht',het',hnt'⟩ := hall (y+a) hya
-  refine ⟨t'-t,detects_sub_filtration (D.quotientConvergence 9 (by decide))
-    (14,139,139) ht'.1 ht.1,?_⟩
-  have hsub : (show BiHom 125 133 (XModLambdaN (S_0_0 : Syn) 9) from lambdaMultiply 6 (t'-t)) =
-      lambdaMultiply 6 t' - lambdaMultiply 6 t := by
-    simp only [lambdaMultiply,Preadditive.comp_sub]
-  calc
-    sphereAction h0 a = sphereAction h0 (y+a) - sphereAction h0 y := by
-      simp only [sphereAction,Preadditive.comp_add,add_sub_cancel_left]
-    _ = lambdaMultiply 6 t' - lambdaMultiply 6 t := congrArg₂ (· - ·) het' het
-    _ = lambdaMultiply 6 (t'-t) := hsub.symm
-
-private theorem anykernel_high_correction_zero_of_high_lambda_zero
-    (Y : E2 H SphereSpectrum 11 136) (T : E2 H SphereSpectrum 14 139)
-    (h0 : BiHom 0 1 (S_0_0 : Syn))
-    (hall : AnyYH0Extension D Y T h0)
-    (hkernel : ∀ b : BiHom 125 139 (XModLambdaN (S_0_0 : Syn) 9),
-      FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 15 b → lambdaMultiply 6 b=0)
-    (y a : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9))
-    (hy : FiniteDetected D 9 (by decide) 11 136 4 Y y)
-    (ha : FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 12 a) :
-    sphereAction h0 a=0 := by
-  obtain ⟨b,hb,he⟩ := anykernel_high_correction_has_high_lambda_preimage Y T h0 hall y a hy ha
-  exact he.trans (hkernel b hb)
-
-end
-end KIP126.Main.SectionSeven
-namespace KIP126.Main.SectionSeven
-open CategoryTheory CategoryTheory.Limits
-open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
-open KIP126.Classical.Adams KIP126.SpectralSequence
-open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
-open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.SectionSeven KIP126.Computation.SphereAndCofiber
-open KIP126.Literature.AdamsSynthetic
-universe u v w
-variable {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C:=C)]
-    {Syn : Type w} [SyntheticCategory.{w,v} Syn] [HasFunctorialCofiber (C:=Syn)]
-    {H : Mod2EilenbergMacLane (C:=C)} {M : MilnorCooperations H} {D : AdamsComparison H M Syn}
-    {L : SphereAdamsClasses H} {G : TmfDetectionClasses H}
-set_option backward.isDefEq.respectTransparency false
-private theorem anyy_iff_exact_high_kernel
-    (I : AdamsComputationTheorems D L G) (BHS : SyntheticComparisonTheorems D) (R : RealizationDetectionData D)
-    (Y : E2 H SphereSpectrum 11 136) (T : E2 H SphereSpectrum 14 139)
-    (h0 : BiHom 0 1 (S_0_0 : Syn))
-    (z : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9))
-    (hz : FiniteDetected D 9 (by decide) 11 136 4 Y z)
-    (hone : ∃ t : BiHom 125 139 (XModLambdaN (S_0_0 : Syn) 9),
-      FiniteDetected D 9 (by decide) 14 139 0 T t ∧
-      sphereAction h0 z=lambdaMultiply 6 t ∧ lambdaMultiply 6 t≠0) :
-    AnyYH0Extension D Y T h0 ↔
-      ∀ a : BiHom 125 132 (XModLambdaN (S_0_0 : Syn) 9),
-        FiltrationAtLeast (nuCoefficientUnit H.unit D.nu) 12 a → sphereAction h0 a=0 := by
-  constructor
-  · intro hall a ha
-    exact anykernel_high_correction_zero_of_high_lambda_zero Y T h0 hall
-      (y_detection_page_lambda_six_filtration_fifteen_zero I BHS.eInfty R) z a hz ha
-  · exact anyy_from_exact_one_and_kernel Y T h0 z hz hone
 end KIP126.Main.SectionSeven

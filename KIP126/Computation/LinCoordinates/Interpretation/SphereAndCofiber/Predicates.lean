@@ -7,7 +7,6 @@ public import KIP126.Def.SpectralSequence.Computation.CyclesAndBoundaries.Predic
 
 @[expose] public section
 
-
 namespace KIP126.Computation.SphereAndCofiber
 open CategoryTheory
 open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology KIP126.Classical.Adams

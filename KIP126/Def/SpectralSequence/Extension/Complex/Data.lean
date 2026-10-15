@@ -26,13 +26,4 @@ noncomputable def twoTermComplex (X₁ X₂ : C) (f : X₁ ⟶ X₂) : ChainComp
       exact twoTermDiff_sq_transport X₁ X₂ f (k + 1 + 1) (k + 1) k
         (by omega) (by omega))
 
-/-- Data for a bounded two-term extension at one graded stem.
-
-The `two_term` condition says that the filtered complex vanishes outside
-chain degrees 1 and 0. Convergence and identifications of its endpoint
-groups are separate mathematical properties. -/
-structure TwoTermData where
-  complex : FilteredComplex C
-  two_term : ∀ k : ℤ, k ≠ 1 → k ≠ 0 → IsZero (complex.complex.X k)
-
 end KIP126.SpectralSequence.BoundedExtension

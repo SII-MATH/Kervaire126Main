@@ -1,7 +1,6 @@
 module
 
 public import KIP126.Def.StableHomotopy.Cohomology.Data
-
 public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Data
 
 @[expose] public section

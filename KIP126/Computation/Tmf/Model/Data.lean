@@ -1,6 +1,9 @@
 module
 
-public import KIP126.Def.ClassicalAdams.Tmf.Model.Data
+public import KIP126.Def.StableHomotopy.Cohomology.Data
+public import KIP126.Def.ClassicalAdams.TowerNaturality.Page.Data
+public import KIP126.Def.Synthetic.Sphere.Data
+public import Mathlib.CategoryTheory.Monoidal.Mon
 public import KIP126.Computation.Tmf.CsvE2.Classes.Data
 
 @[expose] public section
@@ -38,7 +41,6 @@ def E2Presentation.betaFiveG (P : E2Presentation H T) :
 def E2Presentation.betaGFour (P : E2Presentation H T) :
     (adamsTowerInternalSpectralSequence H.unit T.X).Page 2 (19, 114) :=
   P.comparison 19 114 (by decide) CsvE2.betaGFour
-
 
 end
 end KIP126.Classical.Adams.Tmf

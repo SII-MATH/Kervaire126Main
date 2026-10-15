@@ -2,11 +2,12 @@ module
 
 public import KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
 public import KIP126.Main.AdamsSynthetic
-public import KIP126.Main.Computation.Lambda
+public import KIP126.Main.SectionSeven.Lambda
 public import KIP126.Main.DifferentialReduction.Conclusion
-public import KIP126.Main.TmfDetection
+public import KIP126.Def.AdamsSynthetic.ComparisonStatements
 public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Main.SectionSeven
+public import KIP126.Main.SectionSeven.SphereClasses
+public import KIP126.Main.SectionSeven.PropositionSevenNine
 import all KIP126.Main.SectionSeven.DifferentialCriterion.Dichotomy
 
 @[expose] public section
@@ -27,29 +28,6 @@ open KIP126.Classical.Adams KIP126.AdamsSynthetic
 open KIP126.Synthetic.Context
 open KIP126.Main.AdamsSynthetic
 
-/-- The d₃ differential in the ν-cofiber, on the fixed standard sphere model. -/
-theorem cnu_d3 :
-    KIP126.Computation.SphereAndCofiber.Derived.CnuDifferential computationTheorems.interpretation := by
-  exact KIP126.Computation.SphereAndCofiber.cnu_d3 computationTheorems
-
-/-- Multiplication by λ is injective in bidegree (125,130), using the
-literature and computation statements on the same standard sphere. -/
-theorem lambda_injective_125_130 :
-    LambdaInjectiveAt 125 130 (S_0_0 : KIP126.Def.standardSyntheticContext.Syn) := by
-  exact KIP126.Computation.SphereAndCofiber.lambda_injective_125_130 literatureTheorems computationTheorems
-
-/-- Finite-page survival and permanence consequences for the sphere,
-using the given Adams vanishing line. -/
-theorem sphere_facts :
-    KIP126.Computation.SphereAndCofiber.Derived.SphereFacts computationTheorems.interpretation := by
-  exact KIP126.Computation.SphereAndCofiber.sphere_facts computation sphereVanishing
-
-/-- The precise F15 detector injectivity used at all three occurrences
-of the tmf argument in Proposition 7.8. -/
-theorem detector_injective : DetectorInjectiveAt adamsComparison 125 130 15 := by
-  exact KIP126.Computation.SphereAndCofiber.detector_injective_125_130_filtration15
-    literatureTheorems computationTheorems sphereVanishing sphereSeparated
-
 /-- Proposition 7.9 in the implication form used by the final reduction:
 vanishing of the stem-126 d₆ excludes the specified η-extension. -/
 theorem eta_extension_excluded_of_d6_vanishes :
@@ -68,7 +46,12 @@ theorem _root_.KIP126.Main.proposition_7_8 (input : KIP126.ExternalHypotheses) :
   let lit := input.literature
   let B := lit.sources.sourceComparisons
   let st := lit.theorems.sourceTheorems
-    KIP126.Def.standardEInftyWeightShift_natural
+    (KIP126.Synthetic.SpectralSequence.CanonicalWeightShift.natural
+      KIP126.Classical.Adams.standardAdamsComparison.towerPresentation
+      KIP126.Def.standardEInftyWeightShift
+      (Classical.choose_spec
+        (KIP126.Synthetic.SpectralSequence.canonicalWeightShift_exists
+          KIP126.Classical.Adams.standardAdamsComparison.towerPresentation)))
   let BHS : KIP126.Literature.AdamsSynthetic.SyntheticComparisonTheorems standardAdamsComparison := st.synthetic.toComparisonTheorems _ B.bhsCompletion
     B.completionApplicability B.completionComparison
     (KIP126.Main.Literature.SourceComparisons.realizationKernel_of_source _
@@ -79,11 +62,11 @@ theorem _root_.KIP126.Main.proposition_7_8 (input : KIP126.ExternalHypotheses) :
       B.completionComparison B.realizationComparison⟩
   let CL := KIP126.Literature.AdamsSynthetic.classicalTheoremsOfSource standardAdamsComparison KIP126.Def.standardEta
     B.classicalSource st.classical B.hopfComparison B.synthetic_eta
-  let TM := KIP126.Main.Computation.tmf_inputs_of_computation standardAdamsComparison
-    input.computation.sphereAndCofiber lit.theorems.sphereVanishing KIP126.Def.standardSphereSeparated
+  let TM := KIP126.Main.SectionSeven.tmf_inputs_of_computation standardAdamsComparison
+    input.computation.sphereAndCofiber lit.theorems.sphereVanishing KIP126.Main.AdamsSynthetic.sphereSeparated
     B.tmfSource st.tmf B.tmfComparison B.algebraDetectionCompatibility.classical_detection
   exact h6_square_dichotomy BHS RL CL B.algebraDetectionCompatibility.action_filtration TM st.bx input.computation.sphereAndCofiber
     (KIP126.Computation.SphereAndCofiber.sphere_facts input.computation lit.theorems.sphereVanishing)
-    lit.theorems.sphereVanishing KIP126.Def.standardSphereSeparated
+    lit.theorems.sphereVanishing KIP126.Main.AdamsSynthetic.sphereSeparated
 
 end KIP126.Main.SectionSeven.DifferentialCriterion

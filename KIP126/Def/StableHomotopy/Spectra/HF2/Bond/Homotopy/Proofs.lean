@@ -66,12 +66,6 @@ theorem coefficientStableHomotopy_subsingleton_of_ne (d : ℤ) (hd : d ≠ 0) :
   intro n hn r hr
   exact coefficientPi_subsingleton_of_ne hb n r (by omega)
 
-/-- Evaluation on a displayed diagonal representative uses its actual cubical class. -/
-theorem coefficientDiagonalRepresentative_mk (n : ℕ)
-    (hr : (n : ℤ) = 0 + n)
-    (p : GenLoop (Fin n) (hf2RealizationLevel n) (hf2RealizationLevel n).point) :
-    coefficientDiagonalRepresentative hb ⟨n,n,hr,p⟩ = coefficientDiagonalEquiv hb n ⟦p⟧ := rfl
-
 theorem coefficientDiagonalRepresentative_relation
     {a b : Prespectrum.Representative hf2RealizationPrespectrum 0}
     (h : Prespectrum.StableRelation hf2RealizationPrespectrum 0 a b) :
@@ -119,11 +113,5 @@ theorem coefficientDiagonalEquiv_transAt (n : ℕ)
   rw [← HomotopyGroup.mul_spec]
   rw [KIP126.Algebra.equivTwo_map_mul (coefficientDiagonalEquiv hb (n+1))
     (coefficientDiagonalEquiv_const hb (n+1)),add_comm]
-
-
-/-- The diagonal degree-zero calculation returns the displayed normalized coefficient exactly. -/
-@[simp] theorem coefficientZeroPiZeroEquiv_coefficient (a : ZMod 2) :
-    coefficientZeroPiZeroEquiv ⟦coefficientZeroLoop a⟧ = a := by
-  exact coefficientZeroRealizationHomeomorph_coefficient a
 
 end KIP126.StableHomotopy.Spectra.HF2Bond

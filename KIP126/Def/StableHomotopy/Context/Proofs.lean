@@ -131,7 +131,6 @@ theorem les_homotopy_exact_g (T : HoCofiberSequence (C := C)) (n : ℤ) :
       Category.assoc, T.gh_zero, Limits.comp_zero, Functor.map_zero,
       Limits.zero_comp]
 
-
 /-! ### Exactness transferred from the distinguished triangle
 
 The middle-term exactness statement is independent of the connecting

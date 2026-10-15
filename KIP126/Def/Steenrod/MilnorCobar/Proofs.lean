@@ -39,14 +39,6 @@ noncomputable section
   apply Subtype.ext
   simp [cup, cupPolynomial]
 
-theorem h6Cochain_isCycle : IsCycle h6Cochain := by
-  apply Subtype.ext
-  exact h6Polynomial_differential
-
-theorem h6SquareCochain_isCycle : IsCycle h6SquareCochain := by
-  apply Subtype.ext
-  exact h6SquarePolynomial_differential
-
 end
 
 end KIP126.Steenrod.Milnor

@@ -45,15 +45,6 @@ def BJMOriginalCriterion (η : Eta Syn) (θ : Theta Syn) : Prop :=
         ((r : ℤ) + 3) (2, 128) (Sphere.Internal.hiSquare H M 6) ↔
       VanishesModLambda r (etaThetaSquare η θ))
 
-/-- The paper's finite normalized conclusion on the actual synthetic sphere.
-Its bidegrees are explicit, unlike the single-carrier abstraction `BJM_BXCriterion`.
-LWX Remark 7.4 requires an additional torsion/comparison argument to prove it. -/
-def BJMNormalizedFiniteCriterion (η : Eta Syn) (θ : Theta Syn) : Prop :=
-  ∀ r : ℕ, 1 ≤ r →
-    (SurvivesTo (adamsTowerInternalSpectralSequence H.unit SphereSpectrum)
-        ((r : ℤ) + 3) (2, 128) (Sphere.Internal.hiSquare H M 6) ↔
-      VanishesModLambda (r + 1) (lambdaEtaThetaSquare η θ))
-
 /-- The total-differential identity for the actual cofiber boundary of h₆².
 The right-hand side is the specified product ληθ₅² in the synthetic sphere. -/
 def BJMDistinguishedThetaBoundaryIdentity (η : Eta Syn) (θ : Theta Syn) : Prop :=

@@ -6,7 +6,6 @@ public import KIP126.Def.StableHomotopy.Context.Suspension.Data
 
 @[expose] public section
 
-
 /-!
 # Suspension comparison for the actual Adams tower
 
@@ -57,16 +56,6 @@ def classOfSecondCycle (H : Mod2EilenbergMacLane (C := C)) (X : C)
     PageRepresentatives.Ambient H X (s, t) :=
   (adamsTowerSSDataPageIso H.unit X s t 0).inv
     ((adamsCycleBoundaries H.unit X 2 (by decide) s t).mkQ z)
-
-/-- Desuspend represented homotopy classes at every actual tower stage.
-The map uses the specified tower isomorphism, rather than a chosen page map. -/
-def TowerComparison.desuspendTower {H : Mod2EilenbergMacLane (C := C)} {X : C}
-    (S : TowerComparison H X) (n s : ℤ) :
-    HomotopyGroup n (adamsTowerAt H.unit (X⟦(1 : ℤ)⟧) s) →+
-      HomotopyGroup (n - 1) (adamsTowerAt H.unit X s) where
-  toFun z := homotopyDesuspend (adamsTowerAt H.unit X s) n (z ≫ (S.tower s).hom)
-  map_zero' := by simp
-  map_add' a b := by simp only [Preadditive.add_comp, map_add]
 
 /-- Desuspend actual first-page maps through the specified layer comparison;
 the domain sphere is reindexed by its genuine integer equality. -/

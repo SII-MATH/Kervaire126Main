@@ -31,11 +31,6 @@ noncomputable def Smn (m n : ℤ) : Syn :=
 /-- The bigraded homotopy class type `[S^(m,n), X]`. -/
 abbrev BiHom (m n : ℤ) (X : Syn) : Type v := Smn m n ⟶ X
 
-/-- The additive-group structure on a bigraded homotopy group. -/
-@[reducible] noncomputable def biHomotopyGroup (m n : ℤ) (X : Syn) :
-    AddCommGroup (BiHom m n X) :=
-  inferInstance
-
 /-- Bigraded suspension is tensoring with the corresponding sphere. -/
 noncomputable def biShift_eq_tensor_Smn (m n : ℤ) (X : Syn) :
     (SyntheticCategory.biShift (m, n)).obj X ≅ Smn m n ⊗ X :=

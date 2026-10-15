@@ -1,10 +1,10 @@
 module
 
 public import KIP126.Literature.AdamsSynthetic.Statements
-
 public import KIP126.Literature.AdamsSynthetic.ComparisonTheorems
 public import KIP126.Def.AdamsSynthetic.AlgebraRealization.Data
-public import KIP126.Literature.Standard.Sphere.ClassFamily
+public import KIP126.Literature.Standard.Sphere.Classes
+public import KIP126.Def.ClassicalAdams.SphereClasses.Hi.Internal.Data
 
 @[expose] public section
 
@@ -43,7 +43,6 @@ structure SyntheticSourceTheorems where
   /-- BHS A.11 (1),(3): both zero regions on every finite page, including E2. -/
   finite_quotient_page_vanishing : FiniteQuotientPageVanishing D
 
-
 end
 end KIP126.Literature.AdamsSynthetic
 
@@ -80,12 +79,7 @@ structure ClassicalSourceResults (M : MilnorCooperations H) (S : ClassicalHopfTh
   nu_permanent : NonzeroSurvival
     (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) (1,4) (Sphere.Internal.hi H M 2)
 
-def ClassicalSourceExistence (H : Mod2EilenbergMacLane (C := C))
-    (M : MilnorCooperations H) : Prop :=
-  ∃ S : ClassicalHopfThetaClasses H, ClassicalSourceResults M S
-
 variable {Syn : Type w} [SyntheticCategory.{w, v} Syn] [HasFunctorialCofiber (C := Syn)]
-
 
 end KIP126.Literature.AdamsSynthetic
 
@@ -99,7 +93,6 @@ variable (Syn : Type u) [SyntheticCategory.{u, v} Syn]
 conventions on the synthetic category. -/
 def MaySourceResults (B : MayContext Syn) : Prop :=
   ∀ T U : HoCofiberSequence (C := Syn), Nonempty (MayPushpullData Syn B T U)
-
 
 end KIP126.Literature.AdamsSynthetic
 
@@ -121,7 +114,6 @@ structure TodaSourceResults (η : BiHom 1 2 (S_0_0 : Syn))
   lambda_h0 : lambdaMultiply 1 S.h0 = syntheticTwo
   h0_eta : sphereProduct S.h0 η = 0
   low_indeterminacy : ∀ a : BiHom 2 3 (S_0_0 : Syn), sphereProduct S.h0 a = 0
-
 
 end
 end KIP126.Literature.AdamsSynthetic
@@ -177,7 +169,6 @@ def BHSRealizationSourceResults (R : RealizationCoordinates D) : Prop :=
     ∀ convergence : TowerDetection.Convergence H.unit X,
       BHSRealizationDetectionAt D R X convergence
 
-
 end
 end KIP126.Literature.AdamsSynthetic
 
@@ -201,7 +192,6 @@ def RealizationKernelSourceResults (S : SyntheticCompletionAdjunction Syn) : Pro
   ∀ (X : SyntheticObject) (m w : ℤ)
     (a : BiHom m w (S.inclusion.obj (X.obj D.nu D.hopfAndDetector))),
     (S.localization.endofunctor.map a = 0 ↔ ∃ k : ℕ, lambdaMultiply k a = 0)
-
 
 end
 end KIP126.Literature.AdamsSynthetic
@@ -236,14 +226,6 @@ structure TmfSourceResults (S : TmfDetectionData H) : Prop where
     S.labels.delta_h_1_mul_g S.wClass
   high125_nonzero : S.high125 ≫ S.unit ≠ 0
 
-/-- Existence of completed tmf source data satisfying the BMQ/IWX results.
-Application to a given Adams/synthetic model requires `TmfDetectorComparison`, which
-identifies the detector, its unit and its distinguished classes with these
-source data. -/
-def TmfSourceExistence (H : Mod2EilenbergMacLane (C := C)) : Prop :=
-  ∃ S : TmfDetectionData H, TmfSourceResults S
-
-
 end
 end KIP126.Literature.AdamsSynthetic
 
@@ -269,13 +251,6 @@ structure NuCofiberSourceResults (S : NuCofiberLifts D) : Prop where
     D.sphereFirstQuotient 1 4 (quotientClass 1 (sourceNormalizedNu D S nu_exponent)) =
       Sphere.Internal.hi H M 2
   triangle : ∀ he, sourceNormalizedTriangle D S he ∈ distTriang Syn
-
-/-- Existence of compatible normalized lifts for the cofiber of ν.
-Main proves this from the separate Pstrągowski/BHS hypotheses and then
-compares these lifts with the normalized maps of `D`. -/
-def NuCofiberSourceExistence : Prop :=
-  ∃ S : NuCofiberLifts D, NuCofiberSourceResults D S
-
 
 end
 end KIP126.Literature.AdamsSynthetic
@@ -323,9 +298,7 @@ abbrev algebra (_B : SourceComparisons D η L background) := background.algebra
 abbrev quotientCompatibility (_B : SourceComparisons D η L background) := background.quotientCompatibility
 abbrev algebraDetectionCompatibility (_B : SourceComparisons D η L background) := background.algebraDetectionCompatibility
 abbrev may (_B : SourceComparisons D η L background) := background.may
-abbrev realizationAdditive (_B : SourceComparisons D η L background) := background.realizationAdditive
-abbrev weights (_B : SourceComparisons D η L background) := background.weights
-abbrev nuE2 (_B : SourceComparisons D η L background) := background.nuE2
+
 end SourceComparisons
 
 /-- The literature theorems on the source objects specified by `B`.
@@ -340,48 +313,4 @@ structure SourceTheorems {background : AlgebraRealizationComparison D} (B : Sour
   toda : TodaSourceResults D η B.todaSource
   tmf : TmfSourceResults B.tmfSource
 
-
 end KIP126.Literature.AdamsSynthetic
-
-namespace KIP126.ExternalHypotheses
-open CategoryTheory CategoryTheory.MonoidalCategory
-open Classical.Adams SpectralSequence
-universe u v w
-
-section Moss
-
-open StableHomotopy StableHomotopy.Cohomology Classical.Adams.Moss
-
-variable {C : Type u} [StableHomotopyCategory.{u, v} C]
-  [HasFunctorialCofiber (C := C)] [MonoidalClosed C] [BraidedCategory C]
-  (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H)
-  [∀ A : C, (tensorRight A).CommShift ℤ]
-  [∀ A : C, (tensorRight A).IsTriangulated] [MonoidalPreadditive C]
-  [∀ A : C, (tensorLeft A).CommShift ℤ]
-
-/-- Moss convergence for the specified family of mapping Adams spectral
-sequences, with composition, detection and Massey indeterminacy comparisons.
-This general structure is separate from the fixed Section 7 hypotheses. -/
-structure MossConvergenceData {ι : Type w} (objects : ι → C) where
-  composition : CompositionPairing H R
-  coherent : composition.Coherent H R
-  convergence : ∀ X Y : ι, MappingAdamsConvergence H.unit (objects X) (objects Y)
-  weak_convergence : ∀ X Y : ι, MappingAdamsTower H.unit (objects X) (objects Y)
-  detection : ∀ X Y Z : ι,
-    composition.DetectionCompatible H R (objects X) (objects Y) (objects Z)
-      (convergence X Y) (convergence Y Z) (convergence X Z)
-  indeterminacy : ∀ (r : ℤ) (hr : 3 ≤ r) (W X Y Z : ι) (i j k : ℤ × ℤ)
-    (a : (mappingSequence H.unit (objects W) (objects X)).Page r i)
-    (b : (mappingSequence H.unit (objects X) (objects Y)).Page r j)
-    (c : (mappingSequence H.unit (objects Y) (objects Z)).Page r k)
-    (x₀ x : (mappingSequence H.unit (objects W) (objects Z)).Page r
-      (PageMassey.degree r i j k)),
-    PageMassey.Relation H R composition r hr x₀ a b c →
-      (PageMassey.Relation H R composition r hr x a b c ↔
-        PageMassey.Indeterminacy H R composition r (j := j) a c (x - x₀))
-  moss : Classical.Adams.Moss.Statement H R composition objects convergence
-
-
-end Moss
-
-end KIP126.ExternalHypotheses

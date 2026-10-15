@@ -6,7 +6,8 @@ import KIP126.Def.Comparison.ClassicalSynthetic.RealizationTower.Proofs
 import KIP126.Def.ClassicalAdams.TowerNaturality.Proofs
 import KIP126.Def.ClassicalAdams.TowerNaturality.Unit.Proofs
 import KIP126.Def.ClassicalAdams.TowerResolution.Proofs
-import KIP126.Def.ClassicalAdams.MapFiltration.Proofs
+import KIP126.Def.ClassicalAdams.MapFiltration.Predicates
+import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Action.Proofs
 import KIP126.Def.Synthetic.Detection.Vanishing.Proofs
 import KIP126.Def.Synthetic.Context.Coherence.Proofs
 import KIP126.Def.Synthetic.Sphere.Homotopy.Proofs
@@ -194,7 +195,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
     apply (SyntheticCategory.biShift (0,-1)).map_injective
     simpa only [Functor.map_zero] using hz'
 
-
   -- §6.4: powers of lambda retain all chosen shift isomorphisms.
   have lambda_powers_injective_of_lower_weights
       (coh : BiShiftCoherence Syn) (m wt : ℤ) (X : Syn)
@@ -247,7 +247,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
     have hc := (cancel_epi (eqToHom (by congr 1; simp))).mp hab
     exact (cancel_epi ((SyntheticCategory.biShift_comp (m,wt) (0,-(k : ℤ))).inv.app S_0_0)).mp
       (by simpa only [Category.assoc] using hc)
-
 
   -- §§6.5–6.6: use the kernel theorem on the same literature witness.
   have realization_injective : Function.Injective (fun a : BiHom 2 4 (S_0_0 : Syn) =>
@@ -570,8 +569,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           have ha : slotWeight a.val = 2 := by exact_mod_cast a.property.1
           have hb : slotWeight b.val = 2 := by exact_mod_cast b.property.1
           exact (weight_two a.val ha).trans (weight_two b.val hb).symm
-
-
 
         let x : TensorPower 1 := X (0, 0)
         let u : TensorPower 1 := X (0, 0) ^ 2
@@ -1048,7 +1045,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           simp only [zero_smul, zero_add, add_zero, hab, smul_add, Finset.sum_add_distrib]
           exact add_comm _ _
 
-
         have append_exponents {s r : ℕ} (d : Fin s → ℕ →₀ ℕ) (e : Fin r → ℕ →₀ ℕ) :
             (slotExponentsEquiv (s + r)).symm (Fin.addCases d e) =
               Finsupp.mapDomain (fun a : Fin s × ℕ => (a.1.castAdd r, a.2))
@@ -1414,7 +1410,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
               simpa only [← map_smul, Finsupp.smul_single, smul_eq_mul, mul_one] using hr
           simpa only [LinearEquiv.symm_apply_apply] using hgen (e w)
 
-
         have differential_reindex {s s' t t' : ℕ} (hs : s = s') (ht : t = t')
             (w : cochains s t) :
             differential s' t' (reindex hs ht w) =
@@ -1519,7 +1514,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
             (cup_cycle _ _ (dxpow _) duc)
             (cup_cycle _ _ (dxpow _) (cup_cycle _ _ duc (dxpow _)))
           rw [hc, map_zero]
-
 
         have cup_reindex_right {s s' t t' n m : ℕ} (hs : s = s') (ht : t = t')
             (a : cochains n m) (b : cochains s t) :
@@ -1642,8 +1636,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           rcases i with ⟨a, ha⟩
           obtain ⟨b, rfl⟩ := Nat.exists_eq_add_of_le (show a ≤ n by omega)
           exact t_relation a b
-
-
 
         /- The P/Q differential has consecutive coordinate columns. Modulo a
         submodule containing every adjacent relation and every R generator, the
@@ -1862,9 +1854,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           exact cohomology_stem_two_nonzero_unique _ _
             (fun h => hx (e.symm.map_eq_zero_iff.mp h))
             (fun h => hy (e.symm.map_eq_zero_iff.mp h))
-
-
-
 
         -- Concentration of E₂ in one filtration, with at most one nonzero
         -- class there, implies at most one nonzero class in the corresponding
@@ -2314,8 +2303,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           apply Subtype.ext
           rw [← retractThree_differential a, ← retractThree_differential b, hab]
 
-
-
         /- The basis index of the total-degree part of a tensor square. The first
         degree is retained, so distinct direct-sum summands are not identified. -/
         let MilnorPair (n : ℤ) := Σ i : ℤ, MilnorMonomial i × MilnorMonomial (n - i)
@@ -2368,7 +2355,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
             LinearMap.comp_apply, TensorProduct.map_tmul, LinearMap.mul'_apply,
             cupPolynomial, AlgHom.toLinearMap_apply]
           rfl
-
 
         have milnorPairExponents_zero {n : ℤ} (d : MilnorPair n) (j : ℕ) :
             milnorPairExponents d (0, j) = d.2.1.val j := by
@@ -2468,7 +2454,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           simpa only [Function.comp_def, cooperationTensorMilnorPolynomial_basis,
             MvPolynomial.coe_basisMonomials] using hl
 
-
         have cooperationPolynomial_cast (i j : ℤ) (h : i = j)
             (a : Mod2Cooperations H i) :
             cooperationMilnorPolynomial H R B j
@@ -2535,7 +2520,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           exact (B.basis n).repr.trans
               ((Finsupp.domLCongr (R := F2) (singleWordEquiv n)).trans (cochainsWordEquiv 1 n).symm)
 
-
         have reducedCochainEquiv_val :
           letI : ∀ i, Module F2 (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
@@ -2582,7 +2566,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           intro n hn a
           exact reducedCochainEquiv n (positiveReduced n hn a)
 
-
         have positiveCochain_val :
           letI : ∀ i, Module F2 (Mod2Cooperations H i) := fun i => mod2HomologyModule H R i H.HF2
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
@@ -2592,7 +2575,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           letI : ∀ i, Module F2 (HomotopyGroup i H.HF2) := fun i => mod2HF2HomotopyModule H R i
           intro n hn a
           exact reducedCochainEquiv_val n (positiveReduced n hn a)
-
 
         -- Only the supplied positive-basis coproduct is used here.
         have reduced_coproduct :
@@ -2632,7 +2614,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
             DirectSum.lof F2 ℤ _ n (a ⊗ₜ[F2]
               (LinearEquiv.cast (R := F2) (M := fun i => mod2HomologyF2 H R i H.HF2)
                 (sub_self n).symm) (cooperationUnit H))
-
 
         have reducedDiagonal_eq_of (n : ℤ) (a : Mod2Cooperations H n)
             (d : cooperationTensor H R (fun i => mod2HomologyF2 H R i H.HF2) n) :
@@ -4135,7 +4116,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
       rw [hr4] at h
       exact h.trans hmap
 
-
     have threeCell_matrix_023 {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H) (K : Mod2CooperationKunneth H R)  (hD : Mod2KunnethDiagonalCompatible H R K)
         (X : C) (q : mod2HomologyF2 H R 0 X →ₗ[ZMod 2] ZMod 2)
         (e0 : mod2HomologyF2 H R 0 X) (hq : q e0 = 1)
@@ -4205,7 +4185,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
       have h := actualRow_coaction H R K hD X q 3 e4
       rw [hr3] at h
       exact h.trans hmap
-
 
     have toda_homology_geometry {C : Type 1} [StableHomotopyCategory.{1,0} C] [HasFunctorialCofiber (C := C)] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) [(tensorLeft H.HF2).CommShift ℤ] [(tensorLeft H.HF2).IsTriangulated] (R : Mod2RingStructure H)
         (η : Sphere (C := C) 1 ⟶ SphereSpectrum)
@@ -4503,7 +4482,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
         have h := actualRow_coaction H R K hD X q 4 e4
         rw [hr4] at h
         exact h.trans hmap
-
 
     have tensorTerm_coefficient_injective {C : Type 1} [StableHomotopyCategory.{1,0} C] [MonoidalPreadditive C] (H : Mod2EilenbergMacLane (C := C)) (R : Mod2RingStructure H)
         (V : ℤ → Type) [∀ i, AddCommGroup (V i)] [∀ i, Module (ZMod 2) (V i)]
@@ -5557,7 +5535,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
       erw [hc1, hc0] at ht
       exact ht
 
-
     open KIP126.Synthetic.SpectralSequence in
     have final_closure
         (hsmall1 : ∀ a b : HomotopyGroup (C := KIP126.Classical.Adams.standardFoundation.Spectrum)
@@ -5803,7 +5780,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
         rw [literature.sources.sourceComparisons.hopfComparison.eta] at heta0
         exact heta heta0
 
-
       have realization_consequences
           (B : ∀ m w : ℤ,
             SyntheticCategory.biShift (Syn := KIP126.Def.standardSyntheticContext.Syn) (m,w) ⋙
@@ -5910,7 +5886,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
         simpa only [vp, Iso.trans_hom, Iso.symm_hom, asIso_inv, Functor.mapIso_hom,
           Preadditive.comp_nsmul, Category.assoc, IsIso.hom_inv_id_assoc] using hh
 
-
       have realized_comparison
           (hsmall1 : ∀ a b : HomotopyGroup (C := KIP126.Classical.Adams.standardFoundation.Spectrum)
               1 SphereSpectrum, a ≠ 0 → b ≠ 0 → a = b)
@@ -6000,7 +5975,6 @@ theorem low_bracket : TripleToda literature.sources.sourceComparisons.todaSource
           exact hun (qinj (hz.trans qzero.symm))
         · intro hz
           exact hprod (qinj (hz.trans qzero.symm))
-
 
       exact realized_comparison hsmall1 hsmall2 hsquare htoda u hu
     -- Apply the coaction obstructions to the fixed mod-two cooperation ring

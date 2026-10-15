@@ -17,10 +17,6 @@ universe u v
 
 variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
 
-theorem lambdaDegree_add (i j : ℕ) :
-    lambdaDegree (i + j) = lambdaDegree i + lambdaDegree j := by
-  ext <;> simp [lambdaDegree, Nat.cast_add, add_comm]
-
 /-- The associativity condition specialized to the existing λ suspensions. -/
 theorem BiShiftCoherence.lambdaShift_associativity (coh : BiShiftCoherence Syn)
     (i j k ij jk total : ℕ) (hij : i + j = ij) (hjk : j + k = jk)
@@ -142,22 +138,6 @@ theorem lambdaRestrictionSourceMap_commutes (coh : BiShiftCoherence Syn)
     lambdaRestrictionSourceMap i j hij X ≫ lambdaPow i X = lambdaPow j X := by
   simpa only [lambdaRestrictionSourceMap, Category.assoc] using
     (lambdaPow_add coh (j - i) i j (Nat.sub_add_cancel hij) X).symm
-
-/-- The restriction square at an equal index has the identity source map.
-An identity law for the resulting cofiber map is a separate requirement on
-the chosen cofiber construction. -/
-theorem lambdaRestrictionSourceMap_self (coh : BiShiftCoherence Syn)
-    (i : ℕ) (X : Syn) :
-    lambdaRestrictionSourceMap i i le_rfl X =
-      𝟙 ((SyntheticCategory.biShift (lambdaDegree i)).obj X) := by
-  have hzero (n : ℕ) (hn : n = 0) (hni : n + i = i) :
-      (lambdaShiftAddIso n i i hni).inv.app X ≫
-          (SyntheticCategory.biShift (lambdaDegree i)).map (lambdaPow n X) =
-        𝟙 ((SyntheticCategory.biShift (lambdaDegree i)).obj X) := by
-    cases hn
-    rw [← coh.lambdaShift_zero_left i X]
-    exact Iso.inv_hom_id_app _ X
-  exact hzero (i - i) (Nat.sub_self i) (Nat.sub_add_cancel le_rfl)
 
 /-- The source map of the restriction square is natural before any cofiber
 choice is made. -/

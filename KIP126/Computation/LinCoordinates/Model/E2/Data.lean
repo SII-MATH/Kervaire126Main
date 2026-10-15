@@ -25,9 +25,6 @@ def generatorDegree (i : Generator) : ℕ × ℕ :=
   let row := RawData.generators[i.val]!
   (row.2.1, row.2.2)
 
-def generatorName (i : Generator) : String :=
-  (RawData.generators[i.val]!).1
-
 noncomputable def polynomialOfPowers : List ℕ → Poly
   | [] => 1
   | i :: a :: rest =>
@@ -59,8 +56,6 @@ abbrev E2 := Poly ⧸ definingIdeal
 noncomputable def projection : Poly →+* E2 := Ideal.Quotient.mk definingIdeal
 
 noncomputable def generator (i : Generator) : E2 := projection (MvPolynomial.X i)
-
-noncomputable def multiply (a b : E2) : E2 := a * b
 
 noncomputable def homogeneousPart (s t : ℕ) : Submodule F2 E2 :=
   Submodule.span F2 {x | ∃ m : Generator →₀ ℕ,

@@ -41,5 +41,4 @@ noncomputable def pullbackRealizationHomeomorph {X Y Z : SSet.{u}} (f : X ⟶ Z)
   (TopCat.homeoOfIso (SSet.toTop.mapIso (pullbackSubcomplexIso f g).symm)).trans
     (pullbackEqualityHomeomorph f g e hfst hsnd)
 
-
 end KIP126.Topology.SimplicialRealization

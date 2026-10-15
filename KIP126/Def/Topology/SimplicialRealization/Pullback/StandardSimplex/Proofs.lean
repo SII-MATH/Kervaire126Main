@@ -21,13 +21,4 @@ set_option backward.isDefEq.respectTransparency false
     (standardSimplexPullbackHomeomorph f n b x).val.2 = SSet.toTop.map (pullback.snd f b) x :=
   pullbackRealizationHomeomorph_snd f b _ _ _ x
 
-/-- The original realized standard-simplex pullback square satisfies the
-actual topological universal property. -/
-theorem realization_standardSimplex_isPullback {X Y : SSet.{u}}
-    (f : X ⟶ Y) (n : ℕ) (b : (Δ[n] : SSet.{u}) ⟶ Y) :
-    IsPullback (SSet.toTop.map (pullback.fst f b)) (SSet.toTop.map (pullback.snd f b))
-      (SSet.toTop.map f) (SSet.toTop.map b) :=
-  realization_isPullback_of_product_homeomorph f b
-    (realizationStandardSimplexProductHomeomorph X n) (fun _ => rfl) (fun _ => rfl)
-
 end KIP126.Topology.SimplicialRealization

@@ -42,5 +42,4 @@ def homeomorphHomotopyEquiv (e : X ≃ₜ Y) (x : X) (y : Y) (h : e x = y) (n : 
       change GenLoop.Homotopic p q
       simpa only [Equiv.symm_apply_apply] using h'')
 
-
 end KIP126.Topology

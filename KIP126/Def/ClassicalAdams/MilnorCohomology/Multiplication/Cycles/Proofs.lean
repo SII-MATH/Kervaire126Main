@@ -21,12 +21,6 @@ theorem reindex_mem_boundaries_iff {s s' t t' : ℕ} (hs : s = s') (ht : t = t')
   subst t'
   rfl
 
-theorem reindex_isCycle {s s' t t' : ℕ} (hs : s = s') (ht : t = t')
-    (x : cochains s t) (hx : IsCycle x) : IsCycle (reindex hs ht x) := by
-  subst s'
-  subst t'
-  exact hx
-
 /-- A boundary times a cycle is a boundary. At degree zero, the boundary
 is zero; at positive degree its primitive is concatenated with the cycle. -/
 theorem cup_boundary_cycle {s s' t t' : ℕ} (x : cochains s t) (y : cochains s' t')

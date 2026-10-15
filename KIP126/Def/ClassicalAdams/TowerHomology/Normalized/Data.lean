@@ -33,15 +33,6 @@ def adamsHomologyKernelEquiv (R : Mod2RingStructure H) (X : C) (n : ℤ) :
   LinearEquiv.ofBijective ((adamsHomologyBoundary H X n).domRestrict _)
     (adamsHomologyBoundary_ker_action_bijective H R X n)
 
-/-- The next fiber's coefficient homology is the quotient by the unit image. -/
-def adamsHomologyQuotientEquiv (R : Mod2RingStructure H) (X : C) (n : ℤ) :
-    (Mod2Homology H n (H.HF2 ⊗ X) ⧸ LinearMap.range (adamsHomologyUnit H X n)) ≃ₗ[ℤ]
-      Mod2Homology H (n - 1) (fiber (adamsUnit H.unit X)) :=
-  ((LinearMap.range (adamsHomologyUnit H X n)).quotEquivOfEq
-    (LinearMap.ker (adamsHomologyBoundary H X n)) (adamsHomologyBoundary_ker H X n).symm).trans
-      ((adamsHomologyBoundary H X n).quotKerEquivOfSurjective
-        (adamsHomologyBoundary_surjective H R X n))
-
 /-- Restrict the unitor-induced equivalence to the two corresponding kernels. -/
 def sphereHomologyActionKernelEquiv (R : Mod2RingStructure H) (n : ℤ) :
     LinearMap.ker (adamsHomologyAction H R SphereSpectrum n) ≃ₗ[ℤ]
@@ -55,15 +46,6 @@ def sphereFirstTowerHomologyEquiv (R : Mod2RingStructure H) (n : ℤ) :
     Mod2Homology H (n - 1) (adamsTower H.unit SphereSpectrum 1) ≃ₗ[ℤ]
       LinearMap.ker (cooperationCounit H R n).toIntLinearMap :=
   (adamsHomologyKernelEquiv H R SphereSpectrum n).symm.trans (sphereHomologyActionKernelEquiv H R n)
-
-/-- The actual first quotient page in filtration one is the reduced cooperation
-group. This constructs the first nontrivial coordinate layer without a
-`MilnorCooperations` input or an identification with a polynomial algebra. -/
-def sphereFirstPageFiltrationOneEquiv (R : Mod2RingStructure H) (t : ℤ) :
-    adamsPage H.unit SphereSpectrum 1 (by decide) 1 t ≃ₗ[ℤ]
-      LinearMap.ker (cooperationCounit H R t).toIntLinearMap :=
-  (adamsPageOneHomologyEquiv H.unit SphereSpectrum 1 t).trans
-    (sphereFirstTowerHomologyEquiv H R t)
 
 end
 

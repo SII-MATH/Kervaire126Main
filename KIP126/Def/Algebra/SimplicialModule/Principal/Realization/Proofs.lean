@@ -56,16 +56,4 @@ simplicial translation map. -/
   rw [Homeomorph.apply_symm_apply] at h
   exact h.symm
 
-/-- Every simplex of a degreewise surjection has the displayed actual
-continuous product trivialization of its topological pullback. -/
-theorem principalRealizationHomeomorph_exists_of_degreewise_surjective
-    {A B : SimplicialObject (ModuleCat.{u} R)} (p : A ⟶ B)
-    (hp : ∀ n : ℕ, Function.Surjective (p.app (op ⦋n⦌)).hom)
-    (n : ℕ) (b : B.obj (op ⦋n⦌)) :
-    ∃ e : (|kernel p ⋙ forget (ModuleCat R)| × |(Δ[n] : SSet.{u})|) ≃ₜ
-      principalRealizationPullback p b, ∀ x, (e x).val.2 = x.2 := by
-  obtain ⟨z,hz⟩ := hp n b
-  exact ⟨principalRealizationHomeomorph p b z hz, principalRealizationHomeomorph_snd p b z hz⟩
-
-
 end KIP126.Algebra.SimplicialModule

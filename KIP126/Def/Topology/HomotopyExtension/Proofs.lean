@@ -41,13 +41,6 @@ theorem hasHomotopyExtension_iff_lifting {A B : TopCat.{u}} (i : A ⟶ B) :
     · intro a t
       exact congrArg (fun q : C(I, Y) => q t) (ConcreteCategory.congr_hom sq.fac_left a)
 
-/-- Homotopy extension is invariant under a commuting isomorphism of arrows. -/
-theorem hasHomotopyExtension_iff_of_arrow_iso {A B A' B' : TopCat.{u}}
-    {i : A ⟶ B} {i' : A' ⟶ B'} (e : Arrow.mk i ≅ Arrow.mk i') :
-    HasHomotopyExtension i ↔ HasHomotopyExtension i' := by
-  simp only [hasHomotopyExtension_iff_lifting]
-  exact forall_congr' (fun Y => HasLiftingProperty.iff_of_arrow_iso_left e (pathEvaluationZero Y))
-
 /-- Every actual Euclidean disk-boundary inclusion has homotopy extension. -/
 theorem diskBoundaryInclusion_hasHomotopyExtension (n : ℕ) :
     HasHomotopyExtension (TopCat.diskBoundaryInclusion.{u} n) := by

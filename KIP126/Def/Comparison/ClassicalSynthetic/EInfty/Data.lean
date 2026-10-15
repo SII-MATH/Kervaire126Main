@@ -30,9 +30,6 @@ variable {C : Type u} [StableHomotopyCategory.{u, v} C]
   (H : Mod2EilenbergMacLane (C := C)) (N : NuFunctorData C Syn)
   (F : SyntheticAdamsFamily Syn)
 
-/-- Comparisons of classical cycles and boundaries with the synthetic E∞ page,
-together with compatibility under λ and quotient restriction maps. -/
-abbrev NuEInftyFormula := KIP126.Synthetic.SpectralSequence.NuEInftyFormula H N F
 abbrev FiniteEInftyFormula := KIP126.Synthetic.SpectralSequence.FiniteEInftyFormula H N F
 abbrev SyntheticEInftyPresentation :=
   KIP126.Synthetic.SpectralSequence.SyntheticEInftyPresentation H N F

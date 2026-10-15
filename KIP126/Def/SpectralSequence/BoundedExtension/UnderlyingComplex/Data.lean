@@ -1,6 +1,7 @@
 module
 
-public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
+public import KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
+public import KIP126.Def.SpectralSequence.Extension.Proofs
 public import KIP126.Def.SpectralSequence.Extension.Complex.Proofs
 public import KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
 

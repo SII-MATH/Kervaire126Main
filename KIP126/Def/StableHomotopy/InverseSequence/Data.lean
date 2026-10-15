@@ -32,11 +32,6 @@ structure InverseSequence where
 
 variable {C}
 
-/-- Apply a functor to the objects and actual adjacent maps of a sequence. -/
-def InverseSequence.map (D : InverseSequence C) (F : C ⥤ C) : InverseSequence C where
-  obj := fun n => F.obj (D.obj n)
-  step := fun n => F.map (D.step n)
-
 variable [HasProductsOfShape ℕ C]
 
 /-- The endomorphism whose `n`th projection is the `(n+1)`st projection
@@ -52,18 +47,5 @@ noncomputable def InverseSequence.oneSubShift [Preadditive C] (D : InverseSequen
 
 variable [Preadditive C] [HasZeroObject C] [HasShift C ℤ]
   [∀ n : ℤ, (shiftFunctor C n).Additive] [Pretriangulated C]
-
-/-- A Milnor triangle exhibiting the specified vertex `L` as the
-sequential homotopy limit. The first arrow, not just the object, is data. -/
-structure SequentialHomotopyLimit (D : InverseSequence C) (L : C) where
-  toProduct : L ⟶ ∏ᶜ D.obj
-  boundary : ∏ᶜ D.obj ⟶ L⟦(1 : ℤ)⟧
-  distinguished :
-    Triangle.mk toProduct D.oneSubShift boundary ∈ distTriang C
-
-/-- The projections belonging to this specific homotopy-limit witness. -/
-noncomputable def SequentialHomotopyLimit.π {D : InverseSequence C} {L : C}
-    (H : SequentialHomotopyLimit D L) (n : ℕ) : L ⟶ D.obj n :=
-  H.toProduct ≫ Pi.π D.obj n
 
 end KIP126.StableHomotopy

@@ -4,7 +4,6 @@ public import KIP126.Def.ClassicalAdams.SphereAlgebra.Components.Data
 
 @[expose] public section
 
-
 /-! The direct sum of the specified sphere E₂ page with its distributive
 product. Both the product and the specified identity class are fixed before
 the native comparison, in every bidegree. -/

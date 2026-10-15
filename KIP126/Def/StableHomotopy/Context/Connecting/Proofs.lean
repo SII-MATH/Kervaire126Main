@@ -1,7 +1,6 @@
 module
 
 public import KIP126.Def.StableHomotopy.Context.Proofs
-
 import all KIP126.Def.StableHomotopy.Context.Proofs
 
 @[expose] public section
@@ -37,13 +36,5 @@ theorem connectingHomomorphism_naturality (T U : HoCofiberSequence (C := C))
   simpa only [Category.assoc] using congrArg
     (fun f => (shiftFunctorAdd' C n (-1) (n - 1) (by omega)).hom.app SphereSpectrum ≫
       (shiftFunctor C (-1)).map (z ≫ T.h) ≫ f) hn
-
-/-- Reindexing the degree commutes with postcomposition on represented homotopy. -/
-theorem inducedMap_cast {X Y : C} (f : X ⟶ Y) {n m : ℤ} (h : n = m)
-    (x : HomotopyGroup n X) :
-    inducedMap f m (LinearEquiv.cast (R := ℤ) (M := fun i => HomotopyGroup i X) h x) =
-      LinearEquiv.cast (R := ℤ) (M := fun i => HomotopyGroup i Y) h (inducedMap f n x) := by
-  subst m
-  rfl
 
 end KIP126.StableHomotopy

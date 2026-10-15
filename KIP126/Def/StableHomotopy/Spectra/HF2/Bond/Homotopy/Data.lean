@@ -38,12 +38,4 @@ noncomputable def coefficientDiagonalClass (n : ℕ) :
   Quotient.lift (fun p => Prespectrum.loopClass hf2RealizationPrespectrum 0 n n (by omega) p)
     (fun p q h => Prespectrum.loopClass_eq_of_homotopic (X := hf2RealizationPrespectrum) (d := 0) n n (by omega) p q h)
 
-
-/-- The actual zero-dimensional loop specified by a normalized coefficient vertex. -/
-noncomputable def coefficientZeroLoop (a : ZMod 2) :
-    GenLoop (Fin 0) (hf2RealizationLevel 0) (hf2RealizationLevel 0).point :=
-  ⟨ContinuousMap.const _
-    (realizeSimplex (hf2SimplicialSet 0) (a := op (SimplexCategory.mk 0)) (coefficientZeroVertex a) default),
-    fun _ h => by obtain ⟨i,_⟩ := h; exact Fin.elim0 i⟩
-
 end KIP126.StableHomotopy.Spectra.HF2Bond

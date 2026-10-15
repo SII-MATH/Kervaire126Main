@@ -92,19 +92,5 @@ theorem adamsBoundarySubmodule_le_cycle (s t : ℤ) (r : WithTop ℕ) :
       adamsFiniteBoundarySubmodule_le_cycle unit X s t i j
   | coe n => exact adamsFiniteBoundarySubmodule_le_cycle unit X s t n n
 
-/-- Membership at infinity means membership in every finite tower cycle module. -/
-theorem mem_adamsCycleSubmodule_top (s t : ℤ) (x : adamsCycleAmbient unit X s t) :
-    x ∈ adamsCycleSubmodule unit X s t ⊤ ↔
-      ∀ n : ℕ, x.val ∈ adamsCycles unit X (n + 2) (by omega) s t := by
-  simp only [adamsCycleSubmodule, Submodule.mem_iInf]
-  rfl
-
-/-- An infinite-stage boundary already occurs at some finite stage. -/
-theorem mem_adamsBoundarySubmodule_top (s t : ℤ) (x : adamsCycleAmbient unit X s t) :
-    x ∈ adamsBoundarySubmodule unit X s t ⊤ ↔
-      ∃ n : ℕ, x.val ∈ adamsBoundaries unit X (n + 2) (by omega) s t := by
-  exact Submodule.mem_iSup_of_directed (adamsFiniteBoundarySubmodule unit X s t)
-    (adamsFiniteBoundarySubmodule_monotone unit X s t).directed_le
-
 end
 end KIP126.Classical.Adams

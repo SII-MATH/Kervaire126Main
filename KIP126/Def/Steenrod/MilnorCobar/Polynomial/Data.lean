@@ -90,9 +90,6 @@ def cupPolynomial {s s' : ℕ} (x : TensorPower s) (y : TensorPower s') :
   MvPolynomial.rename (fun a : Fin s × ℕ => (a.1.castAdd s', a.2)) x *
     MvPolynomial.rename (fun a : Fin s' × ℕ => (a.1.natAdd s, a.2)) y
 
-/-- The polynomial representative `[ξ₁^64]`. -/
-def h6Polynomial : TensorPower 1 := MvPolynomial.X (0, 0) ^ 64
-
 end
 
 end KIP126.Steenrod.Milnor

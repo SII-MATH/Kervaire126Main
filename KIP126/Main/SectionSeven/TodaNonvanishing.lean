@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Main.Computation.SphereAndCofiber.Consequences
+public import KIP126.Computation.LinCoordinates.Interpretation.SphereAndCofiber.Consequences
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
 public import KIP126.Def.AdamsSynthetic.SectionSeven.AlphaOne
 public import KIP126.Def.Synthetic.Detection.Proofs
@@ -80,7 +80,6 @@ private theorem family_infinity_representative_map
   · exact (congrArg (fun a => a z) (F.pageπ_pageMap i ⊤)).symm.trans (by
       change F.pageMap i ⊤ (((D.family.obj X).sequence.ssData i).pageπ ⊤ z)=_
       rw [he])
-
 
 private theorem sphere_quotient_label_to_nu (q k : ℕ) (s t : ℤ)
     (x : E2 H SphereSpectrum s t) :
@@ -177,7 +176,6 @@ private theorem survives_twelve_not_boundary_eleven (X : C) (p : ℤ × ℤ)
   apply hne
   rw [← hzr]
   exact (subobject_cokernel_π_eq_zero_iff (P.B 10) (P.Z 10) (P.B_le_Z 10) z).mpr hz'
-
 
 namespace MainTodaCycles
 variable {R:Type u} [Ring R] {E:KIP126.SpectralSequence (ModuleCat.{v} R) (ℤ×ℤ)}
@@ -385,7 +383,6 @@ private theorem target_survives_twelve_of_d6_vanishes
     exact choice_nonzero_differential_not_zero hd hc3
   · omega
 
-
 private def shiftSwap (a b : ℤ × ℤ) (A : Syn) :
     (SyntheticCategory.biShift b).obj ((SyntheticCategory.biShift a).obj A) ≅
     (SyntheticCategory.biShift a).obj ((SyntheticCategory.biShift b).obj A) :=
@@ -431,7 +428,6 @@ private theorem shiftSwap_add (coh : BiShiftCoherence Syn)
     Iso.hom_inv_id_app]
   erw [CategoryTheory.Category.id_comp,←Functor.map_comp,Iso.hom_inv_id_app,CategoryTheory.Functor.map_id]
   rfl
-
 
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem shiftSwap_add_eq (coh : BiShiftCoherence Syn)
@@ -504,8 +500,6 @@ private theorem lambda_pow_shift (coh : BiShiftCoherence Syn)
     rw [reassoc_of% hh]
     rfl
 
-
-
 omit [HasFunctorialCofiber (C := Syn)] in
 private theorem shift_assoc_inv (coh : BiShiftCoherence Syn)
     (a b c ab bc total : ℤ × ℤ) (hab : a+b=ab) (hbc : b+c=bc)
@@ -564,7 +558,6 @@ private def sphere_unit (_D : AdamsComparison H M Syn) : BiHom 0 0 (S_0_0 : Syn)
 private def sphere_unit_label (D : AdamsComparison H M Syn) : E2 H SphereSpectrum 0 0 :=
   D.sphereFirstQuotient 0 0 (quotientClass 1 (sphere_unit D))
 
-
 private theorem sphere_unit_action_139 (D : AdamsComparison H M Syn) {A : Syn}
     (a : BiHom 125 139 A) : sphereAction (sphere_unit D) a = a := by
   have hu := D.shiftCoherence.left_unit (125,139) (S_0_0 : Syn)
@@ -589,7 +582,6 @@ private theorem sphere_unit_label_product_139
       (D.sphereFirstQuotient 14 139 b) at h
   rw [hb] at h
   exact h.symm
-
 
 private theorem lambda_eight_target_detected
     (A : AdamsAlgebraStructures D) (qb : QuotientAlgebraCompatibility D A) (ab : AlgebraDetectionCompatibility D A)

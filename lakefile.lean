@@ -25,4 +25,5 @@ lean_lib KIP126 where
 
 @[default_target]
 lean_lib ArchitectureChecks where
-  roots := #[`Tests.Architecture, `Tests.Trust, `Tests.RemoteMerge]
+  roots := #[`Tests.Architecture, `Tests.Trust]
+  globs := #[.submodules `Tests]

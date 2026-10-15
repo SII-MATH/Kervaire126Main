@@ -19,7 +19,6 @@ noncomputable def coefficientStableCode :
   Quot.lift (coefficientDiagonalRepresentative hb) fun _ _ h =>
     coefficientDiagonalRepresentative_relation hb h
 
-
 end KIP126.StableHomotopy.Spectra.HF2Bond
 
 end
@@ -59,7 +58,6 @@ theorem coefficientStableCode_bijective : Function.Bijective (coefficientStableC
     refine ⟨coefficientDiagonalClass 0 (coefficientZeroPiZeroEquiv.symm a),?_⟩
     rw [coefficientStableCode_class]
     exact coefficientZeroPiZeroEquiv.apply_symm_apply a
-
 
 end KIP126.StableHomotopy.Spectra.HF2Bond
 

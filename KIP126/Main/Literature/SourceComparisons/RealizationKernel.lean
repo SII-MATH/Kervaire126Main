@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Main.ExternalHypotheses.Data
+public import KIP126.Computation.Hypotheses.Joint
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
 
 @[expose] public section

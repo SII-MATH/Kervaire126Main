@@ -29,10 +29,6 @@ This is an explicit local structure, not a globally selected instance. -/
 abbrev mod2HomologyModule (n : ℤ) (X : C) : Module (ZMod 2) (Mod2Homology H n X) :=
   AddCommGroup.zmodModule (mod2Homology_two_nsmul_zero H R n X)
 
-/-- The derived F₂ action on the correctly graded represented cohomology. -/
-abbrev mod2CohomologyModule (n : ℤ) (X : C) : Module (ZMod 2) (Mod2Cohomology H n X) :=
-  AddCommGroup.zmodModule (mod2Cohomology_two_nsmul_zero H R n X)
-
 /-- The F₂ action on the coefficient spectrum's actual πₙ. Keeping this
 separate from `mod2CohomologyModule` prevents a cohomological sign change
 from silently regrading coefficient and cooperation calculations. -/
@@ -55,15 +51,6 @@ def cooperationCounitF2 (n : ℤ) :
   letI := mod2HF2HomotopyModule H R n
   (cooperationCounit H R n).toZModLinearMap 2
 
-/-- The actual cooperation diagonal is linear before any Künneth identification. -/
-def cooperationDiagonalF2 (n : ℤ) :
-    letI := mod2HomologyModule H R n H.HF2
-    letI := mod2HomologyModule H R n (H.HF2 ⊗ H.HF2)
-    Mod2Cooperations H n →ₗ[ZMod 2] Mod2Homology H n (H.HF2 ⊗ H.HF2) :=
-  letI := mod2HomologyModule H R n H.HF2
-  letI := mod2HomologyModule H R n (H.HF2 ⊗ H.HF2)
-  (cooperationDiagonalMap H n).toZModLinearMap 2
-
 /-- The existing homology group bundled with its derived F₂ scalar action. -/
 def mod2HomologyF2 (n : ℤ) (X : C) : ModuleCat.{v} (ZMod 2) :=
   letI := mod2HomologyModule H R n X
@@ -75,21 +62,6 @@ def mod2HomologyF2Map {X Y : C} (f : X ⟶ Y) (n : ℤ) :
   letI := mod2HomologyModule H R n X
   letI := mod2HomologyModule H R n Y
   ModuleCat.ofHom ((Mod2Homology.pushforward H f n).toZModLinearMap 2)
-
-/-- The F₂-linear homology functor constructed from the same represented theory. -/
-def mod2HomologyF2Functor (n : ℤ) : C ⥤ ModuleCat.{v} (ZMod 2) where
-  obj X := mod2HomologyF2 H R n X
-  map f := mod2HomologyF2Map H R f n
-  map_id X := by
-    apply ModuleCat.hom_ext
-    ext x
-    change x ≫ H.HF2 ◁ 𝟙 X = x
-    simp
-  map_comp f g := by
-    apply ModuleCat.hom_ext
-    ext x
-    change x ≫ H.HF2 ◁ (f ≫ g) = (x ≫ H.HF2 ◁ f) ≫ H.HF2 ◁ g
-    simp [Category.assoc]
 
 end
 

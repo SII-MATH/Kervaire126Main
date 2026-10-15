@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Transport.Proofs
+public import KIP126.Def.ClassicalAdams.TowerSmash.Pairing.Transport.Data
 public import KIP126.Def.ClassicalAdams.TowerLayer.Proofs
 public import KIP126.Def.StableHomotopy.Cohomology.Multiplication.Pairing.Data
 

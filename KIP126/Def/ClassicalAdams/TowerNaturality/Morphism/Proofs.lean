@@ -105,8 +105,6 @@ theorem adamsTowerSSDataMorphism_page_comparison
     rfl
   exact he.trans (by simpa only [Category.assoc] using hp.symm)
 
-
-
 variable (F : SSDataMorphism (ℤ × ℤ)
     (fun p : ℤ × ℤ => adamsTowerSSData unit X p.1 p.2)
     (fun p : ℤ × ℤ => adamsTowerSSData unit Y p.1 p.2))
@@ -114,80 +112,9 @@ variable (F : SSDataMorphism (ℤ × ℤ)
 
 include hF
 
-theorem adamsTowerSSDataMorphism_internalD (m : ℕ) (s t : ℤ) :
-    F.pageMap (s,t) (m : WithTop ℕ) ≫ adamsTowerInternalD unit Y m s t =
-      adamsTowerInternalD unit X m s t ≫ F.pageMap (s+(m+2:ℕ),t+(m+2:ℕ)-1) (m : WithTop ℕ) := by
-  apply (cancel_mono (adamsTowerSSDataPageIso unit Y (s+(m+2:ℕ)) (t+(m+2:ℕ)-1) m).hom).mp
-  simp only [Category.assoc]
-  rw [adamsTowerInternalD_comparison, ← Category.assoc,
-    adamsTowerSSDataMorphism_page_comparison unit f F hF]
-  rw [adamsTowerSSDataMorphism_page_comparison unit f F hF,
-    ← Category.assoc, adamsTowerInternalD_comparison]
-  simp only [Category.assoc]
-  congr 1
-  apply ModuleCat.hom_ext
-  apply LinearMap.ext
-  intro a
-  exact (adamsPageInduced_differential unit f (m+2) (by omega) s t a).symm
-
-theorem adamsTowerSSDataMorphism_internalD_reindex (m : ℕ) (s t a b : ℤ)
-    (ha : s+(m+2:ℕ) = a) (hb : t+(m+2:ℕ)-1 = b) :
-    F.pageMap (s,t) (m : WithTop ℕ) ≫ adamsTowerInternalD unit Y m s t ≫
-      eqToHom (show (adamsTowerSSData unit Y (s+(m+2:ℕ)) (t+(m+2:ℕ)-1)).page ↑m =
-        (adamsTowerSSData unit Y a b).page ↑m by rw [ha,hb]) =
-    adamsTowerInternalD unit X m s t ≫
-      eqToHom (show (adamsTowerSSData unit X (s+(m+2:ℕ)) (t+(m+2:ℕ)-1)).page ↑m =
-        (adamsTowerSSData unit X a b).page ↑m by rw [ha,hb]) ≫ F.pageMap (a,b) (m : WithTop ℕ) := by
-  subst a
-  subst b
-  simpa only [eqToHom_refl, Category.comp_id, Category.id_comp] using
-    adamsTowerSSDataMorphism_internalD unit f F hF m s t
-
 section
 attribute [local irreducible] adamsTowerSSData
-omit hF in
-private theorem spectralSequenceMorphism_of_internalD
-    (hd : ∀ (m : ℕ) (s t a b : ℤ)
-      (ha : s+(m+2:ℕ) = a) (hb : t+(m+2:ℕ)-1 = b),
-    F.pageMap (s,t) (m : WithTop ℕ) ≫ adamsTowerInternalD unit Y m s t ≫
-      eqToHom (show (adamsTowerSSData unit Y (s+(m+2:ℕ)) (t+(m+2:ℕ)-1)).page ↑m =
-        (adamsTowerSSData unit Y a b).page ↑m by rw [ha,hb]) =
-    adamsTowerInternalD unit X m s t ≫
-      eqToHom (show (adamsTowerSSData unit X (s+(m+2:ℕ)) (t+(m+2:ℕ)-1)).page ↑m =
-        (adamsTowerSSData unit X a b).page ↑m by rw [ha,hb]) ≫ F.pageMap (a,b) (m : WithTop ℕ)) :
-    ∃ G : SpectralSequenceMorphism (adamsTowerInternalSpectralSequence unit X)
-        (adamsTowerInternalSpectralSequence unit Y),
-      G.toSSDataMorphism = F := by
-  refine ⟨{ φ := F.φ
-            preserves_Z := F.preserves_Z
-            preserves_B := F.preserves_B
-            r₀_eq := rfl
-            diffDeg_eq := rfl
-            comm_d := ?_ }, rfl⟩
-  intro r p
-  change F.pageMapAt (E := adamsTowerPreSS unit X) (E' := adamsTowerPreSS unit Y) rfl r p ≫ _ =
-    _ ≫ F.pageMapAt (E := adamsTowerPreSS unit X) (E' := adamsTowerPreSS unit Y) rfl r _ ≫ _
-  simp only [SSDataMorphism.pageMapAt, eqToHom_refl, Category.comp_id]
-  change F.pageMap p (↑(r-2).toNat : WithTop ℕ) ≫ (adamsTowerPreSS unit Y).d r p =
-    (adamsTowerPreSS unit X).d r p ≫ F.pageMap (p+(r,r-1)) (↑(r-2).toNat : WithTop ℕ)
-  by_cases hr : 2 ≤ r
-  · rw [adamsTowerPreSS_d_eq unit Y r p hr, adamsTowerPreSS_d_eq unit X r p hr]
-    have hq : (((r-2).toNat+2:ℕ):ℤ) = r := by omega
-    exact hd (r-2).toNat p.1 p.2
-      (p+(r,r-1)).1 (p+(r,r-1)).2 (by dsimp; omega) (by dsimp; omega)
-  · have hx : (adamsTowerPreSS unit X).d r p = 0 := dif_neg hr
-    have hy : (adamsTowerPreSS unit Y).d r p = 0 := dif_neg hr
-    rw [hx, hy, CategoryTheory.Limits.comp_zero, CategoryTheory.Limits.zero_comp]
 
 end
-
-/-- The actual spectrum map gives a morphism of the already constructed
-Adams spectral sequences, with the prescribed ambient map. -/
-theorem adamsTowerSpectralSequenceMorphism_exists :
-    ∃ G : SpectralSequenceMorphism (adamsTowerInternalSpectralSequence unit X)
-        (adamsTowerInternalSpectralSequence unit Y),
-      G.toSSDataMorphism = F := by
-  exact spectralSequenceMorphism_of_internalD unit F
-    (adamsTowerSSDataMorphism_internalD_reindex unit f F hF)
 
 end KIP126.Classical.Adams

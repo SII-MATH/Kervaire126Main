@@ -72,27 +72,6 @@ theorem pathContraction_projection
     rfl
   exact congrArg (fun z => coneEvaluation (A ⋙ forget (ModuleCat (ZMod 2))) (z, t)) e
 
-/-- Continuous based paths, with the subspace compact-open topology. -/
-def basedPathSpace (A : SimplicialObject (ModuleCat.{0} (ZMod 2))) :=
-  {p : C(I, |A ⋙ forget (ModuleCat (ZMod 2))|) // p 0 = moduleRealizationPoint A}
-
-instance (A : SimplicialObject (ModuleCat.{0} (ZMod 2))) :
-    TopologicalSpace (basedPathSpace A) := inferInstanceAs (TopologicalSpace (Subtype _))
-
-/-- The actual geometric path-object comparison. -/
-noncomputable def pathComparison (A : SimplicialObject (ModuleCat.{0} (ZMod 2)))
-    [Subsingleton (A.obj (op ⦋0⦌))] : C(pathRealizationLevel A, basedPathSpace A) where
-  toFun x := ⟨(coneEvaluation (A ⋙ forget (ModuleCat (ZMod 2)))).curry x,
-    coneEvaluation_zero A x⟩
-  continuous_toFun := (coneEvaluation (A ⋙ forget (ModuleCat (ZMod 2)))).curry.continuous.subtype_mk _
-
-/-- The endpoint of the path comparison is exactly the realized face projection. -/
-theorem pathComparison_endpoint (A : SimplicialObject (ModuleCat.{0} (ZMod 2)))
-    [Subsingleton (A.obj (op ⦋0⦌))] (x : pathRealizationLevel A) :
-    (pathComparison A x).val 1 =
-      SSet.toTop.map (decalageProjection (A ⋙ forget (ModuleCat (ZMod 2)))) x :=
-  coneEvaluation_one _ x
-
 /-- The actual continuous comparison from realized simplicial loops to the
 compact-open space of based topological loops. -/
 noncomputable def loopComparison (n : ℕ) :
@@ -104,49 +83,17 @@ noncomputable def loopComparison (n : ℕ) :
       target' := loopBond_one n x }
   continuous_toFun := Path.continuous_uncurry_iff.mp (loopBond n).continuous
 
-@[simp] theorem loopComparison_apply (n : ℕ) (x : loopRealizationLevel n) (t : I) :
-    loopComparison n x t = loopBond n (x, t) := rfl
-
-@[simp] theorem loopComparison_point (n : ℕ) :
-    loopComparison n (loopRealizationLevel n).point =
-      Path.refl (hf2RealizationLevel (n + 1)).point := by
-  ext t
-  exact loopBond_point n t
-
 /-- The topological adjoint of the specified coefficient spectrum structure map. -/
 noncomputable def bondAdjoint (n : ℕ) :
     C(hf2RealizationLevel n,
       Path (hf2RealizationLevel (n + 1)).point (hf2RealizationLevel (n + 1)).point) :=
   (loopComparison n).comp ⟨coefficientLoopRealizationHomeomorph n, (coefficientLoopRealizationHomeomorph n).continuous⟩
 
-@[simp] theorem bondAdjoint_apply (n : ℕ) (x : hf2RealizationLevel n) (t : I) :
-    bondAdjoint n x t = bond n (x, t) := rfl
-
 @[simp] theorem bondAdjoint_point (n : ℕ) :
     bondAdjoint n (hf2RealizationLevel n).point =
       Path.refl (hf2RealizationLevel (n + 1)).point := by
   ext t
   exact bond_point n t
-
-
-/-- The geometric cone on the zero simplex is the constant based path. -/
-theorem coneEvaluation_point (A : SimplicialObject (ModuleCat.{0} (ZMod 2))) (t : I) :
-    coneEvaluation (A ⋙ forget (ModuleCat (ZMod 2)))
-      ((pathRealizationLevel A).point, t) = moduleRealizationPoint A := by
-  change coneEvaluation _
-    (realizeSimplex (decalage (A ⋙ forget (ModuleCat (ZMod 2))))
-      (a := op ⦋0⦌) (0 : A.obj (op ⦋1⦌)) default, t) = _
-  rw [coneEvaluation_realizeSimplex]
-  exact realizeSimplex_zero A (op ⦋1⦌) _
-
-/-- The comparison takes the specified zero vertex to the constant path. -/
-theorem pathComparison_point (A : SimplicialObject (ModuleCat.{0} (ZMod 2)))
-    [Subsingleton (A.obj (op ⦋0⦌))] :
-    pathComparison A (pathRealizationLevel A).point =
-      ⟨ContinuousMap.const I (moduleRealizationPoint A), rfl⟩ := by
-  apply Subtype.ext
-  ext t
-  exact coneEvaluation_point A t
 
 /-- The realized inclusion of the actual simplicial loop kernel. -/
 noncomputable def loopRealizationInclusion (n : ℕ) :
@@ -171,14 +118,6 @@ theorem loopRealizationInclusion_projection (n : ℕ) (x : loopRealizationLevel 
     SSet.toTop.map (decalageProjection (hf2SimplicialSet (n + 1)))
       (loopRealizationInclusion n x) = (hf2RealizationLevel (n + 1)).point :=
   (coneEvaluation_one _ _).symm.trans (loopBond_one n x)
-
-/-- On the simplicial kernel, the path comparison is exactly the actual loop
-comparison, including its parametrization. -/
-theorem pathComparison_loopRealizationInclusion (n : ℕ)
-    [Subsingleton ((hf2SimplicialModule (n + 1)).obj (op ⦋0⦌))]
-    (x : loopRealizationLevel n) :
-    (pathComparison (hf2SimplicialModule (n + 1)) (loopRealizationInclusion n x)).val =
-      (loopComparison n x).toContinuousMap := rfl
 
 /-- Contracting a point of the realized simplicial kernel and projecting gives
 exactly its specified topological based loop. -/

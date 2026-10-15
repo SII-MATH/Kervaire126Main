@@ -2,7 +2,7 @@ module
 
 public import KIP126.Literature.AdamsSynthetic.ComparisonTheorems
 public import KIP126.Literature.Source
-public import KIP126.Main.Computation.Tmf.Conclusions
+public import KIP126.Def.AdamsSynthetic.Tmf.Predicates
 
 @[expose] public section
 
@@ -26,7 +26,6 @@ structure ClassicalTheorems (η : BiHom 1 2 (S_0_0 : Syn)) : Prop where
   theta5_filtration_gap : Theta5FiltrationGap D
   two_detection : TwoDetection D
   hopf : HopfClassTheorems D η
-
 
 end KIP126.Literature.AdamsSynthetic
 
@@ -69,7 +68,6 @@ def SyntheticSourceTheorems.toComparisonTheorems (S : SyntheticSourceTheorems D)
   e2_weight_vanishing := S.e2_weight_vanishing
   finite_quotient_page_vanishing := S.finite_quotient_page_vanishing
 
-
 end
 end KIP126.Literature.AdamsSynthetic
 
@@ -107,9 +105,7 @@ theorem classicalTheoremsOfSource (D : AdamsComparison H M Syn) (η : BiHom 1 2 
     · simpa [B.convergence, B.eta, ClassicalObject.obj] using hS.eta_detection
     · simpa [B.convergence, B.nu, ClassicalObject.obj] using hS.nu_detection
 
-
 end KIP126.Literature.AdamsSynthetic
-
 
 namespace KIP126.Literature.AdamsSynthetic
 open CategoryTheory KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
@@ -166,11 +162,8 @@ def todaRelationsOfSource (η : BiHom 1 2 (S_0_0 : Syn)) (S : SyntheticH0Class (
   low_indeterminacy := A.low_indeterminacy
   symmetric_two := P.symmetric_two
 
-
 end
 end KIP126.Literature.AdamsSynthetic
-
-
 
 namespace KIP126.Literature.AdamsSynthetic
 open CategoryTheory KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
@@ -220,7 +213,6 @@ structure RealizationDetectionData where
   coordinates : RealizationCoordinates D
   detection : RealizationDetection D coordinates
 
-
 end
 end KIP126.Literature.AdamsSynthetic
 
@@ -238,7 +230,6 @@ variable {C : Type u} [StableHomotopyCategory.{u, v} C]
 statements. They do not assert the ν-extension constructed in LWX Lemma 7.19. -/
 structure Applicability : Prop where
   nuCofiber : NuCofiberNormalization D
-
 
 end
 end KIP126.Literature.AdamsSynthetic
@@ -300,6 +291,5 @@ def SourceTheorems.toAdamsSyntheticTheorems {background : AlgebraRealizationComp
   toda := todaRelationsOfSource D η B.todaSource A.toda P.toda
   tmf := tmf
   applicability := ⟨P.nuCofiber⟩
-
 
 end KIP126.Literature.AdamsSynthetic

@@ -48,10 +48,5 @@ def Fiber (FC : FilteredComplex C) {T : C} (r s k : ℤ)
     (y : T ⟶ FC.assocGraded (s + r) (k - 1)) :=
   { z : Representatives FC T r s k // equation FC T r s k z = (x, y, 0) }
 
-/-- Homogeneous solutions are precisely the kernel of the same equation map. -/
-noncomputable def differences (FC : FilteredComplex C) (T : C) (r s k : ℤ) :
-    AddSubgroup (Representatives FC T r s k) :=
-  (equation FC T r s k).ker
-
 end Solutions
 end KIP126.SpectralSequence.FilteredComplex

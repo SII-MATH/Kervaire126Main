@@ -38,5 +38,4 @@ theorem continuousHomotopyMap_bijective_of_fiber_contraction
   exact (contractionFiberHomotopyMap_bijective f e c hc hf n).comp
     (homeomorphHomotopyEquiv j x ⟨e,rfl⟩ hj' n).bijective
 
-
 end KIP126.Topology

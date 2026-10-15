@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.Algebra.Filtration.Proofs
+public import KIP126.Def.Algebra.Filtration.Data
 public import Mathlib.CategoryTheory.Limits.Constructions.EventuallyConstant
 
 @[expose] public section

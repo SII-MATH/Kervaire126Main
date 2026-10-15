@@ -22,7 +22,6 @@ theorem cubeFacesRetractionFunction_continuous {n : ℕ} (faces : Set (Fin n × 
       continuous_const).div (cubeFacesScale_continuous faces)
         (fun z => (cubeFacesScale_pos faces z).ne') |>.add continuous_const).div_const 2
 
-
 theorem cubeFacesRetractionFunction_restrict {n : ℕ} (faces : Set (Fin n × Bool))
     (z : I × (Fin n → I)) (hz : z.1 = 0 ∨ z.2 ∈ cubeFacesBoundary n faces) :
     cubeFacesRetractionFunction faces z = z := by
@@ -87,6 +86,5 @@ theorem cubeFacesRetractionFunction_range {n : ℕ} (faces : Set (Fin n × Bool)
           change 2*(z.2 i : ℝ)-1 = cubeFacesScale faces z at he
           rw [he,div_self hp.ne']
           norm_num
-
 
 end KIP126.Topology.HomotopyLifting

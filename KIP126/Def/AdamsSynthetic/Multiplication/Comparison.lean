@@ -23,7 +23,6 @@ variable {C : Type u} [StableHomotopyCategory.{u,v} C]
   [HasFunctorialCofiber (C := Syn)]
   {H : Mod2EilenbergMacLane (C := C)} {M : MilnorCooperations H}
 
-
 variable (D : AdamsComparison H M Syn)
 
 /-- The first-lambda-quotient comparison identifies its ACTUAL algebra product

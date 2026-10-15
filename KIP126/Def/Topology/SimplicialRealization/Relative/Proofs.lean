@@ -35,8 +35,6 @@ theorem vertex_homotopy_extension (X : SSet.{u}) (x : X.obj (op ⦋0⦌))
       exact hp)
   exact ⟨H, hH0, hHi default⟩
 
-
-
 /-- The geometric vertex agrees exactly with the vertex selected by the realization adjunction. -/
 theorem realization_vertex_eq_unit (X : SSet.{u}) (x : X.obj (op ⦋0⦌)) :
     SSet.toTop.map (SSet.const x : Δ[0] ⟶ X) default =

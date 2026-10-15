@@ -1,7 +1,8 @@
 module
 
-public import KIP126.Main.Computation.LowDegrees
-public import KIP126.Main.SectionSeven.Indeterminacy
+public import KIP126.Computation.LinCoordinates.Certificates.LowDegrees
+public import KIP126.Main.SectionSeven.SphereClasses
+public import KIP126.Main.SectionSeven.Lambda
 
 @[expose] public section
 
@@ -15,10 +16,13 @@ open KIP126.Literature.AdamsSynthetic KIP126.Main.AdamsSynthetic
 noncomputable section
 
 local notation "D" => adamsComparison
+
 local notation "M" => standardMilnorCooperations
-local notation "L" => sphereClasses
+
 local notation "I" => computationTheorems
+
 local notation "η" => etaClass
+
 local notation "h₀" => literatureTheorems.toda.h0
 
 section ThetaBShuffleProof
@@ -644,13 +648,12 @@ theorem theta_b_multiplied_shuffle
       lambdaMultiply 3 (sphereProduct η (sphereProduct theta b)) := by
   have horder := KIP126.Computation.SphereAndCofiber.theta5_choice_order_two literatureTheorems I theta htheta
   exact theta_b_shuffle_from_low_degrees D literatureTheorems.synthetic.eInfty sphereVanishing
-    (KIP126.Main.Computation.sphere_eta_nonzero_unique KIP126.Main.externalHypotheses)
-    (KIP126.Main.Computation.sphere_e2_two_three_subsingleton KIP126.Main.externalHypotheses)
+    (KIP126.Computation.LinCoordinates.sphere_eta_nonzero_unique KIP126.Main.externalHypotheses)
+    (KIP126.Computation.LinCoordinates.sphere_e2_two_three_subsingleton KIP126.Main.externalHypotheses)
     h₀ η literatureTheorems.toda.lambda_h0
     theta b horder
     (KIP126.Computation.SphereAndCofiber.two_torsion_62_70 literatureTheorems I sphereVanishing b)
     z hz (literatureTheorems.toda.symmetric_two theta horder)
-
 
 end
 end KIP126.Main.SectionSeven

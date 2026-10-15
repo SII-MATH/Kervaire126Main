@@ -8,11 +8,6 @@ namespace KIP126.SpectralSequence
 open CategoryTheory
 universe u v
 
-/-- Kernel membership for an actual page element, with no survival claim. -/
-def IsPageCycle {R : Type u} [Ring R]
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
-    (r : ℤ) (p : ℤ × ℤ) (x : E.Page r p) : Prop := E.d r p x = 0
-
 /-- Membership in the image of the actual page differential with source
 degree `p`. The target degree is `p + E.diffDeg r`. Zero is allowed: this is
 boundary membership, not the assertion of a nonzero incoming hit. -/
@@ -50,13 +45,6 @@ def NeverHit {R : Type u} [Ring R]
   ∀ (r : ℤ) (_ : 2 ≤ r) (q : ℤ × ℤ) (h : q + E.diffDeg r = p)
     (y : E.Page r p), RepresentsOnPage E r p x y → y ≠ 0 →
     ∀ z : E.Page r q, (E.d r q ≫ eqToHom (congrArg (E.Page r) h)) z ≠ y
-
-/-- Vanishing on all continuations of a fixed E₂ class on one page.
-This predicate alone does not assert that any continuation exists. -/
-def DifferentialVanishesOn {R : Type u} [Ring R]
-    (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))
-    (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=
-  ∀ xr : E.Page r p, RepresentsOnPage E r p x xr → E.d r p xr = 0
 
 /-- Every differential on a continuation is zero or represented by the
 specified target. The nonzero alternative is not assumed to occur. -/

@@ -42,34 +42,5 @@ theorem adamsCycles_mem_iff_longLayer (r : ℕ) (hr : 1 ≤ r) (s t : ℤ)
     (adamsTowerMapAt_comp unit X s (s + 1) (s + r) (by omega) (by omega))
     (t - s) x).symm
 
-theorem adamsLongLayerToE1_mem_cycles (r : ℕ) (hr : 1 ≤ r) (s t : ℤ)
-    (z : HomotopyGroup (t - s) (adamsLongLayer unit X r hr s)) :
-    adamsLongLayerToE1 unit X r hr s t z ∈ adamsCycles unit X r hr s t :=
-  (adamsCycles_mem_iff_longLayer unit X r hr s t _).mpr ⟨z, rfl⟩
-
-/-- An equality of the actual submodules, not merely an abstract isomorphism. -/
-theorem adamsCycles_eq_range_longLayer (r : ℕ) (hr : 1 ≤ r) (s t : ℤ) :
-    adamsCycles unit X r hr s t = LinearMap.range (adamsLongLayerToE1 unit X r hr s t) := by
-  ext x
-  exact adamsCycles_mem_iff_longLayer unit X r hr s t x
-
-/-- Compute the existing differential on any long-layer representative by
-its own connecting homomorphism; the result is independent of that choice
-because it is equal to the already constructed quotient differential. -/
-theorem adamsDifferential_of_longLayer (r : ℕ) (hr : 1 ≤ r) (s t : ℤ)
-    (x : adamsCycles unit X r hr s t)
-    (z : HomotopyGroup (t - s) (adamsLongLayer unit X r hr s))
-    (hz : adamsLongLayerToE1 unit X r hr s t z = x.val) :
-    adamsDifferential unit X r hr s t
-        ((adamsCycleBoundaries unit X r hr s t).mkQ x) =
-      adamsJToPage unit X r hr (s + r) (t + r - 1)
-        (Eq.mp (congrArg (fun n => HomotopyGroup n (adamsTowerAt unit X (s + r)))
-          (by omega : t - s - 1 = (t + r - 1) - (s + r)))
-            (adamsLongLayerK unit X r hr s t z)) := by
-  rw [adamsDifferential_mk]
-  apply adamsDifferentialValue_eq_of_lift
-  exact (adamsLongLayerK_lift unit X r hr s t z).trans
-    (congrArg (adamsK unit X s t) hz)
-
 end
 end KIP126.Classical.Adams

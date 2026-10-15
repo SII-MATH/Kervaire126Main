@@ -107,21 +107,4 @@ theorem exists_open_pushout_retraction_with_preimages
   · exact fun y _ => hgb y
   · exact fun x _ => hga x
 
-/-- The descended collar retraction is defined on a genuine open
-neighborhood of the entire old space. -/
-theorem exists_open_pushout_retraction
-    {S A B P : TopCat.{u}} [NormalSpace A] [T1Space A]
-    {i : S ⟶ A} {f : S ⟶ B} {a : A ⟶ P} {b : B ⟶ P}
-    (h : IsPushout i f a b) (hi : IsClosedEmbedding i)
-    (W : Set A) (hW : IsOpen W) (hiW : Set.range i ⊆ W)
-    (r : A → B) (hr : ContinuousOn r W) (hri : ∀ s, r (i s) = f s) :
-    ∃ V : Set P, IsOpen V ∧ Set.range b ⊆ V ∧
-      ∃ g : C(V,B), (∀ y (hy : b y ∈ V), g ⟨b y,hy⟩ = y) ∧
-        (∀ x (hx : a x ∈ V), g ⟨a x,hx⟩ = r x) := by
-  obtain ⟨V,hV,_,hbV,g,hgb,hga⟩ :=
-    exists_open_pushout_retraction_with_preimages h hi W hW hiW r hr hri
-  refine ⟨V,hV,?_,g,hgb,hga⟩
-  rintro _ ⟨y,rfl⟩
-  exact (Set.eq_univ_iff_forall.mp hbV) y
-
 end KIP126.Topology

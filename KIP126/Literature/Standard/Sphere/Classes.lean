@@ -13,10 +13,6 @@ No new object or correctness axiom is introduced by these definitions.
 -/
 namespace KIP126.Classical.Adams
 
-/-- The standard class of [ξ₁^64] in the same internal sphere E₂ as the data labels. -/
-noncomputable def standardH6 : sphereAdamsData.Page 2 (1, 64) :=
-  Sphere.Internal.hi standardFoundation.hf2 standardMilnorCooperations 6
-
 /-- The standard class of the cobar concatenation [ξ₁^64 | ξ₁^64].
 This is the standard h₆² class in the final permanence theorem, in (s,t) = (2,128), stem 126.
 It is defined before, and independently of, any CSV encoding or comparison.

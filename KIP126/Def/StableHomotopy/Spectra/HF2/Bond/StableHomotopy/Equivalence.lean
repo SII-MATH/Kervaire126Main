@@ -18,7 +18,6 @@ noncomputable def coefficientStableZeroEquiv :
     Prespectrum.StableHomotopy hf2RealizationPrespectrum 0 ≃ ZMod 2 :=
   Equiv.ofBijective (coefficientStableCode hb) (coefficientStableCode_bijective hb)
 
-
 end KIP126.StableHomotopy.Spectra.HF2Bond
 
 end
@@ -57,16 +56,6 @@ theorem coefficientStableZeroEquiv_add (n : ℕ)
       coefficientStableZeroEquiv hb
         (Prespectrum.loopClass hf2RealizationPrespectrum 0 (n+1) (n+1) (by omega) q) := by
   simpa only [coefficientStableZeroEquiv_class] using coefficientDiagonalEquiv_transAt hb n p q
-
-
-/-- The stable equivalence is fixed by the specified normalized coefficient
-vertex, rather than an unspecified bijection of two-element sets. -/
-theorem coefficientStableZeroEquiv_coefficient
-    (hb : ∀ n r, Function.Bijective (bondHomotopyMap n r)) (a : ZMod 2) :
-    coefficientStableZeroEquiv hb
-      (Prespectrum.loopClass hf2RealizationPrespectrum 0 0 0 (by simp) (coefficientZeroLoop a)) = a := by
-  rw [coefficientStableZeroEquiv_class]
-  exact coefficientZeroPiZeroEquiv_coefficient a
 
 end KIP126.StableHomotopy.Spectra.HF2Bond
 

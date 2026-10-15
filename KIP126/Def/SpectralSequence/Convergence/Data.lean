@@ -28,19 +28,6 @@ structure Filtration {ω : Type w} (A : ω → C) where
   /-- Successive levels form a decreasing family. -/
   mono : ∀ (s : ℤ) (k : ω), F (s + 1) k ≤ F s k
 
-/-- View the spectral-sequence filtration as a decreasing algebraic filtration. -/
-def Filtration.toAlgebra {ω : Type w} {A : ω → C} (F : Filtration A) :
-    KIP126.Algebra.Filtration A where
-  F := F.F
-  decreasing := F.mono
-
-/-- View a decreasing algebraic filtration as a spectral-sequence filtration. -/
-def _root_.KIP126.Algebra.Filtration.toSpectralSequence
-    {ω : Type w} {A : ω → C} (F : KIP126.Algebra.Filtration A) :
-    Filtration A where
-  F := F.F
-  mono := F.decreasing
-
 /-- Associated graded piece `F^s A^k / F^(s+1) A^k`. -/
 noncomputable def Filtration.associatedGraded
     {ω : Type w} {A : ω → C} (F : Filtration A) (s : ℤ) (k : ω) : C :=
@@ -70,20 +57,6 @@ structure Convergence
   /-- Identification of the infinity page with the associated graded. -/
   iso : ∀ (k : ω),
     (E.ssData k).eInfty ≅ F.associatedGraded (reindex k).1 (reindex k).2
-
-/-- Filtration-degree component of the convergence reindexing. -/
-def Convergence.filtrationDegree
-    {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
-    {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
-    (conv : Convergence E A F) (k : ω) : ℤ :=
-  (conv.reindex k).1
-
-/-- Stem-degree component of the convergence reindexing. -/
-def Convergence.stemDegree
-    {ω : Type w} [AddCommGroup ω] [DecidableEq ω]
-    {E : SpectralSequence C ω} {ω' : Type w} {A : ω' → C} {F : Filtration A}
-    (conv : Convergence E A F) (k : ω) : ω' :=
-  (conv.reindex k).2
 
 /-- Map on associated graded pieces induced by filtration-compatible maps. -/
 noncomputable def Filtration.inducedAssocGradedMap
@@ -157,34 +130,5 @@ noncomputable def FilteredMorphism.inducedGrMap
     (f : FilteredMorphism F₁ F₂) (s : ℤ) (k : ω) :
     F₁.associatedGraded s k ⟶ F₂.associatedGraded s k :=
   Filtration.inducedAssocGradedMap f.map f.compat s k
-
-/-- A spectral sequence packaged with its filtered target and convergence data. -/
-structure ConvergingSS
-    (C : Type u) [Category.{v} C] [Abelian C]
-    (ω : Type w) [AddCommGroup ω] [DecidableEq ω] (ω' : Type w) where
-  /-- Underlying spectral sequence. -/
-  E : SpectralSequence C ω
-  /-- Target graded object. -/
-  A : ω' → C
-  /-- Filtration on the target. -/
-  F : Filtration A
-  /-- Convergence identification. -/
-  conv : Convergence E A F
-
-/-- Associated-graded map with the restriction maps supplied explicitly. -/
-noncomputable def Filtration.inducedGradedMapOfMap
-    {ω' : Type w} {A₁ A₂ : ω' → C}
-    {F₁ : Filtration A₁} {F₂ : Filtration A₂}
-    (φ : ∀ (s : ℤ) (k' : ω'), Subobject.underlying.obj (F₁.F s k') ⟶
-      Subobject.underlying.obj (F₂.F s k'))
-    (hw : ∀ (s : ℤ) (k' : ω'),
-      Subobject.ofLE (F₁.F (s + 1) k') (F₁.F s k') (F₁.mono s k') ≫ φ s k' =
-        φ (s + 1) k' ≫
-          Subobject.ofLE (F₂.F (s + 1) k') (F₂.F s k') (F₂.mono s k'))
-    (s : ℤ) (k' : ω') : F₁.associatedGraded s k' ⟶ F₂.associatedGraded s k' :=
-  cokernel.map
-    (Subobject.ofLE (F₁.F (s + 1) k') (F₁.F s k') (F₁.mono s k'))
-    (Subobject.ofLE (F₂.F (s + 1) k') (F₂.F s k') (F₂.mono s k'))
-    (φ (s + 1) k') (φ s k') (hw s k')
 
 end KIP126.SpectralSequence

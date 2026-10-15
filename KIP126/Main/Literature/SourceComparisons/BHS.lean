@@ -1,8 +1,13 @@
 module
 
-public import KIP126.Main.ExternalHypotheses.Data
+public import KIP126.Computation.Hypotheses.Joint
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
-public import KIP126.Main.AdamsSynthetic.SphereConvergence
+public import KIP126.Literature.Background.SphereConvergence
+public import KIP126.Literature.Standard.ClassicalContext
+public import KIP126.Def.StableHomotopy.FiniteType.Predicates
+public import KIP126.Def.StableHomotopy.Context.Proofs
+public import KIP126.Def.StableHomotopy.Context.Mapping.Data
+public import Mathlib.GroupTheory.QuotientGroup.Finite
 
 @[expose] public section
 
@@ -11,7 +16,7 @@ public import KIP126.Main.AdamsSynthetic.SphereConvergence
 The statements retain the hypotheses of BHS A.1(2) and cor:tau-surj
 (Source/BHS/source/SynRevBigraded.tex and SynRevAdams.tex). Completion maps
 and their image, divisibility and realization comparisons transport the
-source theorems. Specialization to the sphere uses Def's accepted
+source theorems. Specialization to the sphere uses Literature's accepted
 standard-sphere applicability hypothesis; source nilpotent completeness
 and strong convergence remain explicit.
 -/
@@ -20,81 +25,6 @@ open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory
 open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology
 open KIP126.Classical.Adams KIP126.Synthetic.Context KIP126.AdamsSynthetic
 open KIP126.Literature.AdamsSynthetic
-
-/-- The actual selected ν cofiber has finite mod-two homology, by exact
-tensoring of its sphere triangle. No Hopf detection or literature input is used. -/
-theorem standard_nu_cofiber_finite_mod2_type :
-    FiniteMod2Type standardFoundation.hf2
-      (ClassicalObject.obj (C := standardFoundation.Spectrum)
-        standardAdamsComparison.hopfAndDetector .nuCofiber) := by
-  let c := KIP126.AdamsSynthetic.Standard.classicalContext
-  letI : KIP126.Foundation.TensorTriangulatedStructure c.stableContext := c.tensorStructure
-  letI : (tensorLeft standardFoundation.hf2.HF2).CommShift ℤ :=
-    KIP126.Foundation.TensorTriangulatedStructure.leftShift (F := c.stableContext) _
-  letI : (tensorLeft standardFoundation.hf2.HF2).IsTriangulated :=
-    KIP126.Foundation.TensorTriangulatedStructure.leftExact (F := c.stableContext) _
-  have hs : FiniteMod2Type standardFoundation.hf2 SphereSpectrum :=
-    KIP126.Def.standardSphereFiniteMod2Type
-  exact FiniteMod2Type.of_cofiber
-    (HoCofiberSequence.ofMorphism (C := standardFoundation.Spectrum)
-      standardAdamsComparison.hopfAndDetector.nuMap) (hs.shift 3) hs
-
-/-- Apply BHS `cor:synth-ctau-ASS` (1),(3) on the same supplied synthetic
-family and positive finite lambda quotient. This projection retains all
-finite pages r >= 2 and both weight inequalities. It does not derive an
-E3 or E7 zero region from an E-infinity-only comparison, and it supplies no
-new computation result. The field is supplied with the other BHS literature
-statements. -/
-theorem bhs_finite_quotient_page_vanishing
-    (syntheticContext : StandardSyntheticContext) (source : SyntheticSourceTheorems syntheticContext.adamsComparison) :
-    FiniteQuotientPageVanishing syntheticContext.adamsComparison :=
-  source.finite_quotient_page_vanishing
-
-/-- Apply BHS A.1(2) to the specified synthetic context and source object,
-with the source completeness and strong-convergence hypotheses explicit. -/
-theorem bhs_permanent_lift_of_complete_source
-    (syntheticContext : StandardSyntheticContext) (source : SyntheticSourceTheorems syntheticContext.adamsComparison)
-    (X : standardFoundation.Spectrum)
-    (products : HasProductsOfShape ℕ standardFoundation.Spectrum)
-    (hX : BHSObjectApplicability products standardFoundation.hf2.unit X) :
-    BHSPermanentLiftAt syntheticContext.adamsComparison X :=
-  source.permanent_lift X products hX
-
-/-- BHS cor:tau-surj on that same source. -/
-theorem bhs_filtration_lambda_of_complete_source
-    (syntheticContext : StandardSyntheticContext) (source : SyntheticSourceTheorems syntheticContext.adamsComparison)
-    (X : standardFoundation.Spectrum)
-    (products : HasProductsOfShape ℕ standardFoundation.Spectrum)
-    (hX : BHSObjectApplicability products standardFoundation.hf2.unit X) :
-    BHSFiltrationLambdaAt syntheticContext.adamsComparison X :=
-  source.filtration_lambda X products hX
-
-/-- Specialize the source theorem to the sphere using its fixed
-completeness and strong-convergence hypotheses from Def. -/
-theorem standard_sphere_permanent_lift
-    (syntheticContext : StandardSyntheticContext) (source : SyntheticSourceTheorems syntheticContext.adamsComparison) :
-    BHSPermanentLiftAt syntheticContext.adamsComparison SphereSpectrum :=
-  bhs_permanent_lift_of_complete_source syntheticContext source _ _
-    KIP126.Def.standardSphereApplicability
-
-theorem standard_sphere_filtration_lambda
-    (syntheticContext : StandardSyntheticContext) (source : SyntheticSourceTheorems syntheticContext.adamsComparison) :
-    BHSFiltrationLambdaAt syntheticContext.adamsComparison SphereSpectrum :=
-  bhs_filtration_lambda_of_complete_source syntheticContext source _ _
-    KIP126.Def.standardSphereApplicability
-
-/-- The remaining untruncated clauses of BHS A.1 on an applicable source.
-The classical convergence is canonical for that SAME source object's tower. -/
-theorem bhs_realization_of_complete_source
-    (syntheticContext : StandardSyntheticContext)
-    (R : RealizationCoordinates syntheticContext.adamsComparison)
-    (source : BHSRealizationSourceResults syntheticContext.adamsComparison R)
-    (X : standardFoundation.Spectrum)
-    (products : HasProductsOfShape ℕ standardFoundation.Spectrum)
-    (hX : BHSObjectApplicability products standardFoundation.hf2.unit X)
-    (convergence : TowerDetection.Convergence standardFoundation.hf2.unit X) :
-    BHSRealizationDetectionAt syntheticContext.adamsComparison R X convergence :=
-  source X products hX convergence
 
 section Transport
 universe u v w

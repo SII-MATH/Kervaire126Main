@@ -24,5 +24,4 @@ noncomputable def cubeFacesRetractionFunction {n : ℕ} (faces : Set (Fin n × B
       (le_div_iff₀ hp).mpr (by linarith [z.1.property.2])
     linarith
 
-
 end KIP126.Topology.HomotopyLifting

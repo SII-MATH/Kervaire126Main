@@ -1,7 +1,6 @@
 module
 
 import KIP126
-import Tests.RemoteMerge
 import Lean
 
 /-! Public consumers of the migrated four-directory API. The endpoint is the

@@ -17,7 +17,6 @@ noncomputable def pushoutCellRepresentative
     (h : IsPushout i f a b) (x : P) (hx : x ∉ Set.range b) : A :=
   ((Types.eq_or_eq_of_isPushout (h.map (forget TopCat)) x).resolve_right hx).choose
 
-
 end KIP126.Topology
 
 end
@@ -55,7 +54,6 @@ theorem pushoutCellRepresentative_eq
     pushoutCellRepresentative h x hx = y :=
   pushout_cell_eq_of_outside_boundary h hi (pushoutCellRepresentative_not_boundary h x hx)
     ((pushoutCellRepresentative_projection h x hx).trans hy.symm)
-
 
 end KIP126.Topology
 

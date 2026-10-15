@@ -1,7 +1,6 @@
 module
 
 public import KIP126.Literature.AdamsSynthetic.Statements
-
 public import KIP126.Literature.Source
 public import KIP126.Literature.Standard.AlgebraRealization
 public import KIP126.Literature.Standard.Sphere.EInfty

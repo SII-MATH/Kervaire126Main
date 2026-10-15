@@ -66,25 +66,5 @@ theorem DifferentialAt.cycles {r : ℤ} {p q : ℤ × ℤ}
   exact ⟨(isCycle_iff_represents H X r hr p x).mpr ⟨xr, hx⟩,
     (isCycle_iff_represents H X r hr q y).mpr ⟨yr, hy⟩⟩
 
-/-- Differential degree is fixed by the actual Adams tower. -/
-theorem DifferentialAt.degree {r : ℤ} {p q : ℤ × ℤ}
-    {x : Ambient H X p} {y : Ambient H X q}
-    (h : DifferentialAt H X r p q x y) : p + (r, r - 1) = q :=
-  h.2.target_degree
-
-/-- Nonzero E∞ survival implies a permanent representative, with no converse asserted. -/
-theorem isPermanent_of_nonzeroSurvival (p : ℤ × ℤ) (x : Ambient H X p)
-    (h : NonzeroSurvival (adamsTowerInternalSpectralSequence H.unit X) p x) :
-    IsPermanent H X p x := by
-  obtain ⟨z, hz, _⟩ := h
-  exact ⟨z, hz⟩
-
-/-- The paper's classical crossing range is empty on E₂. -/
-theorem noCrossingOn_two (r : ℤ) (hr : 2 ≤ r) (p : ℤ × ℤ) :
-    NoCrossingOn H X r 2 p := by
-  refine ⟨le_refl _, hr, ?_⟩
-  rintro ⟨a, b, ha, hb, _⟩
-  omega
-
 end
 end KIP126.Classical.Adams.PageRepresentatives

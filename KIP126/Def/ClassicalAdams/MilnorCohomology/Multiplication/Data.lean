@@ -29,12 +29,5 @@ def cup {s t s' t' : ℕ} :
     (boundaries_le_cycleCupClass_ker H M s t s' t')
     (boundaries_le_cycleCupClass_flip_ker H M s t s' t')
 
-/-- Transport along equalities of the two grading indices. -/
-def cohomologyReindex {s s' t t' : ℕ} (hs : s = s') (ht : t = t') :
-    Cohomology H M s t ≃ₗ[F2] Cohomology H M s' t' := by
-  subst s'
-  subst t'
-  exact LinearEquiv.refl F2 _
-
 end
 end KIP126.Classical.Adams.MilnorCohomology

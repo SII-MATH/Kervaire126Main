@@ -17,7 +17,6 @@ noncomputable def cubeFacesHornRetraction {n : ℕ} (faces : Set (Fin n × Bool)
   ⟨fun z => ⟨cubeFacesRetractionFunction faces z,cubeFacesRetractionFunction_range faces z⟩,
     (cubeFacesRetractionFunction_continuous faces).subtype_mk _⟩
 
-
 end KIP126.Topology.HomotopyLifting
 
 end
@@ -46,7 +45,6 @@ theorem exists_relativeLift_faces_in_trivialization
       (∀ z, L z.val = g z) :=
   exists_relativeLift_of_retraction f T (cubeFacesBoundary n faces)
     (cubeFacesHornRetraction faces) (cubeFacesHornRetraction_restrict faces) g H hH hcomm
-
 
 end KIP126.Topology.HomotopyLifting
 

@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Main.ExternalHypotheses.Data
+public import KIP126.Computation.Hypotheses.Joint
 public import KIP126.Main.Literature.AdamsSynthetic.Theorems
 
 @[expose] public section
@@ -27,13 +27,6 @@ theorem todaApplication_of_secondary (η : BiHom 1 2 (S_0_0 : Syn))
   intro θ hθ
   rw [← B.star_product θ]
   exact B.symmetric θ hθ
-
-/-- The secondary Toda relations follow from the specified source facts
-and the comparison of secondary operations on the same sphere. -/
-theorem toda_of_source (η : BiHom 1 2 (S_0_0 : Syn)) (S : SyntheticH0Class (Syn := Syn))
-    (A : TodaSourceResults D η S) (B : TodaSecondaryComparison η S) :
-    Nonempty (TodaRelations D η) := by
-  exact ⟨todaRelationsOfSource D η S A (todaApplication_of_secondary η S B)⟩
 
 end
 end KIP126.Main.Literature.SourceComparisons

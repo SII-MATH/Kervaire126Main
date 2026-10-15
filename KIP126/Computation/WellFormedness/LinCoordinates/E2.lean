@@ -5,7 +5,6 @@ public import KIP126.Def.ComputationModel.PolynomialAlgebra.HomogeneousParts
 
 @[expose] public section
 
-
 namespace KIP126.LinE2
 
 /-- Homogeneous multiplication is a property of the actual quotient algebra;

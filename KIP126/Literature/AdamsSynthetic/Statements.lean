@@ -23,23 +23,6 @@ variable {C : Type u} [StableHomotopyCategory.{u, v} C]
 This abbreviation states those properties without asserting their truth. -/
 abbrev SyntheticLiftTheorems := KIP126.Synthetic.NuCofiberAndLiftTheorems H D.nu
 
-/-- BHS A.8 / LWX Theorem 3.6: the source λᵏx and target
-λ^(k+r-1)y have the same weight. This literature statement compares the
-specified differentials; it does not define a map from the entire classical
-sequence to every synthetic weight. -/
-def ClassicalSyntheticDifferentialComparison : Prop :=
-  ∀ (X : ClassicalObject) (a s t : ℤ) (r k : ℕ), 2 ≤ r →
-    ∀ (x : E2 H (X.obj D.hopfAndDetector) s t)
-      (y : E2 H (X.obj D.hopfAndDetector) (s + r) (t + r - 1)),
-    KIP126.SpectralSequence.HasDifferential
-      (adamsTowerInternalSpectralSequence H.unit (X.obj D.hopfAndDetector)) r
-      (s,t) (s+r,t+r-1) x y →
-    KIP126.Synthetic.SpectralSequence.HasDifferential
-      (D.family.obj ((SyntheticCategory.biShift (0,a)).obj
-        (D.nu.functor.obj (X.obj D.hopfAndDetector)))) r
-      (s,t,t+a-k) (s+r,t+r-1,(t+r-1)+a-(k+(r-1) : ℕ))
-      (D.nuE2 X a s t k x) (D.nuE2 X a (s+r) (t+r-1) (k+(r-1)) y)
-
 /-- Identify the geometric Hopf maps used by the extension laws with standard classes
 and to the actual synthetic η used in C₅. These are explicit literature
 identifications, not consequences inferred merely from the maps' names. -/
@@ -52,41 +35,11 @@ def HopfClassComparison (η : BiHom 1 2 (S_0_0 : Syn)) : Prop :=
     η = (etaSourceIso D he).hom ≫
       (D.normalizedMap (.shift 1 .sphere) .sphere D.hopfAndDetector.etaMap).map ≫ D.nu.unitIso.hom
 
-/-- The original distinguished-choice BX condition, before the LWX
-normalization and arbitrary-choice deductions. BX Proposition 7.19. -/
-abbrev BXThetaCriterion (η : BiHom 1 2 (S_0_0 : Syn)) (θ : BiHom 62 64 (S_0_0 : Syn)) :=
-  BJMOriginalCriterion H M D.sphereFirstQuotient η θ
-
 /-- Actual order-two statement used before Moss; no presentation of π₆₂
 as an unrelated abstract group is substituted. Xu/IWX, cited by LWX 7.16. -/
 def OrderTwo62 : Prop :=
   ∀ α : HomotopyGroup (C := C) 62 SphereSpectrum, α + α = 0
 
-/-- The local sphere form of the Moss implication needed in LWX Lemma 7.16.
-Source: Moss Theorem 1.2; crossing convention also IWX Definition 2.15 and
-Theorem 2.16. No claim of zero indeterminacy is hidden in the conclusion:
-there exists a permanent defining-system value detecting a bracket member.
-The three detection and two null-composition hypotheses are explicit. -/
-def ThetaBMossConvergence : Prop :=
-  ∀ (B : E2 H SphereSpectrum 8 70)
-    (θ β : HomotopyGroup (C := C) 62 SphereSpectrum)
-    (two : HomotopyGroup (C := C) 0 SphereSpectrum),
-    two = (shiftFunctorZero C ℤ).hom.app SphereSpectrum ≫ (2 • 𝟙 _) →
-    TowerDetection.Detects (D.classicalConvergence .sphere) (2,64)
-      (Sphere.Internal.hiSquare H M 5) θ →
-    TowerDetection.Detects (D.classicalConvergence .sphere) (1,1)
-      (Sphere.Internal.hi H M 0) two →
-    TowerDetection.Detects (D.classicalConvergence .sphere) (8,70) B β →
-    θ + θ = 0 → β + β = 0 →
-    (ThetaBMassey M B).Nonempty →
-    ¬ SphereMossCrossing (H := H) 3 (3,65) →
-    ¬ SphereMossCrossing (H := H) 3 (9,71) →
-    TowerDetection.ResidualInjectivity H.unit (SphereSpectrum (C := C)) →
-    ∃ (z : E2 H SphereSpectrum 9 134)
-      (ξ : HomotopyGroup (C := C) 125 SphereSpectrum),
-      ThetaBMasseyDefiningSystem M B z ∧
-      TowerDetection.Detects (D.classicalConvergence .sphere) (9,134) z ξ ∧
-      ThetaBToda θ β ξ
 end KIP126.Literature.AdamsSynthetic
 
 /-! Classical literature hypotheses on the specified sphere Adams tower.
@@ -140,7 +93,6 @@ def HopfClassTheorems (η : BiHom 1 2 (S_0_0 : Syn)) : Prop :=
     (1,4) (Sphere.Internal.hi H M 2)
 
 end KIP126.Literature.AdamsSynthetic
-
 
 namespace KIP126.Literature.AdamsSynthetic
 open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology KIP126.Classical.Adams
@@ -353,32 +305,3 @@ def TmfDetectionClasses.Standard (G : TmfDetectionClasses H) : Prop :=
 
 end
 end KIP126.Literature.AdamsSynthetic
-
-namespace KIP126.Literature.AdamsSynthetic
-open CategoryTheory
-open KIP126.StableHomotopy KIP126.StableHomotopy.Cohomology KIP126.Classical.Adams
-open KIP126.Synthetic.Context KIP126.AdamsSynthetic
-open KIP126.Literature.AdamsSynthetic
-universe u v w
-variable {C : Type u} [StableHomotopyCategory.{u, v} C]
-  [HasFunctorialCofiber (C := C)]
-  {Syn : Type w} [SyntheticCategory.{w, v} Syn] [HasFunctorialCofiber (C := Syn)]
-  {H : Mod2EilenbergMacLane (C := C)} {M : MilnorCooperations H} (D : AdamsComparison H M Syn)
-
-/-- Moss (1970), Theorem 1.2, in the precise local specialization used by
-LWX Lemma 7.16. The defining systems, two null products, two no-crossing
-conditions and residual-tower condition remain explicit hypotheses.
-It asserts existence of a detected bracket member, not that every member
-is permanent or that the bracket has zero indeterminacy. The statement and
-crossing convention were also checked against Belmont--Kong (2021),
-Theorem 1.1 / 4.11 and Definition 2.10. Moss's original scan was unavailable;
-the source inventory does not advertise it as independently read. -/
-abbrev MossConvergenceTheorem := KIP126.Literature.AdamsSynthetic.ThetaBMossConvergence D
-
-/-- The residual-tower hypothesis for the selected complete classical
-sphere. This is an applicability obligation for the Moss source theorem,
-not a computational no-crossing or Massey-value assertion. -/
-abbrev MossTowerResidualInjectivity :=
-  TowerDetection.ResidualInjectivity H.unit (SphereSpectrum (C := C))
-end KIP126.Literature.AdamsSynthetic
-
