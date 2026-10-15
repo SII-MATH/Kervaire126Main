@@ -28,6 +28,8 @@ mechanism, source implementations, or private page-calculus helpers. -/
 #check_failure KIP126.Main.SectionSeven.Internal.main_weak_high_representative
 #check_failure KIP126.Main.sphere_filtration_lambda
 #check_failure KIP126.Main.lambda_three_eta_u_difference_filtration_fifteen
+#check_failure KIP126.Main.Internal.Choice.Completion.normalized_quotient
+#check_failure KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen
 
 open Lean Elab Command
 

@@ -235,6 +235,7 @@ import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSeque
 import all KIP126.Def.SpectralSequence
 import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
+import all KIP126.Main.Internal.Choice.Completion
 import all KIP126.Main.ClassicalReduction
 import all KIP126.Main.Conditions
 import all KIP126.Main.DifferentialCriterion

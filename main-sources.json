@@ -4,19 +4,20 @@
   "source_repository": "https://github.com/SII-MATH/Kervaire126.git",
   "source_commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
   "attribution": "KIP126 contributors. The pinned source repository LICENSE is MIT and is preserved verbatim in the source archive. Original per-file copyright or license notices are retained as written and are not reclassified. The AimPaper article is attributed separately to its authors/arXiv in aim-paper-sources.json; no repository license is asserted for the article.",
-  "source_policy": "Existing Main proof bodies are migrated to fixed callable upstream APIs. Original paper gaps remain explicitly classified; upstream construction, comparison, literature and computation obligations are not Main duties. Source provenance and compilation do not certify transitive sorry-free proofs.",
+  "source_policy": "Existing Main proofs and the three original choice-transport targets are proved on fixed callable upstream APIs. Construction, comparison, literature and computation obligations retain their upstream owners. Historical source gaps remain provenance records; they are not active Main obligations.",
   "status_definitions": {
     "original-paper-target-without-proof": "The pinned source recorded an actual-model target as a proposition definition without a proof. Turning it into a callable pending theorem does not mean its proof existed previously.",
     "existing-proof-archived-port-pending": "The referenced old declaration/argument has a proof body without a direct sorry; current type-compatible adaptation remains pending. This does not certify the old proof transitive dependencies.",
     "original-paper-proof-gaps-retained": "A direct proof gap already occurred in the pinned article implementation. It remains a paper-local obligation, not an accepted outside fact.",
     "original-paper-proof-gaps-and-proof-port-pending": "Both original proof gaps and adaptation of already written proof text remain.",
     "external-upstream-duty": "Construction, compatibility, cited external theorem or computation correctness belongs to its upstream module, even if legacy source lived under Main. It is not repeated as a Main obligation.",
-    "adapted-proof-body-present": "Current proof body has no direct sorry. Its transitive dependencies may still contain pending upstream or local paper proofs."
+    "adapted-proof-body-present": "Current proof body has no direct sorry. Its transitive dependencies may still contain pending upstream or local paper proofs.",
+    "paper-argument-completed": "The previously unproved actual-model target now has a compiled Main proof from existing fixed upstream APIs and private paper deductions. This does not certify its pending upstream dependencies."
   },
   "files": [
     {
       "path": "KIP126/Main/ChoiceIndependence.lean",
-      "sha256": "a53c0a90063ba4cdd4c3ce9f062eeed005cf620194e7c416056cd062d41a7f4d",
+      "sha256": "2fd572482b9a0e874afd7ef35f1b43954e1f84baef5c1e359457c650ba7005c0",
       "role": "paper-definition-or-proof-adaptation",
       "origins": [
         {
@@ -38,11 +39,7 @@
           "archive_member": "KIP126/Main/Solution/Route/Selected/ChoiceInvariance.lean"
         }
       ],
-      "direct_local_sorry_lines": [
-        27,
-        36,
-        76
-      ],
+      "direct_local_sorry_lines": [],
       "declarations": [
         "KIP126.Main.normalized_bx_finite",
         "KIP126.Main.lambda_eta_theta_square_independent",
@@ -52,7 +49,7 @@
         "KIP126.Main.eta_extension_detection_choice_equivalence",
         "KIP126.Main.square_and_eta_detection_choice_equivalence"
       ],
-      "change": "Proof port to fixed upstream APIs; shared repeated helper proofs. Local original gaps are individually distinguished from pending upstream construction or proof.",
+      "change": "Completed all three original choice-transport targets from the paper arguments and existing fixed upstream APIs; public types and exports unchanged.",
       "source_blocks": [
         {
           "source": {
@@ -103,7 +100,33 @@
         "KIP126.Main.eta_extension_detection_choice_equivalence",
         "KIP126.Main.square_and_eta_detection_choice_equivalence"
       ],
-      "private_implementation_declarations": []
+      "private_implementation_declarations": [],
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2127,
+            2131
+          ],
+          "label": "Remark 7.4"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2133,
+            2139
+          ],
+          "label": "Remark 7.5; Section 7 filtration and tmf arguments"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2244,
+            2262
+          ],
+          "label": "Lemma 7.11"
+        }
+      ]
     },
     {
       "path": "KIP126/Main/ClassicalReduction.lean",
@@ -5869,7 +5892,7 @@
     },
     {
       "path": "KIP126/Main/InternalAudit.lean",
-      "sha256": "458be3a293be529b8b14b54f30612f618d7279c7f3663965a96038e084c1396d",
+      "sha256": "5236cda7c9f2274d2828433f3ade72f2c70c3b2304f2d0db62a4a0ef9d5e3d0c",
       "role": "internal-trust-audit",
       "origins": [],
       "direct_local_sorry_lines": [],
@@ -9652,6 +9675,100 @@
         },
         "note": "Uses actual existing finite table/bases and Y survival. Does not call Computation.Standard.y_not_hit."
       }
+    },
+    {
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "sha256": "ae6233033144a08e5d873a26c72eb969c7f09183ed7faf424d8628a6ebc6295b",
+      "role": "private-paper-proof-completion",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "direct_local_sorry_lines": [],
+      "declarations": [
+        "KIP126.Main.Internal.Choice.Completion.one_basis_cases",
+        "KIP126.Main.Internal.Choice.Completion.stem126_three_d2",
+        "KIP126.Main.Internal.Choice.Completion.no_outgoing_126_three",
+        "KIP126.Main.Internal.Choice.Completion.stem125_five_third_zero",
+        "KIP126.Main.Internal.Choice.Completion.no_outgoing_125_low_late",
+        "KIP126.Main.Internal.Choice.Completion.regrade_heq",
+        "KIP126.Main.Internal.Choice.Completion.multiply_heq",
+        "KIP126.Main.Internal.Choice.Completion.lambdaAt",
+        "KIP126.Main.Internal.Choice.Completion.lambdaAt_heq",
+        "KIP126.Main.Internal.Choice.Completion.lambda_one_power",
+        "KIP126.Main.Internal.Choice.Completion.quotient_zero_iff_multiple",
+        "KIP126.Main.Internal.Choice.Completion.lambda_injective_125_130",
+        "KIP126.Main.Internal.Choice.Completion.normalized_quotient",
+        "KIP126.Main.Internal.Choice.Completion.choice_quotient_frame_late",
+        "KIP126.Main.Internal.Choice.Completion.choice_sphere_frame_late",
+        "KIP126.Main.Internal.Choice.Completion.eta_weight131_branches_filtration_fifteen",
+        "KIP126.Main.Internal.Choice.Completion.stem124_weight131_filtration11_branches",
+        "KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen"
+      ],
+      "change": "Private extension of the existing lambda, quotient-frame and eta-error arguments; no new public declaration, premise, upstream responsibility or proof obligation.",
+      "source_blocks": [],
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2244,
+            2262
+          ],
+          "label": "Lemma 7.11"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2127,
+            2131
+          ],
+          "label": "Remark 7.4"
+        }
+      ],
+      "public_declarations": [],
+      "private_implementation_declarations": [
+        "KIP126.Main.Internal.Choice.Completion.one_basis_cases",
+        "KIP126.Main.Internal.Choice.Completion.stem126_three_d2",
+        "KIP126.Main.Internal.Choice.Completion.no_outgoing_126_three",
+        "KIP126.Main.Internal.Choice.Completion.stem125_five_third_zero",
+        "KIP126.Main.Internal.Choice.Completion.no_outgoing_125_low_late",
+        "KIP126.Main.Internal.Choice.Completion.regrade_heq",
+        "KIP126.Main.Internal.Choice.Completion.multiply_heq",
+        "KIP126.Main.Internal.Choice.Completion.lambdaAt",
+        "KIP126.Main.Internal.Choice.Completion.lambdaAt_heq",
+        "KIP126.Main.Internal.Choice.Completion.lambda_one_power",
+        "KIP126.Main.Internal.Choice.Completion.quotient_zero_iff_multiple",
+        "KIP126.Main.Internal.Choice.Completion.lambda_injective_125_130",
+        "KIP126.Main.Internal.Choice.Completion.normalized_quotient",
+        "KIP126.Main.Internal.Choice.Completion.choice_quotient_frame_late",
+        "KIP126.Main.Internal.Choice.Completion.choice_sphere_frame_late",
+        "KIP126.Main.Internal.Choice.Completion.eta_weight131_branches_filtration_fifteen",
+        "KIP126.Main.Internal.Choice.Completion.stem124_weight131_filtration11_branches",
+        "KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen"
+      ]
     }
   ],
   "declaration_migration": [
@@ -9659,17 +9776,15 @@
       "name": "KIP126.Main.normalized_bx_finite",
       "source_name": "KIP126.Main.normalized_bx_finite",
       "source_kind": "theorem",
-      "line": 21,
+      "line": 29,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 30,
+      "end_line": 42,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
-      "direct_local_sorry_lines": [
-        27
-      ],
-      "migration_status": "original-paper-target-without-proof",
-      "status_note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem.",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Proved from the fixed original bx_finite, lambda injectivity at (125,130), cofiber exactness and the coherent composition of arbitrary lambda powers. The source (3,129) has no outgoing differential: its complete one-dimensional basis is hit by the recorded d2 from (1,128).",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -9705,23 +9820,31 @@
           "correspondence": "original-unproved-target-statement"
         }
       ],
-      "source_correspondence_note": "Current paper-owned normalization step at the fixed BX choice. The original actual-model any_choice_criterion is a Prop definition only; its normalized finite criterion had no proof. This new decomposition is not represented as a source theorem with an existing proof."
+      "source_correspondence_note": "Current paper-owned normalization step at the fixed BX choice. The original actual-model any_choice_criterion is a Prop definition only; its normalized finite criterion had no proof. This new decomposition is not represented as a source theorem with an existing proof.",
+      "original_migration_status": "original-paper-target-without-proof",
+      "original_status_note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem.",
+      "paper_locator": {
+        "path": "AimPaper/main.tex",
+        "lines": [
+          2127,
+          2131
+        ],
+        "label": "Remark 7.4"
+      }
     },
     {
       "name": "KIP126.Main.lambda_eta_theta_square_independent",
       "source_name": "KIP126.Main.lambda_eta_theta_square_independent",
       "source_kind": "theorem",
-      "line": 31,
+      "line": 43,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 38,
+      "end_line": 78,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
-      "direct_local_sorry_lines": [
-        36
-      ],
-      "migration_status": "original-paper-target-without-proof",
-      "status_note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative.",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Proved for every ThetaChoice using the established filtration-six gap and exponent two, the paper eta-error estimate in filtration 15, and the existing tmf detector injectivity. This gives exact equality before applying lambda and uses neither the final theorem nor a new boundary assumption.",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -9757,16 +9880,26 @@
           "correspondence": "original-unproved-target-statement"
         }
       ],
-      "source_correspondence_note": "Current paper-owned choice-transport step used to prove the original arbitrary-choice target. The original file contains the target Prop but no proof and no literally identical equality theorem. Independence of this lambda-eta-square expression is the current decomposition of that unproved paper step; it is not imported as literature and does not assert equality of theta representatives."
+      "source_correspondence_note": "Current paper-owned choice-transport step used to prove the original arbitrary-choice target. The original file contains the target Prop but no proof and no literally identical equality theorem. Independence of this lambda-eta-square expression is the current decomposition of that unproved paper step; it is not imported as literature and does not assert equality of theta representatives.",
+      "original_migration_status": "original-paper-target-without-proof",
+      "original_status_note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative.",
+      "paper_locator": {
+        "path": "AimPaper/main.tex",
+        "lines": [
+          2133,
+          2139
+        ],
+        "label": "Remark 7.5; Section 7 filtration and tmf arguments"
+      }
     },
     {
       "name": "KIP126.Main.any_choice_criterion",
       "source_name": "KIP126.Main.any_choice_criterion",
       "source_kind": "theorem",
-      "line": 39,
+      "line": 79,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 55,
+      "end_line": 95,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
       "direct_local_sorry_lines": [],
@@ -9813,10 +9946,10 @@
       "name": "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
       "source_name": "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
       "source_kind": "theorem",
-      "line": 56,
+      "line": 96,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 62,
+      "end_line": 102,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
       "direct_local_sorry_lines": [],
@@ -9863,10 +9996,10 @@
       "name": "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
       "source_name": "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
       "source_kind": "theorem",
-      "line": 63,
+      "line": 103,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 73,
+      "end_line": 114,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
       "direct_local_sorry_lines": [],
@@ -9913,17 +10046,15 @@
       "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
       "source_name": "KIP126.Main.eta_extension_detection_choice_equivalence",
       "source_kind": "theorem",
-      "line": 74,
+      "line": 115,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 77,
+      "end_line": 125,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
-      "direct_local_sorry_lines": [
-        76
-      ],
-      "migration_status": "original-paper-target-without-proof",
-      "status_note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof.",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof.",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -9959,16 +10090,26 @@
           "correspondence": "original-unproved-target-statement"
         }
       ],
-      "source_correspondence_note": "Original actual-model EtaExtensionDetection equivalence with every U representative was a Prop target only. This remains a paper-owned unproved theorem. No original proof is claimed and no upstream fact is introduced to replace the missing argument."
+      "source_correspondence_note": "Original actual-model EtaExtensionDetection equivalence with every U representative was a Prop target only. This remains a paper-owned unproved theorem. No original proof is claimed and no upstream fact is introduced to replace the missing argument.",
+      "original_migration_status": "original-paper-target-without-proof",
+      "original_status_note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof.",
+      "paper_locator": {
+        "path": "AimPaper/main.tex",
+        "lines": [
+          2244,
+          2262
+        ],
+        "label": "Lemma 7.11"
+      }
     },
     {
       "name": "KIP126.Main.square_and_eta_detection_choice_equivalence",
       "source_name": "KIP126.Main.square_and_eta_detection_choice_equivalence",
       "source_kind": "theorem",
-      "line": 78,
+      "line": 126,
       "visibility": "public",
       "name_kind": "public-declaration",
-      "end_line": 84,
+      "end_line": 129,
       "path": "KIP126/Main/ChoiceIndependence.lean",
       "responsibility_owner": "Main",
       "direct_local_sorry_lines": [],
@@ -45873,6 +46014,762 @@
       ],
       "source_correspondence_note": "Newer NuExtension3 assembly; the original relation and mathematical hypotheses are preserved.",
       "update_review": "upstream-update-review.json"
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.one_basis_cases",
+      "source_kind": "theorem",
+      "line": 33,
+      "end_line": 41,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.one_basis_cases",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.stem126_three_d2",
+      "source_kind": "theorem",
+      "line": 42,
+      "end_line": 56,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.stem126_three_d2",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.no_outgoing_126_three",
+      "source_kind": "theorem",
+      "line": 57,
+      "end_line": 82,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.no_outgoing_126_three",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.stem125_five_third_zero",
+      "source_kind": "theorem",
+      "line": 83,
+      "end_line": 116,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.stem125_five_third_zero",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.no_outgoing_125_low_late",
+      "source_kind": "theorem",
+      "line": 117,
+      "end_line": 125,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.no_outgoing_125_low_late",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.regrade_heq",
+      "source_kind": "theorem",
+      "line": 126,
+      "end_line": 131,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.regrade_heq",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.multiply_heq",
+      "source_kind": "theorem",
+      "line": 132,
+      "end_line": 139,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.multiply_heq",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.lambdaAt",
+      "source_kind": "def",
+      "line": 140,
+      "end_line": 145,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.lambdaAt",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.lambdaAt_heq",
+      "source_kind": "theorem",
+      "line": 146,
+      "end_line": 154,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.lambdaAt_heq",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.lambda_one_power",
+      "source_kind": "theorem",
+      "line": 155,
+      "end_line": 178,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.lambda_one_power",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.quotient_zero_iff_multiple",
+      "source_kind": "theorem",
+      "line": 179,
+      "end_line": 187,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.quotient_zero_iff_multiple",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.lambda_injective_125_130",
+      "source_kind": "theorem",
+      "line": 188,
+      "end_line": 204,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.lambda_injective_125_130",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.normalized_quotient",
+      "source_kind": "theorem",
+      "line": 205,
+      "end_line": 222,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.normalized_quotient",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.choice_quotient_frame_late",
+      "source_kind": "theorem",
+      "line": 223,
+      "end_line": 276,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.choice_quotient_frame_late",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.choice_sphere_frame_late",
+      "source_kind": "theorem",
+      "line": 277,
+      "end_line": 285,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.choice_sphere_frame_late",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.eta_weight131_branches_filtration_fifteen",
+      "source_kind": "theorem",
+      "line": 286,
+      "end_line": 313,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.eta_weight131_branches_filtration_fifteen",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.stem124_weight131_filtration11_branches",
+      "source_kind": "theorem",
+      "line": 314,
+      "end_line": 345,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.stem124_weight131_filtration11_branches",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
+    },
+    {
+      "name": "KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen",
+      "source_kind": "theorem",
+      "line": 346,
+      "end_line": 376,
+      "visibility": "private",
+      "source_name": "KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen",
+      "name_kind": "private-implementation-declaration",
+      "path": "KIP126/Main/Internal/Choice/Completion.lean",
+      "responsibility_owner": "Main",
+      "direct_local_sorry_lines": [],
+      "migration_status": "paper-argument-completed",
+      "status_note": "Private supporting proof for Remark 7.4 or Lemma 7.11; all mathematical inputs are existing upstream declarations.",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Data.lean",
+          "sha256": "d8728acd3b6256ac34d4a3e9c49b4ff353bebe41300b91b2b2148d81e02dd11a"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Homotopy/Predicates.lean",
+          "sha256": "7d41b120a9c0de218da4933b5b030a596281acb9475c914e4a4d3b144612c242"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Computation/Lambda.lean",
+          "sha256": "82cdde7e8f534b1fb9c36d6a82d1a956fd0536b6e3ea287258e0577ab7700fdf"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3"
+        }
+      ],
+      "source_blocks": []
     }
   ],
   "archive": {
@@ -56816,39 +57713,11 @@
   },
   "live_proof_summary": {
     "counting_unit": "Named declarations containing a direct current sorry; no transitive upstream duties are duplicated here.",
-    "original_unproved_actual_model_targets": [
-      {
-        "name": "KIP126.Main.normalized_bx_finite",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          27
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem."
-      },
-      {
-        "name": "KIP126.Main.lambda_eta_theta_square_independent",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          36
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
-      },
-      {
-        "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          76
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
-      }
-    ],
+    "original_unproved_actual_model_targets": [],
     "existing_proof_ports_remaining": [],
     "historical_route_moss_gap_active": false,
-    "source_files": 135,
-    "source_declarations": 895,
+    "source_files": 136,
+    "source_declarations": 913,
     "default_build_validation": {
       "status": "passed",
       "command": "lake build",
@@ -56922,6 +57791,102 @@
       "nu9_unrestricted_y_dependency_absent": true,
       "renaming_source_inventory_check": "passed",
       "diff_whitespace_check": "passed"
+    },
+    "completed_original_actual_model_targets": [
+      {
+        "name": "KIP126.Main.normalized_bx_finite",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          29
+        ],
+        "status": "paper-argument-completed",
+        "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem.",
+        "line": 29,
+        "completion_note": "Proved from the fixed original bx_finite, lambda injectivity at (125,130), cofiber exactness and the coherent composition of arbitrary lambda powers. The source (3,129) has no outgoing differential: its complete one-dimensional basis is hit by the recorded d2 from (1,128).",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2127,
+            2131
+          ],
+          "label": "Remark 7.4"
+        }
+      },
+      {
+        "name": "KIP126.Main.lambda_eta_theta_square_independent",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          43
+        ],
+        "status": "paper-argument-completed",
+        "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative.",
+        "line": 43,
+        "completion_note": "Proved for every ThetaChoice using the established filtration-six gap and exponent two, the paper eta-error estimate in filtration 15, and the existing tmf detector injectivity. This gives exact equality before applying lambda and uses neither the final theorem nor a new boundary assumption.",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2133,
+            2139
+          ],
+          "label": "Remark 7.5; Section 7 filtration and tmf arguments"
+        }
+      },
+      {
+        "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          115
+        ],
+        "status": "paper-argument-completed",
+        "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof.",
+        "line": 115,
+        "completion_note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof.",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2244,
+            2262
+          ],
+          "label": "Lemma 7.11"
+        }
+      }
+    ],
+    "choice_proof_completion_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2386,
+      "exit_code": 0,
+      "checked_at_utc": "2026-10-15T07:43:10.698392+00:00",
+      "log_path": "/tmp/main-three-proofs-full-build.log",
+      "log_sha256": "012c6726293df556e468fb4319cdeec3e138e6e9e37019206cb1ab1b81d8d245",
+      "cache_reused": true,
+      "toolchain": "leanprover/lean4:v4.32.2",
+      "main_direct_pending": 0,
+      "main_internal_audit_declarations": 1716,
+      "captured_main_declarations_excluding_audit": 1706,
+      "consumer_trust_declarations": 19,
+      "consumer_local_holes": 0,
+      "project_axioms": 0,
+      "reviewed_local_dependency_checks": 12,
+      "public_exports": 80,
+      "public_types_universes_exports_and_axiom_lists_unchanged": true,
+      "upstream_obligations_unchanged": 303,
+      "pending_registry_total": 303,
+      "new_upstream_contracts": 0,
+      "new_proof_obligations": 0,
+      "completed_proofs_do_not_depend_on_final_theorem": true,
+      "proofs_have_pending_upstream_dependencies": true,
+      "source_inventory_project_files": 376,
+      "source_inventory_consumer_audit_files": 26,
+      "final_metadata_recheck": {
+        "status": "passed",
+        "command": "lake build",
+        "jobs": 2386,
+        "exit_code": 0,
+        "log_path": "/tmp/main-three-proofs-final-build.log",
+        "log_sha256": "13a53e4eb57dbb1f81bda399644e65eff2806f91f64985c45ef0ae582626237e",
+        "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
+      }
     }
   },
   "legacy_main_interface_delivery": [
@@ -57048,5 +58013,42 @@
     }
   ],
   "mathematical_naming_restoration": "mathematical-naming-restoration.json",
-  "newer_source_update_review": "upstream-update-review.json"
+  "newer_source_update_review": "upstream-update-review.json",
+  "choice_proof_completion_validation": {
+    "status": "passed",
+    "command": "lake build",
+    "jobs": 2386,
+    "exit_code": 0,
+    "checked_at_utc": "2026-10-15T07:43:10.698392+00:00",
+    "log_path": "/tmp/main-three-proofs-full-build.log",
+    "log_sha256": "012c6726293df556e468fb4319cdeec3e138e6e9e37019206cb1ab1b81d8d245",
+    "cache_reused": true,
+    "toolchain": "leanprover/lean4:v4.32.2",
+    "main_direct_pending": 0,
+    "main_internal_audit_declarations": 1716,
+    "captured_main_declarations_excluding_audit": 1706,
+    "consumer_trust_declarations": 19,
+    "consumer_local_holes": 0,
+    "project_axioms": 0,
+    "reviewed_local_dependency_checks": 12,
+    "public_exports": 80,
+    "public_types_universes_exports_and_axiom_lists_unchanged": true,
+    "upstream_obligations_unchanged": 303,
+    "pending_registry_total": 303,
+    "new_upstream_contracts": 0,
+    "new_proof_obligations": 0,
+    "completed_proofs_do_not_depend_on_final_theorem": true,
+    "proofs_have_pending_upstream_dependencies": true,
+    "source_inventory_project_files": 376,
+    "source_inventory_consumer_audit_files": 26,
+    "final_metadata_recheck": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2386,
+      "exit_code": 0,
+      "log_path": "/tmp/main-three-proofs-final-build.log",
+      "log_sha256": "13a53e4eb57dbb1f81bda399644e65eff2806f91f64985c45ef0ae582626237e",
+      "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
+    }
+  }
 }

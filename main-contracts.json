@@ -189,43 +189,43 @@
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.normalized_bx_finite",
-          "line": 21,
-          "migration_status": "original-paper-target-without-proof"
+          "line": 29,
+          "migration_status": "paper-argument-completed"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.lambda_eta_theta_square_independent",
-          "line": 31,
-          "migration_status": "original-paper-target-without-proof"
+          "line": 43,
+          "migration_status": "paper-argument-completed"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.any_choice_criterion",
-          "line": 39,
+          "line": 79,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
-          "line": 56,
+          "line": 96,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
-          "line": 63,
+          "line": 103,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.eta_extension_detection_choice_equivalence",
-          "line": 74,
-          "migration_status": "original-paper-target-without-proof"
+          "line": 115,
+          "migration_status": "paper-argument-completed"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.square_and_eta_detection_choice_equivalence",
-          "line": 78,
+          "line": 126,
           "migration_status": "adapted-proof-body-present"
         }
       ],
@@ -233,21 +233,22 @@
         "Tests.Main.Consumers"
       ],
       "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": [
+      "remaining_producer_obligations": [],
+      "completed_producer_obligations": [
         {
           "name": "KIP126.Main.normalized_bx_finite",
-          "status": "original-paper-target-without-proof",
-          "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem."
+          "status": "paper-argument-completed",
+          "note": "Proved from the fixed original bx_finite, lambda injectivity at (125,130), cofiber exactness and the coherent composition of arbitrary lambda powers. The source (3,129) has no outgoing differential: its complete one-dimensional basis is hit by the recorded d2 from (1,128)."
         },
         {
           "name": "KIP126.Main.lambda_eta_theta_square_independent",
-          "status": "original-paper-target-without-proof",
-          "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
+          "status": "paper-argument-completed",
+          "note": "Proved for every ThetaChoice using the established filtration-six gap and exponent two, the paper eta-error estimate in filtration 15, and the existing tmf detector injectivity. This gives exact equality before applying lambda and uses neither the final theorem nor a new boundary assumption."
         },
         {
           "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
-          "status": "original-paper-target-without-proof",
-          "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
+          "status": "paper-argument-completed",
+          "note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof."
         }
       ]
     },
@@ -961,7 +962,7 @@
     }
   ],
   "proof_obligation_registry": "proof-obligations.json",
-  "proof_status": "existing-proof-bodies-ported; only three original unproved actual-model targets remain local",
+  "proof_status": "all Main proofs provided; no direct Main sorry; upstream proof and construction obligations remain pending",
   "exclusions": [
     "Reconstructing concrete Adams/Milnor/cobar or synthetic models as a Main obligation.",
     "Re-proving externally cited literature and computation correctness inside Main.",
@@ -975,42 +976,14 @@
     "Tests.Main.Boundary",
     "Tests.Main.LegacyResults"
   ],
-  "validation": "The cached default build passed for the final legacy-result additions, including exact public type/export locks, private boundaries, ordinary-import consumers, all nine reviewed local proof dependencies, and trust/source inventory checks. Historical validation is retained separately. No provenance entry certifies transitive sorry-freedom; existing upstream responsibilities and exactly three Main direct pending targets remain unchanged.",
+  "validation": "The full cached lake build passed (2386 jobs), including all exact public interface locks, ordinary-import consumers, private visibility tests, 12 local dependency checks, the Main audit of 1716 declarations with zero direct proof holes, and the consumer/source/trust checks. All 303 upstream obligation records are unchanged. Transitive upstream proofs remain pending.",
   "proof_implementation_summary": {
     "counting_unit": "Named declarations containing a direct current sorry; no transitive upstream duties are duplicated here.",
-    "original_unproved_actual_model_targets": [
-      {
-        "name": "KIP126.Main.normalized_bx_finite",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          27
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem."
-      },
-      {
-        "name": "KIP126.Main.lambda_eta_theta_square_independent",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          36
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative."
-      },
-      {
-        "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
-        "path": "KIP126/Main/ChoiceIndependence.lean",
-        "lines": [
-          76
-        ],
-        "status": "original-paper-target-without-proof",
-        "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof."
-      }
-    ],
+    "original_unproved_actual_model_targets": [],
     "existing_proof_ports_remaining": [],
     "historical_route_moss_gap_active": false,
-    "source_files": 135,
-    "source_declarations": 895,
+    "source_files": 136,
+    "source_declarations": 913,
     "default_build_validation": {
       "status": "passed",
       "command": "lake build",
@@ -1054,9 +1027,136 @@
       "after_trailing_whitespace_cleanup": true
     },
     "legacy_result_public_additions": 9,
-    "private_helper_count": 835,
-    "public_interface_types": "All 80 exports are preserved modulo the reviewed mathematical renames; this newer-source update adds no public declaration.",
-    "proof_sources": "main-sources.json; declaration-level source blocks and hashes"
+    "newer_source_update_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2385,
+      "cache_reused": true,
+      "toolchain": "leanprover/lean4:v4.32.2",
+      "checked_at": "2026-10-15T06:19:27.329081+00:00",
+      "log_path": "/tmp/kervaire-updated-final-build.log",
+      "log_sha256": "674edfe5cd7c530d7f956c25264c602113a741f9d1c8e418fd30ef2ef821fd7c",
+      "source_inventory_project_files": 375,
+      "consumer_audit_files": 26,
+      "consumer_local_holes": 0,
+      "project_axioms": 0,
+      "pending_obligations": 306,
+      "pending_by_module": {
+        "AdamsSynthetic": 81,
+        "Computation": 88,
+        "Literature": 132,
+        "Main": 3,
+        "ProofTools": 2
+      },
+      "main_exports": 80,
+      "new_public_declarations": 0,
+      "new_pending_obligations": 0,
+      "completed_existing_obligations": [
+        "KIP126.Literature.Standard.realization_additive"
+      ],
+      "nu9_unrestricted_y_dependency_absent": true,
+      "renaming_source_inventory_check": "passed",
+      "diff_whitespace_check": "passed"
+    },
+    "completed_original_actual_model_targets": [
+      {
+        "name": "KIP126.Main.normalized_bx_finite",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          29
+        ],
+        "status": "paper-argument-completed",
+        "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem.",
+        "line": 29,
+        "completion_note": "Proved from the fixed original bx_finite, lambda injectivity at (125,130), cofiber exactness and the coherent composition of arbitrary lambda powers. The source (3,129) has no outgoing differential: its complete one-dimensional basis is hit by the recorded d2 from (1,128).",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2127,
+            2131
+          ],
+          "label": "Remark 7.4"
+        }
+      },
+      {
+        "name": "KIP126.Main.lambda_eta_theta_square_independent",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          43
+        ],
+        "status": "paper-argument-completed",
+        "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative.",
+        "line": 43,
+        "completion_note": "Proved for every ThetaChoice using the established filtration-six gap and exponent two, the paper eta-error estimate in filtration 15, and the existing tmf detector injectivity. This gives exact equality before applying lambda and uses neither the final theorem nor a new boundary assumption.",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2133,
+            2139
+          ],
+          "label": "Remark 7.5; Section 7 filtration and tmf arguments"
+        }
+      },
+      {
+        "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
+        "path": "KIP126/Main/ChoiceIndependence.lean",
+        "lines": [
+          115
+        ],
+        "status": "paper-argument-completed",
+        "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof.",
+        "line": 115,
+        "completion_note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof.",
+        "paper_locator": {
+          "path": "AimPaper/main.tex",
+          "lines": [
+            2244,
+            2262
+          ],
+          "label": "Lemma 7.11"
+        }
+      }
+    ],
+    "choice_proof_completion_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2386,
+      "exit_code": 0,
+      "checked_at_utc": "2026-10-15T07:43:10.698392+00:00",
+      "log_path": "/tmp/main-three-proofs-full-build.log",
+      "log_sha256": "012c6726293df556e468fb4319cdeec3e138e6e9e37019206cb1ab1b81d8d245",
+      "cache_reused": true,
+      "toolchain": "leanprover/lean4:v4.32.2",
+      "main_direct_pending": 0,
+      "main_internal_audit_declarations": 1716,
+      "captured_main_declarations_excluding_audit": 1706,
+      "consumer_trust_declarations": 19,
+      "consumer_local_holes": 0,
+      "project_axioms": 0,
+      "reviewed_local_dependency_checks": 12,
+      "public_exports": 80,
+      "public_types_universes_exports_and_axiom_lists_unchanged": true,
+      "upstream_obligations_unchanged": 303,
+      "pending_registry_total": 303,
+      "new_upstream_contracts": 0,
+      "new_proof_obligations": 0,
+      "completed_proofs_do_not_depend_on_final_theorem": true,
+      "proofs_have_pending_upstream_dependencies": true,
+      "source_inventory_project_files": 376,
+      "source_inventory_consumer_audit_files": 26,
+      "final_metadata_recheck": {
+        "status": "passed",
+        "command": "lake build",
+        "jobs": 2386,
+        "exit_code": 0,
+        "log_path": "/tmp/main-three-proofs-final-build.log",
+        "log_sha256": "13a53e4eb57dbb1f81bda399644e65eff2806f91f64985c45ef0ae582626237e",
+        "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
+      }
+    },
+    "private_helper_count": 853,
+    "public_interface_types": "All 80 original exports, exact type fingerprints, universe parameters and axiom lists are unchanged.",
+    "proof_sources": "main-sources.json; exact paper locators and existing proof-port sources"
   },
   "mathematical_naming_restoration": "mathematical-naming-restoration.json",
   "newer_source_update_review": "upstream-update-review.json",
@@ -1090,5 +1190,42 @@
     "nu9_unrestricted_y_dependency_absent": true,
     "renaming_source_inventory_check": "passed",
     "diff_whitespace_check": "passed"
+  },
+  "choice_proof_completion_validation": {
+    "status": "passed",
+    "command": "lake build",
+    "jobs": 2386,
+    "exit_code": 0,
+    "checked_at_utc": "2026-10-15T07:43:10.698392+00:00",
+    "log_path": "/tmp/main-three-proofs-full-build.log",
+    "log_sha256": "012c6726293df556e468fb4319cdeec3e138e6e9e37019206cb1ab1b81d8d245",
+    "cache_reused": true,
+    "toolchain": "leanprover/lean4:v4.32.2",
+    "main_direct_pending": 0,
+    "main_internal_audit_declarations": 1716,
+    "captured_main_declarations_excluding_audit": 1706,
+    "consumer_trust_declarations": 19,
+    "consumer_local_holes": 0,
+    "project_axioms": 0,
+    "reviewed_local_dependency_checks": 12,
+    "public_exports": 80,
+    "public_types_universes_exports_and_axiom_lists_unchanged": true,
+    "upstream_obligations_unchanged": 303,
+    "pending_registry_total": 303,
+    "new_upstream_contracts": 0,
+    "new_proof_obligations": 0,
+    "completed_proofs_do_not_depend_on_final_theorem": true,
+    "proofs_have_pending_upstream_dependencies": true,
+    "source_inventory_project_files": 376,
+    "source_inventory_consumer_audit_files": 26,
+    "final_metadata_recheck": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2386,
+      "exit_code": 0,
+      "log_path": "/tmp/main-three-proofs-final-build.log",
+      "log_sha256": "13a53e4eb57dbb1f81bda399644e65eff2806f91f64985c45ef0ae582626237e",
+      "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
+    }
   }
 }

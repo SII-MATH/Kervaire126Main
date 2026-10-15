@@ -2,6 +2,7 @@ module
 import all KIP126.Main
 import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
+import all KIP126.Main.Internal.Choice.Completion
 import all KIP126.Main.ClassicalReduction
 import all KIP126.Main.Conditions
 import all KIP126.Main.DifferentialReduction
@@ -194,8 +195,10 @@ run_cmd do
     (`KIP126.Main.theta_square_detection_cases, #[]),
     (`KIP126.Main.theta_square_three_possibilities, #[]),
     (`KIP126.Main.delta_h6_square_bx, #[]),
-    (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square,
-      #[`KIP126.Main.lambda_eta_theta_square_independent])]
+    (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square, #[]),
+    (`KIP126.Main.normalized_bx_finite, #[]),
+    (`KIP126.Main.lambda_eta_theta_square_independent, #[]),
+    (`KIP126.Main.eta_extension_detection_choice_equivalence, #[])]
   for (root, expected) in checks do
     let mut todo := #[root]
     let mut visited : NameSet := {}

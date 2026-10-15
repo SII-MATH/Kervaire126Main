@@ -163,15 +163,15 @@ if tool_holes != {
         'KIP126/Def/ProofTools/GeneralizedMahowald.lean': 2}:
     errors.append('ProofTools original four-gap budget changed: ' + str(tool_holes))
 
-# Six former migration placeholders must have actual proof bodies. Only the
-# three original actual-model targets without proof remain active Main holes.
+# Every Main declaration, including the completed choice-transport results,
+# must have an actual proof body. Upstream obligations keep their own owners.
 main_holes = {}
 for path in (root / 'KIP126/Main').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
     if count:
         main_holes[str(path.relative_to(root))] = count
-if main_holes != {'KIP126/Main/ChoiceIndependence.lean': 3}:
-    errors.append('Main original-gap budget changed; proof-port placeholders forbidden: ' + str(main_holes))
+if main_holes:
+    errors.append('Main proof placeholders forbidden: ' + str(main_holes))
 
 if errors:
     raise SystemExit('\n'.join(errors))
