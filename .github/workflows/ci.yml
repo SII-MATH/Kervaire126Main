@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lean:
+    name: Lean checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LEAN_NUM_THREADS: '2'
+      MATHLIB_NO_CACHE_ON_UPDATE: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Identify all tracked inputs
+        id: inputs
+        # Includes interfaces, obligation registry, scripts and workflow configuration.
+        run: echo "tree=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Lean build cache
+        id: cache
+        continue-on-error: true
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-complete
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-
+
+      - name: Install pinned Lean toolchain
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: false
+          use-github-cache: false
+
+      - name: Fetch only imported Mathlib dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: |
+          lake env python3 scripts/mathlib-cache-roots.py > "$RUNNER_TEMP/mathlib-roots.txt"
+          mapfile -t mathlib_roots < "$RUNNER_TEMP/mathlib-roots.txt"
+          if (( ${#mathlib_roots[@]} )); then
+            lake exe cache get "${mathlib_roots[@]}"
+          fi
+
+      - name: Build all modules and checks
+        id: build
+        timeout-minutes: 60
+        # Always run, including exact cache hits; Lake decides what to rebuild.
+        run: lake build
+
+      - name: Save complete build
+        if: steps.build.outcome == 'success' && steps.cache.outputs.cache-hit != 'true'
+        timeout-minutes: 8
+        continue-on-error: true
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-complete
+
+      - name: Preserve partial build after failure
+        if: >-
+          always() &&
+          (steps.build.outcome == 'failure' || steps.build.outcome == 'cancelled') &&
+          steps.inputs.outputs.tree != '' && hashFiles('.lake/build/**/*.trace') != ''
+        timeout-minutes: 8
+        continue-on-error: true
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          # Best effort: hard cancellation or a lost runner can prevent saving.
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-progress-${{ github.run_id }}-${{ github.run_attempt }}
