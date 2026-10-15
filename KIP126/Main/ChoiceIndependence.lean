@@ -1,6 +1,8 @@
 module
 
 public import KIP126.Main.Conditions
+import KIP126.Def.Computation.Table.Values
+import KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Choice.Invariance
 import all KIP126.Main.Internal.Choice.FinitePages
 import all KIP126.Main.Internal.High125.Injectivity
@@ -16,17 +18,20 @@ is already upstream; normalization and arbitrary-choice transport are not.
 
 @[expose] section
 namespace KIP126.Main
+open CategoryTheory KIP126.Classical.Adams
 open KIP126.Synthetic.Context KIP126.Core.SpectralSequence
+open KIP126.Core.SpectralSequence.FinitePageCalculus KIP126.Computation.Table
 open KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1600000
+set_option maxRecDepth 10000
 
 /-- Remark 7.4: cancel one lambda using the actual source-page calculation
 in degree (3,129), then apply the original fixed-choice BX criterion. -/
-public theorem normalized_bx_finite (r : ℕ) (hr : 1 ≤ r) :
+private theorem normalized_bx_finite (r : ℕ) (hr : 1 ≤ r) :
     SurvivesTo model.classical.sphere ((r : ℤ)+3) (2,128)
       model.standardClasses.standardH6Square ↔
     quotientClass (r+1)
@@ -36,11 +41,64 @@ public theorem normalized_bx_finite (r : ℕ) (hr : 1 ≤ r) :
     (Internal.Choice.Completion.normalized_quotient r
       (KIP126.Literature.Standard.etaThetaSquare KIP126.Literature.Standard.bxTheta5))
 
+private theorem h6_square_basis : basis .sphere 2 128 0 =
+    model.standardClasses.standardH6Square := by
+  have h := basis_value ⟨.mul (.named .h6) (.named .h6),0⟩ (by decide)
+  change basis .sphere 2 128 0 = KIP126.Computation.Standard.product (r := (2,128))
+    (KIP126.Computation.Standard.atom .h6) (KIP126.Computation.Standard.atom .h6) at h
+  dsimp only [KIP126.Computation.Standard.product] at h
+  simpa [KIP126.Computation.Standard.atom_h6,
+    model.standardClasses.standardH6Square_eq_product] using h
+
+/-- The fixed table records the actual square reaching E7, independently of
+the paper's final permanence theorem or the positive-r BX criterion. -/
+private theorem h6_square_reaches_seven : ReachesPage model.classical.sphere 7 (2,128)
+    model.standardClasses.standardH6Square := by
+  have hrow := result ⟨.sphere,.reaches,7,2,128,[0],2,128,[],"S0_AdamsE2_ss",2314⟩
+    (List.mem_of_getElem? (i := 146) (by rfl))
+  dsimp only [Statement] at hrow
+  obtain ⟨x,hx,h⟩ := hrow
+  have vx : Raw.coordinatesValid Raw.degrees .sphere 2 128 [0] = true := rfl
+  simp only [decode,vx,if_true,List.map_cons,List.map_nil,
+    List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx
+  rw [←hx] at h
+  rw [←h6_square_basis]
+  exact h
+
+/-- At the r=0 endpoint, the square is nonzero on E3: it reaches that page,
+and the only possible incoming d2 has zero source E2^(0,127). -/
+private theorem h6_square_survives_three : SurvivesTo model.classical.sphere 3 (2,128)
+    model.standardClasses.standardH6Square := by
+  obtain ⟨a,ha⟩ := reaches_before (by decide : (2:ℤ)≤3) (by decide : (3:ℤ)≤7)
+    h6_square_reaches_seven
+  refine ⟨a,ha,?_⟩
+  apply represents_next_nonzero_of_incoming_zero
+    (E := model.classical.sphere) (r := 2) (p := (2,128))
+    (by simpa only [ClassicalAdamsFamily.sphere, ClassicalAdamsFamily.obj,
+      model.classical.firstPage] using (le_refl (2:ℤ))) (by decide) ?_ ha
+    (RepresentsOnPage.self_two _) KIP126.Computation.Standard.square_nonzero
+  have he : (2,128)-model.classical.sphere.diffDeg 2 = ((0,127) : ℤ×ℤ) := by
+    simp only [ClassicalAdamsFamily.sphere, ClassicalAdamsFamily.obj,
+      model.classical.differentialDegree, Prod.mk_sub_mk, Int.reduceSub]
+  rw [he]
+  letI := KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero 2 127 (by decide)
+  ext x
+  rw [Subsingleton.elim x 0]
+  simp
+
+/-- Every lambda multiple vanishes in the first quotient; this endpoint
+requires no detection or order-two condition on theta. -/
+private theorem lambda_eta_theta_square_mod_lambda_zero
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
+    quotientClass 1 (KIP126.Literature.Standard.lambdaEtaThetaSquare theta) = 0 := by
+  exact (Internal.Choice.Completion.quotient_zero_iff_multiple 1 129 _).mpr
+    ⟨KIP126.Literature.Standard.etaThetaSquare theta, HEq.rfl⟩
+
 /-- The source-to-arbitrary-choice step belongs to the present paper.
 The square difference has high filtration; the Section 7 eta-error and tmf
 arguments annihilate it. Only the lambda-eta-square expression is asserted
 independent, as in Remark 7.5. -/
-public theorem lambda_eta_theta_square_independent
+private theorem lambda_eta_theta_square_independent
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
     KIP126.Literature.Standard.lambdaEtaThetaSquare theta =
       KIP126.Literature.Standard.lambdaEtaThetaSquare
@@ -75,25 +133,32 @@ public theorem lambda_eta_theta_square_independent
   have h := congrArg (lambdaMultiply 1) (sub_eq_zero.mp heq)
   exact h
 
-/-- The complete normalized criterion at any admissible theta choice. -/
+/-- The complete normalized criterion at any admissible theta choice, for
+every natural r. The r=0 case is the independent E3/first-quotient endpoint;
+positive r uses the original fixed-choice BX criterion and choice transport. -/
 public theorem any_choice_criterion
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
-    (∀ r : ℕ, 1 ≤ r →
+    (∀ r : ℕ,
       (SurvivesTo model.classical.sphere ((r : ℤ)+3) (2,128)
         model.standardClasses.standardH6Square ↔
         quotientClass (r+1) (KIP126.Literature.Standard.lambdaEtaThetaSquare theta) = 0)) ∧
     (H6SquarePermanent ↔ KIP126.Literature.Standard.lambdaEtaThetaSquare theta = 0) := by
   have he := lambda_eta_theta_square_independent theta htheta
   constructor
-  · intro r hr
-    rw [he]
-    exact normalized_bx_finite r hr
+  · intro r
+    cases r with
+    | zero =>
+      exact ⟨fun _ => lambda_eta_theta_square_mod_lambda_zero theta,
+        fun _ => h6_square_survives_three⟩
+    | succ r =>
+      rw [he]
+      exact normalized_bx_finite (r+1) (by omega)
   · rw [he]
     exact KIP126.Literature.Standard.bx_untruncated
 
 /-- The original finite-page, filtration, and exponent-two proof of Theta5SquareNonzeroDetection
 invariance, using the fixed upstream table and comparison declarations. -/
-public theorem theta5_square_nonzero_detection_choice_invariant
+private theorem theta5_square_nonzero_detection_choice_invariant
     (theta theta' : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
     (htheta : ThetaChoice theta) (htheta' : ThetaChoice theta')
     (hc4 : Theta5SquareNonzeroDetectionAt theta') : Theta5SquareNonzeroDetectionAt theta := by
@@ -123,7 +188,7 @@ public theorem eta_extension_detection_choice_equivalence :
     obtain ⟨u,hu⟩ := Internal.Selected.u_choice_exists
     exact ⟨u,hu,h u hu⟩
 
-public theorem square_and_eta_detection_choice_equivalence :
+private theorem square_and_eta_detection_choice_equivalence :
     (Theta5SquareNonzeroDetection ↔ ∀ theta, ThetaChoice theta → Theta5SquareNonzeroDetectionAt theta) ∧
     (EtaExtensionDetection ↔ ∀ u, UChoice u → EtaExtensionDetectionAt u) :=
   ⟨theta5_square_nonzero_detection_choice_equivalence, eta_extension_detection_choice_equivalence⟩

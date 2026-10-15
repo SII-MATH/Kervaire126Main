@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.AlphaOne
 public import KIP126.Def.ProofTools.Operations
 public import KIP126.Def.ProofTools.Representatives
 import all KIP126.Main.Internal.DetectionLabels

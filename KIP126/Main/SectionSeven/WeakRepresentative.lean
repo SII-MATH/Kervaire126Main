@@ -1,4 +1,5 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.SectionSeven.WeakStrip
 import all KIP126.Main.Internal.Selected.LambdaOperations
 import all KIP126.Main.Internal.Selected.DetectionOperations

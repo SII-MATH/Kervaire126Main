@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Def.Literature.Standard.Filtration
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.LambdaZero
@@ -10,7 +10,7 @@ import all KIP126.Main.SectionSeven.NuTargetWindows
 import all KIP126.Main.SectionSeven.WeakInitialLambda
 import all KIP126.Main.SectionSeven.NuTargetYLambda
 import all KIP126.Main.Internal.Selected.DetectionOperations
-public import KIP126.Main.ClassicalReduction
+import all KIP126.Main.ClassicalReduction
 /-! Nonzero starting bracket argument from WeakInitialNonzero.lean:125–147,568–675 at bbac1fc05843 (MIT). -/
 @[expose] section
 set_option backward.isDefEq.respectTransparency false

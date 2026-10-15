@@ -25,10 +25,12 @@ example : NonzeroSurvival model.classical.sphere (2,128)
     model.standardClasses.standardH6Square
   exact h6_sq_permanent
 
-example : Stem126D6Vanishes ↔ SurvivesTo model.classical.sphere 12 (14,139)
-    KIP126.Computation.Standard.T := d6_vanishes_iff_target_survives_twelve
-
-example (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := d12_necessary hd
+example (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := by
+  obtain ⟨cases, criterion⟩ := h6_square_differential_dichotomy_and_criterion
+  refine ⟨?_, (criterion.mp hd).1⟩
+  rcases cases with hp | hn
+  · exact False.elim (hp.2 hd)
+  · exact hn.2
 
 /-- The paper's final reasoning consumes the two intermediate theorems
 without requesting a construction or a delivery package from the caller. -/

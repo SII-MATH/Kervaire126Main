@@ -1,5 +1,6 @@
 module
-public import KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.Internal.AlphaOne.Layers
 import all KIP126.Main.Internal.AlphaOne.Filtration
 import all KIP126.Main.Internal.AlphaOne.Corrections

@@ -89,10 +89,23 @@
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [
+        "KIP126.Main.H6SquareSupportsD12",
+        "KIP126.Main.Stem126D6Vanishes",
+        "KIP126.Main.ThetaChoice",
+        "KIP126.Main.Theta5SquareNonzeroDetectionAt",
+        "KIP126.Main.Theta5SquareNonzeroDetection",
+        "KIP126.Main.UChoice",
+        "KIP126.Main.EtaExtensionDetectionAt",
+        "KIP126.Main.EtaExtensionDetection",
+        "KIP126.Main.H6SquarePermanent"
+      ],
+      "internal_declarations": []
     },
     {
       "id": "main-classical-reduction",
@@ -129,31 +142,45 @@
           "path": "KIP126/Main/ClassicalReduction.lean",
           "declaration": "KIP126.Main.target_nonzero",
           "line": 39,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/ClassicalReduction.lean",
           "declaration": "KIP126.Main.d6_vanishes_iff_target_survives_twelve",
           "line": 46,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/ClassicalReduction.lean",
           "declaration": "KIP126.Main.d12_necessary",
           "line": 62,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.target_nonzero",
+        "KIP126.Main.d6_vanishes_iff_target_survives_twelve",
+        "KIP126.Main.d12_necessary"
+      ]
     },
     {
       "id": "main-choice-independence",
-      "mathematical_purpose": "在真正的检测／存活条件下处理 theta 与 U 代表的选择；外部 BX 定理由 Literature 提供。",
+      "mathematical_purpose": "在真正的检测／存活条件下处理 theta 与 U 代表的选择；有限页判据覆盖所有自然数 r，r=0 由 Main 独立证明，正整数情形使用 Literature 的固定 BX 定理。",
       "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2117,
+          "label": "thm:bjmbx"
+        },
         {
           "path": "AimPaper/main.tex",
           "line": 2133,
@@ -189,50 +216,84 @@
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.normalized_bx_finite",
-          "line": 29,
-          "migration_status": "paper-argument-completed"
+          "line": 34,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
+        },
+        {
+          "path": "KIP126/Main/ChoiceIndependence.lean",
+          "declaration": "KIP126.Main.h6_square_basis",
+          "line": 44,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
+        },
+        {
+          "path": "KIP126/Main/ChoiceIndependence.lean",
+          "declaration": "KIP126.Main.h6_square_reaches_seven",
+          "line": 55,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
+        },
+        {
+          "path": "KIP126/Main/ChoiceIndependence.lean",
+          "declaration": "KIP126.Main.h6_square_survives_three",
+          "line": 70,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
+        },
+        {
+          "path": "KIP126/Main/ChoiceIndependence.lean",
+          "declaration": "KIP126.Main.lambda_eta_theta_square_mod_lambda_zero",
+          "line": 91,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.lambda_eta_theta_square_independent",
-          "line": 43,
-          "migration_status": "paper-argument-completed"
+          "line": 101,
+          "migration_status": "paper-argument-completed",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.any_choice_criterion",
-          "line": 79,
+          "line": 139,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
-          "line": 96,
-          "migration_status": "adapted-proof-body-present"
+          "line": 161,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
-          "line": 103,
+          "line": 168,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.eta_extension_detection_choice_equivalence",
-          "line": 115,
+          "line": 180,
           "migration_status": "paper-argument-completed"
         },
         {
           "path": "KIP126/Main/ChoiceIndependence.lean",
           "declaration": "KIP126.Main.square_and_eta_detection_choice_equivalence",
-          "line": 126,
-          "migration_status": "adapted-proof-body-present"
+          "line": 191,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults",
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
       "remaining_producer_obligations": [],
       "completed_producer_obligations": [
         {
@@ -250,7 +311,23 @@
           "status": "paper-argument-completed",
           "note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof."
         }
-      ]
+      ],
+      "public_declarations": [
+        "KIP126.Main.any_choice_criterion",
+        "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
+        "KIP126.Main.eta_extension_detection_choice_equivalence"
+      ],
+      "internal_declarations": [
+        "KIP126.Main.normalized_bx_finite",
+        "KIP126.Main.lambda_eta_theta_square_independent",
+        "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
+        "KIP126.Main.square_and_eta_detection_choice_equivalence",
+        "KIP126.Main.h6_square_basis",
+        "KIP126.Main.h6_square_reaches_seven",
+        "KIP126.Main.h6_square_survives_three",
+        "KIP126.Main.lambda_eta_theta_square_mod_lambda_zero"
+      ],
+      "finite_criterion_range": "All natural r, including r=0; ThetaChoice is retained and the permanent-cycle equivalence is unchanged."
     },
     {
       "id": "main-proposition-seven-eight",
@@ -298,19 +375,22 @@
           "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.permanence_or_d12",
           "line": 20,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.d12_implies_square_and_eta",
           "line": 27,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/DifferentialCriterion.lean",
           "declaration": "KIP126.Main.conditions_imply_d12",
           "line": 34,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/DifferentialCriterion.lean",
@@ -320,10 +400,20 @@
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults",
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [
+        "KIP126.Main.h6_square_differential_dichotomy_and_criterion"
+      ],
+      "internal_declarations": [
+        "KIP126.Main.permanence_or_d12",
+        "KIP126.Main.d12_implies_square_and_eta",
+        "KIP126.Main.conditions_imply_d12"
+      ]
     },
     {
       "id": "main-local-toda-and-indeterminacy",
@@ -371,99 +461,132 @@
         {
           "path": "KIP126/Main/SectionSeven/AlphaOne.lean",
           "declaration": "KIP126.Main.SectionSeven.ClassicalInfinityGenerated",
-          "line": 21,
-          "migration_status": "definition-or-language-migrated"
+          "line": 20,
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/AlphaOne.lean",
           "declaration": "KIP126.Main.SectionSeven.FiniteNonzeroDifferential",
-          "line": 31,
-          "migration_status": "definition-or-language-migrated"
+          "line": 30,
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/AlphaOne.lean",
           "declaration": "KIP126.Main.SectionSeven.AlphaOneProperties",
-          "line": 46,
-          "migration_status": "definition-or-language-migrated"
+          "line": 45,
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Indeterminacy.lean",
           "declaration": "KIP126.Main.SectionSeven.multiplied_indeterminacy_of_two_torsion",
-          "line": 64,
-          "migration_status": "adapted-proof-body-present"
+          "line": 63,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.FiniteDetected",
           "line": 22,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.SphereDetected",
           "line": 30,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.ModuleTripleToda",
           "line": 43,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.ThetaBMultipliedIndeterminacy",
           "line": 56,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.SymmetricTwoMultipliedIndeterminacy",
           "line": 66,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.NuExtension9",
           "line": 74,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.NuExtension5",
           "line": 84,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.AnyYH0Extension",
           "line": 95,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Predicates.lean",
           "declaration": "KIP126.Main.SectionSeven.TargetNuDivisible",
           "line": 106,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/TodaNonempty.lean",
           "declaration": "KIP126.Main.SectionSeven.module_toda_nonempty",
           "line": 27,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/TodaNonempty.lean",
           "declaration": "KIP126.Main.SectionSeven.module_toda_nonempty_of_alpha",
           "line": 93,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.SectionSeven.ClassicalInfinityGenerated",
+        "KIP126.Main.SectionSeven.FiniteNonzeroDifferential",
+        "KIP126.Main.SectionSeven.AlphaOneProperties",
+        "KIP126.Main.SectionSeven.multiplied_indeterminacy_of_two_torsion",
+        "KIP126.Main.SectionSeven.FiniteDetected",
+        "KIP126.Main.SectionSeven.SphereDetected",
+        "KIP126.Main.SectionSeven.ModuleTripleToda",
+        "KIP126.Main.SectionSeven.ThetaBMultipliedIndeterminacy",
+        "KIP126.Main.SectionSeven.SymmetricTwoMultipliedIndeterminacy",
+        "KIP126.Main.SectionSeven.NuExtension9",
+        "KIP126.Main.SectionSeven.NuExtension5",
+        "KIP126.Main.SectionSeven.AnyYH0Extension",
+        "KIP126.Main.SectionSeven.TargetNuDivisible",
+        "KIP126.Main.SectionSeven.module_toda_nonempty",
+        "KIP126.Main.SectionSeven.module_toda_nonempty_of_alpha"
+      ]
     },
     {
       "id": "main-nu-target",
@@ -492,15 +615,20 @@
         {
           "path": "KIP126/Main/SectionSeven/NuTarget.lean",
           "declaration": "KIP126.Main.SectionSeven.target_nu_divisible",
-          "line": 33,
-          "migration_status": "adapted-proof-body-present"
+          "line": 34,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.SectionSeven.target_nu_divisible"
+      ]
     },
     {
       "id": "main-cofiber-obstruction",
@@ -541,57 +669,76 @@
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero",
-          "line": 26,
-          "migration_status": "adapted-proof-body-present"
+          "line": 27,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.target_divisibility_contradiction",
-          "line": 57,
-          "migration_status": "adapted-proof-body-present"
+          "line": 58,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/CofiberRigidity.lean",
           "declaration": "KIP126.Main.SectionSeven.target_divisibility_forces_cnu_incoming",
-          "line": 65,
-          "migration_status": "adapted-proof-body-present"
+          "line": 66,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/Final.lean",
           "declaration": "KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes",
-          "line": 15,
-          "migration_status": "adapted-proof-body-present"
+          "line": 14,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/NormalizedNu.lean",
           "declaration": "KIP126.Main.SectionSeven.hopfNu",
           "line": 20,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/NormalizedNu.lean",
           "declaration": "KIP126.Main.SectionSeven.nuBottom",
           "line": 23,
-          "migration_status": "definition-or-language-migrated"
+          "migration_status": "definition-or-language-migrated",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/NormalizedNu.lean",
           "declaration": "KIP126.Main.SectionSeven.normalized_nu_bottom_zero",
           "line": 45,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SectionSeven/NormalizedNu.lean",
           "declaration": "KIP126.Main.SectionSeven.lambda_nu_multiple_bottom_zero",
           "line": 64,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero",
+        "KIP126.Main.SectionSeven.target_divisibility_contradiction",
+        "KIP126.Main.SectionSeven.target_divisibility_forces_cnu_incoming",
+        "KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes",
+        "KIP126.Main.SectionSeven.hopfNu",
+        "KIP126.Main.SectionSeven.nuBottom",
+        "KIP126.Main.SectionSeven.normalized_nu_bottom_zero",
+        "KIP126.Main.SectionSeven.lambda_nu_multiple_bottom_zero"
+      ]
     },
     {
       "id": "main-standard-h6-square",
@@ -643,33 +790,45 @@
         {
           "path": "KIP126/Main/DifferentialReduction.lean",
           "declaration": "KIP126.Main.h6_square_no_outgoing",
-          "line": 17,
-          "migration_status": "adapted-proof-body-present"
+          "line": 18,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/DifferentialReduction.lean",
           "declaration": "KIP126.Main.only_d12_differential_reduction",
-          "line": 28,
-          "migration_status": "adapted-proof-body-present"
+          "line": 29,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/H6SquarePermanent.lean",
           "declaration": "KIP126.Main.eta_extension_excluded_of_d6_vanishes",
-          "line": 17,
+          "line": 16,
           "migration_status": "adapted-proof-body-present"
         },
         {
           "path": "KIP126/Main/H6SquarePermanent.lean",
           "declaration": "KIP126.Main.h6_sq_permanent",
-          "line": 22,
+          "line": 21,
           "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
-        "Tests.Main.Consumers"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults",
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
-      "remaining_producer_obligations": []
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
+      "remaining_producer_obligations": [],
+      "public_declarations": [
+        "KIP126.Main.eta_extension_excluded_of_d6_vanishes",
+        "KIP126.Main.h6_sq_permanent"
+      ],
+      "internal_declarations": [
+        "KIP126.Main.h6_square_no_outgoing",
+        "KIP126.Main.only_d12_differential_reduction"
+      ]
     },
     {
       "id": "main-legacy-boundary-formula",
@@ -699,29 +858,36 @@
         {
           "path": "KIP126/Main/BoundaryFormula.lean",
           "declaration": "KIP126.Main.delta_h6_square_bx",
-          "line": 17,
-          "migration_status": "adapted-proof-body-present"
+          "line": 18,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/BoundaryFormula.lean",
           "declaration": "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square",
-          "line": 25,
+          "line": 26,
           "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults",
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.delta1_h6Square_eq_lambdaEtaTheta5Square",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "修正对象的公式已公开；固定选择调用既有 BX 接口，任意选择包装仍依赖原有 Main 待证责任。",
+      "canonical_statement_coverage": "任意 ThetaChoice 的实际边界公式保留公开；固定 BX 特例内部化。Main 选择无关性证明已完成，仍依赖分别登记的上游责任。",
       "remaining_scope": "旧输入是包含像，连接映射自动为零；修正公式不冒充该旧输入公式。任意选择仍依赖 lambda_eta_theta_square_independent。",
       "new_upstream_contracts": [],
       "validation_status": "passed-default-build",
-      "existing_main_pending_dependencies": [
-        "KIP126.Main.lambda_eta_theta_square_independent"
+      "existing_main_pending_dependencies": [],
+      "public_declarations": [
+        "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square"
+      ],
+      "internal_declarations": [
+        "KIP126.Main.delta_h6_square_bx"
       ]
     },
     {
@@ -764,27 +930,36 @@
         {
           "path": "KIP126/Main/SquareClassification.lean",
           "declaration": "KIP126.Main.theta_square_detection_cases",
-          "line": 225,
-          "migration_status": "adapted-proof-body-present"
+          "line": 227,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/SquareClassification.lean",
           "declaration": "KIP126.Main.theta_square_three_possibilities",
-          "line": 236,
+          "line": 238,
           "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "Tests.Main.Consumers",
+        "Tests.Main.LegacyResults",
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Selected public conclusions with internal proof stages; see public_declarations and internal_declarations.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.theta5Square_three_possibilities",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "固定实际系统上的检测三分支和完整精确 λ6/λ9/λ10 代表等式均已公开并单文件编译通过；对所有 theta 成立，第一支保留 UChoice，第二支还保留非零 correction 检测。",
+      "canonical_statement_coverage": "精确 λ6/λ9/λ10 代表分类保留公开；检测三分支作为内部推导保留。公开分类对所有相应双次数的 theta 成立，保留 UChoice 和非零 correction 检测。",
       "remaining_scope": "旧 opaque H0SquareX124_8Representative 与实际 UChoice 的逐字身份输运尚未建立；这不再表示三分支分类或精确代表方程缺失。",
       "new_upstream_contracts": [],
-      "validation_status": "passed-default-build"
+      "validation_status": "passed-default-build",
+      "public_declarations": [
+        "KIP126.Main.theta_square_three_possibilities"
+      ],
+      "internal_declarations": [
+        "KIP126.Main.theta_square_detection_cases"
+      ]
     },
     {
       "id": "main-legacy-lambda-six-representative",
@@ -815,26 +990,33 @@
           "path": "KIP126/Main/RepresentativeResults.lean",
           "declaration": "KIP126.Main.lambda_three_eta_u_filtration_fourteen",
           "line": 29,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         },
         {
           "path": "KIP126/Main/RepresentativeResults.lean",
           "declaration": "KIP126.Main.lambda_three_eta_u_eq_lambda_six",
           "line": 38,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.lambdaThreeEtaH0Square_eq_lambdaSixH1H4X109_12",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "实际系统的全称存在式已由已证明 F14 与既有 BHS 比较推出，无新增上游输入。",
+      "canonical_statement_coverage": "实际系统的全称存在式及 F14 界证明完整保留，现为 Main 内部构造；没有新增上游输入。",
       "remaining_scope": "旧 opaque 代表标签尚未逐字输运。旧公理类型未要求 y 的 T 检测，本定理也不额外承诺该检测。",
       "new_upstream_contracts": [],
-      "validation_status": "passed-default-build"
+      "validation_status": "passed-default-build",
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.lambda_three_eta_u_filtration_fourteen",
+        "KIP126.Main.lambda_three_eta_u_eq_lambda_six"
+      ]
     },
     {
       "id": "main-legacy-representative-indeterminacy",
@@ -859,23 +1041,28 @@
           "path": "KIP126/Main/RepresentativeResults.lean",
           "declaration": "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen",
           "line": 61,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.lambda3_eta_h0Square_indeterminacy_AF_ge_15",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "仅 F14 已证明，不是 F15；没有用权重130的误差界取消额外 λ3。",
+      "canonical_statement_coverage": "本条 F14 代表差估计证明保留并内部化；扩张选择等价使用的更强 F15 界仍由 Main 内部完成证明提供。",
       "remaining_scope": "任意两项 UChoice 的 λ³η 差属于 F15 仍需局部权重131的有限窗证明。现有数据可用但新局部论证未完成；原 eta_extension_detection_choice_equivalence 责任保留，不新增上游契约或 Main sorry。",
       "new_upstream_contracts": [],
       "validation_status": "passed-default-build",
       "remaining_scope_class": "substantive-paper-proof; no missing computation input identified in this change",
       "related_existing_main_obligations": [
         "KIP126.Main.eta_extension_detection_choice_equivalence"
+      ],
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen"
       ]
     },
     {
@@ -901,20 +1088,25 @@
           "path": "KIP126/Main/RepresentativeResults.lean",
           "declaration": "KIP126.Main.u_choice_exists",
           "line": 24,
-          "migration_status": "adapted-proof-body-present"
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.h0SquareX124_8_representative_exists",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "实际代表存在证明已公开，复用已迁入提升证明，不依赖待证 eta_extension_detection_choice_equivalence。",
+      "canonical_statement_coverage": "实际 UChoice 代表存在证明保留并内部化，复用既有提升证明，不增加调用者前提。",
       "remaining_scope": "旧 opaque 代表标签与实际 UChoice 的逐字身份输运尚未建立；标准实际系统的代表存在性已经交付。",
       "new_upstream_contracts": [],
-      "validation_status": "passed-default-build"
+      "validation_status": "passed-default-build",
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.u_choice_exists"
+      ]
     },
     {
       "id": "main-legacy-table-one",
@@ -944,21 +1136,26 @@
         {
           "path": "KIP126/Main/TableOne.lean",
           "declaration": "KIP126.Main.table1",
-          "line": 14,
-          "migration_status": "adapted-proof-body-present"
+          "line": 13,
+          "migration_status": "adapted-proof-body-present",
+          "visibility": "private"
         }
       ],
       "consumers": [
-        "Tests.Main.LegacyResults"
+        "KIP126.Main.InternalAudit"
       ],
-      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "interface_state": "Internal Main proof stage; unavailable through ordinary public imports. Mathematical responsibility and proof coverage are unchanged.",
       "remaining_producer_obligations": [],
       "legacy_inventory_item": "KIPBase.Section7.table1",
       "legacy_exact_coverage": "partial",
-      "canonical_statement_coverage": "实际系统 Table 1 结论有直接证明，不依赖待证 eta_extension_detection_choice_equivalence。",
+      "canonical_statement_coverage": "实际系统 Table 1 结论证明保留并内部化；公开的扩张排除定理和选择等价已提供对外所需结论。",
       "remaining_scope": "旧 Statement7_11_5prime 的 opaque 代表/检测谓词尚未逐字输运；NuTarget 和 cofiber rigidity 证明已迁入。",
       "new_upstream_contracts": [],
-      "validation_status": "passed-default-build"
+      "validation_status": "passed-default-build",
+      "public_declarations": [],
+      "internal_declarations": [
+        "KIP126.Main.table1"
+      ]
     }
   ],
   "proof_obligation_registry": "proof-obligations.json",
@@ -976,14 +1173,14 @@
     "Tests.Main.Boundary",
     "Tests.Main.LegacyResults"
   ],
-  "validation": "The full cached lake build passed (2386 jobs), including all exact public interface locks, ordinary-import consumers, private visibility tests, 12 local dependency checks, the Main audit of 1716 declarations with zero direct proof holes, and the consumer/source/trust checks. All 303 upstream obligation records are unchanged. Transitive upstream proofs remain pending.",
+  "validation": "Full cached lake build passed (3007 jobs): any_choice_criterion covers every natural r, including the independently proved r=0 endpoint. Ordinary-import consumers, exact public interface locks and Main trust audits passed; 17 named public interfaces and 1 generated helper remain. No upstream source/API changes or new proof obligations.",
   "proof_implementation_summary": {
     "counting_unit": "Named declarations containing a direct current sorry; no transitive upstream duties are duplicated here.",
     "original_unproved_actual_model_targets": [],
     "existing_proof_ports_remaining": [],
     "historical_route_moss_gap_active": false,
     "source_files": 136,
-    "source_declarations": 913,
+    "source_declarations": 917,
     "default_build_validation": {
       "status": "passed",
       "command": "lake build",
@@ -1063,11 +1260,11 @@
         "name": "KIP126.Main.normalized_bx_finite",
         "path": "KIP126/Main/ChoiceIndependence.lean",
         "lines": [
-          29
+          34
         ],
         "status": "paper-argument-completed",
         "note": "The pinned actual-model any_choice_criterion was a proposition definition only; its finite exponent normalization had no supplied proof. This paper deduction is distinct from the fixed upstream BX source theorem.",
-        "line": 29,
+        "line": 34,
         "completion_note": "Proved from the fixed original bx_finite, lambda injectivity at (125,130), cofiber exactness and the coherent composition of arbitrary lambda powers. The source (3,129) has no outgoing differential: its complete one-dimensional basis is hit by the recorded d2 from (1,128).",
         "paper_locator": {
           "path": "AimPaper/main.tex",
@@ -1082,11 +1279,11 @@
         "name": "KIP126.Main.lambda_eta_theta_square_independent",
         "path": "KIP126/Main/ChoiceIndependence.lean",
         "lines": [
-          43
+          101
         ],
         "status": "paper-argument-completed",
         "note": "The arbitrary-choice argument in the paper remark was not supplied for the actual-model target. Only the lambda-eta-square expression is asserted independent, not theta itself or every representative.",
-        "line": 43,
+        "line": 101,
         "completion_note": "Proved for every ThetaChoice using the established filtration-six gap and exponent two, the paper eta-error estimate in filtration 15, and the existing tmf detector injectivity. This gives exact equality before applying lambda and uses neither the final theorem nor a new boundary assumption.",
         "paper_locator": {
           "path": "AimPaper/main.tex",
@@ -1101,11 +1298,11 @@
         "name": "KIP126.Main.eta_extension_detection_choice_equivalence",
         "path": "KIP126/Main/ChoiceIndependence.lean",
         "lines": [
-          115
+          180
         ],
         "status": "paper-argument-completed",
         "note": "The actual-model Theta5SquareNonzeroDetection/EtaExtensionDetection choice-equivalence source was only a proposition definition; the universal U-representative argument had no supplied proof.",
-        "line": 115,
+        "line": 180,
         "completion_note": "Proved by transporting detection across the filtration-15 difference of the lambda-three eta products. The complete finite-page argument includes the weight-131 correction frame and the d2 killing the source (5,130); the reverse implication uses the existing U representative existence proof.",
         "paper_locator": {
           "path": "AimPaper/main.tex",
@@ -1154,9 +1351,36 @@
         "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
       }
     },
-    "private_helper_count": 853,
-    "public_interface_types": "All 80 original exports, exact type fingerprints, universe parameters and axiom lists are unchanged.",
-    "proof_sources": "main-sources.json; exact paper locators and existing proof-port sources"
+    "private_helper_count": 896,
+    "public_interface_types": "17 selected named public declarations and 1 generated helper; all retained types, universes and axiom lists are unchanged. The other 43 former public declarations remain proved inside Main.",
+    "proof_sources": "main-sources.json; exact paper locators and existing proof-port sources",
+    "public_surface_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "exit_code": 0,
+      "jobs": 2386,
+      "checked_at_utc": "2026-10-15T08:01:55.770094+00:00",
+      "log_path": "/tmp/main-visibility-final-build.log",
+      "log_sha256": "5bd33a3b54ca2b18474c16aac4a4618176abe81abba2b05daacc1f5f17c14107",
+      "cache_reused": true,
+      "named_public_declarations": 17,
+      "generated_public_declarations": 1,
+      "total_main_exports": 18,
+      "ordinary_import_hidden_declaration_checks": 43,
+      "retained_public_types_universes_and_axioms_unchanged": true,
+      "original_mathematical_implementation_text_preserved": true,
+      "main_internal_audit_declarations": 1774,
+      "main_direct_pending": 0,
+      "reviewed_local_dependency_checks": 12,
+      "consumer_trust_declarations": 19,
+      "source_inventory_project_files": 376,
+      "source_inventory_consumer_audit_files": 26,
+      "upstream_pending_obligations_unchanged": 303,
+      "new_obligations": 0,
+      "project_axioms": 0,
+      "upstream_api_locks_unchanged": true,
+      "module_responsibilities_unchanged": true
+    }
   },
   "mathematical_naming_restoration": "mathematical-naming-restoration.json",
   "newer_source_update_review": "upstream-update-review.json",
@@ -1226,6 +1450,165 @@
       "log_path": "/tmp/main-three-proofs-final-build.log",
       "log_sha256": "13a53e4eb57dbb1f81bda399644e65eff2806f91f64985c45ef0ae582626237e",
       "purpose": "Final cached validation after synchronizing proof-status and source-locator metadata."
+    }
+  },
+  "public_surface_review": {
+    "authorization": "User approved the reviewed 17-public / 43-internal Main interface proposal: ok 就这么干.",
+    "counting_unit": "Named Main source declarations; compiler-generated declarations counted separately.",
+    "entry_module": "KIP126.Main",
+    "previous_named_public_count": 60,
+    "named_public_count": 17,
+    "named_internalized_count": 43,
+    "generated_public_count": 1,
+    "total_exports": 18,
+    "public_results": [
+      "KIP126.Main.any_choice_criterion",
+      "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square",
+      "KIP126.Main.eta_extension_detection_choice_equivalence",
+      "KIP126.Main.eta_extension_excluded_of_d6_vanishes",
+      "KIP126.Main.h6_sq_permanent",
+      "KIP126.Main.h6_square_differential_dichotomy_and_criterion",
+      "KIP126.Main.theta5_square_nonzero_detection_choice_equivalence",
+      "KIP126.Main.theta_square_three_possibilities"
+    ],
+    "public_language": [
+      "KIP126.Main.EtaExtensionDetection",
+      "KIP126.Main.EtaExtensionDetectionAt",
+      "KIP126.Main.H6SquarePermanent",
+      "KIP126.Main.H6SquareSupportsD12",
+      "KIP126.Main.Stem126D6Vanishes",
+      "KIP126.Main.Theta5SquareNonzeroDetection",
+      "KIP126.Main.Theta5SquareNonzeroDetectionAt",
+      "KIP126.Main.ThetaChoice",
+      "KIP126.Main.UChoice"
+    ],
+    "internalized_declarations": [
+      "KIP126.Main.SectionSeven.AlphaOneProperties",
+      "KIP126.Main.SectionSeven.AnyYH0Extension",
+      "KIP126.Main.SectionSeven.ClassicalInfinityGenerated",
+      "KIP126.Main.SectionSeven.FiniteDetected",
+      "KIP126.Main.SectionSeven.FiniteNonzeroDifferential",
+      "KIP126.Main.SectionSeven.ModuleTripleToda",
+      "KIP126.Main.SectionSeven.NuExtension5",
+      "KIP126.Main.SectionSeven.NuExtension9",
+      "KIP126.Main.SectionSeven.SphereDetected",
+      "KIP126.Main.SectionSeven.SymmetricTwoMultipliedIndeterminacy",
+      "KIP126.Main.SectionSeven.TargetNuDivisible",
+      "KIP126.Main.SectionSeven.ThetaBMultipliedIndeterminacy",
+      "KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero",
+      "KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes",
+      "KIP126.Main.SectionSeven.hopfNu",
+      "KIP126.Main.SectionSeven.lambda_nu_multiple_bottom_zero",
+      "KIP126.Main.SectionSeven.module_toda_nonempty",
+      "KIP126.Main.SectionSeven.module_toda_nonempty_of_alpha",
+      "KIP126.Main.SectionSeven.multiplied_indeterminacy_of_two_torsion",
+      "KIP126.Main.SectionSeven.normalized_nu_bottom_zero",
+      "KIP126.Main.SectionSeven.nuBottom",
+      "KIP126.Main.SectionSeven.target_divisibility_contradiction",
+      "KIP126.Main.SectionSeven.target_divisibility_forces_cnu_incoming",
+      "KIP126.Main.SectionSeven.target_nu_divisible",
+      "KIP126.Main.conditions_imply_d12",
+      "KIP126.Main.d12_implies_square_and_eta",
+      "KIP126.Main.d12_necessary",
+      "KIP126.Main.d6_vanishes_iff_target_survives_twelve",
+      "KIP126.Main.delta_h6_square_bx",
+      "KIP126.Main.h6_square_no_outgoing",
+      "KIP126.Main.lambda_eta_theta_square_independent",
+      "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen",
+      "KIP126.Main.lambda_three_eta_u_eq_lambda_six",
+      "KIP126.Main.lambda_three_eta_u_filtration_fourteen",
+      "KIP126.Main.normalized_bx_finite",
+      "KIP126.Main.only_d12_differential_reduction",
+      "KIP126.Main.permanence_or_d12",
+      "KIP126.Main.square_and_eta_detection_choice_equivalence",
+      "KIP126.Main.table1",
+      "KIP126.Main.target_nonzero",
+      "KIP126.Main.theta5_square_nonzero_detection_choice_invariant",
+      "KIP126.Main.theta_square_detection_cases",
+      "KIP126.Main.u_choice_exists"
+    ],
+    "preservation": "All retained public type fingerprints, rendered full types, universes and axiom lists match the original 60-interface baseline. Original proof bodies are retained; private shared declarations are imported only within Main. No module responsibility is moved.",
+    "validation_status": "passed",
+    "validation": {
+      "status": "passed",
+      "command": "lake build",
+      "exit_code": 0,
+      "jobs": 2386,
+      "checked_at_utc": "2026-10-15T08:01:55.770094+00:00",
+      "log_path": "/tmp/main-visibility-final-build.log",
+      "log_sha256": "5bd33a3b54ca2b18474c16aac4a4618176abe81abba2b05daacc1f5f17c14107",
+      "cache_reused": true,
+      "named_public_declarations": 17,
+      "generated_public_declarations": 1,
+      "total_main_exports": 18,
+      "ordinary_import_hidden_declaration_checks": 43,
+      "retained_public_types_universes_and_axioms_unchanged": true,
+      "original_mathematical_implementation_text_preserved": true,
+      "main_internal_audit_declarations": 1774,
+      "main_direct_pending": 0,
+      "reviewed_local_dependency_checks": 12,
+      "consumer_trust_declarations": 19,
+      "source_inventory_project_files": 376,
+      "source_inventory_consumer_audit_files": 26,
+      "upstream_pending_obligations_unchanged": 303,
+      "new_obligations": 0,
+      "project_axioms": 0,
+      "upstream_api_locks_unchanged": true,
+      "module_responsibilities_unchanged": true
+    }
+  },
+  "any_choice_criterion_natural_r_extension": {
+    "authorization": "User explicitly requested extending any_choice_criterion to every natural r, proving r=0, updating interface locks and explanations, and leaving upstream modules unchanged.",
+    "declaration": "KIP126.Main.any_choice_criterion",
+    "previous_finite_range": "forall r : Nat, 1 <= r -> ...",
+    "finite_range": "forall r : Nat, ...",
+    "retained_premises": "ThetaChoice theta remains required by the public theorem; the untruncated equivalence is unchanged.",
+    "paper_scope": "AimPaper Theorem 7.3(1) does not state a range for r. Notation 7.2 defines images in S/lambda^k for k >= 1, so the normalized exponent r+1 permits r=0. The paper does not separately discuss that endpoint.",
+    "zero_case": "Both sides hold: the actual standard h6 square survives nontrivially to E3, and every lambda eta theta square maps to zero in S/lambda. The private zero-case facts do not require ThetaChoice.",
+    "positive_case": "The unchanged Literature.Standard.bx_finite still requires 1 <= r. Existing normalization and choice-independence arguments handle precisely this branch.",
+    "caller_change": "Use (any_choice_criterion theta htheta).1 r, without supplying a proof of 1 <= r.",
+    "new_private_helpers": [
+      "KIP126.Main.h6_square_basis",
+      "KIP126.Main.h6_square_reaches_seven",
+      "KIP126.Main.h6_square_survives_three",
+      "KIP126.Main.lambda_eta_theta_square_mod_lambda_zero"
+    ],
+    "upstream_interfaces_changed": false,
+    "new_proof_obligations": 0,
+    "proof_obligation_registry_changed": false,
+    "proofs_have_pending_upstream_dependencies": true,
+    "validation": {
+      "status": "passed",
+      "command": "lake build",
+      "exit_code": 0,
+      "jobs": 3007,
+      "checked_at_utc": "2026-10-15T09:41:13.626420+00:00",
+      "log_path": "/tmp/any-choice-r0-full-build.log",
+      "log_sha256": "7f1422a7c3aed821ebaa7d8eb445e939ae9bedf8c3344997eef4663c5dd078fb",
+      "cache_reused": true,
+      "toolchain": "leanprover/lean4:v4.32.2",
+      "named_public_declarations": 17,
+      "generated_public_declarations": 1,
+      "total_main_exports": 18,
+      "authorized_changed_public_types": [
+        "KIP126.Main.any_choice_criterion"
+      ],
+      "all_other_public_types_and_all_universes_axiom_lists_unchanged": true,
+      "ordinary_import_checks": [
+        "arbitrary natural r without positivity premise",
+        "r=0: E3 and S/lambda",
+        "r=1: E4 and S/lambda^2",
+        "four new private helpers remain hidden"
+      ],
+      "main_internal_audit_declarations": 1779,
+      "main_direct_pending": 0,
+      "reviewed_local_dependency_checks": 17,
+      "consumer_trust_declarations": 19,
+      "project_axioms": 0,
+      "new_proof_obligations": 0,
+      "proof_obligation_registry_unchanged": true,
+      "upstream_source_and_interface_locks_unchanged": true,
+      "proofs_have_pending_upstream_dependencies": true
     }
   }
 }

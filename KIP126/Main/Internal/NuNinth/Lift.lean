@@ -1,6 +1,6 @@
 module
 import all KIP126.Main.Internal.NuNinth.Incoming
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.NuNinth.Fourth
 import all KIP126.Main.Internal.NuNinth.Unit
 import all KIP126.Main.Internal.NuNinth.Frames

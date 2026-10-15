@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaAlgebra
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy

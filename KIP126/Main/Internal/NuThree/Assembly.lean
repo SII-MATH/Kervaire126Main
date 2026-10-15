@@ -1,5 +1,6 @@
 module
-public import KIP126.Main.SectionSeven.NormalizedNu
+import all KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.NormalizedNu
 import all KIP126.Main.Internal.NuThree.Actual
 import all KIP126.Main.Internal.NuThree.Shift
 import all KIP126.Main.Internal.NuFifth.Lift

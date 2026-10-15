@@ -142,6 +142,59 @@ import Lean
 /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually
 registered proof/construction holes are permitted; project axioms and synthetic
 (elaboration-error) holes are always rejected. SpectralSequence stays sorry-free. -/
+-- Former public-consumer examples remain checked inside Main after encapsulation.
+namespace KIP126.Main.InternalAudit
+open KIP126.Main KIP126.Synthetic.Context KIP126.AdamsSynthetic
+open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
+open KIP126.Literature.Standard (eta bxTheta5)
+
+example : ∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u :=
+  u_choice_exists
+
+example (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :
+    ∃ y : BiHom 125 139 (S_0_0 : SyntheticSpectrum),
+      lambdaMultiply 3 (sphereProduct eta u) = lambdaMultiply 6 y :=
+  lambda_three_eta_u_eq_lambda_six u hu
+
+example (u v : BiHom 124 134 (S_0_0 : SyntheticSpectrum))
+    (hu : UChoice u) (hv : UChoice v) :
+    FiltrationAtLeast model.syntheticTower 14
+      (lambdaMultiply 3 (sphereProduct eta u) -
+        lambdaMultiply 3 (sphereProduct eta v)) :=
+  lambda_three_eta_u_difference_filtration_fourteen u v hu hv
+
+example (hc3 : Stem126D6Vanishes) (h : ∀ u, UChoice u → EtaExtensionDetectionAt u) : False := table1 hc3 h
+
+-- Recover the former three-possibility shape with actual representatives.
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (_htheta : ThetaChoice theta) :
+    (∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u ∧
+      sphereProduct theta theta = lambdaMultiply 6 u) ∨
+    (∃ c : BiHom 124 137 (S_0_0 : SyntheticSpectrum),
+      sphereProduct theta theta = lambdaMultiply 9 c) ∨
+    (∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum),
+      sphereProduct theta theta = lambdaMultiply 10 a) := by
+  rcases theta_square_three_possibilities theta with h6 | h9 | h10
+  · exact Or.inl h6
+  · obtain ⟨c, _, hc⟩ := h9
+    exact Or.inr (Or.inl ⟨c, hc⟩)
+  · exact Or.inr (Or.inr h10)
+
+example : KIP126.Literature.deltaH6Square model =
+    KIP126.Literature.Standard.lambdaEtaThetaSquare bxTheta5 :=
+  delta_h6_square_bx
+
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
+    KIP126.Literature.deltaH6Square model =
+      KIP126.Literature.Standard.lambdaEtaThetaSquare theta :=
+  delta_h6_square_eq_lambda_eta_theta_square theta htheta
+
+example : Stem126D6Vanishes ↔
+    KIP126.Core.SpectralSequence.SurvivesTo model.classical.sphere 12 (14,139)
+      KIP126.Computation.Standard.T := d6_vanishes_iff_target_survives_twelve
+
+end KIP126.Main.InternalAudit
+
+
 open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
@@ -182,7 +235,7 @@ run_cmd do
     throwError "Proof obligation registry has stale or missing declarations: {holes}"
   logInfo m!"Main trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms"
 
--- Public replacements for old Main axioms must retain their reviewed local
+-- Public results and internal replacements retain their reviewed local
 -- proof dependencies. Upstream obligations remain owned by upstream modules.
 run_cmd do
   let env ← getEnv
@@ -197,10 +250,19 @@ run_cmd do
     (`KIP126.Main.delta_h6_square_bx, #[]),
     (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square, #[]),
     (`KIP126.Main.normalized_bx_finite, #[]),
+    (`KIP126.Main.h6_square_basis, #[]),
+    (`KIP126.Main.h6_square_reaches_seven, #[]),
+    (`KIP126.Main.h6_square_survives_three, #[]),
+    (`KIP126.Main.lambda_eta_theta_square_mod_lambda_zero, #[]),
+    (`KIP126.Main.any_choice_criterion, #[]),
     (`KIP126.Main.lambda_eta_theta_square_independent, #[]),
     (`KIP126.Main.eta_extension_detection_choice_equivalence, #[])]
   for (root, expected) in checks do
-    let mut todo := #[root]
+    let roots := env.constants.toList.filter fun (name, _) =>
+      ((privateToUserName? name).getD name) == root
+    unless roots.length == 1 do
+      throwError "Missing unique Main declaration: {root}"
+    let mut todo := #[roots.head!.1]
     let mut visited : NameSet := {}
     let mut actual : Array Name := #[]
     while let some name := todo.back? do
@@ -219,7 +281,7 @@ run_cmd do
     unless (actual.map Name.toString).qsort (· < ·) ==
         (expected.map Name.toString).qsort (· < ·) do
       throwError "Main proof dependencies changed for {root}: {actual}; expected {expected}"
-  logInfo m!"Main legacy-result audit: {checks.size} public results have the exact reviewed local proof dependencies"
+  logInfo m!"Main legacy-result audit: {checks.size} public/internal results have the exact reviewed local proof dependencies"
 
 -- The updated Nu9 proof uses only the finite Y incoming window.
 run_cmd do
@@ -244,3 +306,31 @@ run_cmd do
     if let some value := info.value? (allowOpaque := true) then
       todo := todo ++ value.getUsedConstants
   logInfo "Nu9 finite-window dependency audit: no unrestricted Y incoming assumption"
+
+
+run_cmd do
+  let env ← getEnv
+  for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion, `KIP126.Main.eta_extension_excluded_of_d6_vanishes,
+      `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes,
+      `KIP126.Main.theta5_square_nonzero_detection_choice_invariant,
+      `KIP126.Main.permanence_or_d12,
+      `KIP126.Main.d12_implies_square_and_eta,
+      `KIP126.Main.conditions_imply_d12,
+      `KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero,
+      `KIP126.Main.SectionSeven.target_nu_divisible,
+      `KIP126.Main.u_choice_exists,
+      `KIP126.Main.lambda_three_eta_u_filtration_fourteen,
+      `KIP126.Main.lambda_three_eta_u_eq_lambda_six,
+      `KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen,
+      `KIP126.Main.theta_square_detection_cases,
+      `KIP126.Main.theta_square_three_possibilities,
+      `KIP126.Main.table1,
+      `KIP126.Main.delta_h6_square_bx,
+      `KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square] do
+    let candidates := env.constants.toList.filter fun (n, _) =>
+      ((privateToUserName? n).getD n) == name
+    unless candidates.length == 1 do
+      throwError "Missing unique paper proof assembly: {name}"
+    let info := candidates.head!.2
+    if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then
+      throwError "Paper proof assembly was replaced by a direct placeholder: {name}"

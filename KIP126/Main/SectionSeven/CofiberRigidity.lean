@@ -1,6 +1,7 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 
-public import KIP126.Main.SectionSeven.NormalizedNu
+import all KIP126.Main.SectionSeven.NormalizedNu
 import all KIP126.Main.Internal.CofiberRigidity
 
 /-! The final Cν rigidity step in LWX Proposition 7.9.
@@ -23,7 +24,7 @@ set_option backward.isDefEq.respectTransparency false
 survives to E₆, so λ⁴ times the image of this detected representative is
 nonzero. The old proof compares actual quotient representatives with B₅.
 The finite survival and BHS comparison are fixed upstream interfaces. -/
-public theorem detected_target_bottom_lambda_four_nonzero
+private theorem detected_target_bottom_lambda_four_nonzero
     (t : BiHom 125 139 (S_0_0 : SyntheticSpectrum))
     (ht : SphereDetected 14 139 0 T t) :
     lambdaMultiply 4 t ≫ nuBottom ≠ 0 := by
@@ -54,7 +55,7 @@ public theorem detected_target_bottom_lambda_four_nonzero
   rw [hgr,ha0,map_zero,map_zero]
 
 /-- The exact λν equation contradicts that nonzero bottom-cell image. -/
-public theorem target_divisibility_contradiction : ¬ TargetNuDivisible T hopfNu := by
+private theorem target_divisibility_contradiction : ¬ TargetNuDivisible T hopfNu := by
   rintro ⟨t, a, ht, heq⟩
   apply detected_target_bottom_lambda_four_nonzero t ht
   rw [← heq]
@@ -62,7 +63,7 @@ public theorem target_divisibility_contradiction : ¬ TargetNuDivisible T hopfNu
 
 /-- The original last-step formulation exposes the finite incoming window
 2..5 on the same actual Cν class. It makes no permanence assertion about Cν. -/
-public theorem target_divisibility_forces_cnu_incoming
+private theorem target_divisibility_forces_cnu_incoming
     (hdiv : TargetNuDivisible T hopfNu) :
     ∃ r : ℤ, 2 ≤ r ∧ r ≤ 5 ∧
       HitOnPage nuCofiberSequence r (14,139) (bottom 14 139 T) := by

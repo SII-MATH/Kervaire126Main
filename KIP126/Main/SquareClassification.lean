@@ -1,6 +1,8 @@
 module
 
-public import KIP126.Main.RepresentativeResults
+public import KIP126.Main.Conditions
+
+import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.Internal.Selected.ThetaFrames
 import all KIP126.Main.Internal.Selected.SphereDetection
 import all KIP126.Main.Internal.Selected.LambdaOperations
@@ -222,7 +224,7 @@ private theorem correction_exact_representative
 
 /-- Detection form of the stem-124 classification, from the proved finite-page
 analysis. It holds for every element in the theta degree. -/
-public theorem theta_square_detection_cases
+private theorem theta_square_detection_cases
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
     Theta5SquareNonzeroDetectionAt theta ∨
       DetectsNonzero (model.convergence .sphere) (13,137,128)

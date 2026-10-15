@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.Internal.AlphaOne.LastDifferential
 
 /-! All finite-differential and rho-target consequences in

@@ -1,4 +1,5 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.Internal.LowEta
 import all KIP126.Main.Internal.Selected.LambdaOperations

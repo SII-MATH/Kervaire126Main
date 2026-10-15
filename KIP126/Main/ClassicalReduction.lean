@@ -36,14 +36,14 @@ private theorem sixth_degree : (8,134) + model.classical.sphere.diffDeg 6 = (14,
     model.classical.differentialDegree, Prod.mk_add_mk, Int.reduceSub, Int.reduceAdd]
 
 /-- The target's nonvanishing follows from the recorded nonmultiplicity fact. -/
-public theorem target_nonzero : T ≠ 0 := by
+private theorem target_nonzero : T ≠ 0 := by
   intro hz
   apply KIP126.Computation.Standard.t_not_h0_multiple
   refine ⟨0, ?_⟩
   simp only [KIP126.Computation.Standard.product, map_zero, hz]
 
 /-- Paper condition (3) is exactly survival of T to E12. -/
-public theorem d6_vanishes_iff_target_survives_twelve :
+private theorem d6_vanishes_iff_target_survives_twelve :
     Stem126D6Vanishes ↔ SurvivesTo model.classical.sphere 12 (14,139) T := by
   constructor
   · intro hc3
@@ -59,7 +59,7 @@ public theorem d6_vanishes_iff_target_survives_twelve :
       KIP126.Computation.Standard.w_to_e6 KIP126.Computation.Standard.w_d6_targets hs
 
 /-- A nonzero d12 excludes permanent survival and forces condition (3). -/
-public theorem d12_necessary (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := by
+private theorem d12_necessary (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := by
   refine ⟨nonzero_differential_not_permanent (E := model.classical.sphere)
     (by rw [sphere_start]; decide) hd, ?_⟩
   exact d6_vanishes_iff_target_survives_twelve.mpr hd.target_survives

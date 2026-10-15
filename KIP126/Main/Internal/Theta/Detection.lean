@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Def.Computation.Table.Values
 import all KIP126.Main.Internal.AlphaOne.Staircase
 import all KIP126.Main.Internal.Selected.SphereDetection

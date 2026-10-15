@@ -21,12 +21,12 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
 /-- The actual nonzero permanent class U has a representative on the sphere. -/
-public theorem u_choice_exists :
+private theorem u_choice_exists :
     ∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u := by
   exact Internal.Selected.u_choice_exists
 
 /-- Every U representative has its lambda-three eta product in filtration 14. -/
-public theorem lambda_three_eta_u_filtration_fourteen
+private theorem lambda_three_eta_u_filtration_fourteen
     (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :
     FiltrationAtLeast model.syntheticTower 14
       (lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta u)) := by
@@ -35,7 +35,7 @@ public theorem lambda_three_eta_u_filtration_fourteen
 
 /-- Actual lambda-six divisibility, retaining the choice of lift. A specified
 T detection of that lift is not a premise or a conclusion of this equation. -/
-public theorem lambda_three_eta_u_eq_lambda_six
+private theorem lambda_three_eta_u_eq_lambda_six
     (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :
     ∃ y : BiHom 125 139 (S_0_0 : SyntheticSpectrum),
       lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta u) =
@@ -58,7 +58,7 @@ public theorem lambda_three_eta_u_eq_lambda_six
 
 /-- The difference of two lambda-three eta products lies in filtration 14
 at degree (125, 133). The stronger filtration-15 bound remains a separate goal. -/
-public theorem lambda_three_eta_u_difference_filtration_fourteen
+private theorem lambda_three_eta_u_difference_filtration_fourteen
     (u u' : BiHom 124 134 (S_0_0 : SyntheticSpectrum))
     (hu : UChoice u) (hu' : UChoice u') :
     FiltrationAtLeast model.syntheticTower 14

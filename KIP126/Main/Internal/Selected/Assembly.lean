@@ -1,5 +1,6 @@
 module
-public import KIP126.Main.ChoiceIndependence
+import all KIP126.Main.ClassicalReduction
+import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.Internal.Selected.ThetaFrames
 import all KIP126.Main.Internal.Selected.TargetFrame
 import all KIP126.Main.Internal.Selected.ProductZero

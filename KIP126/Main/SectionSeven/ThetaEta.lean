@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.Selected.ThetaFrames
 import all KIP126.Main.Internal.Selected.LambdaOperations
 import all KIP126.Main.Internal.Choice.Filtration

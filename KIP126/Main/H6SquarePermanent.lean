@@ -1,8 +1,7 @@
 module
 
 public import KIP126.Main.DifferentialCriterion
-public import KIP126.Main.SectionSeven.Final
-
+import all KIP126.Main.SectionSeven.Final
 /-! The final proof follows bbac1fc05843 Main/Solution/h6_sq_permanent and
 DifferentialReduction/Conclusion (MIT; see the retained source LICENSE). Upstream facts are directly
 callable. There is no Challenge, result package or extra acceptance premise.

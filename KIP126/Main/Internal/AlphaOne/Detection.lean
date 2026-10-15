@@ -1,4 +1,5 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.SectionSeven.AlphaOne
 public import KIP126.Def.ProofTools.Representatives
 public import KIP126.Def.ProofTools.Operations

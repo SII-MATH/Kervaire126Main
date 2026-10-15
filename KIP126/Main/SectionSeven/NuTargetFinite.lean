@@ -1,4 +1,5 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Def.Computation.Table.Values
 import all KIP126.Main.Internal.LambdaZero
 import all KIP126.Main.Internal.DetectionLabels

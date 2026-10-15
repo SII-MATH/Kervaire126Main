@@ -1,4 +1,7 @@
 module
+import all KIP126.Main.ClassicalReduction
+import all KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.SectionSeven.AnyYPeeling
 import all KIP126.Main.SectionSeven.AnyYSplit
 import all KIP126.Main.SectionSeven.WeakInitialNonzero
