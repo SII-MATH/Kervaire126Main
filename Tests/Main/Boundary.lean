@@ -26,6 +26,8 @@ mechanism, source implementations, or private page-calculus helpers. -/
 #check_failure KIP126.Main.Internal.AlphaOne.alpha_one_exists
 #check_failure KIP126.Main.SectionSeven.Internal.nu_target_full_of_nonzero
 #check_failure KIP126.Main.SectionSeven.Internal.main_weak_high_representative
+#check_failure KIP126.Main.sphere_filtration_lambda
+#check_failure KIP126.Main.lambda_three_eta_u_difference_filtration_fifteen
 
 open Lean Elab Command
 
@@ -45,7 +47,16 @@ run_cmd do
       `KIP126.Main.d12_implies_square_and_eta,
       `KIP126.Main.conditions_imply_d12,
       `KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero,
-      `KIP126.Main.SectionSeven.target_nu_divisible] do
+      `KIP126.Main.SectionSeven.target_nu_divisible,
+      `KIP126.Main.u_choice_exists,
+      `KIP126.Main.lambda_three_eta_u_filtration_fourteen,
+      `KIP126.Main.lambda_three_eta_u_eq_lambda_six,
+      `KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen,
+      `KIP126.Main.theta_square_detection_cases,
+      `KIP126.Main.theta_square_three_possibilities,
+      `KIP126.Main.table1,
+      `KIP126.Main.delta_h6_square_bx,
+      `KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square] do
     let some info := exported.find? name
       | throwError "Missing paper proof assembly: {name}"
     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then

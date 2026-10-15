@@ -19,6 +19,7 @@ import all Tests.Literature.Secondary
 import all Tests.Main.Boundary
 import all Tests.Main.Consumers
 import all Tests.Main.Interface
+import all Tests.Main.LegacyResults
 import all Tests.ProofTools.Consumers
 import all Tests.ProofTools.Interface
 import all Tests.SpectralSequence.Consumers

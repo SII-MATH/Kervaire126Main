@@ -669,6 +669,295 @@
       ],
       "interface_state": "fixed directly callable declarations; actual proof status is tracked separately; no consumer result packages",
       "remaining_producer_obligations": []
+    },
+    {
+      "id": "main-legacy-boundary-formula",
+      "mathematical_purpose": "实际第一商标准 h6 平方的固定 BX 选择及任意 ThetaChoice 连接映射公式。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2133,
+          "label": "rem:theta5choice"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/SourceLanguage.lean",
+          "sha256": "8fa4634e7d40f2baf4ea1060bddeda727d5683a06b8e17b822b65a7c53193abd",
+          "archive_member": "KIP126/Def/Kervaire/Route/SourceLanguage.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/ChoiceIndependence/any_choice_criterion.lean",
+          "sha256": "c1d15ab55c0c4989312b073b5895bf7f638b44a8bf37e17bd0a863de9bd3fd50",
+          "archive_member": "KIP126/Main/Solution/ChoiceIndependence/any_choice_criterion.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/BoundaryFormula.lean",
+          "declaration": "KIP126.Main.delta_h6_square_bx",
+          "line": 17,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/Main/BoundaryFormula.lean",
+          "declaration": "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square",
+          "line": 25,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.delta1_h6Square_eq_lambdaEtaTheta5Square",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "修正对象的公式已公开；固定选择调用既有 BX 接口，任意选择包装仍依赖原有 Main 待证责任。",
+      "remaining_scope": "旧输入是包含像，连接映射自动为零；修正公式不冒充该旧输入公式。任意选择仍依赖 lambda_eta_theta_square_independent。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build",
+      "existing_main_pending_dependencies": [
+        "KIP126.Main.lambda_eta_theta_square_independent"
+      ]
+    },
+    {
+      "id": "main-legacy-square-classification",
+      "mathematical_purpose": "已证明检测三分支及保持代表身份的精确 λ6、λ9、λ10 三分支。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2181,
+          "label": "prop:possible_h_6_sq"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/AlphaOne/Existence.lean",
+          "sha256": "64489539fc2ff6eaf9a316f285159c03c3e534ae7fb107d3779a60c47a13d552",
+          "archive_member": "KIP126/Main/Solution/Route/AlphaOne/Existence.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ThetaData.lean",
+          "sha256": "0674ebfe3734cce4dc306917ee2201f9c77cb87c2909cec34ab58cd426ce3cd3",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/ThetaData.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/ChoiceInvariance.lean",
+          "sha256": "8ba34606ee29b682b4eeb9546acdda3a2524a647c9645ad64882db02a5c3e5c6",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/ChoiceInvariance.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/SquareClassification.lean",
+          "declaration": "KIP126.Main.theta_square_detection_cases",
+          "line": 225,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/Main/SquareClassification.lean",
+          "declaration": "KIP126.Main.theta_square_three_possibilities",
+          "line": 236,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.theta5Square_three_possibilities",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "固定实际系统上的检测三分支和完整精确 λ6/λ9/λ10 代表等式均已公开并单文件编译通过；对所有 theta 成立，第一支保留 UChoice，第二支还保留非零 correction 检测。",
+      "remaining_scope": "旧 opaque H0SquareX124_8Representative 与实际 UChoice 的逐字身份输运尚未建立；这不再表示三分支分类或精确代表方程缺失。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build"
+    },
+    {
+      "id": "main-legacy-lambda-six-representative",
+      "mathematical_purpose": "任意 UChoice 的 λ³ηu 滤过14界及实际 λ6 提升方程。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2244,
+          "label": "lem:equistate5"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/SourceLanguage.lean",
+          "sha256": "8fa4634e7d40f2baf4ea1060bddeda727d5683a06b8e17b822b65a7c53193abd",
+          "archive_member": "KIP126/Def/Kervaire/Route/SourceLanguage.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/RepresentativeResults.lean",
+          "declaration": "KIP126.Main.lambda_three_eta_u_filtration_fourteen",
+          "line": 29,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/Main/RepresentativeResults.lean",
+          "declaration": "KIP126.Main.lambda_three_eta_u_eq_lambda_six",
+          "line": 38,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.lambdaThreeEtaH0Square_eq_lambdaSixH1H4X109_12",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "实际系统的全称存在式已由已证明 F14 与既有 BHS 比较推出，无新增上游输入。",
+      "remaining_scope": "旧 opaque 代表标签尚未逐字输运。旧公理类型未要求 y 的 T 检测，本定理也不额外承诺该检测。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build"
+    },
+    {
+      "id": "main-legacy-representative-indeterminacy",
+      "mathematical_purpose": "两项 UChoice 的 λ³η 差在 (125,133) 的 F14 界；保留更强 F15 目标。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2244,
+          "label": "lem:equistate5"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/RepresentativeResults.lean",
+          "declaration": "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen",
+          "line": 61,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.lambda3_eta_h0Square_indeterminacy_AF_ge_15",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "仅 F14 已证明，不是 F15；没有用权重130的误差界取消额外 λ3。",
+      "remaining_scope": "任意两项 UChoice 的 λ³η 差属于 F15 仍需局部权重131的有限窗证明。现有数据可用但新局部论证未完成；原 c5_choice_equivalence 责任保留，不新增上游契约或 Main sorry。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build",
+      "remaining_scope_class": "substantive-paper-proof; no missing computation input identified in this change",
+      "related_existing_main_obligations": [
+        "KIP126.Main.c5_choice_equivalence"
+      ]
+    },
+    {
+      "id": "main-legacy-u-representative-existence",
+      "mathematical_purpose": "由标准 U 的非零永久代表和实际提升/比较得到 UChoice。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2156,
+          "label": "fact:theta5sqAF"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/RepresentativeResults.lean",
+          "declaration": "KIP126.Main.u_choice_exists",
+          "line": 24,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.h0SquareX124_8_representative_exists",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "实际代表存在证明已公开，复用已迁入提升证明，不依赖待证 c5_choice_equivalence。",
+      "remaining_scope": "旧 opaque 代表标签与实际 UChoice 的逐字身份输运尚未建立；标准实际系统的代表存在性已经交付。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build"
+    },
+    {
+      "id": "main-legacy-table-one",
+      "mathematical_purpose": "C3 与所有 U 代表满足 C5At 的矛盾；使用实际代表存在性和已迁入 Section7 链。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 2208,
+          "label": "prop:state5false"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Section7/Final.lean",
+          "sha256": "782a04de21eecb5ecd4a56dcc9023547328855e379b40bba626cab11a51eea1f",
+          "archive_member": "KIP126/Main/Solution/Route/Section7/Final.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Main/Solution/Route/Selected/DetectionData.lean",
+          "sha256": "fef351ee27f4e980c80e9b1f6edf388a101596169848e25ead929bbf16799dcb",
+          "archive_member": "KIP126/Main/Solution/Route/Selected/DetectionData.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/Main/TableOne.lean",
+          "declaration": "KIP126.Main.table1",
+          "line": 14,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.Main.LegacyResults"
+      ],
+      "interface_state": "Fixed callable conclusions; ordinary mathematical premises only, no consumer result packages.",
+      "remaining_producer_obligations": [],
+      "legacy_inventory_item": "KIPBase.Section7.table1",
+      "legacy_exact_coverage": "partial",
+      "canonical_statement_coverage": "实际系统 Table 1 结论有直接证明，不依赖待证 c5_choice_equivalence。",
+      "remaining_scope": "旧 Statement7_11_5prime 的 opaque 代表/检测谓词尚未逐字输运；NuTarget 和 cofiber rigidity 证明已迁入。",
+      "new_upstream_contracts": [],
+      "validation_status": "passed-default-build"
     }
   ],
   "proof_obligation_registry": "proof-obligations.json",
@@ -683,9 +972,10 @@
   "checks": [
     "Tests.Main.Interface",
     "Tests.Main.Consumers",
-    "Tests.Main.Boundary"
+    "Tests.Main.Boundary",
+    "Tests.Main.LegacyResults"
   ],
-  "validation": "The default build independently validates exact type/export/trust locks and all compiled proof bodies. This source/responsibility ledger does not assert transitive sorry-freedom. Historical unused route_moss is archived without a new Main sorry.",
+  "validation": "The cached default build passed for the final legacy-result additions, including exact public type/export locks, private boundaries, ordinary-import consumers, all nine reviewed local proof dependencies, and trust/source inventory checks. Historical validation is retained separately. No provenance entry certifies transitive sorry-freedom; existing upstream responsibilities and exactly three Main direct pending targets remain unchanged.",
   "proof_implementation_summary": {
     "counting_unit": "Named declarations containing a direct current sorry; no transitive upstream duties are duplicated here.",
     "original_unproved_actual_model_targets": [
@@ -719,9 +1009,38 @@
     ],
     "existing_proof_ports_remaining": [],
     "historical_route_moss_gap_active": false,
-    "source_files": 130,
-    "source_declarations": 868,
+    "source_files": 134,
+    "source_declarations": 888,
     "default_build_validation": {
+      "status": "passed",
+      "command": "lake build",
+      "exit_code": 0,
+      "jobs": 2384,
+      "checked_at": "2026-10-15T03:55:56.514725+00:00",
+      "finished_at": "2026-10-15T03:55:02.737307+00:00",
+      "cache_reused": true,
+      "log_path": ".lake/six-main-final-build.log",
+      "log_sha256": "631ef0e766a90924881cb7e8adc9ceada41e94a0559e4cb54d82bc5fa79270cd",
+      "main_direct_pending": 3,
+      "main_existing_proof_ports_pending": 0,
+      "main_internal_audit_declarations": 1665,
+      "project_axioms": 0,
+      "legacy_public_result_dependency_checks": 9,
+      "consumer_trust_declarations": 19,
+      "consumer_local_holes": 0,
+      "source_inventory_project_files": 374,
+      "source_inventory_consumer_audit_files": 26,
+      "existing_main_public_type_count": 70,
+      "existing_main_public_types_unchanged": true,
+      "main_public_interface_counts": {
+        "handwritten": 60,
+        "generated": 20,
+        "total_exports": 80
+      },
+      "upstream_pending_not_duplicated_into_main": true,
+      "proof_obligation_registry_changed": false
+    },
+    "previous_default_build_validation": {
       "status": "passed",
       "command": "lake build",
       "jobs": 2379,
@@ -734,8 +1053,9 @@
       "upstream_pending_not_duplicated_into_main": true,
       "after_trailing_whitespace_cleanup": true
     },
-    "private_helper_count": 817,
-    "public_interface_types": "Unchanged; main-api.json remains the independent exact type/export authority.",
+    "legacy_result_public_additions": 9,
+    "private_helper_count": 828,
+    "public_interface_types": "Existing public types preserved; nine fixed conclusions added. main-api.json remains the independent type/export authority and is refreshed separately.",
     "proof_sources": "main-sources.json; declaration-level source blocks and hashes"
   }
 }

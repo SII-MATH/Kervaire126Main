@@ -90,7 +90,8 @@ lean_lib ProofToolsChecks where
 @[default_target]
 lean_lib MainChecks where
   needs := #[.packageTarget .anonymous `mainApi]
-  roots := #[`Tests.Main.Interface, `Tests.Main.Consumers, `Tests.Main.Boundary]
+  roots := #[`Tests.Main.Interface, `Tests.Main.Consumers, `Tests.Main.Boundary,
+    `Tests.Main.LegacyResults]
 
 @[default_target]
 lean_lib IntegrationChecks where

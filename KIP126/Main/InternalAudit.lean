@@ -1,5 +1,6 @@
 module
 import all KIP126.Main
+import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.ClassicalReduction
 import all KIP126.Main.Conditions
@@ -87,6 +88,7 @@ import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy
 import all KIP126.Main.Internal.Theta.ZeroDegree
 import all KIP126.Main.PropositionSevenEight
+import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.AnyYError
 import all KIP126.Main.SectionSeven.AnyYFinite
@@ -128,6 +130,8 @@ import all KIP126.Main.SectionSeven.WeakStripFinite
 import all KIP126.Main.SectionSeven.WeakStripTorsion
 import all KIP126.Main.SectionSeven.WeakYDetection
 import all KIP126.Main.SectionSeven.WeakYFinite
+import all KIP126.Main.SquareClassification
+import all KIP126.Main.TableOne
 
 
 public meta import Checks.Registry
@@ -175,3 +179,40 @@ run_cmd do
   unless holes.qsort (· < ·) == expectedNames.qsort (· < ·) do
     throwError "Proof obligation registry has stale or missing declarations: {holes}"
   logInfo m!"Main trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms"
+
+-- Public replacements for old Main axioms must retain their reviewed local
+-- proof dependencies. Upstream obligations remain owned by upstream modules.
+run_cmd do
+  let env ← getEnv
+  let checks : Array (Name × Array Name) := #[
+    (`KIP126.Main.u_choice_exists, #[]),
+    (`KIP126.Main.lambda_three_eta_u_filtration_fourteen, #[]),
+    (`KIP126.Main.lambda_three_eta_u_eq_lambda_six, #[]),
+    (`KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen, #[]),
+    (`KIP126.Main.table1, #[]),
+    (`KIP126.Main.theta_square_detection_cases, #[]),
+    (`KIP126.Main.theta_square_three_possibilities, #[]),
+    (`KIP126.Main.delta_h6_square_bx, #[]),
+    (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square,
+      #[`KIP126.Main.lambda_eta_theta_square_independent])]
+  for (root, expected) in checks do
+    let mut todo := #[root]
+    let mut visited : NameSet := {}
+    let mut actual : Array Name := #[]
+    while let some name := todo.back? do
+      todo := todo.pop
+      if visited.contains name then continue
+      visited := visited.insert name
+      let some info := env.find? name
+        | throwError "Missing proof dependency while auditing {root}: {name}"
+      let some idx := env.getModuleIdxFor? name | continue
+      unless (`KIP126.Main).isPrefixOf env.header.moduleNames[idx.toNat]! do continue
+      let body := info.value? (allowOpaque := true)
+      if info.type.hasSorry || body.any (·.hasSorry) then
+        actual := actual.push name
+      todo := todo ++ info.type.getUsedConstants
+      if let some value := body then todo := todo ++ value.getUsedConstants
+    unless (actual.map Name.toString).qsort (· < ·) ==
+        (expected.map Name.toString).qsort (· < ·) do
+      throwError "Main proof dependencies changed for {root}: {actual}; expected {expected}"
+  logInfo m!"Main legacy-result audit: {checks.size} public results have the exact reviewed local proof dependencies"

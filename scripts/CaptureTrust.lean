@@ -233,6 +233,7 @@ import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Data
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Proofs
 import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSequence.Data
 import all KIP126.Def.SpectralSequence
+import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.ClassicalReduction
 import all KIP126.Main.Conditions
@@ -320,6 +321,7 @@ import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy
 import all KIP126.Main.Internal.Theta.ZeroDegree
 import all KIP126.Main.PropositionSevenEight
+import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.AnyYError
 import all KIP126.Main.SectionSeven.AnyYFinite
@@ -361,6 +363,8 @@ import all KIP126.Main.SectionSeven.WeakStripFinite
 import all KIP126.Main.SectionSeven.WeakStripTorsion
 import all KIP126.Main.SectionSeven.WeakYDetection
 import all KIP126.Main.SectionSeven.WeakYFinite
+import all KIP126.Main.SquareClassification
+import all KIP126.Main.TableOne
 import all KIP126.Main
 import Lean
 open Lean Elab Command

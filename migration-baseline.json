@@ -1,7 +1,7 @@
 {
   "schema_version": 3,
   "created_date_utc": "2026-10-14",
-  "stage": "existing-main-and-proof-tools-proofs-ported; original-gaps-retained",
+  "stage": "six-legacy-main-public-interfaces-reviewed; existing-proofs-ported; substantive-original-gaps-retained",
   "source_repository": {
     "url": "https://github.com/SII-MATH/Kervaire126.git",
     "local_path": "../Kervaire126",
@@ -77,7 +77,8 @@
     "paper_assets_migrated": true,
     "blueprint_migrated": false,
     "proof_tools_existing_proof_port_complete": true,
-    "main_existing_proof_port_complete": true
+    "main_existing_proof_port_complete": true,
+    "six_legacy_main_public_interfaces_reviewed": true
   },
   "spectralSequence": {
     "source_manifest": "spectral-sequence-sources.json",
@@ -213,8 +214,8 @@
   "verification": {
     "default_command": "lake build",
     "result": "passed",
-    "jobs": 2379,
-    "checked_at_utc": "2026-10-15T03:34:42.266949+00:00",
+    "jobs": 2384,
+    "checked_at_utc": "2026-10-15T03:55:49.642243+00:00",
     "separate_module_checks": [
       "SpectralSequenceChecks",
       "AdamsSyntheticChecks",
@@ -289,10 +290,9 @@
       "Projectivity, page/range, nonzero and full short-exactness conditions remain.",
       "Earlier partial mappings are not promoted merely because fixed signatures are callable.",
       "Finite stretching is the pinned strengthened sufficient condition preserving lambda layers; not the full paper equivalence or an infinite lift.",
-      "All required existing Main proof bodies are compiled ports; original active Main targets remain three separate pending declarations. Upstream and original ProofTools gaps are still pending.",
       "All required existing Main proof bodies are compiled ports; original active Main targets remain three separate pending declarations. Upstream and original ProofTools gaps are still pending."
     ],
-    "main_old_six_tracking": "Reviewed conservatively; interface coverage is independent of proof completion.",
+    "main_old_six_tracking": "Actual-system canonical public results and exact local proof dependencies reviewed; old opaque statement transport stays separate. Exact F15 and arbitrary-theta choice independence remain substantive Main proof scope.",
     "original_271_obligation_rows_preserved": true,
     "main_final_has_no_caller_parameters": true,
     "main_final_direct_proof_present": true,
@@ -330,7 +330,7 @@
       }
     ],
     "main_existing_proof_port_complete": true,
-    "main_public_types_and_exports_unchanged": true,
+    "main_public_types_and_exports_unchanged": false,
     "main_original_gap_guard": true,
     "proof_tools_existing_public_types_preserved": true,
     "proof_tools_proved_operations_added": 28,
@@ -342,7 +342,14 @@
       "exit_code": 1,
       "diagnostic": "Main original-gap budget changed",
       "temporary_probe_removed": true
-    }
+    },
+    "default_build_log_sha256": "631ef0e766a90924881cb7e8adc9ceada41e94a0559e4cb54d82bc5fa79270cd",
+    "main_existing_public_types_preserved": true,
+    "main_public_theorems_added": 9,
+    "main_exports_added_including_generated": 10,
+    "proof_registry_byte_identical_to_previous_commit": true,
+    "main_legacy_result_dependency_check": "passed; 8 new results have no Main pending dependency; arbitrary-theta boundary has exactly the existing choice-independence dependency",
+    "new_computation_interfaces": 0
   },
   "literature": {
     "source_manifest": "literature-sources.json",
@@ -579,16 +586,16 @@
     "api_contract": "main-api.json",
     "capability_ledger": "main-contracts.json",
     "root_import": "KIP126.Main",
-    "source_files": 130,
+    "source_files": 134,
     "default_build": "lake build",
     "build_result": "passed",
-    "build_jobs": 2379,
+    "build_jobs": 2384,
     "cache_reused": true,
     "visibility": {
       "default": "private; explicit public declarations",
-      "named_public_declarations": 51,
-      "generated_declarations": 19,
-      "exports_including_generated_declarations": 70,
+      "named_public_declarations": 60,
+      "generated_declarations": 20,
+      "exports_including_generated_declarations": 80,
       "type_signature_lock": "Full elaborated types, universe names, exact exports and axiom dependencies"
     },
     "axiom_audit": {
@@ -598,14 +605,15 @@
       "project_axiom_declarations": [],
       "no_synthetic_sorry": true,
       "scope": "All own public/private declarations, including facade; source inventory verifies every source is included.",
-      "declarations_checked": 1642
+      "declarations_checked": 1665
     },
     "proof_completion_claimed": false,
     "proof_status": "existing proof port complete; original targets without proof remain",
     "checks": [
       "Tests.Main.Interface",
       "Tests.Main.Consumers",
-      "Tests.Main.Boundary"
+      "Tests.Main.Boundary",
+      "Tests.Main.LegacyResults"
     ],
     "final_entry": "KIP126.Main.h6_sq_permanent",
     "direct_obligation_classification": {
@@ -660,7 +668,79 @@
         "AdamsSynthetic": 3,
         "Literature": 9,
         "Computation": 16
-      }
+      },
+      "record_scope": "Historical existing-proof-port completion before the subsequent six legacy interface delivery; its hashes and counts refer to that earlier reviewed state."
+    },
+    "six_entry_public_interface_completion": {
+      "status": "passed",
+      "command": "lake build",
+      "jobs": 2384,
+      "checked_at": "2026-10-15T03:55:49.642243+00:00",
+      "log_sha256": "631ef0e766a90924881cb7e8adc9ceada41e94a0559e4cb54d82bc5fa79270cd",
+      "cache_reused": true,
+      "main_sources": 134,
+      "main_source_declarations": 888,
+      "main_public_declarations": 60,
+      "main_generated_declarations": 20,
+      "main_public_exports": 80,
+      "existing_70_public_types_preserved": true,
+      "public_theorems_added": [
+        "KIP126.Main.delta_h6_square_bx",
+        "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square",
+        "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen",
+        "KIP126.Main.lambda_three_eta_u_eq_lambda_six",
+        "KIP126.Main.lambda_three_eta_u_filtration_fourteen",
+        "KIP126.Main.table1",
+        "KIP126.Main.theta_square_detection_cases",
+        "KIP126.Main.theta_square_three_possibilities",
+        "KIP126.Main.u_choice_exists"
+      ],
+      "generated_export_added": [
+        "KIP126.Synthetic.Context.homotopyRegrade.congr_simp"
+      ],
+      "main_local_pending_dependencies": {
+        "KIP126.Main.delta_h6_square_bx": [],
+        "KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square": [
+          "KIP126.Main.lambda_eta_theta_square_independent"
+        ],
+        "KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen": [],
+        "KIP126.Main.lambda_three_eta_u_eq_lambda_six": [],
+        "KIP126.Main.lambda_three_eta_u_filtration_fourteen": [],
+        "KIP126.Main.table1": [],
+        "KIP126.Main.theta_square_detection_cases": [],
+        "KIP126.Main.theta_square_three_possibilities": [],
+        "KIP126.Main.u_choice_exists": []
+      },
+      "direct_obligations": 307,
+      "main_direct_obligations": 3,
+      "proof_registry_byte_identical_to_previous_commit": true,
+      "new_sorry_declarations": 0,
+      "new_project_axioms": 0,
+      "new_computation_interfaces": 0,
+      "upstream_files_and_pins_unchanged": true,
+      "trust_capture_declarations": 8434,
+      "main_audit_declarations": 1665,
+      "source_inventory": {
+        "project_files": 374,
+        "consumer_and_audit_files": 26
+      },
+      "consumer_check": "Tests.Main.LegacyResults",
+      "consumer_source_sha256": "febb07de8c803c6d4d296f516bfda0acaf89f71541989b52a5d0cdf7335f4a12",
+      "proof_dependency_check": "KIP126.Main.InternalAudit",
+      "original_gaps_retained": [
+        "KIP126.Main.c5_choice_equivalence",
+        "KIP126.Main.lambda_eta_theta_square_independent",
+        "KIP126.Main.normalized_bx_finite"
+      ],
+      "substantive_remaining_six_entry_scope": [
+        "Arbitrary-theta boundary formula retains lambda_eta_theta_square_independent.",
+        "Exact F15 difference requires a new Main local proof; only F14 is delivered."
+      ],
+      "review_notes": "Upstream pending construction and proof responsibilities are called directly and remain upstream. Original 111 opaque statement coverage is tracked separately from the proved actual-system interfaces.",
+      "main_api_sha256": "0e982d3cf4939e0e57d8d7a6618bbd3f6be244a6634dbc9dcd8a55a0cc789101",
+      "source_manifest_sha256": "cd5fd0b2fca172c55208be9db1bc80647694f3569ffd7a9f7b4676880205261f",
+      "contracts_sha256": "ab4659111909c3e56ebf7e1b43c346ac445139de269f7daacc5610cfc18daeaf",
+      "proof_registry_sha256": "72de19cd06e16bb7b4d2b4878ffbbb8d0d752f2d5fca4cfe8f24b23c1846f944"
     }
   },
   "aimPaper": {
