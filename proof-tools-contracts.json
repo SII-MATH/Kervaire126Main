@@ -145,7 +145,7 @@
       "consumers": [
         "Tests.ProofTools.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
       "remaining_producer_obligations": []
     },
     {
@@ -211,7 +211,7 @@
       "consumers": [
         "Tests.ProofTools.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
       "remaining_producer_obligations": []
     },
     {
@@ -255,7 +255,7 @@
       "consumers": [
         "Tests.ProofTools.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
       "remaining_producer_obligations": []
     },
     {
@@ -287,18 +287,18 @@
       "consumers": [
         "Tests.ProofTools.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
       "remaining_producer_obligations": [
         {
           "name": "KIP126.ProofTools.Standard.generalizedLeibniz",
           "status": "original-paper-proof-gaps-retained",
-          "note": "Original GL1 and GL2 subgoals at GeneralizedLeibniz/Proofs.lean:110,158 remain pending; the surrounding representative/Bockstein assembly is being ported. Two subgoals belong to one direct-hole declaration."
+          "note": "Original GL1 and GL2 at GeneralizedLeibniz/Proofs.lean:110,158 remain pending. All existing proof steps have been adapted; two original subgoals belong to one direct-hole declaration."
         }
       ]
     },
     {
       "id": "proof-tools-stretching-and-mahowald",
-      "mathematical_purpose": "提供固定对象上的 callable stretching／Mahowald 定理；明确区分旧有证明待迁移与 MH1/MH2 原证明缺口。",
+      "mathematical_purpose": "完整迁移 stretching 证明和 Mahowald 已有证明；仅保留 MH1/MH2 原缺口，固定上游对象直接调用。",
       "paper_locators": [
         {
           "path": "AimPaper/main.tex",
@@ -323,42 +323,85 @@
           "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
           "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
           "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Detection/Vanishing/Proofs.lean",
+          "sha256": "476232502e737ba011d7b86769b59af35f8687c6d0e6de1622ca61de4065a33a",
+          "archive_member": "KIP126/Def/Synthetic/Detection/Vanishing/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/QuotientRestrictions/Proofs.lean",
+          "sha256": "bb15b1209c175dd1ba8927abce52e1d459558bb0d20931a03ca24f4b2f20d1c6",
+          "archive_member": "KIP126/Def/Synthetic/QuotientRestrictions/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Data.lean",
+          "sha256": "b4ce3a31ee686c2f23b474798c4a2b0fac8c094418a386bee5a1f1865be68319",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Data.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Data.lean",
+          "sha256": "d538e7634b5a8f59c716e57f6a67ea0632fae7d8653e176a79278f65822c8261",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Data.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Proofs.lean",
+          "sha256": "16c45a71590baa8123e94060b0138af43fe9d1251c8331ffe581d5b7900723ae",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Proofs.lean"
         }
       ],
       "implementation": [
         {
-          "path": "KIP126/Def/ProofTools/Standard.lean",
-          "declaration": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
-          "line": 22,
-          "migration_status": "existing-proof-archived-port-pending"
+          "path": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_correction",
+          "line": 14,
+          "migration_status": "adapted-proof-body-present"
         },
         {
-          "path": "KIP126/Def/ProofTools/Standard.lean",
+          "path": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_reflection",
+          "line": 48,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/Def/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.first_nonzero_filtration_grade",
+          "line": 69,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/Def/ProofTools/GeneralizedMahowald.lean",
           "declaration": "KIP126.ProofTools.Standard.generalizedMahowald",
-          "line": 38,
-          "migration_status": "original-paper-proof-gaps-and-proof-port-pending"
+          "line": 23,
+          "migration_status": "original-paper-proof-gaps-retained"
+        },
+        {
+          "path": "KIP126/Def/ProofTools/Stretching.lean",
+          "declaration": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
+          "line": 27,
+          "migration_status": "adapted-proof-body-present"
         }
       ],
       "consumers": [
         "Tests.ProofTools.Consumers"
       ],
-      "interface_state": "fixed callable declarations with separately tracked proof-port/original-proof gaps",
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
       "remaining_producer_obligations": [
         {
-          "name": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
-          "status": "existing-proof-archived-port-pending",
-          "note": "The original PageExtensionStretching proof has no direct sorry. Its nontrivial finite correction body remains archived; the three finite-filtration lemmas are ported separately."
-        },
-        {
           "name": "KIP126.ProofTools.Standard.generalizedMahowald",
-          "status": "original-paper-proof-gaps-and-proof-port-pending",
-          "note": "The original proof contains MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362. The remaining existing auxiliary proof text is preserved in the archive but has not all been adapted to the fixed abstract model."
+          "status": "original-paper-proof-gaps-retained",
+          "note": "The complete original proof and its proved helpers are adapted. Only MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362 remain pending."
         }
       ]
     }
   ],
   "proof_obligation_registry": "proof-obligations.json",
-  "proof_status": "partial-proof-port; distinguish existing proof-port debt from original unproved article steps",
+  "proof_status": "complete-existing-proof-port; exactly original GL1/GL2/MH1/MH2 remain",
   "exclusions": [
     "Reconstructing concrete Adams/Milnor/cobar or synthetic models as a Main obligation.",
     "Re-proving externally cited literature and computation correctness inside Main.",
@@ -374,5 +417,17 @@
   "scope": {
     "finite_stretching": "The frozen baseline provides a layer-preserving strengthened sufficient condition for existence of a later finite-page extension. It excludes finite nonliftable crossings, including inessential ones; it is not claimed equivalent to the full printed paper criterion. It does not assert lifting an arbitrary chosen strict solution, an infinite compatible lift tower, or an untruncated extension.",
     "source_locator_role": "Paper labels identify the mathematical source context. Exact formal scope is determined by proof-tools-api.json and the retained hypotheses of each law."
+  },
+  "remaining_obligation_accounting": {
+    "declarations": 2,
+    "original_local_sorry_sites": 4,
+    "original_labels": [
+      "GL1",
+      "GL2",
+      "MH1",
+      "MH2"
+    ],
+    "proof_port_holes": 0,
+    "upstream_duties_recounted_as_tools": false
   }
 }

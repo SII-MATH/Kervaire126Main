@@ -180,7 +180,7 @@ theorem comp_transport {a b : ℤ × ℤ} (h : a = b) (X Y : Syn)
   simp
 
 /-- The defining successor equation, expressed through the same addition iso. -/
-theorem lambdaPow_succ_comparison (n : ℕ) (X : Syn) :
+public theorem lambdaPow_succ_comparison (n : ℕ) (X : Syn) :
     (lambdaShiftAddIso 1 n (n + 1) (by omega)).hom.app X ≫ lambdaPow (n + 1) X =
       (SyntheticCategory.biShift (lambdaDegree n)).map (SyntheticCategory.lam.app X) ≫
         lambdaPow n X := by

@@ -5261,6 +5261,56 @@
       "remaining_producer_obligations": [
         "Supply the individual proofs/constructions listed in proof-obligations.json for the referenced fixed declarations; retain the original mathematical scope conditions."
       ]
+    },
+    {
+      "id": "lambda-power-recursion-comparison",
+      "mathematical_purpose": "公开原已证 λ 幂递推与双移位相容式，供有限商的移位同构证明使用。",
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
+          "declaration": "KIP126.Synthetic.Context.lambdaPow_succ_comparison"
+        }
+      ],
+      "consumers": [
+        "KIP126.Def.ProofTools.StretchingRepresentatives"
+      ],
+      "proof_status": "existing proved theorem exposed; no new proof obligation",
+      "source_manifest": "adams-synthetic-sources.json"
+    },
+    {
+      "id": "synthetic-homotopy-separation",
+      "mathematical_purpose": "在原 SyntheticObject 闭包上恢复同一固定塔的同伦滤过分离性；仍为上游基础待证责任。",
+      "implementation": [
+        {
+          "path": "KIP126/Def/AdamsSynthetic/Standard/Separation.lean",
+          "declaration": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+          "sha256": "4eabd395ef01f7886611fb430326c2c4c4b990c1c6b09734eb76d2a8591f3249",
+          "line": 29,
+          "declaration": "KIP126.Kervaire.Route.Model.homotopySeparated"
+        }
+      ],
+      "consumers": [
+        "KIP126.Def.ProofTools.GeneralizedMahowald"
+      ],
+      "scope": [
+        "sphere",
+        "nu of ClassicalObject (sphere, nuCofiber, detector, shifts)",
+        "all selected-object bidegree shifts",
+        "all finite lambda quotients of selected objects"
+      ],
+      "not_asserted": [
+        "Separation for every object of SyntheticSpectrum",
+        "A uniform or finite filtration bound",
+        "Classical finite-map odd-torsion separation",
+        "An automatic consequence of canonical E-infinity identification"
+      ],
+      "proof_status": "pending-proof; restored original model prerequisite"
     }
   ],
   "retained_obligations": [

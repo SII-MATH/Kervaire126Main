@@ -137,6 +137,18 @@ for path in tests | {root / 'Tests/Trust.lean'}:
     if re.search(r'(?<![\w`])(?:sorry|sorryAx|axiom)\b', code_only(path.read_text())):
         errors.append('Consumer source contains a local sorry/axiom: ' + str(path.relative_to(root)))
 
+# The completed ProofTools port retains precisely the four original local
+# subgoals; proof-port work may not be disguised as an additional paper gap.
+tool_holes = {}
+for path in (root / 'KIP126/Def/ProofTools').rglob('*.lean'):
+    count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
+    if count:
+        tool_holes[str(path.relative_to(root))] = count
+if tool_holes != {
+        'KIP126/Def/ProofTools/GeneralizedLeibniz.lean': 2,
+        'KIP126/Def/ProofTools/GeneralizedMahowald.lean': 2}:
+    errors.append('ProofTools original four-gap budget changed: ' + str(tool_holes))
+
 if errors:
     raise SystemExit('\n'.join(errors))
 print(f'Source inventory: {len(actual_project)} project files and {len(tests) + 1} consumer/audit '

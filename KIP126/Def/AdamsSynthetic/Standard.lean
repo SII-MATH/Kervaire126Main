@@ -2,6 +2,7 @@ module
 
 public import KIP126.Def.AdamsSynthetic.Standard.Operations
 public import KIP126.Def.AdamsSynthetic.Standard.Realization
+public import KIP126.Def.AdamsSynthetic.Standard.Separation
 
 /-! The fixed Adams/synthetic system. Consumers call these objects and
 theorems directly, while real mathematical hypotheses remain in each type. -/

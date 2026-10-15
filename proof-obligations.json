@@ -6,11 +6,11 @@
   "summary": {
     "total": 285,
     "by_module": {
-      "AdamsSynthetic": 77,
+      "AdamsSynthetic": 78,
       "Computation": 72,
       "Literature": 124,
       "Main": 9,
-      "ProofTools": 3
+      "ProofTools": 2
     },
     "by_kind": {
       "pending-construction": 81,
@@ -90,6 +90,7 @@
     "KIP126.AdamsSynthetic.Standard.syntheticCofiber": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.syntheticRealization": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.syntheticTower": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.weight_map": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.weight_map_comp": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.weight_map_self": "AdamsSynthetic",
@@ -300,7 +301,6 @@
     "KIP126.Main.lambda_eta_theta_square_independent": "Main",
     "KIP126.Main.normalized_bx_finite": "Main",
     "KIP126.Main.permanence_or_d12": "Main",
-    "KIP126.ProofTools.Standard.finitePageExtensionStretching": "ProofTools",
     "KIP126.ProofTools.Standard.generalizedLeibniz": "ProofTools",
     "KIP126.ProofTools.Standard.generalizedMahowald": "ProofTools"
   },
@@ -1239,6 +1239,31 @@
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
+      "synthetic_sorry": false
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Separation",
+      "full_type": "∀ (X : KIP126.Kervaire.Route.SyntheticObject),\n  KIP126.AdamsSynthetic.HomotopySeparated.{1, 0}\n    (KIP126.Kervaire.Route.ModelData.syntheticTower.{1, 0, 1}\n      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n    (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n      X)",
+      "type_fingerprint": "824254188236161023",
+      "body_fingerprint": "14357778225234386823",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Separation.lean",
+      "line": 20,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "restored-existing-foundational-proof-obligation",
+      "migration_status": "original-foundation-pending",
+      "original_sources": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+          "sha256": "4eabd395ef01f7886611fb430326c2c4c4b990c1c6b09734eb76d2a8591f3249",
+          "line": 29,
+          "declaration": "KIP126.Kervaire.Route.Model.homotopySeparated"
+        }
+      ],
+      "reason": "Restores the omitted homotopySeparated field of the pinned coherent model, on its original selected-object closure. The foundational proof remains upstream; it is not a new Mahowald gap or an external literature fact.",
       "synthetic_sorry": false
     },
     {
@@ -4195,36 +4220,6 @@
       "synthetic_sorry": false
     },
     {
-      "name": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
-      "module": "KIP126.Def.ProofTools.Standard",
-      "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y)),\n  KIP126.ProofTools.FinitePageExtensionStretchingLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f",
-      "type_fingerprint": "11264491635714062830",
-      "body_fingerprint": "14387772506446430818",
-      "source": "KIP126/Def/ProofTools/Standard.lean",
-      "line": 22,
-      "kind": "theorem",
-      "status": "pending-proof",
-      "responsibility_owner": "ProofTools",
-      "responsibility_class": "paper-proof-port",
-      "migration_status": "existing-proof-archived-port-pending",
-      "original_sources": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
-          "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
-          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
-        },
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
-          "sha256": "4ad174936f51c5e627f020e8482d55c3fed5f7b0bd20cdbf29878f91158e3936",
-          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean"
-        }
-      ],
-      "reason": "The original PageExtensionStretching proof has no direct sorry. Its nontrivial finite correction body remains archived; the three finite-filtration lemmas are ported separately. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
-      "synthetic_sorry": false
-    },
-    {
       "name": "KIP126.ProofTools.Standard.generalizedLeibniz",
       "module": "KIP126.Def.ProofTools.GeneralizedLeibniz",
       "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y)),\n  KIP126.ProofTools.GeneralizedLeibnizLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f",
@@ -4245,29 +4240,23 @@
           "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean"
         }
       ],
-      "reason": "Original GL1 and GL2 subgoals at GeneralizedLeibniz/Proofs.lean:110,158 remain pending; the surrounding representative/Bockstein assembly is being ported. Two subgoals belong to one direct-hole declaration. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
+      "reason": "Original GL1 and GL2 at GeneralizedLeibniz/Proofs.lean:110,158 remain pending. All existing proof steps have been adapted; two original subgoals belong to one direct-hole declaration. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
       "synthetic_sorry": false
     },
     {
       "name": "KIP126.ProofTools.Standard.generalizedMahowald",
-      "module": "KIP126.Def.ProofTools.Standard",
+      "module": "KIP126.Def.ProofTools.GeneralizedMahowald",
       "full_type": "∀\n  (T :\n    KIP126.Kervaire.Route.TriangleData.{1, 0}\n      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))),\n  KIP126.ProofTools.GeneralizedMahowaldLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T",
       "type_fingerprint": "12297579626073384622",
-      "body_fingerprint": "14193485955161710593",
-      "source": "KIP126/Def/ProofTools/Standard.lean",
-      "line": 38,
+      "body_fingerprint": "5683528006827065855",
+      "source": "KIP126/Def/ProofTools/GeneralizedMahowald.lean",
+      "line": 23,
       "kind": "theorem",
       "status": "pending-proof",
       "responsibility_owner": "ProofTools",
-      "responsibility_class": "paper-proof-port-and-original-gap",
-      "migration_status": "original-paper-proof-gaps-and-proof-port-pending",
+      "responsibility_class": "original-paper-proof-gap",
+      "migration_status": "original-paper-proof-gaps-retained",
       "original_sources": [
-        {
-          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
-          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
-          "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
-          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
-        },
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
           "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
@@ -4275,7 +4264,7 @@
           "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean"
         }
       ],
-      "reason": "The original proof contains MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362. The remaining existing auxiliary proof text is preserved in the archive but has not all been adapted to the fixed abstract model. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
+      "reason": "The complete original proof and its proved helpers are adapted. Only MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362 remain pending. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
       "synthetic_sorry": false
     }
   ]

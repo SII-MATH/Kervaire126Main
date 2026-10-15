@@ -1,7 +1,5 @@
 module
 
-import all KIP126.Def.AdamsSynthetic
-
 import all KIP126.Def.AdamsSynthetic.AdamsFiltration
 import all KIP126.Def.AdamsSynthetic.Background
 import all KIP126.Def.AdamsSynthetic.Coherence
@@ -33,11 +31,14 @@ import all KIP126.Def.AdamsSynthetic.Standard.Background
 import all KIP126.Def.AdamsSynthetic.Standard.Filtration
 import all KIP126.Def.AdamsSynthetic.Standard.Operations
 import all KIP126.Def.AdamsSynthetic.Standard.Realization
+import all KIP126.Def.AdamsSynthetic.Standard.Separation
 import all KIP126.Def.AdamsSynthetic.Standard
 import all KIP126.Def.AdamsSynthetic.Suspension
 import all KIP126.Def.AdamsSynthetic.System
 import all KIP126.Def.AdamsSynthetic.Tower
 import all KIP126.Def.AdamsSynthetic.Weight
+import all KIP126.Def.AdamsSynthetic
+
 public meta import Checks.Registry
 import Lean
 

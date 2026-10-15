@@ -41,7 +41,7 @@
     {
       "path": "KIP126/Def/AdamsSynthetic/Coherence.lean",
       "role": "mathematical-support-or-internal-generic-implementation",
-      "sha256": "e2120b6fc12f84c04096d66ea4c02a1432e4ae50b716bd050928693d00ceaf79",
+      "sha256": "0867922e2c2731cd701e358c2835efac0f0f74c154217a7e02ae9205c0aa544c",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -366,7 +366,7 @@
     {
       "path": "KIP126/Def/AdamsSynthetic/InternalAudit.lean",
       "role": "internal-trust-audit",
-      "sha256": "d93e52d5fc3fb0a49d039797baae6423c94e86108da525c69a43b5d728006827",
+      "sha256": "cb12ed5c58f69c157f5d8499bb6d4f40954a05f20c8529220735cf52d641c730",
       "origins": [
         {
           "commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
@@ -1630,7 +1630,7 @@
     },
     {
       "path": "KIP126/Def/AdamsSynthetic/Standard.lean",
-      "sha256": "7fd9f99827b0a56e967c180519fb76085601185f13463b8e6ba2460c26f173bd",
+      "sha256": "58f513a062f7df70ee4310be4feb09671c318135af7e8608ec2415f9976b718a",
       "origins": [
         {
           "commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
@@ -2130,8 +2130,63 @@
         }
       ],
       "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    },
+    {
+      "path": "KIP126/Def/AdamsSynthetic/Standard/Separation.lean",
+      "role": "fixed-upstream-foundational-theorem",
+      "origins": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+          "sha256": "4eabd395ef01f7886611fb430326c2c4c4b990c1c6b09734eb76d2a8591f3249"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Model/Predicates.lean",
+          "sha256": "bfdf3d127531a422e55a40e3fde92e4d521f6c96fde9bcc1292c2a847d1f9c46"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Objects/Data.lean",
+          "sha256": "edc7b5a24f7f9c5005551de43757a6bac024a378f9cd0455f185bd3aacb30109"
+        }
+      ],
+      "sha256": "88acf72a435f51bba72e490d94ef2c800f5bf21eb761eb998fdb9540e8f29132",
+      "change": "Restore the exact selected-object separation obligation omitted from the fixed interface. Existing model prerequisite, still pending upstream, not an additional paper proof gap."
     }
   ],
   "obligation_review_commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
-  "retired_files": []
+  "retired_files": [],
+  "restored_foundational_obligations": [
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
+      "original_field": {
+        "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+        "path": "KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean",
+        "sha256": "4eabd395ef01f7886611fb430326c2c4c4b990c1c6b09734eb76d2a8591f3249",
+        "line": 29,
+        "declaration": "KIP126.Kervaire.Route.Model.homotopySeparated"
+      },
+      "scope": "selected SyntheticObject closure only",
+      "restored_type": "(X : SyntheticObject) → KIP126.AdamsSynthetic.HomotopySeparated model.syntheticTower (X.obj model.nu model.auxiliary)",
+      "expanded_conclusion": "∀ (m w : ℤ) (a : BiHom m w (X.obj model.nu model.auxiliary)), (∀ s : ℕ, FiltrationAtLeast model.syntheticTower s a) → a = 0",
+      "status": "restored-existing-foundational-proof-obligation",
+      "existing_api_review": [
+        "Detection.lean provides HomotopySeparated only as a predicate; System.lean Model.HomotopySeparated likewise only packages this predicate over the closure.",
+        "SyntheticTowerConvergence provides canonical associated-graded identification, not Hausdorffness.",
+        "Standard.finite_map_separation concerns classical finite-spectrum maps and concludes odd torsion, hence cannot supply this synthetic zero conclusion.",
+        "Literature.BHSObjectApplicability.separated is conditional classical tower data; no callable instance gives synthetic separation on this closure."
+      ],
+      "source_consumers": {
+        "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean": [
+          88,
+          697,
+          1046,
+          2244,
+          2553
+        ]
+      },
+      "new_paper_proof_gaps": 0
+    }
+  ]
 }

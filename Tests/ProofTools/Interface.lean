@@ -93,3 +93,6 @@ run_cmd do
             throwError "Fixed public interface asks its caller for an upstream result package: {name}"
 
 #check_failure KIP126.ProofTools.Standard.lambda_target_class
+#check_failure KIP126.ProofTools.Internal.finite_representatives_lift
+#check_failure KIP126.ProofTools.Internal.grade_difference
+#check_failure KIP126.ProofTools.Internal.Mahowald.actual_rho_kernel_correction

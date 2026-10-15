@@ -33,6 +33,19 @@ SECONDARY_ORIGIN = {
     'path': 'KIP126/Main/Solution/StageInput.lean',
     'sha256': '08e0089aa0cad368bca033ae13b88f3db5758191c85b335038b2c55a481b89fd',
 }
+# An omitted prerequisite of the pinned coherent model, restored with exactly
+# its original selected-object scope. It is not a new paper lemma or a proof
+# of separatedness from the associated-graded comparison.
+REVIEWED_SEPARATION_NAME = 'KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated'
+REVIEWED_SEPARATION_SOURCE = 'KIP126/Def/AdamsSynthetic/Standard/Separation.lean'
+REVIEWED_SEPARATION_SHA256 = '88acf72a435f51bba72e490d94ef2c800f5bf21eb761eb998fdb9540e8f29132'
+SEPARATION_ORIGIN = {
+    'commit': 'bbac1fc05843bdf2d56057e6114a38839e939378',
+    'path': 'KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean',
+    'sha256': '4eabd395ef01f7886611fb430326c2c4c4b990c1c6b09734eb76d2a8591f3249',
+    'line': 29,
+    'declaration': 'KIP126.Kervaire.Route.Model.homotopySeparated',
+}
 PAPER_RESPONSIBILITY_CLASSES = {
     'existing-proof-archived-port-pending': 'paper-proof-port',
     'original-paper-target-without-proof': 'original-paper-target-without-proof',
@@ -214,6 +227,26 @@ def freeze_trust():
                 # Preserve the reviewed upstream rows exactly, including their
                 # source locators. Adding Main does not re-own these duties.
                 obligations.append(old_upstream[row['name']])
+                continue
+            if row['name'] == REVIEWED_SEPARATION_NAME:
+                source = Path(REVIEWED_SEPARATION_SOURCE)
+                if (row['module'] != 'KIP126.Def.AdamsSynthetic.Standard.Separation'
+                        or hashlib.sha256(source.read_bytes()).hexdigest() != REVIEWED_SEPARATION_SHA256):
+                    raise ValueError('Reviewed separation restoration changed: ' + row['name'])
+                manifest = json.load(open('adams-synthetic-sources.json'))
+                evidence = manifest.get('restored_foundational_obligations', [])
+                if not any(e.get('name') == row['name'] and e.get('original_field') == SEPARATION_ORIGIN
+                           and e.get('scope') == 'selected SyntheticObject closure only' for e in evidence):
+                    raise ValueError('Missing precise separation provenance: ' + row['name'])
+                info = commands(source)[0][row['name']]
+                obligations.append({k: row[k] for k in ['name', 'module', 'full_type', 'type_fingerprint', 'body_fingerprint']} | {
+                    'source': str(source), 'line': info['line'], 'kind': 'theorem',
+                    'status': 'pending-proof', 'responsibility_owner': 'AdamsSynthetic',
+                    'responsibility_class': 'restored-existing-foundational-proof-obligation',
+                    'migration_status': 'original-foundation-pending',
+                    'original_sources': [SEPARATION_ORIGIN],
+                    'reason': 'Restores the omitted homotopySeparated field of the pinned coherent model, on its original selected-object closure. The foundational proof remains upstream; it is not a new Mahowald gap or an external literature fact.',
+                    'synthetic_sorry': False})
                 continue
             origin=reviewed_secondary_origin(row)
             info=commands(REVIEWED_SECONDARY_SOURCE)[0].get(row['name'],{})
