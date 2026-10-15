@@ -4,16 +4,16 @@
   "authorization": "User requested fixed upstream objects/callable theorems with temporarily unfinished proofs, then migration of the main paper using those APIs directly. Article-local proofs remain Main/ProofTools responsibilities; unrelated upstream obligations are not duplicated into Main.",
   "meaning": "Counts include unconstructed mathematical objects as well as unproved theorems. Only direct holes are registered. Ownership follows the defining module, not the consumer or transitive sorry dependency; this registry does not certify their proofs.",
   "summary": {
-    "total": 303,
+    "total": 323,
     "by_module": {
-      "AdamsSynthetic": 81,
+      "AdamsSynthetic": 101,
       "Computation": 88,
       "Literature": 132,
       "ProofTools": 2
     },
     "by_kind": {
-      "pending-construction": 84,
-      "pending-proof": 219
+      "pending-construction": 92,
+      "pending-proof": 231
     }
   },
   "responsibility_owners": {
@@ -25,6 +25,7 @@
     "KIP126.AdamsSynthetic.Standard.classicalConvergence": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.classicalSuspension": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.classicalTower": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.classical_canonicalIso": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.classical_page_negative": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.classical_sphere_separated": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.closedBackground": "AdamsSynthetic",
@@ -68,6 +69,8 @@
     "KIP126.AdamsSynthetic.Standard.mapping_parity": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.mapping_sphere_product": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.milnorCoordinates": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.milnorCoordinates_differential": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.multiplicationCompatible": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.normalizedMap": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.nu": "AdamsSynthetic",
@@ -78,16 +81,28 @@
     "KIP126.AdamsSynthetic.Standard.shift_filtered": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.shift_page": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.shift_representative_iff": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceClassical_inverts_hf2": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceCofiberRecognition": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceDerivedSmashRecognition": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceGeneratorTensorRecognition": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceRecognition": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceReplacement": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sourceReplacement_flat": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.spectrumCategory": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.spectrumCofiber": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.spectrumRealization": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphereAlgebra": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sphereE2_milnor_classOfCycle": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphereProductCommutative": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sphereProduct_milnor": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.sphereUnit_milnor": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphere_first_quotient": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.sphere_twist": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.standardHi": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.standardHi_milnor": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.syntheticCategory": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.syntheticCofiber": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.syntheticRealization": "AdamsSynthetic",
@@ -319,7 +334,12 @@
     "KIP126.Literature.Standard.w_detection": "Literature",
     "KIP126.Literature.Standard.weights_lambda": "Literature",
     "KIP126.ProofTools.Standard.generalizedLeibniz": "ProofTools",
-    "KIP126.ProofTools.Standard.generalizedMahowald": "ProofTools"
+    "KIP126.ProofTools.Standard.generalizedMahowald": "ProofTools",
+    "_private.KIP126.Def.AdamsSynthetic.Internal.Milnor.Complex.0.KIP126.AdamsSynthetic.Milnor.differential_squared": "AdamsSynthetic",
+    "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_comp": "AdamsSynthetic",
+    "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_image": "AdamsSynthetic",
+    "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_kernel": "AdamsSynthetic",
+    "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerDifferential_exists": "AdamsSynthetic"
   },
   "obligations": [
     {
@@ -327,26 +347,28 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "Type 1",
       "type_fingerprint": "11079662268383652067",
-      "body_fingerprint": "499401133734921724",
+      "body_fingerprint": "14763763293622993842",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 22,
+      "line": 24,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "Type 1",
       "type_fingerprint": "11079662268383652067",
-      "body_fingerprint": "6805570742264798380",
+      "body_fingerprint": "11526958317520964155",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 24,
+      "line": 26,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.adams_filtration_bounded",
@@ -366,65 +388,144 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Kervaire.Route.AuxiliaryData.{1, 0} KIP126.AdamsSynthetic.Standard.Spectrum",
       "type_fingerprint": "15168915633986846224",
-      "body_fingerprint": "9671860011440431176",
+      "body_fingerprint": "1559943710658311525",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 53,
+      "line": 55,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.classical",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Classical.Adams.ClassicalAdamsFamily.{1, 0} KIP126.AdamsSynthetic.Standard.Spectrum",
       "type_fingerprint": "560280528799889672",
-      "body_fingerprint": "9214557160148971251",
+      "body_fingerprint": "17229768189070657325",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 33,
+      "line": 35,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.classicalConvergence",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "(X : KIP126.Kervaire.Route.ClassicalObject) →\n  KIP126.AdamsSynthetic.ClassicalTowerConvergence.{1, 0} KIP126.AdamsSynthetic.Standard.classicalTower\n    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)",
       "type_fingerprint": "1075481787223542792",
-      "body_fingerprint": "897083604502108545",
+      "body_fingerprint": "16487636891540178700",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 67,
+      "line": 83,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.classicalSuspension",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "(X : KIP126.Kervaire.Route.ClassicalObject) →\n  KIP126.AdamsSynthetic.ClassicalTowerSuspension.{1, 0} KIP126.AdamsSynthetic.Standard.classicalTower\n    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)",
       "type_fingerprint": "1332098804342577881",
-      "body_fingerprint": "2495109127646776979",
+      "body_fingerprint": "14856451554715270479",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 60,
+      "line": 76,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.classicalTower",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.ClassicalTowerPresentation.{1, 0}\n  (KIP126.StableHomotopy.ModTwoCoefficients.unit.{1, 0} KIP126.AdamsSynthetic.Standard.coefficients)\n  KIP126.AdamsSynthetic.Standard.classical",
       "type_fingerprint": "17196870141213359468",
-      "body_fingerprint": "14801873461659866521",
+      "body_fingerprint": "8222228095844547538",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 59,
+      "line": 75,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.classical_canonicalIso",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "(X : KIP126.AdamsSynthetic.Standard.Spectrum) →\n  CategoryTheory.Iso.{0, 1}\n    (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0} KIP126.AdamsSynthetic.Standard.classical X)\n    (KIP126.AdamsSynthetic.Standard.canonicalAdamsSequence X)",
+      "type_fingerprint": "9070382875180330753",
+      "body_fingerprint": "5517634510464617412",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 76,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Identify the fixed classical sequence on each object with the actual recursive coefficient-tower sequence, including ambient maps, every finite page/differential and infinite cycles/boundaries.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.classical_page_negative",
@@ -520,65 +621,70 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.StableHomotopy.ModTwoCoefficients.{1, 0} KIP126.AdamsSynthetic.Standard.Spectrum",
       "type_fingerprint": "14046043664918476402",
-      "body_fingerprint": "17596442938545934241",
+      "body_fingerprint": "7160430957806102531",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 31,
+      "line": 33,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.comparison",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.E2Comparison.{1, 0, 1} KIP126.AdamsSynthetic.Standard.classical\n  KIP126.AdamsSynthetic.Standard.family KIP126.AdamsSynthetic.Standard.nu KIP126.AdamsSynthetic.Standard.auxiliary",
       "type_fingerprint": "15315329295981026136",
-      "body_fingerprint": "9966440664665637337",
+      "body_fingerprint": "11418220063583334429",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 63,
+      "line": 79,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.convergence",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "(X : KIP126.Kervaire.Route.SyntheticObject) →\n  KIP126.AdamsSynthetic.SyntheticTowerConvergence.{1, 0} KIP126.AdamsSynthetic.Standard.syntheticTower\n    (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n      KIP126.AdamsSynthetic.Standard.auxiliary X)",
       "type_fingerprint": "494570654898546646",
-      "body_fingerprint": "10708825632172460974",
+      "body_fingerprint": "11358715102982265649",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 69,
+      "line": 85,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.convergence_natural",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "∀ (X Y : KIP126.Kervaire.Route.SyntheticObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n        KIP126.AdamsSynthetic.Standard.auxiliary X)\n      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n        KIP126.AdamsSynthetic.Standard.auxiliary Y)),\n  Nonempty.{1}\n    (KIP126.AdamsSynthetic.ConvergentMap.{1, 0} KIP126.AdamsSynthetic.Standard.family f\n      (KIP126.AdamsSynthetic.SyntheticTowerConvergence.toConvergence.{1, 0}\n        (KIP126.AdamsSynthetic.Standard.convergence X))\n      (KIP126.AdamsSynthetic.SyntheticTowerConvergence.toConvergence.{1, 0}\n        (KIP126.AdamsSynthetic.Standard.convergence Y)))",
       "type_fingerprint": "4078769320372353922",
-      "body_fingerprint": "11301917012849019196",
+      "body_fingerprint": "15718285190202404946",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 74,
+      "line": 90,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.exactness",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.StructuralExactness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n  KIP126.AdamsSynthetic.Standard.recovery",
       "type_fingerprint": "15637521956637865518",
-      "body_fingerprint": "5449969146379186046",
+      "body_fingerprint": "5761674540992904247",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 51,
+      "line": 53,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
@@ -598,13 +704,14 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.{1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
       "type_fingerprint": "934005940838392255",
-      "body_fingerprint": "11893601334713663555",
+      "body_fingerprint": "770740357999574162",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 37,
+      "line": 39,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.finite_map_separation",
@@ -624,26 +731,28 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.FirstQuotientComparison.{1, 0, 1} KIP126.AdamsSynthetic.Standard.classical\n  KIP126.AdamsSynthetic.Standard.nu KIP126.AdamsSynthetic.Standard.auxiliary",
       "type_fingerprint": "7915551615440378897",
-      "body_fingerprint": "12836491736277157535",
+      "body_fingerprint": "6824938214889713430",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 71,
+      "line": 87,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.first_quotient",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (a s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0} KIP126.AdamsSynthetic.Standard.classical\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X))\n        2 (Prod.mk.{0, 0} s t))),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence\n      (KIP126.Kervaire.Route.SyntheticObject.quotient 1\n        (KIP126.Kervaire.Route.SyntheticObject.shift (Prod.mk.{0, 0} 0 a)\n          (KIP126.Kervaire.Route.SyntheticObject.nu X))))\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HAdd.hAdd.{0, 0, 0} t a)))\n    ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.pageMap.{1, 0} KIP126.AdamsSynthetic.Standard.family\n          (KIP126.StableHomotopy.HasFunctorialCofiber.cofibι.{1, 0}\n            (KIP126.Synthetic.Context.lambdaPow.{1, 0} 1\n              (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 a))\n                (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                  (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)))))\n          2 (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HAdd.hAdd.{0, 0, 0} t a)))))\n      (Eq.mp.{1}\n        (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n          (congrArg.{1, 2}\n            (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n              (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}\n                (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0} KIP126.AdamsSynthetic.Standard.family\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 a))\n                    (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                      (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n                      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)))))\n              2)\n            (congrArg.{1, 1} (Prod.mk.{0, 0} s)\n              (congrArg.{1, 1} (Prod.mk.{0, 0} t)\n                (Eq.trans.{1} (congrArg.{1, 1} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t a)) Nat.cast_zero.{0})\n                  (sub_zero.{0} (HAdd.hAdd.{0, 0, 0} t a)))))))\n        ((KIP126.AdamsSynthetic.E2Comparison.nuE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison X a s t 0) x)))\n    ((LinearEquiv.symm.{0, 0, 0, 0} (KIP126.AdamsSynthetic.Standard.firstQuotient X a s t)) x)",
       "type_fingerprint": "4456196075311034055",
-      "body_fingerprint": "11834647070623723825",
+      "body_fingerprint": "3115566174901145585",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 79,
+      "line": 95,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.graded_compose",
@@ -1036,82 +1145,236 @@
       "synthetic_sorry": false
     },
     {
+      "name": "KIP126.AdamsSynthetic.Standard.milnorCoordinates",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "(s t : ℕ) →\n  LinearEquiv.{0, 0, 0, 0} (RingHom.id.{0} ℤ)\n    (KIP126.AdamsSynthetic.AbstractAdamsTower.FirstPage.{1, 0}\n      (KIP126.AdamsSynthetic.Standard.canonicalAdamsTower KIP126.StableHomotopy.SphereSpectrum.{1, 0})\n      (Prod.mk.{0, 0} ↑s ↑t))\n    (KIP126.AdamsSynthetic.MilnorCochains s t)",
+      "type_fingerprint": "4179024540292905702",
+      "body_fingerprint": "6445380808811529569",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 102,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct actual first-page coordinates of the same canonical sphere coefficient tower in the independently specified normalized polynomial Milnor cochains.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.milnorCoordinates_differential",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "∀ (s t : ℕ)\n  (x :\n    KIP126.AdamsSynthetic.AbstractAdamsTower.FirstPage.{1, 0}\n      (KIP126.AdamsSynthetic.Standard.canonicalAdamsTower KIP126.StableHomotopy.SphereSpectrum.{1, 0})\n      (Prod.mk.{0, 0} ↑s ↑t)),\n  Eq.{1}\n    ((KIP126.AdamsSynthetic.Standard.milnorCoordinates (HAdd.hAdd.{0, 0, 0} s 1) t)\n      ((KIP126.AdamsSynthetic.Standard.canonicalFirstDifferential s t) x))\n    ((KIP126.AdamsSynthetic.milnorDifferential s t) ((KIP126.AdamsSynthetic.Standard.milnorCoordinates s t) x))",
+      "type_fingerprint": "8530751437189468154",
+      "body_fingerprint": "17590592711135999931",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 107,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the actual connecting/cofiber first differential is the prescribed Milnor polynomial differential under the same coordinates.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
       "name": "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.MultiplicationCompatible.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison\n  KIP126.AdamsSynthetic.Standard.sphereAlgebra\n  (KIP126.AdamsSynthetic.Standard.convergence KIP126.Kervaire.Route.SyntheticObject.sphere)",
       "type_fingerprint": "10220612610735354107",
-      "body_fingerprint": "3241431039161243561",
+      "body_fingerprint": "3380960903226622599",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 102,
+      "line": 118,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.normalizedMap",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "(X Y : KIP126.Kervaire.Route.ClassicalObject) →\n  (f :\n      Quiver.Hom.{0, 1} (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)\n        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary Y)) →\n    KIP126.AdamsSynthetic.NormalizedSyntheticMap.{1, 0, 1} KIP126.AdamsSynthetic.Standard.classicalTower\n      KIP126.AdamsSynthetic.Standard.nu f",
       "type_fingerprint": "17339844557337969849",
-      "body_fingerprint": "7191145555547762180",
+      "body_fingerprint": "6302325918531812818",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 65,
+      "line": 81,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.nu",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Synthetic.Context.NuFunctorData.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.Spectrum\n  KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
       "type_fingerprint": "18387878343174839984",
-      "body_fingerprint": "2793308759100865295",
+      "body_fingerprint": "3421253804610576457",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 35,
+      "line": 37,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "∀ (T : CategoryTheory.Pretriangulated.Triangle.{0, 1} KIP126.AdamsSynthetic.Standard.Spectrum),\n  Membership.mem.{1, 1} CategoryTheory.Pretriangulated.distinguishedTriangles.{0, 1} T →\n    KIP126.AdamsSynthetic.HomologyShortExact.{1, 0} KIP126.AdamsSynthetic.Standard.coefficients T →\n      ∃ h,\n        Membership.mem.{1, 1} CategoryTheory.Pretriangulated.distinguishedTriangles.{0, 1}\n          (CategoryTheory.Pretriangulated.Triangle.mk.{0, 1}\n            (CategoryTheory.Functor.map.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n              (CategoryTheory.Pretriangulated.Triangle.mor₁.{0, 1} T))\n            (CategoryTheory.Functor.map.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n              (CategoryTheory.Pretriangulated.Triangle.mor₂.{0, 1} T))\n            h)",
       "type_fingerprint": "176782862164299349",
-      "body_fingerprint": "16955021377264534959",
+      "body_fingerprint": "12333837945232591806",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 40,
+      "line": 42,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.quotients",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Synthetic.Context.LambdaQuotientSystem.{1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
       "type_fingerprint": "5483420018275371665",
-      "body_fingerprint": "17205451323665421196",
+      "body_fingerprint": "6646653012976413188",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 64,
+      "line": 80,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.recovery",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Synthetic.Context.LambdaRecovery.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu",
       "type_fingerprint": "8303287304353685064",
-      "body_fingerprint": "207623383183495745",
+      "body_fingerprint": "10177941297068087274",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 49,
+      "line": 51,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
@@ -1166,30 +1429,550 @@
       "synthetic_sorry": false
     },
     {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceClassical_inverts_hf2",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "CategoryTheory.MorphismProperty.IsInvertedBy.{1, 0, 1, 1}\n  (KIP126.AdamsSynthetic.classicalHF2Equivalences.{1, 0} KIP126.AdamsSynthetic.Standard.sourceRecognition)\n  KIP126.AdamsSynthetic.Standard.sourceClassical",
+      "type_fingerprint": "1345737635617961660",
+      "body_fingerprint": "9697938691280878114",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 189,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the whole actual classical sequence functor inverts the explicit HF₂ Hom-test equivalences, including ambient and infinite representatives; an E₂-only equivalence does not meet this type.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceCofiberRecognition",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceCofiberRecognition.{1, 0} KIP126.AdamsSynthetic.Standard.sourceRecognition",
+      "type_fingerprint": "13438876124909241224",
+      "body_fingerprint": "10968112205129199353",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 44,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Identify the actual reduced mapping cone with the selected cofiber, including the same inclusion and actual connecting boundary.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceDerivedSmashRecognition",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceDerivedSmashRecognition.{1, 0} KIP126.AdamsSynthetic.Standard.sourceRecognition\n  KIP126.AdamsSynthetic.Standard.sourceReplacement",
+      "type_fingerprint": "16803452981572438798",
+      "body_fingerprint": "13594262873136935080",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 60,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct the all-prespectrum natural tensor comparison with the actual diagonal smash of the specified replacements; no arbitrary source smash object is allowed.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceGeneratorTensorRecognition",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceGeneratorTensorRecognition.{1, 0} KIP126.AdamsSynthetic.Standard.sourceRecognition",
+      "type_fingerprint": "14003343796545625517",
+      "body_fingerprint": "8419925141574086088",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 39,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the selected tensor agrees with actual compactly generated smash on good suspension-spectrum generators, naturally and with the actual generator smash-unit normalization.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceRecognition",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceRecognition.{1, 0} KIP126.AdamsSynthetic.Standard.Spectrum\n  KIP126.AdamsSynthetic.Standard.coefficients",
+      "type_fingerprint": "6472153408196436650",
+      "body_fingerprint": "10949587471476098976",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 34,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct the equivalence from the actual ordinary stable localization to the fixed Spectrum, preserving the actual sphere, shifts, cubical stable homotopy/addition, same HF₂ coordinate and normalized point-set unit.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceReplacement",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceReplacementData",
+      "type_fingerprint": "965789970649500724",
+      "body_fingerprint": "1740917708406944439",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 50,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct the actual levelwise good replacement functor and its natural stable equivalence to the identity on the specified prespectra.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sourceReplacement_flat",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "KIP126.AdamsSynthetic.ClassicalSourceReplacementFlatness KIP126.AdamsSynthetic.Standard.sourceReplacement",
+      "type_fingerprint": "5929113660892040361",
+      "body_fingerprint": "5340952188195873188",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 55,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove actual diagonal smash after this same replacement preserves stable equivalences in both variables.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
       "name": "KIP126.AdamsSynthetic.Standard.spectrumCategory",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.StableHomotopy.StableHomotopyCategory.{1, 0} KIP126.AdamsSynthetic.Standard.Spectrum",
       "type_fingerprint": "13487074918897151668",
-      "body_fingerprint": "17002038372464446122",
+      "body_fingerprint": "17257401636233206684",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 25,
+      "line": 27,
       "kind": "instance",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.StableHomotopy.HasFunctorialCofiber.{1, 0}",
       "type_fingerprint": "6464996440462470749",
-      "body_fingerprint": "3986507383945070760",
+      "body_fingerprint": "17405802484646644996",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 27,
+      "line": 29,
       "kind": "instance",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.spectrumRealization",
@@ -1209,52 +1992,304 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Classical.Adams.SphereE2Algebra.{1, 0} KIP126.AdamsSynthetic.Standard.classical",
       "type_fingerprint": "18061518840488501731",
-      "body_fingerprint": "10647607895651542597",
+      "body_fingerprint": "425457697288437075",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 55,
+      "line": 57,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
+      "full_type": "(s t : ℕ) →\n  LinearEquiv.{0, 0, 0, 0} (RingHom.id.{0} ℤ)\n    (↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2\n        (Prod.mk.{0, 0} ↑s ↑t)))\n    (KIP126.AdamsSynthetic.MilnorCohomology s t)",
+      "type_fingerprint": "4716954868662629503",
+      "body_fingerprint": "2480262613814036756",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
+      "line": 64,
+      "kind": "def",
+      "status": "pending-construction",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct the fixed E₂ equivalence with independently specified normalized Milnor cohomology. The actual E₁ coordinates, differential and quotient descent in Standard.Source constrain this same map; no arbitrary E₂ equivalence is counted as a completed source identification.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCohomology/Comparison/Data.lean",
+          "sha256": "82f212956e823faf8962b78f151464416fe2408069cab2305e00fc2d0d8d4752",
+          "line_start": 30,
+          "line_end": 36,
+          "relation": "source-interface-template; reversed orientation; actual construction remains pending"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sphereE2_milnor_classOfCycle",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "∀ (s t : ℕ)\n  (x :\n    KIP126.AdamsSynthetic.AbstractAdamsTower.FirstPage.{1, 0}\n      (KIP126.AdamsSynthetic.Standard.canonicalAdamsTower KIP126.StableHomotopy.SphereSpectrum.{1, 0})\n      (Prod.mk.{0, 0} ↑s ↑t))\n  (hx :\n    Membership.mem.{0, 0}\n      (KIP126.AdamsSynthetic.AbstractAdamsTower.cycles.{1, 0}\n        (KIP126.AdamsSynthetic.Standard.canonicalAdamsTower KIP126.StableHomotopy.SphereSpectrum.{1, 0}) 2\n        KIP126.AdamsSynthetic.Standard.milnorCoordinates_cycle._proof_1 (Prod.mk.{0, 0} ↑s ↑t))\n      x),\n  Eq.{1}\n    ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv s t)\n      ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n          (KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap.{1, 0, 0}\n            (CategoryTheory.Iso.inv.{0, 1} KIP126.AdamsSynthetic.Standard.classicalSphere_sourceIso) 2\n            (Prod.mk.{0, 0} ↑s ↑t)))\n        (KIP126.AdamsSynthetic.Standard.canonicalE2ClassOfCycle s t x hx)))\n    (KIP126.AdamsSynthetic.milnorClassOfCycle ((KIP126.AdamsSynthetic.Standard.milnorCoordinates s t) x)\n      ((KIP126.AdamsSynthetic.Standard.milnorCoordinates_cycle s t x).mp hx))",
+      "type_fingerprint": "7335292488249991685",
+      "body_fingerprint": "1093691887862486567",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 133,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the fixed E₂ equivalence is the descent of these actual first-page coordinates through the canonical tower quotient and full sequence comparison.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.sphereProductCommutative",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.SphereProductCommutative.{0, 1}",
       "type_fingerprint": "628555822437646905",
-      "body_fingerprint": "5784037171130421069",
+      "body_fingerprint": "9121524336848820076",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 104,
+      "line": 120,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sphereProduct_milnor",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "∀ (s t s' t' : ℕ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2\n        (Prod.mk.{0, 0} ↑s ↑t)))\n  (y :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2\n        (Prod.mk.{0, 0} ↑s' ↑t'))),\n  Eq.{1}\n    ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv (HAdd.hAdd.{0, 0, 0} s s') (HAdd.hAdd.{0, 0, 0} t t'))\n      ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n          (CategoryTheory.eqToHom.{0, 1}\n            (congrArg.{1, 2}\n              (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2)\n              (have this := KIP126.AdamsSynthetic.Standard.sphereProduct_milnor._proof_1 s t s' t';\n              this))))\n        (((KIP126.Classical.Adams.SphereE2Algebra.product.{1, 0} KIP126.AdamsSynthetic.Standard.sphereAlgebra\n              (Prod.mk.{0, 0} ↑s ↑t) (Prod.mk.{0, 0} ↑s' ↑t'))\n            x)\n          y)))\n    (KIP126.AdamsSynthetic.milnorCup ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv s t) x)\n      ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv s' t') y))",
+      "type_fingerprint": "5487772198646407890",
+      "body_fingerprint": "14230206341803191654",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 151,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Identify the existing actual sphere E₂ product with the genuine concatenation cup product on normalized Milnor cohomology under the same fixed comparison.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.sphereUnit_milnor",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "Eq.{1}\n  ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv 0 0)\n    (KIP126.Classical.Adams.SphereE2Algebra.unit.{1, 0} KIP126.AdamsSynthetic.Standard.sphereAlgebra))\n  KIP126.AdamsSynthetic.milnorUnitClass",
+      "type_fingerprint": "11719132221744730532",
+      "body_fingerprint": "12164294630657137435",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 163,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Identify the existing sphere E₂ unit with the specified constant-one Milnor cohomology class.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "∀ (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2\n        (Prod.mk.{0, 0} s t))),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence\n      (KIP126.Kervaire.Route.SyntheticObject.quotient 1 KIP126.Kervaire.Route.SyntheticObject.sphere))\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t t))\n    ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.pageMap.{1, 0} KIP126.AdamsSynthetic.Standard.family\n          (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0} KIP126.Synthetic.Context.S_0_0.{1, 0} 1) 2\n          (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t t))))\n      (id.{1}\n        (Eq.mp.{1}\n          (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n            (congrArg.{1, 2}\n              (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}\n                  (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}\n                    KIP126.AdamsSynthetic.Standard.family KIP126.Synthetic.Context.S_0_0.{1, 0}))\n                2)\n              (congrArg.{1, 1} (Prod.mk.{0, 0} s)\n                (congrArg.{1, 1} (Prod.mk.{0, 0} t)\n                  (Eq.trans.{1} (congrArg.{1, 1} (HSub.hSub.{0, 0, 0} t) Nat.cast_zero.{0}) (sub_zero.{0} t))))))\n          ((KIP126.AdamsSynthetic.E2Comparison.sphereE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison s t 0) x))))\n    ((LinearEquiv.symm.{0, 0, 0, 0}\n        (KIP126.AdamsSynthetic.sphereFirstQuotient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n          (KIP126.Synthetic.Context.LambdaQuotientSystem.functoriality.{1, 0} KIP126.AdamsSynthetic.Standard.quotients)\n          KIP126.AdamsSynthetic.Standard.firstQuotient s t))\n      x)",
       "type_fingerprint": "9056796087041689894",
-      "body_fingerprint": "942288315164018841",
+      "body_fingerprint": "695145342657941634",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 90,
+      "line": 106,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "∀ (s t : ℤ) (k : ℕ)\n  (x : KIP126.Synthetic.Context.BiHom.{1, 0} (HSub.hSub.{0, 0, 0} t s) t KIP126.Synthetic.Context.S_0_0.{1, 0}),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence KIP126.Kervaire.Route.SyntheticObject.sphere)\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HSub.hSub.{0, 0, 0} t ↑k)))\n    ((KIP126.AdamsSynthetic.E2Comparison.sphereE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison s t k)\n      ((KIP126.AdamsSynthetic.sphereFirstQuotient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n          (KIP126.Synthetic.Context.LambdaQuotientSystem.functoriality.{1, 0} KIP126.AdamsSynthetic.Standard.quotients)\n          KIP126.AdamsSynthetic.Standard.firstQuotient s t)\n        (KIP126.Synthetic.Context.quotientClass.{1, 0} 1 x)))\n    (KIP126.Synthetic.Context.lambdaMultiply.{1, 0} k x)",
       "type_fingerprint": "13950854755593307745",
-      "body_fingerprint": "993557545422098629",
+      "body_fingerprint": "5744563403350642078",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 97,
+      "line": 113,
       "kind": "theorem",
       "status": "pending-proof",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero",
@@ -1312,39 +2347,116 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "(i : ℕ) →\n  ↑(KIP126.Classical.Adams.ActualE2At.{1, 0} KIP126.AdamsSynthetic.Standard.classical\n      (KIP126.Classical.Adams.hiDegree i))",
       "type_fingerprint": "4682219679076158652",
-      "body_fingerprint": "9134989926334543554",
+      "body_fingerprint": "10393949368241108652",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 57,
+      "line": 73,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.standardHi_milnor",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.Source",
+      "full_type": "∀ (i : ℕ),\n  Eq.{1}\n    ((KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv 1 (HPow.hPow.{0, 0, 0} 2 i))\n      (KIP126.AdamsSynthetic.Standard.standardHi i))\n    (KIP126.AdamsSynthetic.milnorHiClass i)",
+      "type_fingerprint": "18267893640802330052",
+      "body_fingerprint": "16712086489092507598",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/Source.lean",
+      "line": 145,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Identify every already designated standardHi with the specified ξ₁^(2^i) cocycle class through the same fixed E₂ comparison; the original standardHi construction remains pending.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Comparison.lean",
+          "sha256": "4678ba5c08593113b1525a72e378dabe2129e482e9154df16f6b165be946be8e",
+          "line_start": 31,
+          "line_end": 87,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StableHomotopy/Implementation/Tensor.lean",
+          "sha256": "3e2cf2c5ca21d2c98a2a0d69cb57d79b84b52180064afc1fce3b2d4ef6d1121c",
+          "line_start": 47,
+          "line_end": 71,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/MilnorCooperations/Data.lean",
+          "sha256": "a691d8a9bc80954dd429f96d780083cb56f8f9a56fa42ffd852af6573d32bcc3",
+          "line_start": 35,
+          "line_end": 52,
+          "relation": "interface-template-reference"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Comparison/Cobar/Data.lean",
+          "sha256": "50dc3e4f24874575a98543f6e72379922b9c90f7870299652ee1033c1208478d",
+          "line_start": 22,
+          "line_end": 33,
+          "relation": "representative-compatibility-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Hi/Data.lean",
+          "sha256": "fc86cd2faf06dc53ee3fa5fd3d93260b03f96598c7d2cda84d2af3444f4e60d8",
+          "line_start": 22,
+          "line_end": 34,
+          "relation": "canonical-standard-class-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/SphereClasses/Product/Data.lean",
+          "sha256": "5624a94cd311587d2966f96ef9da0c3b1e9b04b745a6898bca2cb64274efe83b",
+          "line_start": 34,
+          "line_end": 43,
+          "relation": "canonical-cup-source"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Solution/Implementation.lean",
+          "sha256": "f1f45a240639f8ff5e90cc83a3ae2eb00fe20be146c1787376c3678811459c27",
+          "line_start": 12,
+          "line_end": 13,
+          "relation": "original-fixed-implementation-existence-gap-context"
+        }
+      ]
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.syntheticCategory",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.Synthetic.Context.SyntheticCategory.{1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
       "type_fingerprint": "11778471869136666423",
-      "body_fingerprint": "8780212876189976123",
+      "body_fingerprint": "8915702903156791765",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 26,
+      "line": 28,
       "kind": "instance",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.StableHomotopy.HasFunctorialCofiber.{1, 0}",
       "type_fingerprint": "17885769714635244780",
-      "body_fingerprint": "12076172538685240259",
+      "body_fingerprint": "7590400513153089633",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 28,
+      "line": 30,
       "kind": "instance",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.syntheticRealization",
@@ -1364,13 +2476,14 @@
       "module": "KIP126.Def.AdamsSynthetic.Standard.Background",
       "full_type": "KIP126.AdamsSynthetic.SyntheticTowerPresentation.{1, 0}\n  (KIP126.AdamsSynthetic.nuCoefficientUnit.{1, 0, 1} KIP126.AdamsSynthetic.Standard.coefficients\n    KIP126.AdamsSynthetic.Standard.nu)\n  KIP126.AdamsSynthetic.Standard.family",
       "type_fingerprint": "14068598999852487302",
-      "body_fingerprint": "15511809079639380610",
+      "body_fingerprint": "1851276708002446955",
       "source": "KIP126/Def/AdamsSynthetic/Standard/Background.lean",
-      "line": 62,
+      "line": 78,
       "kind": "def",
       "status": "pending-construction",
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
-      "synthetic_sorry": false
+      "synthetic_sorry": false,
+      "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
@@ -4811,6 +5924,508 @@
       ],
       "reason": "The complete original proof and its proved helpers are adapted. Only MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362 remain pending. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
       "synthetic_sorry": false
+    },
+    {
+      "name": "_private.KIP126.Def.AdamsSynthetic.Internal.Milnor.Complex.0.KIP126.AdamsSynthetic.Milnor.differential_squared",
+      "module": "KIP126.Def.AdamsSynthetic.Internal.Milnor.Complex",
+      "full_type": "∀ (s t : ℕ) (x : ↥(KIP126.AdamsSynthetic.Milnor.cochains s t)),\n  Eq.{1}\n    ((KIP126.AdamsSynthetic.Milnor.differential (HAdd.hAdd.{0, 0, 0} s 1) t)\n      ((KIP126.AdamsSynthetic.Milnor.differential s t) x))\n    0",
+      "type_fingerprint": "11556005626672820792",
+      "body_fingerprint": "5525783454376652225",
+      "source": "KIP126/Def/AdamsSynthetic/Internal/Milnor/Complex.lean",
+      "line": 26,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "The prescribed Milnor polynomial differential must satisfy d²=0 independently of the Adams tower to avoid circular source identification.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "source_name": "KIP126.AdamsSynthetic.Milnor.differential_squared"
+    },
+    {
+      "name": "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_comp",
+      "module": "KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence",
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H} {X : C}\n  (T : KIP126.AdamsSynthetic.AbstractAdamsTower.{u, v} unit X) (r : ℤ) (p : Prod.{0, 0} ℤ ℤ),\n  Eq.{v + 1}\n    (CategoryTheory.CategoryStruct.comp.{v, v + 1} (KIP126.AdamsSynthetic.Internal.Source.towerD.{u, v} T r p)\n      (KIP126.AdamsSynthetic.Internal.Source.towerD.{u, v} T r\n        (HAdd.hAdd.{0, 0, 0} p (Prod.mk.{0, 0} r (HSub.hSub.{0, 0, 0} r 1)))))\n    0",
+      "type_fingerprint": "3449614486866568414",
+      "body_fingerprint": "5097948990506019662",
+      "source": "KIP126/Def/AdamsSynthetic/Internal/Source/AdamsSequence.lean",
+      "line": 220,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the actual chosen quotient differentials square to zero from the same coefficient-tower exact couple.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "source_name": "KIP126.AdamsSynthetic.Internal.Source.towerD_comp",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Data.lean",
+          "sha256": "27c2cd3705e546f3b9aa4bed1837e66b59b3f439f2fd0c9f0f194a8601bb61a5",
+          "line_start": 26,
+          "line_end": 51,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Proofs.lean",
+          "sha256": "51760be18bba8a6ca2595c540a5132a709add7c128979c1ad176e40cd417f5e6",
+          "line_start": 17,
+          "line_end": 108,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Data.lean",
+          "sha256": "9f8da3a0ccb254d2b56d83073e81b079b87e0a8297e1656722629cfbf3c7f956",
+          "line_start": 28,
+          "line_end": 64,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerPages/Data.lean",
+          "sha256": "0a6dac4e5164a92301121db3ee5db9dab20b15939ece36abd60e0d75a9706829",
+          "line_start": 26,
+          "line_end": 67,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Data.lean",
+          "sha256": "5e08fa3b86b8f866b3fedb98bfe87ac905db25107f54d52906189a0fe6e5e67b",
+          "line_start": 1,
+          "line_end": 57,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Proofs.lean",
+          "sha256": "4a85cd66bbd5d98ff6daeff5479387704f544a54812d2af6e18b0eaf065b3f61",
+          "line_start": 1,
+          "line_end": 89,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Differential/Proofs.lean",
+          "sha256": "50148dcc4e9a43b381764ad3440e2f272ac178d8b3cbee1a2a96bbc76069a0bd",
+          "line_start": 16,
+          "line_end": 41,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextCycles/Proofs.lean",
+          "sha256": "22903fae210c14abd14e7c7584d081cee9b3ffe67e29adc3ea9900a42ccf621f",
+          "line_start": 1,
+          "line_end": 99,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextBoundaries/Proofs.lean",
+          "sha256": "55217383a44fd3e6309b5248377c4ba0e6599d6beb9ae75ce1023e2606fc9289",
+          "line_start": 1,
+          "line_end": 147,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Assembly/Proofs.lean",
+          "sha256": "c0cba15b627a5ca1ce0428802ec231fd320ec213388cf55ad37bc59c8be4d199",
+          "line_start": 1,
+          "line_end": 105,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Sequence/Data.lean",
+          "sha256": "becb33b3217e431de3b22a7809c405e40c09633b433ca88ba164ea70c9a3a709",
+          "line_start": 1,
+          "line_end": 30,
+          "relation": "existing-exact-couple-proof-template"
+        }
+      ]
+    },
+    {
+      "name": "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_image",
+      "module": "KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence",
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H} {X : C}\n  (T : KIP126.AdamsSynthetic.AbstractAdamsTower.{u, v} unit X) (r : ℤ) (p : Prod.{0, 0} ℤ ℤ),\n  LE.le.{0} 2 r →\n    let n := (HSub.hSub.{0, 0, 0} r 2).toNat;\n    let D :=\n      KIP126.AdamsSynthetic.Internal.Source.towerSSData.{u, v} T\n        (HAdd.hAdd.{0, 0, 0} p (Prod.mk.{0, 0} r (HSub.hSub.{0, 0, 0} r 1)));\n    Eq.{v + 2}\n      (CategoryTheory.Limits.imageSubobject.{v, v + 1} (KIP126.AdamsSynthetic.Internal.Source.towerD.{u, v} T r p))\n      (CategoryTheory.Limits.imageSubobject.{v, v + 1}\n        (CategoryTheory.CategoryStruct.comp.{v, v + 1}\n          (CategoryTheory.Subobject.ofLE.{v, v + 1}\n            (KIP126.Core.SpectralSequence.SSData.B.{v + 1, v} D ↑(HAdd.hAdd.{0, 0, 0} n 1))\n            (KIP126.Core.SpectralSequence.SSData.Z.{v + 1, v} D ↑n)\n            (le_trans.{v + 1} (KIP126.Core.SpectralSequence.SSData.B_le_Z.{v + 1, v} D ↑(HAdd.hAdd.{0, 0, 0} n 1))\n              (KIP126.Core.SpectralSequence.SSData.Z_anti.{v + 1, v} D\n                (cast.{0} (Eq.symm.{1} Nat.cast_le._simp_1.{0}) (Nat.le_succ n)))))\n          (KIP126.Core.SpectralSequence.SSData.pageπ.{v + 1, v} D ↑n)))",
+      "type_fingerprint": "8470820760636513336",
+      "body_fingerprint": "3282738604553024352",
+      "source": "KIP126/Def/AdamsSynthetic/Internal/Source/AdamsSequence.lean",
+      "line": 234,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the image of the actual tower quotient differential is exactly the next boundary-layer image.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "source_name": "KIP126.AdamsSynthetic.Internal.Source.towerD_image",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Data.lean",
+          "sha256": "27c2cd3705e546f3b9aa4bed1837e66b59b3f439f2fd0c9f0f194a8601bb61a5",
+          "line_start": 26,
+          "line_end": 51,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Proofs.lean",
+          "sha256": "51760be18bba8a6ca2595c540a5132a709add7c128979c1ad176e40cd417f5e6",
+          "line_start": 17,
+          "line_end": 108,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Data.lean",
+          "sha256": "9f8da3a0ccb254d2b56d83073e81b079b87e0a8297e1656722629cfbf3c7f956",
+          "line_start": 28,
+          "line_end": 64,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerPages/Data.lean",
+          "sha256": "0a6dac4e5164a92301121db3ee5db9dab20b15939ece36abd60e0d75a9706829",
+          "line_start": 26,
+          "line_end": 67,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Data.lean",
+          "sha256": "5e08fa3b86b8f866b3fedb98bfe87ac905db25107f54d52906189a0fe6e5e67b",
+          "line_start": 1,
+          "line_end": 57,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Proofs.lean",
+          "sha256": "4a85cd66bbd5d98ff6daeff5479387704f544a54812d2af6e18b0eaf065b3f61",
+          "line_start": 1,
+          "line_end": 89,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Differential/Proofs.lean",
+          "sha256": "50148dcc4e9a43b381764ad3440e2f272ac178d8b3cbee1a2a96bbc76069a0bd",
+          "line_start": 16,
+          "line_end": 41,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextCycles/Proofs.lean",
+          "sha256": "22903fae210c14abd14e7c7584d081cee9b3ffe67e29adc3ea9900a42ccf621f",
+          "line_start": 1,
+          "line_end": 99,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextBoundaries/Proofs.lean",
+          "sha256": "55217383a44fd3e6309b5248377c4ba0e6599d6beb9ae75ce1023e2606fc9289",
+          "line_start": 1,
+          "line_end": 147,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Assembly/Proofs.lean",
+          "sha256": "c0cba15b627a5ca1ce0428802ec231fd320ec213388cf55ad37bc59c8be4d199",
+          "line_start": 1,
+          "line_end": 105,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Sequence/Data.lean",
+          "sha256": "becb33b3217e431de3b22a7809c405e40c09633b433ca88ba164ea70c9a3a709",
+          "line_start": 1,
+          "line_end": 30,
+          "relation": "existing-exact-couple-proof-template"
+        }
+      ]
+    },
+    {
+      "name": "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_kernel",
+      "module": "KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence",
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H} {X : C}\n  (T : KIP126.AdamsSynthetic.AbstractAdamsTower.{u, v} unit X) (r : ℤ) (p : Prod.{0, 0} ℤ ℤ),\n  LE.le.{0} 2 r →\n    let n := (HSub.hSub.{0, 0, 0} r 2).toNat;\n    Eq.{v + 2}\n      (CategoryTheory.Limits.kernelSubobject.{v, v + 1} (KIP126.AdamsSynthetic.Internal.Source.towerD.{u, v} T r p))\n      (CategoryTheory.Limits.imageSubobject.{v, v + 1}\n        (CategoryTheory.CategoryStruct.comp.{v, v + 1}\n          (CategoryTheory.Subobject.ofLE.{v, v + 1}\n            (KIP126.Core.SpectralSequence.SSData.Z.{v + 1, v}\n              (KIP126.AdamsSynthetic.Internal.Source.towerSSData.{u, v} T p) ↑(HAdd.hAdd.{0, 0, 0} n 1))\n            (KIP126.Core.SpectralSequence.SSData.Z.{v + 1, v}\n              (KIP126.AdamsSynthetic.Internal.Source.towerSSData.{u, v} T p) ↑n)\n            (KIP126.Core.SpectralSequence.SSData.Z_anti.{v + 1, v}\n              (KIP126.AdamsSynthetic.Internal.Source.towerSSData.{u, v} T p)\n              (cast.{0} (Eq.symm.{1} Nat.cast_le._simp_1.{0}) (Nat.le_succ n))))\n          (KIP126.Core.SpectralSequence.SSData.pageπ.{v + 1, v}\n            (KIP126.AdamsSynthetic.Internal.Source.towerSSData.{u, v} T p) ↑n)))",
+      "type_fingerprint": "2836727571812878826",
+      "body_fingerprint": "16043077041352321598",
+      "source": "KIP126/Def/AdamsSynthetic/Internal/Source/AdamsSequence.lean",
+      "line": 224,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Prove the kernel of the actual tower quotient differential is exactly the next cycle-layer image.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "source_name": "KIP126.AdamsSynthetic.Internal.Source.towerD_kernel",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Data.lean",
+          "sha256": "27c2cd3705e546f3b9aa4bed1837e66b59b3f439f2fd0c9f0f194a8601bb61a5",
+          "line_start": 26,
+          "line_end": 51,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Proofs.lean",
+          "sha256": "51760be18bba8a6ca2595c540a5132a709add7c128979c1ad176e40cd417f5e6",
+          "line_start": 17,
+          "line_end": 108,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Data.lean",
+          "sha256": "9f8da3a0ccb254d2b56d83073e81b079b87e0a8297e1656722629cfbf3c7f956",
+          "line_start": 28,
+          "line_end": 64,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerPages/Data.lean",
+          "sha256": "0a6dac4e5164a92301121db3ee5db9dab20b15939ece36abd60e0d75a9706829",
+          "line_start": 26,
+          "line_end": 67,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Data.lean",
+          "sha256": "5e08fa3b86b8f866b3fedb98bfe87ac905db25107f54d52906189a0fe6e5e67b",
+          "line_start": 1,
+          "line_end": 57,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Proofs.lean",
+          "sha256": "4a85cd66bbd5d98ff6daeff5479387704f544a54812d2af6e18b0eaf065b3f61",
+          "line_start": 1,
+          "line_end": 89,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Differential/Proofs.lean",
+          "sha256": "50148dcc4e9a43b381764ad3440e2f272ac178d8b3cbee1a2a96bbc76069a0bd",
+          "line_start": 16,
+          "line_end": 41,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextCycles/Proofs.lean",
+          "sha256": "22903fae210c14abd14e7c7584d081cee9b3ffe67e29adc3ea9900a42ccf621f",
+          "line_start": 1,
+          "line_end": 99,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextBoundaries/Proofs.lean",
+          "sha256": "55217383a44fd3e6309b5248377c4ba0e6599d6beb9ae75ce1023e2606fc9289",
+          "line_start": 1,
+          "line_end": 147,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Assembly/Proofs.lean",
+          "sha256": "c0cba15b627a5ca1ce0428802ec231fd320ec213388cf55ad37bc59c8be4d199",
+          "line_start": 1,
+          "line_end": 105,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Sequence/Data.lean",
+          "sha256": "becb33b3217e431de3b22a7809c405e40c09633b433ca88ba164ea70c9a3a709",
+          "line_start": 1,
+          "line_end": 30,
+          "relation": "existing-exact-couple-proof-template"
+        }
+      ]
+    },
+    {
+      "name": "_private.KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerDifferential_exists",
+      "module": "KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence",
+      "full_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H} {X : C}\n  (T : KIP126.AdamsSynthetic.AbstractAdamsTower.{u, v} unit X) (r : ℤ) (hr : LE.le.{0} 2 r) (p : Prod.{0, 0} ℤ ℤ),\n  ∃ d, KIP126.AdamsSynthetic.Internal.Source.TowerDifferentialRule.{u, v} T r hr p d",
+      "type_fingerprint": "8909419180343766446",
+      "body_fingerprint": "14919285980522122274",
+      "source": "KIP126/Def/AdamsSynthetic/Internal/Source/AdamsSequence.lean",
+      "line": 197,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "authorized-concrete-source-identification",
+      "reason": "Construct the well-defined linear quotient differential satisfying the actual connecting-map, lift and layer-projection formula on every representative.",
+      "synthetic_sorry": false,
+      "authorization": "User explicitly authorized necessary AdamsSynthetic source-identification interfaces and individual unfinished constructions/proofs while preserving existing interfaces and Main.",
+      "source_name": "KIP126.AdamsSynthetic.Internal.Source.towerDifferential_exists",
+      "original_sources": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Data.lean",
+          "sha256": "27c2cd3705e546f3b9aa4bed1837e66b59b3f439f2fd0c9f0f194a8601bb61a5",
+          "line_start": 26,
+          "line_end": 51,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerFiltration/Proofs.lean",
+          "sha256": "51760be18bba8a6ca2595c540a5132a709add7c128979c1ad176e40cd417f5e6",
+          "line_start": 17,
+          "line_end": 108,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Data.lean",
+          "sha256": "9f8da3a0ccb254d2b56d83073e81b079b87e0a8297e1656722629cfbf3c7f956",
+          "line_start": 28,
+          "line_end": 64,
+          "relation": "adapted-port"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerPages/Data.lean",
+          "sha256": "0a6dac4e5164a92301121db3ee5db9dab20b15939ece36abd60e0d75a9706829",
+          "line_start": 26,
+          "line_end": 67,
+          "relation": "mathematical-template-adaptation"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Data.lean",
+          "sha256": "5e08fa3b86b8f866b3fedb98bfe87ac905db25107f54d52906189a0fe6e5e67b",
+          "line_start": 1,
+          "line_end": 57,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerDifferential/Proofs.lean",
+          "sha256": "4a85cd66bbd5d98ff6daeff5479387704f544a54812d2af6e18b0eaf065b3f61",
+          "line_start": 1,
+          "line_end": 89,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Differential/Proofs.lean",
+          "sha256": "50148dcc4e9a43b381764ad3440e2f272ac178d8b3cbee1a2a96bbc76069a0bd",
+          "line_start": 16,
+          "line_end": 41,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextCycles/Proofs.lean",
+          "sha256": "22903fae210c14abd14e7c7584d081cee9b3ffe67e29adc3ea9900a42ccf621f",
+          "line_start": 1,
+          "line_end": 99,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/NextBoundaries/Proofs.lean",
+          "sha256": "55217383a44fd3e6309b5248377c4ba0e6599d6beb9ae75ce1023e2606fc9289",
+          "line_start": 1,
+          "line_end": 147,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Assembly/Proofs.lean",
+          "sha256": "c0cba15b627a5ca1ce0428802ec231fd320ec213388cf55ad37bc59c8be4d199",
+          "line_start": 1,
+          "line_end": 105,
+          "relation": "existing-exact-couple-proof-template"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/TowerSSData/Sequence/Data.lean",
+          "sha256": "becb33b3217e431de3b22a7809c405e40c09633b433ca88ba164ea70c9a3a709",
+          "line_start": 1,
+          "line_end": 30,
+          "relation": "existing-exact-couple-proof-template"
+        }
+      ]
+    }
+  ],
+  "source_identification_authorization": {
+    "module": "AdamsSynthetic",
+    "reference_commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+    "scope": "Necessary source identification additions only; all original public types and exports and the Main target are preserved.",
+    "original_obligations_preserved": 81,
+    "new_direct_obligations": 20,
+    "unchanged_background_bodies_with_refreshed_sorry_labels": [
+      "KIP126.AdamsSynthetic.Standard.Spectrum",
+      "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+      "KIP126.AdamsSynthetic.Standard.auxiliary",
+      "KIP126.AdamsSynthetic.Standard.classical",
+      "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+      "KIP126.AdamsSynthetic.Standard.classicalSuspension",
+      "KIP126.AdamsSynthetic.Standard.classicalTower",
+      "KIP126.AdamsSynthetic.Standard.coefficients",
+      "KIP126.AdamsSynthetic.Standard.comparison",
+      "KIP126.AdamsSynthetic.Standard.convergence",
+      "KIP126.AdamsSynthetic.Standard.convergence_natural",
+      "KIP126.AdamsSynthetic.Standard.exactness",
+      "KIP126.AdamsSynthetic.Standard.family",
+      "KIP126.AdamsSynthetic.Standard.firstQuotient",
+      "KIP126.AdamsSynthetic.Standard.first_quotient",
+      "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
+      "KIP126.AdamsSynthetic.Standard.normalizedMap",
+      "KIP126.AdamsSynthetic.Standard.nu",
+      "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+      "KIP126.AdamsSynthetic.Standard.quotients",
+      "KIP126.AdamsSynthetic.Standard.recovery",
+      "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+      "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+      "KIP126.AdamsSynthetic.Standard.sphereAlgebra",
+      "KIP126.AdamsSynthetic.Standard.sphereProductCommutative",
+      "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
+      "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
+      "KIP126.AdamsSynthetic.Standard.standardHi",
+      "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+      "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+      "KIP126.AdamsSynthetic.Standard.syntheticTower"
+    ],
+    "non_adams_obligations": "Preserved verbatim; the scoped kernel capture does not claim to validate other modules."
+  },
+  "source_identification_backlog": [
+    {
+      "id": "derived-source-unit-normalization",
+      "responsibility_owner": "AdamsSynthetic",
+      "status": "not-yet-formalized-construction",
+      "counted_as_direct_lean_hole": false,
+      "task": "Construct the actual full-prespectrum source unitor and prove agreement with the already normalized generator smash unit and the full derived tensor comparison. No independent source unitor is asserted as completed."
+    },
+    {
+      "id": "hf2-localization-paper-completion-comparison",
+      "responsibility_owner": "AdamsSynthetic",
+      "status": "not-yet-formalized-comparison",
+      "counted_as_direct_lean_hole": false,
+      "task": "Identify the explicitly defined HF₂ categorical localization with the paper's completion model under the required connectivity/finite-type hypotheses, including the actual completed-sphere comparison. The localized spectral-sequence factorization is not this comparison."
     }
   ]
 }

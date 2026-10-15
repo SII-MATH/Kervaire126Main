@@ -6,6 +6,8 @@ public import KIP126.Def.AdamsSynthetic.Families
 public import KIP126.Def.AdamsSynthetic.Sphere
 public import KIP126.Def.AdamsSynthetic.Configuration
 public import KIP126.Def.SpectralSequence
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Cohomology
+public import KIP126.Def.AdamsSynthetic.Source
 
 /-! The fixed classical and synthetic background used in this project.
 Every unfinished construction is named at its mathematical boundary; the
@@ -53,7 +55,21 @@ public def exactness : StructuralExactness nu recovery := by sorry
 public def auxiliary : AuxiliaryData Spectrum := by sorry
 /-- Multiplication on the actual sphere E₂, not an independent formal algebra. -/
 public def sphereAlgebra : SphereE2Algebra classical := by sorry
-/-- The designated standard hᵢ on this very sphere E₂. -/
+
+/-- The fixed comparison with the independently defined normalized Milnor cobar
+cohomology. Its construction and compatibility with the actual first tower
+differential are separate registered obligations; an arbitrary linear
+isomorphism is not a completed source identification. The public recognition
+statements are in `Standard.Source`. -/
+public def sphereE2_milnorEquiv (s t : ℕ) :
+    classical.sphere.Page 2 ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]
+      MilnorCohomology s t := by
+  sorry
+
+/-- The designated family retains its existing construction boundary.
+`Standard.standardHi_milnor` fixes its identity by the actual E₁-to-E₂
+comparison; both construction and source identification remain registered.
+Keeping this boundary also preserves existing computational consumers. -/
 public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := by sorry
 public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
 public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry

@@ -104,5 +104,50 @@ def infiniteShiftConsumer (n : ℕ) (X Y : ClassicalObject)
     (extensionSourceObject model X Y f) (.nu Y) (model.normalizedMap X Y f).map
     (t-s,t+normalizedExponent model.classicalTower f) s l W.source W.target).mp W.equation
 
+-- Concrete sources and recognition remain usable through ordinary imports.
+example : ClassicalSource ≌ Spectrum := sourceRecognition.equivalence
+example : sourceRecognition.equivalence.functor.obj classicalSourceSphere ≅
+    (SphereSpectrum : Spectrum) := sourceRecognition.sphereIso
+example (d : ℤ) (hd : d ≠ 0) :
+    Subsingleton (classicalStableHomotopy sourceRecognition.coefficientPrespectrum d) :=
+  sourceRecognition.coefficientVanishing d hd
+example : sourceRecognition.coefficientPi0
+    (classicalStableHomotopyMap sourceRecognition.coefficientUnit 0
+      classicalSphereGenerator) = 1 := sourceRecognition.coefficientUnit_pi0
+example (X Y : ClassicalPrespectrum) :
+    sourceRecognition.equivalence.functor.obj (classicalSourceLocalization.obj X) ⊗
+      sourceRecognition.equivalence.functor.obj (classicalSourceLocalization.obj Y) ≅
+        sourceRecognition.equivalence.functor.obj
+          (classicalSourceLocalization.obj (classicalDerivedSmash sourceReplacement X Y)) :=
+  sourceDerivedSmashRecognition.comparison X Y
+example {X Y X' Y' : ClassicalPrespectrum} (f : X ⟶ X') (g : Y ⟶ Y')
+    (hf : classicalStableEquivalences f) (hg : classicalStableEquivalences g) :
+    classicalStableEquivalences (classicalDerivedSmashMap sourceReplacement f g) :=
+  classicalSourceReplacementFlatness_apply sourceReplacement sourceReplacement_flat f g hf hg
+example (s t : ℕ) (x : MilnorCochains s t) :
+    milnorDifferential (s+1) t (milnorDifferential s t x) = 0 :=
+  milnorDifferential_squared s t x
+example (i : ℕ) : sphereE2_milnorEquiv 1 (2^i) (standardHi i) = milnorHiClass i :=
+  standardHi_milnor i
+example : sphereE2_milnorEquiv 2 128 standardH6Square = milnorHiSquareClass 6 :=
+  standardH6Square_milnor
+example : NonzeroSurvival localizedSphereSequence (2,128) localizedH6Square ↔
+    NonzeroSurvival model.classical.sphere (2,128) model.standardClasses.standardH6Square :=
+  nonzeroSurvival_localized_iff
+example (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s:ℤ),(t:ℤ)))
+    (hx : x ∈ (canonicalAdamsTower (SphereSpectrum : Spectrum)).cycles 2 (by decide)
+      ((s:ℤ),(t:ℤ))) :
+    sphereE2_milnorEquiv s t
+      (classicalSphere_sourceIso.inv.pageMap 2 _ (canonicalE2ClassOfCycle s t x hx)) =
+        milnorClassOfCycle (milnorCoordinates s t x)
+          ((milnorCoordinates_cycle s t x).mp hx) :=
+  sphereE2_milnor_classOfCycle s t x hx
+
+-- Source implementation details do not leak through the public facade.
+#check_failure KIP126.AdamsSynthetic.Source.Prespectrum
+#check_failure KIP126.AdamsSynthetic.Source.SourceRecognition
+#check_failure KIP126.AdamsSynthetic.Milnor.Cohomology
+#check_failure KIP126.AdamsSynthetic.Internal.Source.canonicalTower
 
 end
