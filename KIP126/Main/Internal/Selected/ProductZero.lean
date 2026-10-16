@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.Computation.Table.Values
+public import KIP126.Computation.Table.Values
 
 /-! The h₁U vanishing used in Selected/DetectionData, derived from the
 original bounded multiplication relation h₀h₁=0 and actual associativity. -/

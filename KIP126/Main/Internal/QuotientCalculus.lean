@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.Literature.EInfinity
+public import KIP126.Literature.EInfinity
 /-! Definitional quotient operations used in the migrated finite-coordinate proofs.
 These expose no new mathematical input. -/
 @[expose] section

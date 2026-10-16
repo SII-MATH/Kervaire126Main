@@ -1,5 +1,6 @@
 module
 
+import all Tests.Architecture
 import all Tests.AdamsSynthetic.Background
 import all Tests.AdamsSynthetic.Consumers
 import all Tests.AdamsSynthetic.Detection

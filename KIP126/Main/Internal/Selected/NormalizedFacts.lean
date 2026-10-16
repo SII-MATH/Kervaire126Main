@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.Computation.Table.Values
+public import KIP126.Computation.Table.Values
 import all KIP126.Main.Internal.Selected.NormalizedTable
 
 @[expose] section

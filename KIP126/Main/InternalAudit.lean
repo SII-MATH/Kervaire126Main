@@ -341,7 +341,7 @@ run_cmd do
 -- that audit recursively checks these boundary declarations with full bodies.
 -- The independent full-body dependency observer checks the composed graph.
 run_cmd do
-  let contract ← Lean.ofExcept <| Json.parse (include_str "../../main-api.json")
+  let contract ← Lean.ofExcept <| Json.parse (include_str "../../metadata/main-api.json")
   let rows ← Lean.ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let roots ← rows.mapM fun row => do
     let name ← Lean.ofExcept <| row.getObjValAs? String "name"
@@ -379,7 +379,7 @@ run_cmd do
           continue
       let mod := env.header.moduleNames[idx.toNat]!
       let isMain := (`KIP126.Main).isPrefixOf mod
-      let isProofTools := (`KIP126.Def.ProofTools).isPrefixOf mod
+      let isProofTools := (`KIP126.ProofTools).isPrefixOf mod
       unless isMain || isProofTools do continue
       let body := info.value? (allowOpaque := true)
       if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then

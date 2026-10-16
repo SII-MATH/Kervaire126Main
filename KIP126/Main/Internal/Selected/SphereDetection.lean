@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.QuotientCalculus
 import all KIP126.Main.Internal.Selected.DetectionOperations

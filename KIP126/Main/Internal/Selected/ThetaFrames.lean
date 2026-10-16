@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
+public import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Selected.Exhaustion
 import all KIP126.Main.Internal.Selected.InfinityFrames
 import all KIP126.Main.Internal.Selected.ProductDetection

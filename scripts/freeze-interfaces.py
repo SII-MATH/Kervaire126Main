@@ -9,12 +9,14 @@ import hashlib,json,re
 from collections import Counter
 from pathlib import Path
 
+METADATA_DIR = Path('metadata')
+
 MODULES = [
-    ('spectral-sequence', 'SpectralSequence', 'KIP126.Def.SpectralSequence'),
-    ('adams-synthetic', 'AdamsSynthetic', 'KIP126.Def.AdamsSynthetic'),
-    ('literature', 'Literature', 'KIP126.Def.Literature'),
-    ('computation', 'Computation', 'KIP126.Def.Computation'),
-    ('proof-tools', 'ProofTools', 'KIP126.Def.ProofTools'),
+    ('spectral-sequence', 'SpectralSequence', 'KIP126.SpectralSequence'),
+    ('adams-synthetic', 'AdamsSynthetic', 'KIP126.AdamsSynthetic'),
+    ('literature', 'Literature', 'KIP126.Literature'),
+    ('computation', 'Computation', 'KIP126.Computation'),
+    ('proof-tools', 'ProofTools', 'KIP126.ProofTools'),
     ('main', 'Main', 'KIP126.Main'),
 ]
 UPSTREAM = {'AdamsSynthetic', 'Literature', 'Computation'}
@@ -22,8 +24,8 @@ PAPER = {'Main', 'ProofTools'}
 
 # Individually reviewed moves of the two unfinished secondary comparisons from
 # the pinned Main/StageInput. No other new upstream hole is accepted by a freeze.
-REVIEWED_SECONDARY_SOURCE = 'KIP126/Def/Literature/Standard/Secondary.lean'
-REVIEWED_SECONDARY_SHA256 = 'c89b1724e509bad9143337e1ec9e971fdf585e2fca046350464e50fd29ed13fa'
+REVIEWED_SECONDARY_SOURCE = 'KIP126/Literature/Standard/Secondary.lean'
+REVIEWED_SECONDARY_SHA256 = 'cea764222ecf112c65142caec1706d1e5c623d0d03e578657136fb2639212c11'
 REVIEWED_UPSTREAM_ADDITIONS = {
     'KIP126.Literature.Standard.toda_eta_squared': 281,
     'KIP126.Literature.Standard.toda_symmetric': 289,
@@ -37,8 +39,8 @@ SECONDARY_ORIGIN = {
 # its original selected-object scope. It is not a new paper lemma or a proof
 # of separatedness from the associated-graded comparison.
 REVIEWED_SEPARATION_NAME = 'KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated'
-REVIEWED_SEPARATION_SOURCE = 'KIP126/Def/AdamsSynthetic/Standard/Separation.lean'
-REVIEWED_SEPARATION_SHA256 = '88acf72a435f51bba72e490d94ef2c800f5bf21eb761eb998fdb9540e8f29132'
+REVIEWED_SEPARATION_SOURCE = 'KIP126/AdamsSynthetic/Standard/Separation.lean'
+REVIEWED_SEPARATION_SHA256 = 'ba0da5ea44e3ca3aa11e075646bd85424047bdfb4997d7812c2dcf38d386bd1b'
 SEPARATION_ORIGIN = {
     'commit': 'bbac1fc05843bdf2d56057e6114a38839e939378',
     'path': 'KIP126/Def/Kervaire/Route/Model/Coherent/Data.lean',
@@ -63,12 +65,12 @@ def module_owner(name):
 def reviewed_secondary_origin(row):
     """Check the two exact source moves, including their reviewed source bytes."""
     line = REVIEWED_UPSTREAM_ADDITIONS.get(row['name'])
-    if line is None or row['module'] != 'KIP126.Def.Literature.Standard.Secondary':
+    if line is None or row['module'] != 'KIP126.Literature.Standard.Secondary':
         raise ValueError('New upstream obligation requires a separate reviewed migration: ' + row['name'])
     source = Path(REVIEWED_SECONDARY_SOURCE)
     if hashlib.sha256(source.read_bytes()).hexdigest() != REVIEWED_SECONDARY_SHA256:
         raise ValueError('Reviewed secondary comparison source changed: ' + str(source))
-    manifest = json.load(open('main-sources.json'))
+    manifest = json.load(open(METADATA_DIR / 'main-sources.json'))
     matches = [e for e in manifest['pinned_main_direct_sorry_sites']
                if e.get('current_interface') == row['name']]
     if len(matches) != 1:
@@ -83,7 +85,7 @@ def reviewed_secondary_origin(row):
 
 
 def restored_main_port_obligation(row):
-    review = json.load(open('main-proof-port-review.json'))
+    review = json.load(open(METADATA_DIR / 'main-proof-port-review.json'))
     matches = [r for r in review['obligations'] if r['name'] == row['name']]
     if len(matches) != 1:
         return None
@@ -112,7 +114,7 @@ def restored_main_port_obligation(row):
 def paper_migration_record(row, owner):
     """Require a reviewed per-declaration classification, not a module wildcard."""
     stem = 'main' if owner == 'Main' else 'proof-tools'
-    manifest = json.load(open(stem + '-sources.json'))
+    manifest = json.load(open(METADATA_DIR / (stem + '-sources.json')))
     records = [e for e in manifest['declaration_migration'] if e['name'] == row.get('source_name', row['name'])]
     if len(records) != 1:
         raise ValueError('Missing individual paper proof migration review: ' + row['name'])
@@ -164,7 +166,7 @@ def freeze(stem,module,entry_module):
     sourceinfo={};totalcommands=0
     for source in sorted(set(d['module'].replace('.','/')+'.lean' for d in data)):
         records,n=commands(source); sourceinfo[source]=records;totalcommands+=n
-    ledgerpath=Path(stem+'-contracts.json')
+    ledgerpath=METADATA_DIR / (stem+'-contracts.json')
     ledger=json.loads(ledgerpath.read_text()) if ledgerpath.exists() else {}
     capabilities=ledger.get('capabilities',[])
     reverse={}
@@ -214,23 +216,24 @@ def freeze(stem,module,entry_module):
     result={
       'schema_version':3,'module':module,'entry_module':entry_module,
       'source_commit':'bbac1fc05843bdf2d56057e6114a38839e939378',
-      'capability_ledger':stem+'-contracts.json','source_manifest':stem+'-sources.json',
+      'capability_ledger':str(METADATA_DIR / (stem+'-contracts.json')),
+      'source_manifest':str(METADATA_DIR / (stem+'-sources.json')),
       'type_fingerprint_algorithm':'Lean hash (toString ConstantInfo.type), checked with universe parameter names',
       'type_rendering':'Elaborated full type, universe parameters shown; inferred arguments use Lean implicit notation. Fingerprint locks the exact kernel expression, including elaborated proof terms.',
       'classification':'Explicit named public source commands are separated from generated fields, constructors, recursors, instances and generated proof helpers. Generated declarations are not independent mathematical promises.',
       'public_source_commands':totalcommands,
       'named_public_declarations':len(named),'generated_declaration_count':len(generated),
       'declarations':named,'generated_declarations':generated,
-      'proof_obligation_registry':'proof-obligations.json',
+      'proof_obligation_registry':str(METADATA_DIR / 'proof-obligations.json'),
       'proof_status_meaning':'provided-with-pending-dependencies means this declaration has a body/proof but uses declarations whose proofs or constructions remain pending. Each direct obligation belongs to its defining module; transitive upstream dependencies are not new Main obligations. It does not assert that the theorem is sorry-free.',
       'exports':sorted(r['name'] for r in data)}
-    Path(stem+'-api.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+    (METADATA_DIR / (stem+'-api.json')).write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print(module,len(named),'named',len(generated),'generated',totalcommands,'source commands')
 
 
 def freeze_trust():
     data=json.load(open('.lake/trust-capture.json'))
-    previous=json.load(open('proof-obligations.json'))
+    previous=json.load(open(METADATA_DIR / 'proof-obligations.json'))
     previous_rows={row['name']:row for row in previous['obligations']}
     old_upstream={name:row for name,row in previous_rows.items() if module_owner(row['module']) in UPSTREAM}
     captured={row['name']:row for row in data}
@@ -257,10 +260,10 @@ def freeze_trust():
                 continue
             if row['name'] == REVIEWED_SEPARATION_NAME:
                 source = Path(REVIEWED_SEPARATION_SOURCE)
-                if (row['module'] != 'KIP126.Def.AdamsSynthetic.Standard.Separation'
+                if (row['module'] != 'KIP126.AdamsSynthetic.Standard.Separation'
                         or hashlib.sha256(source.read_bytes()).hexdigest() != REVIEWED_SEPARATION_SHA256):
                     raise ValueError('Reviewed separation restoration changed: ' + row['name'])
-                manifest = json.load(open('adams-synthetic-sources.json'))
+                manifest = json.load(open(METADATA_DIR / 'adams-synthetic-sources.json'))
                 evidence = manifest.get('restored_foundational_obligations', [])
                 if not any(e.get('name') == row['name'] and e.get('original_field') == SEPARATION_ORIGIN
                            and e.get('scope') == 'selected SyntheticObject closure only' for e in evidence):
@@ -322,16 +325,16 @@ def freeze_trust():
                    'by_kind':dict(Counter(r['status'] for r in obligations))},
         'responsibility_owners':{r['name']:module_owner(r['module']) for r in obligations},
         'obligations':obligations}
-    Path('proof-obligations.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
+    (METADATA_DIR / 'proof-obligations.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print('Registered individual obligations:',result['summary'])
 
 def prepare():
     # Capture uses only ordinary public imports. Trust capture separately sees
     # private implementation declarations, including internal generic helpers.
-    template = 'module\npublic import KIP126.Def.AdamsSynthetic\nimport Lean\nopen Lean Elab Command\nset_option maxHeartbeats 0\nset_option maxRecDepth 8192\nset_option pp.universes true\nset_option pp.explicit false\nset_option pp.proofs true\nset_option pp.deepTerms true\nrun_cmd do\n  let env ← getEnv\n  let exported := env.setExporting true\n  let mut rows : Array Json := #[]\n  for (name, info) in env.constants.toList do\n    let some idx := env.getModuleIdxFor? name | continue\n    let mod := env.header.moduleNames[idx.toNat]!\n    unless (`KIP126.Def.AdamsSynthetic).isPrefixOf mod do continue\n    unless (exported.find? name).isSome do continue\n    if isPrivateName name then continue\n    let ranges ← findDeclarationRanges? name\n    let kind := match info with\n      | .thmInfo _ => "theorem"\n      | .defnInfo _ => "definition"\n      | .inductInfo _ => "inductive"\n      | .ctorInfo _ => "constructor"\n      | _ => "generated"\n    let ty ← liftTermElabM <| Meta.ppExpr info.type\n    let axioms ← collectAxioms name\n    rows := rows.push <| Json.mkObj [\n      ("axioms", toJson (axioms.map Name.toString)),\n      ("name", toJson name.toString), ("module", toJson mod.toString),\n      ("kind", toJson kind), ("full_type", toJson ty.pretty),\n      ("line", toJson (ranges.map (·.selectionRange.pos.line))),\n      ("column", toJson (ranges.map (·.selectionRange.pos.column))),\n      ("type_dependencies", toJson (info.type.getUsedConstants.map Name.toString)),\n      ("universes", toJson (info.levelParams.map Name.toString)),\n      ("type_fingerprint", toJson (toString (hash (toString info.type))))]\n  liftIO <| IO.FS.writeFile ".lake/adams-synthetic-capture.json" (Json.arr rows).compress\n  logInfo m!"Captured {rows.size} exported project declarations"\n'
+    template = 'module\npublic import KIP126.AdamsSynthetic\nimport Lean\nopen Lean Elab Command\nset_option maxHeartbeats 0\nset_option maxRecDepth 8192\nset_option pp.universes true\nset_option pp.explicit false\nset_option pp.proofs true\nset_option pp.deepTerms true\nrun_cmd do\n  let env ← getEnv\n  let exported := env.setExporting true\n  let mut rows : Array Json := #[]\n  for (name, info) in env.constants.toList do\n    let some idx := env.getModuleIdxFor? name | continue\n    let mod := env.header.moduleNames[idx.toNat]!\n    unless (`KIP126.AdamsSynthetic).isPrefixOf mod do continue\n    unless (exported.find? name).isSome do continue\n    if isPrivateName name then continue\n    let ranges ← findDeclarationRanges? name\n    let kind := match info with\n      | .thmInfo _ => "theorem"\n      | .defnInfo _ => "definition"\n      | .inductInfo _ => "inductive"\n      | .ctorInfo _ => "constructor"\n      | _ => "generated"\n    let ty ← liftTermElabM <| Meta.ppExpr info.type\n    let axioms ← collectAxioms name\n    rows := rows.push <| Json.mkObj [\n      ("axioms", toJson (axioms.map Name.toString)),\n      ("name", toJson name.toString), ("module", toJson mod.toString),\n      ("kind", toJson kind), ("full_type", toJson ty.pretty),\n      ("line", toJson (ranges.map (·.selectionRange.pos.line))),\n      ("column", toJson (ranges.map (·.selectionRange.pos.column))),\n      ("type_dependencies", toJson (info.type.getUsedConstants.map Name.toString)),\n      ("universes", toJson (info.levelParams.map Name.toString)),\n      ("type_fingerprint", toJson (toString (hash (toString info.type))))]\n  liftIO <| IO.FS.writeFile ".lake/adams-synthetic-capture.json" (Json.arr rows).compress\n  logInfo m!"Captured {rows.size} exported project declarations"\n'
     Path('.lake').mkdir(exist_ok=True)
     for stem,module,entry in MODULES:
-        Path('.lake/Capture'+module+'.lean').write_text(template.replace('KIP126.Def.AdamsSynthetic',entry).replace('adams-synthetic',stem))
+        Path('.lake/Capture'+module+'.lean').write_text(template.replace('KIP126.AdamsSynthetic',entry).replace('adams-synthetic',stem))
     path=Path('scripts/CaptureTrust.lean')
     body=path.read_text(); body=body[body.index('import Lean'):]
     if '"source_name"' not in body:

@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.Literature
+import KIP126.Literature
 
 /-! Fixed literature theorems are used by ordinary import, with no delivery,
 model variable or result package supplied by the consumer. -/

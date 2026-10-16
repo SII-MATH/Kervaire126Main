@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.SectionSeven.NuTargetWindows
 /-! The boundary-lift induction of WeakRepresentative.lean:78–222,
 bbac1fc05843 (MIT). Incoming detection is obtained through the generic

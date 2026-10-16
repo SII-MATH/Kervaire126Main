@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.Literature.Standard.Filtration
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.High125.Filtration
 /-! The original Main proof combining the BMQ source product, actual
 multiplicative detection and the proved higher-filtration tail. Source:

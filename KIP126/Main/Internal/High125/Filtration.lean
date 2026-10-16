@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
+public import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.High125.Pages
 import all KIP126.Main.Internal.High125.Finite
 import all KIP126.Main.Internal.High125.Tail

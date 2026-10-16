@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.Selected.LambdaOperations
 import all KIP126.Main.Internal.Selected.DetectionOperations
 import all KIP126.Main.Internal.Selected.SphereDetection

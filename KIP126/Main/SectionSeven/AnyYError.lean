@@ -1,7 +1,7 @@
 module
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.Predicates
-public import KIP126.Def.Literature.Standard.Secondary
+public import KIP126.Literature.Standard.Secondary
 import all KIP126.Main.SectionSeven.AnyYShuffle
 /-! Lambda coherence and the exact bracket error formula,
 AnyYHelpers:2207–2288 at bbac1fc05843 (MIT). -/

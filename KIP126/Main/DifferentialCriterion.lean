@@ -2,7 +2,7 @@ module
 
 import all KIP126.Main.ClassicalReduction
 public import KIP126.Main.ChoiceIndependence
-public import KIP126.Def.ProofTools
+public import KIP126.ProofTools
 import all KIP126.Main.Internal.Selected.Assembly
 import all KIP126.Main.Internal.High125.Injectivity
 

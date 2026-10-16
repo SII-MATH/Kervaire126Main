@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.SpectralSequence
+import KIP126.SpectralSequence
 
 open CategoryTheory CategoryTheory.Limits
 open KIP126.Core KIP126.Core.SpectralSequence

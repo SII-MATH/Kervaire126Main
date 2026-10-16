@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.AdamsSynthetic
+import KIP126.AdamsSynthetic
 
 /-! Fixed filtration theorems keep their actual finiteness and torsion premises. -/
 open CategoryTheory KIP126.StableHomotopy KIP126.AdamsSynthetic

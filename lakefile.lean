@@ -11,25 +11,25 @@ require mathlib from git
 
 -- JSON locks participate in Lake traces; changing a lock reruns its check.
 input_file proofObligations where
-  path := "proof-obligations.json"
+  path := "metadata/proof-obligations.json"
   text := true
 input_file spectralSequenceApi where
-  path := "spectral-sequence-api.json"
+  path := "metadata/spectral-sequence-api.json"
   text := true
 input_file adamsSyntheticApi where
-  path := "adams-synthetic-api.json"
+  path := "metadata/adams-synthetic-api.json"
   text := true
 input_file literatureApi where
-  path := "literature-api.json"
+  path := "metadata/literature-api.json"
   text := true
 input_file computationApi where
-  path := "computation-api.json"
+  path := "metadata/computation-api.json"
   text := true
 input_file proofToolsApi where
-  path := "proof-tools-api.json"
+  path := "metadata/proof-tools-api.json"
   text := true
 input_file mainApi where
-  path := "main-api.json"
+  path := "metadata/main-api.json"
   text := true
 
 lean_lib BuildCheckInputs where
@@ -49,11 +49,11 @@ target sourceInventory pkg : Unit := do
 
 @[default_target]
 lean_lib KIP126 where
-  globs := #[.one `KIP126, .andSubmodules `KIP126.Def.SpectralSequence,
-    .andSubmodules `KIP126.Def.AdamsSynthetic,
-    .andSubmodules `KIP126.Def.Literature,
-    .andSubmodules `KIP126.Def.Computation,
-    .andSubmodules `KIP126.Def.ProofTools,
+  globs := #[.one `KIP126, .andSubmodules `KIP126.SpectralSequence,
+    .andSubmodules `KIP126.AdamsSynthetic,
+    .andSubmodules `KIP126.Literature,
+    .andSubmodules `KIP126.Computation,
+    .andSubmodules `KIP126.ProofTools,
     .andSubmodules `KIP126.Main]
 
 @[default_target]
@@ -94,5 +94,5 @@ lean_lib MainChecks where
     `Tests.Main.LegacyResults]
 
 @[default_target]
-lean_lib IntegrationChecks where
-  roots := #[`Tests.Integration, `Tests.Trust]
+lean_lib ArchitectureChecks where
+  roots := #[`Tests.Architecture, `Tests.Integration, `Tests.Trust]

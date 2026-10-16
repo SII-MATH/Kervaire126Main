@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.Literature
+public import KIP126.ProofTools.Operations
+public import KIP126.Literature
 import all KIP126.Main.Internal.Selected.LambdaOperations
 /-! NuNinth:974–1197, bbac1fc05843 (MIT). The old canonical tower lift
 argument is expressed through the same actual filtered shift comparison.

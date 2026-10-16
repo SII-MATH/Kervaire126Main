@@ -4,7 +4,7 @@ public import KIP126.Main.SectionSeven.NormalizedNu
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.QuotientCalculus
 import all KIP126.Main.Internal.Selected.DetectionOperations
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 
 /-! Proof port of CnuRigidity.lean:199–211, 318–440 at bbac1fc05843 (MIT).
 The original bottom-cell argument uses the actual E₆ survival and the BHS

@@ -11,7 +11,7 @@ set_option maxHeartbeats 0
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 -- Direct sorry obligations are locked separately by the internal trust audits.
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../main-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../metadata/main-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let declarations := named ++ generated
@@ -20,11 +20,11 @@ run_cmd do
   let exported := env.setExporting true
   for mod in env.header.moduleNames do
     if (`KIP126).isPrefixOf mod &&
-        !(`KIP126.Def.SpectralSequence).isPrefixOf mod &&
-        !(`KIP126.Def.AdamsSynthetic).isPrefixOf mod &&
-        !(`KIP126.Def.Literature).isPrefixOf mod &&
-        !(`KIP126.Def.Computation).isPrefixOf mod &&
-        !(`KIP126.Def.ProofTools).isPrefixOf mod &&
+        !(`KIP126.SpectralSequence).isPrefixOf mod &&
+        !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
+        !(`KIP126.Literature).isPrefixOf mod &&
+        !(`KIP126.Computation).isPrefixOf mod &&
+        !(`KIP126.ProofTools).isPrefixOf mod &&
         !(`KIP126.Main).isPrefixOf mod then
       throwError "Main crossed its dependency boundary: {mod}"
   for decl in declarations do

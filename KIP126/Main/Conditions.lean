@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.Computation
+public import KIP126.Computation
 
 /-! The paper's Section 7 conditions on the fixed upstream system.
 Adapted from Kervaire126 bbac1fc05843, Def/Kervaire/Route/Conditions/Predicates

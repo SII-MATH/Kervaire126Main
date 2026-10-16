@@ -1,7 +1,7 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.Internal.Selected.NormalizedFacts
 import all KIP126.Main.Internal.QuotientCalculus
 

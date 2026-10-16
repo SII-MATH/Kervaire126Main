@@ -58,7 +58,7 @@ Definition 5.4 明确取源的 $k=0$ 层，即源只模 $B_1=0$；不能将这�
 
 条件（5）排除此反例；它是否足以恢复一般情形的完整目标同余，仍需证明。另一方向是保留 $l_1$ 层延拓，将降层单列为引理。可对照 [Wu, arXiv:2606.02779v2](https://arxiv.org/pdf/2606.02779v2) 的 Theorem 4.23 与 Remark 4.25；后者的降层另要求 $f_2(x)=0$ 及边界商条件。
 
-形式化反证为 [StatementReview.lean](KIP126/Def/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的私有定理 `rotated_nu_generalized_mahowald_law_false`；前提与非零性分别见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证调用既有登记的上游接口，不调用待证 MH2 或 GL。代码已收入提交 `b4b439f`；公共接口未修改，MH2 的原始 `sorry` 保留。Main 当前使用的实例为 $l_1=0$，本反例为 $l_1=1$。
+形式化反证为 [StatementReview.lean](KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的私有定理 `rotated_nu_generalized_mahowald_law_false`；前提与非零性分别见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证调用既有登记的上游接口，不调用待证 MH2 或 GL。代码已收入提交 `b4b439f`；公共接口未修改，MH2 的原始 `sorry` 保留。Main 当前使用的实例为 $l_1=0$，本反例为 $l_1=1$。
 
 ### 发现思路
 

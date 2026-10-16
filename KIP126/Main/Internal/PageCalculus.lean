@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Def.SpectralSequence
+public import KIP126.SpectralSequence
 
 /-! Representative-level lemmas retained from Selected/ClassicalData at
 Kervaire126 bbac1fc05843 (MIT; see the retained source LICENSE). The proof bodies are preserved;

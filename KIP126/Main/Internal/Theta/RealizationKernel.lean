@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.Theta.NoCrossing
 import all KIP126.Main.Internal.Choice.LambdaInjectivity
 

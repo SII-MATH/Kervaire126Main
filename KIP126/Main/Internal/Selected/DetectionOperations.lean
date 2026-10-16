@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Representatives
 
 /-! Detection operations from Selected/DetectionData.lean:167–182,
 642–672 and 964–997 at bbac1fc05843 (MIT). The last argument uses the

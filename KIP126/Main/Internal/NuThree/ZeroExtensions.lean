@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.Internal.NuThree.ZeroLabels
 /-! The normalized exponent-zero label and representative calculation from
 NuFifth:317–446,583–790 (bbac1fc05843, MIT), using the same fixed maps. -/

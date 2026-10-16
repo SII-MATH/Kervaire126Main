@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.Computation.Table.Archive
+public import KIP126.Computation.Table.Archive
 /-! The one-dimensional degree-zero calculation of the original
 Main/Solution/Computation/LowDegrees.lean:72–107, bbac1fc05843 (MIT). -/
 @[expose] section

@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.Computation
+import KIP126.Computation
 
 /-! Consumers use the fixed objects and callable source theorems. Only actual
 mathematical variables and range hypotheses are parameters. -/

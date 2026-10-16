@@ -1,8 +1,8 @@
 module
 
 public import KIP126.Main.Conditions
-import KIP126.Def.Computation.Table.Values
-import KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
+import KIP126.Computation.Table.Values
+import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Choice.Invariance
 import all KIP126.Main.Internal.Choice.FinitePages
 import all KIP126.Main.Internal.High125.Injectivity

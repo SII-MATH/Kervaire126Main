@@ -7,11 +7,11 @@ import re
 root = Path(__file__).resolve().parent.parent
 errors = []
 entries = {
-    'SpectralSequence': 'KIP126.Def.SpectralSequence',
-    'AdamsSynthetic': 'KIP126.Def.AdamsSynthetic',
-    'Literature': 'KIP126.Def.Literature',
-    'Computation': 'KIP126.Def.Computation',
-    'ProofTools': 'KIP126.Def.ProofTools',
+    'SpectralSequence': 'KIP126.SpectralSequence',
+    'AdamsSynthetic': 'KIP126.AdamsSynthetic',
+    'Literature': 'KIP126.Literature',
+    'Computation': 'KIP126.Computation',
+    'ProofTools': 'KIP126.ProofTools',
     'Main': 'KIP126.Main',
 }
 allowed_dependencies = {
@@ -90,7 +90,7 @@ def imports(path):
 
 # Keep the individually reviewed mathematical names from the upstream cleanup.
 # Local coordinate variables (for example c3) are unrelated to declarations.
-naming_path = root / 'mathematical-naming-restoration.json'
+naming_path = root / 'metadata/mathematical-naming-restoration.json'
 if naming_path.exists():
     naming = json.loads(naming_path.read_text())
     retired_names = set(naming['identifier_renames']) - {'PropositionSevenEight'}
@@ -154,13 +154,13 @@ for path in tests | {root / 'Tests/Trust.lean'}:
 # MH1 is proved. The remaining GL1/GL2/MH2 sites are counted exactly;
 # proof-port work may not be disguised as an additional paper gap.
 tool_holes = {}
-for path in (root / 'KIP126/Def/ProofTools').rglob('*.lean'):
+for path in (root / 'KIP126/ProofTools').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
     if count:
         tool_holes[str(path.relative_to(root))] = count
 if tool_holes != {
-        'KIP126/Def/ProofTools/GeneralizedLeibniz.lean': 2,
-        'KIP126/Def/ProofTools/GeneralizedMahowald.lean': 1}:
+        'KIP126/ProofTools/GeneralizedLeibniz.lean': 2,
+        'KIP126/ProofTools/GeneralizedMahowald.lean': 1}:
     errors.append('ProofTools remaining GL1/GL2/MH2 sites changed: ' + str(tool_holes))
 
 # Every Main declaration, including the completed choice-transport results,

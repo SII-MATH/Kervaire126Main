@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.Computation.Table.Archive
+public import KIP126.Computation.Table.Archive
 import all KIP126.Main.Internal.AlphaOne.Coherence
 import all KIP126.Main.SectionSeven.NuTargetWindows
 import all KIP126.Main.Internal.Selected.InfinityFrames

@@ -1,6 +1,6 @@
 module
 import all KIP126.Main.SectionSeven.Predicates
-public import KIP126.Def.Literature.Standard.Filtration
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.LambdaZero
 import all KIP126.Main.Internal.QuotientCalculus

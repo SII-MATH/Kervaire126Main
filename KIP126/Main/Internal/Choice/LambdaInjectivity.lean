@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 
 /-! Lambda injectivity from the original proved Main/Solution/Computation/Lambda
 at bbac1fc05843 (MIT). The fixed upstream BHS comparisons and separatedness

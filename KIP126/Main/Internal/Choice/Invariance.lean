@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.Literature.Standard.Filtration
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.Choice.Gap
 import all KIP126.Main.Internal.Choice.Filtration
 import all KIP126.Main.Internal.Choice.OrderTwo

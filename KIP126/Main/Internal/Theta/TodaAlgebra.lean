@@ -1,8 +1,8 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.Literature.Standard.QuotientAlgebra
-public import KIP126.Def.Literature.Standard.Filtration
-public import KIP126.Def.Computation.Table.Values
+public import KIP126.Literature.Standard.QuotientAlgebra
+public import KIP126.Literature.Standard.Filtration
+public import KIP126.Computation.Table.Values
 import all KIP126.Main.Internal.NuThree.Shift
 import all KIP126.Main.Internal.Choice.OrderTwo
 import all KIP126.Main.Internal.Theta.Products

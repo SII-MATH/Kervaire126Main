@@ -1,0 +1,3113 @@
+{
+  "schema_version": 3,
+  "module": "ProofTools",
+  "entry_module": "KIP126.ProofTools",
+  "principle": "下游直接调用固定上游对象和定理；上游未完成证明或构造仍归上游。本文局部论证保留为 Main／ProofTools 的证明责任；不恢复 Challenge 或结果包参数。",
+  "review_baseline": "bbac1fc05843bdf2d56057e6114a38839e939378",
+  "type_authority": "metadata/proof-tools-api.json",
+  "source_manifest": "metadata/proof-tools-sources.json",
+  "attribution": "KIP126 contributors. The pinned source repository LICENSE is MIT and is preserved verbatim in the source archive. Original per-file copyright or license notices are retained as written and are not reclassified. The AimPaper article is attributed separately to its authors/arXiv in metadata/aim-paper-sources.json; no repository license is asserted for the article.",
+  "capabilities": [
+    {
+      "id": "proof-tools-representatives",
+      "mathematical_purpose": "共同代表、周期／边界、页上的微分等式和有限／无限 crossing 的语言及代表传递。",
+      "paper_locators": [],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/PageRepresentatives/Predicates.lean",
+          "sha256": "450d87772d57f78833f96ae8bbf597f6cd7d8b9eaff4ee0838db8c8534e46511",
+          "archive_member": "KIP126/Def/ClassicalAdams/PageRepresentatives/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/ClassicalAdams/PageRepresentatives/Proofs.lean",
+          "sha256": "b62e989302da94e64efbe017f7ab8e481ee0b1805677dce3db447444901e9e01",
+          "archive_member": "KIP126/Def/ClassicalAdams/PageRepresentatives/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Extensions/Crossing/Predicates.lean",
+          "sha256": "6734bb8de64cf4de52ecc4849c6a9a5079cf410de3a0cfc94d5f9a24633a7652",
+          "archive_member": "KIP126/Def/Kervaire/Route/Extensions/Crossing/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Extensions/Stretching/Predicates.lean",
+          "sha256": "6bede5b4c5d92131affd530d3352decc0543d286e649063517c39a38b56be68d",
+          "archive_member": "KIP126/Def/Kervaire/Route/Extensions/Stretching/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean",
+          "sha256": "fe01b4d9c42db9e1a857a1cc527efdc94b34428c973ac94309f87576fab2203c",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.Ambient",
+          "line": 21,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.IsCycle",
+          "line": 27,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.IsBoundary",
+          "line": 31,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.IsPermanent",
+          "line": 35,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.Congruent",
+          "line": 39,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.DifferentialAt",
+          "line": 44,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.HasCrossingOn",
+          "line": 53,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.NoCrossingOn",
+          "line": 62,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.FiniteHasCrossing",
+          "line": 72,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.FiniteNoCrossing",
+          "line": 86,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.InfiniteHasCrossing",
+          "line": 93,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.InfiniteNoCrossing",
+          "line": 105,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Language.lean",
+          "declaration": "KIP126.ProofTools.FiniteExtensionNonliftableCrossing",
+          "line": 119,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Representatives.lean",
+          "declaration": "KIP126.ProofTools.isCycle_iff_reaches",
+          "line": 46,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/Representatives.lean",
+          "declaration": "KIP126.ProofTools.representsOnPage_of_congruent",
+          "line": 73,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/Representatives.lean",
+          "declaration": "KIP126.ProofTools.differentialAt_of_congruent",
+          "line": 117,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
+      "remaining_producer_obligations": []
+    },
+    {
+      "id": "proof-tools-laws",
+      "mathematical_purpose": "保留页、次数、范围、crossing、扩张及 normalized triangle 等真实前提的工具类型；有限 stretching 采用固定基线的加强充分条件。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1606,
+          "label": "thm:e73f481e"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1780,
+          "label": "thm:158d451a"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Predicates.lean",
+          "sha256": "d4558dfef2a81cc7ee13aa7d7e6fa91b0d10586d5b6171d038420a7cc666a80b",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Predicates.lean",
+          "sha256": "e2e013997d4995908234d5490f6568b93fbcc6fc308266b97029738dca423098",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Predicates.lean",
+          "sha256": "1c6541f477c3b5bf7546b253e088936abb94e3cefe77015fd45e7292e37540f2",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Predicates.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Laws.lean",
+          "declaration": "KIP126.ProofTools.GeneralizedLeibnizLaw",
+          "line": 26,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Laws.lean",
+          "declaration": "KIP126.ProofTools.GeneralizedMahowaldLaw",
+          "line": 55,
+          "migration_status": "definition-or-language-migrated"
+        },
+        {
+          "path": "KIP126/ProofTools/Laws.lean",
+          "declaration": "KIP126.ProofTools.FinitePageExtensionStretchingLaw",
+          "line": 98,
+          "migration_status": "definition-or-language-migrated"
+        }
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
+      "remaining_producer_obligations": []
+    },
+    {
+      "id": "proof-tools-finite-filtration",
+      "mathematical_purpose": "从旧 stretching 证明迁出的三个有限滤过证明；保留有界／有限条件，不声称无限同步提升。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
+          "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_correction",
+          "line": 14,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_reflection",
+          "line": 48,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.first_nonzero_filtration_grade",
+          "line": 69,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
+      "remaining_producer_obligations": []
+    },
+    {
+      "id": "proof-tools-generalized-leibniz",
+      "mathematical_purpose": "实际三边交换图已在GL1/GL2主证明中组装出同一个右边代表及边界，底边规定目标标签、存活和经典微分的加权读出已证明；仍需左边规定源类匹配及一般无交叉转换。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1606,
+          "label": "thm:e73f481e"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean",
+          "sha256": "fe01b4d9c42db9e1a857a1cc527efdc94b34428c973ac94309f87576fab2203c",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+          "declaration": "KIP126.ProofTools.Standard.generalizedLeibniz",
+          "line": 54,
+          "migration_status": "original-paper-proof-gaps-retained"
+        }
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
+      "remaining_producer_obligations": [
+        {
+          "name": "KIP126.ProofTools.Standard.generalizedLeibniz",
+          "status": "original-paper-proof-gaps-retained",
+          "note": "组装仍需left_boundary、top_no_cross和bottom_no_cross供给左边标签匹配及一般无交叉转换；GL2的底边目标标签由已证明gl_bottom_target_representative供给。原GL1/GL2 sorry仅保留在前三项输入的构造处。"
+        }
+      ],
+      "completed_private_progress": [
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Survival.lean",
+          "sha256": "2829c05950138cd588fa4b53d2a3b0b9592a829516d73da613896a50b449890f",
+          "private_declarations": 4,
+          "proved_scope": "A high-filtration absolute boundary gives the exact lambda divisibility needed to lift the prescribed source through a higher quotient; its unchanged first label is therefore a classical cycle. This proves the reverse survival implication, not the final differential target comparison.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1068,
+              "label": "prop:6de7d130"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Square.lean",
+          "sha256": "eb070a36f7f97e2fc14ddf7a5cff93190072529ca1fe8e77fdce827dae47b332",
+          "private_declarations": 2,
+          "proved_scope": "The absolute quotient boundary and its strict naturality square are proved for the prescribed quotient and suspension maps. Commutativity does not supply a crossing conclusion.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1606,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Boundary.lean",
+          "sha256": "21069601b1da0e1f03f8a5ea4928dfa62824642746e2f185d6b398ca8c828521",
+          "private_declarations": 9,
+          "proved_scope": "The forward classical-differential to absolute lambda-quotient boundary comparison is proved with actual representatives, lambda powers, filtrations and infinity labels. Reverse proves the complementary differential comparison; CrossingDelta and CrossingShift now prove the complete classical delta no-crossing conversion.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1068,
+              "label": "prop:6de7d130"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean",
+          "sha256": "7effb33ec49075994699f01ecf04aab6be27b53c9be89df1cfa3509b5a52bf38",
+          "private_declarations": 12,
+          "proved_scope": "Finite induction on actual filtrations proves representative correction and four-edge synchronization under TowerNoCrossing. The new converse construction turns same-source-grade, higher-target-filtration corrections into the full actual TowerNoCrossing condition. The delta crossing premise is now supplied by CrossingDelta and CrossingShift; the general finite/infinite f conversion remains separate.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 408,
+              "label": "prop:i8r47oe"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 555,
+              "label": "cor:0012nik"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean",
+          "sha256": "5e1d91b32d2cc8521165803606452430caa34209297063ee8cb1c84b7fe0151c",
+          "private_declarations": 7,
+          "proved_scope": "Actual finite and infinite E-infinity windows identify classical labels and precisely characterize nonzero lambda images by the paper boundary exclusion. No strict extension-lifting assertion is made.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1515,
+              "label": "prop:cross-f-Er"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingRange.lean",
+          "sha256": "c01a4c667d357beda68ed9c308adcdd0d54682d42f7f908f2ac50ebf3d9501cd",
+          "private_declarations": 3,
+          "proved_scope": "A finite essential extension has source displacement less than the quotient exponent. Consequently the actual page-two extension map has no higher-source crossings; the general conversion remains pending. The additional minimal-length exclusion is proved in CrossingFinite.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1515,
+              "label": "prop:cross-f-Er"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Reverse.lean",
+          "sha256": "93dc646d87f7032898bf169ae0db1602524b2c84ea3d4ab2787d79057ea86aba",
+          "private_declarations": 15,
+          "proved_scope": "For a specified finite-quotient representative, its first label and absolute boundary detection imply the actual classical differential. Adjacent-lift ambiguity is controlled modulo the actual boundary group. GL2 now uses this result; construction of its synchronized representative remains pending.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1068,
+              "label": "prop:6de7d130"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1606,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDivision.lean",
+          "sha256": "40889904ef3705dd4699e343dc874950405f0024af1aeb7fd622e01a4f6b1141",
+          "private_declarations": 9,
+          "proved_scope": "The finite filtration window and quotient-triangle exactness give strict source lambda division. The prescribed lambda and absolute boundary maps form a proved square up to an explicit target isomorphism, with two-way filtration transport. These results now support the complete delta no-crossing conversion in CrossingDelta; they do not assert compatible division of an arbitrary f-extension relation.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1068,
+              "label": "prop:6de7d130"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1218,
+              "label": "prop:cross-dr-En"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingFinite.lean",
+          "sha256": "6a97c83c37ab5e3e7a2a036dcf9158b5019b6db79659950da430fe8b76e32598",
+          "private_declarations": 6,
+          "proved_scope": "Strict lambda division of an actual finite normalized-map source and filtration of its image are proved in the fixed quotient. They exclude higher-source essential crossings in the minimal normalized-length range m <= e(f). In the range m <= e(f)+1, every possible crossing has u=s+1, v=s+e(f)+1 and m=e(f)+1. This position constraint does not prove the next-length no-crossing conversion or the general finite f conversion.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1515,
+              "label": "prop:cross-f-Er"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDelta.lean",
+          "sha256": "63d16bde2f9c2dfc781ace7d29c5bf204e6c130df5806ab01d157c2e7cb71090",
+          "private_declarations": 11,
+          "proved_scope": "The complete classical NoCrossingOn to actual absolute-boundary TowerNoCrossing implication is proved with no added hypotheses. Strict source lambda division, the reverse survival comparison, BHS differential existence and a zero-target forward boundary representative produce the required same-source-grade correction.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1218,
+              "label": "prop:cross-dr-En"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/CrossingShift.lean",
+          "sha256": "f5cb4c9791698a12c87cac740e671e077175499e55acd0e955f4be7f12da12a3",
+          "private_declarations": 6,
+          "proved_scope": "The complete absolute-boundary no-crossing implication is transported to every vertical shift of nu X, including the normalized source object. The quotient/shift comparison retains its actual projection square and proves filtration compatibility for the fixed boundary map.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1218,
+              "label": "prop:cross-dr-En"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1606,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/DivisionLabels.lean",
+          "sha256": "65d77a9b7b64869a0082c686fe2b3050ae37b3ddcc5351703a594038838b16e7",
+          "private_declarations": 14,
+          "proved_scope": "Actual finite lambda division is constructed from the detected source, uniformly including exponent zero. The divided representative has source label congruent to the original label modulo a boundary, and the resulting classical differential is invariant under this ambiguity. The unified reverse wrapper requires only the actual lambda equation and the specified divided boundary detection; it chooses the first label internally.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1623,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/RightEdge.lean",
+          "sha256": "97af8d4248b7fe7876d52a82bb70264d828f8b895b5413a085e89a0a2a1b12cc",
+          "private_declarations": 6,
+          "proved_scope": "The actual rho lift preserves detection of the original label, via finite filtration reflection and injectivity on E-infinity. Later cycles follow from the higher finite window. GL1 uses the resulting weighted right-edge survival theorem.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1623,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/Propagation.lean",
+          "sha256": "bf5363257d9b3255e07320312925b0bd8a434f6a57de869ffb7e4f74a33ab0aa",
+          "private_declarations": 7,
+          "proved_scope": "The complete infinite normalized-map extension equation is pushed through the actual lambda power and absolute-boundary suspension, retaining both actual source and target infinity classes and their transported E2 representatives. This is a forward propagation only; no-crossing preservation and comparison with the specified left-edge class remain separate.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1623,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/SphereAutomorphisms.lean",
+          "sha256": "6a1f692164c0bd04a984d133048a97c05165f3fadabe908268e05d59e69b94c9",
+          "private_declarations": 5,
+          "proved_scope": "The fixed sphere first quotient is identified with the additive group ZMod 2 using the registered actual sphere coordinates and archive_dimension(0,0). Every sphere automorphism acts trivially after Q1. Actual quotient-shift and quotient-map naturality extend this to every bigraded sphere and arbitrary synthetic target. This does not assert that unquotiented homotopy groups have characteristic two.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1146,
+              "label": "rmk:qvoewfj"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1650,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/BoundaryDivision.lean",
+          "sha256": "26f3dbfab63bec9947db86b8438867c62a9495e9507dab76f20faadaf899415f",
+          "private_declarations": 11,
+          "proved_scope": "The actual boundaries before and after finite lambda division have strictly equal Q1 labels. The difference between the selected exact shift comparison and canonical suspension is a natural automorphism of the represented homotopy functor. Yoneda identifies its action with a sphere automorphism, whose Q1 action is proved trivial. No global equality of the two shift comparisons is assumed.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1146,
+              "label": "rmk:qvoewfj"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1650,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/WeightedReverse.lean",
+          "sha256": "457764d282be8216692f3e15df4f3d63ce76e8c5fb8ab611e5712ae4be00d69a",
+          "private_declarations": 3,
+          "proved_scope": "The weighted absolute-boundary detection is converted into the classical differential. A higher rho lift retains source detection, actual lambda division gives the correct source modulo boundaries, and the strict Q1 boundary comparison determines the target. The final target ambiguity is contained in the permitted B_k. All zero and endpoint cases are included without a new hypothesis.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1146,
+              "label": "rmk:qvoewfj"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1650,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/SquareRepresentatives.lean",
+          "sha256": "61b2af7e37cd648024a5915cf2e4c1260ec5402c5d199cfa1b56a36b58be49ea",
+          "private_declarations": 5,
+          "proved_scope": "The actual quotient/absolute-boundary square is assembled from three TowerExtensionEquation inputs and their no-crossing conditions. One right-edge representative has the specified finite label and its own specified boundary label. Canonical ESS shift transport gives unshifted boundary detection; the GL1 version only requires the top target label and gives high boundary filtration without a bottom label assumption.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1648,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/WitnessSquare.lean",
+          "sha256": "5bca34269eaead5b78afeea2c07dae5090faa5c8ea9f1aee2c35b700a36d2ec2",
+          "private_declarations": 5,
+          "proved_scope": "The actual finite and infinite extension witnesses supply the top edge and the lambda-propagated bottom edge with all degree transports checked. The private assembly wrappers use the proved bottom target label comparison for GL2. Their remaining inputs are the left-edge label match and crossing conversions.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1641,
+              "label": "thm:e73f481e"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedLeibniz/BottomTarget.lean",
+          "sha256": "47abd77069bf7d92e7fc7a5bdb0da0c62a24be3018d141f98bb70be968d28571",
+          "private_declarations": 14,
+          "proved_scope": "The actual lambda/shift propagation of the unshifted Y infinity target retains the prescribed classical target label. Positive lambda powers are identified with the registered infinityLambda window map; exponent zero is proved from the actual shift unit and filtered graded comparison. The resulting target label is supplied directly to the GL2 square wrapper without a new local assumption.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1623,
+              "label": "thm:e73f481e"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proof-tools-stretching-and-mahowald",
+      "mathematical_purpose": "保留完整 stretching 证明与已完成的 MH1；MH2 已取得同一商提升的无移位限制等式及其余纤维边界像的实际 λ 原像 bGeometry。零竖直移位的指定标签搬运、经典 δ 无交叉分支的相对边界同步已证明。bGeometry 与指定 ag 的比较、e=1 源首标签匹配、经典悬移标签与 ν.suspensionIso 的独立目标比较、一般 h-extension 分支及最终标签修正仍待补。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3"
+        },
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1780,
+          "label": "thm:158d451a"
+        }
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
+          "sha256": "4ad174936f51c5e627f020e8482d55c3fed5f7b0bd20cdbf29878f91158e3936",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
+          "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Detection/Vanishing/Proofs.lean",
+          "sha256": "476232502e737ba011d7b86769b59af35f8687c6d0e6de1622ca61de4065a33a",
+          "archive_member": "KIP126/Def/Synthetic/Detection/Vanishing/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/QuotientRestrictions/Proofs.lean",
+          "sha256": "bb15b1209c175dd1ba8927abce52e1d459558bb0d20931a03ca24f4b2f20d1c6",
+          "archive_member": "KIP126/Def/Synthetic/QuotientRestrictions/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Data.lean",
+          "sha256": "b4ce3a31ee686c2f23b474798c4a2b0fac8c094418a386bee5a1f1865be68319",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Data.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Data.lean",
+          "sha256": "d538e7634b5a8f59c716e57f6a67ea0632fae7d8653e176a79278f65822c8261",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Data.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Proofs.lean",
+          "sha256": "16c45a71590baa8123e94060b0138af43fe9d1251c8331ffe581d5b7900723ae",
+          "archive_member": "KIP126/Def/Synthetic/Sphere/Shift/Raw/Proofs.lean"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_correction",
+          "line": 14,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.finite_filtration_reflection",
+          "line": 48,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/FiniteFiltration.lean",
+          "declaration": "KIP126.ProofTools.first_nonzero_filtration_grade",
+          "line": 69,
+          "migration_status": "adapted-proof-body-present"
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald.lean",
+          "declaration": "KIP126.ProofTools.Standard.generalizedMahowald",
+          "line": 34,
+          "migration_status": "original-paper-proof-gaps-retained"
+        },
+        {
+          "path": "KIP126/ProofTools/Stretching.lean",
+          "declaration": "KIP126.ProofTools.Standard.finitePageExtensionStretching",
+          "line": 27,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "fixed callable declarations; existing proofs fully ported; original gaps individually tracked",
+      "remaining_producer_obligations": [
+        {
+          "name": "KIP126.ProofTools.Standard.generalizedMahowald",
+          "status": "original-paper-proof-gaps-retained",
+          "note": "MH1 is proved. MH2 uses the same strict quotient lift desuspended to nu X and now constructs an actual lambda preimage of its cofiber-boundary image. Comparison of that bGeometry with the prescribed ag representative remains needed for the second signed May equation. The zero vertical-shift label comparison and differential no-crossing relative-boundary invariance are proved. The e=1 source first-label match, the independent classical-suspension/nu.suspensionIso target-label comparison, the alternative general h-extension branch and final finite label comparison remain pending."
+        }
+      ],
+      "completed_private_progress": [
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/Signs.lean",
+          "sha256": "1489a642fbd78443edede60bebb38f36c2457c16a00f5cdb2aeaf9d2db3d55e7",
+          "private_declarations": 11,
+          "proved_scope": "The HF2 universal-coefficient comparison proves exponent two for classical Adams pages. Negation transports actual detected representatives; actual homotopy groups are not assumed to have exponent two.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+          "sha256": "a847ef7c02ca160f84f19bbff299c697d406ad2b34f802111781581d250418ac",
+          "private_declarations": 10,
+          "proved_scope": "Existing actual-quotient exactness and octahedra produce the same restriction lift and a lambda preimage of its second image. The actual normalized triangle and unit relative lambda triangle are also instantiated in May after rotation; may_tensor_common_lift proves both signed tensor equations for the same c. Comparison of this tensor instance with the fixed Q(X) maps and bigraded sphere source is still pending. No arbitrary lambda preimage is identified with the specified ag representative.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/NoReturn.lean",
+          "sha256": "8f6c7a6714a8099b73b0bd8337beb7294ea23c9dda545a6654002e837abc1c03",
+          "private_declarations": 6,
+          "proved_scope": "The no-return range d <= -j and the normalized-source quotient comparison for exponents at most one are proved using actual filtration vanishing. This extends the existing no-return proof without assuming equality of arbitrary quotient maps.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+          "sha256": "ed54635d7e26990cc16972b3adab690bb43034f787e67bb57fd8f04243da24ed",
+          "private_declarations": 7,
+          "proved_scope": "The given normalized distinguished triangle identifies the cofiber of normalized g with the prescribed shifted nu X. The inclusion and signed boundary equations are proved from the same triangle isomorphism. MH2 transports its existing quotient lift through this isomorphism and proves its strict rho equation; the simultaneous second May equation remains pending.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/QuotientShift.lean",
+          "sha256": "0b5ac526a70d65db121225a123ec7433f5588066296830ec7ab00c65db042858",
+          "private_declarations": 6,
+          "proved_scope": "Quotient restriction maps that agree on the actual inclusion agree after evaluation on spheres in the no-return range. Chosen quotient/shift comparisons therefore preserve the strict restriction equation of the same desuspended representative. MH2 now uses this transport for its prescribed lift in unshifted nu X.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/Synchronization.lean",
+          "sha256": "930f9884f2fdceed204e08b16c8fd979a8cf34a4d843c4abd9df5bd78aa3a53c",
+          "private_declarations": 1,
+          "proved_scope": "Classical differential no-crossing makes the relative quotient boundary identical for representatives with the same first grade: the absolute-boundary image difference has filtration beyond the complementary finite-quotient window. This handles the differential no-crossing branch of MH2 representative synchronization; the general h-extension branch and simultaneous May image equation remain pending.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1218,
+              "label": "prop:cross-dr-En"
+            },
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/ShiftLabels.lean",
+          "sha256": "1792302b0794414c7195029ff595dbe32dcde398a63ceece107d1b7a0704a475",
+          "private_declarations": 2,
+          "proved_scope": "Removal of the specified zero vertical shift preserves finiteNuLabel with a=0 as the prescribed finiteTargetLabel, and transports detection along the actual quotient map of shiftZero.hom, for every quotient length and lambda label index. The proof uses the quotient inclusion square and the target-label definition. It does not assert compatibility for positive vertical shift a=1 or for nu.suspensionIso with the classical DesuspendsClass relation.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+          "sha256": "8d10546c24560a30db8d648194e079e4df7789b4642a2e982311f235f313e570",
+          "private_declarations": 9,
+          "proved_scope": "A chosen octahedron produces a common lift of two prescribed compatible images. The actual finite quotient triangle constructs the same intermediate vertex from aZ and the prescribed ag. Its comparison into the fixed Q_(i+q)(Cg) has the correct restriction on every sphere by the proved finite no-return window bound; its second image is a fixed K evaluated on the prescribed input. The actual identification of that K evaluation with the signed lambda transition remains separate. Both constructions are called by MH2. Two private conditional comparison lemmas factor K-J through the shifted first arrow when delta followed by K equals delta followed by J, and show equality on a prescribed boundary representative. They do not prove this compatibility for the standard May lambda map, and are not yet used to close MH2.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1860,
+              "label": "thm:158d451a"
+            }
+          ]
+        },
+        {
+          "path": "KIP126/ProofTools/GeneralizedMahowald/ExtensionImage.lean",
+          "sha256": "a95be134d8105fcde74456ee5e879710dc70c4e883f9e7a6f94854ae8bbf8df2",
+          "private_declarations": 11,
+          "proved_scope": "From an actual finite extension witness, positive length implies zero leading E2 image on both the finite quotient and the unquotiented normalized map. A common shift preserves the finite version by actual shifted representatives and filtration. Zero length gives the specified target as the exact finite and unquotiented E2 image. These eleven private lemmas have complete proofs, but do not establish the May K/J comparison, shifted inclusion naturality on nonpermanent labels, h-source first-quotient compatibility, or the final MH2 boundary-controlled division; the main MH2 proof does not yet call them.",
+          "paper_locators": [
+            {
+              "path": "AimPaper/main.tex",
+              "line": 1780,
+              "label": "thm:158d451a"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proof-tools-main-proof-consumption",
+      "mathematical_purpose": "公开 Main 实际消费的既有代表、检测、滤过、收敛和商操作证明。",
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.rho_infty_injective",
+          "line": 17
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.map_preserves_filtration",
+          "line": 18
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.filtration_representative_exists",
+          "line": 19
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.family_page_comp",
+          "line": 20
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.family_infinity_representative_map",
+          "line": 21
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.detects_reflect",
+          "line": 22
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.finite_bottom_filtration",
+          "line": 23
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.finite_infinity_zero_outside",
+          "line": 24
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.detects_map",
+          "line": 25
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.grade_natural",
+          "line": 26
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.filtration_iff_of_infinity_zero",
+          "line": 27
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.grade_difference",
+          "line": 29
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.initialProjection_eq_cycleLabel",
+          "line": 30
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.represents_zero_mem_boundary",
+          "line": 31
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.boundaries_le_cycles",
+          "line": 32
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.boundaries_one",
+          "line": 33
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.finite_high_filtration_zero",
+          "line": 34
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.sphere_first_quotient_label",
+          "line": 35
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.sphere_finite_lambda_detects",
+          "line": 36
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.susp_invariance_add",
+          "line": 37
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.inverse_associativity",
+          "line": 38
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.shift_hom_associativity",
+          "line": 39
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.next_filtration_of_infinity_injective",
+          "line": 41
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.biSuspensionIso",
+          "line": 44
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.infinityGradedIso",
+          "line": 49
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.tower_extension_iff",
+          "line": 58
+        },
+        {
+          "path": "KIP126/ProofTools/Operations.lean",
+          "declaration": "KIP126.ProofTools.Operations.finite_target_label_iff",
+          "line": 78
+        }
+      ],
+      "consumers": [
+        "KIP126.Main.Internal.AlphaOne.Corrections",
+        "KIP126.Main.Internal.AlphaOne.Detection",
+        "KIP126.Main.Internal.AlphaOne.ErrorFiltration",
+        "KIP126.Main.Internal.AlphaOne.Filtration",
+        "KIP126.Main.Internal.AlphaOne.LastDifferential",
+        "KIP126.Main.Internal.Choice.LambdaInjectivity",
+        "KIP126.Main.Internal.CofiberRigidity",
+        "KIP126.Main.Internal.DetectionLabels",
+        "KIP126.Main.Internal.NuNinth.Fourth",
+        "KIP126.Main.Internal.NuNinth.Shift",
+        "KIP126.Main.Internal.NuThree.Actual",
+        "KIP126.Main.Internal.NuThree.ActualOperations",
+        "KIP126.Main.Internal.NuThree.Finite",
+        "KIP126.Main.Internal.NuThree.Shift",
+        "KIP126.Main.Internal.NuThree.Suspension",
+        "KIP126.Main.Internal.NuThree.ZeroExtensions",
+        "KIP126.Main.Internal.NuThree.ZeroLabels",
+        "KIP126.Main.Internal.Selected.InfinityFrames",
+        "KIP126.Main.Internal.Selected.NuErrorData",
+        "KIP126.Main.Internal.Selected.ProductDetection",
+        "KIP126.Main.Internal.Selected.SphereDetection",
+        "KIP126.Main.Internal.Theta.RealizationKernel",
+        "KIP126.Main.SectionSeven.NuTargetCosets",
+        "KIP126.Main.SectionSeven.NuTargetH0Products",
+        "KIP126.Main.SectionSeven.WeakStripFinite",
+        "KIP126.Main.SectionSeven.WeakYFinite"
+      ],
+      "source_locators": [
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean",
+          "sha256": "774d0d4f1dd266f7776663fa27f045ab80d4fe736dcb2f86a278d53ad23c7677",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean",
+          "sha256": "4ad174936f51c5e627f020e8482d55c3fed5f7b0bd20cdbf29878f91158e3936",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Predicates.lean",
+          "sha256": "e2e013997d4995908234d5490f6568b93fbcc6fc308266b97029738dca423098",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Predicates.lean"
+        },
+        {
+          "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
+          "path": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Predicates.lean",
+          "sha256": "1c6541f477c3b5bf7546b253e088936abb94e3cefe77015fd45e7292e37540f2",
+          "archive_member": "KIP126/Def/Kervaire/Route/Tools/PageExtensionStretching/Predicates.lean"
+        }
+      ],
+      "interface_state": "fixed callable declarations; no consumer result packages",
+      "remaining_producer_obligations": [],
+      "not_main_obligation": true
+    },
+    {
+      "id": "proof-tools-nu-cofiber-mahowald-zero-layer",
+      "mathematical_purpose": "公开Main所需的已证零层nu余纤维MH2数值特例；保留实际Q3映射方程及B3目标同余。",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1900,
+          "label": "thm:158d451a"
+        }
+      ],
+      "source_locators": [],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Standard.lean",
+          "declaration": "KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer",
+          "line": 15,
+          "migration_status": "adapted-proof-body-present"
+        }
+      ],
+      "consumers": [
+        "KIP126.Main.Internal.NuThree.Mahowald",
+        "Tests.ProofTools.Interface"
+      ],
+      "interface_state": "One explicitly authorized public alias of a completed private proof. Existing public declarations are unchanged.",
+      "remaining_producer_obligations": [],
+      "proof_scope": "Exact nuRouteTriangle instance (n,m,l,s,t)=(3,0,0,8,134); x reaches Z3, actual finite page4/length3 nu extension and B3 target congruence.",
+      "upstream_dependencies": "Existing registered obligations remain upstream; no local MH2/GL proof gap."
+    }
+  ],
+  "proof_obligation_registry": "metadata/proof-obligations.json",
+  "proof_status": "MH1 and the public nu-cofiber zero-layer MH2 instance are proved relative to fixed upstream duties. Main uses the completed instance. GL1/GL2 and the refuted frozen general MH2 remain off the reviewed Main dependency route. Only the explicitly approved single public bridge is added; no new axiom or obligation.",
+  "exclusions": [
+    "Reconstructing concrete Adams/Milnor/cobar or synthetic models as a Main obligation.",
+    "Re-proving externally cited literature and computation correctness inside Main.",
+    "Treating a paper-specific conclusion or local Moss application as an upstream external premise.",
+    "Claiming archived source text, hashes or successful compilation certify completed formal proofs.",
+    "Restoring Challenge/result-package parameters or adding geometric Kervaire goals."
+  ],
+  "checks": [
+    "Tests.ProofTools.Interface",
+    "Tests.ProofTools.Consumers"
+  ],
+  "validation": "Passed full lake build (3044 jobs) after actual h-target detection and source survival were integrated. ProofTools audit checked 1529 declarations and the original two pending theorem declarations; no new local holes or public interface changes. Ordinary consumers and dependency/source inventory checks passed. MH2 remains incomplete at its original single site.",
+  "scope": {
+    "finite_stretching": "The frozen baseline provides a layer-preserving strengthened sufficient condition for existence of a later finite-page extension. It excludes finite nonliftable crossings, including inessential ones; it is not claimed equivalent to the full printed paper criterion. It does not assert lifting an arbitrary chosen strict solution, an infinite compatible lift tower, or an untruncated extension.",
+    "source_locator_role": "Paper labels identify the mathematical source context. Exact formal scope is determined by metadata/proof-tools-api.json and the retained hypotheses of each law."
+  },
+  "remaining_obligation_accounting": {
+    "declarations": 2,
+    "original_local_sorry_sites": 3,
+    "original_labels": [
+      "GL1",
+      "GL2",
+      "MH2"
+    ],
+    "proof_port_holes": 0,
+    "upstream_duties_recounted_as_tools": false,
+    "completed_original_labels": [
+      "MH1"
+    ]
+  },
+  "paper_proof_correspondence": {
+    "source": "AimPaper/main.tex",
+    "source_manifest": "metadata/aim-paper-sources.json",
+    "scope": "逐步对应论文证明与现有声明。completed 只表示本行写明范围已证明；若结果有前提，仍须由前面的步骤提供。映射不增加公理、前提、公共声明或待补责任。",
+    "generalized_leibniz": {
+      "paper_label": "thm:e73f481e",
+      "proof_lines": [
+        1623,
+        1652
+      ],
+      "steps": [
+        {
+          "id": "square",
+          "paper_lines": [
+            1625,
+            1628
+          ],
+          "claim": "Actual normalized f / absolute-boundary commutative square.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Square.lean",
+              "line": 15,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absoluteBoundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Square.lean",
+              "line": 20,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absoluteBoundary_natural"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 136,
+              "declaration": "generalizedLeibniz.hδsquare"
+            }
+          ],
+          "proved_scope": "Actual normalized f / absolute-boundary commutative square.",
+          "remaining": "None for commutativity.",
+          "instantiation": {
+            "A": "shift (0,e) (nu X)",
+            "B": "nu Y",
+            "map": "(model.normalizedMap X Y f).map",
+            "quotient": "q0"
+          }
+        },
+        {
+          "id": "left_boundary",
+          "paper_lines": [
+            1629,
+            1632
+          ],
+          "claim": "Classical d_r(x)=xInfinity produces the length-r absolute-boundary extension.",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Boundary.lean",
+              "line": 198,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.differential_absolute_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Detection.lean",
+              "line": 15,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.first_label_detects_unshifted"
+            },
+            {
+              "file": "KIP126/ProofTools/DetectionOperations.lean",
+              "line": 189,
+              "declaration": "KIP126.ProofTools.Internal.extension_equation_of_detected_pair"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 134,
+              "declaration": "generalizedLeibniz.aδ,haδ,hδ"
+            }
+          ],
+          "proved_scope": "Specified unshifted quotient representative, its exact first restriction, and detected absolute boundary are proved.",
+          "remaining": "Package source detection and target shift into a TowerExtensionEquation with the same normalized shifted source E∞ label as hf. For e>0 the prescribed nuE2/firstQuotient label transport must be justified; CrossingShift proves filtration/crossing transport, not this prescribed-label equality.",
+          "instantiation": {
+            "i": "q0",
+            "k": "(r-1).toNat",
+            "source_label": "x at (s,t)",
+            "target_label": "xInfinity at (s+r,t+r-1), weight t+q0",
+            "length": "r"
+          }
+        },
+        {
+          "id": "top_finite",
+          "paper_lines": [
+            1633,
+            1636
+          ],
+          "claim": "Condition (2) is the actual finite normalized-map extension.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionWitnesses.lean",
+              "line": 21,
+              "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionWitnesses.lean",
+              "line": 40,
+              "declaration": "KIP126.Kervaire.Route.FiniteExtensionWitness.equation"
+            }
+          ],
+          "proved_scope": "Condition (2) is the actual finite normalized-map extension.",
+          "remaining": "无本步骤缺口；主证明选择WFinite并由两种square包装直接消费WFinite.equation和target_rep。",
+          "instantiation": {
+            "witness": "Classical.choice hf",
+            "r": "page",
+            "n": "m",
+            "source": "x",
+            "target": "y",
+            "p": "(t-s,t+e)"
+          }
+        },
+        {
+          "id": "bottom_initial",
+          "paper_lines": [
+            1637,
+            1640
+          ],
+          "claim": "Condition (3) is the actual untruncated normalized-map extension.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionWitnesses.lean",
+              "line": 45,
+              "declaration": "KIP126.Kervaire.Route.InfiniteExtensionWitness"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionWitnesses.lean",
+              "line": 58,
+              "declaration": "KIP126.Kervaire.Route.InfiniteExtensionWitness.equation"
+            }
+          ],
+          "proved_scope": "Condition (3) is the actual untruncated normalized-map extension.",
+          "remaining": "No mathematical step; use W.equation.",
+          "instantiation": {
+            "witness": "W = Classical.choice hfInfinity",
+            "s": "S=s+r",
+            "t": "T=t+r-1",
+            "n": "l",
+            "p": "(t-s-1,t+r-1+e)"
+          }
+        },
+        {
+          "id": "bottom_lambda",
+          "paper_lines": [
+            1641,
+            1644
+          ],
+          "claim": "Multiply the entire bottom relation by lambda^(r-page), then suspend it into the actual square.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean",
+              "line": 340,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.tower_extension_map"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ESSShift.lean",
+              "line": 115,
+              "declaration": "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.towerExtensionEquation_iff"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/Standard/Operations.lean",
+              "line": 288,
+              "declaration": "KIP126.AdamsSynthetic.Standard.essShift"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/Coherence.lean",
+              "line": 63,
+              "declaration": "KIP126.Synthetic.Context.lambdaPow_naturality"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 28,
+              "declaration": "KIP126.ProofTools.Standard.lambda_target_class"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 202,
+              "declaration": "generalizedLeibniz.h_propagated_target"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Propagation.lean",
+              "line": 132,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.infinite_extension_lambda_boundary_shift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Propagation.lean",
+              "line": 158,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_bottom_point"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 103,
+              "declaration": "generalizedLeibniz.hbottom"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/BottomTarget.lean",
+              "line": 239,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_bottom_target_representative"
+            }
+          ],
+          "proved_scope": "实际无限witness的整个λ传播方程已证明，包括源、目标的实际E∞类、悬移和次数转换。底边目标由同一个经典yInfinity表示也已证明：正指数使用实际λ映射与infinityLambda的比较，零指数使用shift单位相容。GL2主证明直接调用该标签比较。",
+          "remaining": "传播本身及其规定目标标签已完成；左边源类的匹配与传播后的无交叉条件分别属于left_boundary和bottom_no_cross。",
+          "instantiation": {
+            "first_shift": "(0,-k)",
+            "vertical_maps": "lambdaPow k A and lambdaPow k B",
+            "second_shift": "(1,-q0)",
+            "first_p": "(t-s-1,t+r-1+e)",
+            "middle_p": "(t-s-1,t+q0+e)",
+            "final_p": "(t-s,t+e)",
+            "source_filtration": "s+r",
+            "length": "l"
+          }
+        },
+        {
+          "id": "left_no_cross",
+          "paper_lines": [
+            1646,
+            1646
+          ],
+          "claim": "Classical no-crossing implies actual delta no-crossing for the normalized shifted source.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDelta.lean",
+              "line": 255,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.classical_noCrossing_absolute_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingShift.lean",
+              "line": 122,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.classical_noCrossing_shifted_absolute_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 88,
+              "declaration": "generalizedLeibniz.hsourceCrossing delta branch"
+            }
+          ],
+          "proved_scope": "Classical no-crossing implies actual delta no-crossing for the normalized shifted source.",
+          "remaining": "The direction required by GL is proved. No claim that the complete paper iff is exposed as a theorem.",
+          "instantiation": {
+            "X": "X",
+            "page": "page",
+            "e": "normalizedExponent model.classicalTower f",
+            "r": "r",
+            "s": "s",
+            "t": "t"
+          }
+        },
+        {
+          "id": "top_no_cross",
+          "paper_lines": [
+            1646,
+            1646
+          ],
+          "claim": "FiniteNoCrossing implies actual same-weight finite-f TowerNoCrossing.",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingFinite.lean",
+              "line": 166,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.minimal_length_finite_tower_no_crossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingFinite.lean",
+              "line": 23,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.normalized_finite_source_division"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean",
+              "line": 44,
+              "declaration": "KIP126.ProofTools.Internal.CrossingLabels.finite_grade_label"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean",
+              "line": 94,
+              "declaration": "KIP126.ProofTools.Internal.CrossingLabels.lambda_finite_label_nonzero"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 90,
+              "declaration": "generalizedLeibniz.hsourceCrossing finite branch"
+            }
+          ],
+          "proved_scope": "The minimal allowed length m=e is proved independently. Source division and label/boundary comparisons are proved.",
+          "remaining": "一般长度仍需把同weight实际essential crossing转成较小商的合法crossing。已检查指定lower源类的充分提升路线：lambda源除法不自动保证f像的高滤过，首层需要跨f的边界原像修正。允许换a和源类的替代路线也尚缺合法X源的返回构造。没有证明整体转换不可能，也没有新增相对提升前提。",
+          "instantiation": {
+            "q": "q0",
+            "s": "s",
+            "t": "t",
+            "n": "m",
+            "p": "(t-s,t+e)"
+          }
+        },
+        {
+          "id": "bottom_no_cross",
+          "paper_lines": [
+            1646,
+            1646
+          ],
+          "claim": "InfiniteNoCrossing for the original extension excludes crossings of the lambda-propagated bottom relation.",
+          "status": "missing",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/Language.lean",
+              "line": 105,
+              "declaration": "KIP126.ProofTools.InfiniteNoCrossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean",
+              "line": 26,
+              "declaration": "KIP126.ProofTools.Internal.CrossingLabels.nu_grade_label"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean",
+              "line": 66,
+              "declaration": "KIP126.ProofTools.Internal.CrossingLabels.lambda_nu_label_nonzero"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean",
+              "line": 213,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.TowerNoCrossing"
+            }
+          ],
+          "proved_scope": "仅已有E∞标签与λ核的边界比较；本行一般InfiniteNoCrossing到传播后实际无交叉的转换尚未证明。",
+          "remaining": "Actual f-cycle lifting/correction across the weight change, including crossings created after lambda. Window equations identify killed target labels but do not supply their source corrections. This is not a proof that the full public fixed model cannot imply the implication.",
+          "instantiation": {
+            "original": "l, S=s+r, T=t+r-1",
+            "required": "TowerNoCrossing for shifted normalized f at p=(t-s,t+e), starting filtration s+r and length l"
+          }
+        },
+        {
+          "id": "square_composition",
+          "paper_lines": [
+            1648,
+            1649
+          ],
+          "claim": "Choose one common source representative and compose the three actual relations to obtain the right-edge delta relation.",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean",
+              "line": 265,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.square_frames"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Square.lean",
+              "line": 20,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absoluteBoundary_natural"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/SquareRepresentatives.lean",
+              "line": 154,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_detects_unshifted"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/SquareRepresentatives.lean",
+              "line": 202,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_high_filtration"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/WitnessSquare.lean",
+              "line": 60,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_bottom_extension"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/WitnessSquare.lean",
+              "line": 95,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_witness_square_high_filtration"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/WitnessSquare.lean",
+              "line": 140,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_witness_square_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 155,
+              "declaration": "Internal.Leibniz.gl_witness_square_high_filtration"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 266,
+              "declaration": "Internal.Leibniz.gl_witness_square_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/BottomTarget.lean",
+              "line": 239,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl_bottom_target_representative"
+            }
+          ],
+          "proved_scope": "已在实际 quotient/absoluteBoundary 交换图中应用三边滤过组装，构造同一个右边代表及其真实边界。有限witness自动提供上边，lambda传播后的无限witness自动提供下边；所有底边次数运输已证明。GL1版本只需有限目标标签并给出边界高滤过，GL2版本给出同一代表的unshifted边界检测。主证明实际调用两种包装。",
+          "remaining": "组装仍需left_boundary、top_no_cross和bottom_no_cross供给左边标签匹配及一般无交叉转换；GL2的底边目标标签由已证明gl_bottom_target_representative供给。原GL1/GL2 sorry仅保留在前三项输入的构造处。",
+          "instantiation": {
+            "objects": {
+              "X": "Q_q0 A",
+              "Y": "Q_q0 B",
+              "Z": "shift delta A",
+              "W": "shift delta B"
+            },
+            "maps": {
+              "f": "Q_q0 fhat",
+              "h": "absoluteBoundary A q0",
+              "j": "shift delta fhat",
+              "k": "absoluteBoundary B q0"
+            },
+            "square_frames_parameters": {
+              "p": "(t-s,t+e)",
+              "s": "s",
+              "n": "m (GL top length)",
+              "m": "r (GL left length)",
+              "l": "l"
+            },
+            "conclusion": "Right-edge extension starts at s+m with length r+l-m and target filtration s+r+l"
+          }
+        },
+        {
+          "id": "read_right_boundary_survival",
+          "paper_lines": [
+            1649,
+            1651
+          ],
+          "claim": "Right-edge delta relation implies y survives to the required classical page (GL1).",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDivision.lean",
+              "line": 23,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.finite_source_division"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDivision.lean",
+              "line": 149,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absolute_boundary_division_evaluation"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDivision.lean",
+              "line": 206,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.divided_boundary_filtration_iff"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/Survival.lean",
+              "line": 77,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.absolute_boundary_filtration_cycles"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 109,
+              "declaration": "generalizedLeibniz.hy_later"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/RightEdge.lean",
+              "line": 115,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.rho_lift_detected_cycles"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/RightEdge.lean",
+              "line": 187,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.gl1_right_edge_survival"
+            }
+          ],
+          "proved_scope": "给定实际右边代表检测 finiteTargetForExtension(y) 且绝对边界在 F^(s+r+l)，gl1_right_edge_survival 已推出原 y∈Z_(r+l−m−1)。通过ρ提升与E∞注入反射滤过，不需要先除λ或指定firstLabel；GL1已实际调用。",
+          "remaining": "该读出已完成。组装仍需left_boundary、top_no_cross和bottom_no_cross供给左边标签匹配及一般无交叉转换；GL2的底边目标标签由已证明gl_bottom_target_representative供给。原GL1/GL2 sorry仅保留在前三项输入的构造处。",
+          "instantiation": {
+            "case": "l>e; l=e is supplied directly by the original hy",
+            "quotient": "i=page−1",
+            "lifted_quotient": "j=(r+l−e−1).toNat",
+            "source_filtration": "s+m",
+            "source_degree": "t+m",
+            "source_weight": "t+e",
+            "boundary_filtration": "s+r+l",
+            "conclusion": "y∈Z_(r+l−m−1)"
+          }
+        },
+        {
+          "id": "read_right_boundary_target",
+          "paper_lines": [
+            1650,
+            1652
+          ],
+          "claim": "Identify the classical differential target modulo B_(r+l-m-1) (GL2).",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/RightEdge.lean",
+              "line": 25,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.rho_lift_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/DivisionLabels.lean",
+              "line": 314,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.finite_detected_source_division_uniform"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/DivisionLabels.lean",
+              "line": 220,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.boundary_detects_differential_of_source_congruent"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/SphereAutomorphisms.lean",
+              "line": 90,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.sphere_automorphism_quotient_projection"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/BoundaryDivision.lean",
+              "line": 131,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.divided_boundary_first_quotient"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/WeightedReverse.lean",
+              "line": 112,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.finite_detected_boundary_differential_weighted"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 216,
+              "declaration": "generalizedLeibniz.hδ suffices"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz.lean",
+              "line": 232,
+              "declaration": "generalizedLeibniz.hdTarget"
+            }
+          ],
+          "proved_scope": "已证明完整加权反向绝对边界比较：给定原有限商中的右边代表检测 λ^d y，且该代表的实际绝对边界检测指定目标，则得到原 y 的经典微分。证明自动完成高商ρ提升、λ除法、源边界歧义消去、真实绝对边界的Q1标签相容及最终B_k目标修正，包含d=0和提升端点。GL2主证明实际调用该引理，不再额外要求精确首标签、指定λ原像或移位同构全局相等。",
+          "remaining": "该读出已完成。组装仍需left_boundary、top_no_cross和bottom_no_cross供给左边标签匹配及一般无交叉转换；GL2的底边目标标签由已证明gl_bottom_target_representative供给。原GL1/GL2 sorry仅保留在前三项输入的构造处。",
+          "instantiation": {
+            "X": "Y",
+            "i": "page-1",
+            "k": "qFinal=(r+l-m-1).toNat",
+            "d": "(m-e).toNat",
+            "s": "s+m",
+            "t": "t+m",
+            "x": "y",
+            "y": "yExpected",
+            "source_weight": "t+m-d",
+            "boundary_weight": "t+m-d+(page-1)"
+          }
+        }
+      ]
+    },
+    "generalized_mahowald": {
+      "paper_label": "thm:158d451a",
+      "proof_lines": [
+        1860,
+        1917
+      ],
+      "steps": [
+        {
+          "id": "MH01",
+          "paper_lines": [
+            1861,
+            1863
+          ],
+          "claim": "构造归一化f,g,h的distinguished triangle",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/Literature/Triangles.lean",
+              "line": 97,
+              "declaration": "KIP126.Literature.normalizedTriangle"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 39,
+              "declaration": "normalized_g_cofiber_triangle_iso"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 75,
+              "declaration": "normalized_g_shifted_cofiber_inclusion"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 456,
+              "declaration": "eCg/eCgShift/heCgIncl/heCgProj"
+            }
+          ],
+          "proved_scope": "已得到cofiber(G)与shiftedνX的同构，且第二箭头对应normalized h，第三箭头对应旋转后的−f。",
+          "remaining": "对象和箭头已完成；此项不包含nuE2/firstLabel在悬挂下的标签比较。",
+          "depends_on": []
+        },
+        {
+          "id": "MH02",
+          "paper_lines": [
+            1864,
+            1865
+          ],
+          "claim": "构造λ商ρ–δ–λ三角",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/AdamsSynthetic/Quotients.lean",
+              "line": 124,
+              "declaration": "LambdaRhoDeltaTriangle"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 62,
+              "declaration": "local boundary"
+            }
+          ],
+          "proved_scope": "实际ρ、δ、λMap及distinguishedness均已可直接使用。",
+          "remaining": "不把对A的实际塔自动认作A与sphere商三角的tensor。",
+          "depends_on": [
+            "MH01"
+          ]
+        },
+        {
+          "id": "MH03",
+          "paper_lines": [
+            1866,
+            1866
+          ],
+          "claim": "取两个三角的smash product",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/Literature/Standard.lean",
+              "line": 948,
+              "declaration": "KIP126.Literature.Standard.may_pushpull"
+            },
+            {
+              "file": "KIP126/Literature/May.lean",
+              "line": 60,
+              "declaration": "MayPushpullData"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/SphereTensor.lean",
+              "line": 10,
+              "declaration": "biShift_eq_tensor_Smn"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 111,
+              "declaration": "quotient_octahedron_fill"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 208,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.may_tensor_common_lift"
+            }
+          ],
+          "proved_scope": "公开May pushpull/signed boundary结果可直接调用；生产另有三个实际八面体和其带符号互补三角。 给定张量代表a、b及严格相容等式hab后，实际 normalizedTriangle.rotate 与单位 λ–ρ–δ 三角.rotate 的 May tensor 实例已证明：同一个 c 同时满足ρ等式和含真实负号的f等式（may_tensor_common_lift）。",
+          "remaining": "当前主定理尚未从固定商代表构造此tensor hab。仍须把此tensor实例及其普通sphere源比较到MH2的固定Q(X)、双分次sphere源及指定标签。该转换未完成；固定商上的指定ag第二等式不能由未标定的任意λ前像代替。",
+          "depends_on": [
+            "MH01",
+            "MH02"
+          ]
+        },
+        {
+          "id": "MH04",
+          "paper_lines": [
+            1868,
+            1872
+          ],
+          "claim": "由条件(1)得到归一化h扩张，目标为λ^l1 x",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 40,
+              "declaration": "inputs hh,hsusp"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionLabels.lean",
+              "line": 22,
+              "declaration": "extensionSourceObject / finiteExtensionMap"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionLabels.lean",
+              "line": 52,
+              "declaration": "finiteSourceForExtension / finiteTargetForExtension"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/ExtensionWitnesses.lean",
+              "line": 21,
+              "declaration": "FiniteExtensionWitness"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/ShiftLabels.lean",
+              "line": 18,
+              "declaration": "finite_zero_shift_label"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 75,
+              "declaration": "normalized_g_shifted_cofiber_inclusion"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HSource.lean",
+              "line": 223,
+              "declaration": "positive_finite_source_unshifted"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HSource.lean",
+              "line": 252,
+              "declaration": "zero_finite_source_unshifted"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/SuspensionTarget.lean",
+              "line": 105,
+              "declaration": "suspension_finite_target_unshifted"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/FiniteLambdaShift.lean",
+              "line": 264,
+              "declaration": "suspension_finite_lambda_unshift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/SuspensionDetection.lean",
+              "line": 220,
+              "declaration": "suspension_finite_positive_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/SuspensionDetection.lean",
+              "line": 170,
+              "declaration": "suspension_finite_bottom_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 208,
+              "declaration": "normalized_g_cofiber_inclusion"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HTarget.lean",
+              "line": 274,
+              "declaration": "normalized_h_target_representative"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HTargetDetection.lean",
+              "line": 205,
+              "declaration": "normalized_h_target_detects_native"
+            }
+          ],
+          "proved_scope": "正移位源、任意保留lambda层的经典/合成悬挂目标、规范g-cofiber的实际h箭头、任意有限商比较及严格反移位代表相等均已在私有引理中完成。normalized_h_target_detects_native直接消费原Wh、hsusp及现有源关系，给出实际aNu的指定lambda^(l−e(h))x检测；没有额外相容性前提。",
+          "remaining": "标签和实际代表比较已完成；另一无交叉分支中给同一个aZ建立源关系由MH06_h/MH07负责。",
+          "depends_on": [
+            "MH01"
+          ]
+        },
+        {
+          "id": "MH05",
+          "paper_lines": [
+            1873,
+            1876
+          ],
+          "claim": "由条件(2)得到δ_i的扩张与λ^m1 yBar检测代表",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 68,
+              "declaration": "local boundary_representative"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 101,
+              "declaration": "local target_correction"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Adjacent.lean",
+              "line": 246,
+              "declaration": "zero_target_actual_lift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Adjacent.lean",
+              "line": 358,
+              "declaration": "adjacent_mahowald_case"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Sphere.lean",
+              "line": 341,
+              "declaration": "selected_mahowald_case"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 144,
+              "declaration": "zero_target_actual_lift application"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 189,
+              "declaration": "adjacent_mahowald_case application"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 308,
+              "declaration": "selected_mahowald_case application"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 68,
+              "declaration": "boundary_representative assembly"
+            }
+          ],
+          "proved_scope": "目标属于B_q时构造零δ代表；q=1用adjacent；其余用selected MH1；全部合并为实际aZ、haZ、hdelta。",
+          "remaining": "此aZ尚未同时满足h侧的指定x检测。",
+          "depends_on": []
+        },
+        {
+          "id": "MH06_delta",
+          "paper_lines": [
+            1879,
+            1879
+          ],
+          "claim": "prop:cross-dr-En：经典无交叉转为δ实际无交叉/同源代表稳定性",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "AimPaper/main.tex",
+              "line": 1218,
+              "declaration": "prop:cross-dr-En"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDelta.lean",
+              "line": 255,
+              "declaration": "classical_noCrossing_absolute_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Synchronization.lean",
+              "line": 21,
+              "declaration": "relative_boundary_equal_of_no_crossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 369,
+              "declaration": "local hboundaryStable proof"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 437,
+              "declaration": "local hstrictSameSource"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 428,
+              "declaration": "hSourceReady"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HSourceSelection.lean",
+              "line": 310,
+              "declaration": "select_finite_extension_source"
+            }
+          ],
+          "proved_scope": "对任意同一unshifted xBar标签的a与aZ，实际relative δ完全相等；无需再次构造δ桥。 主证明现已由Wh提取真实h源、反移位并调用此稳定性；八面体构造实际使用选定新源，hSourceReady保留h目标检测和严格逆运输关系。",
+          "remaining": "此分支的同源同步、实际h目标检测及源存活见证均已接入主证明。",
+          "depends_on": [
+            "MH05"
+          ]
+        },
+        {
+          "id": "MH06_h",
+          "paper_lines": [
+            1879,
+            1879
+          ],
+          "claim": "prop:cross-f-Er：finite h无交叉转为所需实际ESS无交叉",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "AimPaper/main.tex",
+              "line": 1515,
+              "declaration": "prop:cross-f-Er"
+            },
+            {
+              "file": "KIP126/ProofTools/Language.lean",
+              "line": 72,
+              "declaration": "FiniteHasCrossing / FiniteNoCrossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingFinite.lean",
+              "line": 166,
+              "declaration": "minimal_length_finite_tower_no_crossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingFinite.lean",
+              "line": 177,
+              "declaration": "short_finite_crossing_position"
+            }
+          ],
+          "proved_scope": "已证明一般n<=e+1的finite无交叉转实际tower无交叉及原始见证的指定源重选；主线在h长度l<=eh+1（k<=1）时消费，包含所有i<=2情形。",
+          "remaining": "k>=2、i>=3的一般有限h无交叉仍需同时保留源首项与短商目标滤过的修正。严格lambda除法不反射目标滤过。",
+          "depends_on": [
+            "MH04"
+          ]
+        },
+        {
+          "id": "MH07",
+          "paper_lines": [
+            1880,
+            1884
+          ],
+          "claim": "选择同一个xBar代表，同时满足h目标与δ目标",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 376,
+              "declaration": "aZ,haZ,hdelta,hboundaryStable"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 437,
+              "declaration": "hstrictSameSource"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Synchronization.lean",
+              "line": 21,
+              "declaration": "relative_boundary_equal_of_no_crossing"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 428,
+              "declaration": "hSourceReady"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/HSourceSelection.lean",
+              "line": 310,
+              "declaration": "select_finite_extension_source"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 570,
+              "declaration": "hTargetReady"
+            }
+          ],
+          "proved_scope": "微分无交叉分支及短h长度l<=eh+1分支已使用同一个aZ，保留原delta/g像、Wh实际源关系及反悬挂后规定x标签；hTargetReady记录同一个aNu检测。",
+          "remaining": "k>=2的一般finite h无交叉分支仍缺固定aZ的规定h目标检测。",
+          "depends_on": [
+            "MH04",
+            "MH05",
+            "MH06_delta",
+            "MH06_h"
+          ]
+        },
+        {
+          "id": "MH08",
+          "paper_lines": [
+            1886,
+            1894
+          ],
+          "claim": "由条件(4)取得g扩张的y代表及其yBar目标",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 59,
+              "declaration": "local Wg"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/FinalOperations.lean",
+              "line": 15,
+              "declaration": "finite_top_extension_preimage"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 622,
+              "declaration": "finite_top_extension_preimage application"
+            }
+          ],
+          "proved_scope": "可以直接从Wg取得g的实际源代表；无需先把它改写成论文未shift的νY坐标即可供当前G/cofiber路线使用。",
+          "remaining": "若要求字面对应论文νY上指定y的未shift代表，还涉及相同正移位标签比较；当前内部链保持正移位规范，不使用该额外比较。",
+          "depends_on": []
+        },
+        {
+          "id": "MH09",
+          "paper_lines": [
+            1896,
+            1897
+          ],
+          "claim": "prop:59f111f的degree理由保证λ^m1 yBar检测唯一",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "AimPaper/main.tex",
+              "line": 849,
+              "declaration": "prop:59f111f"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Filtration.lean",
+              "line": 45,
+              "declaration": "finite_infinity_zero_outside"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Filtration.lean",
+              "line": 68,
+              "declaration": "finite_top_detection_unique"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/FinalOperations.lean",
+              "line": 50,
+              "declaration": "finite_top_detection_unique application"
+            }
+          ],
+          "proved_scope": "两个检测同一top-window标签的实际homotopy代表严格相等；证明使用高滤过消失及separatedness。",
+          "remaining": "无本步骤缺口。q=1也由现有helper覆盖。",
+          "depends_on": [
+            "MH05",
+            "MH08"
+          ]
+        },
+        {
+          "id": "MH10",
+          "paper_lines": [
+            1898,
+            1899
+          ],
+          "claim": "得到δ_i(aZ)=G_q(ag)严格方程",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 622,
+              "declaration": "ag,hag,hagDetect"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 400,
+              "declaration": "local may_boundary_lift parameters ag,hag,hstrict"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 465,
+              "declaration": "local hstrict' in biSuspension coordinates"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/FinalOperations.lean",
+              "line": 15,
+              "declaration": "finite_top_extension_preimage"
+            }
+          ],
+          "proved_scope": "hag/hstrict为ag≫finiteExtensionMap G q=boundary aZ；hstrict'给Geometry所需的同一δ方程。",
+          "remaining": "该严格方程成立于当前aZ；aZ的h侧检测尚未成立，不应称完整共同代表已选定。",
+          "depends_on": [
+            "MH05",
+            "MH08",
+            "MH09"
+          ]
+        },
+        {
+          "id": "MH11",
+          "paper_lines": [
+            1900,
+            1903
+          ],
+          "claim": "May lemma产出同一个c满足两条像等式",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "AimPaper/main.tex",
+              "line": 1755,
+              "declaration": "lem:452d218c"
+            },
+            {
+              "file": "KIP126/Literature/May.lean",
+              "line": 80,
+              "declaration": "MayContext.SignedBoundary"
+            },
+            {
+              "file": "KIP126/Literature/Standard.lean",
+              "line": 953,
+              "declaration": "may_signed_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 111,
+              "declaration": "quotient_octahedron_fill"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 447,
+              "declaration": "ug,lamg,vg,wg and hgTriangle"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Signs.lean",
+              "line": 125,
+              "declaration": "finite_source_detects_neg"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 445,
+              "declaration": "hagNeg"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 208,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.may_tensor_common_lift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 29,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.octahedron_common_lift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 96,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.finite_quotient_octahedral_pullback_desuspended"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 155,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.finite_quotient_octahedral_comparison"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 243,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.normalized_finite_no_return"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 279,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.normalized_octahedral_comparison"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 489,
+              "declaration": "finite_quotient_octahedral_pullback_desuspended"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 491,
+              "declaration": "normalized_octahedral_comparison"
+            }
+          ],
+          "proved_scope": "已选实际三八面体；ug在sphere代表上与固定Q_qG相同；符号可在经典标签层处理。单独的第一等式已由exactness构造。 给定张量代表a、b及严格相容等式hab后，实际 normalizedTriangle.rotate 与单位 λ–ρ–δ 三角.rotate 的 May tensor 实例已证明：同一个 c 同时满足ρ等式和含真实负号的f等式（may_tensor_common_lift）。 新增非tensor路线：实际商三角的八面体从指定aZ/ag同时构造v，两个像固定；v经phi进入固定Q_r(Cg)，有限no-return证明第一rho等式，第二像严格等于指定输入经固定K的像。主证明cGeometry现在实际按v≫phi选择。",
+          "remaining": "仍须把固定K在指定ag上的作用识别为要求的带符号lambda_i像，或给出足以推出最终边界同余的修正。当前v/phi/K构造不假设此比较。tensor路线仍需其对象与箭头的实际比较。",
+          "depends_on": [
+            "MH03",
+            "MH10"
+          ]
+        },
+        {
+          "id": "MH12",
+          "paper_lines": [
+            1904,
+            1904
+          ],
+          "claim": "第一May等式ρc=h_i(aZ)",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 57,
+              "declaration": "quotient_boundary_lift_desuspended"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 493,
+              "declaration": "cGeometry,hcGeometry"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 508,
+              "declaration": "cShift,hcShift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/QuotientShift.lean",
+              "line": 128,
+              "declaration": "quotient_shift_desuspend_restriction"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 526,
+              "declaration": "cNu,aNu,hcNu"
+            }
+          ],
+          "proved_scope": "同一个实际c完成ρ提升、对象运输、反悬挂后的严格restriction；没有循环调用MH2。",
+          "remaining": "已完成的是未指定经典标签的ρ等式；把aNu识别为检测λ^l1 x仍依赖MH04/MH07。",
+          "depends_on": [
+            "MH01",
+            "MH02",
+            "MH10"
+          ]
+        },
+        {
+          "id": "MH13",
+          "paper_lines": [
+            1905,
+            1907
+          ],
+          "claim": "第二May等式f_r(c)=λ^i ag",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/Geometry.lean",
+              "line": 89,
+              "declaration": "quotient_lift_image_division"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 506,
+              "declaration": "hg,hjghg,bGeometry,hbGeometry"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 89,
+              "declaration": "normalized_g_shifted_cofiber_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 458,
+              "declaration": "heCgIncl/heCgProj"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 279,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.normalized_octahedral_comparison"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 502,
+              "declaration": "have hsecondGeometry"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 488,
+              "declaration": "pGeometry,vGeometry"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 321,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.octahedral_lift_difference_factor"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/OctahedralPullback.lean",
+              "line": 338,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.octahedral_lift_difference_zero_on_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/ExtensionImage.lean",
+              "line": 140,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.positive_extension_map_e2_zero"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/ExtensionImage.lean",
+              "line": 219,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.finite_positive_extension_shifted_map_e2_zero"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/ExtensionImage.lean",
+              "line": 380,
+              "declaration": "KIP126.ProofTools.Internal.Mahowald.zero_extension_map_e2_bottom_target"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CofiberIdentification.lean",
+              "line": 177,
+              "declaration": "normalized_g_raw_cofiber_boundary"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CommonShiftEdge.lean",
+              "line": 112,
+              "declaration": "quotient_common_desuspended_boundary_defect"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/CommonEdgeLabels.lean",
+              "line": 285,
+              "declaration": "vertical_normalized_finite_lambda_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/MayCorrection.lean",
+              "line": 417,
+              "declaration": "quotient_common_desuspended_boundary_defect_with_transpose"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/FTransport.lean",
+              "line": 262,
+              "declaration": "normalized_f_raw_boundary_detects"
+            }
+          ],
+          "proved_scope": "同一cGeometry的第二像严格为指定ag经KGeometry。CommonShiftEdge证明同一phi/K的实际无商edge缺陷；MayCorrection保留同一raw d/t及lambda_i转置，给出rho_i=0的有限cycle像修正，并分别证明m>0的零leading像及m=0指定微分残差Detects0。CommonEdgeLabels将Jedge严格因子化为原ag的实际有限lambda_i并给出native y检测；FTransport把同一个raw boundary严格识别为所构造实际源alpha的normalized f像，canonical/exact两种输运的检测相同。",
+          "remaining": "尚须在指定非永久有限源ag上把无商edge缺陷与实际cd修正关联，才能把KGeometry第二像改为规定Jedge像；不能直接对family的底层态射差假定E2加性。所构造alpha还需与主线规定x的源检测同步。球源的整体延拓比较另在推进，一般对象未完成。",
+          "depends_on": [
+            "MH11",
+            "MH12"
+          ]
+        },
+        {
+          "id": "MH14",
+          "paper_lines": [
+            1909,
+            1910
+          ],
+          "claim": "从标记为λ^l1 x的Q_r提升推出x∈Z_(r−l1)",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 386,
+              "declaration": "required firstLabel lift in may_boundary_lift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 671,
+              "declaration": "local hxLater"
+            },
+            {
+              "file": "KIP126/Literature/Standard.lean",
+              "line": 754,
+              "declaration": "bhs_finite_lift"
+            },
+            {
+              "file": "KIP126/Literature/Standard.lean",
+              "line": 619,
+              "declaration": "eInfinity_finite_labels"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 526,
+              "declaration": "cNu,hcNu"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/TargetSurvival.lean",
+              "line": 21,
+              "declaration": "finite_target_rho_detects"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald/TargetSurvival.lean",
+              "line": 49,
+              "declaration": "finite_target_rho_bottom_lift"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 597,
+              "declaration": "hSurvivalReady"
+            }
+          ],
+          "proved_scope": "finite_target_rho_detects将实际hcNu提升的cNu检测为同一个lambda^k x；finite_target_rho_bottom_lift经有限E∞窗口和BHS给出Q_(i+q−k)(nuZero X)中规定firstLabel x的提升。主证明hSurvivalReady已将其次数识别为Q=n+m+e(h)，完成微分无交叉分支的存活见证。",
+          "remaining": "另一finite h无交叉分支尚缺MH07的aNu检测，因此这里仍只完成微分无交叉分支，未称为无条件结论。",
+          "depends_on": [
+            "MH04",
+            "MH07",
+            "MH12"
+          ]
+        },
+        {
+          "id": "MH15",
+          "paper_lines": [
+            1911,
+            1912
+          ],
+          "claim": "第二May等式解释为大商上的f扩张",
+          "status": "missing",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 616,
+              "declaration": "remaining common-lift comparison comment"
+            },
+            {
+              "file": "KIP126/ProofTools/DetectionOperations.lean",
+              "line": 189,
+              "declaration": "extension_equation_of_detected_pair"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 643,
+              "declaration": "later use of extension_equation_of_detected_pair"
+            }
+          ],
+          "proved_scope": "从检测对与严格等式组装ESS扩张的通用工具已证明。",
+          "remaining": "微分无交叉分支的大商源检测已完成；仍缺MH13的指定第二May等式，另一个finite h无交叉分支也尚待完成。",
+          "depends_on": [
+            "MH07",
+            "MH12",
+            "MH13"
+          ]
+        },
+        {
+          "id": "MH16",
+          "paper_lines": [
+            1913,
+            1915
+          ],
+          "claim": "除λ^l1并保留B_r_prime模糊度",
+          "status": "partial",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/CrossingDivision.lean",
+              "line": 23,
+              "declaration": "finite_source_division"
+            },
+            {
+              "file": "KIP126/Literature/Standard.lean",
+              "line": 576,
+              "declaration": "eInfinity_lambda_finite"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 388,
+              "declaration": "required y' and B_r_prime congruence"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedLeibniz/DivisionLabels.lean",
+              "line": 178,
+              "declaration": "KIP126.ProofTools.Internal.Leibniz.finite_lambda_division_first_label_congruent"
+            }
+          ],
+          "proved_scope": "有限商的实际源λ除法、E∞的λ与boundary商比较均可用。 另已证明真实有限λ除法的源首标签模B_(d+1)比较。 FinalDivision now proves strict division of the actual detected lambda^k x while correcting its first label to exact x; hDividedSourceReady and hSurvivalReady consume this in the main theorem. The target label extraction and B_(i+1) comparison are also fully proved once its actual f image has the required filtration.",
+          "remaining": "源的严格lambda除法及exact x首标签已证；同一个源的实际f像仍需规定目标滤过。私有SourceBoundaryReview证明：h目标允许加B_(k+1)边界而保持同一见证，正长度f结论则要求leading f_2 x=0。此差异正在独立数学核查，未被新增前提、责任或不合法lambda取消掩盖。",
+          "depends_on": [
+            "MH14",
+            "MH15"
+          ]
+        },
+        {
+          "id": "MH17",
+          "paper_lines": [
+            1915,
+            1917
+          ],
+          "claim": "按定义组装最终FiniteExtension及Congruent结论",
+          "status": "completed",
+          "lean": [
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 625,
+              "declaration": "destructure may_boundary_lift output"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 626,
+              "declaration": "hxLater/hyLater"
+            },
+            {
+              "file": "KIP126/ProofTools/GeneralizedMahowald.lean",
+              "line": 643,
+              "declaration": "extension_equation_of_detected_pair"
+            },
+            {
+              "file": "KIP126/ProofTools/Language.lean",
+              "line": 38,
+              "declaration": "Congruent"
+            },
+            {
+              "file": "KIP126/AdamsSynthetic/PageExtensions.lean",
+              "line": 22,
+              "declaration": "FiniteExtension"
+            }
+          ],
+          "proved_scope": "给定局部may_boundary_lift的完整输出后，survival、target cycles、ESS equation、page索引和最终witness装配均已写成真实证明。",
+          "remaining": "这是条件式完成；所需局部输出仍由main:564原MH2 sorry承担。",
+          "depends_on": [
+            "MH14",
+            "MH16"
+          ]
+        }
+      ],
+      "internal_route_review": {
+        "status": "reviewed-routes-unclosed-no-impossibility-claim",
+        "source_label_route": {
+          "local_goal": "Choose one Q_i(nu Z) representative whose normalized h image has the prescribed target label and whose relative delta image matches the specified g target. Full agreement of the source first-quotient coordinates is sufficient, but has not been proved necessary.",
+          "weaker_route_review": "Lambda_i times delta(a_h-a_Z) vanishes automatically in the quotient triangle. Exactness alone does not give a correction with zero first quotient or in F^(s+1). The two no-crossing branches have not been shown to control a discrepancy in the same leading filtration.",
+          "boundary_index": "For i>1, actual_rho_kernel_correction with d=i-1 requires B_(i+q-1)=B_(r-1). Even under differential-compatible coordinate transport, the known differential gives only B_r. For i=1, a correction with zero first quotient must itself be zero.",
+          "allowed_final_ambiguity": "It would suffice to lift the delta discrepancy through g using a Y-label in B_(r_prime). No such filtered lift follows from the currently established B_r(Z) membership or from the new leading-image calculations."
+        },
+        "finite_may_difference_route": {
+          "candidate": "Extend the unquotiented d and t to d_q and t_q in a finite-source factorization of K-J, then use the shifted finite g leading-image lemma.",
+          "obstructions": [
+            "Sigma F_i(lambda_q A) followed by d = 0",
+            "Sigma(lambda_r B) followed by t = 0"
+          ],
+          "proved_scope": "No-return proves each obstruction vanishes after composition with any sphere representative: the two inequalities are -r-e_f <= -r and -r-e_g <= -r.",
+          "remaining": "The Yoneda extension requires a morphism equality, not only zero action on sphere representatives. A pointwise approach also needs the specified b to have zero composite with Sigma F_i(proj_q A); the known g/delta equation does not supply that lifting condition."
+        },
+        "unchanged_scope": "The preceding weaker-route review predates the explicit 2026-10-16 authorization. Exactly two AdamsSynthetic label-compatibility interfaces and their pending proof responsibilities have now been added under that authorization. ProofTools public interfaces remain unchanged; no other upstream additions are inferred.",
+        "authorized_compatibility_progress": {
+          "date": "2026-10-16",
+          "source_label": "Completed privately for all q>0 and normalized exponent 0 or 1, preserving the actual source representative under inverse transport.",
+          "suspension_target": "Complete for every retained finite lambda layer, including strict identification with the actual cofiber restriction and main-theorem consumption.",
+          "scope_limit": "May comparison and full MH2 remain pending; these are consumers of two registered upstream pending proofs.",
+          "actual_main_consumption": "The selected actual source is now used to prove hTargetReady for aNu and hSurvivalReady for the exact Q_Q firstLabel lift in the differential no-crossing branch. The other h no-crossing branch remains explicit.",
+          "cofiber_choice": "Canonical private g-cofiber choice, exact normalized h inclusion and actual quotient representative identity are proved. The f-side raw boundary retains its original commShift; final f-target transport and May comparison remain separate."
+        },
+        "finite_h_no_crossing_after_label_bridges": {
+          "status": "unclosed-internal-correction-step-no-interface-necessity-claim",
+          "available": "The source can be divided by lambda with an exact source equation. The image lambda equation already follows from quotient naturality; the new shift comparison preserves it.",
+          "minimal_goal": "Preserve the source modulo F^(u+1) while choosing its lambda preimage whose shifted f-image lies in F^v, not merely F^(u+e).",
+          "obstruction_to_direct_cancellation": "Finite lambda has a boundary kernel on E-infinity, so membership of lambda^d f(b) in F^v does not reflect membership of f(b) in F^v.",
+          "circular_route_excluded": "tower_target_of_any_source_frame requires the TowerNoCrossing result currently being proved."
+        }
+      },
+      "private_edge_progress": {
+        "status": "partial-no-new-obligations",
+        "common_edge": "CommonEdgeLabels constructs canonical common edge coordinates and proves that Jedge factors strictly through the actual finite lambda transition on the original detected ag. It does not identify K with J.",
+        "actual_f_transport": "FSourceRegrade is consumed by hActualFSourceReady in the main proof: the same original cGeometry and detected cNu determine the actual signed normalized f source and its prescribed native lambda^k x detection after inverse ef transport. Independent exact/canonical shift choices are compared by label-preserving sphere automorphisms.",
+        "main_consumption": "The actual phiGeometry and KGeometry supply dGeometry, tGeometry and their strict unquotiented edge equation hEdgeGeometry. Passing the defect to the specified nonpermanent finite source remains unproved.",
+        "remaining": "The locked general MH2 law is refuted in StatementReview. Its original sorry is retained pending user review of the public statement; no interface edits or new responsibilities are used to hide the issue.",
+        "source_division": "Divide the actual detected lambda^k x representative in a finite quotient while retaining its exact long lambda image and exact firstLabel x, using the accumulated-boundary torsion correction. An actual target already in the required filtration has a detected classical label; comparison after lambda gives precisely B_(i+1) ambiguity. The final conditional assembler retains the actual f source, actual image, both Detects and strict f equation. Simultaneous preservation of the required f-image filtration is not proved.",
+        "residual_correction": "For the actual common-shift defect, construct the finite-cycle d_0 correction with zero rho_i, and subtract that same correction without changing rho_i. Positive g length kills the Gt_0 E2 image. At zero length, preserve the same raw t and prove its transposed lambda_i factor annihilates the specified differential target at E-infinity. A strengthened private defect construction retains the raw maps and transpose. Comparing the defect on the specified nonpermanent finite source remains separate.",
+        "short_source_synchronization": "Prove finite h no-crossing conversion for n<=e(f)+1, with actual source lambda division, classical cycle extraction, the short minimal witness, essentiality and exact B_2 exclusion. The final wrapper reselects the given unshifted aZ in the original witness and preserves its specified target. The main h-source selector consumes this for k<=1; the remaining finite h branch has k>=2.",
+        "source_boundary_review": "Complete unconditional negation is proved privately in StatementReview, using the actual rotated normalized triangle, actual boundary/suspension/extensions/no-crossing premises, and a proved nonzero normalized bottom leading image. No MH2 invocation or new upstream responsibility is used."
+      },
+      "statement_review": {
+        "verdict": "locked-law-refuted-relative-to-existing-registered-upstream-interfaces",
+        "proof": {
+          "file": "KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean",
+          "declaration": "KIP126.ProofTools.Internal.Mahowald.rotated_nu_generalized_mahowald_law_false",
+          "type": "¬GeneralizedMahowaldLaw model rotatedNuRouteTriangle",
+          "parameters": []
+        },
+        "triangle": "S^0 -> Cnu -> S^4 -> S^1; actual selected normalized exponents (0,0,1)",
+        "parameters": {
+          "n": 1,
+          "m": 0,
+          "l": 2,
+          "s": 1,
+          "t": 16,
+          "r": 3,
+          "r_prime": 3,
+          "i": 2,
+          "q": 1,
+          "k": 1,
+          "Q": 2
+        },
+        "classes": {
+          "x": "mh2BoundaryClass = d2(h4) = h0*h3^2 in Ext^(3,17), nonzero and in B2",
+          "xBar": 0,
+          "y": 0,
+          "yBar": 0,
+          "suspendedX": "actual suspension of the same x, nonzero and in B2"
+        },
+        "all_premises": "Proved using RotatedNuTriangle, SuspensionClassLabels and RotatedNuPremises; zero differential and all cycle conditions are supplied in StatementReview.",
+        "contradiction": "The law requires a positive length-one bottom-map finite extension from exact x, which forces its normalized leading E2 image to vanish. BottomNuInjection and the zero-normalization bridge prove that same image nonzero.",
+        "no_local_circularity": "Neither the negation proof nor its new helpers invoke generalizedMahowald or generalizedLeibniz; the completed-helper dependency audit checks this.",
+        "new_axioms": [],
+        "new_obligations": [],
+        "public_interface_changed": false,
+        "unapproved_repair_proposal": {
+          "status": "proposal-only-no-interface-edits",
+          "k": "l-e(h)",
+          "Q": "n+m+e(h)",
+          "change": "Replace the general conclusion ordinary finite f-extension at page Q+1 by a k-layer finite f-extension: representatives in Q_(Q+k), source detected by lambda^k x, target detected by lambda^(n-e(f)+k) y-prime, with the actual normalized f equation. Retain x survival to Q and the stated target congruence.",
+          "main_impact": "The sole Main use has l=e(h)=0, so k=0 and the mathematical target is unchanged. A public zero-layer adapter or an explicitly authorized consumer adaptation may be needed. General layered proof completion remains separate from this reviewed proposal.",
+          "approval_basis": "AGENTS.md public interface freeze; no semantic changes made without explicit user authorization."
+        },
+        "validation": {
+          "full_build": "passed; 3075 jobs",
+          "ProofTools_audit": "2520 declarations; 2 original pending theorem declarations; no project axioms; completed proof dependency graph excludes MH2/GL",
+          "obligation_count": 325,
+          "source_inventory": "470 project files and 26 consumer/audit files",
+          "public_interface_lock_changed": false,
+          "independent_review": "All actual candidate hypotheses, the normalized bottom leading nonzero, the unconditional negation, and the zero-layer same-alpha assembly were independently reviewed.",
+          "dependency_capture": {
+            "status": "passed-current-compiled-environment",
+            "root": "KIP126.ProofTools.Internal.Mahowald.rotated_nu_generalized_mahowald_law_false",
+            "type": "¬KIP126.ProofTools.GeneralizedMahowaldLaw KIP126.AdamsSynthetic.Standard.model\n    KIP126.ProofTools.Internal.Mahowald.rotatedNuRouteTriangle",
+            "visited_project_declarations": 1236,
+            "registered_upstream_obligations": 71,
+            "by_module": {
+              "AdamsSynthetic": 39,
+              "Computation": 12,
+              "Literature": 20
+            },
+            "all_upstream_type_and_body_fingerprints_match_registry": true,
+            "local_pending_MH2_or_GL_dependencies": [],
+            "project_axioms": [],
+            "uses_two_newly_authorized_first_quotient_comparisons": false,
+            "obligations": [
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.Spectrum",
+                "type_fingerprint": "11079662268383652067",
+                "body_fingerprint": "14763763293622993842"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+                "type_fingerprint": "11079662268383652067",
+                "body_fingerprint": "11526958317520964155"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.auxiliary",
+                "type_fingerprint": "15168915633986846224",
+                "body_fingerprint": "1559943710658311525"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.classical",
+                "type_fingerprint": "560280528799889672",
+                "body_fingerprint": "17229768189070657325"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.classicalConvergence",
+                "type_fingerprint": "1075481787223542792",
+                "body_fingerprint": "16487636891540178700"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.classicalSuspension",
+                "type_fingerprint": "1332098804342577881",
+                "body_fingerprint": "14856451554715270479"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.classicalTower",
+                "type_fingerprint": "17196870141213359468",
+                "body_fingerprint": "8222228095844547538"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.classical_page_negative",
+                "type_fingerprint": "634763592143704713",
+                "body_fingerprint": "4574548805482137604"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.closedBackground",
+                "type_fingerprint": "270856830428001499",
+                "body_fingerprint": "4419424534466331630"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.coefficients",
+                "type_fingerprint": "14046043664918476402",
+                "body_fingerprint": "7160430957806102531"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.comparison",
+                "type_fingerprint": "15315329295981026136",
+                "body_fingerprint": "11418220063583334429"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.convergence",
+                "type_fingerprint": "494570654898546646",
+                "body_fingerprint": "11358715102982265649"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.convergence_natural",
+                "type_fingerprint": "4078769320372353922",
+                "body_fingerprint": "15718285190202404946"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.exactness",
+                "type_fingerprint": "15637521956637865518",
+                "body_fingerprint": "5761674540992904247"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+                "type_fingerprint": "12065170714903124641",
+                "body_fingerprint": "10466396512054973303"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.family",
+                "type_fingerprint": "934005940838392255",
+                "body_fingerprint": "770740357999574162"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.firstQuotient",
+                "type_fingerprint": "7915551615440378897",
+                "body_fingerprint": "6824938214889713430"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.first_quotient",
+                "type_fingerprint": "4456196075311034055",
+                "body_fingerprint": "3115566174901145585"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
+                "type_fingerprint": "10220612610735354107",
+                "body_fingerprint": "3380960903226622599"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.normalizedMap",
+                "type_fingerprint": "17339844557337969849",
+                "body_fingerprint": "6302325918531812818"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.nu",
+                "type_fingerprint": "18387878343174839984",
+                "body_fingerprint": "3421253804610576457"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
+                "type_fingerprint": "176782862164299349",
+                "body_fingerprint": "12333837945232591806"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.quotients",
+                "type_fingerprint": "5483420018275371665",
+                "body_fingerprint": "6646653012976413188"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.recovery",
+                "type_fingerprint": "8303287304353685064",
+                "body_fingerprint": "10177941297068087274"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
+                "type_fingerprint": "3768213177925458532",
+                "body_fingerprint": "9620663337743236160"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.shift_filtered",
+                "type_fingerprint": "1677854821530006782",
+                "body_fingerprint": "7842722461084502916"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.shift_page",
+                "type_fingerprint": "18144948223769668085",
+                "body_fingerprint": "183798563128889075"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.shift_representative_iff",
+                "type_fingerprint": "8791865895269973894",
+                "body_fingerprint": "9571282827017802285"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+                "type_fingerprint": "13487074918897151668",
+                "body_fingerprint": "17257401636233206684"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.spectrumCofiber",
+                "type_fingerprint": "6464996440462470749",
+                "body_fingerprint": "17405802484646644996"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.sphereAlgebra",
+                "type_fingerprint": "18061518840488501731",
+                "body_fingerprint": "425457697288437075"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.sphereProductCommutative",
+                "type_fingerprint": "628555822437646905",
+                "body_fingerprint": "9121524336848820076"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
+                "type_fingerprint": "9056796087041689894",
+                "body_fingerprint": "695145342657941634"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
+                "type_fingerprint": "13950854755593307745",
+                "body_fingerprint": "5744563403350642078"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.standardHi",
+                "type_fingerprint": "4682219679076158652",
+                "body_fingerprint": "10393949368241108652"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+                "type_fingerprint": "11778471869136666423",
+                "body_fingerprint": "8915702903156791765"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.syntheticCofiber",
+                "type_fingerprint": "17885769714635244780",
+                "body_fingerprint": "7590400513153089633"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.syntheticTower",
+                "type_fingerprint": "14068598999852487302",
+                "body_fingerprint": "1851276708002446955"
+              },
+              {
+                "name": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
+                "type_fingerprint": "824254188236161023",
+                "body_fingerprint": "14357778225234386823"
+              },
+              {
+                "name": "KIP126.Computation.Standard.atomIndex",
+                "type_fingerprint": "5244478228156422748",
+                "body_fingerprint": "7493112042972568245"
+              },
+              {
+                "name": "KIP126.Computation.Standard.atom_record",
+                "type_fingerprint": "9242798099145959741",
+                "body_fingerprint": "1506501078724632048"
+              },
+              {
+                "name": "KIP126.Computation.Standard.basisCount",
+                "type_fingerprint": "315134888161699255",
+                "body_fingerprint": "12754723046758671327"
+              },
+              {
+                "name": "KIP126.Computation.Standard.basisMonomial",
+                "type_fingerprint": "6511153569974194816",
+                "body_fingerprint": "2300252150349820013"
+              },
+              {
+                "name": "KIP126.Computation.Standard.comparison",
+                "type_fingerprint": "10390596938955163426",
+                "body_fingerprint": "10918007980759747929"
+              },
+              {
+                "name": "KIP126.Computation.Standard.generators",
+                "type_fingerprint": "884614755546337909",
+                "body_fingerprint": "5052414904939880635"
+              },
+              {
+                "name": "KIP126.Computation.Standard.sourceAtom",
+                "type_fingerprint": "10944012106967610415",
+                "body_fingerprint": "3851082173878173170"
+              },
+              {
+                "name": "KIP126.Computation.Standard.sourceComponent",
+                "type_fingerprint": "812860716995903482",
+                "body_fingerprint": "3147047472915102048"
+              },
+              {
+                "name": "KIP126.Computation.Standard.sourceCoordinates",
+                "type_fingerprint": "2835207117292209",
+                "body_fingerprint": "17911884321131014622"
+              },
+              {
+                "name": "KIP126.Computation.Standard.sourceProduct",
+                "type_fingerprint": "14597280856711889140",
+                "body_fingerprint": "9839395640983808402"
+              },
+              {
+                "name": "KIP126.Computation.Standard.sourceUnit",
+                "type_fingerprint": "15027897330730916727",
+                "body_fingerprint": "9553209857064190412"
+              },
+              {
+                "name": "KIP126.Computation.Table.archive_dimension",
+                "type_fingerprint": "9646785453186587979",
+                "body_fingerprint": "1250657039536697143"
+              },
+              {
+                "name": "KIP126.Literature.Standard.above_diagonal",
+                "type_fingerprint": "6370885773641265521",
+                "body_fingerprint": "16496751299886541639"
+              },
+              {
+                "name": "KIP126.Literature.Standard.adamsOneLine_d2",
+                "type_fingerprint": "7722750320381462445",
+                "body_fingerprint": "14803027034970512237"
+              },
+              {
+                "name": "KIP126.Literature.Standard.bhs_differentials",
+                "type_fingerprint": "14889335692979323318",
+                "body_fingerprint": "2514420461951206179"
+              },
+              {
+                "name": "KIP126.Literature.Standard.bhs_finite_lift",
+                "type_fingerprint": "4089210314348603630",
+                "body_fingerprint": "9781353044539765070"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_finite",
+                "type_fingerprint": "10673444386559312414",
+                "body_fingerprint": "2482317402972115309"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_finite_labels",
+                "type_fingerprint": "14757180500088859677",
+                "body_fingerprint": "2510808789685238858"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_nu",
+                "type_fingerprint": "7260328860443537932",
+                "body_fingerprint": "14782969942871976053"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_nu_labels",
+                "type_fingerprint": "17051995989441834193",
+                "body_fingerprint": "14762030411826088569"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_rho_finite",
+                "type_fingerprint": "11100993187605420803",
+                "body_fingerprint": "9975702715706969839"
+              },
+              {
+                "name": "KIP126.Literature.Standard.eInfinity_rho_nu",
+                "type_fingerprint": "8726733678020675434",
+                "body_fingerprint": "16586774509011863647"
+              },
+              {
+                "name": "KIP126.Literature.Standard.finite_quotient_retained",
+                "type_fingerprint": "17598259559459155750",
+                "body_fingerprint": "2757427308373214793"
+              },
+              {
+                "name": "KIP126.Literature.Standard.finite_quotient_vanishing",
+                "type_fingerprint": "5976050123302837553",
+                "body_fingerprint": "9014286775235952109"
+              },
+              {
+                "name": "KIP126.Literature.Standard.nuCofiber_bottom_exponent",
+                "type_fingerprint": "2493686983420087191",
+                "body_fingerprint": "712728374290328363"
+              },
+              {
+                "name": "KIP126.Literature.Standard.nuCofiber_normalized_label",
+                "type_fingerprint": "15770365136592793462",
+                "body_fingerprint": "3583239307612503599"
+              },
+              {
+                "name": "KIP126.Literature.Standard.nuCofiber_nu_exponent",
+                "type_fingerprint": "8630513092260222443",
+                "body_fingerprint": "11362091149669776804"
+              },
+              {
+                "name": "KIP126.Literature.Standard.nuCofiber_top_exponent",
+                "type_fingerprint": "11597648277129171419",
+                "body_fingerprint": "4335946666859928136"
+              },
+              {
+                "name": "KIP126.Literature.Standard.nuCofiber_triangle",
+                "type_fingerprint": "13769536074215387489",
+                "body_fingerprint": "6165089643827972821"
+              },
+              {
+                "name": "KIP126.Literature.Standard.selected_permanent_lift",
+                "type_fingerprint": "14906487732900146957",
+                "body_fingerprint": "8844291717421934848"
+              },
+              {
+                "name": "KIP126.Literature.Standard.selected_realization_boundary_lift",
+                "type_fingerprint": "6271493024794400292",
+                "body_fingerprint": "15113625437553249467"
+              },
+              {
+                "name": "KIP126.Literature.Standard.triangle_lift",
+                "type_fingerprint": "1151516286184191359",
+                "body_fingerprint": "1504018850750146275"
+              }
+            ],
+            "method": "Read-only observer using the existing scripts/CaptureTrust.lean proof-visible environment; production mathematical import boundaries and public consumers remain unchanged.",
+            "checker": "/tmp/MH2RefutationDependencies.lean",
+            "checker_sha256": "2230cc2a598192a73dbab078be1ec39750caec3629c710c9d86bf1f90de8ea6b",
+            "log": "/tmp/mh2-refutation-dependencies.log"
+          }
+        },
+        "zero_layer_support": {
+          "file": "KIP126/ProofTools/GeneralizedMahowald/ZeroLayerAssembly.lean",
+          "declaration": "KIP126.ProofTools.Internal.Mahowald.minimal_corrected_total_extension",
+          "status": "proved-private-assembly",
+          "scope": "Consumes actual SphereMay rho preservation/Jq detection and original bottom source detection; fixes the same total alpha and epsilonA in source and target. It is not claimed to prove the refuted general law or an unconditional replacement theorem."
+        }
+      }
+    },
+    "source_sha256": "828ee5a5aa06e1f390b036a043230ed417446fa7be11a4e27eecc4a565135c4b"
+  },
+  "approved_main_zero_layer_rewire_2026_10_16": {
+    "status": "completed-production-rewire-verified",
+    "authorization": "Explicit user approval of the single public nuCofiberMahowaldZeroLayer bridge and Main redirection.",
+    "public_bridge": "KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer",
+    "bridge_source": "KIP126/ProofTools/Standard.lean",
+    "bridge_line": 15,
+    "main_consumer": "KIP126/Main/Internal/NuThree/Mahowald.lean",
+    "main_public_interface_unchanged": true,
+    "scope": "Exact nuRouteTriangle instance (n,m,l,s,t)=(3,0,0,8,134); x reaches Z3, actual finite page4/length3 nu extension and B3 target congruence.",
+    "construction": "Public alias of the completed private main_nu_mahowald_zero_layer; no pending general MH2/GL is used.",
+    "old_named_proofTools_declarations_unchanged": 52,
+    "old_generated_proofTools_declarations_unchanged": 4,
+    "new_public_exports": [
+      "KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer"
+    ],
+    "new_axioms": [],
+    "new_obligations": [],
+    "new_sorry_sites": [],
+    "retained_off_route_obligations": [
+      "KIP126.ProofTools.Standard.generalizedMahowald",
+      "KIP126.ProofTools.Standard.generalizedLeibniz"
+    ],
+    "legacy_general_MH2_source": "Restored byte-for-byte; original type/body obligation fingerprints retained. The single bridge lives in Standard to isolate the old theorem elaboration environment.",
+    "audit_design": {
+      "Main": "Traverse complete own-module types and opaque proof bodies for all 17 named public roots. Reject local placeholders and old MH2/GL; compare the exact 33 ProofTools frontier entries with the shared ledger.",
+      "ProofTools": "Recursively audit all 33 reviewed frontier entries with complete same-module proof bodies, in addition to all existing completed helpers. Reject local pending-law dependencies.",
+      "independent_cross_check": "Read-only full-body observer; production mathematical imports remain within module boundaries."
+    },
+    "upstream_scope": {
+      "main_theorem_registered_direct_obligations": 182,
+      "by_module": {
+        "AdamsSynthetic": 42,
+        "Literature": 71,
+        "Computation": 69
+      },
+      "added_reachable_existing_obligations": [
+        "KIP126.Literature.Standard.above_diagonal",
+        "KIP126.Literature.Standard.finite_quotient_retained"
+      ],
+      "all_existing_type_body_fingerprints_retained": true,
+      "meaning": "No claim of upstream sorry-freedom."
+    },
+    "review_directory": "Sources/Reviews/Main-zero-layer-rewire-2026-10-16",
+    "validation": {
+      "full_project_build": {
+        "command": "lake build",
+        "result": "passed",
+        "jobs": 3077,
+        "log": "/tmp/MH2-approved-zero-layer-final-full-build.log"
+      },
+      "Main_audit": {
+        "named_public_roots": 17,
+        "own_module_declarations_checked": 1491,
+        "exact_ProofTools_frontier": 33,
+        "local_placeholder_or_old_MH2_GL_dependencies": 0
+      },
+      "ProofTools_audit": {
+        "declarations": 2648,
+        "frontier_roots_checked": 33,
+        "registered_pending_off_route_declarations": 2,
+        "project_axioms": 0
+      },
+      "independent_full_body_observer": {
+        "result": "passed-final-production-Standard-bridge",
+        "named_roots": 17,
+        "reachable_project_constants": 4531,
+        "Main_ProofTools_sorry_dependencies": 0,
+        "registered_upstream_main_dependencies": 182,
+        "registered_upstream_union_dependencies": 186,
+        "all_upstream_fingerprints_match": true,
+        "old_MH2_type_fingerprint": "12297579626073384622",
+        "old_MH2_body_fingerprint": "17924752964050994422"
+      },
+      "source_inventory": {
+        "result": "passed",
+        "project_files": 472,
+        "consumer_audit_files": 26
+      },
+      "old_public_interfaces_unchanged": {
+        "ProofTools_old_exports": 56,
+        "Main_api_byte_identical": true
+      },
+      "sole_authorized_export": "KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer",
+      "new_axioms": [],
+      "new_sorry_sites": [],
+      "new_obligations": [],
+      "final_synchronized_ledger_build": {
+        "command": "lake build",
+        "result": "passed",
+        "jobs": 3077,
+        "log": "/tmp/MH2-approved-zero-layer-status-final-build.log"
+      }
+    }
+  }
+}

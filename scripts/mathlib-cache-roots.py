@@ -10,13 +10,16 @@ import subprocess
 
 
 def main():
-    sources = subprocess.check_output(
-        ["git", "ls-files", "-z", "--", "*.lean"], text=True
-    ).split("\0")[:-1]
+    root = Path(__file__).resolve().parent.parent
+    # Follow the active source tree, including modules moved before a commit.
+    candidates = {root / "KIP126.lean", root / "lakefile.lean"}
+    for directory in ("KIP126", "Tests", "Checks"):
+        candidates.update((root / directory).rglob("*.lean"))
+    sources = sorted(path.relative_to(root).as_posix() for path in candidates if path.is_file())
     if not sources:
-        raise SystemExit("No tracked Lean sources found.")
+        raise SystemExit("No active Lean sources found.")
     parsed = json.loads(subprocess.check_output(
-        ["lean", "--deps-json", *sources], text=True
+        ["lean", "--deps-json", *sources], text=True, cwd=root
     ))["imports"]
     if len(parsed) != len(sources):
         raise SystemExit("Lean did not return an import header for every source.")

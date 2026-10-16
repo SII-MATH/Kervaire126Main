@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 
 /-! Sphere and finite-quotient label transports used in the Section 7 proof.
 Adapted from NuTargetHelpers.lean:321–524, 614–628, 739–775 at the fixed

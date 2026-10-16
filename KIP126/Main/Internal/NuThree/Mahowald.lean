@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.ProofTools.Standard
-public import KIP126.Def.Computation
+public import KIP126.ProofTools.Standard
+public import KIP126.Computation
 import all KIP126.Main.Internal.NuThree.ZeroExtensions
 import all KIP126.Main.Internal.NuThree.Suspension
 import all KIP126.Main.Internal.NuThree.ClassicalZero

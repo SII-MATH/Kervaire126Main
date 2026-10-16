@@ -9,5 +9,5 @@ public import KIP126.Main.BoundaryFormula
 
 /-! The paper's final theorem and selected intermediate results.
 The public surface contains 17 named declarations; proof stages stay private.
-Proof/construction status is recorded in main-api.json and proof-obligations.json.
+Proof/construction status is recorded in metadata/main-api.json and metadata/proof-obligations.json.
 -/

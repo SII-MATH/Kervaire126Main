@@ -1,7 +1,7 @@
 module
 
-public import KIP126.Def.Computation.Table.Values
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.Computation.Table.Values
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.SectionSeven.NuTargetLinear
 
 /-! The two P/Q coset computations from NuTargetHelpers.lean:151–275,

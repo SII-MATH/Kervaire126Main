@@ -1,7 +1,7 @@
 module
 
-public import KIP126.Def.Computation
-public import KIP126.Def.Literature
+public import KIP126.Computation
+public import KIP126.Literature
 
 /-! Paper-specific language adapted from Kervaire126
 `KIP126/Def/Kervaire/Route/Section7/Predicates.lean` at

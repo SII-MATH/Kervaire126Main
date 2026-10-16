@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.AdamsSynthetic.Standard
-public import KIP126.Def.AdamsSynthetic.Standard.Filtration
+public import KIP126.AdamsSynthetic.Standard
+public import KIP126.AdamsSynthetic.Standard.Filtration
 /-! The zero-object tower argument of the pinned NuFifth:971–1038,
 adapted to the same abstract tower and its full ambient comparison. -/
 @[expose] section

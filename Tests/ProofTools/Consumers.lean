@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.ProofTools
+import KIP126.ProofTools
 
 /-! The fixed tools preserve genuine page, cycle, extension, triangle and
 crossing hypotheses; their callers never supply upstream result packages. -/
