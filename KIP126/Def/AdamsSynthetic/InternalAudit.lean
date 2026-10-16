@@ -32,6 +32,7 @@ import all KIP126.Def.AdamsSynthetic.Standard
 import all KIP126.Def.AdamsSynthetic.Standard.Background
 import all KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Def.AdamsSynthetic.Standard.Filtration
+import all KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility
 import all KIP126.Def.AdamsSynthetic.Standard.Operations
 import all KIP126.Def.AdamsSynthetic.Standard.Realization
 import all KIP126.Def.AdamsSynthetic.Standard.Separation

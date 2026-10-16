@@ -12,9 +12,10 @@ import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereLabels
 import all KIP126.Def.ProofTools.DetectionOperations
 import all KIP126.Def.ProofTools.StretchingRepresentatives
 
-/-! The proved sphere cases of generalized Mahowald, retained from
+/-! Boundary lifts for every selected classical object, generalized from
 GeneralizedMahowald/Proofs.lean:1996–2940 at bbac1fc05843 (MIT).
-Shared detection, filtration and coherence arguments use the same fixed system. -/
+The original sphere argument extends using finite_lambda_detects on the same
+fixed system; no assumption identifying the object with the sphere is needed. -/
 
 @[expose] section
 set_option backward.isDefEq.respectTransparency false
@@ -39,33 +40,32 @@ private theorem quotient_restriction_boundary (coh : BiShiftCoherence SyntheticS
     (by simpa only [lambdaDegree, Category.comp_id] using
       lambdaRestrictionSourceMap_commutes coh i j hij X)
 
-private theorem sphere_boundary_nonadjacent
-    
+private theorem selected_boundary_nonadjacent (X : ClassicalObject)
     (i k : ℕ) (hi : 0 < i) (hik : i < k) (s t : ℤ)
-    (x : Ambient model .sphere (s,t))
-    (y : Ambient model .sphere (s+k+1,t+k))
-    (hd : HasDifferential (model.classical.sphere)
+    (x : Ambient model X (s,t))
+    (y : Ambient model X (s+k+1,t+k))
+    (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
       (k+1) (s,t) (s+k+1,t+k) x y)
-    (hy : y ∈ KIP126.Literature.permanentCycles model .sphere (s+k+1,t+k))
+    (hy : y ∈ KIP126.Literature.permanentCycles model X (s+k+1,t+k))
  :
-    ∃ a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj SphereSpectrum) i),
+    ∃ a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i),
       a ≫ (model.quotients.tower _).rho 1 i hi =
-        firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧
-      Detects (model.convergence (.quotient (k+1-i) (.nu .sphere)))
+        firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧
+      Detects (model.convergence (.quotient (k+1-i) (.nu X)))
         (s+k+1,t+k,t+k-(k-i:ℕ))
-        (finiteTargetLabel model .sphere (k+1-i) (s+k+1) (t+k) (k-i) y)
+        (finiteTargetLabel model X (k+1-i) (s+k+1) (t+k) (k-i) y)
         (homotopyRegrade (by dsimp; omega) (by dsimp; omega)
-          (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN (model.nu.functor.obj SphereSpectrum) (k+1-i))
+          (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (k+1-i))
             (a ≫ ((model.quotients.tower _).triangle hi (show i < k+1 by omega)).delta))) := by
-  have adjacent_sphere_representative_and_target_lift
+  have adjacent_selected_representative_and_target_lift
       
       (i k : ℕ) (hi : 0 < i) (hik : i ≤ k) (s t : ℤ)
-      (x : Ambient model .sphere (s,t))
-      (y : Ambient model .sphere (s+k+1,t+k))
-      (hd : HasDifferential (model.classical.sphere)
+      (x : Ambient model X (s,t))
+      (y : Ambient model X (s+k+1,t+k))
+      (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
         (k+1) (s,t) (s+k+1,t+k) x y)
-      (hy : y ∈ KIP126.Literature.permanentCycles model .sphere (s+k+1,t+k)) :
-      let A := model.nu.functor.obj SphereSpectrum
+      (hy : y ∈ KIP126.Literature.permanentCycles model X (s+k+1,t+k)) :
+      let A := model.nu.functor.obj (X.obj model.auxiliary)
       let δ : XModLambdaN A k ⟶
           ((SyntheticCategory.biShift (0,-(k:ℤ))).obj (XModLambdaN A 1))⟦(1:ℤ)⟧ := by
         simpa only [show k.succ-k=1 by omega] using
@@ -73,44 +73,44 @@ private theorem sphere_boundary_nonadjacent
       ∃ (a : BiHom (t-s) t (XModLambdaN A k))
           (α : BiHom ((t+k)-(s+k+1)) (t+k) A),
         a ≫ (model.quotients.tower A).rho 1 k (by omega) =
-          firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
+          firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
         α ≫ XModLambdaN.incl A 1 =
-          firstLabel model .sphere (s+k+1) (t+k) y ≫
+          firstLabel model X (s+k+1) (t+k) y ≫
             XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
         homotopyRegrade (by omega) rfl
             (biSuspensionHomEquiv (t-s) t (k:ℤ) (XModLambdaN A 1) (a ≫ δ)) =
           α ≫ XModLambdaN.incl A 1 ∧
         (a ≫ (model.quotients.tower A).rho i k hik) ≫ (model.quotients.tower A).rho 1 i hi =
-          firstLabel model .sphere s t x ≫
+          firstLabel model X s t x ≫
             XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 := by
     dsimp only
-    let A := model.nu.functor.obj SphereSpectrum
-    obtain ⟨a,ha,had⟩ := adjacent_mahowald_case .sphere k (by omega) s t x y hd
-    obtain ⟨α0,hα0⟩ := (KIP126.Literature.Standard.selected_permanent_lift .sphere (s+k+1) (t+k) y).mp (by
+    let A := model.nu.functor.obj (X.obj model.auxiliary)
+    obtain ⟨a,ha,had⟩ := adjacent_mahowald_case X k (by omega) s t x y hd
+    obtain ⟨α0,hα0⟩ := (KIP126.Literature.Standard.selected_permanent_lift X (s+k+1) (t+k) y).mp (by
       obtain ⟨z,hz⟩ := hy
       refine ⟨z, ?_⟩
       have h := normalizeInitialProjection
-        ((model.classical.obj (ClassicalObject.sphere.obj model.auxiliary)).ssData (s+k+1,t+k))
-        (↑(2-(model.classical.obj (ClassicalObject.sphere.obj model.auxiliary)).r₀).toNat)
+        ((model.classical.obj (X.obj model.auxiliary)).ssData (s+k+1,t+k))
+        (↑(2-(model.classical.obj (X.obj model.auxiliary)).r₀).toNat)
         ⊤ (by rw [model.classical.firstPage]; rfl) le_top
       exact (congrArg (fun f => f z) h).trans hz)
     let α : BiHom ((t+k)-(s+k+1)) (t+k) A :=
       α0 ≫ SyntheticCategory.biShift_zero.hom.app A
     have hα : α ≫ XModLambdaN.incl A 1 =
-        firstLabel model .sphere (s+k+1) (t+k) y ≫
+        firstLabel model X (s+k+1) (t+k) y ≫
           XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 := by
       dsimp only [α]
       rw [Category.assoc,XModLambdaN.incl_naturality,←Category.assoc]
       exact congrArg (fun z => z ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1) hα0
     have hαρ : (α ≫ XModLambdaN.incl A 1) ≫ (model.quotients.tower A).rho 1 1 (by decide) =
-        firstLabel model .sphere (s+k+1) (t+k) y ≫
+        firstLabel model X (s+k+1) (t+k) y ≫
           XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 := by
       rw [(model.quotients.tower A).rho_id,Category.comp_id]
       exact hα
-    have hαd := first_label_detects_unshifted .sphere 1 (by decide)
+    have hαd := first_label_detects_unshifted X 1 (by decide)
       (s+k+1) (t+k) y (α ≫ XModLambdaN.incl A 1) hαρ
     refine ⟨a,α,ha,hα,?_,?_⟩
-    · exact finite_top_detection_unique .sphere 1 (by decide)
+    · exact finite_top_detection_unique X 1 (by decide)
         (s+k+1) (t+k) (t+k) (by omega) _ _ _ had hαd
     · rw [Category.assoc,(model.quotients.tower A).rho_comp hi hik]
       exact ha
@@ -169,23 +169,23 @@ private theorem sphere_boundary_nonadjacent
     rw [←Functor.map_comp,hl,Functor.map_comp]
     simp only [lambdaRestrictionSourceMap,KIP126.Synthetic.Context.lambdaDegree,Category.assoc]
 
-  have sphere_cross_index_normalized
+  have selected_cross_index_normalized
       
       (i k : ℕ) (hi : 0 < i) (hik : i < k) :
       ∃ v : (SyntheticCategory.biShift (0,-(k:ℤ))).obj
-          (XModLambdaN (model.nu.functor.obj SphereSpectrum) 1) ⟶
+          (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) 1) ⟶
         (SyntheticCategory.biShift (0,-(i:ℤ))).obj
-          (XModLambdaN (model.nu.functor.obj SphereSpectrum) (k+1-i)),
+          (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (k+1-i)),
         (SyntheticCategory.biShift (0,-(k:ℤ))).map (XModLambdaN.incl _ 1) ≫ v =
           lambdaRestrictionSourceMap i k hik.le _ ≫
             (SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl _ (k+1-i)) ∧
-        ∀ (m w : ℤ) (a : BiHom m w (XModLambdaN (model.nu.functor.obj SphereSpectrum) k)),
+        ∀ (m w : ℤ) (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) k)),
           (a ≫ (model.quotients.tower _).rho i k hik.le) ≫
             ((model.quotients.tower _).triangle hi (show i < k+1 by omega)).delta =
           (a ≫ (by simpa only [show k.succ-k=1 by omega] using
             ((model.quotients.tower _).triangle (show 0 < k by omega) (Nat.lt_succ_self k)).delta)) ≫
             (shiftFunctor SyntheticSpectrum (1:ℤ)).map v := by
-    let A := model.nu.functor.obj SphereSpectrum
+    let A := model.nu.functor.obj (X.obj model.auxiliary)
     let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-(k:ℤ))
     have hv_exists : ∃ v : F.obj (XModLambdaN A 1) ⟶
         (SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A (k+1-i)),
@@ -231,7 +231,7 @@ private theorem sphere_boundary_nonadjacent
       rfl
     refine ⟨v,hv,?_⟩
     intro m w a
-    have hc := selected_delta_cross_index_of_inclusion_square .sphere
+    have hc := selected_delta_cross_index_of_inclusion_square X
       i k (k+1) hi hik.le (Nat.lt_succ_self k) (F.map c ≫ v) hvraw m w a
     have hδ : ((model.quotients.tower A).triangle (show 0 < k by omega) (Nat.lt_succ_self k)).delta ≫
           (shiftFunctor SyntheticSpectrum (1:ℤ)).map (F.map c) =
@@ -244,42 +244,42 @@ private theorem sphere_boundary_nonadjacent
     have h := congrArg (fun z => (a ≫ z) ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map v) hδ
     simpa only [Category.assoc,A,ClassicalObject.obj] using h
 
-  have sphere_boundary_of_normalized_cross
+  have selected_boundary_of_normalized_cross
       
       (i k : ℕ) (hi : 0 < i) (hik : i < k) (s t : ℤ)
-      (x : Ambient model .sphere (s,t))
-      (y : Ambient model .sphere (s+k+1,t+k))
-      (hd : HasDifferential (model.classical.sphere)
+      (x : Ambient model X (s,t))
+      (y : Ambient model X (s+k+1,t+k))
+      (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
         (k+1) (s,t) (s+k+1,t+k) x y)
-      (hy : y ∈ KIP126.Literature.permanentCycles model .sphere (s+k+1,t+k))
+      (hy : y ∈ KIP126.Literature.permanentCycles model X (s+k+1,t+k))
       (v : (SyntheticCategory.biShift (0,-(k:ℤ))).obj
-        (XModLambdaN (model.nu.functor.obj SphereSpectrum) 1) ⟶
+        (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) 1) ⟶
         (SyntheticCategory.biShift (0,-(i:ℤ))).obj
-          (XModLambdaN (model.nu.functor.obj SphereSpectrum) (k+1-i)))
+          (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (k+1-i)))
       (hv : (SyntheticCategory.biShift (0,-(k:ℤ))).map (XModLambdaN.incl _ 1) ≫ v =
         lambdaRestrictionSourceMap i k hik.le _ ≫
           (SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl _ (k+1-i)))
-      (hc : ∀ (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj SphereSpectrum) k)),
+      (hc : ∀ (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) k)),
         (a ≫ (model.quotients.tower _).rho i k hik.le) ≫
           ((model.quotients.tower _).triangle hi (show i < k+1 by omega)).delta =
         (a ≫ (by simpa only [show k.succ-k=1 by omega] using
           ((model.quotients.tower _).triangle (show 0 < k by omega) (Nat.lt_succ_self k)).delta)) ≫
           (shiftFunctor SyntheticSpectrum (1:ℤ)).map v) :
-      ∃ a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj SphereSpectrum) i),
+      ∃ a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i),
         a ≫ (model.quotients.tower _).rho 1 i hi =
-          firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧
-        Detects (model.convergence (.quotient (k+1-i) (.nu .sphere)))
+          firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧
+        Detects (model.convergence (.quotient (k+1-i) (.nu X)))
           (s+k+1,t+k,t+k-(k-i:ℕ))
-          (finiteTargetLabel model .sphere (k+1-i) (s+k+1) (t+k) (k-i) y)
+          (finiteTargetLabel model X (k+1-i) (s+k+1) (t+k) (k-i) y)
           (homotopyRegrade (by dsimp; omega) (by dsimp; omega)
-            (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN (model.nu.functor.obj SphereSpectrum) (k+1-i))
+            (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (k+1-i))
               (a ≫ ((model.quotients.tower _).triangle hi (show i < k+1 by omega)).delta))) := by
-    let A := model.nu.functor.obj SphereSpectrum
+    let A := model.nu.functor.obj (X.obj model.auxiliary)
     let δ : XModLambdaN A k ⟶
         ((SyntheticCategory.biShift (0,-(k:ℤ))).obj (XModLambdaN A 1))⟦(1:ℤ)⟧ := by
       simpa only [show k.succ-k=1 by omega] using
         ((model.quotients.tower A).triangle (show 0 < k by omega) (Nat.lt_succ_self k)).delta
-    obtain ⟨ak,α,ha,hα,hδ,hfirst⟩ := adjacent_sphere_representative_and_target_lift
+    obtain ⟨ak,α,ha,hα,hδ,hfirst⟩ := adjacent_selected_representative_and_target_lift
       i k hi hik.le s t x y hd hy
     let α' : BiHom ((t-s)-1) (t+k) A := homotopyRegrade (by omega) rfl α
     have regrade_comp {m m' w w' : ℤ} (hm : m=m') (hw : w=w')
@@ -316,8 +316,8 @@ private theorem sphere_boundary_nonadjacent
       exact lambda_transition_evaluation model.quotients.coherence i k hik.le (k+1-i) (t-s) t A α'
     refine ⟨ak ≫ (model.quotients.tower A).rho i k hik.le,hfirst,?_⟩
     rw [heval]
-    have hcal := sphere_finite_lambda_detects (k+1-i) (by omega)
-      (s+k+1) (t+k) (k-i) y α hα
+    have hcal := finite_lambda_detects X (k+1-i) (k-i) (by omega) (by omega)
+      (s+k+1) (t+k) y hy α hα
     have cancel_lambda_regrade {n n' w w' : ℤ} (hn : n=n') (d : ℕ)
         (hw : w-(d:ℤ)=w') {B C : SyntheticSpectrum} (a : BiHom n w B) (f : B ⟶ C) :
         homotopyRegrade hn.symm hw.symm
@@ -330,54 +330,53 @@ private theorem sphere_boundary_nonadjacent
     have hlast := cancel_lambda_regrade
       (show (t+k)-(s+k+1)=(t-s)-1 by omega) (k-i)
       (show (t+k)-(k-i:ℕ)=t+i by omega) α (XModLambdaN.incl A (k+1-i))
-    exact (congrArg (Detects (model.convergence (.quotient (k+1-i) (.nu .sphere)))
+    exact (congrArg (Detects (model.convergence (.quotient (k+1-i) (.nu X)))
       (s+k+1,t+k,t+k-(k-i:ℕ))
-      (finiteTargetLabel model .sphere (k+1-i) (s+k+1) (t+k) (k-i) y)) hlast).mpr hcal
+      (finiteTargetLabel model X (k+1-i) (s+k+1) (t+k) (k-i) y)) hlast).mpr hcal
 
-  obtain ⟨v,hv,hc⟩ := sphere_cross_index_normalized i k hi hik
-  exact sphere_boundary_of_normalized_cross i k hi hik s t x y hd hy
+  obtain ⟨v,hv,hc⟩ := selected_cross_index_normalized i k hi hik
+  exact selected_boundary_of_normalized_cross i k hi hik s t x y hd hy
     v hv (hc (t-s) t)
 
-private theorem sphere_mahowald_case
-    
+private theorem selected_mahowald_case (X : ClassicalObject)
     (i q : ℕ) (hi : 0 < i) (hq : 0 < q) (s t : ℤ)
-    (x : Ambient model .sphere (s,t))
-    (y : Ambient model .sphere (s+i+q,t+i+q-1))
-    (hd : HasDifferential (model.classical.sphere)
+    (x : Ambient model X (s,t))
+    (y : Ambient model X (s+i+q,t+i+q-1))
+    (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
       (i+q) (s,t) (s+i+q,t+i+q-1) x y)
-    (hy : y ∈ KIP126.Literature.permanentCycles model .sphere (s+i+q,t+i+q-1)) :
-    let A := model.nu.functor.obj SphereSpectrum
+    (hy : y ∈ KIP126.Literature.permanentCycles model X (s+i+q,t+i+q-1)) :
+    let A := model.nu.functor.obj (X.obj model.auxiliary)
     let δ : XModLambdaN A i ⟶
         ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by
       simpa only [Nat.add_sub_cancel_left] using
         ((model.quotients.tower A).triangle hi (show i < i+q by omega)).delta
     ∃ a : BiHom (t-s) t (XModLambdaN A i),
       a ≫ (model.quotients.tower A).rho 1 i hi =
-        firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
-      Detects (model.convergence (.quotient q (.nu .sphere))) (s+i+q,t+i+q-1,t+i)
+        firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
+      Detects (model.convergence (.quotient q (.nu X))) (s+i+q,t+i+q-1,t+i)
         (regradeE2 (by exact congrArg (fun w : ℤ => (s+i+q,t+i+q-1,w)) (by omega))
-          (finiteTargetLabel model .sphere q (s+i+q) (t+i+q-1) (q-1) y))
+          (finiteTargetLabel model X q (s+i+q) (t+i+q-1) (q-1) y))
         (homotopyRegrade (by dsimp; omega) rfl
           (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN A q) (a≫δ))) := by
-  have sphere_boundary_nonadjacent_reindexed
+  have selected_boundary_nonadjacent_reindexed
       
       (i k j q d : ℕ) (hi : 0 < i) (hik : i < k)
       (hj : j=k+1) (hq : j-i=q) (hdexp : d=k-i)
       (s t S T : ℤ) (hS : S=s+k+1) (hT : T=t+k)
-      (x : Ambient model .sphere (s,t)) (y : Ambient model .sphere (S,T))
-      (hd : HasDifferential (model.classical.sphere)
+      (x : Ambient model X (s,t)) (y : Ambient model X (S,T))
+      (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
         j (s,t) (S,T) x y)
-      (hy : y ∈ KIP126.Literature.permanentCycles model .sphere (S,T)) :
-      let A := model.nu.functor.obj SphereSpectrum
+      (hy : y ∈ KIP126.Literature.permanentCycles model X (S,T)) :
+      let A := model.nu.functor.obj (X.obj model.auxiliary)
       let δ : XModLambdaN A i ⟶
           ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by
         simpa only [hq] using
           ((model.quotients.tower A).triangle hi (show i < j by omega)).delta
       ∃ a : BiHom (t-s) t (XModLambdaN A i),
         a ≫ (model.quotients.tower A).rho 1 i hi =
-          firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
-        Detects (model.convergence (.quotient q (.nu .sphere))) (S,T,t+i)
-          (regradeE2 (by exact congrArg (fun w : ℤ => (S,T,w)) (by omega)) (finiteTargetLabel model .sphere q S T d y))
+          firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
+        Detects (model.convergence (.quotient q (.nu X))) (S,T,t+i)
+          (regradeE2 (by exact congrArg (fun w : ℤ => (S,T,w)) (by omega)) (finiteTargetLabel model X q S T d y))
           (homotopyRegrade (by dsimp; omega) rfl
             (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN A q) (a≫δ))) := by
     subst j
@@ -386,7 +385,7 @@ private theorem sphere_mahowald_case
     subst S
     subst T
     dsimp only
-    obtain ⟨a,ha,had⟩ := sphere_boundary_nonadjacent i k hi hik s t x y hd hy
+    obtain ⟨a,ha,had⟩ := selected_boundary_nonadjacent X i k hi hik s t x y hd hy
     refine ⟨a,ha,?_⟩
     have change_weight {X : SyntheticObject} (S T w w' m bweight : ℤ)
         (hw : w=w') (hm : m=T-S) (hb : bweight=w)
@@ -401,33 +400,33 @@ private theorem sphere_mahowald_case
     exact change_weight (s+k+1) (t+k) (t+k-(k-i:ℕ)) (t+i) ((t-s)-1) (t+i)
       (by omega) (by omega) (by omega) _ _ had
 
-  have sphere_boundary_adjacent_reindexed
+  have selected_boundary_adjacent_reindexed
       
       (i : ℕ) (hi : 0 < i) (s t S T : ℤ) (hS : S=s+i+1) (hT : T=t+i)
-      (x : Ambient model .sphere (s,t)) (y : Ambient model .sphere (S,T))
-      (hd : HasDifferential (model.classical.sphere)
+      (x : Ambient model X (s,t)) (y : Ambient model X (S,T))
+      (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))
         (i+1) (s,t) (S,T) x y) :
-      let A := model.nu.functor.obj SphereSpectrum
+      let A := model.nu.functor.obj (X.obj model.auxiliary)
       let δ : XModLambdaN A i ⟶
           ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A 1))⟦(1:ℤ)⟧ := by
         simpa only [show i.succ-i=1 by omega] using
           ((model.quotients.tower A).triangle hi (Nat.lt_succ_self i)).delta
       ∃ a : BiHom (t-s) t (XModLambdaN A i),
         a ≫ (model.quotients.tower A).rho 1 i hi =
-          firstLabel model .sphere s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
-        Detects (model.convergence (.quotient 1 (.nu .sphere))) (S,T,t+i)
-          (regradeE2 (by exact congrArg (fun w : ℤ => (S,T,w)) (by omega)) (finiteTargetLabel model .sphere 1 S T 0 y))
+          firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
+        Detects (model.convergence (.quotient 1 (.nu X))) (S,T,t+i)
+          (regradeE2 (by exact congrArg (fun w : ℤ => (S,T,w)) (by omega)) (finiteTargetLabel model X 1 S T 0 y))
           (homotopyRegrade (by dsimp; omega) rfl
             (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN A 1) (a≫δ))) := by
     subst S
     subst T
-    exact adjacent_mahowald_case .sphere i hi s t x y hd
+    exact adjacent_mahowald_case X i hi s t x y hd
 
   by_cases hq1 : q=1
   · subst q
-    exact sphere_boundary_adjacent_reindexed i hi s t
+    exact selected_boundary_adjacent_reindexed i hi s t
       (s+i+1) (t+i+1-1) (by omega) (by omega) x y hd
-  · exact sphere_boundary_nonadjacent_reindexed
+  · exact selected_boundary_nonadjacent_reindexed
       i (i+q-1) (i+q) q (q-1) hi (by omega) (by omega) (by omega) (by omega)
       s t (s+i+q) (t+i+q-1) (by omega) (by omega) x y hd hy
 

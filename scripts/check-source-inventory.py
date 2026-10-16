@@ -151,8 +151,8 @@ for path in tests | {root / 'Tests/Trust.lean'}:
     if re.search(r'(?<![\w`])(?:sorry|sorryAx|axiom)\b', code_only(path.read_text())):
         errors.append('Consumer source contains a local sorry/axiom: ' + str(path.relative_to(root)))
 
-# The completed ProofTools port retains precisely the four original local
-# subgoals; proof-port work may not be disguised as an additional paper gap.
+# MH1 is proved. The remaining GL1/GL2/MH2 sites are counted exactly;
+# proof-port work may not be disguised as an additional paper gap.
 tool_holes = {}
 for path in (root / 'KIP126/Def/ProofTools').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
@@ -160,8 +160,8 @@ for path in (root / 'KIP126/Def/ProofTools').rglob('*.lean'):
         tool_holes[str(path.relative_to(root))] = count
 if tool_holes != {
         'KIP126/Def/ProofTools/GeneralizedLeibniz.lean': 2,
-        'KIP126/Def/ProofTools/GeneralizedMahowald.lean': 2}:
-    errors.append('ProofTools original four-gap budget changed: ' + str(tool_holes))
+        'KIP126/Def/ProofTools/GeneralizedMahowald.lean': 1}:
+    errors.append('ProofTools remaining GL1/GL2/MH2 sites changed: ' + str(tool_holes))
 
 # Every Main declaration, including the completed choice-transport results,
 # must have an actual proof body. Upstream obligations keep their own owners.

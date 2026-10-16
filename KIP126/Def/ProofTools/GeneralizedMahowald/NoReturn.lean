@@ -22,23 +22,25 @@ theorem nu_infinity_zero_above (X : ClassicalObject) (s t w : ℤ) (hw : t < w) 
     (KIP126.Literature.Standard.eInfinity_nu X (s,t) w).injective.subsingleton
   exact ModuleCat.isZero_of_subsingleton _
 
-theorem negative_shift_nu_to_quotient_zero (X Y : ClassicalObject)
-    (j : ℕ) (hj : 0 < j) (m w : ℤ)
-    (c : BiHom m w ((SyntheticCategory.biShift (0,-(j:ℤ)-1)).obj
+/- The endpoint shift already forces the image beyond the finite quotient
+window. This includes the positive source shift of a normalized map. -/
+private theorem nonreturn_at_window_end (X Y : ClassicalObject)
+    (j : ℕ) (hj : 0 < j) (d : ℤ) (hd : d ≤ -(j:ℤ)) (m w : ℤ)
+    (c : BiHom m w ((SyntheticCategory.biShift (0,d)).obj
       (model.nu.functor.obj (X.obj model.auxiliary))))
-    (z : (SyntheticCategory.biShift (0,-(j:ℤ)-1)).obj
+    (z : (SyntheticCategory.biShift (0,d)).obj
       (model.nu.functor.obj (X.obj model.auxiliary)) ⟶
         XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) j) : c ≫ z = 0 := by
-  let A : SyntheticObject := .shift (0,-(j:ℤ)-1) (.nu X)
+  let A : SyntheticObject := .shift (0,d) (.nu X)
   let B : SyntheticObject := .quotient j (.nu Y)
-  let L : ℤ := w-m+j+1
+  let L : ℤ := w-m-d
   have hzA (k : ℤ) (hk : k < L) :
       IsZero (((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (k,m+k,w)).eInfty) := by
-    have hz := nu_infinity_zero_above X k (m+k) (w+j+1) (by dsimp [L] at hk; omega)
+    have hz := nu_infinity_zero_above X k (m+k) (w-d) (by dsimp [L] at hk; omega)
     let e := towerInfinityIso (model.convergence (.nu X)) (model.convergence A)
-      ((essShift (0,-(j:ℤ)-1)).filtered (.nu X) (m,w+j+1)) k
+      ((essShift (0,d)).filtered (.nu X) (m,w-d)) k
     have he := hz.of_iso e.symm
-    have hw : w + ↑j + 1 + (-↑j - 1) = w := by omega
+    have hw : w - d + d = w := by omega
     simpa only [e, A, Prod.fst_add, Prod.snd_add, add_zero, hw] using he
   have hc0 := filtration_at_zero model.syntheticTower _ m w c
   have hcL : FiltrationAtLeast model.syntheticTower L c := by
@@ -49,6 +51,17 @@ theorem negative_shift_nu_to_quotient_zero (X Y : ClassicalObject)
   have hcz : FiltrationAtLeast model.syntheticTower L (c ≫ z) :=
     map_preserves_filtration (model.convergentMap A B z) (m,w) L c hcL
   exact finite_high_filtration_zero Y j hj m w L (by dsimp [L]; omega) (c ≫ z) hcz
+
+
+theorem negative_shift_nu_to_quotient_zero (X Y : ClassicalObject)
+    (j : ℕ) (hj : 0 < j) (m w : ℤ)
+    (c : BiHom m w ((SyntheticCategory.biShift (0,-(j:ℤ)-1)).obj
+      (model.nu.functor.obj (X.obj model.auxiliary))))
+    (z : (SyntheticCategory.biShift (0,-(j:ℤ)-1)).obj
+      (model.nu.functor.obj (X.obj model.auxiliary)) ⟶
+        XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) j) : c ≫ z = 0 := by
+  exact nonreturn_at_window_end X Y j hj (-(j:ℤ)-1) (by omega) m w c z
+
 
 theorem quotient_nu_maps_equal_on_spheres
       (X Y : ClassicalObject)
@@ -112,5 +125,40 @@ theorem shift_minus_one_quotient_maps_equal_on_spheres
     apply sub_eq_zero.mp
     rw [←Preadditive.comp_sub,hz,←Category.assoc]
     exact hcz
+/-- Chosen cofiber fillings for a normalized source agree on sphere maps.
+The exponent-one case uses the endpoint of the finite no-return window. -/
+private theorem normalized_quotient_maps_equal_on_spheres
+    (X Y : ClassicalObject) (k : ℕ) (hk : k ≤ 1) (j : ℕ) (hj : 0 < j)
+    (a b : XModLambdaN ((SyntheticCategory.biShift (0,(k:ℤ))).obj
+        (model.nu.functor.obj (X.obj model.auxiliary))) j ⟶
+      XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) j)
+    (hab : XModLambdaN.incl _ j ≫ a = XModLambdaN.incl _ j ≫ b) :
+    ∀ (m w : ℤ) (c : BiHom m w (XModLambdaN ((SyntheticCategory.biShift (0,(k:ℤ))).obj
+      (model.nu.functor.obj (X.obj model.auxiliary))) j)), c ≫ a = c ≫ b := by
+  apply quotient_maps_equal_on_spheres_of_no_return j a b hab
+  intro m w c z
+  let V := model.nu.functor.obj (X.obj model.auxiliary)
+  let ε : (((SyntheticCategory.biShift (0,-(j:ℤ))).obj
+      ((SyntheticCategory.biShift (0,(k:ℤ))).obj V)))⟦(1:ℤ)⟧ ≅
+      (SyntheticCategory.biShift (0,(k:ℤ)-(j:ℤ)-1)).obj
+        (model.nu.functor.obj ((ClassicalObject.shift 1 X).obj model.auxiliary)) :=
+    (shiftFunctor SyntheticSpectrum (1:ℤ)).mapIso
+      ((SyntheticCategory.biShift_comp (0,(k:ℤ)) (0,-(j:ℤ))).app V) ≪≫
+      (SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1).symm.app _ ≪≫
+      (SyntheticCategory.biShift_comp ((0,(k:ℤ))+(0,-(j:ℤ))) (1,0)).app V ≪≫
+      eqToIso (congrArg (fun p => (SyntheticCategory.biShift p).obj V)
+        (show ((0,(k:ℤ))+(0,-(j:ℤ)))+(1,0)=(1,1)+(0,(k:ℤ)-(j:ℤ)-1)
+          by ext <;> simp; omega)) ≪≫
+      (SyntheticCategory.biShift_comp (1,1) (0,(k:ℤ)-(j:ℤ)-1)).symm.app V ≪≫
+      (SyntheticCategory.biShift (0,(k:ℤ)-(j:ℤ)-1)).mapIso (model.nu.suspensionIso _).symm
+  have hzero (c' : BiHom m w ((SyntheticCategory.biShift (0,(k:ℤ)-(j:ℤ)-1)).obj
+        (model.nu.functor.obj ((ClassicalObject.shift 1 X).obj model.auxiliary))))
+      (z' : (SyntheticCategory.biShift (0,(k:ℤ)-(j:ℤ)-1)).obj
+        (model.nu.functor.obj ((ClassicalObject.shift 1 X).obj model.auxiliary)) ⟶
+          XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) j) : c' ≫ z' = 0 :=
+    nonreturn_at_window_end (.shift 1 X) Y j hj ((k:ℤ)-(j:ℤ)-1) (by omega) m w c' z'
+
+  have h := hzero (c ≫ ε.hom) (ε.inv ≫ z)
+  simpa only [Category.assoc,Iso.hom_inv_id_assoc] using h
 end
 end KIP126.ProofTools.Internal.Mahowald

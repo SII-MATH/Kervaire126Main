@@ -150,4 +150,42 @@ example (s t : ℕ)
 #check_failure KIP126.AdamsSynthetic.Milnor.Cohomology
 #check_failure KIP126.AdamsSynthetic.Internal.Source.canonicalTower
 
+-- Ordinary consumers of the two compatibility interfaces authorized on 2026-10-16.
+example
+    (X : ClassicalObject) (s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+    (ε : XModLambdaN ((SyntheticCategory.biShift (0,1)).obj
+        (model.nu.functor.obj (X.obj model.auxiliary))) 1 ≅
+      (SyntheticCategory.biShift (0,1)).obj
+        (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) 1))
+    (hε : XModLambdaN.incl _ 1 ≫ ε.hom =
+      (SyntheticCategory.biShift (0,1)).map (XModLambdaN.incl _ 1)) :
+    homotopyRegrade (by simp) (by simp)
+      (shiftHomotopyClass (0,1) (t-s,t)
+        (homotopyRegrade rfl (by simp) ((model.firstQuotient X 0 s t).symm x) ≫
+          XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1)) ≫ ε.inv =
+        (model.firstQuotient X 1 s t).symm x := by
+  exact firstQuotient_positive_shift X s t x ε hε
+
+example
+    (X : ClassicalObject) (s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+    (sx : (model.classical.obj ((ClassicalObject.shift 1 X).obj model.auxiliary)).Page 2 (s,t+1))
+    (ε : XModLambdaN ((SyntheticCategory.biShift (1,1)).obj
+        (model.nu.functor.obj (X.obj model.auxiliary))) 1 ≅
+      (SyntheticCategory.biShift (1,1)).obj
+        (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) 1))
+    (hε : XModLambdaN.incl _ 1 ≫ ε.hom =
+      (SyntheticCategory.biShift (1,1)).map (XModLambdaN.incl _ 1))
+    (hsx : (model.classicalSuspension X).DesuspendsClass s (t+1) sx (by simpa using x)) :
+    (homotopyRegrade (w' := t+1) rfl (by simp)
+        ((model.firstQuotient (.shift 1 X) 0 s (t+1)).symm sx) ≫
+      XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1) ≫
+      XModLambdaN.map (model.nu.suspensionIso (X.obj model.auxiliary)).hom 1 ≫ ε.hom =
+    homotopyRegrade (by simp; omega) (by simp)
+      (shiftHomotopyClass (1,1) (t-s,t)
+        (homotopyRegrade rfl (by simp) ((model.firstQuotient X 0 s t).symm x) ≫
+          XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1)) := by
+  exact firstQuotient_suspension X s t x sx ε hε hsx
+
 end

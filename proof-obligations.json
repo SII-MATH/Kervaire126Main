@@ -4,16 +4,16 @@
   "authorization": "User requested fixed upstream objects/callable theorems with temporarily unfinished proofs, then migration of the main paper using those APIs directly. Article-local proofs remain Main/ProofTools responsibilities; unrelated upstream obligations are not duplicated into Main.",
   "meaning": "Counts include unconstructed mathematical objects as well as unproved theorems. Only direct holes are registered. Ownership follows the defining module, not the consumer or transitive sorry dependency; this registry does not certify their proofs.",
   "summary": {
-    "total": 323,
+    "total": 325,
     "by_module": {
-      "AdamsSynthetic": 101,
+      "AdamsSynthetic": 103,
       "Computation": 88,
       "Literature": 132,
       "ProofTools": 2
     },
     "by_kind": {
       "pending-construction": 92,
-      "pending-proof": 231
+      "pending-proof": 233
     }
   },
   "responsibility_owners": {
@@ -38,6 +38,8 @@
     "KIP126.AdamsSynthetic.Standard.family": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.finite_map_separation": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.firstQuotient": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift": "AdamsSynthetic",
+    "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.first_quotient": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.graded_compose": "AdamsSynthetic",
     "KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous": "AdamsSynthetic",
@@ -739,6 +741,44 @@
       "reason": "Fixed upstream mathematical fact or object; proof/construction deferred by the user. This obligation is not a downstream theorem premise.",
       "synthetic_sorry": false,
       "source_location_refresh": "Lean sorry labels include source positions/hygiene; original declaration tokens, type, universes and axiom dependencies are unchanged. The fingerprint was recaptured after adding the separately authorized source comparison."
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility",
+      "full_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (ε :\n    CategoryTheory.Iso.{0, 1}\n      (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n        (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n          (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X)))\n        1)\n      (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n        (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1))),\n  Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n            (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                X)))\n          1)\n        (CategoryTheory.Iso.hom.{0, 1} ε))\n      (CategoryTheory.Functor.map.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1)) →\n    Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.homotopyRegrade.{1, 0}\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_1 s t)\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_2 s t)\n          (KIP126.AdamsSynthetic.shiftHomotopyClass.{0, 1} (Prod.mk.{0, 0} 0 1)\n            (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s) t)\n            (CategoryTheory.CategoryStruct.comp.{0, 1}\n              (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n                (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_3 s t)\n                ((LinearEquiv.symm.{0, 0, 0, 0}\n                    (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 0 s t))\n                  x))\n              (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n                (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                  (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X)))\n                1))))\n        (CategoryTheory.Iso.inv.{0, 1} ε))\n      ((LinearEquiv.symm.{0, 0, 0, 0}\n          (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 1 s t))\n        x)",
+      "type_fingerprint": "13497849682890837448",
+      "body_fingerprint": "10199108966902490032",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/FirstQuotientCompatibility.lean",
+      "line": 22,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "user-authorized-label-compatibility",
+      "migration_status": "new-upstream-compatibility-pending",
+      "original_sources": [],
+      "reason": "Prove that the fixed classical/first-quotient comparison commutes with the actual positive weight-one shift, for every quotient/shift isomorphism satisfying the actual inclusion square. This is newly authorized upstream work, not a completed or migrated proof.",
+      "synthetic_sorry": false,
+      "authorization": "允许新增这两项上游接口及待证明责任",
+      "authorization_date": "2026-10-16"
+    },
+    {
+      "name": "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
+      "module": "KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility",
+      "full_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (sx :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            (KIP126.Kervaire.Route.ClassicalObject.shift 1 X)))\n        2 (Prod.mk.{0, 0} s (HAdd.hAdd.{0, 0, 0} t 1))))\n  (ε :\n    CategoryTheory.Iso.{0, 1}\n      (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n        (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n          (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X)))\n        1)\n      (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n        (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1))),\n  Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n            (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                X)))\n          1)\n        (CategoryTheory.Iso.hom.{0, 1} ε))\n      (CategoryTheory.Functor.map.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1)) →\n    KIP126.AdamsSynthetic.ClassicalTowerSuspension.DesuspendsClass.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.classicalSuspension.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X)\n        s (HAdd.hAdd.{0, 0, 0} t 1) sx\n        (Eq.mpr.{1}\n          (id.{0}\n            (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n              (congrArg.{1, 2}\n                (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                  (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X))\n                  2)\n                (congrArg.{1, 1} (Prod.mk.{0, 0} s) (add_sub_cancel_right.{0} t 1)))))\n          x) →\n      Eq.{1}\n        (CategoryTheory.CategoryStruct.comp.{0, 1}\n          (CategoryTheory.CategoryStruct.comp.{0, 1}\n            (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n              (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_1 t)\n              ((LinearEquiv.symm.{0, 0, 0, 0}\n                  (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)\n                    (KIP126.Kervaire.Route.ClassicalObject.shift 1 X) 0 s (HAdd.hAdd.{0, 0, 0} t 1)))\n                sx))\n            (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n              (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                  (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                    (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ClassicalObject.shift 1 X))))\n              1))\n          (CategoryTheory.CategoryStruct.comp.{0, 1}\n            (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n              (CategoryTheory.Iso.hom.{0, 1}\n                (KIP126.Synthetic.Context.NuFunctorData.suspensionIso.{1, 0, 1, 0}\n                  (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    X)))\n              1)\n            (CategoryTheory.Iso.hom.{0, 1} ε)))\n        (KIP126.Synthetic.Context.homotopyRegrade.{1, 0}\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_3 s t)\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_4 s t)\n          (KIP126.AdamsSynthetic.shiftHomotopyClass.{0, 1} (Prod.mk.{0, 0} 1 1)\n            (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s) t)\n            (CategoryTheory.CategoryStruct.comp.{0, 1}\n              (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n                (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_3 s t)\n                ((LinearEquiv.symm.{0, 0, 0, 0}\n                    (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 0 s t))\n                  x))\n              (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n                (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                  (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X)))\n                1))))",
+      "type_fingerprint": "15839982846520915617",
+      "body_fingerprint": "15927239144773563134",
+      "source": "KIP126/Def/AdamsSynthetic/Standard/FirstQuotientCompatibility.lean",
+      "line": 40,
+      "kind": "theorem",
+      "status": "pending-proof",
+      "responsibility_owner": "AdamsSynthetic",
+      "responsibility_class": "user-authorized-label-compatibility",
+      "migration_status": "new-upstream-compatibility-pending",
+      "original_sources": [],
+      "reason": "Prove that the fixed first-quotient labels of a classical class and its actual suspension agree under the fixed nu suspension and every quotient/shift comparison satisfying the actual inclusion square. This is newly authorized upstream work, not a completed or migrated proof.",
+      "synthetic_sorry": false,
+      "authorization": "允许新增这两项上游接口及待证明责任",
+      "authorization_date": "2026-10-16"
     },
     {
       "name": "KIP126.AdamsSynthetic.Standard.first_quotient",
@@ -5882,9 +5922,9 @@
       "module": "KIP126.Def.ProofTools.GeneralizedLeibniz",
       "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y)),\n  KIP126.ProofTools.GeneralizedLeibnizLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f",
       "type_fingerprint": "16172807452524726602",
-      "body_fingerprint": "12530562754946220753",
+      "body_fingerprint": "2644570276117170943",
       "source": "KIP126/Def/ProofTools/GeneralizedLeibniz.lean",
-      "line": 45,
+      "line": 54,
       "kind": "theorem",
       "status": "pending-proof",
       "responsibility_owner": "ProofTools",
@@ -5898,7 +5938,7 @@
           "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedLeibniz/Proofs.lean"
         }
       ],
-      "reason": "Original GL1 and GL2 at GeneralizedLeibniz/Proofs.lean:110,158 remain pending. All existing proof steps have been adapted; two original subgoals belong to one direct-hole declaration. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
+      "reason": "Original GL1 and GL2 remain at matching the left edge to the finite and propagated infinite witnesses, the general finite/infinite no-crossing conversions. The actual three-edge square now constructs the same right representative with controlled absolute boundary. Weighted survival and differential readout are proved. No new obligation or public assumption is introduced.",
       "synthetic_sorry": false
     },
     {
@@ -5906,9 +5946,9 @@
       "module": "KIP126.Def.ProofTools.GeneralizedMahowald",
       "full_type": "∀\n  (T :\n    KIP126.Kervaire.Route.TriangleData.{1, 0}\n      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))),\n  KIP126.ProofTools.GeneralizedMahowaldLaw.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T",
       "type_fingerprint": "12297579626073384622",
-      "body_fingerprint": "5683528006827065855",
+      "body_fingerprint": "17924752964050994422",
       "source": "KIP126/Def/ProofTools/GeneralizedMahowald.lean",
-      "line": 23,
+      "line": 38,
       "kind": "theorem",
       "status": "pending-proof",
       "responsibility_owner": "ProofTools",
@@ -5922,7 +5962,7 @@
           "archive_member": "KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean"
         }
       ],
-      "reason": "The complete original proof and its proved helpers are adapted. Only MH1 and MH2 at GeneralizedMahowald/Proofs.lean:3321,3362 remain pending. This is a local ProofTools responsibility. Transitive upstream obligations remain with their original owners.",
+      "reason": "The locked exact-source statement is refuted by the complete private theorem rotated_nu_generalized_mahowald_law_false in GeneralizedMahowald/StatementReview.lean, using the actual rotated nu triangle and only existing registered upstream interfaces. The original MH2 sorry is retained pending explicit user review of the public statement; no false lambda cancellation or new assumption/obligation is introduced. Completed private helper proofs remain independently audited.",
       "synthetic_sorry": false
     },
     {
@@ -6428,6 +6468,21 @@
       "task": "Identify the explicitly defined HF₂ categorical localization with the paper's completion model under the required connectivity/finite-type hypotheses, including the actual completed-sphere comparison. The localized spectral-sequence factorization is not this comparison."
     }
   ],
+  "mh2_label_compatibility_authorization": {
+    "date": "2026-10-16",
+    "user_reply": "允许新增这两项上游接口及待证明责任",
+    "scope": "Exactly two AdamsSynthetic first-quotient label compatibility theorems, with their individual pending-proof responsibilities and compiler-generated proof support. ProofTools public declarations, types and exports remain unchanged.",
+    "declarations": [
+      "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+      "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension"
+    ],
+    "reviewed_statement": "/tmp/MH2CompatibilityReview.lean; both final signatures checked definitionally equal to the reviewed propositions.",
+    "new_pending_proofs": 2,
+    "existing_adams_synthetic_exports_preserved": 1817,
+    "new_named_public_declarations": 2,
+    "new_generated_proof_support": 6,
+    "completion_limit": "These are newly authorized upstream obligations, not recovered baseline proofs. They provide label compatibility only; May comparison, representative synchronization and finite-boundary control for MH2 still require proofs."
+  },
   "sphere_bhs_proof_port": {
     "responsibility_owner": "AdamsSynthetic",
     "status": "conditional-proof-support-ported-selected-completed-source-instantiation-pending",

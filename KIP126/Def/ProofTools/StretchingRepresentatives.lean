@@ -26,7 +26,17 @@ private theorem quotient_shift_exists (coh : BiShiftCoherence SyntheticSpectrum)
     ∃ e : XModLambdaN ((SyntheticCategory.biShift a).obj X) q ≅
       (SyntheticCategory.biShift a).obj (XModLambdaN X q),
       XModLambdaN.incl ((SyntheticCategory.biShift a).obj X) q ≫ e.hom =
-        (SyntheticCategory.biShift a).map (XModLambdaN.incl X q) := by
+        (SyntheticCategory.biShift a).map (XModLambdaN.incl X q) ∧
+      ∃ e₁ : (SyntheticCategory.biShift (lambdaDegree q)).obj
+          ((SyntheticCategory.biShift a).obj X) ≅
+        (SyntheticCategory.biShift a).obj
+          ((SyntheticCategory.biShift (lambdaDegree q)).obj X),
+        lambdaPow q ((SyntheticCategory.biShift a).obj X) =
+          e₁.hom ≫ (SyntheticCategory.biShift a).map (lambdaPow q X) ∧
+        e.hom ≫ (SyntheticCategory.biShift a).map (XModLambdaN.proj X q) ≫
+            ((SyntheticCategory.biShift a).commShiftIso (1 : ℤ)).hom.app _ =
+          XModLambdaN.proj ((SyntheticCategory.biShift a).obj X) q ≫
+            (shiftFunctor SyntheticSpectrum (1 : ℤ)).map e₁.hom := by
   let oneComm (a : ℤ × ℤ) :
       SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree 1) ≅
         SyntheticCategory.biShift (lambdaDegree 1) ⋙ SyntheticCategory.biShift a :=
@@ -89,13 +99,25 @@ private theorem quotient_shift_exists (coh : BiShiftCoherence SyntheticSpectrum)
       change lambdaPow q (F.obj X) ≫ 𝟙 _ =
         (powerComm a q).hom.app X ≫ F.map (lambdaPow q X)
       simpa only [Category.comp_id] using powerComm_square coh a q X)
-  refine ⟨Triangle.π₃.mapIso e, ?_⟩
-  have h := e.hom.comm₂
-  change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
-    e.hom.hom₂ ≫ F.map (XModLambdaN.incl X q) at h
-  change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
-    F.map (XModLambdaN.incl X q)
-  simpa only [e, isoTriangleOfIso₁₂_hom_hom₂, Iso.refl_hom, Category.id_comp] using h
+  refine ⟨Triangle.π₃.mapIso e, ?_, (powerComm a q).app X,
+    powerComm_square coh a q X, ?_⟩
+  · have h := e.hom.comm₂
+    change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
+      e.hom.hom₂ ≫ F.map (XModLambdaN.incl X q) at h
+    change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
+      F.map (XModLambdaN.incl X q)
+    simpa only [e, isoTriangleOfIso₁₂_hom_hom₂, Iso.refl_hom, Category.id_comp] using h
+  · have h := e.hom.comm₃
+    have h₁ : e.hom.hom₁ = ((powerComm a q).app X).hom := by
+      simp only [e, isoTriangleOfIso₁₂_hom_hom₁]
+    rw [h₁] at h
+    change XModLambdaN.proj (F.obj X) q ≫
+        (shiftFunctor SyntheticSpectrum (1 : ℤ)).map ((powerComm a q).app X).hom =
+      e.hom.hom₃ ≫ (F.map (XModLambdaN.proj X q) ≫
+        (F.commShiftIso (1 : ℤ)).hom.app _) at h
+    change e.hom.hom₃ ≫ F.map (XModLambdaN.proj X q) ≫
+        (F.commShiftIso (1 : ℤ)).hom.app _ = _
+    exact h.symm
 
 
 private def familyPageIso {X Y : SyntheticSpectrum} (e : X ≅ Y)

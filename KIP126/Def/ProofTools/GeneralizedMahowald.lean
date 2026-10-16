@@ -1,5 +1,19 @@
 module
 public import KIP126.Def.ProofTools.Laws
+import all KIP126.Def.ProofTools.GeneralizedMahowald.NoReturn
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Geometry
+import all KIP126.Def.ProofTools.GeneralizedMahowald.OctahedralPullback
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonShiftEdge
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CofiberIdentification
+import all KIP126.Def.ProofTools.GeneralizedMahowald.QuotientShift
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Signs
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Synchronization
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HSourceSelection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ShortSource
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HTargetDetection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.TargetSurvival
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FinalDivision
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FSourceRegrade
 import all KIP126.Def.ProofTools.GeneralizedMahowald.Sphere
 import all KIP126.Def.ProofTools.GeneralizedMahowald.Adjacent
 import all KIP126.Def.ProofTools.GeneralizedMahowald.FinalOperations
@@ -8,8 +22,9 @@ import all KIP126.Def.ProofTools.GeneralizedMahowald.PageCalculus
 import all KIP126.Def.ProofTools.GeneralizedMahowald.BoundaryDetection
 import all KIP126.Def.ProofTools.DetectionOperations
 /-! AimPaper Theorem 6.12, retaining the complete proof from bbac1fc05843 (MIT).
-The original MH1 and MH2 geometric gaps remain in their original branches;
-all formerly proved representative, quotient and case-assembly steps are retained. -/
+The finite boundary comparison (MH1) is proved for every selected object.
+The original May boundary lift (MH2) remains pending; representative, quotient
+and case-assembly steps use the same fixed mathematical objects. -/
 @[expose] section
 namespace KIP126.ProofTools.Standard
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
@@ -61,7 +76,12 @@ public theorem generalizedMahowald
         Detects (model.convergence (.quotient q (.nu T.Z)))
           (sf+n+m,((tf+n)-(sf+n))+(sf+n+m),tf+n+eg)
           (finiteTargetForExtension model T.Y T.Z T.g q m (sf+n) (tf+n) Wg.length_lower yBar)
-          (homotopyRegrade (by dsimp; omega) rfl (boundary aZ)) := by
+          (homotopyRegrade (by dsimp; omega) rfl (boundary aZ)) ∧
+        (NoCrossingOn model T.Z (n+m+l) (n+m+l-(m-eg)) (s,t) →
+          ∀ a : BiHom (t-s) t (XModLambdaN Zν i),
+            Detects (model.convergence (.quotient i (.nu T.Z))) (s,t,t)
+              (regradeE2 (by simp) (finiteTargetLabel model T.Z i s t 0 xBar)) a →
+            boundary a = boundary aZ) := by
     have hmi : eg ≤ m := by dsimp [eg]; omega
     have hxi : xBar ∈ cycles model T.Z (i:ℤ) (s,t) :=
       cycles_antitone model T.Z (s,t) (by omega : (i:ℤ) ≤ n+m+l-1) hxBar.2
@@ -264,96 +284,100 @@ public theorem generalizedMahowald
                 (Nat.add_sub_cancel_left i 1)) _ _ _ _
             exact transport_q q hq hq1 htarget
         · have hqgt : 1<q := by omega
-          by_cases hZ : T.Z = ClassicalObject.sphere
-          · have sphere_reindexed (X : ClassicalObject) (hX : X=.sphere)
-                (r u v : ℤ) (hr : r=((i+q:ℕ):ℤ))
-                (hu : u=s+i+q) (hv : v=t+i+q-1)
-                (x' : Ambient model X (s,t))
-                (y' : Ambient model X (u,v))
-                (hdy : KIP126.Core.SpectralSequence.HasDifferential
-                  (model.classical.obj (X.obj model.auxiliary))
-                  r (s,t) (u,v) x' y')
-                (hperm : y' ∈ permanentCycles model X (u,v)) :
-                let A := model.nu.functor.obj (X.obj model.auxiliary)
-                let δ : XModLambdaN A i ⟶
-                    ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by
-                  simpa only [Nat.add_sub_cancel_left] using
-                    ((model.quotients.tower A).triangle hi (show i < i+q by omega)).delta
-                ∃ a : BiHom (t-s) t (XModLambdaN A i),
-                  a ≫ (model.quotients.tower A).rho 1 i hi =
-                    firstLabel model X s t x' ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
-                  Detects (model.convergence (.quotient q (.nu X))) (u,v,t+i)
-                    (regradeE2 (by exact congrArg (fun w : ℤ => (u,v,w)) (by omega))
-                      (finiteTargetLabel model X q u v (q-1) y'))
-                    (homotopyRegrade (by dsimp; omega) rfl
-                      (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN A q) (a≫δ))) := by
-              subst X
-              subst r
-              subst u
-              subst v
-              exact sphere_mahowald_case i q hi hq s t x' y' hdy hperm
-            obtain ⟨a,ha,hda⟩ := sphere_reindexed T.Z hZ (n+m+l) (sf+n+m) (tf+n+m)
-              (by omega) (by dsimp [sf]; omega) (by dsimp [tf]; omega) xBar yBar hd.2 hyBar
-            have transport {p p' : Tridegree} (hp : p=p')
-                (z : (model.family.obj (XModLambdaN Zν q)).E₂ p)
-                (b : BiHom (p.2.1-p.1) p.2.2 (XModLambdaN Zν q))
-                (hb : Detects (model.convergence (.quotient q (.nu T.Z))) p z b) :
-                Detects (model.convergence (.quotient q (.nu T.Z))) p' (regradeE2 hp z)
-                  (homotopyRegrade (congrArg (fun p : Tridegree => p.2.1-p.1) hp)
-                    (congrArg (fun p : Tridegree => p.2.2) hp) b) := by
-              subst p'
-              exact hb
-            have label_transport (s0 t0 : ℤ) (z : Ambient model T.Z (s0,t0))
-                (k k' : ℕ) (hk : k=k') (p p' : Tridegree)
-                (hp : (s0,t0,t0-k)=p') (h0 : (s0,t0,t0-k')=p) (h1 : p=p') :
-                regradeE2 hp (finiteTargetLabel model T.Z q s0 t0 k z) =
-                  regradeE2 h1 (regradeE2 h0 (finiteTargetLabel model T.Z q s0 t0 k' z)) := by
-              subst k'
-              subst p
-              subst p'
+          have selected_reindexed (X : ClassicalObject)
+              (r u v : ℤ) (hr : r=((i+q:ℕ):ℤ))
+              (hu : u=s+i+q) (hv : v=t+i+q-1)
+              (x' : Ambient model X (s,t))
+              (y' : Ambient model X (u,v))
+              (hdy : KIP126.Core.SpectralSequence.HasDifferential
+                (model.classical.obj (X.obj model.auxiliary))
+                r (s,t) (u,v) x' y')
+              (hperm : y' ∈ permanentCycles model X (u,v)) :
+              let A := model.nu.functor.obj (X.obj model.auxiliary)
+              let δ : XModLambdaN A i ⟶
+                  ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by
+                simpa only [Nat.add_sub_cancel_left] using
+                  ((model.quotients.tower A).triangle hi (show i < i+q by omega)).delta
+              ∃ a : BiHom (t-s) t (XModLambdaN A i),
+                a ≫ (model.quotients.tower A).rho 1 i hi =
+                  firstLabel model X s t x' ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) 1 ∧
+                Detects (model.convergence (.quotient q (.nu X))) (u,v,t+i)
+                  (regradeE2 (by exact congrArg (fun w : ℤ => (u,v,w)) (by omega))
+                    (finiteTargetLabel model X q u v (q-1) y'))
+                  (homotopyRegrade (by dsimp; omega) rfl
+                    (biSuspensionHomEquiv (t-s) t (i:ℤ) (XModLambdaN A q) (a≫δ))) := by
+            subst r
+            subst u
+            subst v
+            exact selected_mahowald_case X i q hi hq s t x' y' hdy hperm
+          obtain ⟨a,ha,hda⟩ := selected_reindexed T.Z (n+m+l) (sf+n+m) (tf+n+m)
+            (by omega) (by dsimp [sf]; omega) (by dsimp [tf]; omega) xBar yBar hd.2 hyBar
+          have transport {p p' : Tridegree} (hp : p=p')
+              (z : (model.family.obj (XModLambdaN Zν q)).E₂ p)
+              (b : BiHom (p.2.1-p.1) p.2.2 (XModLambdaN Zν q))
+              (hb : Detects (model.convergence (.quotient q (.nu T.Z))) p z b) :
+              Detects (model.convergence (.quotient q (.nu T.Z))) p' (regradeE2 hp z)
+                (homotopyRegrade (congrArg (fun p : Tridegree => p.2.1-p.1) hp)
+                  (congrArg (fun p : Tridegree => p.2.2) hp) b) := by
+            subst p'
+            exact hb
+          have label_transport (s0 t0 : ℤ) (z : Ambient model T.Z (s0,t0))
+              (k k' : ℕ) (hk : k=k') (p p' : Tridegree)
+              (hp : (s0,t0,t0-k)=p') (h0 : (s0,t0,t0-k')=p) (h1 : p=p') :
+              regradeE2 hp (finiteTargetLabel model T.Z q s0 t0 k z) =
+                regradeE2 h1 (regradeE2 h0 (finiteTargetLabel model T.Z q s0 t0 k' z)) := by
+            subst k'
+            subst p
+            subst p'
+            rfl
+          have hdegree : (sf+n+m,tf+n+m,t+(i:ℤ)) =
+              (sf+n+m,((tf+n)-(sf+n))+(sf+n+m),tf+n+eg) := by
+            ext <;> dsimp only [tf] <;> omega
+          have htarget := transport hdegree _ _ hda
+          have hlabel : finiteTargetForExtension model T.Y T.Z T.g q m (sf+n) (tf+n) Wg.length_lower yBar =
+              regradeE2 hdegree
+                (regradeE2 (by exact congrArg (fun w : ℤ => (sf+n+m,tf+n+m,w)) (by omega))
+                  (finiteTargetLabel model T.Z q (sf+n+m) (tf+n+m) (q-1) yBar)) := by
+            unfold finiteTargetForExtension
+            exact label_transport _ _ yBar _ (q-1) (by dsimp [eg] at hqZ hmi; omega) _ _ _ _ _
+          rw [←hlabel] at htarget
+          refine ⟨a-a0,?_,?_⟩
+          · rw [Preadditive.sub_comp,ha,ha0first,sub_self]
+          · have haa : a0+(a-a0)=a := by abel
+            rw [haa]
+            have regrade_comp {m w m' w' m'' w'' : ℤ} {B : SyntheticSpectrum}
+                (hm : m=m') (hw : w=w') (hm' : m'=m'') (hw' : w'=w'')
+                (b : BiHom m w B) :
+                homotopyRegrade hm' hw' (homotopyRegrade hm hw b) =
+                  homotopyRegrade (hm.trans hm') (hw.trans hw') b := by
+              subst m'; subst w'; subst m''; subst w''; rfl
+            dsimp only [boundary]
+            simp (config := { congrConsts := false }) only [regrade_comp] at htarget ⊢
+            convert htarget using 1
+            congr 2
+            have cast_comp {S U A B : SyntheticSpectrum} (h : A=B)
+                (ha : (S ⟶ A)=(S ⟶ B)) (hf : (U ⟶ A)=(U ⟶ B))
+                (a : S ⟶ U) (f : U ⟶ A) : ha.mp (a≫f)=a≫hf.mp f := by
+              subst B
               rfl
-            have hdegree : (sf+n+m,tf+n+m,t+(i:ℤ)) =
-                (sf+n+m,((tf+n)-(sf+n))+(sf+n+m),tf+n+eg) := by
-              ext <;> dsimp only [tf] <;> omega
-            have htarget := transport hdegree _ _ hda
-            have hlabel : finiteTargetForExtension model T.Y T.Z T.g q m (sf+n) (tf+n) Wg.length_lower yBar =
-                regradeE2 hdegree
-                  (regradeE2 (by exact congrArg (fun w : ℤ => (sf+n+m,tf+n+m,w)) (by omega))
-                    (finiteTargetLabel model T.Z q (sf+n+m) (tf+n+m) (q-1) yBar)) := by
-              unfold finiteTargetForExtension
-              exact label_transport _ _ yBar _ (q-1) (by dsimp [eg] at hqZ hmi; omega) _ _ _ _ _
-            rw [←hlabel] at htarget
-            refine ⟨a-a0,?_,?_⟩
-            · rw [Preadditive.sub_comp,ha,ha0first,sub_self]
-            · have haa : a0+(a-a0)=a := by abel
-              rw [haa]
-              have regrade_comp {m w m' w' m'' w'' : ℤ} {B : SyntheticSpectrum}
-                  (hm : m=m') (hw : w=w') (hm' : m'=m'') (hw' : w'=w'')
-                  (b : BiHom m w B) :
-                  homotopyRegrade hm' hw' (homotopyRegrade hm hw b) =
-                    homotopyRegrade (hm.trans hm') (hw.trans hw') b := by
-                subst m'; subst w'; subst m''; subst w''; rfl
-              dsimp only [boundary]
-              simp (config := { congrConsts := false }) only [regrade_comp] at htarget ⊢
-              convert htarget using 1
-              congr 2
-              have cast_comp {S U A B : SyntheticSpectrum} (h : A=B)
-                  (ha : (S ⟶ A)=(S ⟶ B)) (hf : (U ⟶ A)=(U ⟶ B))
-                  (a : S ⟶ U) (f : U ⟶ A) : ha.mp (a≫f)=a≫hf.mp f := by
-                subst B
-                rfl
-              exact cast_comp (congrArg (fun k =>
-                ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN Zν k))⟦(1:ℤ)⟧)
-                (Nat.add_sub_cancel_left i q)) _ _ _ _
-          · -- MH1: the remaining nonzero comparison is for T.Z other than the sphere.
-            sorry
+            exact cast_comp (congrArg (fun k =>
+              ((SyntheticCategory.biShift (0,-(i:ℤ))).obj (XModLambdaN Zν k))⟦(1:ℤ)⟧)
+              (Nat.add_sub_cancel_left i q)) _ _ _ _
     obtain ⟨c,hc,hdelta⟩ := target_correction
     have hfirst : (a0+c) ≫ (model.quotients.tower Zν).rho 1 i hi =
         firstLabel model T.Z s t xBar ≫
           XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app Zν) 1 := by
       rw [Preadditive.add_comp,ha0first,hc,add_zero]
-    exact ⟨a0+c,first_label_detects_unshifted T.Z i hi s t xBar (a0+c) hfirst,hdelta⟩
-  obtain ⟨aZ,haZ,hdelta⟩ := boundary_representative
+    have hsource := first_label_detects_unshifted T.Z i hi s t xBar (a0+c) hfirst
+    refine ⟨a0+c,hsource,hdelta,?_⟩
+    intro hnc a ha
+    have hnc' : NoCrossingOn model T.Z (i+q) (i+1) (s,t) := by
+      convert hnc using 1 <;> omega
+    have heq := relative_boundary_equal_of_no_crossing T.Z i q hi hq s t hnc' a (a0+c)
+      (detects_sub_filtration (model.convergence (.quotient i (.nu T.Z))) (s,t,t) ha hsource)
+    dsimp only [boundary]
+    rw [heq]
+  obtain ⟨aZ,haZ,hdelta,hboundaryStable⟩ := boundary_representative
   have may_boundary_lift :
       ∀ ag : BiHom ((tf+n)-(sf+n)) (tf+n+eg)
           ((SyntheticObject.quotient q (extensionSourceObject model T.Y T.Z T.g)).obj model.nu model.auxiliary),
@@ -378,15 +402,296 @@ public theorem generalizedMahowald
               (homotopyRegrade (by dsimp; omega) rfl bf) ∧
             af ≫ finiteExtensionMap model T.X T.Y T.f Q = bf := by
     intro ag hag hstrict
-    -- MH2, MainPaper lines 1875–1917: hcross synchronizes the h-extension
-    -- with the delta representative aZ; htriangle and may.boundary then
-    -- give the actual lift through lambda^Q and the strict f_Q square.
-    -- hsusp identifies the ordinary suspension label with x. Transport
-    -- through lambda powers must retain the finite B_(n+m+l-(m-e(g)))
-    -- ambiguity in y', not merely equality in the infinity quotient.
-    -- May supplies a signed homotopy relation; removing its sign requires
-    -- the mod-2 label comparison, not an assertion of characteristic two
-    -- for the homotopy groups. No FiniteExtension conclusion is assumed here.
+    let Wh : FiniteExtensionWitness model T.Z (.shift 1 T.X) T.h
+        (i+1) l s t xBar suspendedX := by
+      convert (Classical.choice hh) using 1
+      dsimp only [eg] at hiZ
+      omega
+    obtain ⟨aZSelected,haZSelected,hδSelected,hSelectedH⟩ :=
+      select_finite_extension_source T.Z (.shift 1 T.X) T.h
+        (i+1) q hq l s t xBar suspendedX Wh aZ haZ
+    have hSelectedBoundary : boundary aZSelected = boundary aZ := by
+      dsimp only [boundary]
+      rw [hδSelected]
+    have hSelectedBoundaryStable
+        (hnc : NoCrossingOn model T.Z (n+m+l) (n+m+l-(m-eg)) (s,t))
+        (a : BiHom (t-s) t (XModLambdaN Zν i))
+        (ha : Detects (model.convergence (.quotient i (.nu T.Z))) (s,t,t)
+          (regradeE2 (by simp) (finiteTargetLabel model T.Z i s t 0 xBar)) a) :
+        boundary a = boundary aZSelected :=
+      (hboundaryStable hnc a ha).trans hSelectedBoundary.symm
+    have hstrictSelected : ag ≫ finiteExtensionMap model T.Y T.Z T.g q =
+        boundary aZSelected := hstrict.trans hSelectedBoundary.symm
+    let aZ := aZSelected
+    have haZ := haZSelected
+    have hstrict := hstrictSelected
+    have hboundaryStable := hSelectedBoundaryStable
+    have hSourceReady :
+        (FiniteNoCrossing model T.Z (.shift 1 T.X) T.h (i+1) l s t ∧ eh+1<l) ∨
+        FiniteExtensionAtSource T.Z (.shift 1 T.X) T.h (i+1) l s t
+          xBar suspendedX Wh aZ := by
+      rcases hcross with hhcross | hδcross
+      · have hncFinite : FiniteNoCrossing model T.Z (.shift 1 T.X) T.h (i+1) l s t := by
+          convert hhcross using 1
+          dsimp only [eg] at hiZ
+          omega
+        by_cases hlShort : l≤eh+1
+        · right
+          exact KIP126.ProofTools.Internal.Leibniz.finite_extension_at_source_short
+            T.Z (.shift 1 T.X) T.h (i+1) l s t xBar suspendedX Wh
+            (by exact hlShort) hncFinite aZ haZ
+        · exact Or.inl ⟨hncFinite,by omega⟩
+      · right
+        apply hSelectedH
+        convert hδcross using 1 <;> dsimp only [eg] at hiZ hqZ <;> omega
+    have hSourceShort (hlShort : l≤eh+1) :
+        FiniteExtensionAtSource T.Z (.shift 1 T.X) T.h (i+1) l s t
+          xBar suspendedX Wh aZ := by
+      rcases hSourceReady with ⟨_,hlong⟩ | hsource
+      · omega
+      · exact hsource
+    have hstrictSameSource
+        (hnc : NoCrossingOn model T.Z (n+m+l) (n+m+l-(m-eg)) (s,t))
+        (a : BiHom (t-s) t (XModLambdaN Zν i))
+        (ha : Detects (model.convergence (.quotient i (.nu T.Z))) (s,t,t)
+          (regradeE2 (by simp) (finiteTargetLabel model T.Z i s t 0 xBar)) a) :
+        ag ≫ finiteExtensionMap model T.Y T.Z T.g q = boundary a := by
+      rw [hboundaryStable hnc a ha]
+      exact hstrict
+    have hagNeg := finite_source_detects_neg T.Y T.Z T.g q (sf+n) (tf+n) y _ hag
+    let G := (model.normalizedMap T.Y T.Z T.g).map
+    obtain ⟨ug,hugIncl,hugProj,lamg,vg,wg,hlamgIncl,hlamgProj,hvgIncl,hvgProj,hwgIncl,hgTriangle⟩ :=
+      quotient_octahedron_fill G q
+    have hugFixed := normalized_quotient_maps_equal_on_spheres T.Y T.Z
+      (normalizedExponent model.classicalTower T.g)
+      (normalizedExponent_le_one model.classicalTower T.g) q hq ug (XModLambdaN.map G q)
+      (hugIncl.trans (XModLambdaN.incl_naturality G q))
+    have hugStrict : ag ≫ ug = boundary aZ := (hugFixed _ _ ag).trans hstrict
+    let Cg := HasFunctorialCofiber.cofib G
+    let jg : Zν ⟶ Cg := HasFunctorialCofiber.cofibι G
+    let eCg := normalized_g_cofiber_iso T he htriangle
+    let eCgShift := normalized_g_shifted_cofiber_iso T he htriangle
+    have heCgIncl := normalized_g_shifted_cofiber_inclusion T he htriangle
+    have heCgProj := normalized_g_shifted_cofiber_boundary T he htriangle
+    have hGj : G ≫ jg = 0 :=
+      comp_distTriang_mor_zero₁₂ _ (HasFunctorialCofiber.cofib_distinguished G)
+    let ag' : BiHom (t-s-1) (t+i)
+        (XModLambdaN ((extensionSourceObject model T.Y T.Z T.g).obj model.nu model.auxiliary) q) :=
+      homotopyRegrade (by dsimp [tf,sf]; omega) (by dsimp [tf]; omega) ag
+    have hstrict' : ag' ≫ XModLambdaN.map G q =
+        biSuspensionHomEquiv (t-s) t i (XModLambdaN Zν q)
+          (by simpa only [Nat.add_sub_cancel_left] using
+            aZ ≫ ((model.quotients.tower Zν).triangle hi (show i < i+q by omega)).delta) := by
+      have regrade_comp {m m' w w' : ℤ} {A B : SyntheticSpectrum}
+          (hm : m=m') (hw : w=w') (a : BiHom m w A) (f : A ⟶ B) :
+          homotopyRegrade hm hw (a ≫ f) = homotopyRegrade hm hw a ≫ f := by
+        subst m'; subst w'; rfl
+      have regrade_back {m m' w w' : ℤ} {A : SyntheticSpectrum}
+          (hm : m=m') (hw : w=w') (hm' : m'=m) (hw' : w'=w)
+          (a : BiHom m w A) : homotopyRegrade hm' hw' (homotopyRegrade hm hw a) = a := by
+        subst m'; subst w'; rfl
+      have H := congrArg (homotopyRegrade
+        (show (tf+n)-(sf+n)=t-s-1 by dsimp [tf,sf]; omega)
+        (show tf+n+eg=t+i by dsimp [tf]; omega)) hstrict
+      dsimp only [boundary] at H
+      rw [regrade_comp,regrade_back] at H
+      exact H
+    let hg : Cg ⟶
+        ((extensionSourceObject model T.Y T.Z T.g).obj model.nu model.auxiliary)⟦(1:ℤ)⟧ :=
+      HasFunctorialCofiber.cofibδ G
+    have hjghg : jg ≫ hg = 0 :=
+      comp_distTriang_mor_zero₂₃ _ (HasFunctorialCofiber.cofib_distinguished G)
+    obtain ⟨pGeometry,vGeometry,hpGeometry,hvGeometry,hvSecond⟩ :=
+      finite_quotient_octahedral_pullback_desuspended G i q hi hq (t-s) t aZ ag' hstrict'
+    obtain ⟨φGeometry,KGeometry,hφGeometry,hKGeometry,hρGeometry⟩ :=
+      normalized_octahedral_comparison T.X T.Y Zν Cg _ ef eg
+        (by dsimp [ef]; omega) eCg G jg hg hGj hjghg i q hi hq pGeometry hpGeometry
+    let cGeometry : BiHom (t-s) t (XModLambdaN Cg (i+q)) := vGeometry ≫ φGeometry
+    have hcGeometry : cGeometry ≫ (model.quotients.tower Cg).rho i (i+q) (by omega) =
+        aZ ≫ XModLambdaN.map jg i := by
+      change (vGeometry ≫ φGeometry) ≫ _ = _
+      rw [Category.assoc,hρGeometry,←Category.assoc,hvGeometry]
+    let compositeGeometry :=
+      (SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-(i:ℤ))).map
+        (XModLambdaN.map G (i+q-i)) ≫
+          ((model.quotients.tower Zν).triangle hi (show i < i+q by omega)).lambdaMap
+    have hsecondGeometry : cGeometry ≫ XModLambdaN.map hg (i+q) =
+        (vGeometry ≫ HasFunctorialCofiber.cofibδ compositeGeometry) ≫ KGeometry := by
+      dsimp only [cGeometry,compositeGeometry]
+      rw [Category.assoc,←hKGeometry,←Category.assoc]
+    obtain ⟨dGeometry,tGeometry,hEdgeGeometry⟩ :=
+      quotient_unquotiented_boundary_defect G i q hi hq
+        φGeometry KGeometry hφGeometry hKGeometry
+    obtain ⟨bGeometry,hbGeometry⟩ := quotient_lift_image_division jg hg hjghg
+      i (i+q) hi (by omega) aZ cGeometry hcGeometry
+    let cShift : BiHom (t-s) t (XModLambdaN
+        ((SyntheticCategory.biShift (1,ef+eg)).obj
+          (model.nu.functor.obj (T.X.obj model.auxiliary))) (i+q)) :=
+      cGeometry ≫ XModLambdaN.map eCg.hom (i+q)
+    have hcShift : cShift ≫ (model.quotients.tower
+        ((SyntheticCategory.biShift (1,ef+eg)).obj
+          (model.nu.functor.obj (T.X.obj model.auxiliary)))).rho i (i+q) (by omega) =
+        aZ ≫ XModLambdaN.map (jg ≫ eCg.hom) i := by
+      dsimp only [cShift]
+      rw [Category.assoc, ← (model.quotients.natural eCg.hom).rho_naturality (by omega),
+        ← Category.assoc, hcGeometry, Category.assoc,
+        ← model.quotients.functoriality.map_comp]
+    letI := model.exactness.shiftCommShift (1,ef+eg)
+    letI := model.exactness.shiftExact (1,ef+eg)
+    obtain ⟨eQi,heQi,_⟩ := quotient_shift_exists model.quotients.coherence (1,ef+eg) i
+      (model.nu.functor.obj (T.X.obj model.auxiliary))
+    obtain ⟨eQr,heQr,_⟩ := quotient_shift_exists model.quotients.coherence (1,ef+eg) (i+q)
+      (model.nu.functor.obj (T.X.obj model.auxiliary))
+    let cNu : BiHom (t-s-1) (t-(ef+eg))
+        (XModLambdaN (model.nu.functor.obj (T.X.obj model.auxiliary)) (i+q)) :=
+      quotientShiftDesuspend T.X (1,ef+eg) (i+q) eQr (t-s) t cShift
+    let aNu : BiHom (t-s-1) (t-(ef+eg))
+        (XModLambdaN (model.nu.functor.obj (T.X.obj model.auxiliary)) i) :=
+      quotientShiftDesuspend T.X (1,ef+eg) i eQi (t-s) t
+        (aZ ≫ XModLambdaN.map (jg ≫ eCg.hom) i)
+    have hcNu : cNu ≫ (model.quotients.tower
+        (model.nu.functor.obj (T.X.obj model.auxiliary))).rho i (i+q) (by omega) = aNu :=
+      quotient_shift_desuspend_restriction T.X (1,ef+eg) i (i+q) hi (by omega)
+        eQi eQr heQi heQr (t-s) t _ cShift hcShift
+    let k : ℕ := (l-eh).toNat
+    have hkZ : (k:ℤ)=l-eh := by
+      have := Wh.length_lower
+      dsimp only [k,eh]
+      exact Int.toNat_of_nonneg (by omega)
+    have hki : k < i := by
+      have hh := Wh.length_upper
+      dsimp only [eh] at hkZ
+      omega
+    have hweight : t-(ef+eg)=tf-k := by
+      have hsum : ef+eg+eh=1 := he
+      dsimp only [tf]
+      omega
+    let aNuNative : BiHom (tf-sf) (tf-k)
+        (XModLambdaN (model.nu.functor.obj (T.X.obj model.auxiliary)) i) :=
+      homotopyRegrade (by dsimp [tf,sf]; omega) hweight aNu
+    let cNuNative : BiHom (tf-sf) (tf-k)
+        (XModLambdaN (model.nu.functor.obj (T.X.obj model.auxiliary)) (i+q)) :=
+      homotopyRegrade (by dsimp [tf,sf]; omega) hweight cNu
+    have hcNuNative : cNuNative ≫ (model.quotients.tower
+        (model.nu.functor.obj (T.X.obj model.auxiliary))).rho i (i+q) (by omega) = aNuNative := by
+      dsimp only [cNuNative,aNuNative]
+      rw [←regrade_comp,hcNu]
+    have hTargetReady :
+        FiniteNoCrossing model T.Z (.shift 1 T.X) T.h (i+1) l s t ∨
+        Detects (model.convergence (.quotient i (.nu T.X))) (sf,tf,tf-k)
+          (finiteTargetLabel model T.X i sf tf k x) aNuNative := by
+      rcases hSourceReady with ⟨hnc,_⟩ | hsource
+      · exact Or.inl hnc
+      · right
+        exact normalized_h_target_detects_native T he htriangle i l s t xBar x suspendedX
+          Wh hsusp aZ hsource eQi heQi
+    have hTargetShort (hlShort : l≤eh+1) :
+        Detects (model.convergence (.quotient i (.nu T.X))) (sf,tf,tf-k)
+          (finiteTargetLabel model T.X i sf tf k x) aNuNative :=
+      normalized_h_target_detects_native T he htriangle i l s t xBar x suspendedX
+        Wh hsusp aZ (hSourceShort hlShort) eQi heQi
+    have hActualFSource
+        (htarget : Detects (model.convergence (.quotient i (.nu T.X))) (sf,tf,tf-k)
+          (finiteTargetLabel model T.X i sf tf k x) aNuNative) :=
+      normalized_f_raw_source_unshift_detects T he htriangle (i+q) k (by omega)
+        sf tf (t-s) t x (by dsimp [tf,sf]; omega) hweight eQr heQr cGeometry
+        (finite_target_rho_detects T.X i (i+q) k hki (by omega)
+          sf tf x aNuNative htarget cNuNative hcNuNative)
+    have hActualFSourceReady := hTargetReady.imp (fun h => h) hActualFSource
+    have hDividedSourceReady :
+        FiniteNoCrossing model T.Z (.shift 1 T.X) T.h (i+1) l s t ∨
+        ∃ b : BiHom (tf-sf) tf
+            (XModLambdaN (model.nu.functor.obj (T.X.obj model.auxiliary)) (i+q-k)),
+          b ≫ (model.quotients.tower _).rho 1 (i+q-k) (by omega) =
+            firstLabel model T.X sf tf x ≫
+              XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧
+          Detects (model.convergence (.quotient (i+q-k) (.nu T.X))) (sf,tf,tf)
+            (regradeE2 (by simp) (finiteTargetLabel model T.X (i+q-k) sf tf 0 x)) b ∧
+          KIP126.ProofTools.Internal.Leibniz.finiteLambdaDivisionClass T.X (i+q) k
+            (by omega) sf tf b = cNuNative := by
+      rcases hTargetReady with hnc | htarget
+      · exact Or.inl hnc
+      · right
+        have hcDetected := finite_target_rho_detects T.X i (i+q) k hki (by omega)
+          sf tf x aNuNative htarget cNuNative hcNuNative
+        exact finite_target_source_division_exact T.X (i+q) k (by omega)
+          sf tf x cNuNative hcDetected
+    have hSurvivalReady :
+        FiniteNoCrossing model T.Z (.shift 1 T.X) T.h (i+1) l s t ∨
+        (∃ c : BiHom (tf-sf) tf (XModLambdaN (nuZero model T.X) Q),
+          c ≫ (model.quotients.tower (nuZero model T.X)).rho 1 Q hQ =
+            firstLabel model T.X sf tf x) := by
+      rcases hDividedSourceReady with hnc | hdivided
+      · exact Or.inl hnc
+      · right
+        have hQk : i+q-k=Q := by omega
+        obtain ⟨b,hb,_,_⟩ := hdivided
+        let f : model.nu.functor.obj (T.X.obj model.auxiliary) ⟶ nuZero model T.X :=
+          SyntheticCategory.biShift_zero.inv.app _
+        have hlift : ∃ c : BiHom (tf-sf) tf (XModLambdaN (nuZero model T.X) (i+q-k)),
+            c ≫ (model.quotients.tower _).rho 1 (i+q-k) (by omega) =
+              firstLabel model T.X sf tf x := by
+          refine ⟨b≫XModLambdaN.map f (i+q-k),?_⟩
+          rw [Category.assoc,←(model.quotients.natural f).rho_naturality (by omega),
+            ←Category.assoc,hb]
+          simp only [f,Category.assoc,←model.quotients.functoriality.map_comp,
+            Iso.hom_inv_id_app,model.quotients.functoriality.map_id,Category.comp_id]
+        have transport (q₁ q₂ : ℕ) (h : q₁=q₂) (hq₁ : 0<q₁) (hq₂ : 0<q₂)
+            (hh : ∃ c : BiHom (tf-sf) tf (XModLambdaN (nuZero model T.X) q₁),
+              c ≫ (model.quotients.tower (nuZero model T.X)).rho 1 q₁ hq₁ =
+                firstLabel model T.X sf tf x) :
+            ∃ c : BiHom (tf-sf) tf (XModLambdaN (nuZero model T.X) q₂),
+              c ≫ (model.quotients.tower (nuZero model T.X)).rho 1 q₂ hq₂ =
+                firstLabel model T.X sf tf x := by
+          subst q₂
+          exact hh
+        exact transport _ _ hQk (by omega) hQ hlift
+    -- MH2, MainPaper lines 1875–1917: vGeometry is constructed from the
+    -- prescribed pair aZ/ag'; hvGeometry and hvSecond fix both of its images.
+    -- The same cGeometry=vGeometry≫φGeometry lies in the fixed λ^(i+q)
+    -- quotient. Finite no-return proves its strict ρ equation hcGeometry.
+    -- hsecondGeometry factors its second image through the fixed KGeometry
+    -- evaluated on the prescribed ag' (via hvSecond). It remains to identify
+    -- this K evaluation with the required signed λ_i image of ag'.
+    -- hEdgeGeometry now records the actual unquotiented edge defect for
+    -- these same φGeometry/KGeometry, retaining both dGeometry and tGeometry.
+    -- Passing that defect to the prescribed finite source still requires
+    -- the filtered correction; its two residual terms are not set to zero.
+    -- hbGeometry independently retains membership in the actual λ_i image;
+    -- its arbitrary preimage bGeometry is not identified with ag'.
+    -- cShift transports that same lift to the specified shifted νX;
+    -- heCgIncl/heCgProj retain the normalized h map and rotated −f map.
+    -- cNu is that same lift in the unshifted νX quotient; hcNu preserves
+    -- its restriction after the chosen quotient/shift comparison.
+    -- ug and its complementary lamg filling are selected by three actual
+    -- octahedra. hgTriangle retains the signed triangle on Cg, cone(ug)
+    -- and cone(F_q G)[1], with hlamgIncl/hlamgProj and hvgIncl/hvgProj/hwgIncl
+    -- recording its actual comparison maps. hugStrict identifies the
+    -- action of ug on ag with the fixed quotient map, including exponent one.
+    -- aZ is selected from the actual h witness in the differential
+    -- no-crossing branch, with the same unshifted label and δ image.
+    -- hSourceReady retains either the finite h no-crossing hypothesis or
+    -- that actual h-source/target detection and its strict inverse transport.
+    -- The source comparison uses the registered positive-shift compatibility.
+    -- hTargetReady identifies the actual aNu with the prescribed weighted
+    -- x label in the differential no-crossing or short h branch (k<=1).
+    -- hTargetShort gives this detection directly under the short length
+    -- bound, with the excluded branch retaining its strict k>=2 range.
+    -- hSurvivalReady then
+    -- supplies the required Q_Q firstLabel lift via the actual cNu restriction.
+    -- hDividedSourceReady also divides that same cNuNative by lambda^k
+    -- while preserving its strict lambda image and the exact original x
+    -- first label, using a torsion lift of the source boundary ambiguity.
+    -- The target filtration of its actual f image remains to be proved.
+    -- hActualFSourceReady transports the same original cGeometry to the
+    -- actual signed normalized f source, retaining the native lambda^k x
+    -- detection after inverse ef transport, with internally chosen quotient
+    -- comparisons and no equality between independent commShift choices.
+    -- The remaining common-lift comparison must impose the second May
+    -- equation, finish the finite h no-crossing branch, and
+    -- retain the finite B_(n+m+l-(m-e(g))) ambiguity after λ division.
+    -- The proved label sign comparison applies only after detection;
+    -- no exponent-two assertion is made for synthetic homotopy groups.
     sorry
   obtain ⟨ag,hag,hagDetect⟩ := finite_top_extension_preimage
     T.Y T.Z T.g pg m (sf+n) (tf+n) y yBar Wg (by dsimp [pg,eg]; omega)
