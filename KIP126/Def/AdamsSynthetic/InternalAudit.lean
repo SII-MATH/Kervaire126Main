@@ -48,6 +48,9 @@ import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Grading
 import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Multiplication
 import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Normalization
 import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Preservation
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Inverse
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Milnor
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Tower
 import all KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence
 import all KIP126.Def.AdamsSynthetic.Internal.Source.AdamsTower
 import all KIP126.Def.AdamsSynthetic.Internal.Source.Completion

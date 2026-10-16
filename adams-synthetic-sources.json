@@ -4494,7 +4494,7 @@
     {
       "path": "KIP126/Def/AdamsSynthetic/InternalAudit.lean",
       "role": "internal-trust-audit",
-      "sha256": "c12529bf99b66278262758a33b3feeef701c821d963e777c9e8886c71c85dfe1",
+      "sha256": "f7ea0ec7fc25418270c4a48650ea6c1632aa80f9e6b94c9550887b0b57e5066a",
       "origins": [
         {
           "commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
@@ -5856,7 +5856,7 @@
     },
     {
       "path": "KIP126/Def/AdamsSynthetic/Standard/ClassicalSupport.lean",
-      "sha256": "51440cd82880d564447b6d48ee8095e38f600d6cbf404ee9e3c9fc63ea905388",
+      "sha256": "7fc05373517eac9a906654dd21d9695a67360d5d832ede1299227f4ca04d4fec",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -5880,7 +5880,8 @@
         }
       ],
       "role": "fixed-original-upstream-contract-and-data",
-      "change": "Restore original finite data, actual-object calibration or structural comparison consumed by the migrated Main proof. No paper-specific derived conclusion is assumed here; derived Main calculations remain compiled Main proofs."
+      "change": "Restore original finite data, actual-object calibration or structural comparison consumed by the migrated Main proof. No paper-specific derived conclusion is assumed here; derived Main calculations remain compiled Main proofs.",
+      "sphere_bhs_port": "Private conditional adapter specializes the migrated finite-kernel argument to the exact tower of classical_sphere_separated; the public obligation retains its original proof debt."
     },
     {
       "path": "KIP126/Def/AdamsSynthetic/Standard/Filtration.lean",
@@ -6981,6 +6982,177 @@
       ],
       "sha256": "65cd507e9e53c5f6639dc5578709c3b7141116745cfe352559ae44601a15f9e2",
       "change": "Fixed public objects/results are supplied in Standard; generic mathematical support and established proofs are retained. Consumer result packages are private or removed. Individual unfinished objects/proofs are locked in proof-obligations.json."
+    },
+    {
+      "path": "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Inverse.lean",
+      "sha256": "262d89822688da4a7cb9fbcd8008b51faa94e7cbb232248981f03bbd60bf89dd",
+      "role": "private-conditional-sphere-bhs-proof-port",
+      "origins": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Algebra/InverseSequence/Finite/Proofs.lean",
+          "sha256": "a2e52af35aa586905c61ba504ac0d14b81bd1d80b56a7819d0ccfa869b920abb",
+          "line_start": 16,
+          "line_end": 66
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 125,
+          "line_end": 235
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 399,
+          "line_end": 435
+        }
+      ],
+      "declarations": [
+        {
+          "name": "exists_compatible_of_finite",
+          "line": 29,
+          "kind": "theorem"
+        },
+        {
+          "name": "surjective_sub_shift_of_finite",
+          "line": 65,
+          "kind": "theorem"
+        },
+        {
+          "name": "finite_fiber_of_finite_ker",
+          "line": 80,
+          "kind": "theorem"
+        },
+        {
+          "name": "finite_fiber_comp",
+          "line": 92,
+          "kind": "theorem"
+        },
+        {
+          "name": "finite_fiber_tower",
+          "line": 104,
+          "kind": "theorem"
+        },
+        {
+          "name": "separated_of_finite_ker",
+          "line": 138,
+          "kind": "theorem"
+        },
+        {
+          "name": "compatible_zero_of_difference_injective",
+          "line": 177,
+          "kind": "theorem"
+        },
+        {
+          "name": "common_representative",
+          "line": 190,
+          "kind": "theorem"
+        }
+      ]
+    },
+    {
+      "path": "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Milnor.lean",
+      "sha256": "2c9ea3d5cd206e824e5de8ddb6996d8f8006adb4e0fb7e003f28a08a62da992f",
+      "role": "private-conditional-sphere-bhs-proof-port",
+      "origins": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 899,
+          "line_end": 1015
+        }
+      ],
+      "declarations": [
+        {
+          "name": "doubling_kernel_cokernel",
+          "line": 21,
+          "kind": "theorem"
+        },
+        {
+          "name": "shift_power_doubling_conditions",
+          "line": 56,
+          "kind": "theorem"
+        },
+        {
+          "name": "doubling_middle_of_exact",
+          "line": 92,
+          "kind": "theorem"
+        }
+      ]
+    },
+    {
+      "path": "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Tower.lean",
+      "sha256": "488692fb7ec36128eec7de56e09a0b80a58fd79d6da5fc2638392a23fe572528",
+      "role": "private-conditional-sphere-bhs-proof-port",
+      "origins": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 92,
+          "line_end": 119
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 240,
+          "line_end": 291
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8",
+          "line_start": 438,
+          "line_end": 522
+        }
+      ],
+      "declarations": [
+        {
+          "name": "oneSubShift",
+          "line": 34,
+          "kind": "def"
+        },
+        {
+          "name": "hom_delta_bijective",
+          "line": 37,
+          "kind": "theorem"
+        },
+        {
+          "name": "separated_of_finite_kernels",
+          "line": 67,
+          "kind": "theorem"
+        },
+        {
+          "name": "filtration_element_separated",
+          "line": 87,
+          "kind": "theorem"
+        },
+        {
+          "name": "filtration_separated",
+          "line": 105,
+          "kind": "theorem"
+        },
+        {
+          "name": "quotientProjection_eq_zero_iff",
+          "line": 122,
+          "kind": "theorem"
+        },
+        {
+          "name": "adams_complete_of_difference",
+          "line": 135,
+          "kind": "theorem"
+        },
+        {
+          "name": "complete_and_separated_of_acyclic_and_finite",
+          "line": 212,
+          "kind": "theorem"
+        }
+      ]
     }
   ],
   "obligation_review_commit": "5aa845241533b763c37a1d5fc70cce9708c4e68e",
@@ -8644,5 +8816,102 @@
       "SurvivalTransport is a new complete local proof on SSDataMorphism, not an upstream text port.",
       "Compatibility decision: the original Standard.standardHi construction (and its direct sorry) remains unchanged. New Standard.standardHi_milnor is a separate pending identity proof. No completed inverse-definition of standardHi is claimed; standardH6Square_milnor depends on this identity and product compatibility."
     ]
+  },
+  "sphere_bhs_proof_port": {
+    "user_authorization": "Migrate the old Kervaire126/develop sphere BHS applicability proof framework, retaining its known incompleteness.",
+    "responsibility_owner": "AdamsSynthetic",
+    "source": {
+      "repository": "https://github.com/SII-MATH/Kervaire126.git",
+      "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+      "archive": "Sources/Kervaire126SphereBHS-8cb35dad5.tar.gz",
+      "archive_sha256": "b8911fdfa3f9641da8974ec201e45b1f7e49fd09cec07205a1d2fa600bef28af",
+      "files": [
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+          "sha256": "4ce2256b0f3329e34201dcaf8daabf6ea8eb99bafeca58b8ceb09ea7db760db8"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/Algebra/InverseSequence/Finite/Proofs.lean",
+          "sha256": "a2e52af35aa586905c61ba504ac0d14b81bd1d80b56a7819d0ccfa869b920abb"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/Completion/Predicates.lean",
+          "sha256": "ca3256383ff815d00ea191b4d39f1c4e90a923804e4f672a4296909e42b2f433"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/Convergence/BHS/Predicates.lean",
+          "sha256": "cdc621f0f4f197e433c9df61df8bd0b7f970ca1e74ed54356c510ffe64d89291"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/Convergence/Tower/FiniteType/Proofs.lean",
+          "sha256": "3735a958c5ed2d37884c699d537e08675cd022afc7edc97f8b9cc95242fa50d3"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/Convergence/Tower/Proofs.lean",
+          "sha256": "2bb3929e522d4ad5053b1f2d1f41bbdd490d2aa979ed91b2a87bf786d383e1b7"
+        },
+        {
+          "commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
+          "path": "KIP126/Def/ClassicalAdams/Convergence/Tower/Completion/Proofs.lean",
+          "sha256": "82fd570df3e7ad640ed8de9b617c658865e4b7f59ef3613587dac2f3b4a83ad7"
+        }
+      ],
+      "status": "original-source-evidence-only-not-imported-as-current-Lean-modules"
+    },
+    "status": "conditional-proof-support-ported-selected-completed-source-instantiation-pending",
+    "compiled_components": [
+      "finite inverse-system compactness and finite-kernel separation",
+      "actual AbstractAdamsTower 1-shift bijectivity on represented homotopy",
+      "canonical filtration quotient-cone completeness and subobject separation",
+      "Milnor doubling kernel/cokernel, exact-sequence and finite-geometric-sum arguments"
+    ],
+    "private_files": [
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Inverse.lean",
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Milnor.lean",
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Tower.lean"
+    ],
+    "public_interfaces_changed": false,
+    "new_direct_lean_holes": 0,
+    "new_axioms": 0,
+    "existing_obligations_not_discharged": [
+      "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+      "KIP126.AdamsSynthetic.Standard.classicalConvergence"
+    ],
+    "original_source_gaps": [
+      {
+        "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+        "line": 3805,
+        "sorry_line": 3806,
+        "statement": "(adamsResidualSequence H.unit X).IsAcyclic",
+        "status": "original-archived-gap-not-a-new-current-Lean-hole",
+        "warning": "This is the same selected sphere nilpotent-completeness condition; it must not be discharged by standardSphereApplicability."
+      },
+      {
+        "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+        "line": 3883,
+        "sorry_line": 3886,
+        "statement": "inducedMap (adamsTowerMap H.unit (M s) 0 (2*(n+1)) _) n = 0",
+        "status": "original-archived-gap-not-a-new-current-Lean-hole"
+      }
+    ],
+    "remaining_port_boundary": "The old full instantiation uses a reflective completed-source model and its HF2 cohomology detector. Current sourceRecognition recognizes the ordinary stable source; HF2 localization versus the paper completion remains an independent backlog. The point-set completed-source/Moore instantiation is retained as exact archived source, not claimed compiled or complete.",
+    "no_cycle": "The compiled helpers depend only on current tower/filtration definitions and mathlib; none imports Literature, Computation, ProofTools, Main, or a selected applicability assertion.",
+    "private_standard_adapter": {
+      "path": "KIP126/Def/AdamsSynthetic/Standard/ClassicalSupport.lean",
+      "name": "classical_sphere_separated_of_residual_acyclic",
+      "premises": [
+        "countable products",
+        "invertible actual residual 1-shift",
+        "finite adjacent homotopy kernels"
+      ],
+      "conclusion": "the unchanged public classical_sphere_separated statement",
+      "status": "conditional-proof-only-no-new-public-interface"
+    }
   }
 }

@@ -6240,5 +6240,47 @@
         "task": "Identify the explicitly defined HF₂ categorical localization with the paper's completion model under the required connectivity/finite-type hypotheses, including the actual completed-sphere comparison. The localized spectral-sequence factorization is not this comparison."
       }
     ]
+  },
+  "sphere_bhs_proof_port": {
+    "user_authorization": "Migrate the old Kervaire126/develop sphere BHS applicability proof framework, retaining its known incompleteness.",
+    "responsibility_owner": "AdamsSynthetic",
+    "status": "conditional-proof-support-ported-selected-completed-source-instantiation-pending",
+    "compiled_components": [
+      "finite inverse-system compactness and finite-kernel separation",
+      "actual AbstractAdamsTower 1-shift bijectivity on represented homotopy",
+      "canonical filtration quotient-cone completeness and subobject separation",
+      "Milnor doubling kernel/cokernel, exact-sequence and finite-geometric-sum arguments"
+    ],
+    "private_files": [
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Inverse.lean",
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Milnor.lean",
+      "KIP126/Def/AdamsSynthetic/Internal/SphereBHS/Tower.lean"
+    ],
+    "public_interfaces_changed": false,
+    "new_direct_lean_holes": 0,
+    "new_axioms": 0,
+    "existing_obligations_not_discharged": [
+      "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+      "KIP126.AdamsSynthetic.Standard.classicalConvergence"
+    ],
+    "original_source_gaps": [
+      {
+        "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+        "line": 3805,
+        "sorry_line": 3806,
+        "statement": "(adamsResidualSequence H.unit X).IsAcyclic",
+        "status": "original-archived-gap-not-a-new-current-Lean-hole",
+        "warning": "This is the same selected sphere nilpotent-completeness condition; it must not be discharged by standardSphereApplicability."
+      },
+      {
+        "path": "KIP126/Def/StageInput/StandardSphere/Sequence/Proofs.lean",
+        "line": 3883,
+        "sorry_line": 3886,
+        "statement": "inducedMap (adamsTowerMap H.unit (M s) 0 (2*(n+1)) _) n = 0",
+        "status": "original-archived-gap-not-a-new-current-Lean-hole"
+      }
+    ],
+    "remaining_port_boundary": "The old full instantiation uses a reflective completed-source model and its HF2 cohomology detector. Current sourceRecognition recognizes the ordinary stable source; HF2 localization versus the paper completion remains an independent backlog. The point-set completed-source/Moore instantiation is retained as exact archived source, not claimed compiled or complete.",
+    "no_cycle": "The compiled helpers depend only on current tower/filtration definitions and mathlib; none imports Literature, Computation, ProofTools, Main, or a selected applicability assertion."
   }
 }
