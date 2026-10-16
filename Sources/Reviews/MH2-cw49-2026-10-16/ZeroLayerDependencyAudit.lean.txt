@@ -1,0 +1,382 @@
+module
+-- Read-only observer: full bodies are imported to inspect proof dependencies;
+-- production imports and mathematical module boundaries are unchanged.
+import all KIP126.Def.AdamsSynthetic
+import all KIP126.Def.AdamsSynthetic.AdamsFiltration
+import all KIP126.Def.AdamsSynthetic.Background
+import all KIP126.Def.AdamsSynthetic.Coherence
+import all KIP126.Def.AdamsSynthetic.Comparisons
+import all KIP126.Def.AdamsSynthetic.Compatibility
+import all KIP126.Def.AdamsSynthetic.Configuration
+import all KIP126.Def.AdamsSynthetic.ConsumerOperations
+import all KIP126.Def.AdamsSynthetic.Context
+import all KIP126.Def.AdamsSynthetic.Detection
+import all KIP126.Def.AdamsSynthetic.ESSShift
+import all KIP126.Def.AdamsSynthetic.Enrichment
+import all KIP126.Def.AdamsSynthetic.Extension
+import all KIP126.Def.AdamsSynthetic.ExtensionLabels
+import all KIP126.Def.AdamsSynthetic.ExtensionWitnesses
+import all KIP126.Def.AdamsSynthetic.ExtensionZero
+import all KIP126.Def.AdamsSynthetic.Families
+import all KIP126.Def.AdamsSynthetic.HomologyExactness
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Cobar
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Cohomology
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Complex
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Hi
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Data
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Grading
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Multiplication
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Normalization
+import all KIP126.Def.AdamsSynthetic.Internal.Milnor.Polynomial.Preservation
+import all KIP126.Def.AdamsSynthetic.Internal.Source.AdamsSequence
+import all KIP126.Def.AdamsSynthetic.Internal.Source.AdamsTower
+import all KIP126.Def.AdamsSynthetic.Internal.Source.Completion
+import all KIP126.Def.AdamsSynthetic.Internal.Source.DerivedSmash
+import all KIP126.Def.AdamsSynthetic.Internal.Source.MilnorComparison
+import all KIP126.Def.AdamsSynthetic.Internal.Source.PointSet
+import all KIP126.Def.AdamsSynthetic.Internal.Source.PointSetRecognition
+import all KIP126.Def.AdamsSynthetic.Internal.Source.Prespectrum
+import all KIP126.Def.AdamsSynthetic.Internal.Source.Recognition
+import all KIP126.Def.AdamsSynthetic.Internal.Source.Sphere
+import all KIP126.Def.AdamsSynthetic.Internal.Source.SurvivalTransport
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Inverse
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Milnor
+import all KIP126.Def.AdamsSynthetic.Internal.SphereBHS.Tower
+import all KIP126.Def.AdamsSynthetic.Mapping
+import all KIP126.Def.AdamsSynthetic.MappingComposition
+import all KIP126.Def.AdamsSynthetic.MappingDetection
+import all KIP126.Def.AdamsSynthetic.MappingEnrichment
+import all KIP126.Def.AdamsSynthetic.Normalized
+import all KIP126.Def.AdamsSynthetic.PageExtensions
+import all KIP126.Def.AdamsSynthetic.Quotients
+import all KIP126.Def.AdamsSynthetic.Realization
+import all KIP126.Def.AdamsSynthetic.Recovery
+import all KIP126.Def.AdamsSynthetic.Source
+import all KIP126.Def.AdamsSynthetic.Sphere
+import all KIP126.Def.AdamsSynthetic.SphereTensor
+import all KIP126.Def.AdamsSynthetic.Standard
+import all KIP126.Def.AdamsSynthetic.Standard.Background
+import all KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
+import all KIP126.Def.AdamsSynthetic.Standard.Filtration
+import all KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility
+import all KIP126.Def.AdamsSynthetic.Standard.Operations
+import all KIP126.Def.AdamsSynthetic.Standard.Realization
+import all KIP126.Def.AdamsSynthetic.Standard.Separation
+import all KIP126.Def.AdamsSynthetic.Standard.Source
+import all KIP126.Def.AdamsSynthetic.Suspension
+import all KIP126.Def.AdamsSynthetic.System
+import all KIP126.Def.AdamsSynthetic.Tower
+import all KIP126.Def.AdamsSynthetic.Weight
+import all KIP126.Def.Computation
+import all KIP126.Def.Computation.Basis
+import all KIP126.Def.Computation.Source
+import all KIP126.Def.Computation.Standard
+import all KIP126.Def.Computation.Table
+import all KIP126.Def.Computation.Table.Archive
+import all KIP126.Def.Computation.Table.Data
+import all KIP126.Def.Computation.Table.Dimensions
+import all KIP126.Def.Computation.Table.Internal.ZeroDimension
+import all KIP126.Def.Computation.Table.Relations
+import all KIP126.Def.Computation.Table.Syntax
+import all KIP126.Def.Computation.Table.ThetaRelations
+import all KIP126.Def.Computation.Table.Values
+import all KIP126.Def.Literature
+import all KIP126.Def.Literature.Applicability
+import all KIP126.Def.Literature.BHS
+import all KIP126.Def.Literature.BX
+import all KIP126.Def.Literature.Classical
+import all KIP126.Def.Literature.ClassicalRange
+import all KIP126.Def.Literature.Delivery
+import all KIP126.Def.Literature.EInfinity
+import all KIP126.Def.Literature.Lift
+import all KIP126.Def.Literature.May
+import all KIP126.Def.Literature.Moss
+import all KIP126.Def.Literature.RealizationTransport
+import all KIP126.Def.Literature.Rigidity
+import all KIP126.Def.Literature.Secondary
+import all KIP126.Def.Literature.Standard
+import all KIP126.Def.Literature.Standard.Filtration
+import all KIP126.Def.Literature.Standard.QuotientAlgebra
+import all KIP126.Def.Literature.Standard.Secondary
+import all KIP126.Def.Literature.Toda
+import all KIP126.Def.Literature.Triangles
+import all KIP126.Def.ProofTools
+import all KIP126.Def.ProofTools.ConvergenceOperations
+import all KIP126.Def.ProofTools.DetectionOperations
+import all KIP126.Def.ProofTools.FiltrationOperations
+import all KIP126.Def.ProofTools.FiniteFiltration
+import all KIP126.Def.ProofTools.GeneralizedLeibniz
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.BottomTarget
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Boundary
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.BoundaryDivision
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingDelta
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingDivision
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingFinite
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingLabels
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingRange
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.CrossingShift
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.DivisionLabels
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Filtration
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Propagation
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Reverse
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.RightEdge
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.SphereAutomorphisms
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Square
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.SquareRepresentatives
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.Survival
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.WeightedReverse
+import all KIP126.Def.ProofTools.GeneralizedLeibniz.WitnessSquare
+import all KIP126.Def.ProofTools.GeneralizedMahowald
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Adjacent
+import all KIP126.Def.ProofTools.GeneralizedMahowald.BottomNuInjection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.BoundaryDetection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.BoundaryLambda
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CofiberIdentification
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Coherence
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonCoordinates
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonEdgeLabels
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonEdgeNativeTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonShiftEdge
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonTotalTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CorrectedCoordinates
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CorrectedTotalTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.CumulativeBoundary
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Detection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ExtensionImage
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FSourceActual
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FSourceRegrade
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FSourceTransport
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FTransport
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FTransportLambda
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Filtration
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FinalDivision
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FinalOperations
+import all KIP126.Def.ProofTools.GeneralizedMahowald.FiniteLambdaShift
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Geometry
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HMapCoherence
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HSource
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HSourceSelection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.HTargetDetection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.KernelCorrection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.KernelTriangles
+import all KIP126.Def.ProofTools.GeneralizedMahowald.MayCorrection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.MinimalFinalAssembly
+import all KIP126.Def.ProofTools.GeneralizedMahowald.MinimalSource
+import all KIP126.Def.ProofTools.GeneralizedMahowald.NoReturn
+import all KIP126.Def.ProofTools.GeneralizedMahowald.NuCofiberMayCorrection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.OctahedralPullback
+import all KIP126.Def.ProofTools.GeneralizedMahowald.PageCalculus
+import all KIP126.Def.ProofTools.GeneralizedMahowald.QuotientShift
+import all KIP126.Def.ProofTools.GeneralizedMahowald.RotatedNuPremises
+import all KIP126.Def.ProofTools.GeneralizedMahowald.RotatedNuTriangle
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ShiftLabels
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ShortSource
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Signs
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SourceBoundaryReview
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Sphere
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereAutomorphismDetection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereLabels
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereMayActual
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereMayCorrection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SphereResidualLabels
+import all KIP126.Def.ProofTools.GeneralizedMahowald.StatementReview
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SuspensionClassLabels
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SuspensionDetection
+import all KIP126.Def.ProofTools.GeneralizedMahowald.SuspensionTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.Synchronization
+import all KIP126.Def.ProofTools.GeneralizedMahowald.TargetSurvival
+import all KIP126.Def.ProofTools.GeneralizedMahowald.TotalFTransport
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerAssembly
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerSpecial
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerTarget
+import all KIP126.Def.ProofTools.Language
+import all KIP126.Def.ProofTools.Laws
+import all KIP126.Def.ProofTools.Operations
+import all KIP126.Def.ProofTools.Representatives
+import all KIP126.Def.ProofTools.Standard
+import all KIP126.Def.ProofTools.Stretching
+import all KIP126.Def.ProofTools.StretchingRepresentatives
+import all KIP126.Def.SpectralSequence
+import all KIP126.Def.SpectralSequence.Basic
+import all KIP126.Def.SpectralSequence.Basic.Category.Data
+import all KIP126.Def.SpectralSequence.Basic.Category.Predicates
+import all KIP126.Def.SpectralSequence.Basic.Category.Proofs
+import all KIP126.Def.SpectralSequence.Basic.Data
+import all KIP126.Def.SpectralSequence.Basic.MorphismCriterion
+import all KIP126.Def.SpectralSequence.Basic.PageHomology.Data
+import all KIP126.Def.SpectralSequence.Basic.Predicates
+import all KIP126.Def.SpectralSequence.Basic.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension
+import all KIP126.Def.SpectralSequence.BoundedExtension.BoundedComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Chain.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Detection.Predicates
+import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Construction.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Morphism.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.SelfComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Predicates
+import all KIP126.Def.SpectralSequence.BoundedExtension.Sequence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.SpectralSequence.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.Square.Construction.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Square.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.Square.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.TwoTerm.Proofs
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Data
+import all KIP126.Def.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity
+import all KIP126.Def.SpectralSequence.Commutativity.Basic.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity.Detection.Data
+import all KIP126.Def.SpectralSequence.Commutativity.Detection.Proofs
+import all KIP126.Def.SpectralSequence.Commutativity.Predicates
+import all KIP126.Def.SpectralSequence.Commutativity.Square.Data
+import all KIP126.Def.SpectralSequence.Commutativity.Square.Proofs
+import all KIP126.Def.SpectralSequence.Completion.Comparison.Data
+import all KIP126.Def.SpectralSequence.Completion.Comparison.Proofs
+import all KIP126.Def.SpectralSequence.Completion.CompletedFiltration.Data
+import all KIP126.Def.SpectralSequence.Completion.Data
+import all KIP126.Def.SpectralSequence.Completion.Predicates
+import all KIP126.Def.SpectralSequence.Completion.Proofs
+import all KIP126.Def.SpectralSequence.Completion.UniversalProperty.Data
+import all KIP126.Def.SpectralSequence.Completion.UniversalProperty.Proofs
+import all KIP126.Def.SpectralSequence.Computation.API.Predicates
+import all KIP126.Def.SpectralSequence.Computation.Morphism.Proofs
+import all KIP126.Def.SpectralSequence.Computation.PageThree.Proofs
+import all KIP126.Def.SpectralSequence.Computation.Predicates
+import all KIP126.Def.SpectralSequence.Computation.Proofs
+import all KIP126.Def.SpectralSequence.Computation.State.Predicates
+import all KIP126.Def.SpectralSequence.Computation.State.Proofs
+import all KIP126.Def.SpectralSequence.Consumer.BoundedExtension
+import all KIP126.Def.SpectralSequence.Consumer.Extension
+import all KIP126.Def.SpectralSequence.Convergence.Category.Data
+import all KIP126.Def.SpectralSequence.Convergence.Data
+import all KIP126.Def.SpectralSequence.Convergence.Predicates
+import all KIP126.Def.SpectralSequence.Convergence.Proofs
+import all KIP126.Def.SpectralSequence.Convergence.Vanishing.Proofs
+import all KIP126.Def.SpectralSequence.Crossing.Data
+import all KIP126.Def.SpectralSequence.Crossing.Predicates
+import all KIP126.Def.SpectralSequence.Crossing.Proofs
+import all KIP126.Def.SpectralSequence.Extension.Complex.Data
+import all KIP126.Def.SpectralSequence.Extension.Complex.Proofs
+import all KIP126.Def.SpectralSequence.Extension.Data
+import all KIP126.Def.SpectralSequence.Extension.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex
+import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing
+import all KIP126.Def.SpectralSequence.FilteredComplex.Crossing.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.HomologyTarget.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Predicates
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSData.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.SSDataConstruction.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Affine.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.AffineRestriction.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Finiteness.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Morphism.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Obstruction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Obstruction.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Converse.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Page.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Restriction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.Solutions.Restriction.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.SpectralSequenceConstruction.Data
+import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Comparison.Proofs
+import all KIP126.Def.SpectralSequence.FilteredComplex.WeakConvergence.Data
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Boundaries
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Cycles
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Data
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Helpers
+import all KIP126.Def.SpectralSequence.FilteredDifferential.Proofs
+import all KIP126.Def.SpectralSequence.FilteredDifferential.SquareZero
+import all KIP126.Def.SpectralSequence.FilteredPage.Data
+import all KIP126.Def.SpectralSequence.FilteredPage.Proofs
+import all KIP126.Def.SpectralSequence.FinitePageCalculus.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Coefficients.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Completion.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Predicates
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Filtration.Proofs
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Graded.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Data
+import all KIP126.Def.SpectralSequence.Internal.Algebra.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.ModuleQuotient.Data
+import all KIP126.Def.SpectralSequence.ModuleQuotient.Proofs
+import all KIP126.Def.SpectralSequence.ModuleSubobject.Proofs
+import all KIP126.Def.SpectralSequence.Multiplicative
+import all KIP126.Def.SpectralSequence.MultiplicativeCategory
+import all KIP126.Def.SpectralSequence.PageComparison.Data
+import all KIP126.Def.SpectralSequence.PageComparison.Predicates
+import all KIP126.Def.SpectralSequence.PageComparison.Raw.Data
+import all KIP126.Def.SpectralSequence.PageComparison.Raw.Proofs
+import all KIP126.Def.SpectralSequence.PageLevel.Data
+import all KIP126.Def.SpectralSequence.PageLevel.Proofs
+import all KIP126.Def.SpectralSequence.Permanence.Predicates
+import all KIP126.Def.SpectralSequence.Permanence.Proofs
+import all KIP126.Def.SpectralSequence.Representatives.Proofs
+import all KIP126.Def.SpectralSequence.Transport
+import all KIP126.Def.SpectralSequence.Truncation
+import all KIP126.Def.SpectralSequence.Truncation.Data
+import all KIP126.Def.SpectralSequence.Truncation.Predicates
+import all KIP126.Def.SpectralSequence.Truncation.Proofs
+import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Data
+import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedComplex.Proofs
+import all KIP126.Def.SpectralSequence.UnboundedExtension.TruncatedSpectralSequence.Data
+public meta import Checks.Registry
+import Lean
+open Lean Elab Command
+set_option maxHeartbeats 0
+set_option maxRecDepth 8192
+run_cmd do
+  let env ← getEnv
+  let roots := #[`KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere,
+    `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer]
+  let mut pending : Array Name := #[]
+  for sourceName in roots do
+    let some (name, _) := env.constants.toList.find? (fun (name, _) =>
+      ((privateToUserName? name).getD name) == sourceName)
+      | throwError "Missing zero-layer theorem: {sourceName}"
+    pending := pending.push name
+  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let rows ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
+  let mut seen : NameSet := {}
+  let mut holes : Array Json := #[]
+  while !pending.isEmpty do
+    let name := pending.back!
+    pending := pending.pop
+    if seen.contains name then continue
+    seen := seen.insert name
+    let some info := env.find? name | throwError "Missing dependency: {name}"
+    let some idx := env.getModuleIdxFor? name | continue
+    let mod := env.header.moduleNames[idx.toNat]!
+    unless (`KIP126).isPrefixOf mod do continue
+    if info.isAxiom then throwError "Project axiom: {name}"
+    let body := info.value? (allowOpaque := true)
+    if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then
+      throwError "Synthetic sorry: {name}"
+    if info.type.hasSorry || body.any (·.hasSorry) then
+      if (`KIP126.Def.ProofTools).isPrefixOf mod then
+        throwError "Local unfinished MH2/GL dependency: {name}"
+      let some row := rows.find? (fun row => row.getObjValAs? String "name" == .ok name.toString)
+        | throwError "Unregistered upstream proof responsibility: {name}"
+      let ht ← Lean.ofExcept <| row.getObjValAs? String "type_fingerprint"
+      let hb ← Lean.ofExcept <| row.getObjValAs? String "body_fingerprint"
+      unless ht == toString (hash (toString info.type)) && hb == toString (hash (toString body)) do
+        throwError "Changed upstream obligation: {name}"
+      holes := holes.push <| Json.mkObj [("name", toJson name.toString), ("module", toJson mod.toString)]
+    pending := pending ++ info.type.getUsedConstants
+    if let some value := body then pending := pending ++ value.getUsedConstants
+  liftIO <| IO.FS.writeFile "/tmp/MH2-zero-layer-dependencies.json"
+    (Json.mkObj [("roots", toJson (roots.map Name.toString)),
+      ("visited_constants", toJson seen.size), ("registered_upstream_obligations", Json.arr holes),
+      ("local_pending_MH2_GL_dependencies", Json.arr #[]), ("project_axioms", Json.arr #[])]).pretty
+  logInfo m!"Zero-layer dependency audit: {holes.size} registered upstream obligations; no local MH2/GL gap or project axiom"

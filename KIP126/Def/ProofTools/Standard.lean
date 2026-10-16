@@ -3,8 +3,15 @@ module
 public import KIP126.Def.ProofTools.Stretching
 public import KIP126.Def.ProofTools.GeneralizedLeibniz
 public import KIP126.Def.ProofTools.GeneralizedMahowald
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerSpecial
 
-/-! Fixed callable paper tools. All already-written proofs from the pinned
-source have been ported. The original GL1/GL2 and MH1/MH2 subgoals remain
-in their respective theorem bodies; upstream construction and external-result
-obligations stay in the modules that supply those interfaces. -/
+/-! Fixed callable paper tools. The remaining general GL1/GL2 and MH2
+obligations stay registered in their original theorem bodies. Main uses the
+proved zero-layer nu-cofiber instance below. Upstream construction and
+external-result duties stay in the modules that supply those interfaces. -/
+
+namespace KIP126.ProofTools.Standard
+/-- The proved zero-layer nu-cofiber instance used by Main. -/
+public alias nuCofiberMahowaldZeroLayer :=
+  KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer
+end KIP126.ProofTools.Standard

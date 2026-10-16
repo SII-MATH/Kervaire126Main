@@ -1,0 +1,290 @@
+Main 实际依赖审计（full-body；type + opaque body 的常量依赖；每个缺口给出最短路径）
+主定理根：KIP126.Main.h6_sq_permanent
+不会把上游模块责任算作 Main / ProofTools 本地缺口。
+观察器：/tmp/MainActualDependencyAudit.lean
+
+根：KIP126.Main.EtaExtensionDetection
+可达项目声明：442
+Main/ProofTools direct sorry：0；上游 direct sorry：37
+
+根：KIP126.Main.EtaExtensionDetectionAt
+可达项目声明：434
+Main/ProofTools direct sorry：0；上游 direct sorry：37
+
+根：KIP126.Main.H6SquarePermanent
+可达项目声明：148
+Main/ProofTools direct sorry：0；上游 direct sorry：5
+
+根：KIP126.Main.H6SquareSupportsD12
+可达项目声明：432
+Main/ProofTools direct sorry：0；上游 direct sorry：36
+
+根：KIP126.Main.Stem126D6Vanishes
+可达项目声明：418
+Main/ProofTools direct sorry：0；上游 direct sorry：36
+
+根：KIP126.Main.Theta5SquareNonzeroDetection
+可达项目声明：432
+Main/ProofTools direct sorry：0；上游 direct sorry：36
+
+根：KIP126.Main.Theta5SquareNonzeroDetectionAt
+可达项目声明：423
+Main/ProofTools direct sorry：0；上游 direct sorry：36
+
+根：KIP126.Main.ThetaChoice
+可达项目声明：367
+Main/ProofTools direct sorry：0；上游 direct sorry：31
+
+根：KIP126.Main.UChoice
+可达项目声明：423
+Main/ProofTools direct sorry：0；上游 direct sorry：36
+
+根：KIP126.Main.any_choice_criterion
+可达项目声明：1692
+Main/ProofTools direct sorry：0；上游 direct sorry：108
+
+根：KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square
+可达项目声明：1646
+Main/ProofTools direct sorry：0；上游 direct sorry：106
+
+根：KIP126.Main.eta_extension_detection_choice_equivalence
+可达项目声明：1112
+Main/ProofTools direct sorry：0；上游 direct sorry：72
+
+根：KIP126.Main.eta_extension_excluded_of_d6_vanishes
+可达项目声明：3669
+Main/ProofTools direct sorry：1；上游 direct sorry：158
+  缺口：KIP126.ProofTools.Standard.generalizedMahowald
+  模块：KIP126.Def.ProofTools.GeneralizedMahowald
+  类型指纹：12297579626073384622；证明体指纹：17924752964050994422
+  已登记且指纹一致：True
+  最短路径：
+    KIP126.Main.eta_extension_excluded_of_d6_vanishes
+    KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes
+    KIP126.Main.SectionSeven.target_nu_divisible
+    KIP126.Main.Internal.NuNinth.nu_extension_in_ninth_quotient
+    KIP126.Main.Internal.NuThree.nu_extension_in_fifth_quotient
+    KIP126.Main.Internal.NuThree.nu_extension_in_third_quotient
+    KIP126.Main.Internal.NuThree.nu_three_actual_relation_and_unique
+    KIP126.Main.Internal.NuThree.nu_three_actual_map_relation
+    KIP126.Main.Internal.NuThree.cnu_mahowald_finite
+    KIP126.ProofTools.Standard.generalizedMahowald
+
+根：KIP126.Main.h6_sq_permanent
+可达项目声明：4194
+Main/ProofTools direct sorry：1；上游 direct sorry：180
+  缺口：KIP126.ProofTools.Standard.generalizedMahowald
+  模块：KIP126.Def.ProofTools.GeneralizedMahowald
+  类型指纹：12297579626073384622；证明体指纹：17924752964050994422
+  已登记且指纹一致：True
+  最短路径：
+    KIP126.Main.h6_sq_permanent
+    KIP126.Main.eta_extension_excluded_of_d6_vanishes
+    KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes
+    KIP126.Main.SectionSeven.target_nu_divisible
+    KIP126.Main.Internal.NuNinth.nu_extension_in_ninth_quotient
+    KIP126.Main.Internal.NuThree.nu_extension_in_fifth_quotient
+    KIP126.Main.Internal.NuThree.nu_extension_in_third_quotient
+    KIP126.Main.Internal.NuThree.nu_three_actual_relation_and_unique
+    KIP126.Main.Internal.NuThree.nu_three_actual_map_relation
+    KIP126.Main.Internal.NuThree.cnu_mahowald_finite
+    KIP126.ProofTools.Standard.generalizedMahowald
+
+根：KIP126.Main.h6_square_differential_dichotomy_and_criterion
+可达项目声明：1879
+Main/ProofTools direct sorry：0；上游 direct sorry：118
+
+根：KIP126.Main.theta5_square_nonzero_detection_choice_equivalence
+可达项目声明：839
+Main/ProofTools direct sorry：0；上游 direct sorry：65
+
+根：KIP126.Main.theta_square_three_possibilities
+可达项目声明：1186
+Main/ProofTools direct sorry：0；上游 direct sorry：69
+
+所有根可达的 direct sorry 声明清单（上游单独标注）：
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.Spectrum | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.SyntheticSpectrum | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.auxiliary | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.classical | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.classicalConvergence | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.classicalSuspension | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.classicalTower | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport :: KIP126.AdamsSynthetic.Standard.classical_page_negative | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport :: KIP126.AdamsSynthetic.Standard.classical_sphere_separated | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Filtration :: KIP126.AdamsSynthetic.Standard.closedBackground | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.coefficients | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.comparison | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.convergence | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.convergence_natural | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.exactness | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.family | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.firstQuotient | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility :: KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.FirstQuotientCompatibility :: KIP126.AdamsSynthetic.Standard.firstQuotient_suspension | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.first_quotient | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.multiplicationCompatible | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.normalizedMap | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.nu | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.nu_preserves_triangle | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.quotients | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.recovery | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Operations :: KIP126.AdamsSynthetic.Standard.shift_ambient_eq | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Operations :: KIP126.AdamsSynthetic.Standard.shift_filtered | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Operations :: KIP126.AdamsSynthetic.Standard.shift_page | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Operations :: KIP126.AdamsSynthetic.Standard.shift_representative_iff | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.spectrumCategory | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.spectrumCofiber | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.sphereAlgebra | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.sphereProductCommutative | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.sphere_first_quotient | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport :: KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.standardHi | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.syntheticCategory | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.syntheticCofiber | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Background :: KIP126.AdamsSynthetic.Standard.syntheticTower | 登记指纹一致=True
+上游 KIP126.Def.AdamsSynthetic.Standard.Separation :: KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.atomIndex | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.atom_record | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.basisCount | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.basisMonomial | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.cofiber_d3 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.cofiber_target_not_hit_through5 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.cofiber_target_to_e6 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h0 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h1 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h2 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h4 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h5 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_h6 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_product | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.comparison_unit | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.correction_permanent | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.d2_x125_8 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.d3_h4_x109_12 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.delta_agrees | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.e2_stem125_low | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.e4_stem124_af12 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.e4_stem125_af12 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.e5_stem124_af11 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.e5_stem125_af13 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.g_agrees | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.generators | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.h1_correction_zero | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.h5Square_b_zero | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.high_e5 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.p_h2_boundary | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.p_permanent | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.q_h2_boundary | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.q_permanent | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceAtom | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceComponent | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceCoordinates | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceGenerator | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceProduct | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.sourceUnit | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.square_nonzero | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.t_not_h0_multiple | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.t_only_incoming | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.t_permanent_cycle | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.topCell | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.top_comparison | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.u_permanent | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.v_to_e12 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.w_d6_targets | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.w_to_e6 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.x_h2_zero | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.x_not_hit | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.x_to_e6 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Standard :: KIP126.Computation.Standard.y_to_e5 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Dimensions :: KIP126.Computation.Table.archive_dimension | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Values :: KIP126.Computation.Table.basis_value | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table :: KIP126.Computation.Table.cofiberBasis | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table :: KIP126.Computation.Table.cofiber_basis_correct | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h0_obstruction_rel0 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h0_obstruction_rel1 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h0_obstruction_rel2 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h0_obstruction_rel3 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h2_obstruction_rel0 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h2_obstruction_rel1 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Relations :: KIP126.Computation.Table.h2_obstruction_rel2 | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Values :: KIP126.Computation.Table.product_comm | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table :: KIP126.Computation.Table.result | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.Archive :: KIP126.Computation.Table.staircase_result | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.ThetaRelations :: KIP126.Computation.Table.theta_h5_generator84_zero | 登记指纹一致=True
+上游 KIP126.Def.Computation.Table.ThetaRelations :: KIP126.Computation.Table.theta_h5_generator85_zero | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.Filtration :: KIP126.Literature.Standard.action_filtration | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.adamsOneLine_d2 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bhs_bockstein | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bhs_differentials | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bhs_finite_lift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bxTheta5 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bx_finite | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bx_theta_label | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bx_total_boundary | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.bx_untruncated | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.Filtration :: KIP126.Literature.Standard.classical_product_detection | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.deltaH1g | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_finite | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_finite_labels | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_lambda_finite | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_lambda_nu | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_nu | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_nu_labels | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_rho_finite | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eInfinity_rho_nu | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eta_exponent | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.eta_label | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.Filtration :: KIP126.Literature.Standard.finite_action | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.finite_quotient_vanishing | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.g | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.infinityShift_natural | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.kappaBar | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.kappaBar_detection | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.may_leftExact | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.may_leftShift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.may_rightExact | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.may_rightShift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.nuCofiber_bottom_exponent | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.nuCofiber_normalized_label | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.nuCofiber_nu_exponent | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.nuCofiber_top_exponent | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.nuCofiber_triangle | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientAlgebra | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientAlgebra_commutative | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientAlgebra_first_quotient | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientAlgebra_sphere_action | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientAlgebra_unit | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.QuotientAlgebra :: KIP126.Literature.Standard.quotientSyntheticSymmetric | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.realization_lambda | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.realization_sphere | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.realization_unit | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.selected_filtration_lambda | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.selected_permanent_lift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.selected_realization_boundary_lift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.selected_realization_kernel | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.selected_realization_prescribed_lift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.sphereVanishing | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.stem62_exponent_two | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.syntheticH0 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.theta5 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.theta5_lift | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmf | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmfIso | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmfUnit | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmfUnit_agrees | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmf_high125_nonzero | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmf_low_filtration63 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.tmf_vanishing62 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.Secondary :: KIP126.Literature.Standard.toda_eta_squared | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.toda_h0_eta | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.toda_h0_label | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.toda_lambda_h0 | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.toda_low_indeterminacy | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard.Secondary :: KIP126.Literature.Standard.toda_symmetric | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.universal_coefficient | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.wClass | 登记指纹一致=True
+上游 KIP126.Def.Literature.Standard :: KIP126.Literature.Standard.w_detection | 登记指纹一致=True
+本地 KIP126.Def.ProofTools.GeneralizedMahowald :: KIP126.ProofTools.Standard.generalizedMahowald | 登记指纹一致=True

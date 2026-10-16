@@ -1,0 +1,198 @@
+CW49 有限页 Syn / GL 分支与可证明特例（只读）
+2026-10-16
+源码版本：Zenodo 14875701 source-code.zip，commit 087753ebaa0b351f565d18279442cf05c9ab3c50。
+范围：ss/category.cpp:458–710；ss/deduce.cpp:247–275；ss/ss.cpp:214–285；ss/cofseq.cpp:885–916。
+不修改项目源码、公共接口、数据库。本报告的证明是纸面证明，未新增 Lean 声明。
+
+一、调用入口、数据形状及三个不同整数
+
+SetCwDiffGlobal:458–471 在 depth≤1、开启 synthetic、非零已知 d_r、r≤6 时进入 SetCwDiffSynthetic。
+DeduceDiffBySynthetic:247–275 是另一入口，遍历所有当前已知 outgoing differential；这里没有显式 r≤6 限制。
+所以“算法只处理 r≤6”仅对第一个入口正确，不是整个 Syn 模块的全局定理。
+
+写原始微分为 d_r(x)=z。sx 为 x 的滤过，sz=sx+r。
+在三角中当前映射为 f:X→Y，下一映射为 g:Y→Z，前一映射为 h:Z→ΣX。
+记 a_f=f->deg.s 为源码中 E2 映射的滤过位移。它不必等于 e(f)；例如 theta 映射的实际位移可为2，而 e(f)=1。
+
+第一次 GetSynImage 返回 y，sy=sx+m；
+第二次返回 w，sw=sx+r+l；
+输出微分长度 q=sw−sy=r+l−m，恰为 GL 的次数公式。
+
+Adams staircase level_x：
+  outgoing d_r 的源用10000−r；
+  boundary d_r 的目标用r；
+  LEVEL_PERM=9000 是程序的永久区间标记。
+这不是 λ 的数学层数。
+
+日志“General Leibniz ... k=...”中的整数另记 κ，定义为
+  κ=r_fx_tmp + (dfx_tmp.empty()?1:0)。
+它是 y 可能出现下一个 Adams 微分的 cutoff；不是数学 λ-level K。
+
+二、SetCwDiffSynthetic 的逐分支职责
+
+1. 第一次 GetSynImage:496：
+  输入 x，level_x=10000−r，s_f_dinv_x=−1。
+  hasCross=false 时 cross_min=1000，故通常不运行有限滤过处的 hidden-extension crossing sweep；
+  hasCross=true 时 cross_min=0，尝试要求第一条 f-extension 本身无 crossing。
+这是交换方框里“原 Adams 微分无 crossing，或者第一条 f-extension 无 crossing”的逻辑 OR。
+但 cross_min=1000 是有限计算的 sentinel；要将其读成∞，仍需既定计算范围内不出现滤过≥1000的候选。
+
+2. GetRAndDiff:497：
+  若 y 支持一个已知非零 d_τ，κ初值为τ；
+  若 y 已知 d_j=0 且下一页未知，κ初值为已知零的最后页+1；
+  若 y 是已知 Adams 边界，函数将其视作可存活到程序永久 cutoff，κ可为1000。
+其数学目标是证明 d_j(y)=0 对 j<κ，而非证明 y 永久。
+
+3. GetCrossR:498–503：
+  输入 Er=m−a_f+2。
+  若检查发现更早的潜在 crossing cutoff C，则将 κ 降到 C，并清掉临时非零目标。
+  精确地说，它把 κ 改成不大于该 crossing cutoff 的值。
+  这一步是对 y 的 Adams 微分/crossing 信息保守截断，不能解释成数学 level 的改变。
+
+4. 第二次 GetSynImage:512：
+  输入 z=d_r(x)，level_x=r，s_f_dinv_x=sy，
+  cross_min=sy+κ。
+  它试图构造 f(z) 的标签 w，并排除命中 AF≥sy+κ 的 crossing。
+  这就是一般交换方框定理只在高滤过区间要求 bottom 无 crossing 的结构。
+  源 z 虽为经典 Adams 边界，仍可有非零 synthetic λ-torsion 代表；不能把它简单置零。
+
+5. 行513–529：
+  必须 sw≥sy+κ，即 q≥κ；
+  最后把普通 Adams 方程 d_q(y)=w 写入数据库。
+  因而最后一步必须有真正的 δ 解码论证，有限商中的零关系本身不足以支持此写入。
+
+三、这里实际对应的是更一般的 cutoff 方框，而非只对应简版 GL
+
+AimPaper/main.tex:461–503 的定理4114f70c要求：
+  两条顶/左 extension 中至少一条无 crossing；
+  bottom extension 只需没有命中 AF≥sy+κ 的 crossing；
+  右边 d_(κ−1)(y)=0 且无 crossing；
+  0<κ≤q。
+由此给出右边长度q的微分。
+
+源码的 hasCross、cross_min=sy+κ、q≥κ 三项与这个版本逐项吻合。
+因此只拿原论文简版 GL 的“bottom 完全无 crossing”去核查代码，会错误地把程序有意允许的低目标 crossing 判成漏洞。
+
+但这只是结构匹配，不足以证明算法正确：
+  (i) 顶/左/底需要是同一个实际 synthetic 方框中的关系；
+  (ii) 右边的实际 δ 标签必须处在可解码层；
+  (iii) GetCrossR 的经典窗口需要覆盖实际 λ 层的 δ crossing 窗口；
+  (iv) GetSynImage 返回的候选需具备相应代表和 ESS 定义域。
+这些不是字符串或变量名能证明的。
+
+四、GetCrossR 的准确数学内容及限度
+
+ss.cpp:258–285 检查高一个源滤过 a，1≤a≤Er−2。
+在该位置的 staircase 中，最大 level 对应最短的可能 outgoing Adams differential 长度 ρ(a)。
+函数返回 min_a(a+ρ(a))，与1000比较取小；超出已知 t_max 的位置按最早长度2给出保守界。
+若某位置不存在，只有相应 raw basis 已知确实为空或有既定消失线才能把它略去。
+
+因此当返回 C>r 时，任何被覆盖位置的潜在 outgoing differential 都不能在 AF≤sx+r 命中；这充分排除对应经典 crossing。
+它可能多拒绝合法情况，因为它不要求每个潜在输出都实际非零，因而是保守检查。
+
+对于原 d_r(x)，入口传Er=r，覆盖 a=1,...,r−2；这包含所有 E_n（n≤r）的经典 crossing 源。
+所以 hasCross=false 是经典 Adams 无 crossing 的充分证书，条件是当前 staircase 与 t_max 消失信息正确。
+hasCross=true 仅表示不能排除 crossing，并不证明真有 crossing。
+
+对于 target y，Er=m−a_f+2 覆盖 a=1,...,m−a_f。
+这段窗口不是 λ-level，也不是所有任意 Q_N、λ^A y 的 δ crossing 窗口。
+需要额外证明实际方框可选的 N,A 正好使该窗口足够，不能从返回值直接得出任意带层 δ 的无 crossing。
+
+五、两次 GetSynImage 内部成功路径并不相同
+
+A. 直接 E2 像分支：fx=f_*x非零且 level_fx≥r_new，行563立即return0。
+第一次传s_f_dinv_x=−1，r_new=sy+1。低level边界被排除；高level存活类或足够晚的边界可通过。
+第二次传s_f_dinv_x=sy，若也走此分支，r_new=sw−sy=q；它排除太早已经为边界的目标。
+这个分支没有进行末端crossing sweep，不能把每次return0都解释成“运行过688–706的递归crossing检查”。
+
+B. E2 像为零、直接找 h 前像分支：598–623。
+在高到低生存状态的基中求 h_*barx=x，再读取 d_R(barx)。
+有限源检查 R<r（level_xtop>10000−r）保证 x 存活所需页。
+若 h,g 的实际滤过都是 e(h),e(g)，则 native MH2 的 k=0、m1=0：
+  输出长度 m=R−1+e(f)，native商Q_R。
+这个子分支能直接用已修复的零层 MH2，不需消 λ。
+若 h 的实际滤过较大，k=a_h−e(h)>0；若 g 较大，m1=a_g−e(g)>0。
+后者还需目标相应 cycle 资格；普通 raw E2 候选枚举本身不等于该资格的证明。
+
+C. E2 像为 Adams 边界分支：558–596。
+设 f_*x=d_A(v)。先令 barx=g_*v，读取 d_R(barx)；
+递归调用 h 的 GetSynImage，确认 barx 的输出是 x 模相应 staircase。
+只有递归输出为 level0 的真实关系，或另有相容代表定理时，才可直接当作核心 MH2 的 level0输入。
+若递归输出只被新定理认证成正level关系，不能自动再次调用只接收level0输入的核心修复。
+
+D. 两种目标线性解码：639–674。
+首次有限源level_x=10000−r>9000，使用所有候选并在必要时检查kernel；
+第二次boundary源level_x=r≤9000，限制在已确定的边界/永久候选区间，要求kernel在较短Adams边界空间中消失。
+这为目标唯一性提供实际线性约束，但它仍不是“已有完整ν代表”的同义词。
+尤其第二次调用需要的完整ν见证、源边界代表和higher-filtration修正，须单独证明。
+
+E. crossing sweep：676–706。
+扫源滤过 sx<s1<sy−a_f；这使用E2map实际AF作为最低长度。
+只考虑staircase level不低于本次源状态的basis，递归求hidden images；
+在命中 AF∈[cross_min,sy] 时拒绝；失败时一般拒绝，只有error12被略过。
+要将basis逐个检查提升为全部线性组合的无crossing，需要证明递归映像/定义域在该staircase商上满足线性闭包。
+error12的略过还需一个专门引理：level不足的源在实际所用Q_N、λ^K层不可能给出essential crossing。
+正K会改变B下标和Z下标，因此不能只用旧0层crossing翻译代替这些命题。
+
+六、已经能够完整证明的实际安全路径：两次都是直接 E2 像
+
+假设两次 GetSynImage 都在行563return0，且源码E2矩阵实现实际映射f。
+那么
+  y=f_*x，w=f_*z，
+  sy=sx+a_f，sw=sx+r+a_f。
+于是m=l=a_f，q=r。
+Adams谱序列的自然性直接给
+  d_r(y)=d_r(f_*x)=f_*(d_r x)=f_*z=w。
+结果按E_r上的边界商理解，与写入的普通Adams方程完全一致。
+此证明不需要MH2，不需要消λ，不需要GL的额外crossing条件。
+源码额外的cutoff/资格检查只会拒绝部分可用自然性，不会破坏这个推导。
+这是一条可识别、可重放认证的安全路径，不是仅给出待证明条件。
+但正常执行中普通自然性可能已经先写入同一结果，导致IsNewDiff为false；因此不能假称此路径必定贡献新的Syn日志。
+当前日志没有保存内部return分支，尚未把已发布某条Syn行逐一归入此路径。
+
+七、可证明的带层 cutoff GL 充分定理及证明
+
+记Q_N=ν/λ^N，e=e(f)，K为数学level；A=m−e+K。
+要求 r≥2、m≥e、l≥e，并且
+  0≤K<N，0≤A<N，N≤r+K−1；
+  κ≥1，κ≤q=r+l−m。
+在同一个真实交换方框
+  Q_N(X) --f_N--> Q_N(Y)
+    |δ_X              |δ_Y
+  shifted νX --f--> shifted νY
+中，要求如下实际ESS关系（包括其源定义域、目标边界商）：
+  δ_X: λ^K x ↦ λ^(r−N−1+K) z；
+  f_N: λ^K x ↦ λ^A y；
+  f: λ^(r−N−1+K) z ↦ λ^(r+l−N−1−e+K) w。
+第一、第二条至少一条无crossing。
+第三条无命中AF≥sy+κ的crossing。
+另外
+  d_(κ−1)^(δ_Y)(λ^A y)=0
+且该实际δ延拓无crossing。
+保留相应标签/循环资格，且最终δ编码确实采用源层A（不是另外一个标签）。
+
+证明：
+将上述方框代入一般交换方框定理4114f70c，得到
+  d_q^(δ_Y)(λ^A y)=λ^(A+q−N−1) w。
+因为0≤A<N，δ的带层编码真实可见；代入q=r+l−m和A=m−e+K，右指数恰好相同。
+由δ编码解得普通Adams微分d_q(y)=w。
+全程没有取消λ、没有将Q_N反演，也没有从截断零群推断普通微分。
+
+关键算术：满足A<N及N≤r+K−1的某个整数N存在，当且仅当
+  m≤r−2+e。
+这个上界与K无关。提高共同level不能修复超出此范围的顶层输出；必须换一种真实方框或别的论证。
+特别是源码没有在外层显式检查 m≤r−2+e；若要给所有成功分支发证，须由内部条件推出它，或证明另一个适用定理。
+
+八、仍需证明的精确源码义务
+
+G1. 第一次成功调用产生原生Q_N1的levelK1关系，并给出实际representative；递归分支应保留这一证书。
+G2. 第二次boundary源成功调用产生完整ν中的相容关系，或直接给出带层δ方框底边，而非仅有限商关系。
+G3. 存在共同N,K可由G1、G2合法投影/乘λ得到第七节三条边；不能从较小有限商自动提升到较大商。
+G4. 入口no-crossing OR对升层后的实际δ_X/f_N标签仍成立。
+G5. 行498的Adams窗口足以认证第七节δ_Y cutoff无crossing；行688–706足以认证bottom范围无crossing，包括线性组合及error12。
+G6. 最终0≤A<N及N≤r+K−1的解码范围；若有目标标签为零，输出应按目标商解释，不能据此区别某个具体y。
+G7. source/target cycle条件、ESS定义域、较短ESS像不定性均在调用时状态里成立。
+
+凡能补齐G1–G7的调用，可由第七节纸面定理给普通Adams输出发证；不必把所有算法分支都限制成K=0。
+当前只完成两次直接E2像路径的无条件证明，以及hidden路径的可检查充分定理。
+尚未证明全部Syn成功调用满足G1–G7，也未找到一个具体发布的Syn输出错误。

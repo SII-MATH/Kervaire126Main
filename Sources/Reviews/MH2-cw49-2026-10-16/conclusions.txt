@@ -1,0 +1,127 @@
+Main 零层 MH2 特例与官方 cw49 实际使用分支复核
+2026-10-16
+
+结论范围
+本轮按王老师“先证可推出的特例，再看 SS 实际使用版本”的意见推进。
+只修改 ProofTools 的私有实现、模块审计与证明/来源状态；公共接口保持冻结。
+详细证据分列于同目录的 MH2、GL、经典解码、配置清单与独立数学报告。
+下述数学证明、Lean 实现、程序认证三者分别说明，不能相互替代。
+
+一、Main 所需特例
+记 ef=e(f),eg=e(g),eh=e(h),ef+eg+eh=1。
+当 m=eg,l=eh 时，m1=l1=0，设 i=n-ef>=1，则
+  q=1，r=r'=Q=i+1=n+eg+eh。
+核心 May 构造在同一 Q_r 中保留同一个实际代表 c，满足
+  rho_i(c)=h(a)，F_r(c)=lambda^i b。
+零层的 rho 标签反射给出 x∈Z_r；第二式给出最高可见层的目标
+lambda^i y，其标签为 Z_1/B_r。由同一个 c 构造有限延拓 witness，
+得到延拓至 y' 且 y'-y∈B_r。整个过程不取消 lambda。
+h 的 no-crossing 在 l=eh 时次数窗口为空；不需要额外非零条件。
+独立纸面证明甚至可选 y'=y；本轮 Lean 封装保留原结论形式。
+
+本轮私有 Lean 定理：generalized_mahowald_zero_layer_sphere。
+文件：KIP126/Def/ProofTools/GeneralizedMahowald/ZeroLayerSpecial.lean。
+它保留原 MH2 输入，额外限定 m=eg,l=eh,T.Y=sphere，闭合所需输出。
+另有显式私有 Main 实例 main_nu_mahowald_zero_layer，结论直接写成Z3、页4长3延拓及B3同余。
+T.Y=sphere 来自当前实际 May 修正引理的适用范围；不能据此宣称所有
+目标对象的零层特例均已在 Lean 中闭合。
+Main 的 nuRouteTriangle 具有 Y=sphere，ef=1,eg=eh=0，参数
+(n,m,l,s,t)=(3,0,0,8,134)，因此 r=Q=3，有限延拓页为4，目标模B3。
+该私有定理从真实代表、rho 保持及目标标签引理组装，不调用待补的一般
+MH2 或 GL。上游已登记的 Literature/Computation 等责任仍按模块约定使用。
+
+现有 Main 文件仍通过旧公共 generalizedMahowald 入口消费；本轮不修改
+Main 或公开新接口。因此完成私有替代证明与现有公开依赖路径消除是两件事。
+旧一般 MH2 的反例及其原始待补责任仍保留。
+
+二、官方源码依据和统一参数
+源码：Zenodo record 14875701 的 v126.3.cw49 source-code.zip，
+commit 087753ebaa0b351f565d18279442cf05c9ab3c50。
+主要位置：ss/category.cpp:458-710，ss/deduce.cpp:247-318，
+ss/ss.cpp:214-285，ss/cofseq.cpp:885-916；论文 AimPaper/main.tex:461-503、1900起。
+令实际矩阵滤过为 d_f,d_g,d_h；它们可能大于仅取0/1的 ef,eg,eh。
+GetSynImage 隐藏路径中，若上方微分为 d_a(barx)=bary，则
+  m=d_g,l=AF(x)-AF(barx),n=a-l-d_g,
+  m1=d_g-eg,k=l1=l-eh,r=a,r'=a-m1,Q=a-k。
+核心修复首先在强商 Q_a 给出
+  d_n^(fhat_a)(lambda^k x)=lambda^(n-ef+k)y。
+向 Q_Q 的投影可能丢失目标，不能把弱关系自动降到第零层。
+
+三、MH2 分支
+D：原 E2 像非零且通过页资格检查，直接返回（category.cpp:558-564）。
+  属于给定实际映射的自然性，不需 MH2。须认证映射矩阵及相应页资格。
+M0：原 E2 像为零，直接求 h 的 E2 前像（599-624）。
+  当 d_h=eh,d_g=eg 时，k=m1=0，n=a-1+ef,Q=a；
+  原输入 cycle 及最小滤过 h/g 关系给出可用的零层 MH2 特例。
+  数学上适用于任意相容三角；本轮 Lean 实现覆盖其中 Y=sphere 的部分。
+  k>0 时需 genuine h 关系和 crossing，并保留层；m1>0 时额外核对
+  y∈Z_(m1+1) 及 g 关系，raw E2 候选空间不自动证明这些条件。
+M1：原 E2 像非零但为 Adams 边界（558-595）。
+  若 f2(x)=d_c(v)，取 barx=g2(v)，递归求 h 像；
+  l=c-d_f-d_g,k=l-eh。有限 d_b 源的比较模 Z_b（当前已知部分），
+  并非固定 E2 标签，也不只是模 Adams 边界。
+  必须证明换源 x→x+Z_b 对后续 GL 输出无影响，或给出固定标签、
+  第零层递归见证与同一代表同步。当前代码成功返回本身不提供此证明。
+目标解码：有限源可枚举全部 E2；永久/边界源限制候选并检查 kernel。
+  这些是唯一性的线性约束，不能等同于较高 cycle 或完整 nu 提升证书。
+crossing：循环跳过较低 staircase level（含更长存活类），忽略 error12。
+  还需 cycle 商上的 crossing 引理、basis 线性组合完备性和 error12 排除引理。
+
+配置全量审计：61个余纤维三角，183个旋转方向；对 M0 有
+  175个(k,m1)=(0,0)，4个(1,0)，4个(0,1)。
+8个例外方向来自 C(2sigma)、C(sigma^2)、Ctheta4、Ctheta5；每个各贡献
+一个 inclusion 正k方向和一个 projection 正m1方向。
+这仅是配置方向计数，不是历史成功调用比例，不认证递归M1。
+重放：python Sources/Reviews/MH2-cw49-2026-10-16/cw49_config_audit.py /实际路径/ss.json。
+
+四、GL 分支及精确缺失前提
+SetCwDiffSynthetic 对应论文 thm:4114f70c 的 cutoff 交换方框，
+不是仅对应简版 GL。日志 k 实际为 cutoff kappa；staircase level_x
+是页状态；数学 lambda 层另记 K，三者不得混同。
+原 d_r(x)=z，两次返回 y,w，设其相对滤过为 m,l，写入长度
+  q=r+l-m，要求1<=kappa<=q。
+顶/左至少一边无 crossing；底边只排除命中 AF>=AF(y)+kappa 的 crossing；
+右边还需 cutoff 前的零微分及对应无 crossing。
+
+已证安全特例：两次均直接返回 E2 像时，m=l=d_f,q=r，
+  d_r(f2(x))=f2(d_r(x))。
+普通自然性足够，但可能已被其他路径先写入，不能据此虚称新增 Syn 日志已认证。
+
+带层充分版本：存在同一个真实商 Q_N 和同一个数学层 K，令 A=m-ef+K，要求
+  0<=K<N，0<=A<N，N<=r+K-1。
+对同一个交换方框核对顶/左关系、完整nu中的底边关系、实际 crossing、
+右边 cutoff 零关系及目标边界商，方框定理给出可解码的普通 d_q(y)=w。
+上述 N 的整数可选范围等价于 m<=r-2+ef；提高 K 本身不能修复超出范围的情况。
+现有 GetCrossR 的经典窗口须另证覆盖实际带层窗口；不能直接照搬。
+有限源 M1 的模Z_b换代表若只保持 d_b 像，可能应证明联合 GL 的源商版本，
+而非逐次强行恢复固定源 MH2。该方向目前是待证引理，不是已认证程序性质。
+另有一个入口 DeduceDiffBySynthetic 不限制r<=6，不能把即时入口的限制全局化。
+
+五、SynCs 经典延拓与 Main 计算影响
+一个不循环的充分解码引理：强 Q_R May 构造的具体源 a_Q 若能提升到完整nuX，
+其低层标签反射先证明目标永久，再经lambda反演得到经典延拓。
+障碍是该具体代表的连接像 partial(a_Q)=0；它属于lambda^R的核。
+相关群无lambda^R挠是更强的充分条件。仅知源永久只保证某个代表可提升，
+不保证 May 所选代表可提升；SynCsIn 新写入的目标永久性不能反过来作前提。
+边界源经典 ESS 为零时，目标还可能是较短 ESS 的像，不必为 Adams 边界。
+
+正层日志2414557/2414560的弱Q2关系目标已截断；强商Q_(k+2)仍保留信息，
+可沿具体提升路线认证，但本轮未获得提升证书，也未证实这些输出错误或属于Main祖先。
+Main 手写调用本身不需消层；已有矩阵核对、B2消元不受此次修正影响。
+Main 的计算输入仍需历史状态及调用依赖证书：包括源到E6、AF10 gap、
+相应不被击中事实与所有相关 Syn/SynCs 祖先。不能由手写调用为零层推出
+全部计算数据安全，也不能从上述认证缺口断言主定理被反驳。
+
+六、构建与审计
+- 含显式 Main 数值实例的 ZeroLayerSpecial 完整模块构建通过（2802 jobs）。
+- lake build 全项目构建通过（3077 jobs）；普通公共接口消费者、模块边界与依赖审计通过。
+- ProofTools：2647个声明，仍仅2个已登记的待补声明（GL含2个源码sorry，MH2含1个）；无项目公理。
+- 完成定理的递归依赖检查排除了本模块待补的一般 MH2/GL；上游责任仍照既有登记使用。
+- source inventory：472个项目文件、26个消费者/审计文件均覆盖。
+- ProofTools来源清单98个文件的当前SHA均匹配；325项既有责任的内容和指纹完全未变。
+- 所有公共api/contract、工具链、依赖锁及Main代码均未修改。git diff --check通过。
+- 两项完成定理的精确上游依赖审计通过：74项既有责任，AdamsSynthetic 39项、Computation 12项、Literature 23项。
+  所有类型/体指纹均与原登记完全一致；不依赖本模块待补MH2/GL，无项目公理。
+  详细名单：zero-layer-upstream-dependencies.txt。此结果不等于上游责任已被证明。
+- 只读观察器已随报告保存为ZeroLayerDependencyAudit.lean.txt，复核时复制到临时.lean运行；
+  其完整证明体导入仅用于观察，不是允许生产模块跨边界导入私有实现。

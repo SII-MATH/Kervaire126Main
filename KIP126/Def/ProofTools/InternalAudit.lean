@@ -42,6 +42,8 @@ import all KIP126.Def.ProofTools.GeneralizedMahowald.Geometry
 import all KIP126.Def.ProofTools.GeneralizedMahowald.OctahedralPullback
 import all KIP126.Def.ProofTools.GeneralizedMahowald.CommonShiftEdge
 import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerAssembly
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerTarget
+import all KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerSpecial
 import all KIP126.Def.ProofTools.GeneralizedMahowald.StatementReview
 import all KIP126.Def.ProofTools.GeneralizedMahowald.BottomNuInjection
 import all KIP126.Def.ProofTools.GeneralizedMahowald.CorrectedTotalTarget
@@ -543,8 +545,40 @@ run_cmd do
     `KIP126.ProofTools.Internal.Mahowald.quotient_class_unshift_regrade_source,
     `KIP126.ProofTools.Internal.Mahowald.homotopy_regrade_self,
     `KIP126.ProofTools.Internal.Mahowald.finite_e2_regrade_roundtrip,
-    `KIP126.ProofTools.Internal.Mahowald.minimal_corrected_total_extension]
+    `KIP126.ProofTools.Internal.Mahowald.minimal_corrected_total_extension,
+    `KIP126.ProofTools.Internal.Mahowald.normalized_included_source_label,
+    `KIP126.ProofTools.Internal.Mahowald.corrected_second_image_finite_label,
+    `KIP126.ProofTools.Internal.Mahowald.finite_edge_detection_source_length,
+    `KIP126.ProofTools.Internal.Mahowald.finite_native_bottom_detection_reindex_exists,
+    `KIP126.ProofTools.Internal.Mahowald.zero_level_native_detection,
+    `KIP126.ProofTools.Internal.Mahowald.ZeroLayerDetectedPair,
+    `KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere,
+    `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer,
+    `KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer]
   let mut pending : Array Name := #[]
+  -- Main checks its ordinary-import dependency frontier against this same ledger.
+  -- Here import-all restores ProofTools proof bodies, so these roots receive the
+  -- full recursive no-local-gap check alongside the completed private helpers.
+  let rewire ← Lean.ofExcept <| ledger.getObjVal? "main_zero_layer_rewire_2026_10_16"
+  let mainBoundary ← Lean.ofExcept <|
+    rewire.getObjValAs? (Array String) "proofTools_boundary_declarations"
+  unless !mainBoundary.isEmpty do
+    throwError "Main-to-ProofTools dependency frontier must not be empty"
+  let mut boundaryNames : NameSet := {}
+  for sourceName in mainBoundary do
+    let name := sourceName.toName
+    if isPrivateName name then
+      throwError "Main dependency frontier contains a private ProofTools declaration: {name}"
+    if boundaryNames.contains name then
+      throwError "Duplicate Main-to-ProofTools boundary declaration: {name}"
+    boundaryNames := boundaryNames.insert name
+    let some _ := env.find? name
+      | throwError "Missing Main-to-ProofTools boundary declaration: {name}"
+    let some idx := env.getModuleIdxFor? name
+      | throwError "Missing module for Main-to-ProofTools boundary declaration: {name}"
+    unless (`KIP126.Def.ProofTools).isPrefixOf env.header.moduleNames[idx.toNat]! do
+      throwError "Main dependency frontier contains a declaration outside ProofTools: {name}"
+    pending := pending.push name
   for sourceName in provedTools do
     let some (name, _) := env.constants.toList.find? (fun (name, _) =>
         ((privateToUserName? name).getD name) == sourceName)
@@ -566,4 +600,5 @@ run_cmd do
       throwError "Completed tool depends on a local paper proof gap: {name}"
     pending := pending ++ info.type.getUsedConstants
     if let some value := body then pending := pending ++ value.getUsedConstants
+  logInfo m!"ProofTools Main dependency boundary audit: {mainBoundary.size} roots have no local paper proof gaps"
   logInfo m!"ProofTools trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms"

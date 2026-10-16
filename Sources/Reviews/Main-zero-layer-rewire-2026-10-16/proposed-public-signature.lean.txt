@@ -1,0 +1,24 @@
+public theorem KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer
+    (x : Ambient model (.shift 3 .sphere) (8,133))
+    (y : Ambient model .sphere (11,136))
+    (xBar : Ambient model .nuCofiber (8,134))
+    (yBar : Ambient model .nuCofiber (11,136))
+    (suspendedX : Ambient model (.shift 1 (.shift 3 .sphere)) (8,134))
+    (hx : IsCycle model (.shift 3 .sphere) 2 (8,133) x)
+    (hy : IsCycle model .sphere 1 (11,136) y)
+    (hxBar : IsCycle model .nuCofiber 2 (8,134) xBar)
+    (hyBar : IsPermanent model .nuCofiber (11,136) yBar)
+    (hsusp : (model.classicalSuspension (.shift 3 .sphere)).DesuspendsClass
+      8 134 suspendedX x)
+    (hh : FiniteExtension model .nuCofiber (.shift 1 (.shift 3 .sphere))
+      (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap) 3 0 8 134 xBar suspendedX)
+    (hd : DifferentialAt model .nuCofiber 3 (8,134) (11,136) xBar yBar)
+    (hcross : FiniteNoCrossing model .nuCofiber (.shift 1 (.shift 3 .sphere))
+        (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap) 3 0 8 134 ∨
+      NoCrossingOn model .nuCofiber 3 3 (8,134))
+    (hg : FiniteExtension model .sphere .nuCofiber
+      (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) 2 0 11 136 y yBar) :
+    IsCycle model (.shift 3 .sphere) 3 (8,133) x ∧
+      ∃ y' : Ambient model .sphere (11,136),
+        FiniteExtension model (.shift 3 .sphere) .sphere model.auxiliary.nuMap
+          4 3 8 133 x y' ∧ Congruent model .sphere 3 (11,136) y' y

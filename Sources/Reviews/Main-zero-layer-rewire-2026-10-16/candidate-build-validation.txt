@@ -1,0 +1,36 @@
+Main 零层替代接线：隔离编译验证（未应用生产）
+
+结论
+最小候选仅增加一个 ProofTools public alias，并把 Main 私有 cnu_mahowald_finite 的调用改为该精确零层结果。受影响依赖链 12 个模块已全部重新编译成功，包括 KIP126.Main.H6SquarePermanent 和 KIP126.Main。生产公共接口、锁文件、源码和现有编译产物均未写入。
+
+候选源
+src/KIP126/Def/ProofTools/GeneralizedMahowald.lean
+src/KIP126/Main/Internal/NuThree/Mahowald.lean
+
+编译隔离
+/tmp/mh2-shadow-validation-20261016/lib/lean 完整软链接生产项目缓存；重新编译的每个模块先删除候选目录内的 .olean/.olean.private/.olean.server/.ilean 软链，然后只写候选目录。固定 Lean v4.32.2 工具链，无工具链升级或依赖变更。
+Lean 对项目根使用整包搜索，所以只在 LEAN_PATH 前置一个不完整候选模块目录会导致 Laws.olean 不存在；完整只读软链接树解决此问题。
+
+精确命令
+lake env bash -c 'export LEAN_PATH="/tmp/mh2-shadow-validation-20261016/lib/lean:$LEAN_PATH"; python3 /tmp/mh2-shadow-validation-20261016/compile.py'
+
+所有编译均 exit 0。详细命令逐项保存在 results.json 与 compile.log。
+
+重编模块：
+- KIP126.Def.ProofTools.GeneralizedMahowald (27.06 s)
+- KIP126.Def.ProofTools.Standard (2.13 s)
+- KIP126.Def.ProofTools (2.41 s)
+- KIP126.Main.DifferentialCriterion (3.1 s)
+- KIP126.Main.Internal.NuThree.Mahowald (2.79 s)
+- KIP126.Main.Internal.NuThree.Actual (3.27 s)
+- KIP126.Main.Internal.NuThree.Assembly (2.27 s)
+- KIP126.Main.Internal.NuNinth.Assembly (2.08 s)
+- KIP126.Main.SectionSeven.NuTarget (2.78 s)
+- KIP126.Main.SectionSeven.Final (2.13 s)
+- KIP126.Main.H6SquarePermanent (2.66 s)
+- KIP126.Main (2.52 s)
+
+独立实际依赖审计结果
+main_dependency_audit 使用同一个 full-body observer 对候选新 .olean 环境运行成功：17 个 Main 公开根的 Main/ProofTools 直接或递归 sorry 均为 0；17 个公开类型指纹仍与现有 main-api.json 完全一致。h6_sq_permanent 的实际依赖经过公开数值桥和 private zero layer，不经过旧 generalizedMahowald 或 GL。不存在项目自建 axiom 或 synthetic sorry。
+主定理上游登记 sorry 由 180 增至 182，多出的 Literature.above_diagonal 与 Literature.finite_quotient_retained 都是既有登记项，指纹一致；这不是全项目无 sorry 的证明。
+独立审计：/tmp/Main-Actual-Dependency-Audit-Candidate.txt 与 .json。

@@ -334,3 +334,76 @@ run_cmd do
     let info := candidates.head!.2
     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then
       throwError "Paper proof assembly was replaced by a direct placeholder: {name}"
+
+
+-- Normal imports deliberately hide ProofTools proof bodies. Audit every Main
+-- body here and freeze the exact hand-off to the same-module ProofTools audit;
+-- that audit recursively checks these boundary declarations with full bodies.
+-- The independent full-body dependency observer checks the composed graph.
+run_cmd do
+  let contract ← Lean.ofExcept <| Json.parse (include_str "../../main-api.json")
+  let rows ← Lean.ofExcept <| contract.getObjValAs? (Array Json) "declarations"
+  let roots ← rows.mapM fun row => do
+    let name ← Lean.ofExcept <| row.getObjValAs? String "name"
+    pure name.toName
+  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let route ← Lean.ofExcept <| ledger.getObjVal? "main_zero_layer_rewire_2026_10_16"
+  let boundaryNames ← Lean.ofExcept <| route.getObjValAs? (Array String)
+    "proofTools_boundary_declarations"
+  let reviewedProofToolsBoundary := boundaryNames.map String.toName
+  let reviewedRootNames ← Lean.ofExcept <| route.getObjValAs? (Array String)
+    "public_main_roots"
+  unless (roots.map Name.toString).qsort (· < ·) == reviewedRootNames.qsort (· < ·) do
+    throwError "Reviewed Main roots differ from the frozen public interface"
+  let forbidden := #[`KIP126.ProofTools.Standard.generalizedMahowald,
+    `KIP126.ProofTools.Standard.generalizedLeibniz]
+  let env ← getEnv
+  let mut boundary : NameSet := {}
+  let mut checkedMain : NameSet := {}
+  for root in roots do
+    unless env.contains root do
+      throwError "Missing locked Main public root: {root}"
+    let mut pending := #[root]
+    let mut visited : NameSet := {}
+    while let some name := pending.back? do
+      pending := pending.pop
+      if visited.contains name then continue
+      visited := visited.insert name
+      if forbidden.contains name then
+        throwError "Main public root {root} regained an unfinished MH2/GL dependency: {name}"
+      let some info := env.find? name
+        | throwError "Missing dependency while auditing Main public root {root}: {name}"
+      let some idx := env.getModuleIdxFor? name
+        | if (`KIP126).isPrefixOf ((privateToUserName? name).getD name) then
+            throwError "Missing project module provenance while auditing {root}: {name}"
+          continue
+      let mod := env.header.moduleNames[idx.toNat]!
+      let isMain := (`KIP126.Main).isPrefixOf mod
+      let isProofTools := (`KIP126.Def.ProofTools).isPrefixOf mod
+      unless isMain || isProofTools do continue
+      let body := info.value? (allowOpaque := true)
+      if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then
+        throwError "Synthetic sorry reachable from Main public root {root}: {name}"
+      if info.type.hasSorry || body.any (·.hasSorry) then
+        throwError "Main/ProofTools placeholder reachable from Main public root {root}: {name}"
+      if isProofTools then
+        -- An imported theorem can be represented as an axiom with no body.
+        -- Never interpret that absence as a completed cross-module audit.
+        unless reviewedProofToolsBoundary.contains name do
+          throwError "Unreviewed ProofTools audit boundary from Main public root {root}: {name}"
+        boundary := boundary.insert name
+        continue
+      if info.isAxiom then
+        throwError "Main declaration has no auditable proof body: {name} (root {root})"
+      match info with
+      | .defnInfo _ | .thmInfo _ | .opaqueInfo _ =>
+        unless body.isSome do
+          throwError "Missing Main definition/proof body while auditing {root}: {name}"
+      | _ => pure ()
+      checkedMain := checkedMain.insert name
+      pending := pending ++ info.type.getUsedConstants
+      if let some value := body then pending := pending ++ value.getUsedConstants
+  -- Reject stale boundary entries as well as newly introduced dependencies.
+  unless boundary.toArray.qsort Name.quickLt == reviewedProofToolsBoundary.qsort Name.quickLt do
+    throwError "Main/ProofTools reviewed audit boundary changed: {boundary.toArray}"
+  logInfo m!"Main public-root regression audit: {roots.size} roots, {checkedMain.size} Main declarations; no local placeholder or old MH2/GL; {boundary.size} exact ProofTools boundaries delegated to its full-body internal audit"

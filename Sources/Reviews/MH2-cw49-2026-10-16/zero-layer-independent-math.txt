@@ -1,0 +1,124 @@
+MH2 的 m1=l1=0 特例：独立纸面与当前 Lean 路线复核
+2026-10-16；只读项目，未修改公共接口或项目文件。
+
+一、精确参数，不要误认零层意味着 ef=1
+
+记 ef=e(f)、eg=e(g)、eh=e(h)，满足 ef+eg+eh=1。
+令 m=eg、l=eh，假设 n1=n-ef>=1。则
+  m1=l1=0，i=n1，q=1，r=r'=Q=i+1=n+eg+eh。
+因此，一般零层特例并不要求 ef=1，亦不要求 m=l=0；只在 Main 的
+nu 三角上，ef=1、eg=eh=0，才进一步得到 m=l=0、r=n。
+Main 的 n=3 是实例次数，不是该数学特例成立所需的额外条件。
+
+二、可以独立陈述的精确数学定理
+
+设规范化三角相容，sf=s+eh，tf=t+eh-1。取经典 E2 标签
+  x in E2(X)^(sf,tf)，y in E2(Y)^(sf+n,tf+n)，
+  xb in E2(Z)^(s,t)，yb in E2(Z)^(s+r,t+r-1)，
+  sx in E2(Sigma X)^(s+eh,t+eh)。
+假设 sx 是 x 的悬移，且有
+  FiniteExtension(h, page=r, length=eh, xb, sx)，
+  d_r(xb)=yb，
+  FiniteExtension(g, page=2, length=eg, y, yb)。
+保留原 MH2 的 cycle/permanent 条件当然充分；事实上这些条件中若干项
+已由上述 witnesses 或 d_r 前提给出，不必为本轮擅自弱化公共声明。
+则
+  x in Z_r(X)，
+  FiniteExtension(f, page=r+1, length=n, x, y)。
+所以原声明要求的“存在 y'，y'-y in B_r，延拓至 y'”可取 y'=y。
+这不是说经典 E2 目标没有 B_r 不定性：有限商的目标标签本来已经模 B_r。
+
+原 no-crossing OR 在此特例不需要另假设。因为 l=eh，h-crossing 的
+参数必须同时满足 a>0、b>=0、b<=l-a-eh=-a，矛盾。该判断对
+zero/essential 情形都适用；不要为此额外添加非零性假设。
+
+三、证明（没有 lambda 除法）
+
+记 Q_j(A)=nu(A)/lambda^j。有限商三角为
+  Q_r -> Q_i -> Sigma^(1,-i) Q_1 -> Sigma Q_r，i=r-1。
+由 d_r(xb)=yb 的相邻 Bockstein 比较，选 a in pi(Q_i Z)，底层检测 xb，
+其连接像 delta(a) 在 Q_1 Z 检测 yb。原始 E2 标签也可以是零；现有
+Adjacent.adjacent_mahowald_case 正是处理给定 yb 及 B_i 代表差的引理。
+
+h 延拓长度为最小可能值 eh，所以规范化 h 的作用为 ESS 的 d0。
+其底层像只取决于 xb 的底层标签；对上述同一个 a，h(a) 检测 sx，
+反悬后检测 x。这里不另选独立 a，不假定两组候选代表自动相同。
+
+g 延拓也具有最小长度 eg，发生在 Q_1。选 b 检测 y，其规范化像检测
+同一个 yb。Q_1 在此 weight 的同伦群只有底层，第一标签是同构，故
+  g(b)=delta(a)
+是实际同伦群中的等式，而不仅是 E2 上的同余。
+
+对规范化三角和上述有限商三角应用 May pushpull，得到同一个实际
+c in pi(Q_r X)，满足
+  rho_i(c)=h(a)，
+  F_r(c)=lambda^i b。
+May 约定带旋转负号；必须在实际代表上保留负号，并用经典 E2 的
+特征二使检测标签不变，不能断言 synthetic 同伦群指数二。当前
+ZeroLayerAssembly/TotalFTransport 就以实际负映射及标签传输处理此点。
+
+源是零层：任何此次数 c 的 Adams 滤过至少为 sf；rho_i 在底层标签
+上是 Z_r/B_1 -> Z_i/B_1 的单射。因为 rho_i(c) 检测 x，c 也检测 x。
+B_1=0，所以 x 本身（不只是某个 x modulo boundaries）属于 Z_r。
+
+目标指数 i=r-1 是 Q_r 的最高 lambda 层；lambda^i b 检测
+  lambda^i y in Z_1(Y)/B_r(Y)。
+因此上述实际等式给出 f 的 ESS 长度 n 关系；有限扩展 witness
+用 c 及其真实像，不需要事后重新选择、除 lambda 或额外源资格。
+
+四、Main 的具体输入与所需输出
+
+三角 Sigma^3 S --nu--> S -> Cnu -> Sigma^4 S；
+  ef=1，eg=eh=0，n=3，s=8，t=134；
+  i=2，q=1，r=3，sf=8，tf=133。
+输入 xb 是 Computation.Standard.cofiberSource，y=Y，yb=bottom(Y)。
+从 cofiber_d3 得到 d3(xb)=yb；top_comparison 确定 sx 的反悬类 a3；
+top/bottom 零长度扩展由现有 finite_zero_extension_* 已构造。
+输出可加强为
+  FiniteExtension model (.shift 3 .sphere) .sphere nuMap
+    4 3 8 133 a3 Y。
+原 Main 的 cnu_mahowald_finite 要求“存在 x,y'，扩展至 y' 且 B3 同余Y”，
+可选 x=a3、y'=Y。因此 source cycle Z3 是结论，不需提前假设 a3 到 E4。
+现有 a3 的 Z2 资格来自 h witness 或显式 desuspendsClass_isCycle，已足够。
+
+实际代表在未正规化坐标中为
+  c in pi_(125,133)(Q3 nu(Sigma^3 S))，
+  rho_(2,3)c=hhat_2[a]，
+规范化 source 后 weight134，nu 的像检测 lambda²Y。
+目标 quotient 是 Z1/B3。Q5、Q9 下游需要的正是这条 Q3 真实映射关系。
+
+五、Lean 路线评审与限制
+
+1. ZeroLayerAssembly.native_bottom_detects_of_same_restriction 已证明零层
+   源标签通过同一 rho 保持；CorrectedCoordinates 中亦有同型引理。
+   这是本特例不需要 FinalDivision 的确切实现理由。
+
+2. ZeroLayerAssembly.minimal_corrected_total_extension 并非现成完整 MH2：
+   它接受 cGeometry、修正 c'、h-rho、原源检测 hc、短 g 源 ag 及其检测、
+   修正后第二像检测 hu 等输入，才输出实际 af/bf 及边界同余。
+   因此不能把单独编译该文件当作最终特例已证明。
+
+3. SphereMayActual.sphere_source_actual_mahowald_second_image 能给上述修正
+   c'、h-rho 和 hu，而且额外假设 T.Y=.sphere。Main 恰满足。
+   原始 phi/K/v/ag、hvSecond、hphi/hK 都必须来自同一套 octahedral
+   构造；该引理保留了实际 edge defect，并非把任意 comparison map
+   视为 canonical。Main 的 source nuf不必额外 sphere，因为 lemma 的
+   sphere 条件作用于 g 的源 Y，Main 的 Y 本来就是球。
+
+4. ZeroLayerAssembly 中 minimal_final_extension_of_detected_source 的最终
+   实现直接取 y'=y。boundary 参数 b 在这里是任意值，其成立理由只是
+   y-y=0 属于 B_b；不是该 lemma 偷换了 B_r 范围。若输出经过该路线，
+   source label、target label、strict equation 都已由同一个实际代表给出。
+
+5. 一般数学零层特例不需 T.Y=sphere，但当前现成 Lean correction helper
+   只覆盖 sphere source（另有 nuCofiber/shifted cofiber helper）。本轮应
+   先闭合 Main nu 三角实例；不要把“可证明 Main”报告成“任意三角
+   m1=l1=0 在当前 Lean 模型已全部证明”。
+
+6. 使用 frozen upstream Literature/Computation 的公开输入符合模块约定；
+   上游事实仍有自己的证明责任。本特例消除有问题的一般 MH2 调用的
+   数学必要性，不认证 cofiber_d3、top_comparison 等计算数据的历史依赖。
+
+结论：Main 零层实例有完整的无除法纸面证明，现成 private helper 提供
+所有关键几何与检测成分，但还须把它们完整装配成特例并通过 Lean。
+是否完成 Lean 装配与检查，以负责实现的 zero_layer_lean 代理结果为准。

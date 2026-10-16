@@ -173,13 +173,13 @@ private theorem minimal_corrected_total_extension
     (hT : NormalizedTriangleCompatible model T he)
     (i q : ℕ) (hi : 0 < i) (hq : 0 < q) (s t n b : ℤ)
     (hn : n=(i:ℤ)+normalizedExponent model.classicalTower T.f)
+    (M W : ℤ) (hM : M=(t-s)+1)
+    (hW : W=t+(normalizedExponent model.classicalTower T.f : ℤ)+normalizedExponent model.classicalTower T.g)
     (x : Ambient model T.X (s,t)) (y : Ambient model T.Y (s+n,t+n)) :
     let ef : ℤ := normalizedExponent model.classicalTower T.f
     let eg : ℤ := normalizedExponent model.classicalTower T.g
     let e : ℤ := ef+eg
     let r := i+q
-    let M : ℤ := (t-s)+1
-    let W : ℤ := t+e
     let Xν := model.nu.functor.obj (T.X.obj model.auxiliary)
     let Yν := model.nu.functor.obj (T.Y.obj model.auxiliary)
     let Af := (extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary
@@ -215,7 +215,8 @@ private theorem minimal_corrected_total_extension
             (SyntheticCategory.biShift (0,(i:ℤ)+e)).map ((model.quotients.tower Xν).rho i r (by omega)))
         (_hc : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)
           (regradeE2 (by simp) (finiteTargetLabel model T.X r s t 0 x))
-          (homotopyRegrade (by dsimp [M,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [W]; omega)
+          (homotopyRegrade (by simp only [Prod.fst,Prod.snd] <;> omega)
+            (by simp only [Prod.fst,Prod.snd]; dsimp [e,ef,eg] at * <;> omega)
             (quotientShiftDesuspend T.X (1,e) r eQ M W (cGeometry≫XModLambdaN.map eCg.hom r))))
         (ag : BiHom ((t+n)-(s+n)) (t+n+eg) (XModLambdaN Ag (r-i)))
         (_hag : Detects (model.convergence (.quotient (r-i) (.shift (0,eg) (.nu T.Y))))
@@ -224,17 +225,18 @@ private theorem minimal_corrected_total_extension
           (s+n,t+n,t+n+eg)
           (familyPageMap model.family Jq 2 (s+n,t+n,t+n+eg)
             (regradeE2 (by simp) (finiteNuLabel model T.Y (r-i) eg (s+n) (t+n) 0 y)))
-          (homotopyRegrade (by dsimp [M,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [W,e]; omega) (c'≫h₀))),
+          (homotopyRegrade (by simp only [Prod.fst,Prod.snd] <;> omega)
+            (by simp only [Prod.fst,Prod.snd]; dsimp [e,ef,eg] at * <;> omega) (c'≫h₀))),
       ∃ y' : Ambient model T.Y (s+n,t+n), y'-y∈boundaries model T.Y b (s+n,t+n) ∧
         ∃ (af : BiHom (t-s) (t+ef) (XModLambdaN Af r))
           (bf : BiHom (t-s) (t+ef) (XModLambdaN Yν r)),
           Detects (model.convergence (.quotient r (extensionSourceObject model T.X T.Y T.f)))
             (s,(t-s)+s,t+ef) (finiteSourceForExtension model T.X T.Y T.f r s t x)
-            (homotopyRegrade (by dsimp; omega) rfl af) ∧
+            (homotopyRegrade (by simp only [Prod.fst,Prod.snd] <;> omega) rfl af) ∧
           Detects (model.convergence (.quotient r (.nu T.Y)))
             (s+n,(t-s)+(s+n),t+ef)
             (finiteTargetForExtension model T.X T.Y T.f r n s t (by omega) y')
-            (homotopyRegrade (by dsimp; omega) rfl bf) ∧
+            (homotopyRegrade (by simp only [Prod.fst,Prod.snd] <;> omega) rfl bf) ∧
           af≫finiteExtensionMap model T.X T.Y T.f r=bf := by
   dsimp only
   intro eQ εe εA eAg esusp heQ hεe hεA heAg hesusp cGeometry c' hρ hc ag hag hu
@@ -242,8 +244,6 @@ private theorem minimal_corrected_total_extension
   let eg : ℤ := normalizedExponent model.classicalTower T.g
   let e : ℤ := ef+eg
   let r := i+q
-  let M : ℤ := (t-s)+1
-  let W : ℤ := t+e
   let Xν := model.nu.functor.obj (T.X.obj model.auxiliary)
   let Yν := model.nu.functor.obj (T.Y.obj model.auxiliary)
   let Af := (extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary
@@ -264,38 +264,39 @@ private theorem minimal_corrected_total_extension
     omega
   have hrawCommon := corrected_actual_common_edge_native_detects T.Y eg heg i q hi hq
     (s+n) (t+n) y esusp eAg heAg ag hag
-    (homotopyRegrade (by omega) (by dsimp [W,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at *; omega) (c'≫h₀)) hu
+    (homotopyRegrade (by omega) (by dsimp [e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * <;> omega) (c'≫h₀)) hu
   have hrawNative := common_corrected_total_native_detection T.Y eg i q hq
-    (s+n) (t+n) M W (by dsimp [M,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [W,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at *; omega) y
+    (s+n) (t+n) M W (by omega) (by dsimp [e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * <;> omega) y
     esusp eAg _ _ eC (XModLambdaN.map (HasFunctorialCofiber.cofibδ G) r) c' (by
       simpa only [common_regrade_trans,h₀,ff,eD,SyntheticObject.obj] using hrawCommon)
   let p : ℤ×ℤ := (t-s,t)
   let py : ℤ×ℤ := ((t+n)-(s+n),t+n-i)
   let aY := homotopyRegrade
-    (show M=(py+(1,eg)).1 by dsimp [M,py,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega)
-    (show W=(py+(1,eg)).2 by dsimp [W,py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at *; omega) cnew
+    (show M=(py+(1,eg)).1 by dsimp [py,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega)
+    (show W=(py+(1,eg)).2 by dsimp [py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * <;> omega) cnew
   have hMayY := normalized_f_total_raw_boundary_detects_transport T he hT
     (commonTotalSuspensionTransport eg i) r i (by omega) (s+n) (t+n) y
     εA εB hεA hεB aY (by
       simpa only [aY,cnew,←regrade_comp] using hrawNative)
   let p0 : ℤ×ℤ := (t-s,t-(0:ℕ))
-  have hp0 : p=p0 := by ext <;> dsimp [p,p0]; omega
+  have hp0 : p=p0 := by ext <;> dsimp [p,p0] <;> omega
   have hgrade : (s,t,t-(0:ℕ))=(s,t,t) := by simp
   let cSource := homotopyRegrade
-    (show M=(p0+(1,e)).1 by rfl)
-    (show W=(p0+(1,e)).2 by dsimp [W,p0]; omega) cnew
+    (show M=(p0+(1,e)).1 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega)
+    (show W=(p0+(1,e)).2 by dsimp [p0] <;> omega) cnew
   have hsourceNative := corrected_native_bottom_detects T.X e eCg i r hi (by omega) eQ
-    M W s t (by dsimp [M]; omega) (by dsimp [W]; omega) x cGeometry c' hρ hc
+    M W s t (by omega) (by omega) x cGeometry c' hρ hc
   have hsourceBack := detects_transport hgrade.symm _ _ hsourceNative
   rw [finite_e2_regrade_roundtrip hgrade] at hsourceBack
   have hnat0 : homotopyRegrade (congrArg Prod.fst hp0) (congrArg Prod.snd hp0)
       (quotientUnshift T.X (1,e) p r eQ
-        (homotopyRegrade (show M=(p+(1,e)).1 by rfl) (show W=(p+(1,e)).2 by rfl)
+        (homotopyRegrade (show M=(p+(1,e)).1 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (show W=(p+(1,e)).2 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega)
           (cnew≫XModLambdaN.map eCg.hom r))) =
       quotientUnshift T.X (1,e) p0 r eQ (cSource≫XModLambdaN.map eCg.hom r) := by
     have hh := quotient_class_unshift_regrade_source Xν (1,e) p p0 hp0 r eQ M W
-      (cnew≫XModLambdaN.map eCg.hom r) rfl rfl
-      (by rfl) (by dsimp [W,p0]; omega)
+      (cnew≫XModLambdaN.map eCg.hom r)
+      (by dsimp [p] <;> omega) (by dsimp [p,e,ef,eg] at * <;> omega)
+      (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p0] <;> omega)
     simpa only [quotientClassUnshift,quotientUnshift,cSource,regrade_comp] using hh
   have hc0 : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t-(0:ℕ))
       (finiteTargetLabel model T.X r s t 0 x)
@@ -305,8 +306,8 @@ private theorem minimal_corrected_total_extension
   have hsource := normalized_f_total_actual_source_unshift_detects T he hT r 0 (by omega)
     s t x eQ εe εA heQ hεe hεA cSource hc0
   let a := homotopyRegrade
-    (show (p0+(1,e)).1=((p0+(0,ef))+(1,eg)).1 by dsimp [p0,e]; omega)
-    (show (p0+(1,e)).2=((p0+(0,ef))+(1,eg)).2 by dsimp [p0,e]; omega) cSource
+    (show (p0+(1,e)).1=((p0+(0,ef))+(1,eg)).1 by dsimp [p0,e] <;> omega)
+    (show (p0+(1,e)).2=((p0+(0,ef))+(1,eg)).2 by dsimp [p0,e] <;> omega) cSource
   let af := quotientClassUnshift Af (1,eg) (p0+(0,ef)) r εA
     (a≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r)
   have hsource0 : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t-(0:ℕ))
@@ -315,21 +316,21 @@ private theorem minimal_corrected_total_extension
   have hsourceForward := detects_transport hgrade _ _ hsource0
   have hnat1 := quotient_class_unshift_regrade_source Xν (0,ef) p0 p hp0.symm r εe
     (p0+(0,ef)).1 (p0+(0,ef)).2 af rfl rfl
-    (by rfl) (by dsimp [p0,p]; omega)
+    (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p0,p] <;> omega)
   have hafNative : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)
       (regradeE2 (by simp) (finiteTargetLabel model T.X r s t 0 x))
       (quotientUnshift T.X (0,ef) (t-s,t) r εe
-        (homotopyRegrade (by rfl) (by dsimp [p,p0]; omega) af)) := by
+        (homotopyRegrade (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p,p0] <;> omega) af)) := by
     have hh : homotopyRegrade (congrArg Prod.fst hp0.symm) (congrArg Prod.snd hp0.symm)
         (quotientUnshift T.X (0,ef) p0 r εe af) =
         quotientUnshift T.X (0,ef) p r εe
-          (homotopyRegrade (by rfl) (by dsimp [p0,p]; omega) af) := by
+          (homotopyRegrade (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p0,p] <;> omega) af) := by
       simpa only [quotientClassUnshift,quotientUnshift,homotopy_regrade_self,Xν] using hnat1
     exact (congrArg (fun z => Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)
       (regradeE2 hgrade (finiteTargetLabel model T.X r s t 0 x)) z) hh).mp hsourceForward
   have hMay : Detects (model.convergence (.quotient r (.nu T.Y))) (s+n,t+n,t+n-i)
       (finiteTargetLabel model T.Y r (s+n) (t+n) i y)
-      (homotopyRegrade (by dsimp [p0,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [p0,ef,Prod.mk_add_mk,Prod.fst,Prod.snd] at *; omega)
+      (homotopyRegrade (by dsimp [p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p0,ef,Prod.mk_add_mk,Prod.fst,Prod.snd] at * <;> omega)
         (af≫finiteExtensionMap model T.X T.Y T.f r)) := by
     have hpy : py=p0+(0,ef) := by ext <;> dsimp [py,p0,ef] at * <;> omega
     have hα : homotopyRegrade (congrArg Prod.fst hpy.symm) (congrArg Prod.snd hpy.symm) af =
@@ -337,13 +338,13 @@ private theorem minimal_corrected_total_extension
           (aY≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r) := by
       have hh := quotient_class_unshift_regrade_source Af (1,eg) (p0+(0,ef)) py hpy.symm r εA
         M W (cnew≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r)
-        (by dsimp [M,p0,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [W,p0,e,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega)
-        (by dsimp [M,py,Prod.mk_add_mk,Prod.fst,Prod.snd]; omega) (by dsimp [W,py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at *; omega)
+        (by dsimp [p0,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [p0,e,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega)
+        (by dsimp [py,Prod.mk_add_mk,Prod.fst,Prod.snd] <;> omega) (by dsimp [py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * <;> omega)
       simpa only [af,a,cSource,aY,regrade_comp,common_regrade_trans] using hh
     rw [regrade_comp,hα]
     exact hMayY
   apply minimal_final_extension_of_native_source T.X T.Y T.f r (by omega) i n s t b
-    (by omega) (by omega) x y (homotopyRegrade (by dsimp [p0]; omega) (by dsimp [p0]; omega) af) εe hεe
+    (by omega) (by omega) x y (homotopyRegrade (by dsimp [p0] <;> omega) (by dsimp [p0] <;> omega) af) εe hεe
   · simpa only [common_regrade_trans] using hafNative
   · simpa only [←regrade_comp,common_regrade_trans] using hMay
 

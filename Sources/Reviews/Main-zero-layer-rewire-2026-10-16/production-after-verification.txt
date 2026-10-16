@@ -1,0 +1,27 @@
+生产 Main 改接后的独立全图复核
+
+2026-10-16；最终 Standard 桥版本；使用生产目录 lake env，没有候选 overlay。
+
+执行：
+  lake env lean /tmp/MainActualDependencyAudit-Production-After.lean
+  python3 /tmp/analyze_main_dependencies_production_after.py
+  python3 /tmp/verify_main_production_after.py
+
+结果：
+- 全部17个Main命名公开根的实际type及opaque proof body依赖中，Main/ProofTools直接或递归sorry为0。
+- 17个公开类型指纹与当前main-api.json一致。
+- h6_sq_permanent实际经过Standard.nuCofiberMahowaldZeroLayer及private main_nu_mahowald_zero_layer。
+- h6_sq_permanent实际不经过旧generalizedMahowald或GL。
+- 所有可达项目声明无项目自建axiom或synthetic sorry。
+- 全图4531个可达项目常量；全部17根的上游直接sorry并集186个；h6_sq_permanent的上游直接sorry为182个，均已登记且指纹相符。
+
+范围：
+本观察器full-body导入属于独立只读审计，不改变生产数学模块导入或公共接口。其结论是主证明在Main/ProofTools范围内不再依赖sorry；并非全项目无sorry。ProofTools原一般MH2和GL缺口仍存在，但不在主证明实际依赖中。
+
+持久构建审计与本交叉复核的计数口径：
+生产Main内部正常模块环境锁定33个ProofTools公开frontier；完整导入环境曾观察到35个，差异为两个自动生成的Synthetic.Context helper在不同环境的首次生成归属（正常环境归Main，完整环境归ProofTools.Coherence）。正常环境已完整检查其本地body，故这项归属差异不影响上述Main/ProofTools本地缺口为0的结论。17个Main命名公开根保持相同口径。
+
+最终实现位置专项校验：
+- 新桥声明归属模块为 KIP126.Def.ProofTools.Standard。
+- 旧一般 MH2 类型指纹仍为 12297579626073384622，证明体指纹仍为 17924752964050994422，均与原登记完全相同。
+- 校验文件 /tmp/MH2-Final-Standard-Bridge-Fingerprints.json 及同名 .log；校验观察器 /tmp/MH2FinalBridgeFingerprintAudit.lean。

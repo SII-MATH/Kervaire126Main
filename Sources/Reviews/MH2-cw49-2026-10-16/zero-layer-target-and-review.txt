@@ -1,0 +1,32 @@
+MH2 零层 Main 特例：目标检测桥复核
+
+范围
+本分工只修改 ProofTools 内部私有文件，不修改公共接口、锁文件或 Main。
+新增文件：KIP126/Def/ProofTools/GeneralizedMahowald/ZeroLayerTarget.lean。
+
+数学路线
+Main 的三角满足 T.Y = sphere。现成 SphereMayActual.sphere_source_actual_mahowald_second_image 在这一真实对象条件下构造同一 May 代表的修正 c'，保持它的 rho_i 像，并给出 c' h_0 对规定有限 J_q 标签的检测。它并未假设最终 MH2 结论，也不调用待补 generalizedMahowald。
+
+该证明使用实际 cofiber 图的 d/raw 残差。sphere_source_actual_edge_correction 通过余纤维三角 exactness 将实际 d、R 延拓到 Q_q，然后从实际 c 减去同一个 alpha d_Q。保持 rho_i 的论证使用实际映射零关系和有限商窗口，而非在 E2 上把两个非线性选择相减。残差 R 在 m>0 时由正长度延拓的 E2 零作用处理；m=0 时用给定 Adams 微分目标处于 B_(i+1)，结合 raw 残差的 lambda_i 转置关系处理。Main 对应后一个分支。
+
+在 m1=l1=0 时 q=1、k=0。源检测不需除 lambda，hTargetShort 给出 aNuNative 的底层标签，再由 finite_target_rho_detects 给出 cNuNative 的底层检测。这恰好满足 ZeroLayerAssembly.minimal_corrected_total_extension 的源前提。
+
+新增标签桥
+normalized_included_source_label 证明：对任何真实归一化 g、任何 q 和 x，包含映射作用于 infiniteSourceForExtension 的标准重分级标签，严格等于同 q 的 finiteNuLabel 标准重分级标签。证明只展开已有标签定义、用 page_regrade 和重分级合成恒等式。
+corrected_second_image_finite_label 将上一等式应用于任意实际 J_q，因此把 SphereMayActual 输出的第二像检测变为 ZeroLayerAssembly 接受的精确标签。这里不改变代表、商长、目标边界或层数。
+
+补充的 finite_edge_detection_source_length 用两个独立自然数参数 j,q 证明标签检测在 j=q 下的依赖类型转换，消除 q 与 i+q-i 的强制转换。该声明也为 private、无 sorry，补充后模块 lake build 再次通过。
+
+精确覆盖 Main
+Configuration.lean 中 nuRouteTriangle 的 Y 定义就是 sphere。Main 参数 n=3,m=l=0，e_f=1,e_g=e_h=0，故 i=2,q=1,Q=3：输入 g 页2、h 页3、输出 f 页4、目标同余 B3，完全匹配 cnu_mahowald_finite。
+
+再补 finite_native_bottom_detection_reindex_exists：在证明 q=j 后将有限源检测及其代表同时转移到 j；证明是 subst j 后原样返回同一代表。这避免了多次 Eq.mp 的依赖类型转换，不是更换数学代表。四条新引理均为 private，并均已由 lake build 验证。
+
+接口和验证
+所有新增声明为 private，使用 module；没有新增 sorry、axiom 或数学前提。完整包装和坐标对接由 zero_layer_lean 分工的 ZeroLayerSpecial.lean 完成。验证完成：lake env lean ZeroLayerTarget.lean 无输出 exit 0；lake build KIP126.Def.ProofTools.GeneralizedMahowald.ZeroLayerTarget 成功（2769 jobs），新模块无 sorry 警告。构建回放了已有上游 sorry 警告，未新增或转移这些责任。
+
+最终组装只读复核
+ZeroLayerSpecial 模块 lake build 已通过（2802 jobs，模块32秒）。完整 theorem 为 generalized_mahowald_zero_layer_sphere，除旧 MH2 输入外，仅加 Y=sphere、m=e_g、l=e_h。它未调用待补 generalizedMahowald 或 generalizedLeibniz。
+实际 cGeometry 经 sphere_source_actual_mahowald_second_image 得同 rho 的 c'；minimal_corrected_total_extension 把同一个 c' 变回 cnew；normalized_f_total_actual_source_unshift_detects 和 normalized_f_total_raw_boundary_detects_transport 分别处理这个同一个实际 cnew 的源、像，再由 minimal_final_extension_of_native_source 给实际 af、bf 和 af F=bf。不是独立选择检测类后强行拼接。
+agFinal 的重索引引理在 j=q 后原样返回 ag，因此也不更换其数学代表。
+范围严格为 Main 所需 Y=sphere 零层实例，不据此声称任意 Y 的零层版本已完全形式化。旧公共一般定理依旧不应视为已证明；主模块未改接新私有特例。
