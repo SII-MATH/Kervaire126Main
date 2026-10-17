@@ -10,14 +10,14 @@ AimPaper/main.tex 的全部未注释 theorem/lemma/definition/corollary/proposit
 | --- | ---: |
 | 原有公共主干对应 | 24 |
 | 本轮补齐并公开 | 7 |
-| 部分对应／条件或范围不同 | 9 |
+| 部分对应／条件或范围不同 | 10 |
 | 相关内部步骤，尚未补齐 | 3 |
-| 用户暂缓 | 1 |
+| 用户暂缓 | 0 |
 | 未见对应公共结果 | 11 |
 | 当前形式化终点之外 | 2 |
 | 合计 | **57** |
 
-公共对应合计 **31** 项。这个数字不表示 31 项论文一般范围的全部内容均已完成无待补证明。
+公共对应合计 **31** 项。这个数字不表示 31 项论文一般范围的全部内容均已完成无待补证明。另有命题 6.20 的一项授权修正版已完整公开，仍在原文计数中保留为 partial，以区分删除差集后的新陈述与印刷原句。
 
 - 公共对应不等于论文一般范围的全部覆盖，也不等于已消除既有上游待补责任。
 - 原有公共 24 项只表示所选模型的公共主干；3.6 等受 ClassicalObject 范围限制，3.17 的任意 lift 比较仅模 λ-torsion，6.11 保留指数二条件，6.1 仍有登记直接待补。
@@ -65,7 +65,7 @@ AimPaper/main.tex 的全部未注释 theorem/lemma/definition/corollary/proposit
 | 引理 7.14 | 已公开同一 Q11 类、Q9 像、每个 U 代表的两个修正关系及精确 h₀ 消灭关系。 | `KIP126.Main.Paper.lemma_x1239` |
 | 引理 7.20 | 已公开同一 Q9 中两个规定类的非零检测及规范化 ν 的精确方程，量词为存在代表。 | `KIP126.Main.Paper.lemma_nuext125` |
 
-## 部分对应／条件或范围不同（9）
+## 部分对应／条件或范围不同（10）
 
 | 论文条目 | 当前对应与限制 | 公共名称 |
 | --- | --- | --- |
@@ -79,6 +79,8 @@ AimPaper/main.tex 的全部未注释 theorem/lemma/definition/corollary/proposit
 | 定理 6.12 | 存在公共 Mahowald 定理，但比正文另显式要求 NormalizedTriangleCompatible 及指定 suspendedX 与 x 的 DesuspendsClass。不能在缺少 3.20 一般桥接时算作同前提的完整覆盖；该 theorem 当前还有直接待补。 | `KIP126.ProofTools.GeneralizedMahowaldLaw`<br>`KIP126.ProofTools.Standard.generalizedMahowald` |
 | 推论 6.23 | 当前接口只给有限后页，源靶需满足后页 cycle 条件；排除同一早期有限商中非零且不 lift 的所有短扩张，比论文仅排除 essential crossings 更强。正文 r=∞ 的形式也未由此交付。 | `KIP126.ProofTools.FinitePageExtensionStretchingLaw`<br>`KIP126.ProofTools.FiniteExtensionNonliftableCrossing`<br>`KIP126.ProofTools.Standard.finitePageExtensionStretching` |
 
+| 命题 6.20 | 已公开合法页下降；王老师要求删除差集后，固定原 y、b=0 的完整 iff 已公开，保留真实早循环和同商源靶。原含差集陈述不标完成；授权修正版另计 complete-revised。 | `KIP126.ProofTools.Paper.finiteExtension_descends`<br>`KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter` |
+
 ## 相关内部步骤，尚未补齐（3）
 
 | 论文条目 | 当前对应与限制 | 公共名称 |
@@ -86,12 +88,6 @@ AimPaper/main.tex 的全部未注释 theorem/lemma/definition/corollary/proposit
 | 命题 5.10 | 尚缺一般长度下同时除 λ 的源与映像提升；抽象滤过群证据只反驳现有中间推理，不是固定对象反例。 | — |
 | 引理 7.16 | 原 Toda 成员非零已有证明；仍缺保持 Toda 关系的 F11 成员与完整不确定性控制，以完成规定检测。 | — |
 | 推论 7.18 | 仍缺对任意 Y 检测代表证明 h₀ 消去代表差，不能取消额外 λ 因子。 | — |
-
-## 用户暂缓（1）
-
-| 论文条目 | 当前对应与限制 | 公共名称 |
-| --- | --- | --- |
-| 命题 6.20 | 用户决定暂时保持不变；页长度域及目标关联问题保留在独立报告，候选修正未接入公共接口。 | — |
 
 ## 未见对应公共结果（11）
 
@@ -115,3 +111,8 @@ AimPaper/main.tex 的全部未注释 theorem/lemma/definition/corollary/proposit
 | --- | --- | --- |
 | 定理 1.1 | 126 维有 Kervaire 不变量一的带标架流形；当前终点仅为标准 h6 平方非零永久存活。 | — |
 | 推论 1.2 | 全部维数分类；没有流形存在性及仅这些维数的公共命题。 | — |
+
+
+## 6.20 最新二择修正版（2026-10-18）
+
+已形式化并公开 `FiniteExtensionNonliftableShortTo` 与 `finiteExtension_nonliftableShort_or_lateCrossing`：同一晚页扩张本质、早页扩张非本质，推出保持原 y、b=0 的差集短扩张，或同一晚页 normalized synthetic ESS 的 crossing。去差集 iff 和合法页下降继续保留。此处未将 crossing 等同定义 5.9 的经典有限页条件，也未推出推论 6.23 的升页存在性。原印刷 general-b/y′ 版本仍区别记录。验证及完整传递依赖见 [本轮记录](../interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/validation.json)。

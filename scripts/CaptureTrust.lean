@@ -329,6 +329,10 @@ import all KIP126.ProofTools.Language
 import all KIP126.ProofTools.Laws
 import all KIP126.ProofTools.Operations
 import all KIP126.ProofTools.Paper.Crossing
+import all KIP126.ProofTools.Paper.ExtensionDescent
+import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
+import all KIP126.ProofTools.Paper.ExtensionEssentialSource
+import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions

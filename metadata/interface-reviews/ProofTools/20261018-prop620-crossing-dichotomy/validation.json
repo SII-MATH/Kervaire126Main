@@ -1,0 +1,98 @@
+{
+  "status": "passed",
+  "completed_at_utc": "2026-10-17T16:53:08.865411+00:00",
+  "scope": "User-authorized latest Prop6.20 revision only: fixed-original-y/b=0 classical nonliftable short extension, or crossing in the same late synthetic normalized-map ESS.",
+  "public_declarations": [
+    "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo",
+    "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing"
+  ],
+  "source_sha256": {
+    "KIP126/ProofTools/Paper/ExtensionEssentialSource.lean": "b304c817a0cc1f7a958b16ae0c0e74c2e60357e2317d723b39b400c34ab36aa4",
+    "KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean": "aa1ae0f936ebb219b551f03731bf4001baef78dd1010029442525517afe50251"
+  },
+  "checks": [
+    {
+      "command": "lake env lean (final worker source)",
+      "exit_code": 0,
+      "log": "worker-final-lean.log"
+    },
+    {
+      "command": "lake build KIP126.ProofTools",
+      "exit_code": 0,
+      "jobs": 2823,
+      "log": "evidence/public-build.log"
+    },
+    {
+      "command": "lake build Tests.ProofTools.Consumers",
+      "exit_code": 0,
+      "jobs": 2825,
+      "log": "evidence/consumer-build.log"
+    },
+    {
+      "command": "lake env lean .lake/CaptureProofTools.lean",
+      "exit_code": 0,
+      "captured_exports": 122,
+      "log": "evidence/public-capture.log"
+    },
+    {
+      "command": "lake env lean scripts/CaptureTrust.lean",
+      "exit_code": 0,
+      "captured_project_declarations": 12403,
+      "log": "evidence/trust-capture.log"
+    },
+    {
+      "command": "python3 scripts/check-source-inventory.py",
+      "exit_code": 0,
+      "project_files": 483,
+      "consumer_audit_files": 28
+    },
+    {
+      "command": "lake build",
+      "exit_code": 0,
+      "jobs": 3090,
+      "log": "evidence/full-build.log"
+    }
+  ],
+  "interface_lock": {
+    "existing_public_rows_unchanged": 116,
+    "named_public_declarations": 87,
+    "generated_declarations": 35,
+    "exports": 122,
+    "added_mathematical_declarations": 2,
+    "added_generated_support_items": 4,
+    "generated_support_note": "Two cast-arithmetic proof items and two existing-definition equation lemmas. These are not four additional mathematical promises.",
+    "baseline_snapshot": "evidence/baseline-proof-tools-api.json",
+    "independent_check": "independent-final-interface-check.json"
+  },
+  "proof_obligations": {
+    "registry_byte_unchanged": true,
+    "registry_sha256": "be2c30804b01991af0731aeaa0619b1738ccf93f0ac76c4271b4945844dd2aad",
+    "registered_direct_obligations": 299,
+    "all_type_and_body_fingerprints_unchanged": true,
+    "new_obligations": [],
+    "new_axioms": [],
+    "registry_rewritten": false,
+    "independent_check": "independent-full-trust-registry-check.json"
+  },
+  "dependency_audit": "dependency-audit.json",
+  "independent_dependency_audit": "independent-production-audit.json",
+  "root_dependency_counts": {
+    "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo": {
+      "project_constant_count": 601,
+      "registered_upstream_direct_obligations": 33
+    },
+    "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing": {
+      "project_constant_count": 929,
+      "registered_upstream_direct_obligations": 38
+    }
+  },
+  "same_38_upstream_obligation_set_as_previous_iff": true,
+  "old_five_other_api_locks_language_laws_indeterminacy_toolchain_and_manifest_unchanged": true,
+  "not_asserted": [
+    "Identification of this synthetic ESS crossing with Definition5.9 classical FiniteHasCrossing",
+    "Corollary6.23 lifting existence",
+    "Printed general-b/y-prime iff",
+    "Elimination of the 38 already registered upstream dependencies"
+  ],
+  "remaining_current_scope_work": []
+}

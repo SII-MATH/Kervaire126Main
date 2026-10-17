@@ -1,5 +1,9 @@
 module
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
+import all KIP126.ProofTools.Paper.ExtensionDescent
+import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
+import all KIP126.ProofTools.Paper.ExtensionEssentialSource
+import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
@@ -558,7 +562,11 @@ run_cmd do
     `KIP126.ProofTools.Internal.Mahowald.ZeroLayerDetectedPair,
     `KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere,
     `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer,
-    `KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer]
+    `KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer,
+    `KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel,
+    `KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter,
+    `KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo,
+    `KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing]
   let mut pending : Array Name := #[]
   -- Main checks its ordinary-import dependency frontier against this same ledger.
   -- Here import-all restores ProofTools proof bodies, so these roots receive the

@@ -36,6 +36,77 @@ example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxil
   KIP126.ProofTools.Standard.finitePageExtensionStretching X Y f
     rEarlier rLater n s t x y hr hle hn hnUpper hx hy hW hcross
 
+/-- Proposition 6.20 descends the prescribed source and target, within the
+earlier page's defining length range. -/
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (rEarlier rLater : ℕ) (n s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+n,t+n))
+    (hr : 2 ≤ rEarlier) (hle : rEarlier ≤ rLater)
+    (hnUpper : n ≤ (rEarlier : ℤ)-2+normalizedExponent model.classicalTower f)
+    (h : FiniteExtension model X Y f rLater n s t x y) :
+    FiniteExtension model X Y f rEarlier n s t x y :=
+  Paper.finiteExtension_descends X Y f rEarlier rLater n s t x y hr hle hnUpper h
+
+/-- The revised second clause supplies an actual classical early-cycle
+source, without a nonliftability premise or an unrelated target. -/
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (rEarlier rLater : ℕ) (n s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+n,t+n))
+    (Wlater : FiniteExtensionWitness model X Y f rLater n s t x y)
+    (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y)
+    (hle : rEarlier ≤ rLater) (hess : Wlater.Essential)
+    (hne : ¬ Wearly.Essential) :
+    ∃ a : ℕ, 0 < a ∧ (a : ℤ) ≤ n-normalizedExponent model.classicalTower f ∧
+      ∃ x' : Ambient model X (s+a,(t-s)+(s+a)),
+        x' ∈ KIP126.Literature.cycles model X
+          (((rEarlier-1 : ℕ) : ℤ)-(a : ℤ)) (s+a,(t-s)+(s+a)) := by
+  obtain ⟨a,ha,han,x',hx',_⟩ :=
+    (Paper.finiteExtension_inessential_iff_shorter
+      X Y f rEarlier rLater n s t x y Wlater Wearly hle hess).mp hne
+  exact ⟨a,ha,han,x',hx'⟩
+
+/-- At the minimal normalized length, later essentiality cannot become
+inessential earlier: the positive shorter-source interval is empty. -/
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (rEarlier rLater : ℕ) (n s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+n,t+n))
+    (Wlater : FiniteExtensionWitness model X Y f rLater n s t x y)
+    (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y)
+    (hle : rEarlier ≤ rLater) (hess : Wlater.Essential)
+    (hn : n = (normalizedExponent model.classicalTower f : ℤ)) :
+    Wearly.Essential := by
+  classical
+  by_contra hne
+  obtain ⟨a,ha,han,_⟩ :=
+    (Paper.finiteExtension_inessential_iff_shorter
+      X Y f rEarlier rLater n s t x y Wlater Wearly hle hess).mp hne
+  omega
+
+/-- The teacher's latest formulation consumes the complete existential failure
+of the fixed-target difference branch, giving a crossing in the actual late ESS. -/
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (rEarlier rLater : ℕ) (n s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+n,t+n))
+    (Wlater : FiniteExtensionWitness model X Y f rLater n s t x y)
+    (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y)
+    (hle : rEarlier ≤ rLater) (hess : Wlater.Essential) (hne : ¬Wearly.Essential)
+    (hno : ¬ Paper.FiniteExtensionNonliftableShortTo
+      X Y f rEarlier rLater n s t x y Wearly) :
+    ¬ Paper.ExtensionNoCrossingRange (model.convergentMap
+      (.quotient (rLater-1) (extensionSourceObject model X Y f))
+      (.quotient (rLater-1) (.nu Y)) (finiteExtensionMap model X Y f (rLater-1)))
+      (t-s,t+normalizedExponent model.classicalTower f) s n s :=
+  (Paper.finiteExtension_nonliftableShort_or_lateCrossing
+    X Y f rEarlier rLater n s t x y Wlater Wearly hle hess hne).resolve_left hno
+
+#check_failure Paper.finiteExtension_essential_shorter_source
+#check_failure Paper.correction_source_lift_of_late_cycle
+#check_failure Paper.infinityTowerNatural
+
+#check_failure Paper.correctionShiftIso
+#check_failure Paper.inessential_length_strict
+
 /-- The complete representative criterion applies to ordinary filtered
 homotopy groups, independently of any synthetic background choice. -/
 example {A B : Type*} [AddCommGroup A] [AddCommGroup B]

@@ -1,0 +1,35 @@
+@[no_expose] public noncomputable def finiteExtensionCorrectionLabel (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (q : ℕ) (s t : ℤ) (a : ℕ)
+    (x : Ambient model X (s+a,(t-s)+(s+a))) :
+    (model.family.obj ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj
+      model.nu model.auxiliary)).E₂
+      (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f) :=
+  familyPageMap model.family (correctionShiftIso X Y f q).inv 2 _
+    (regradeE2 (by ext <;> dsimp <;> omega)
+      (((essShift (0,(normalizedExponent model.classicalTower f : ℤ))).page
+        (.quotient q (.nu X)) 2 (by decide)
+        (t-s,((t-s)+(s+a))-(a:ℤ)) (s+a)).hom
+          (finiteTargetLabel model X q (s+a) ((t-s)+(s+a)) a x)))
+
+public theorem finiteExtension_inessential_iff_shorter (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (rEarlier rLater : ℕ) (n s t : ℤ) (x y)
+    (Wlater : FiniteExtensionWitness model X Y f rLater n s t x y)
+    (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y)
+    (hle : rEarlier ≤ rLater) (hess : Wlater.Essential) :
+    ¬ Wearly.Essential ↔ ∃ a : ℕ, 0 < a ∧
+      (a:ℤ) ≤ n-normalizedExponent model.classicalTower f ∧
+      ∃ x' : Ambient model X (s+a,(t-s)+(s+a)),
+        x' ∈ cycles model X (((rEarlier-1:ℕ):ℤ)- (a:ℤ)) (s+a,(t-s)+(s+a)) ∧
+        ∃ z,
+          HasInfinityRepresentative _ 2 _
+            (finiteExtensionCorrectionLabel X Y f (rEarlier-1) s t a x') z ∧
+          TowerExtensionEquation (model.convergentMap
+            (.quotient (rEarlier-1) (extensionSourceObject model X Y f))
+            (.quotient (rEarlier-1) (.nu Y)) (finiteExtensionMap model X Y f (rEarlier-1)))
+            (t-s,t+normalizedExponent model.classicalTower f) (s+a) (n-a) z
+            ((eqToHom (congrArg (fun d =>
+              ((model.family.obj ((SyntheticObject.quotient (rEarlier-1) (.nu Y)).obj
+                model.nu model.auxiliary)).sequence.ssData
+                (d,(t-s)+d,t+normalizedExponent model.classicalTower f)).eInfty)
+              (show s+n = (s+a)+(n-a) by omega))) Wearly.target) := by

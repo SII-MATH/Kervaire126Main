@@ -13,11 +13,27 @@ source_file_and_sha256: "KIP126/ProofTools/Paper/ExtensionDescent.lean: e9094c45
 reporter_agent: "/root/descent_interface_report"
 independent_of_discoverer_and_implementer: true
 evidence_level: "Lean-checked generic domain contradiction; independently checked exact-target identities; fixed-model candidate has existing upstream sorry dependencies; printed second-clause crossing iff remains unresolved"
-status: deferred-by-user
-human_decision: "2026-10-17 用户决定暂时保持不变，并将相关信息发送至飞书群 project math assistant；未批准 A 或 B。"
+status: first-clause-approved-second-clause-under-review
+human_decision: "2026-10-17 用户后续转述王老师意见：首段增加条件；第二段提出 y' 应是 y。首段合法域修正获准，第二段替换另做分次核验。此前暂缓决定保留为历史。"
 ---
 
 # 接口调整人审报告
+
+## 第二次回复后的进展
+
+已读取王老师[最新群消息](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1481)：“一般的b，可以推b=0”，并按用户要求继续补证。固定原目标时 b=0 的分次归约成立；本轮完成精确目标局部判据 5 条及商代表提升判据 2 条。进一步提取非提升首项时出现 HZ/16 纸面谱反例构造，独立证明审查已核对其实际映射和滤过；当前 Lean 仅完成局部定理与 9 条有限算术，未在固定模型实现该谱反例。
+
+具体见 [独立核验](evidence/wang-bzero-audit.md)、[接口人审报告](../20261017-prop620-fixed-target-bzero/report.md) 和 [本轮验证](wang-bzero-validation.json)。首段合法域下降保持；完整第二段未公开、未登记为已证，未新增责任。以下保留上次修正记录及更早历史。
+
+## 最新反馈与当前范围
+
+用户后续转述：“王老师的回复是：1 增加条件；y'应该是y吧？”（原文和解释见 [wang-feedback.json](wang-feedback.json)）。首段增加 `n ≤ rEarlier - 2 + e(f)` 后的下降证明接入 `KIP126.ProofTools.Paper.finiteExtension_descends`。这只完成首段，不计为完整 6.20。
+
+第二段若保留 `b > 0`，不能直接以原 `y` 替换 `y'`：短扩张的靶双分次为 `(s+n-b,t+n-b)`，而原 `y` 在 `(s+n,t+n)`；λ 只改变 weight。只有 `b=0` 时分次相合，但把整个存在式限制为 `b=0` 仍需另证。独立复核见 [wang-correction-audit.md](evidence/wang-correction-audit.md)。没有由此断言实际谱上的反例，也没有增加待补公共定理。
+
+本次实际验证：默认 `lake build` 通过（3087 个任务）；普通入口精确捕获仅新增这一条公共定理，原 112 项导出记录逐项保留。全量证明体捕获后，新增定理的保守依赖闭包为 600 项，涉及 29 项既有上游直接待补，没有 Main 依赖或 Main／ProofTools 本地待补；全部 299 项注册责任及其类型／体指纹保留。详见 [wang-validation.json](wang-validation.json) 与 [依赖摘要](evidence/wang-dependency-summary.json)。这取代本轮候选历史快照的 403／24 数字，且不表示上游责任已完成。
+
+以下是先前独立报告及决定的历史记录；其中“候选未接入”等描述是当时状态，最新状态以上段和当前公共入口为准。
 
 ## 用户决定
 
@@ -333,3 +349,7 @@ D.convergentMap
 当前无针对本报告 A/B 方案的明确人类决定。`human_decision: null`。
 
 本轮用户原话“同时补齐这 11 条论文完整定理的证明并公开”记录为任务范围背景；它不是对后来发现的域修正、目标替代或缩减完整 iff 交付范围的具体批准。协调者/worker 的建议、其他报告的决定、等待或沉默均未记作本报告批准。后续仅可由协调者按真实人类原话、出处和明确范围补记审核结果；实施另行安排。
+
+## 后续授权修正版（删除差集）已完成
+
+王老师随后明确要求“把差集条件先去掉”，用户授权依此继续并记入memo。固定原y、b=0、保留早循环及同早商的修正版，现已由 `KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter` 补证并公开，全仓构建通过3088 jobs。见 [新范围报告](../20261017-prop620-remove-difference/report.md) 和 [验证](../20261017-prop620-remove-difference/validation.json)。本报告此前的含差集版本分析作为历史依据保留，不据此阻塞已获授权的修正版；也不将原含差集版本改记为已证。

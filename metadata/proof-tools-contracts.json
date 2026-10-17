@@ -1338,6 +1338,142 @@
       ],
       "interface_state": "Public statements have proved bodies. Existing upstream construction/computation/literature obligations remain with their owners.",
       "remaining_producer_obligations": []
+    },
+    {
+      "id": "paper-finite-extension-descent",
+      "mathematical_purpose": "Finite page extensions descend along actual quotient reduction on the earlier page defining length range; the same f, x, y are retained.",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3",
+          "number": "6.20",
+          "scope": "first clause with user-approved legal-page condition"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Paper/ExtensionDescent.lean",
+          "declaration": "KIP126.ProofTools.Paper.finiteExtension_descends",
+          "line": 83,
+          "migration_status": "proved-public-interface"
+        }
+      ],
+      "public_declarations": [
+        "KIP126.ProofTools.Paper.finiteExtension_descends"
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "First clause with approved legal-page bound is public. The authorized second-clause revision removing the cycle-set exclusion is recorded separately under paper-finite-extension-inessentiality-revised; the printed strict-difference version is not asserted.",
+      "remaining_producer_obligations": [],
+      "review": "metadata/interface-reviews/ProofTools/20261017-paper-prop620-domain/wang-feedback.json",
+      "followup_review": "metadata/interface-reviews/ProofTools/20261017-prop620-fixed-target-bzero/report.md"
+    },
+    {
+      "id": "paper-finite-extension-inessentiality-revised",
+      "mathematical_purpose": "For the same two finite-page witnesses and original target, earlier inessentiality iff a shorter same-quotient extension from a higher classical cycle source. Removes only the late-cycle exclusion as explicitly requested; b=0 and target y are retained.",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3",
+          "number": "6.20",
+          "scope": "authorized revision of second clause: remove late-cycle exclusion, fix original y, b=0"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Paper/ExtensionIndeterminacy.lean",
+          "declaration": "KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel",
+          "line": 191,
+          "migration_status": "proved-public-revised-interface"
+        },
+        {
+          "path": "KIP126/ProofTools/Paper/ExtensionIndeterminacy.lean",
+          "declaration": "KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter",
+          "line": 300,
+          "migration_status": "proved-public-revised-interface"
+        }
+      ],
+      "public_declarations": [
+        "KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel",
+        "KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter"
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "Authorized revised statement proved; ordinary public consumer, exact interface lock, full-body trust audit, source inventory and full lake build passed (3088 jobs). Existing upstream obligations remain with their owners; printed strict-difference version is not asserted.",
+      "remaining_producer_obligations": [],
+      "review": "metadata/interface-reviews/ProofTools/20261017-prop620-remove-difference/report.md",
+      "authorization_feedback": "metadata/interface-reviews/ProofTools/20261017-prop620-fixed-target-bzero/evidence/wang-remove-difference-feedback.json",
+      "removed_condition": "x′ ∉ Z_(rLater-1-a)",
+      "retained_conditions": [
+        "same map, source and original target",
+        "late witness essential",
+        "both witnesses valid on their actual pages",
+        "0<a<=n-e(f)",
+        "x′ in Z_(rEarlier-1-a)",
+        "same earlier quotient and source ESS survival",
+        "b=0"
+      ],
+      "not_changed": "Existing FiniteExtensionNonliftableCrossing and the frozen stretching sufficient condition.",
+      "validation": "metadata/interface-reviews/ProofTools/20261017-prop620-remove-difference/validation.json"
+    },
+    {
+      "id": "paper-finite-extension-crossing-dichotomy",
+      "mathematical_purpose": "Latest authorized Proposition 6.20 revision: late essential and earlier inessential imply a fixed-original-target nonliftable short early extension, or a crossing in the same late normalized synthetic extension spectral sequence.",
+      "paper_locators": [
+        {
+          "path": "AimPaper/main.tex",
+          "line": 1981,
+          "label": "prop:dec738d3",
+          "number": "6.20",
+          "scope": "authorized latest revision: retain strict cycle-set difference and fixed y, add late synthetic ESS crossing branch"
+        }
+      ],
+      "implementation": [
+        {
+          "path": "KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean",
+          "declaration": "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo",
+          "migration_status": "proved-public-revised-interface",
+          "line": 29
+        },
+        {
+          "path": "KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean",
+          "declaration": "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing",
+          "migration_status": "proved-public-revised-interface",
+          "line": 450
+        }
+      ],
+      "public_declarations": [
+        "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo",
+        "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing"
+      ],
+      "consumers": [
+        "Tests.ProofTools.Consumers"
+      ],
+      "interface_state": "Authorized latest revision proved and public. Ordinary public consumer, all old interface rows, all 299 registered obligations, full-body trust audit, source inventory and default lake build passed (3090 jobs). Existing upstream duties retained.",
+      "remaining_producer_obligations": [],
+      "review": "metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/report.md",
+      "authorization_feedback": "metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/evidence/wang-crossing-feedback.json",
+      "retained_conditions": [
+        "same actual map and fixed Standard model",
+        "same original x and y in both valid page witnesses",
+        "late essential and earlier inessential",
+        "0<a<=n-e(f)",
+        "early classical cycle and exclusion from late classical cycles",
+        "actual earlier correction label, same earlier map, same original target, b=0"
+      ],
+      "crossing_scope": "Negation of ExtensionNoCrossingRange for the same late normalized-map ESS, at p=(t-s,t+e(f)), source cutoff s and upper target cutoff s+n. Not identified with Definition 5.9 classical FiniteHasCrossing.",
+      "unchanged_interfaces": [
+        "finiteExtension_descends",
+        "finiteExtension_inessential_iff_shorter",
+        "FiniteExtensionNonliftableCrossing",
+        "frozen stretching sufficient condition"
+      ],
+      "new_axioms": [],
+      "new_obligations": []
     }
   ],
   "proof_obligation_registry": "metadata/proof-obligations.json",
@@ -3423,7 +3559,7 @@
     "Passed full lake build (3044 jobs) after actual h-target detection and source survival were integrated. ProofTools audit checked 1529 declarations and the original two pending theorem declarations; no new local holes or public interface changes. Ordinary consumers and dependency/source inventory checks passed. MH2 remains incomplete at its original single site."
   ],
   "paper_interface_exposure_20261017": {
-    "authorization": "User explicitly requested exposing the 11 internal-correspondence items, then completing their full statements without new proof placeholders. User subsequently deferred every Prop 6.20 change.",
+    "authorization": "User explicitly requested exposing the 11 internal-correspondence items, then completing their full statements without new proof placeholders. User subsequently deferred every Prop 6.20 change. Subsequent user feedback authorized the legal-page range correction for the first clause of Prop 6.20; its full second clause remains unproved.",
     "report": "metadata/paper-interface-exposure-20261017/report.md",
     "proof_obligations_unchanged": true,
     "validation": "metadata/paper-interface-exposure-20261017/validation.json"

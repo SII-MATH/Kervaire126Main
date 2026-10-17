@@ -24,10 +24,10 @@
     "outside": 2,
     "missing": 11,
     "public-existing": 24,
-    "partial": 9,
+    "partial": 10,
     "public-new": 7,
     "incomplete": 3,
-    "deferred-by-user": 1
+    "deferred-by-user": 0
   },
   "public_correspondence_total": 31,
   "inputs": {
@@ -37,7 +37,7 @@
     "metadata/computation-api.json": "3f9348f006570a1836ec733ba075ca043cdfd156a6042a4b8bb021eda27612fe",
     "metadata/literature-api.json": "fd1e63547aed567125e88ef9e178949ec5d331a90681dbcb6317fae53fe0c0ff",
     "metadata/main-api.json": "bcb441999382423f22a0260f12878692e6d3efa4a5d75e0061cb97987e05253a",
-    "metadata/proof-tools-api.json": "364f271cba9f80d4452dac3a0e4370d5a556c60aaa18b76ad48a65e9ae384968",
+    "metadata/proof-tools-api.json": "fcec6893b94ffc475e8ccd95630bb49818c91ca9550f35dbd1247aee0a7ad500",
     "metadata/spectral-sequence-api.json": "8d26cb4dbe5f3777de02680b0aa73b1b3c5c8bfc612fb0c0e7c92fee33b89879"
   },
   "items": [
@@ -1803,16 +1803,127 @@
         "prop:dec738d3",
         "eq:dr'"
       ],
-      "status": "deferred-by-user",
-      "public_correspondences": [],
+      "status": "partial",
+      "public_correspondences": [
+        {
+          "name": "KIP126.ProofTools.Paper.finiteExtension_descends",
+          "owner": "ProofTools",
+          "source": "KIP126/ProofTools/Paper/ExtensionDescent.lean",
+          "source_locator_lines": [
+            null
+          ],
+          "proof_status": "provided-with-pending-dependencies",
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext",
+            "sorryAx"
+          ],
+          "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y))\n  (rEarlier rLater : ℕ) (n s t : ℤ)\n  (x : ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X (Prod.mk.{0, 0} s t)))\n  (y :\n    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y\n        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s n) (HAdd.hAdd.{0, 0, 0} t n)))),\n  LE.le.{0} 2 rEarlier →\n    LE.le.{0} rEarlier rLater →\n      LE.le.{0} n\n          (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (↑rEarlier) 2)\n            ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                f)) →\n        KIP126.Kervaire.Route.FiniteExtension.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rLater n s t x y →\n          KIP126.Kervaire.Route.FiniteExtension.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rEarlier n s t x y"
+        },
+        {
+          "name": "KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel",
+          "source": "KIP126/ProofTools/Paper/ExtensionIndeterminacy.lean",
+          "source_locator_lines": [
+            191
+          ],
+          "proof_status": "provided-with-pending-dependencies",
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext",
+            "sorryAx"
+          ],
+          "full_type": "(X Y : KIP126.Kervaire.Route.ClassicalObject) →\n  (f :\n      Quiver.Hom.{0, 1}\n        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          X)\n        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          Y)) →\n    (q : ℕ) →\n      (s t : ℤ) →\n        (a : ℕ) →\n          ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X\n                (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑a)\n                  (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} s ↑a)))) →\n            ↑(KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.E₂.{0}\n                (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}\n                  (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}\n                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                  (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n                    (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.SyntheticObject.quotient q\n                      (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y\n                        f))))\n                (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑a)\n                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} s ↑a))\n                    (HAdd.hAdd.{0, 0, 0} t\n                      ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                          f)))))",
+          "scope": "authorized revised second clause; late-cycle exclusion removed"
+        },
+        {
+          "name": "KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter",
+          "source": "KIP126/ProofTools/Paper/ExtensionIndeterminacy.lean",
+          "source_locator_lines": [
+            300
+          ],
+          "proof_status": "provided-with-pending-dependencies",
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext",
+            "sorryAx"
+          ],
+          "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y))\n  (rEarlier rLater : ℕ) (n s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (y :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            Y))\n        2 (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s n) (HAdd.hAdd.{0, 0, 0} t n))))\n  (Wlater :\n    KIP126.Kervaire.Route.FiniteExtensionWitness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rLater n s t x y)\n  (Wearly :\n    KIP126.Kervaire.Route.FiniteExtensionWitness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rEarlier n s t x\n      y),\n  LE.le.{0} rEarlier rLater →\n    KIP126.Kervaire.Route.FiniteExtensionWitness.Essential.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f Wlater →\n      (¬KIP126.Kervaire.Route.FiniteExtensionWitness.Essential.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f\n            Wearly ↔\n        ∃ a,\n          LT.lt.{0} 0 a ∧\n            LE.le.{0} (↑a)\n                (HSub.hSub.{0, 0, 0} n\n                  ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      f)) ∧\n              ∃ x',\n                Membership.mem.{0, 0}\n                    (KIP126.Literature.cycles.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X\n                      (HSub.hSub.{0, 0, 0} ↑(HSub.hSub.{0, 0, 0} rEarlier 1) ↑a)\n                      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑a)\n                        (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} s ↑a))))\n                    x' ∧\n                  ∃ z,\n                    KIP126.AdamsSynthetic.HasInfinityRepresentative.{0}\n                        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}\n                          (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}\n                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                          (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n                            (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                            (KIP126.Kervaire.Route.SyntheticObject.quotient (HSub.hSub.{0, 0, 0} rEarlier 1)\n                              (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1}\n                                KIP126.AdamsSynthetic.Standard.model X Y f))))\n                        2\n                        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑a)\n                          (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} s ↑a))\n                            (HAdd.hAdd.{0, 0, 0} t\n                              ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                      KIP126.AdamsSynthetic.Standard.model))\n                                  f))))\n                        (KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel X Y f (HSub.hSub.{0, 0, 0} rEarlier 1) s\n                          t a x')\n                        z ∧\n                      KIP126.AdamsSynthetic.TowerExtensionEquation.{1, 0}\n                        (KIP126.Kervaire.Route.Model.convergentMap.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model\n                          (KIP126.Kervaire.Route.SyntheticObject.quotient (HSub.hSub.{0, 0, 0} rEarlier 1)\n                            (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model\n                              X Y f))\n                          (KIP126.Kervaire.Route.SyntheticObject.quotient (HSub.hSub.{0, 0, 0} rEarlier 1)\n                            (KIP126.Kervaire.Route.SyntheticObject.nu Y))\n                          (KIP126.Kervaire.Route.finiteExtensionMap.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f\n                            (HSub.hSub.{0, 0, 0} rEarlier 1)))\n                        (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)\n                          (HAdd.hAdd.{0, 0, 0} t\n                            ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                                (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                    KIP126.AdamsSynthetic.Standard.model))\n                                f)))\n                        (HAdd.hAdd.{0, 0, 0} s ↑a) (HSub.hSub.{0, 0, 0} n ↑a) z\n                        ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n                            (CategoryTheory.eqToHom.{0, 1}\n                              (congrArg.{1, 2}\n                                (fun d =>\n                                  KIP126.Core.SpectralSequence.SSData.eInfty.{1, 0}\n                                    (KIP126.Core.SpectralSequence.PreSS.ssData.{1, 0, 0}\n                                      (KIP126.Core.SpectralSequence.toPreSS.{1, 0, 0}\n                                        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}\n                                          (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}\n                                            (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}\n                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                                KIP126.AdamsSynthetic.Standard.model))\n                                            (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n                                              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                                                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                                  KIP126.AdamsSynthetic.Standard.model))\n                                              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                                                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                                  KIP126.AdamsSynthetic.Standard.model))\n                                              (KIP126.Kervaire.Route.SyntheticObject.quotient\n                                                (HSub.hSub.{0, 0, 0} rEarlier 1)\n                                                (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))\n                                      (Prod.mk.{0, 0} d\n                                        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) d)\n                                          (HAdd.hAdd.{0, 0, 0} t\n                                            ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                                                (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}\n                                                    KIP126.AdamsSynthetic.Standard.model))\n                                                f))))))\n                                (have this :=\n                                  KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter._proof_2 rEarlier\n                                    rLater n s a;\n                                this))))\n                          (KIP126.Kervaire.Route.FiniteExtensionWitness.target.{1, 0, 1} Wearly)))",
+          "scope": "authorized revised second clause; late-cycle exclusion removed"
+        },
+        {
+          "name": "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo",
+          "owner": "ProofTools",
+          "source": "KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean",
+          "source_locator_lines": [
+            29
+          ],
+          "proof_status": "provided-with-pending-dependencies",
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext",
+            "sorryAx"
+          ],
+          "full_type": "(X Y : KIP126.Kervaire.Route.ClassicalObject) →\n  (f :\n      Quiver.Hom.{0, 1}\n        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          X)\n        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          Y)) →\n    (rEarlier : ℕ) →\n      ℕ →\n        (n s t : ℤ) →\n          (x :\n              ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                  (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X))\n                  2 (Prod.mk.{0, 0} s t))) →\n            (y :\n                ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                    (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                        Y))\n                    2 (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s n) (HAdd.hAdd.{0, 0, 0} t n)))) →\n              KIP126.Kervaire.Route.FiniteExtensionWitness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rEarlier\n                  n s t x y →\n                Prop",
+          "scope": "latest authorized fixed-y strict-difference-or-late-synthetic-crossing revision"
+        },
+        {
+          "name": "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing",
+          "owner": "ProofTools",
+          "source": "KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean",
+          "source_locator_lines": [
+            450
+          ],
+          "proof_status": "provided-with-pending-dependencies",
+          "axioms": [
+            "Classical.choice",
+            "Quot.sound",
+            "propext",
+            "sorryAx"
+          ],
+          "full_type": "∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        Y))\n  (rEarlier rLater : ℕ) (n s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (y :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            Y))\n        2 (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s n) (HAdd.hAdd.{0, 0, 0} t n))))\n  (Wlater :\n    KIP126.Kervaire.Route.FiniteExtensionWitness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rLater n s t x y)\n  (Wearly :\n    KIP126.Kervaire.Route.FiniteExtensionWitness.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f rEarlier n s t x\n      y),\n  LE.le.{0} rEarlier rLater →\n    KIP126.Kervaire.Route.FiniteExtensionWitness.Essential.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f Wlater →\n      ¬KIP126.Kervaire.Route.FiniteExtensionWitness.Essential.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f\n            Wearly →\n        KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo X Y f rEarlier rLater n s t x y Wearly ∨\n          ¬KIP126.ProofTools.Paper.ExtensionNoCrossingRange.{1, 0}\n              (KIP126.Kervaire.Route.Model.convergentMap.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model\n                (KIP126.Kervaire.Route.SyntheticObject.quotient (HSub.hSub.{0, 0, 0} rLater 1)\n                  (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f))\n                (KIP126.Kervaire.Route.SyntheticObject.quotient (HSub.hSub.{0, 0, 0} rLater 1)\n                  (KIP126.Kervaire.Route.SyntheticObject.nu Y))\n                (KIP126.Kervaire.Route.finiteExtensionMap.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f\n                  (HSub.hSub.{0, 0, 0} rLater 1)))\n              (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)\n                (HAdd.hAdd.{0, 0, 0} t\n                  ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      f)))\n              s n s",
+          "scope": "latest authorized fixed-y strict-difference-or-late-synthetic-crossing revision"
+        }
+      ],
       "related_internal_sources": [
         "KIP126/ProofTools/Stretching.lean",
-        "KIP126/ProofTools/StretchingRepresentatives.lean"
+        "KIP126/ProofTools/StretchingRepresentatives.lean",
+        "KIP126/ProofTools/Paper/ExtensionDescent.lean"
       ],
-      "assessment": "用户决定暂时保持不变；页长度域及目标关联问题保留在独立报告，候选修正未接入公共接口。",
+      "assessment": "原文第一段增加合法页长度界后已公开；固定原y、b=0去差集iff已补证；本轮进一步保留差集，并增加同一晚页normalized synthetic ESS crossing分支，二择已形式化。该分支未等同定义5.9经典crossing，也不推出6.23升页存在性。原印刷general-b/y′版本仍区别记录，57项原文计数保留partial。",
       "paper_statement_tex": "\\label{prop:dec738d3}\n    Suppose that we have an $(f,E_r)$-extension $d^{f,E_r}_n(x)=y$, where $x\\in Z_{r-1}^{s,t}(X)$ and $y\\in Z_{r-1-n+e(f)}^{s+n,t+n}(Y)$. Then for all $2\\le r'<r$, we also have\n    \\begin{equation}\\label{eq:dr'}\n        d^{f,E_{r'}}_n(x)=y.\n    \\end{equation}\n\n    Furthermore, if $d^{f,E_r}_n(x)=y$ is essential and $n\\le r'-2+e(f)$, then (\\ref{eq:dr'}) is inessential if and only if there exists some $0<a'\\le n-e(f)$ and an element\n    $$x'\\in Z_{r'-1-a'}^{s+a',t+a'}(X)\\backslash Z_{r-1-a'}^{s+a',t+a'}(X)$$\n    such that\n    $$d^{\\hat f_{r'-1}}_{n-a'-b}(\\lambda^{a'} x')=\\lambda^{n-b-e(f)} y'$$\n    for some $b\\ge 0$.",
       "baseline_status": "internal",
-      "implementation_scope": "No statement or public interface change applied. Range/target issues were sent to the requested Feishu group. Candidate kept only as review evidence."
+      "implementation_scope": "Approved legal-page descent and both authorized fixed-y revisions completed; printed general-b/y-prime proposition remains distinct.",
+      "followup_review": "metadata/interface-reviews/ProofTools/20261017-prop620-fixed-target-bzero/report.md",
+      "authorized_revision": {
+        "status": "complete",
+        "removed_condition": "x′ ∉ Z_(rLater-1-a)",
+        "retained_conditions": "early classical cycle; same normalized finite quotient; same original y; b=0; valid earlier/later witnesses; later essentiality",
+        "declarations": [
+          "KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel",
+          "KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter"
+        ],
+        "review": "metadata/interface-reviews/ProofTools/20261017-prop620-remove-difference/report.md",
+        "validation": "metadata/interface-reviews/ProofTools/20261017-prop620-remove-difference/validation.json"
+      },
+      "latest_authorized_revision": {
+        "status": "complete",
+        "scope": "Strict cycle-set difference and same original y/b=0 retained, with a late normalized synthetic ESS crossing alternative.",
+        "declarations": [
+          "KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo",
+          "KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing"
+        ],
+        "review": "metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/report.md",
+        "validation": "metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/validation.json",
+        "not_asserted": [
+          "identification with Definition5.9 classical FiniteHasCrossing",
+          "Corollary6.23 lifting existence",
+          "printed general-b statement"
+        ]
+      }
     },
     {
       "paper_number": "6.23",
@@ -2513,5 +2624,14 @@
       "baseline_status": "public"
     }
   ],
-  "validation_reference": "metadata/paper-interface-exposure-20261017/validation.json"
+  "validation_reference": "metadata/paper-interface-exposure-20261017/validation.json",
+  "followup_validation_reference": "metadata/interface-reviews/ProofTools/20261017-paper-prop620-domain/wang-validation.json",
+  "authorized_revised_items": [
+    {
+      "paper_number": "6.20",
+      "status": "complete",
+      "counted_as_printed_status": "partial"
+    }
+  ],
+  "latest_revision_validation_reference": "metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/validation.json"
 }

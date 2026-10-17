@@ -1,0 +1,152 @@
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:29:2: warning: `@[expose]` has no effect; this declaration would be exposed by default
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:207:77: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:207:89: warning: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:399:92: error: unsolved goals
+X Y : ClassicalObject
+f : ClassicalObject.obj model.auxiliary X ⟶ ClassicalObject.obj model.auxiliary Y
+i q : ℕ
+hi : 0 < i
+hiq : i ≤ q
+s t : ℤ
+a : ℕ
+z :
+  ↑((model.family.obj
+              (SyntheticObject.obj model.nu model.auxiliary
+                (SyntheticObject.quotient q (SyntheticObject.nu X)))).sequence.ssData
+        (s + ↑a, t - s + (s + ↑a), t - s + (s + ↑a) - ↑a)).eInfty
+e : ℤ := ↑(normalizedExponent model.classicalTower f)
+δ : ℤ × ℤ := (0, e)
+u : ℤ := s + ↑a
+p₀ : ℤ × ℤ := (t - s, t - s + (s + ↑a) - ↑a)
+p : ℤ × ℤ := (t - s, t + e)
+hdeg : (u, (p₀ + δ).1 + u, (p₀ + δ).2) = (u, p.1 + u, p.2) :=
+  Prod.ext (Eq.refl (s + ↑a))
+    (Prod.ext (id (Decidable.byContradiction fun a_1 => correctionInfinity_rho._proof_1_1 i q s t a a_1))
+      (id (Decidable.byContradiction fun a_1 => correctionInfinity_rho._proof_1_2 X Y f i q s t a a_1)))
+ra : XModLambdaN (SyntheticObject.obj model.nu model.auxiliary (extensionSourceObject model X Y f)) q ⟶
+  XModLambdaN (SyntheticObject.obj model.nu model.auxiliary (extensionSourceObject model X Y f)) i :=
+  (model.quotients.tower (SyntheticObject.obj model.nu model.auxiliary (extensionSourceObject model X Y f))).rho i q hiq
+rn : XModLambdaN (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X)) q ⟶
+  XModLambdaN (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X)) i :=
+  (model.quotients.tower (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X))).rho i q hiq
+srn : (SyntheticCategory.biShift δ).obj (XModLambdaN (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X)) q) ⟶
+  (SyntheticCategory.biShift δ).obj (XModLambdaN (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X)) i) :=
+  (SyntheticCategory.biShift δ).map rn
+IL : ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.quotient q (SyntheticObject.nu X)))).sequence.ssData
+      (u, p₀.1 + u, p₀.2)).eInfty ≅
+  ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient q (SyntheticObject.nu X))))).sequence.ssData
+      (u, (p₀ + δ).1 + u, (p₀ + δ).2)).eInfty :=
+  towerInfinityIso (model.convergence (SyntheticObject.quotient q (SyntheticObject.nu X)))
+    (model.convergence (SyntheticObject.shift δ (SyntheticObject.quotient q (SyntheticObject.nu X))))
+    ((essShift δ).filtered (SyntheticObject.quotient q (SyntheticObject.nu X)) p₀) u
+IE : ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.quotient i (SyntheticObject.nu X)))).sequence.ssData
+      (u, p₀.1 + u, p₀.2)).eInfty ≅
+  ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient i (SyntheticObject.nu X))))).sequence.ssData
+      (u, (p₀ + δ).1 + u, (p₀ + δ).2)).eInfty :=
+  towerInfinityIso (model.convergence (SyntheticObject.quotient i (SyntheticObject.nu X)))
+    (model.convergence (SyntheticObject.shift δ (SyntheticObject.quotient i (SyntheticObject.nu X))))
+    ((essShift δ).filtered (SyntheticObject.quotient i (SyntheticObject.nu X)) p₀) u
+castL : ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient q (SyntheticObject.nu X))))).sequence.ssData
+      (u, (p₀ + δ).1 + u, (p₀ + δ).2)).eInfty ⟶
+  ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient q (SyntheticObject.nu X))))).sequence.ssData
+      (u, p.1 + u, p.2)).eInfty :=
+  eqToHom ⋯
+castE : ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient i (SyntheticObject.nu X))))).sequence.ssData
+      (u, (p₀ + δ).1 + u, (p₀ + δ).2)).eInfty ⟶
+  ((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient i (SyntheticObject.nu X))))).sequence.ssData
+      (u, p.1 + u, p.2)).eInfty :=
+  eqToHom ⋯
+zs : ↑((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.shift δ (SyntheticObject.quotient q (SyntheticObject.nu X))))).sequence.ssData
+      (u, p.1 + u, p.2)).eInfty :=
+  (ConcreteCategory.hom castL) ((ConcreteCategory.hom IL.hom) z)
+zl : ↑((model.family.obj
+            (SyntheticObject.obj model.nu model.auxiliary
+              (SyntheticObject.quotient q (extensionSourceObject model X Y f)))).sequence.ssData
+      (s + ↑a, t - s + (s + ↑a), t + ↑(normalizedExponent model.classicalTower f))).eInfty :=
+  correctionInfinity X Y f q s t a z
+hQ :
+  (ConcreteCategory.hom
+        (SpectralSequenceMorphism.eInftyMap (model.family.map (correctionShiftIso X Y f i).hom) (u, p.1 + u, p.2)))
+      ((ConcreteCategory.hom
+          (SpectralSequenceMorphism.eInftyMap
+            (model.family.map
+              ((model.quotients.tower
+                    (SyntheticObject.obj model.nu model.auxiliary (extensionSourceObject model X Y f))).rho
+                i q hiq))
+            (u, p.1 + u, p.2)))
+        zl) =
+    (ConcreteCategory.hom
+        (SpectralSequenceMorphism.eInftyMap
+          (model.family.map
+            ((SyntheticCategory.biShift (0, ↑(normalizedExponent model.classicalTower f))).map
+              ((model.quotients.tower (model.nu.functor.obj (ClassicalObject.obj model.auxiliary X))).rho i q hiq)))
+          (u, p.1 + u, p.2)))
+      ((ConcreteCategory.hom
+          (SpectralSequenceMorphism.eInftyMap (model.family.map (correctionShiftIso X Y f q).hom) (u, p.1 + u, p.2)))
+        zl)
+⊢ (ConcreteCategory.hom
+        ((towerInfinityIso (model.convergence (SyntheticObject.quotient q (SyntheticObject.nu X)))
+              (model.convergence
+                (SyntheticObject.shift (0, ↑(normalizedExponent model.classicalTower f))
+                  (SyntheticObject.quotient q (SyntheticObject.nu X))))
+              ((essShift (0, ↑(normalizedExponent model.classicalTower f))).filtered
+                (SyntheticObject.quotient q (SyntheticObject.nu X)) (t - s, t - s + (s + ↑a) - ↑a))
+              (s + ↑a)).hom ≫
+          eqToHom ⋯ ≫
+            𝟙
+              ((model.family.obj
+                        (SyntheticObject.obj model.nu model.auxiliary
+                          (SyntheticObject.shift (0, ↑(normalizedExponent model.classicalTower f))
+                            (SyntheticObject.quotient q (SyntheticObject.nu X))))).sequence.ssData
+                  (s + ↑a, t - s + (s + ↑a), t + ↑(normalizedExponent model.classicalTower f))).eInfty))
+      z =
+    (ConcreteCategory.hom
+        ((towerInfinityIso (model.convergence (SyntheticObject.quotient q (SyntheticObject.nu X)))
+              (model.convergence
+                (SyntheticObject.shift (0, ↑(normalizedExponent model.classicalTower f))
+                  (SyntheticObject.quotient q (SyntheticObject.nu X))))
+              ((essShift (0, ↑(normalizedExponent model.classicalTower f))).filtered
+                (SyntheticObject.quotient q (SyntheticObject.nu X)) (t - s, t - s + (s + ↑a) - ↑a))
+              (s + ↑a)).hom ≫
+          eqToHom ⋯))
+      z
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:403:44: warning: This simp argument is unused:
+  ConcreteCategory.id_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [← ̲ModuleCat.comp_apply, ̲Category.assoc, ̲← ̲SpectralSequenceMorphism.eInftyMap_comp,
+        ← ̲SyntheticAdamsFamily.map_comp, ̲Iso.inv_hom_id, ̲SyntheticAdamsFamily.map_id,
+        SpectralSequenceMorphism.eInftyMap_id,̵C̵o̵n̵c̵r̵e̵t̵e̵C̵a̵t̵e̵g̵o̵r̵y̵.̵i̵d̵_̵a̵p̵p̵l̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:417:37: warning: This simp argument is unused:
+  Category.assoc
+
+Hint: Omit it from the simp argument list.
+  simp only [← ̲ModuleCat.comp_apply,C̵a̵t̵e̵g̵o̵r̵y̵.̵a̵s̵s̵o̵c̵,̵ ̲← ̲SpectralSequenceMorphism.eInftyMap_comp,
+        ← ̲SyntheticAdamsFamily.map_comp, ̲Iso.hom_inv_id, ̲SyntheticAdamsFamily.map_id,
+        SpectralSequenceMorphism.eInftyMap_id, ̲ConcreteCategory.id_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
