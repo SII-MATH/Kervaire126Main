@@ -1,4 +1,8 @@
 module
+import all KIP126.ProofTools.Paper.ExtensionRepresentatives
+import all KIP126.ProofTools.Paper.Crossing
+import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
+import all KIP126.ProofTools.Paper.SyntheticExtensions
 import all KIP126.ProofTools
 import all KIP126.ProofTools.ConvergenceOperations
 import all KIP126.ProofTools.DetectionOperations

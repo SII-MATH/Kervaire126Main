@@ -41,4 +41,20 @@ theorem paperConclusion : H6SquarePermanent := by
   · obtain ⟨h3, _, h5⟩ := criterion.mp hd.1
     exact False.elim (eta_extension_excluded_of_d6_vanishes h3 h5)
 
+open CategoryTheory KIP126.Synthetic.Context
+open KIP126.AdamsSynthetic.Standard (SyntheticSpectrum)
+
+/-- A normal consumer obtains the Q9 alpha-one representative from the
+compatible Q11 construction, without importing its private implementation. -/
+example : ∃ a : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
+    Paper.FiniteDetected 9 (by decide) 9 132 0 KIP126.Computation.Standard.V a := by
+  obtain ⟨a11,_,ha9,_⟩ := Paper.lemma_x1239
+  exact ⟨a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide),ha9⟩
+
+/-- The actual nu-extension supplies a nonzero detected X representative. -/
+example : ∃ x : BiHom 122 126 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
+    Paper.FiniteDetected 9 (by decide) 8 130 4 KIP126.Computation.Standard.X x := by
+  obtain ⟨x,y,hx,_⟩ := Paper.lemma_nuext125
+  exact ⟨x,hx⟩
+
 end Tests.Main

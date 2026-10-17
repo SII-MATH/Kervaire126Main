@@ -1,0 +1,572 @@
+Independently read excerpts; paths relative to repository root. Source hashes in source-hashes.json.
+
+### AimPaper/main.tex:253
+
+253: \section{A Spectral Sequence for Extensions}\label{sec:e6be737c}
+254: In this paper, we assume that all symbols $X,Y,Z,W,\dots$ for spectra represent 2-completed connective spectra of finite type. In particular, their $\HF$-Adams spectral sequences converge strongly.
+255: 
+
+### AimPaper/main.tex:1276
+
+1276: 
+1277: \begin{notation}
+1278: For a map between classical spectra $f: X\to Y$, consider the associated synthetic map from Notation~\ref{not:fhat}
+1279: $$\hat f: \Sus^{0,e(f)}\nu X\to \nu Y.$$
+1280: For any $2\le r\le \infty$, we denote the following mod $\lambda^{r-1}$ reduction maps by $\hat f_{r-1}$:
+1281: $$\hat f_{r-1}: \Sus^{0,e(f)}\nu X/\lambda^{r-1}\to \nu Y/\lambda^{r-1}.$$
+1282: \end{notation}
+1283: 
+1284: The $E_0$-page of the $\hat f_{r-1}$-ESS is isomorphic to
+1285: $$\begin{aligned}
+1286:     \ESS{\hat f_{r-1}}_0^{s,t,t-k+e(f)}\iso & E_\infty^{s,t,t-k}(\nu X/\lambda^{r-1})\oplus E_\infty^{s,t,t-k+e(f)}(\nu Y/\lambda^{r-1})\\
+1287:     \iso & \big(Z_{r-1-k}^{s,t}(X)/B_{1+k}^{s,t}(X)\big)\oplus \big(Z_{r-1-k+e(f)}^{s,t}(Y)/B_{1+k-e(f)}^{s,t}(Y)\big).
+1288: \end{aligned}$$
+1289: A nontrivial $d^{\hat f_{r-1}}_n$ differential can be interpreted as a map from the subgroup
+1290: \begin{equation}\label{eq:eae450fe}
+1291:   \ZESS{\hat f_{r-1}}_{n-1}^{s,t,t-k}(X) \subset  Z_{r-1-k}^{s,t}(X)/B_{1+k}^{s,t}(X)
+1292: \end{equation}
+1293: to the quotient group 
+1294: \begin{equation}\label{eq:334248d2}
+1295:     \big(Z_{r-1-k-n+e(f)}^{s+n,t+n}(Y)/B_{1+k+n-e(f)}^{s+n,t+n}(Y) \big)/\BESS{\hat f_{r-1}}_{n-1}^{s+n,t+n,t-k}(Y).
+1296: \end{equation}
+1297: The differential $d^{\hat f_{r-1}}_n$ is trivial for degree reasons when 
+1298: $$n<\AF(f)\text{ or }n>r-2-k+e(f).$$
+1299: 
+1300:     
+1301: \begin{definition}\label{def:6c076a33}
+1302:     Let $x\in Z^{s,t}_{r-1}(X)$ and $y\in Z^{s+n,t+n}_{r-1-n+e(f)}(Y)$ for some 
+1303:     $$e(f)\le n\le r-2+e(f).$$
+1304:     We say that there is an $(f,E_r)$-extension from $x$ to $y$, denoted by
+1305:     \begin{equation}\label{eq:b98be76a}
+1306:     d_{n}^{f,E_r}(x)=y
+1307:     \end{equation}
+1308:     if there exists a synthetic $\hat f_{r-1}$-extension
+1309:     \begin{equation}\label{eq:a020bad3}
+1310:         d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y.
+1311:     \end{equation}
+1312:     where $x$ is viewed as an element of the subgroup (\ref{eq:eae450fe}) with $k=0$, and $\lambda^{n-e(f)} y$ is viewed as an element of the quotient group (\ref{eq:334248d2}) with $k=0$. 
+1313: 
+1314:    We say that this $(f,E_r)$-extension in (\ref{eq:b98be76a}) is \emph{essential} if the corresponding synthetic $\hat f_{r-1}$-extension in (\ref{eq:a020bad3}) is an essential differential in the $\hat f_{r-1}$-ESS.
+1315:     
+1316:     For $r=\infty$, we similar define an $(f,E_\infty)$-extension using the corresponding synthetic $\hat f$-extension.
+1317: \end{definition}
+
+### AimPaper/main.tex:1385
+
+1385: 
+1386: \begin{remark} \label{def:fErextess}
+1387: Consider an $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ in (\ref{eq:b98be76a}).
+1388:     The element $y$ should be interpreted as a coset with indeterminacy given by $B_{1+n-e(f)}^{s+n,t+n}(Y)$, plus the sum of images of $d^{\hat f_{r-1}}_{<n}$ differentials.   This $(f,E_r)$-extension is \emph{essential} if this coset does not contain 0.
+1389: \end{remark}
+
+### AimPaper/main.tex:1981
+
+1981: \begin{proposition}\label{prop:dec738d3}
+1982:     Suppose that we have an $(f,E_r)$-extension $d^{f,E_r}_n(x)=y$, where $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_{r-1-n+e(f)}^{s+n,t+n}(Y)$. Then for all $2\le r'<r$, we also have
+1983:     \begin{equation}\label{eq:dr'}
+1984:         d^{f,E_{r'}}_n(x)=y.
+1985:     \end{equation}
+1986: 
+1987:     Furthermore, if $d^{f,E_r}_n(x)=y$ is essential and $n\le r'-2+e(f)$, then (\ref{eq:dr'}) is inessential if and only if there exists some $0<a'\le n-e(f)$ and an element
+1988:     $$x'\in Z_{r'-1-a'}^{s+a',t+a'}(X)\backslash Z_{r-1-a'}^{s+a',t+a'}(X)$$
+1989:     such that
+1990:     $$d^{\hat f_{r'-1}}_{n-a'-b}(\lambda^{a'} x')=\lambda^{n-b-e(f)} y'$$
+1991:     for some $b\ge 0$.
+1992:     
+1993: \end{proposition}
+1994: 
+1995: \begin{proof}
+1996:     Consider the following commutative diagram:
+1997:     $$\xymatrix{
+1998:         \Sus^{0,e(f)}\nu X/\lambda^{r-1} \ar[r]^-{\hat f_{r-1}}\ar[d]_{\rho_X} & \nu Y/\lambda^{r-1} \ar[d]_{\rho_Y}\\
+1999:         \Sus^{0,e(f)}\nu X/\lambda^{r'-1} \ar[r]^-{\hat f_{r'-1}} & \nu Y/\lambda^{r'-1}
+2000:     }$$
+2001:     By Corollary \ref{cor:e7b20ae2}, $(\rho_X,\rho_Y)$ induces a map from the $\hat f_{r-1}$-ESS to the $\hat f_{r'-1}$-ESS. Therefore, by naturality,
+2002:     $$d^{\hat f_{r-1}}_n(x)=\lambda^{n-e(f)} y\ \text{implies} \ d^{\hat f_{r'-1}}_n(x)=\lambda^{n-e(f)} y,$$
+2003:     which, by definition, is
+2004:     $$d^{f,E_{r'}}_n(x)=y.$$
+2005:    
+2006:     Next, we prove the second part of the proposition. By Definition \ref{def:6c076a33}, the $(f,E_r)$-extension (\ref{eq:dr'}) is inessential if and only if 
+2007:     there exists $0<a\le n-e(f)$ and 
+2008:     $$\lambda^a x'\in E_\infty^{s+a,t+a,t}(\nu X/\lambda^{r'-1})\iso Z_{r'-1-a}^{s+a,t+a}(X)/B_{1+a}^{s+a,t+a}(X),$$
+2009:     such that
+2010:     \begin{equation}\label{eq:dcd62a19}
+2011:         d^{\hat f_{r'-1}}_{n-a}(\lambda^ax')=\lambda^{n-e(f)} y,
+2012:     \end{equation}
+2013:     and this differential is not induced by $(\rho_X,\rho_Y)$, as we assume that $d^{f,E_r}_n(x)=y$ is essential.
+2014:     
+2015:     There are two scenarios where this differential is not induced by $(\rho_X,\rho_Y)$. The first case occurs when $\lambda^ax'$ is not in the image of $\rho_X$ at all, which is equivalent to $x'\notin Z_{r-1-a}^{s+a,t+a}(X)$. (See Figure \ref{fig:b22d961f}.) 
+2016:     
+2017:     \begin{figure}[h]
+2018:     \centering
+2019:     \scalebox{0.9}{\begin{tikzpicture}
+2020:         % Draw grid
+2021:         \fill[llgray] (0-0.5, 4-0.5) rectangle ++(1, 2);
+2022:         \tikzgrid{0}{2}{0}{7}
+2023:         \tikzgrid{3}{5}{0}{7}
+2024:         \draw[thick] (0-0.5, 4-0.5) rectangle ++(1, 2);
+2025:     
+2026:         % Draw bullets
+2027:         \coordinate (x) at (1, 0);
+2028:         \coordinate (x1) at (1, 1);
+2029:         \coordinate (dx1) at (0, 5);
+2030:         \coordinate (dx) at (0, 6);
+2031:         \coordinate (y) at (4, 3);
+2032:         \coordinate (y1) at (4, 2);
+2033:         \coordinate (dy) at (3, 6);
+2034:         
+2035:         \fill (x) circle (0.1) node[below right] {$x$};
+2036:         \fill (x1) circle (0.1) node[below right] {$x'$};
+2037:         \fill (y1) circle (0.1) node[right] {$y$};
+2038:         \fill (dx1) circle (0.1) node[right] {};
+2039:     
+2040:         % Draw differentials
+2041:         \draw[dashed, -{Stealth[length=1.5mm]}, shorten >=(0.08cm)] (x) -- (dx) node[near end, above right] {$d_{\ge r'}$};
+2042:         \drawarrow (x1) -- (dx1) node[near end,left
+2043:         ] {$d_*$};
+2044:         \draw[dashed, -{Stealth[length=1.5mm]}, shorten >=(0.08cm)] (x) -- (y) node[near end,above left=-5pt] {$d^{f,E_{r'}}_{>n}$};
+2045:         \drawarrow (x) -- (y1) node[midway,below right=-5pt] {$d^{f,E_{r}}_{n}$};
+2046:         \drawarrow (x1) -- (y1) node[near start,above=-3pt] {$d^{f,E_{r'-a}}_{n-a}$};
+2047:     
+2048:         \node[anchor=east] at (-0.6, 0) {$s$};
+2049:         \node[anchor=east] at (-0.6, 1) {$s+a$};
+2050:         \node[anchor=east] at (-0.6, 2) {$s+n$};
+2051:         \node[anchor=east] at (-0.6, 4) {$s+r'$};
+2052:         \node[anchor=east] at (-0.6, 6) {$s+r$};
+2053:     
+2054:         \node at (.5, -1.0) {$E_2(X)$};
+2055:         \node at (3.5, -1.0) {$E_2(Y)$};
+2056:     \end{tikzpicture}}
+2057:     \caption{Extensions across pages}\label{fig:b22d961f}
+2058:     \end{figure}
+2059:     
+2060:     The second case occurs when $\lambda^ax'$ is in the image of $\rho_X$, but it supports an essential $\hat f_{r-1}$-extension that is strictly shorter than the differential (\ref{eq:dcd62a19}). 
+2061:     
+2062:     To further explore this scenario, we replace $x$ with $\lambda^ax'$ and analyze successive essential extensions. This process is repeated iteratively until the first case is reached. Ultimately, this leads to the existence of some $0<a'\le n-e(f)$ and an element
+2063:     $$x''\in Z_{r'-1-a'}^{s+a',t+a'}(X)\backslash Z_{r-1-a'}^{s+a',t+a'}(X)$$
+2064:     such that
+2065:     $$d^{\hat f_{r'-1}}_{n-a'-b}(\lambda^{a'} x'')=\lambda^{n-b-e(f)} y'$$
+2066:     for some $b>0$. This represents a crossing of $d^{\hat f_{r'-1}}_n(x)=\lambda^{n-e(f)}y$.
+2067:     
+2068: \end{proof}
+2069: 
+2070: 
+2071: The following Corollary~\ref{cor:dfc6043e} is the contrapositive statement of the second part of Proposition~\ref{prop:dec738d3}.
+2072: 
+2073: 
+2074: \begin{corollary}\label{cor:dfc6043e}
+2075:     Suppose $r\ge r'$ and there exists an $(f,E_{r'})$-extension 
+2076:     $$d^{f,E_{r'}}_n(x)=y$$
+2077:     for $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_{r'-1-n+e(f)}^{s+n,t+n}(Y)$. Assume that this extension has no crossing of the form $d^{f,E_{r'-a}}_{n-a-b}(x')=y'$ for any $b>0$, $0<a\le n-e(f)$, and 
+2078:     $$x'\in Z_{r'-1-a}^{s+a,t+a}(X)\backslash Z_{r-1-a}^{s+a,t+a}(X).$$ 
+2079:     Under these conditions, we also have an $(f,E_{r})$-extension
+2080:     $$d^{f,E_{r}}_n(x)=y.$$
+2081: \end{corollary}
+2082: 
+2083: 
+2084: \begin{example} \label{exam:stretchext}
+2085:     In Example~\ref{exam:Mahowald}, we use the Generalized Mahowald Trick to establish the $(f, E_3)$-extension:
+2086:         $$d_2^{f, E_3} (h_0h_4^2) = h_0 p,$$
+2087:         for the map $f=\nu:S^3 \rightarrow S^0$, as discussed
+2088: in Example~\ref{exam:extonEn}(2). However, to apply the Generalized Leibniz Rule in proving the classical Adams differential 
+2089: $$d_3(h_2h_5) = h_0p$$
+2090: in Example~\ref{exam:Leibnizyes}, we need the $E_\infty$-page version of the $(f, E_3)$-extension:
+2091: $$d_2^{f, E_\infty} (h_0h_4^2) = h_0 p.$$
+2092: We apply Corollary~\ref{cor:dfc6043e} to confirm this.
+2093: 
+2094: %Specifically, set 
+2095: %$$r'=3, \ r=\infty, \ n=2, \ s=3, \ t=36, \ e(f)=1,$$
+2096: %$$x=h_0h_4^2 \in Z_\infty^{3,36}(S^3), \ y = h_0p \in Z_1^{5,38}(S^0)$$
+2097: As checked in Example~\ref{exam:Ercross}(2), the $(f, E_3)$-extension has no crossing. Consequently, by Corollary~\ref{cor:dfc6043e}, we obtain the required $(f, E_\infty)$-extension:
+2098: $$d_2^{f, E_\infty} (h_0h_4^2) = h_0 p.$$
+2099: \end{example}
+2100: 
+2101: 
+2102: \section{Proof of the main theorem}
+2103: 
+2104: In this section, we present the proof of our main Theorem~\ref{thm:h_6_sq}. 
+2105: 
+2106: \begin{theorem}[Theorem~\ref{thm:h_6_sq}] \label{thm:126survives}
+2107:     The element $h_6^2$ survives to the $E_\infty$-page in the Adams spectral sequence.
+2108: \end{theorem}
+2109: 
+2110: We first recall the following theorem, known as the inductive method, originally by Barratt--Jones--Mahowald \cite{BJMinduction} and later extended to the H$\mathbb{F}_2$-synthetic setting by Burklund--Xu \cite[Proposition~7.19]{BurklundXu}.
+2111: 
+2112: \begin{notation}
+2113:     Let $\theta_5 = [h_5^2]$ represent any synthetic homotopy class in $\pi_{62,62+2}S^{0,0}$ detected by $h_5^2$ in the Adams $E_2$-page. For convenience, we use the same notation, $\theta_5$, to denote its image in $\pi_{62,62+2}S^{0,0}/\lambda^r$ via the map $S^{0,0} \rightarrow S^{0,0}/\lambda^r$ for all $r \ge 1$. Similarly, let $\eta = [h_1] \in \pi_{1,1+1}S^{0,0}$.
+2114: \end{notation}
+2115: 
+2116: 
+2117: \begin{theorem}[Barratt--Jones--Mahowald, Burklund--Xu] \label{thm:bjmbx}
+2118: \begin{enumerate}
+2119:  \item[]
+2120:  \item    The element $h_6^2$ survives to the $E_{r+3}$-page of the classical Adams spectral sequence if and only if for some $\theta_5$, 
+2121:  $$\lambda \eta \theta_5^2 = 0 \ \text{in} \ \pi_{125,125+4} S^{0,0}/\lambda^{r+1}.$$
+2122:  \item   In particular, $h_6^2$ is a permanent cycle in the classical Adams spectral sequence if and only if for some $\theta_5$,
+2123:  $$\lambda \eta \theta_5^2 = 0 \ \text{in} \ \pi_{125,125+4} S^{0,0}.$$ 
+
+### KIP126/AdamsSynthetic/ExtensionWitnesses.lean:1
+
+1: module
+2: 
+3: public import KIP126.AdamsSynthetic.ExtensionLabels
+4: 
+5: @[expose] section
+6: 
+7: /-! Page extensions in the shared model, with no separate ESS, filtration,
+8: source/target operators, or arbitrary quotient comparisons as parameters. -/
+9: namespace KIP126.Kervaire.Route
+10: open CategoryTheory KIP126.StableHomotopy
+11: open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
+12: open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence
+13: universe u v w
+14: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+15:   [HasFunctorialCofiber (C := C)]
+16:   {Syn : Type w} [SyntheticCategory.{w, v} Syn]
+17:   [HasFunctorialCofiber (C := Syn)]
+18:   (D : Model C Syn)
+19:   (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
+20: 
+21: public structure FiniteExtensionWitness (r : ℕ) (n s t : ℤ)
+22:     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
+23:     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) where
+24:   page_ge_two : 2 ≤ r
+25:   length_lower : (normalizedExponent D.classicalTower f : ℤ) ≤ n
+26:   length_upper : n ≤ (r : ℤ) - 2 + normalizedExponent D.classicalTower f
+27:   source_cycle : ReachesPage (D.classical.obj (X.obj D.auxiliary)) r (s, t) x
+28:   target_cycle : ReachesPage (D.classical.obj (Y.obj D.auxiliary))
+29:     ((r : ℤ) - n + normalizedExponent D.classicalTower f) (s + n, t + n) y
+30:   source : ((D.family.obj ((SyntheticObject.quotient (r - 1)
+31:     (extensionSourceObject D X Y f)).obj D.nu D.auxiliary)).sequence.ssData
+32:       (s, (t - s) + s, t + normalizedExponent D.classicalTower f)).eInfty
+33:   target : ((D.family.obj ((SyntheticObject.quotient (r - 1) (.nu Y)).obj
+34:     D.nu D.auxiliary)).sequence.ssData
+35:       (s + n, (t - s) + (s + n), t + normalizedExponent D.classicalTower f)).eInfty
+36:   source_rep : HasInfinityRepresentative _ 2 _
+37:     (finiteSourceForExtension D X Y f (r - 1) s t x) source
+38:   target_rep : HasInfinityRepresentative _ 2 _
+39:     (finiteTargetForExtension D X Y f (r - 1) n s t length_lower y) target
+40:   equation : TowerExtensionEquation
+41:     (D.convergentMap (.quotient (r - 1) (extensionSourceObject D X Y f))
+42:       (.quotient (r - 1) (.nu Y)) (finiteExtensionMap D X Y f (r - 1)))
+43:     (t - s, t + normalizedExponent D.classicalTower f) s n source target
+44: 
+45: public structure InfiniteExtensionWitness (n s t : ℤ)
+46:     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
+47:     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) where
+48:   length_lower : (normalizedExponent D.classicalTower f : ℤ) ≤ n
+
+### KIP126/AdamsSynthetic/PageExtensions.lean:1
+
+1: module
+2: 
+3: public import KIP126.AdamsSynthetic.ExtensionWitnesses
+4: 
+5: @[expose] section
+6: 
+7: /-! Page extensions in the shared model, with no separate ESS, filtration,
+8: source/target operators, or arbitrary quotient comparisons as parameters. -/
+9: namespace KIP126.Kervaire.Route
+10: open CategoryTheory KIP126.StableHomotopy
+11: open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
+12: open KIP126.Classical.Adams KIP126.AdamsSynthetic
+13: universe u v w
+14: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+15:   [HasFunctorialCofiber (C := C)]
+16:   {Syn : Type w} [SyntheticCategory.{w, v} Syn]
+17:   [HasFunctorialCofiber (C := Syn)]
+18:   (D : Model C Syn)
+19:   (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
+20: 
+21: 
+22: public def FiniteExtension (r : ℕ) (n s t : ℤ)
+23:     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
+24:     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) : Prop :=
+25:   Nonempty (FiniteExtensionWitness D X Y f r n s t x y)
+26: 
+27: public def FiniteExtensionWitness.Essential {r : ℕ} {n s t : ℤ} {x y}
+28:     (W : FiniteExtensionWitness D X Y f r n s t x y) : Prop :=
+29:   TowerEssentialExtension
+30:     (D.convergentMap (.quotient (r - 1) (extensionSourceObject D X Y f))
+31:       (.quotient (r - 1) (.nu Y)) (finiteExtensionMap D X Y f (r - 1)))
+32:     (t - s, t + normalizedExponent D.classicalTower f) s n W.source W.target
+33: 
+34: 
+35: public def InfiniteExtension (n s t : ℤ)
+36:     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))
+37:     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) : Prop :=
+38:   Nonempty (InfiniteExtensionWitness D X Y f n s t x y)
+39: 
+40: public def InfiniteExtensionWitness.Essential {n s t : ℤ} {x y}
+41:     (W : InfiniteExtensionWitness D X Y f n s t x y) : Prop :=
+42:   TowerEssentialExtension
+43:     (D.convergentMap (extensionSourceObject D X Y f) (.nu Y) (D.normalizedMap X Y f).map)
+44:     (t - s, t + normalizedExponent D.classicalTower f) s n W.source W.target
+45: 
+46: /-- The finite target page stays in the valid page-two range. -/
+47: public theorem FiniteExtensionWitness.target_page_ge_two {r : ℕ} {n s t : ℤ} {x y}
+48:     (W : FiniteExtensionWitness D X Y f r n s t x y) :
+49:     2 ≤ (r : ℤ) - n + normalizedExponent D.classicalTower f := by
+50:   have h := W.length_upper
+51:   omega
+52: 
+53: public theorem FiniteExtensionWitness.length_nonnegative {r : ℕ} {n s t : ℤ} {x y}
+54:     (W : FiniteExtensionWitness D X Y f r n s t x y) : 0 ≤ n := by
+55:   have h := W.length_lower
+56:   omega
+57: 
+58: public theorem InfiniteExtensionWitness.length_nonnegative {n s t : ℤ} {x y}
+59:     (W : InfiniteExtensionWitness D X Y f n s t x y) : 0 ≤ n := by
+
+### KIP126/AdamsSynthetic/Extension.lean:61
+
+61: namespace ConvergentMap
+62: variable {F : SyntheticAdamsFamily Syn} {X Y : Syn} {g : X ⟶ Y}
+63:   {FX : Filtration (syntheticHomotopy X)} {FY : Filtration (syntheticHomotopy Y)}
+64:   {cx : Convergence (F.obj X).sequence (syntheticHomotopy X) FX}
+65:   {cy : Convergence (F.obj Y).sequence (syntheticHomotopy Y) FY}
+66:   (M : ConvergentMap F g cx cy)
+67:   (p : ℤ × ℤ) (s n : ℤ) {i j : Tridegree}
+68:   (hi : cx.reindex i = (s,p)) (hj : cy.reindex j = (s+n,p))
+69:   {T : ModuleCat.{v} ℤ}
+70: 
+71: /-- The actual filtered extension equation, with the original nonnegative length. -/
+72: public def ExtensionEquation (x : T ⟶ ((F.obj X).sequence.ssData i).eInfty)
+73:     (y : T ⟶ ((F.obj Y).sequence.ssData j).eInfty) : Prop :=
+74:   FilteredMapExtension.Relation M.filteredMap p s n
+75:     (toGraded cx hi x) (toGraded cy hj y)
+76: 
+77: /-- Essentiality modulo the entire homogeneous target solution space. -/
+78: public def EssentialExtension (x : T ⟶ ((F.obj X).sequence.ssData i).eInfty)
+79:     (y : T ⟶ ((F.obj Y).sequence.ssData j).eInfty) : Prop :=
+80:   FilteredMapExtension.Essential M.filteredMap p s n
+81:     (toGraded cx hi x) (toGraded cy hj y)
+82: 
+83: /-- A consumer obtains actual lifts without expanding any filtered complex. -/
+84: public theorem extensionEquation_iff
+85:     (x : T ⟶ ((F.obj X).sequence.ssData i).eInfty)
+86:     (y : T ⟶ ((F.obj Y).sequence.ssData j).eInfty) :
+87:     M.ExtensionEquation p s n hi hj x y ↔
+88:       0 ≤ n ∧ ∃ (a : T ⟶ Subobject.underlying.obj (FX.F s p))
+89:         (b : T ⟶ Subobject.underlying.obj (FY.F (s+n) p)),
+90:         a ≫ FX.toAssociatedGraded s p = toGraded cx hi x ∧
+91:         b ≫ FY.toAssociatedGraded (s+n) p = toGraded cy hj y ∧
+92:         a ≫ (FX.F s p).arrow ≫ syntheticHomotopyMap g p = b ≫ (FY.F (s+n) p).arrow := by
+93:   simp only [ExtensionEquation, FilteredMapExtension.Relation, filteredMap_map]
+94: 
+95: /-- All targets for this source, expressed as the full homogeneous coset. -/
+96: public theorem targets_iff_coset
+97:     (x : T ⟶ ((F.obj X).sequence.ssData i).eInfty)
+98:     (y z : T ⟶ ((F.obj Y).sequence.ssData j).eInfty)
+99:     (h : M.ExtensionEquation p s n hi hj x y) :
+100:     M.ExtensionEquation p s n hi hj x z ↔
+101:       toGraded cy hj z ∈ FilteredMapExtension.TargetCoset
+102:         M.filteredMap p s n (toGraded cy hj y) :=
+103:   (FilteredMapExtension.Relation.mem_targetCoset_iff h).symm
+104: 
+105: public theorem essential_iff_no_zero_target
+106:     (x : T ⟶ ((F.obj X).sequence.ssData i).eInfty)
+107:     (y : T ⟶ ((F.obj Y).sequence.ssData j).eInfty)
+108:     (h : M.ExtensionEquation p s n hi hj x y) :
+109:     M.EssentialExtension p s n hi hj x y ↔
+110:       ¬ M.ExtensionEquation p s n hi hj x 0 := by
+111:   simpa only [EssentialExtension, ExtensionEquation, toGraded,
+112:     Limits.zero_comp] using FilteredMapExtension.essential_iff h
+113: 
+114: end ConvergentMap
+115: 
+116: section Tower
+117: variable [HasFunctorialCofiber (C := Syn)]
+118:   {H : Syn} {unit : S_0_0 ⟶ H} {F : SyntheticAdamsFamily Syn}
+119:   {P : SyntheticTowerPresentation unit F} {X Y : Syn} {g : X ⟶ Y}
+120:   {cx : SyntheticTowerConvergence P X} {cy : SyntheticTowerConvergence P Y}
+121: 
+122: /-- Element form of the same extension relation, with canonical tower degrees.
+123: The equation remains meaningful without a bounded ESS construction. -/
+124: public def TowerExtensionEquation
+125:     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
+126:     (p : ℤ × ℤ) (s n : ℤ)
+127:     (x : ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)
+128:     (y : ((F.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty) : Prop :=
+129:   M.ExtensionEquation p s n (by simp [SyntheticTowerConvergence.toConvergence])
+130:     (by simp [SyntheticTowerConvergence.toConvergence]) (elementMap x) (elementMap y)
+131: 
+132: public def TowerEssentialExtension
+133:     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
+134:     (p : ℤ × ℤ) (s n : ℤ)
+135:     (x : ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)
+136:     (y : ((F.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty) : Prop :=
+137:   M.EssentialExtension p s n (by simp [SyntheticTowerConvergence.toConvergence])
+138:     (by simp [SyntheticTowerConvergence.toConvergence]) (elementMap x) (elementMap y)
+139: end Tower
+140: end KIP126.AdamsSynthetic
+
+### KIP126/SpectralSequence/Consumer/Extension.lean:36
+
+36:   simp only [Filtration.toAssociatedGraded, FilteredMorphism.inducedGrMap,
+37:     Filtration.inducedAssocGradedMap, cokernel.map, cokernel.π_desc]
+38: 
+39: namespace FilteredMapExtension
+40: 
+41: /-- The actual representatives of an extension of nonnegative length. -/
+42: public def Relation (f : FilteredMorphism F G) (k : ω) (s n : ℤ)
+43:     {T : C} (x : T ⟶ F.associatedGraded s k)
+44:     (y : T ⟶ G.associatedGraded (s + n) k) : Prop :=
+45:   0 ≤ n ∧ ∃ (a : T ⟶ Subobject.underlying.obj (F.F s k))
+46:     (b : T ⟶ Subobject.underlying.obj (G.F (s + n) k)),
+47:     a ≫ F.toAssociatedGraded s k = x ∧
+48:     b ≫ G.toAssociatedGraded (s + n) k = y ∧
+49:     a ≫ (F.F s k).arrow ≫ f.map k = b ≫ (G.F (s + n) k).arrow
+50: 
+51: /-- Homogeneous target ambiguity of the same representative equation. -/
+52: public def TargetIndeterminacy (f : FilteredMorphism F G) (k : ω) (s n : ℤ)
+53:     (T : C) : Set (T ⟶ G.associatedGraded (s + n) k) :=
+54:   {z | Relation f k s n (0 : T ⟶ F.associatedGraded s k) z}
+55: 
+56: /-- All targets differing from `y` by an actual homogeneous solution. -/
+57: public def TargetCoset (f : FilteredMorphism F G) (k : ω) (s n : ℤ)
+58:     {T : C} (y : T ⟶ G.associatedGraded (s + n) k) :
+59:     Set (T ⟶ G.associatedGraded (s + n) k) :=
+60:   {z | z - y ∈ TargetIndeterminacy f k s n T}
+61: 
+62: /-- Essentiality is nonvanishing modulo the complete target ambiguity. -/
+63: public def Essential (f : FilteredMorphism F G) (k : ω) (s n : ℤ)
+64:     {T : C} (x : T ⟶ F.associatedGraded s k)
+65:     (y : T ⟶ G.associatedGraded (s + n) k) : Prop :=
+66:   Relation f k s n x y ∧ 0 ∉ TargetCoset f k s n y
+67: 
+68: variable {f : FilteredMorphism F G} {k : ω} {s n : ℤ} {T : C}
+69:   {x x' : T ⟶ F.associatedGraded s k}
+70:   {y y' z : T ⟶ G.associatedGraded (s + n) k}
+71: 
+72: public theorem Relation.add (h : Relation f k s n x y)
+73:     (h' : Relation f k s n x' y') : Relation f k s n (x + x') (y + y') := by
+74:   obtain ⟨hn, a, b, ha, hb, he⟩ := h
+75:   obtain ⟨_, a', b', ha', hb', he'⟩ := h'
+76:   refine ⟨hn, a + a', b + b', ?_, ?_, ?_⟩
+77:   · simp only [Preadditive.add_comp, ha, ha']
+78:   · simp only [Preadditive.add_comp, hb, hb']
+79:   · simp only [Preadditive.add_comp, he, he']
+80: 
+81: public theorem Relation.sub (h : Relation f k s n x y)
+82:     (h' : Relation f k s n x' y') : Relation f k s n (x - x') (y - y') := by
+83:   obtain ⟨hn, a, b, ha, hb, he⟩ := h
+84:   obtain ⟨_, a', b', ha', hb', he'⟩ := h'
+85:   refine ⟨hn, a - a', b - b', ?_, ?_, ?_⟩
+86:   · simp only [Preadditive.sub_comp, ha, ha']
+87:   · simp only [Preadditive.sub_comp, hb, hb']
+88:   · simp only [Preadditive.sub_comp, he, he']
+89: 
+90: /-- Once a target is known, its coset consists exactly of all targets of the same source. -/
+91: public theorem Relation.mem_targetCoset_iff (h : Relation f k s n x y) :
+92:     z ∈ TargetCoset f k s n y ↔ Relation f k s n x z := by
+93:   constructor
+94:   · intro hz
+95:     have hh : Relation f k s n 0 (z - y) := hz
+96:     simpa only [zero_add, sub_add_cancel] using hh.add h
+97:   · intro hz
+98:     change Relation f k s n 0 (z - y)
+99:     simpa only [sub_self] using hz.sub h
+100: 
+101: /-- A known extension is essential exactly when the same source has no zero target. -/
+102: public theorem essential_iff (h : Relation f k s n x y) :
+103:     Essential f k s n x y ↔ ¬ Relation f k s n x 0 := by
+104:   simp only [Essential, h, true_and, h.mem_targetCoset_iff]
+105: 
+106: /-- The ambiguity consists exactly of images of higher-source-filtration
+107: corrections, with their actual target lifts and quotient labels. -/
+108: public theorem mem_indeterminacy_iff :
+109:     z ∈ TargetIndeterminacy f k s n T ↔
+110:       0 ≤ n ∧ ∃ (a : T ⟶ Subobject.underlying.obj (F.F (s + 1) k))
+111:         (b : T ⟶ Subobject.underlying.obj (G.F (s + n) k)),
+112:         b ≫ G.toAssociatedGraded (s + n) k = z ∧
+113:         a ≫ (F.F (s + 1) k).arrow ≫ f.map k =
+114:           b ≫ (G.F (s + n) k).arrow := by
+115:   let i := Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k)
+116:   constructor
+117:   · rintro ⟨hn, a, b, ha, hb, he⟩
+118:     have ha0 : a ≫ cokernel.π i = 0 := ha
+119:     let a' := Abelian.monoLift i a ha0
+120:     have ha' : a' ≫ i = a := Abelian.monoLift_comp i a ha0
+121:     refine ⟨hn, a', b, hb, ?_⟩
+122:     rw [← ha'] at he
+123:     simpa only [Category.assoc, i, Subobject.ofLE_arrow_assoc] using he
+124:   · rintro ⟨hn, a, b, hb, he⟩
+125:     refine ⟨hn, a ≫ i, b, ?_, hb, ?_⟩
+126:     · change (a ≫ i) ≫ cokernel.π i = 0
+127:       rw [Category.assoc, cokernel.condition, comp_zero]
+128:     · simpa only [Category.assoc, i, Subobject.ofLE_arrow_assoc] using he
+129: 
+130: theorem zero_lifts_iff (f : FilteredMorphism F G) (k : ω) (s t : ℤ) (h : t = s)
+131:     {T : C} (x : T ⟶ F.associatedGraded s k)
+132:     (y : T ⟶ G.associatedGraded t k) :
+
+### KIP126/ProofTools/Language.lean:109
+
+109: 
+110: /-- 有限 stretching 的障碍候选，直接在同一个早期 λ 商的实际 ESS 中定义。
+111: 源和靶的 synthetic weight 固定为原 extension 的 `t + e(f)`，而源的
+112: filtration 提高 `a`。源必须不在后期商到早期商的实际 `ρ` 所诱导的
+113: `E∞` 映射像中；这与某个普通 Adams 代表元不属于后页 cycle 层不同。
+114: 允许 `b = 0` 及长度 `n - a - b = 0` 的 synthetic extension，包括
+115: `e(f) = 1` 的情形。要求同商中实际 extension equation 的靶非零，不要求
+116: essential 性，不换成较小 λ 商的 extension，也不额外施加普通 Adams
+117: boundary 排除条件。排除这些候选强于仅排除 essential crossings；这是
+118: 修复后的充分条件，不声称与原普通 Adams 代表元谓词等价。 -/
+119: public def FiniteExtensionNonliftableCrossing
+120:     (rEarlier rLater : ℕ) (n s t : ℤ) : Prop :=
+121:   ∃ hle : rEarlier ≤ rLater, ∃ a b : ℕ,
+122:     0 < a ∧ a ≤ rEarlier - 2 ∧ (a : ℤ) + b ≤ n ∧
+123:     ∃ (source : ((D.family.obj ((SyntheticObject.quotient (rEarlier - 1)
+124:           (extensionSourceObject D X Y f)).obj D.nu D.auxiliary)).sequence.ssData
+125:           (s + a, (t - s) + (s + a), t + normalizedExponent D.classicalTower f)).eInfty)
+126:       (target : ((D.family.obj ((SyntheticObject.quotient (rEarlier - 1)
+127:           (.nu Y)).obj D.nu D.auxiliary)).sequence.ssData
+128:           (s + a + (n - a - b), (t - s) + (s + a + (n - a - b)),
+129:             t + normalizedExponent D.classicalTower f)).eInfty),
+130:       source ∉ Set.range (((D.family.functor.map
+131:         ((D.quotients.tower ((extensionSourceObject D X Y f).obj D.nu D.auxiliary)).rho
+132:           (rEarlier - 1) (rLater - 1) (Nat.sub_le_sub_right hle 1))).eInftyMap
+133:             (s + a, (t - s) + (s + a), t + normalizedExponent D.classicalTower f)).hom) ∧
+134:       TowerExtensionEquation (D.convergentMap
+135:         (.quotient (rEarlier - 1) (extensionSourceObject D X Y f))
+136:         (.quotient (rEarlier - 1) (.nu Y))
+137:         (finiteExtensionMap D X Y f (rEarlier - 1)))
+138:         (t - s, t + normalizedExponent D.classicalTower f) (s + a) (n - a - b) source target ∧
+139:       target ≠ 0
+140: 
+141: 
+
+### KIP126/ProofTools/Laws.lean:89
+
+89: /-- 本文待证工具（原 am7）：保留 λ 层数的有限页 stretching 充分条件。
+90: 参考 MainPaper Proposition `prop:dec738d3` 中同一有限商内的修正过程。
+91: 源、靶须属于后页所需的 cycle 层；排除的障碍是在早页同一个有限商中，
+92: 源不属于后页 ρ 的 E∞ 像、目标非零的实际较短扩张（包括非 essential 的扩张）。
+93: 不能改为只排除较小商中的无层扩张：乘 λ 可能杀掉低滤过项。
+94: 这比只排除 essential crossings 更强，不声称等价于原跨页候选或印出的推论。
+95: 原仓库已证明有限滤过修正；当前迁移状态另行追踪，不将迁移缺口认定为新假设。
+96: 结论只给出后页 extension 的存在，不声称任意指定的早期严格解可提升，
+97: 也不蕴含相容解塔或未截断 extension 的存在。 -/
+98: public def FinitePageExtensionStretchingLaw (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) : Prop :=
+99:   ∀ (rEarlier rLater : ℕ) (n s t : ℤ)
+100:     (x : Ambient D X (s, t)) (y : Ambient D Y (s + n, t + n)),
+101:     2 ≤ rEarlier → rEarlier ≤ rLater →
+102:     (normalizedExponent D.classicalTower f : ℤ) ≤ n →
+103:     n ≤ (rEarlier : ℤ) - 2 + normalizedExponent D.classicalTower f →
+104:     IsCycle D X ((rLater : ℤ) - 1) (s, t) x →
+105:     IsCycle D Y ((rLater : ℤ) - 1 - n + normalizedExponent D.classicalTower f) (s + n, t + n) y →
+106:     FiniteExtension D X Y f rEarlier n s t x y →
+107:     ¬ FiniteExtensionNonliftableCrossing D X Y f rEarlier rLater n s t →
+108:     FiniteExtension D X Y f rLater n s t x y
+109: 
+110: 
+111: end
+112: end KIP126.ProofTools
+
+### KIP126/ProofTools.lean:1
+
+1: module
+2: 
+3: public import KIP126.ProofTools.Standard
+4: public import KIP126.ProofTools.Operations

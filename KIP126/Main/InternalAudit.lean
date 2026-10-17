@@ -1,4 +1,6 @@
 module
+import all KIP126.Main.PaperResults
+import all KIP126.Main.PaperResults.TodaFiltration
 import all KIP126.Main
 import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
@@ -353,6 +355,13 @@ run_cmd do
   let reviewedProofToolsBoundary := boundaryNames.map String.toName
   let reviewedRootNames ← Lean.ofExcept <| route.getObjValAs? (Array String)
     "public_main_roots"
+  -- The user authorized these four additional declarations in the paper
+  -- exposure task. Keep the historical roots and the same full-body audit;
+  -- the direct-obligation registry and exact ProofTools boundary are unchanged.
+  let paperRootNames := #["KIP126.Main.Paper.FiniteDetected",
+    "KIP126.Main.Paper.SphereDetected", "KIP126.Main.Paper.lemma_x1239",
+    "KIP126.Main.Paper.lemma_nuext125"]
+  let reviewedRootNames := reviewedRootNames ++ paperRootNames
   unless (roots.map Name.toString).qsort (· < ·) == reviewedRootNames.qsort (· < ·) do
     throwError "Reviewed Main roots differ from the frozen public interface"
   let forbidden := #[`KIP126.ProofTools.Standard.generalizedMahowald,
