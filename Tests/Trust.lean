@@ -11,6 +11,7 @@ import all Tests.AdamsSynthetic.Structural
 import all Tests.AdamsSynthetic.System
 import all Tests.Computation.Consumers
 import all Tests.Computation.Interface
+import all Tests.Computation.SourceExpression
 import all Tests.Integration
 import all Tests.Literature.Consumers
 import all Tests.Literature.Interface

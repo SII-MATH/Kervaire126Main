@@ -20,6 +20,9 @@ Port of the `dichotomy` argument in Selected/Assembly. -/
 private theorem permanence_or_d12 : H6SquarePermanent ∨ H6SquareSupportsD12 := by
   exact Internal.Selected.selected_dichotomy (fun hf =>
     Internal.High125.detector_injective_filtration15 _ hf
+      (Internal.High125.eta_product_order_two 124 128
+        (KIP126.Synthetic.Context.sphereProduct
+          KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))
       (Internal.High125.synthetic_eta_theta_square_detector_zero KIP126.Literature.Standard.bxTheta5))
 
 /-- The square and eta-detection conclusions in the nonpermanent branch.
@@ -27,6 +30,9 @@ Port of the forward implication in Selected/Assembly. -/
 private theorem d12_implies_square_and_eta (hd : H6SquareSupportsD12) : Theta5SquareNonzeroDetection ∧ EtaExtensionDetection := by
   exact Internal.Selected.selected_forward (fun hf =>
     Internal.High125.detector_injective_filtration15 _ hf
+      (Internal.High125.eta_product_order_two 124 128
+        (KIP126.Synthetic.Context.sphereProduct
+          KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))
       (Internal.High125.synthetic_eta_theta_square_detector_zero KIP126.Literature.Standard.bxTheta5)) hd
 
 /-- The reverse implication uses choice invariance, the actual target

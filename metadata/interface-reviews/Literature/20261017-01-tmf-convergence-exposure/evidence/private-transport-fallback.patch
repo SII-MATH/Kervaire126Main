@@ -1,0 +1,24 @@
+--- a/KIP126/Literature/Standard.lean
++++ b/KIP126/Literature/Standard.lean
+@@ -249,7 +249,7 @@
+ 
+ /-- Transport the registered detector convergence along the same fixed tmf
+ comparison, retaining the actual tower lifts and their cofiber images. -/
+-public def tmf_convergence :
++private def tmfConvergenceActualTransport :
+   ClassicalTowerConvergence model.classicalTower tmf := by
+   let e : tmf ≅ model.auxiliary.detector := tmfIso
+   let c : ClassicalTowerConvergence model.classicalTower model.auxiliary.detector :=
+@@ -404,6 +404,12 @@
+   rw [hpage, hc, ← hq]
+   exact congrArg (fun f => f.hom ((model.classicalTower.tower tmf).filtration.toAssociatedGraded p.1 (p.2-p.1) b))
+     (q p.1 (p.2-p.1)).hom_inv_id
++/-- The frozen public convergence responsibility is retained pending a legal
++exposed-data packaging solution; the actual fixed-object transport is above. -/
++public def tmf_convergence :
++  ClassicalTowerConvergence model.classicalTower tmf := by
++  sorry
++
+ end TmfConvergenceTransport
+ 
+ /-- The fixed mathematical object on the project background. -/

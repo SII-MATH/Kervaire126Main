@@ -80,7 +80,8 @@ lean_lib LiteratureChecks where
 @[default_target]
 lean_lib ComputationChecks where
   needs := #[.packageTarget .anonymous `computationApi]
-  roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers]
+  roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers,
+    `Tests.Computation.SourceExpression]
 
 @[default_target]
 lean_lib ProofToolsChecks where

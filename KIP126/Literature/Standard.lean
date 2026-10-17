@@ -180,9 +180,11 @@ public theorem theta5_detection :
   ClassicalTheta5Detected model theta5 := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+/-- The ordinary 62-stem has exponent two on its 2-primary subgroup.
+Odd-primary summands are not covered by this source obligation. -/
 public theorem stem62_exponent_two :
-  ∀ a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum, a+a=0 := by
+  ∀ a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum,
+    (∃ n : ℕ, (2 ^ n : ℕ) • a = 0) → a + a = 0 := by
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/
@@ -217,9 +219,11 @@ public theorem eta_realization :
   realizeSphere 1 2 eta = model.auxiliary.etaMap := by
   sorry
 
-/-- Derived from the fixed objects and previously established operations. -/
+/-- The selected integral θ₅ has order two. Its independent proof is pending;
+the ordinary 62-stem theorem only covers 2-primary elements. -/
 public theorem theta5_order_two :
-  theta5 + theta5 = 0 := stem62_exponent_two theta5
+  theta5 + theta5 = 0 := by
+  sorry
 
 /-- Source or comparison proof remains to be supplied. -/
 public theorem sphereVanishing :
@@ -249,7 +253,7 @@ set_option backward.isDefEq.respectTransparency false
 
 /-- Transport the registered detector convergence along the same fixed tmf
 comparison, retaining the actual tower lifts and their cofiber images. -/
-private def tmfConvergenceActualTransport :
+public def tmf_convergence :
   ClassicalTowerConvergence model.classicalTower tmf := by
   let e : tmf ≅ model.auxiliary.detector := tmfIso
   let c : ClassicalTowerConvergence model.classicalTower model.auxiliary.detector :=
@@ -404,12 +408,6 @@ private def tmfConvergenceActualTransport :
   rw [hpage, hc, ← hq]
   exact congrArg (fun f => f.hom ((model.classicalTower.tower tmf).filtration.toAssociatedGraded p.1 (p.2-p.1) b))
     (q p.1 (p.2-p.1)).hom_inv_id
-/-- The frozen public convergence responsibility is retained pending a legal
-exposed-data packaging solution; the actual fixed-object transport is above. -/
-public def tmf_convergence :
-  ClassicalTowerConvergence model.classicalTower tmf := by
-  sorry
-
 end TmfConvergenceTransport
 
 /-- The fixed mathematical object on the project background. -/
@@ -496,9 +494,11 @@ public theorem w_detection :
   ClassicalDetects (model.classicalConvergence .sphere) (9,54) deltaH1g wClass := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+/-- The specified image retains the non-odd-torsion content of the BMQ
+2-local Hurewicz result. Its identification with the fixed source classes and
+unit remains the same Literature proof responsibility. -/
 public theorem tmf_high125_nonzero :
-  high125 ≫ tmfUnit ≠ 0 := by
+  ¬ IsOddTorsionMap (high125 ≫ tmfUnit) := by
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/

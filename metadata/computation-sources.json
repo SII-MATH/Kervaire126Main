@@ -45,7 +45,7 @@
     },
     {
       "path": "KIP126/Computation/InternalAudit.lean",
-      "sha256": "c7c67313771cf10c2e234de81bc5d5cb457965ea10ca8115ba34e11428933cdf",
+      "sha256": "57d34f6a75a6c5792d730a7db535ee4ac6a57599d0d334895f2ab8457bbf4375",
       "origins": [
         {
           "commit": "bbac1fc05843bdf2d56057e6114a38839e939378",
@@ -273,6 +273,20 @@
       ],
       "role": "fixed-original-upstream-contract-and-data",
       "change": "Restore original finite data, actual-object calibration or structural comparison consumed by the migrated Main proof. No paper-specific derived conclusion is assumed here; derived Main calculations remain compiled Main proofs."
+    },
+    {
+      "path": "KIP126/Computation/Table/Internal/SourceExpression.lean",
+      "sha256": "e1f9fb4bdd6b7631deddf758442910ab71557c7494266cc02d22193f7908e67a",
+      "origins": [],
+      "role": "private-derived-expression-comparison",
+      "change": "Extract only recursive source evaluation and the bounded expression comparison from the Computation session; use existing fixed sourceData/comparison/product/unit interfaces. Remove the unused concrete SphereQuotient import. No data, source model, public declaration, interface change or new proof obligation.",
+      "session_origin": {
+        "worktree": "/tmp/kip-computation-20261017",
+        "baseline_commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+        "uncommitted_delivery": true,
+        "path": "KIP126/Computation/Table/Internal/SourceExpression.lean",
+        "sha256": "97b47598e8a478041e712f2b03b95e04d46f430507e74411caec5b5df285e0fe"
+      }
     }
   ],
   "retired_files": [
@@ -773,5 +787,31 @@
       "KIP126.Computation.Table.h1_h2_zero",
       "KIP126.Computation.Table.theta_h5_h6_zero"
     ]
+  },
+  "private_expression_comparison_20261017": {
+    "implementation": "KIP126/Computation/Table/Internal/SourceExpression.lean",
+    "declarations": [
+      "KIP126.Computation.Table.sourceValue",
+      "KIP126.Computation.Table.value_comparison"
+    ],
+    "visibility": "private; ordinary imports expose neither helper",
+    "scope": "Expression evaluation commutes with the existing fixed comparison when total internal degree <= 261. Invalid source addresses match existing generatorImage zero branches.",
+    "upstream_interfaces_used": [
+      "KIP126.Computation.Standard.comparison",
+      "KIP126.Computation.Standard.comparison_unit",
+      "KIP126.Computation.Standard.comparison_product"
+    ],
+    "upstream_pending_constructions_retained": true,
+    "public_interface_lock_unchanged": true,
+    "direct_computation_obligations_before": 88,
+    "direct_computation_obligations_after": 88,
+    "new_direct_obligations": 0,
+    "tests": [
+      "Tests.Computation.SourceExpression",
+      "Tests.Computation.Consumers",
+      "Tests.Computation.Interface",
+      "Tests.Trust"
+    ],
+    "report": "metadata/proof-sessions/integrations/20261017-computation-source-expression/report.md"
   }
 }

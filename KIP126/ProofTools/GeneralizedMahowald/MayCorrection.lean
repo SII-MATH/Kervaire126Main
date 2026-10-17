@@ -111,7 +111,7 @@ private theorem finite_cycle_image_correction
   have hfil : FiltrationAtLeast model.syntheticTower s (c'≫rho) :=
     map_preserves_filtration (model.convergentMap A B rho) (t-s,t+a-(0:ℕ)) s c'
       hfilc
-  apply synthetic_homotopy_separated B (t-s) (t+a-(0:ℕ)) (c'≫rho)
+  apply synthetic_homotopy_separated (.shift (0,b) (.nu X)) i (t-s) (t+a-(0:ℕ)) (c'≫rho)
   intro j
   by_cases hj : s ≤ (j:ℤ)
   · exact (filtration_iff_of_infinity_zero (model.convergence B) s j (t-s) (t+a-(0:ℕ)) hj

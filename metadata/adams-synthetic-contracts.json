@@ -2635,7 +2635,8 @@
       ],
       "constraints": [
         "Hom 分量就是 Hom(Σ^(0,w) X,Y)，总 Hom 是这些实际 Hom 的直和；不是任意新选对象。 Polynomial.X 在直和注入上等于由同一 lam 和同一 shift comparison 构成的 weightHomLambda；权重降低一。 复合是 ℤ[λ] 双线性，齐次分量上的复合等于实际移位映射复合；单位由同一 biShift_zero 得到。 修正旧未分次 EnrichedCategory(ModuleCat ℤ[λ]) 的语义：普通 Syn 是分次富集的零次部分；不宣称 λ 是固定权重 Hom 上的自映射。 结合律和左右单位律从同一 shift coherence、齐次实际复合相容式及 DirectSum 加法归纳推导，已经删除重复输入字段。",
-        "旧未分次富集声明没有绑定权重；新合同在 ⨁ w, Hom(Σ^(0,w) X,Y) 上交付 ℤ[λ] 富集，并将普通 Syn 解释为零次部分。λ 降权一，不能在固定权重 Hom 内强行当作自映射。"
+        "旧未分次富集声明没有绑定权重；新合同在 ⨁ w, Hom(Σ^(0,w) X,Y) 上交付 ℤ[λ] 富集，并将普通 Syn 解释为零次部分。λ 降权一，不能在固定权重 Hom 内强行当作自映射。",
+        "User-approved exception: graded_compose is no_expose; its mathematical signature and homogeneous formula remain available, and the frozen graded_compose._proof_1 full type/name must remain exact. No other new public support declaration is authorized."
       ],
       "statement_disposition": "revised-contract; original signature preserved in fixed inventory",
       "consumers": [
@@ -5090,6 +5091,9 @@
         "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
         "KIP126.AdamsSynthetic.Standard.graded_left_unit",
         "KIP126.AdamsSynthetic.Standard.graded_right_unit"
+      ],
+      "constraints": [
+        "User-approved exception: graded_compose is no_expose; its mathematical signature and homogeneous formula remain available, and the frozen graded_compose._proof_1 full type/name must remain exact. No other new public support declaration is authorized."
       ]
     },
     {
@@ -5282,7 +5286,7 @@
     },
     {
       "id": "synthetic-homotopy-separation",
-      "mathematical_purpose": "在原 SyntheticObject 闭包上恢复同一固定塔的同伦滤过分离性；仍为上游基础待证责任。",
+      "mathematical_purpose": "同一固定 synthetic 塔在所选对象实际有限 λⁿ 商上的同伦滤过分离性；不再断言未截断普通球/ν 对象的全称零结论。",
       "implementation": [
         {
           "path": "KIP126/AdamsSynthetic/Standard/Separation.lean",
@@ -5302,18 +5306,17 @@
         "KIP126.ProofTools.GeneralizedMahowald"
       ],
       "scope": [
-        "sphere",
-        "nu of ClassicalObject (sphere, nuCofiber, detector, shifts)",
-        "all selected-object bidegree shifts",
-        "all finite lambda quotients of selected objects"
+        "XModLambdaN (X.obj model.nu model.auxiliary) n for X : SyntheticObject and n : ℕ; the same actual lambda cofiber and synthetic tower"
       ],
       "not_asserted": [
         "Separation for every object of SyntheticSpectrum",
         "A uniform or finite filtration bound",
         "Classical finite-map odd-torsion separation",
-        "An automatic consequence of canonical E-infinity identification"
+        "An automatic consequence of canonical E-infinity identification",
+        "Untruncated sphere or arbitrary nu-object Hausdorffness",
+        "Vanishing of odd-primary infinite-filtration classes on the ordinary sphere"
       ],
-      "proof_status": "pending-proof; restored original model prerequisite"
+      "proof_status": "pending-proof; user-approved finite-lambda-quotient replacement of original unrestricted obligation"
     },
     {
       "id": "adams-synthetic-main-proof-consumption",
@@ -5377,10 +5380,10 @@
       "interface_state": "fixed callable declarations; no consumer result packages",
       "remaining_producer_obligations": [
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
-        "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero",
-        "KIP126.AdamsSynthetic.Standard.classical_sphere_separated"
+        "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero"
       ],
-      "not_main_obligation": true
+      "not_main_obligation": true,
+      "classical_sphere_filtration_scope": "Infinite filtration implies IsOddTorsionMap; zero conclusions require separately proved actual element conditions. The theorem is derived from the existing finite_map_separation producer and retains that transitive pending dependency."
     },
     {
       "id": "concrete-classical-source-identification",
@@ -6215,16 +6218,12 @@
   "proof_obligation_registry": "metadata/proof-obligations.json",
   "migration_map": "metadata/fixed-interface-migration.json",
   "validation": {
-    "result": "passed",
-    "scope": "Current shared working tree after actual MH2 h-target detection and source survival integration; includes independent SphereBHS work already present in the shared checkout.",
-    "interface_types_and_exports": "Verified all 1817 pre-addition exports retain module/kind/full type/type fingerprint/universes and axiom dependencies. Exactly 2 authorized named theorems and 6 compiler-generated proof helpers are added.",
-    "direct_consumer_tests": true,
-    "proof_obligations": "2870 AdamsSynthetic declarations audited; 103 exact registered pending construction/proof declarations, including the two newly authorized label comparisons; no project axioms or synthetic holes.",
-    "completion_limit": "The two new statements remain authorized upstream proof obligations. The actual MH2 source synchronization and weighted h-target detection are integrated in the differential no-crossing branch; the other branch, May second image and final target boundary control remain incomplete.",
-    "focused_command": "lake build AdamsSyntheticChecks KIP126.AdamsSynthetic.InternalAudit ProofToolsChecks KIP126.ProofTools.InternalAudit",
-    "focused_jobs": 2794,
-    "command": "lake build",
-    "jobs": 3044
+    "result": "module public consumer/interface and internal trust checks passed; complete project blocked by Main",
+    "approval": "metadata/interface-reviews/approved-upstream-20261017/approval.json",
+    "evidence": "metadata/interface-reviews/approved-upstream-20261017/evidence/adams-validation.json",
+    "full_project_build": "failed: Main.Internal.Choice.LambdaInjectivity, Main.Internal.LowEta, Main.Internal.High125.Filtration",
+    "proof_obligations": "exact compiled capture; no project axioms/synthetic sorry; only one separately approved new Literature.theta5_order_two responsibility",
+    "integration_report": "metadata/interface-reviews/approved-upstream-20261017/report.md"
   },
   "source_strengthening": {
     "reference_commit": "8cb35dad5f75ecc095e474df6c765baec9b175bf",
@@ -6330,6 +6329,18 @@
       "main_target": "unchanged; Main audit reports zero direct pending declarations",
       "completion_limit": "Source unit normalization and paper completion comparison remain explicit unformalized backlog, separate from the 101 direct Lean holes.",
       "scope": "Isolated staged tree containing only this AdamsSynthetic change, with HEAD Main/ProofTools sources and their unchanged registry entries. Unrelated working-tree changes are excluded."
+    },
+    {
+      "result": "passed",
+      "scope": "Current shared working tree after actual MH2 h-target detection and source survival integration; includes independent SphereBHS work already present in the shared checkout.",
+      "interface_types_and_exports": "Verified all 1817 pre-addition exports retain module/kind/full type/type fingerprint/universes and axiom dependencies. Exactly 2 authorized named theorems and 6 compiler-generated proof helpers are added.",
+      "direct_consumer_tests": true,
+      "proof_obligations": "2870 AdamsSynthetic declarations audited; 103 exact registered pending construction/proof declarations, including the two newly authorized label comparisons; no project axioms or synthetic holes.",
+      "completion_limit": "The two new statements remain authorized upstream proof obligations. The actual MH2 source synchronization and weighted h-target detection are integrated in the differential no-crossing branch; the other branch, May second image and final target boundary control remain incomplete.",
+      "focused_command": "lake build AdamsSyntheticChecks KIP126.AdamsSynthetic.InternalAudit ProofToolsChecks KIP126.ProofTools.InternalAudit",
+      "focused_jobs": 2794,
+      "command": "lake build",
+      "jobs": 3044
     }
   ],
   "sphere_bhs_proof_port": {
@@ -6373,5 +6384,10 @@
     ],
     "remaining_port_boundary": "The old full instantiation uses a reflective completed-source model and its HF2 cohomology detector. Current sourceRecognition recognizes the ordinary stable source; HF2 localization versus the paper completion remains an independent backlog. The point-set completed-source/Moore instantiation is retained as exact archived source, not claimed compiled or complete.",
     "no_cycle": "The compiled helpers depend only on current tower/filtration definitions and mathlib; none imports Literature, Computation, ProofTools, Main, or a selected applicability assertion."
+  },
+  "approved_interface_revision_20261017": {
+    "approval": "metadata/interface-reviews/approved-upstream-20261017/approval.json",
+    "status": "implementation-in-progress; default build and consumer repair pending",
+    "new_pending_responsibilities_authorized": false
   }
 }

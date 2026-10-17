@@ -808,6 +808,9 @@
         "KIP126.Literature.Standard.tmfUnit",
         "KIP126.Literature.Standard.tmfUnit_agrees",
         "KIP126.Literature.Standard.universal_coefficient"
+      ],
+      "constraints": [
+        "stem62_exponent_two applies only to the same ordinary sphere element a satisfying ∃ n : ℕ, (2^n : ℕ) • a = 0. No unconditional ordinary 62-stem exponent-two assertion is provided. Selected theta5 order-two proof and Main arbitrary-choice repairs remain explicit integration blockers; no new pending obligation is authorized."
       ]
     },
     {
@@ -924,7 +927,7 @@
         {
           "path": "KIP126/Literature/Standard.lean",
           "declaration": "KIP126.Literature.Standard.tmf_high125_nonzero",
-          "line": 332
+          "line": 500
         },
         {
           "path": "KIP126/Literature/Standard.lean",
@@ -1048,7 +1051,13 @@
         "KIP126.Literature.Standard.two_detection",
         "KIP126.Literature.Standard.wClass",
         "KIP126.Literature.Standard.w_detection"
-      ]
+      ],
+      "high125_image_contract": {
+        "declaration": "KIP126.Literature.Standard.tmf_high125_nonzero",
+        "meaning": "The same fixed high125 image under tmfUnit is not annihilated by any positive odd integer; ordinary nonzero follows. No premise added and no object replacement.",
+        "source": "BMQ, The 2-primary Hurewicz image of tmf, 2-local convention p.2 and Cor.7.5 p.47; AimPaper/main.tex:254 and :2342. Fixed-object comparison remains the same existing Literature proof obligation.",
+        "approval": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/approval.json"
+      }
     },
     {
       "id": "literature-delivery",
@@ -4059,14 +4068,24 @@
     ]
   },
   "validation": {
-    "command": "lake build",
-    "result": "passed",
-    "interface_types_and_exports": "locked by normal public import tests",
-    "direct_consumer_tests": true,
-    "proof_obligations": "exact direct names/types/bodies locked; no project axioms or synthetic sorry",
-    "previous_coverage_not_promoted": true,
-    "jobs": 2197,
-    "cache_invalidation_negative_checks": "passed; registry and API JSON are traced through Lake needs"
+    "result": "complete default build and all module/consumer audits passed",
+    "full_project_build": {
+      "command": "lake build",
+      "result": "passed",
+      "exit_code": 0,
+      "jobs": 3080,
+      "log": "metadata/proof-sessions/integrations/20261017-main-local-reproof/evidence/approved-default-build-final.log",
+      "Main_direct_pending": 0,
+      "registered_total_pending": 299,
+      "Main_public_exports": 18,
+      "Main_named_public_roots": 17,
+      "Main_proof_nodes_audited": 1565,
+      "ProofTools_exact_handoffs": 32,
+      "old_MH2_GL_dependencies": 0,
+      "phase": "validated-before-publication"
+    },
+    "approval": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/approval.json",
+    "proof_obligations": "299 total, Literature119, Main0; no new names or responsibility count increase"
   },
   "status": "fixed-direct-interfaces; individual proofs and constructions tracked separately",
   "proof_obligation_registry": "metadata/proof-obligations.json",
@@ -4237,5 +4256,96 @@
       "source_inventory": "metadata/proof-sessions/runs/Literature/20261017-01/absorb-21-20261017/validation/source-inventory-final.json",
       "full_lake_build": "metadata/proof-sessions/runs/Literature/20261017-01/absorb-21-20261017/validation/full-build-final.json"
     }
+  },
+  "approved_interface_revision_20261017": {
+    "approval": "metadata/interface-reviews/approved-upstream-20261017/approval.json",
+    "status": "Literature root build and exact773 public capture passed; Main integration pending",
+    "new_pending_responsibilities_authorized": [
+      "KIP126.Literature.Standard.theta5_order_two"
+    ]
+  },
+  "approved_tmf_exports_20261017": {
+    "names": [
+      "KIP126.Literature.Standard.tmf_convergence._proof_1",
+      "KIP126.Literature.Standard.tmf_convergence._proof_2",
+      "KIP126.Literature.Standard.tmf_convergence._proof_3",
+      "KIP126.Literature.Standard.tmf_convergence._proof_4",
+      "KIP126.Literature.Standard.tmf_convergence._proof_5",
+      "KIP126.Literature.Standard.tmf_convergence._proof_6",
+      "KIP126.Literature.Standard.tmf_convergence._proof_7",
+      "KIP126.Literature.Standard.tmf_convergence._proof_8",
+      "KIP126.Literature.Standard.tmf_convergence._proof_9",
+      "KIP126.Literature.Standard.tmf_convergence._proof_10",
+      "KIP126.Literature.Standard.tmf_convergence._proof_11",
+      "KIP126.Literature.Standard.tmf_convergence._proof_12",
+      "KIP126.Literature.Standard.tmf_convergence._proof_13",
+      "KIP126.Literature.Standard.tmf_convergence._proof_14",
+      "KIP126.Literature.Standard.tmf_convergence._proof_15",
+      "KIP126.Literature.Standard.tmf_convergence._proof_16",
+      "KIP126.Literature.Standard.tmf_convergence._proof_17",
+      "KIP126.Literature.Standard.tmf_convergence._proof_18",
+      "KIP126.Literature.Standard.tmf_convergence._proof_19"
+    ],
+    "original_exports": 754,
+    "approved_exports": 773,
+    "types": "metadata/interface-reviews/Literature/20261017-01-tmf-convergence-exposure/proposed-additional-exports.json",
+    "condition": "Original 754 names, complete types, universes and exposed behavior remain unchanged except separately approved stem62 signature."
+  },
+  "validation_history": [
+    {
+      "command": "lake build",
+      "result": "passed",
+      "interface_types_and_exports": "locked by normal public import tests",
+      "direct_consumer_tests": true,
+      "proof_obligations": "exact direct names/types/bodies locked; no project axioms or synthetic sorry",
+      "previous_coverage_not_promoted": true,
+      "jobs": 2197,
+      "cache_invalidation_negative_checks": "passed; registry and API JSON are traced through Lake needs"
+    },
+    {
+      "result": "module public consumer/interface and internal trust checks passed; complete project blocked by Main",
+      "approval": "metadata/interface-reviews/approved-upstream-20261017/approval.json",
+      "evidence": "metadata/interface-reviews/approved-upstream-20261017/evidence/literature-validation.json",
+      "full_project_build": "failed: Main.Internal.Choice.LambdaInjectivity, Main.Internal.LowEta, Main.Internal.High125.Filtration",
+      "proof_obligations": "exact compiled capture; no project axioms/synthetic sorry; only one separately approved new Literature.theta5_order_two responsibility",
+      "integration_report": "metadata/interface-reviews/approved-upstream-20261017/report.md"
+    },
+    {
+      "result": "approved high125 conclusion compiled; exact 773 exported types checked with only one authorized type change; exact 119 direct Literature obligations retained",
+      "approval": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/approval.json",
+      "full_project_build": "pending final coordinator build",
+      "proof_obligations": "299 total, Literature119, Main0; no new names, axioms or synthetic sorry"
+    }
+  ],
+  "approved_high125_nonodd_revision_20261017": {
+    "approval": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/approval.json",
+    "declaration": "KIP126.Literature.Standard.tmf_high125_nonzero",
+    "old_type": "Ne.{1} (CategoryTheory.CategoryStruct.comp.{0, 1} KIP126.Literature.Standard.high125 KIP126.Literature.Standard.tmfUnit)\n  0",
+    "old_type_fingerprint": "16606212098900527494",
+    "new_type": "¬KIP126.AdamsSynthetic.IsOddTorsionMap.{1, 0}\n    (CategoryTheory.CategoryStruct.comp.{0, 1} KIP126.Literature.Standard.high125 KIP126.Literature.Standard.tmfUnit)",
+    "new_type_fingerprint": "5689349671372562828",
+    "same_fixed_objects": true,
+    "new_premises": [],
+    "export_name_delta": 0,
+    "direct_pending_obligation_delta": 0,
+    "status": "approved same-name strengthening implemented; full default build passed; no pending count increase",
+    "public_capture": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/evidence/kip-high125-final-literature-public.json",
+    "trust_capture": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/evidence/kip-high125-final-literature-trust.json",
+    "full_project_validation": {
+      "command": "lake build",
+      "result": "passed",
+      "exit_code": 0,
+      "jobs": 3080,
+      "log": "metadata/proof-sessions/integrations/20261017-main-local-reproof/evidence/approved-default-build-final.log",
+      "Main_direct_pending": 0,
+      "registered_total_pending": 299,
+      "Main_public_exports": 18,
+      "Main_named_public_roots": 17,
+      "Main_proof_nodes_audited": 1565,
+      "ProofTools_exact_handoffs": 32,
+      "old_MH2_GL_dependencies": 0,
+      "phase": "validated-before-publication"
+    },
+    "independent_full_body_observer": "metadata/proof-sessions/integrations/20261017-main-local-reproof/evidence/kip-main-final-observer-summary.json"
   }
 }

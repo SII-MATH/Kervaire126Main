@@ -3,16 +3,18 @@ module
 public import KIP126.Main.Conditions
 public import KIP126.ProofTools.Operations
 
-/-! Lambda injectivity from the original proved Main/Solution/Computation/Lambda
-at bbac1fc05843 (MIT). The fixed upstream BHS comparisons and separatedness
-supply their original mathematical roles; no new proof input is added. -/
+/-! Lambda injectivity from the actual cofiber triangle. The first-quotient
+kernel source has the indicated classical bidegree; permanent labels lift
+through ν by the existing selected BHS comparison, so their connecting map
+vanishes. No separation of an untruncated object is used. -/
 @[expose] section
 namespace KIP126.Main.Internal.Choice
-open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra
+open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated KIP126.Core.Algebra
 open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.Kervaire.Route KIP126.Literature
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
+open KIP126.ProofTools.Operations
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option backward.defeqAttrib.useBackward true
@@ -86,33 +88,223 @@ private theorem lambda_powers_injective_of_lower_weights
   exact (cancel_epi ((SyntheticCategory.biShift_comp (m,wt) (0,-(k : ℤ))).inv.app S_0_0)).mp
     (by simpa only [Category.assoc] using hc)
 
-private theorem selected_homotopyMap_injective_of_eInfty
-    (X Y : SyntheticObject) (f : X.obj model.nu model.auxiliary ⟶ Y.obj model.nu model.auxiliary)
+private theorem nu_first_quotient_label_surjective (X : ClassicalObject) (s t : ℤ) :
+    Function.Surjective (firstLabel model X s t) := by
+  let Q := XModLambdaN (nuZero model X) 1
+  have hcast : BiHom (t-s) (t+0) Q = BiHom (t-s) t Q := by rw [add_zero]
+  intro b
+  refine ⟨model.firstQuotient X 0 s t ((Equiv.cast hcast).symm b), ?_⟩
+  change (Equiv.cast hcast) ((model.firstQuotient X 0 s t).symm
+    ((model.firstQuotient X 0 s t) ((Equiv.cast hcast).symm b))) = b
+  rw [LinearEquiv.symm_apply_apply,Equiv.apply_symm_apply]
+
+private theorem nu_first_quotient_lift_of_permanent
+    (X : ClassicalObject) (s t : ℤ)
+    (hperm : ∀ x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t),
+      IsPermanentCycle (model.classical.obj (X.obj model.auxiliary)) (s,t) x)
+    (b : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) 1)) :
+    ∃ c : BiHom (t-s) t (model.nu.functor.obj (X.obj model.auxiliary)),
+      c ≫ XModLambdaN.incl _ 1 = b := by
+  let e := SyntheticCategory.biShift_zero.app (model.nu.functor.obj (X.obj model.auxiliary))
+  let b₀ := b ≫ XModLambdaN.map e.inv 1
+  have hsurj : Function.Surjective (firstLabel model X s t) := by
+    let Q := XModLambdaN (nuZero model X) 1
+    have hcast : BiHom (t-s) (t+0) Q = BiHom (t-s) t Q := by rw [add_zero]
+    intro b
+    refine ⟨model.firstQuotient X 0 s t ((Equiv.cast hcast).symm b), ?_⟩
+    change (Equiv.cast hcast) ((model.firstQuotient X 0 s t).symm
+      ((model.firstQuotient X 0 s t) ((Equiv.cast hcast).symm b))) = b
+    rw [LinearEquiv.symm_apply_apply,Equiv.apply_symm_apply]
+  obtain ⟨x,hb₀⟩ := hsurj b₀
+  have hp : ClassicalPermanentCycle model X (s,t) x := hperm x
+  obtain ⟨c,hc⟩ := (KIP126.Literature.Standard.selected_permanent_lift X s t x).mp hp
+  change c ≫ XModLambdaN.incl _ 1 = firstLabel model X s t x at hc
+  refine ⟨c ≫ e.hom, ?_⟩
+  rw [Category.assoc, XModLambdaN.incl_naturality, ←Category.assoc, hc]
+  rw [hb₀]
+  dsimp only [b₀]
+  rw [Category.assoc, ←model.quotients.functoriality.map_comp, Iso.inv_hom_id,
+    model.quotients.functoriality.map_id]
+  simp only [Functor.id_obj,Category.comp_id]
+
+private theorem lambda_kernel_zero_of_first_quotient_lifts
+    (Y : SyntheticSpectrum) (m w : ℤ)
+    (hlift : ∀ b : BiHom (m+1) w (XModLambdaN Y 1),
+      ∃ c : BiHom (m+1) w Y, c ≫ XModLambdaN.incl Y 1 = b)
+    (a : BiHom m w ((SyntheticCategory.biShift (0,-1)).obj Y))
+    (ha : a ≫ SyntheticCategory.lam.app Y = 0) : a = 0 := by
+  let F := shiftFunctor SyntheticSpectrum (1:ℤ)
+  have hshift : F.map a ≫ F.map (lambdaPow 1 Y) = 0 := by
+    rw [←Functor.map_comp,lambdaPow_one model.quotients.coherence,ha,Functor.map_zero]
+  obtain ⟨b,hb⟩ := (XModLambdaN.cofiberTriangle Y 1).coyoneda_exact₁
+    (XModLambdaN.cofiberTriangle_distinguished Y 1) (F.map a) hshift
+  let eS : Smn (Syn:=SyntheticSpectrum) (m+1) w ≅ F.obj (Smn m w) :=
+    ((biShiftAddIso (m,w) (1,0) (m+1,w) (by ext <;> simp)).app S_0_0).symm ≪≫
+      (SyntheticCategory.biShift_compat 1).app (Smn m w)
+  obtain ⟨c,hc⟩ := hlift (eS.hom ≫ b)
+  have hboundary : (eS.hom ≫ b) ≫ XModLambdaN.proj Y 1 = 0 := by
+    rw [←hc,Category.assoc,XModLambdaN.incl_comp_proj,comp_zero]
+  have hz : F.map a = 0 := by
+    apply (cancel_epi eS.hom).mp
+    rw [hb]
+    simpa [F,XModLambdaN.cofiberTriangle,Category.assoc] using hboundary
+  exact F.map_injective (by simpa only [Functor.map_zero] using hz)
+
+
+private theorem lambda_shifted_finite_high_filtration_zero
+    (X : ClassicalObject) (q : ℕ) (hq : 0 < q) (δ : ℤ × ℤ) (m w s : ℤ)
+    (hs : (q:ℤ) ≤ (m-δ.1)+s-(w-δ.2))
+    (a : BiHom m w ((SyntheticCategory.biShift δ).obj
+      (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q)))
+    (ha : FiltrationAtLeast model.syntheticTower s a) : a=0 := by
+  let p : ℤ × ℤ := (m-δ.1,w-δ.2)
+  have hp : p+δ=(m,w) := by ext <;> simp [p]
+  let e : FilteredPieceIso (model.convergence (.quotient q (.nu X))).filtration
+      (model.convergence (.shift δ (.quotient q (.nu X)))).filtration p (m,w) :=
+    hp ▸ (KIP126.AdamsSynthetic.Standard.essShift δ).filtered (.quotient q (.nu X)) p
+  have hmem : a ∈ ModuleCat.subobjectModule _
+      ((model.convergence (.shift δ (.quotient q (.nu X)))).filtration.F s (m,w)) := by
+    simpa only [SyntheticTowerConvergence.filtration,
+      SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,
+      FiltrationAtLeast,SyntheticObject.obj] using ha
+  obtain ⟨x,hx⟩ := hmem
+  have hcomm := ConcreteCategory.congr_hom (e.symm.level_arrow s) x
+  simp only [ModuleCat.comp_apply, FilteredPieceIso.symm] at hcomm
+  have hm : e.ambient.inv a ∈ ModuleCat.subobjectModule _
+      ((model.convergence (.quotient q (.nu X))).filtration.F s p) := by
+    refine ⟨(e.level s).inv x,?_⟩
+    change ((model.convergence (.quotient q (.nu X))).filtration.F s p).arrow
+      ((e.level s).inv x) = e.ambient.inv a
+    simpa only [hx,Iso.symm_hom] using hcomm
+  have hb : FiltrationAtLeast model.syntheticTower s (e.ambient.inv a) := by
+    simpa only [SyntheticTowerConvergence.filtration,
+      SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,
+      FiltrationAtLeast] using hm
+  have hz := KIP126.ProofTools.Operations.finite_high_filtration_zero X q hq p.1 p.2 s hs
+    (e.ambient.inv a) hb
+  apply (ModuleCat.mono_iff_injective e.ambient.inv).mp inferInstance
+  simpa only [map_zero] using hz
+
+
+private theorem lambda_boundary_no_return (X : ClassicalObject) (q : ℕ) (hq : 0<q)
     (m w : ℤ)
-    (hinj : ∀ s : ℕ, Function.Injective
-      ((model.family.functor.map f).eInftyMap (s,m+s,w))) :
-    Function.Injective (syntheticHomotopyMap f (m,w)) := by
-  have hker (a : BiHom m w (X.obj model.nu model.auxiliary))
-      (ha : a ≫ f = 0) : a = 0 := by
-    apply KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated X m w a
-    intro s
-    induction s with
-    | zero =>
-      refine ⟨a ≫ (model.syntheticTower.tower _).zeroIso.inv, ?_⟩
-      change (a ≫ (model.syntheticTower.tower _).zeroIso.inv) ≫
-        (model.syntheticTower.tower _).projection 0 = a
-      simp only [AbstractAdamsTower.projection,Int.toNat_zero,AbstractAdamsTower.map_self,
-        Category.id_comp,Category.assoc,Iso.inv_hom_id,Category.comp_id]
-      erw [Category.id_comp, Iso.inv_hom_id, Category.comp_id]
-    | succ s ih =>
-      have h := KIP126.ProofTools.Operations.next_filtration_of_infinity_injective
-        (model.convergentMap X Y f) (m,w) s (hinj s) a ih (by
-          rw [ha]
-          exact Submodule.zero_mem _)
-      simpa only [Nat.cast_add,Nat.cast_one,FiltrationAtLeast] using h
-  intro a b hab
+    (c : BiHom m w ((SyntheticCategory.biShift (1,-(q:ℤ))).obj
+      (model.nu.functor.obj (X.obj model.auxiliary))))
+    (z : (SyntheticCategory.biShift (1,-(q:ℤ))).obj
+      (model.nu.functor.obj (X.obj model.auxiliary)) ⟶
+        XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q) : c ≫ z = 0 := by
+  let A : SyntheticObject := .shift (1,-(q:ℤ)) (.nu X)
+  let B : SyntheticObject := .quotient q (.nu X)
+  let L : ℤ := w-m+1+q
+  have hzA (k : ℤ) (hk : k<L) :
+      IsZero (((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (k,m+k,w)).eInfty) := by
+    haveI : Subsingleton (nuEInftyModel model X (k,m-1+k) (w+q)) := by
+      simp only [nuEInftyModel,show ¬ w+(q:ℤ)≤(k,m-1+k).2 by dsimp [L] at hk ⊢; omega,ite_false]
+      infer_instance
+    haveI : Subsingleton (((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData
+        (k,m-1+k,w+q)).eInfty) :=
+      (KIP126.Literature.Standard.eInfinity_nu X (k,m-1+k) (w+q)).injective.subsingleton
+    have hz := ModuleCat.isZero_of_subsingleton (((model.family.obj
+      (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (k,m-1+k,w+q)).eInfty)
+    let e := towerInfinityIso (model.convergence (.nu X)) (model.convergence A)
+      ((KIP126.AdamsSynthetic.Standard.essShift (1,-(q:ℤ))).filtered (.nu X) (m-1,w+q)) k
+    have he := hz.of_iso e.symm
+    simpa only [e,A,Prod.fst_add,Prod.snd_add,sub_add_cancel,add_neg_cancel_right] using he
+  have hc0 : FiltrationAtLeast model.syntheticTower 0 c := by
+    refine ⟨c ≫ (model.syntheticTower.tower _).zeroIso.inv, ?_⟩
+    change (c ≫ (model.syntheticTower.tower _).zeroIso.inv) ≫
+      (model.syntheticTower.tower _).projection 0 = c
+    simp only [AbstractAdamsTower.projection,Int.toNat_zero,AbstractAdamsTower.map_self]
+    erw [Category.assoc,Category.id_comp,Iso.inv_hom_id,Category.comp_id]
+  have hcL : FiltrationAtLeast model.syntheticTower L c := by
+    by_cases hL : L≤0
+    · exact model.syntheticTower.filtrationSubmodule_antitone _ (m,w) hL hc0
+    · exact (filtration_iff_of_infinity_zero (model.convergence A) 0 L m w
+        (by omega) (fun k _ hk => hzA k hk) c).mp hc0
+  have hcz := map_preserves_filtration (model.convergentMap A B z) (m,w) L c hcL
+  exact finite_high_filtration_zero X q hq m w L (by dsimp [L]; omega) (c≫z) hcz
+
+private theorem lambda_quotient_maps_equal_on_spheres
+    (X : ClassicalObject) (q : ℕ) (hq : 0<q)
+    (f g : XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q ⟶
+      XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q)
+    (hfg : XModLambdaN.incl _ q ≫ f = XModLambdaN.incl _ q ≫ g)
+    (m w : ℤ) (c : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q)) :
+    c ≫ f = c ≫ g := by
+  let Y := model.nu.functor.obj (X.obj model.auxiliary)
+  have hzero : XModLambdaN.incl Y q ≫ (f-g) = 0 := by
+    rw [Preadditive.comp_sub,hfg,sub_self]
+  obtain ⟨z,hz⟩ := (XModLambdaN.cofiberTriangle Y q).yoneda_exact₃
+    (XModLambdaN.cofiberTriangle_distinguished Y q) (f-g) hzero
+  let e := (KIP126.ProofTools.Operations.biSuspensionIso (q:ℤ) Y).symm
+  have hn := lambda_boundary_no_return X q hq m w
+    ((c ≫ XModLambdaN.proj Y q) ≫ e.hom) (e.inv ≫ z)
+  have hn' : (c ≫ XModLambdaN.proj Y q) ≫ z = 0 := by
+    simpa only [Category.assoc,Iso.hom_inv_id_assoc] using hn
   apply sub_eq_zero.mp
-  exact hker (a-b) (by change (syntheticHomotopyMap f (m,w)) (a-b) = 0; rw [map_sub,hab,sub_self])
+  rw [←Preadditive.comp_sub,hz,←Category.assoc]
+  exact hn'
+
+private theorem lambda_first_quotient_delta_evaluation
+    (X : ClassicalObject) (i j : ℕ)
+    (T : LambdaRhoDeltaTriangle (model.nu.functor.obj (X.obj model.auxiliary)) i j)
+    (m w : ℤ)
+    (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i)) :
+    a ≫ T.delta = a ≫ XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) i ≫
+      (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).map
+          (XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) (j-i))) := by
+  let A := model.nu.functor.obj (X.obj model.auxiliary)
+  obtain ⟨c,hc,hδ⟩ := complete_distinguished_triangle_morphism
+    (XModLambdaN.cofiberTriangle A i) (Triangle.mk T.lambdaMap T.rho T.delta)
+    (XModLambdaN.cofiberTriangle_distinguished A i) T.distinguished
+    ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i)))
+    (XModLambdaN.incl A j) T.lambda_quotient.symm
+  change XModLambdaN A i ⟶ XModLambdaN A i at c
+  change XModLambdaN.incl A i ≫ c = XModLambdaN.incl A j ≫ T.rho at hc
+  have hc' : XModLambdaN.incl A i ≫ c = XModLambdaN.incl A i ≫ 𝟙 _ := by
+    rw [hc,T.rho_quotient,Category.comp_id]
+  have hac : a ≫ c = a := by
+    simpa only [Category.comp_id] using
+      lambda_quotient_maps_equal_on_spheres X i T.i_pos c (𝟙 _) hc' m w a
+  change XModLambdaN.proj A i ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+      ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i))) =
+    c ≫ T.delta at hδ
+  calc
+    a ≫ T.delta = (a ≫ c) ≫ T.delta := by rw [hac]
+    _ = a ≫ XModLambdaN.proj A i ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i))) := by
+      rw [Category.assoc,←hδ]
+
+private theorem lambda_zero_shift_delta_evaluation
+    (X : ClassicalObject) (i j : ℕ) (hi : 0 < i) (hij : i < j) (m w : ℤ)
+    (a : BiHom m w (XModLambdaN (nuZero model X) i)) :
+    a ≫ ((model.quotients.tower (nuZero model X)).triangle hi hij).delta =
+    a ≫ XModLambdaN.proj (nuZero model X) i ≫
+      (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).map
+          (XModLambdaN.incl (nuZero model X) (j-i))) := by
+  let V := model.nu.functor.obj (X.obj model.auxiliary)
+  let e : nuZero model X ≅ V := SyntheticCategory.biShift_zero.app V
+  let eQ := (model.quotients.functoriality.functor (j-i)).mapIso e
+  let post := (shiftFunctor SyntheticSpectrum (1:ℤ)).mapIso
+    ((SyntheticCategory.biShift (0,-(i:ℤ))).mapIso eQ)
+  apply (cancel_mono post.hom).mp
+  change (a ≫ ((model.quotients.tower (nuZero model X)).triangle hi hij).delta) ≫
+      (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.map e.hom (j-i))) = _
+  rw [Category.assoc, ←(model.quotients.natural e.hom).delta_naturality hi hij,
+    ←Category.assoc, lambda_first_quotient_delta_evaluation X i j _ m w]
+  simp only [Category.assoc, post, eQ, Functor.mapIso_hom,
+    LambdaQuotientFunctoriality.functor]
+  rw [←Category.assoc (XModLambdaN.map e.hom i),XModLambdaN.proj_naturality]
+  have hmap := congrArg (fun f => (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+      ((SyntheticCategory.biShift (0,-(i:ℤ))).map f))
+    (XModLambdaN.incl_naturality e.hom (j-i))
+  simp only [Functor.map_comp] at hmap
+  simpa only [Category.assoc] using congrArg
+    (fun f => a ≫ XModLambdaN.proj (nuZero model X) i ≫ f) hmap
+
 
 private theorem paper_boundaries_step (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r) (p : ℤ × ℤ)
     (hd : (model.classical.obj (X.obj model.auxiliary)).d r
@@ -159,65 +351,6 @@ private theorem nu_lambda_injective_from_source (X : ClassicalObject) (m wt : �
     (hsource : NoOutgoingAt (model.classical.obj (X.obj model.auxiliary))
       (wt-m-2) (wt-1)) :
     LambdaInjectiveAt m wt (model.nu.functor.obj (X.obj model.auxiliary)) := by
-  have bhs_lambdaMap_injective (s : ℤ) :
-      Function.Injective (KIP126.Literature.Standard.infinityLambda (.nu X) 1 (s,m+s) wt) := by
-    let E := model.classical.obj (X.obj model.auxiliary)
-    by_cases hw : wt ≤ m+s
-    · have hr : 2 ≤ 2+(m+s)-wt := by omega
-      have hidx : (s,m+s)-E.diffDeg (2+(m+s)-wt) = (wt-m-2,wt-1) := by
-        rw [show E.diffDeg (2+(m+s)-wt) = (2+(m+s)-wt,2+(m+s)-wt-1) from model.classical.differentialDegree _ _]
-        ext <;> dsimp <;> omega
-      have hd : E.d (2+(m+s)-wt) ((s,m+s)-E.diffDeg (2+(m+s)-wt)) = 0 := by
-        rw [hidx]
-        apply ModuleCat.hom_ext
-        apply LinearMap.ext
-        intro y
-        exact hsource _ hr y
-      have hB := paper_boundaries_step X (2+(m+s)-wt) hr (s,m+s) hd
-      have hB' : boundaries model X (1+(m+s)-wt) (s,m+s) =
-          boundaries model X (1+(m+s)-(wt-1)) (s,m+s) := by
-        convert hB.symm using 1 <;> congr 1 <;> omega
-      have hq := subquotient_map_injective_of_boundary_eq
-        (permanentCycles model X (s,m+s)) _ _
-        (boundaries_monotone model X (s,m+s) (show 1+(m+s)-wt ≤ 1+(m+s)-(wt-1) by omega)) hB'
-      intro x y hxy
-      apply (KIP126.Literature.Standard.infinityNuWindow X (s,m+s) wt hw).injective
-      apply hq
-      have hx := KIP126.Literature.Standard.eInfinity_lambda_nu X 1 (s,m+s) wt hw x
-      have hy := KIP126.Literature.Standard.eInfinity_lambda_nu X 1 (s,m+s) wt hw y
-      exact hx.symm.trans ((congrArg (KIP126.Literature.Standard.infinityNuWindow
-        X (s,m+s) (wt-1) (by omega)) hxy).trans hy)
-    · have hz : Subsingleton (nuEInftyModel model X (s,m+s) wt) := by
-        simp only [nuEInftyModel,hw,ite_false]
-        infer_instance
-      intro x y _
-      apply (KIP126.Literature.Standard.eInfinity_nu X (s,m+s) wt).injective
-      exact hz.elim _ _
-  have actual_lambda_eMap_injective (s : ℤ) :
-      Function.Injective (((model.family.functor.map
-        (lambdaPow 1 (model.nu.functor.obj (X.obj model.auxiliary)))).eInftyMap
-          (s,m+s,wt-1)).hom) := by
-    let e := KIP126.Literature.Standard.infinityShiftData.shift model (.nu X) 1 (s,m+s) wt
-    have hl : KIP126.Literature.Standard.infinityLambda (.nu X) 1 (s,m+s) wt =
-        e.hom ≫ (model.family.map (lambdaPow 1 (model.nu.functor.obj (X.obj model.auxiliary)))).eInftyMap (s,m+s,wt-1) := by
-      simp only [KIP126.Literature.Standard.infinityLambda,InfinityShiftCoordinates.lambdaMap,
-        Nat.one_ne_zero, ↓reduceDIte]
-      rfl
-    intro x y hxy
-    apply e.symm.toLinearEquiv.injective
-    apply bhs_lambdaMap_injective s
-    rw [hl]
-    simp only [ModuleCat.comp_apply]
-    have hx := e.toLinearEquiv.apply_symm_apply x
-    have hy := e.toLinearEquiv.apply_symm_apply y
-    change e.hom (e.inv x) = x at hx
-    change e.hom (e.inv y) = y at hy
-    change (model.family.map (lambdaPow 1 (model.nu.functor.obj (X.obj model.auxiliary)))).eInftyMap
-      (s,m+s,wt-1) (e.hom (e.inv x)) =
-      (model.family.map (lambdaPow 1 (model.nu.functor.obj (X.obj model.auxiliary)))).eInftyMap
-      (s,m+s,wt-1) (e.hom (e.inv y))
-    rw [hx,hy]
-    exact hxy
   have lambda_action_injective_of_actual_map
       (Y : SyntheticSpectrum) (m w : ℤ)
       (hinj : Function.Injective (syntheticHomotopyMap (SyntheticCategory.lam.app Y) (m,w-1))) :
@@ -242,11 +375,25 @@ private theorem nu_lambda_injective_from_source (X : ClassicalObject) (m wt : �
       SyntheticCategory.lam.naturality]
     simpa only [Functor.id_map,Category.assoc] using congrArg (fun z => e.hom ≫ z) hc
   apply lambda_action_injective_of_actual_map
-  apply selected_homotopyMap_injective_of_eInfty (.shift (0,-1) (.nu X)) (.nu X)
-  intro s
-  have h := actual_lambda_eMap_injective s
-  rw [lambdaPow_one model.quotients.coherence] at h
-  exact h
+  intro a b hab
+  apply sub_eq_zero.mp
+  apply lambda_kernel_zero_of_first_quotient_lifts
+    (model.nu.functor.obj (X.obj model.auxiliary)) m (wt-1)
+  · have hperm (x : (model.classical.obj (X.obj model.auxiliary)).Page 2
+        (wt-m-2,wt-1)) :
+        IsPermanentCycle (model.classical.obj (X.obj model.auxiliary)) (wt-m-2,wt-1) x := by
+      apply isPermanentCycle_of_reachesPage _ 2
+        (by rw [model.classical.firstPage]) _ x
+        ⟨x,RepresentsOnPage.self_two x⟩
+      intro r hr
+      ext y
+      exact hsource r hr y
+    have hlift := nu_first_quotient_lift_of_permanent X (wt-m-2) (wt-1) hperm
+    rw [show wt-1-(wt-m-2)=m+1 by omega] at hlift
+    exact hlift
+  · change (a-b) ≫ SyntheticCategory.lam.app _ = 0
+    rw [Preadditive.sub_comp]
+    exact sub_eq_zero.mpr hab
 
 private theorem nu_lambda_powers_injective_of_source_halfplane
     (X : ClassicalObject) (m wgt : ℤ)

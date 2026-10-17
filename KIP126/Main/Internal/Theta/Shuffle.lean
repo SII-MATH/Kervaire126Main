@@ -1,11 +1,12 @@
 module
 public import KIP126.Main.SectionSeven.Indeterminacy
 import all KIP126.Main.Internal.AlphaOne.Coherence
+import all KIP126.Main.Internal.LowEta
 
 /-! The complete doubled Toda juggling and lambda coherence argument,
 Section7/ThetaShuffle.lean:148–628, bbac1fc05843 (MIT).
-The required low-degree uniqueness and order-two statements are retained
-as mathematical hypotheses of this internal lemma. -/
+The order-two statements remain mathematical hypotheses; source automorphisms
+are removed only after passing to the actual finite lambda quotient. -/
 @[expose] section
 namespace KIP126.Main.Internal.Theta
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated CategoryTheory.MonoidalCategory
@@ -22,14 +23,14 @@ set_option backward.defeqAttrib.useBackward true
 set_option maxRecDepth 10000
 set_option maxHeartbeats 2000000
 private theorem theta_b_shuffle_from_low_degrees
-    (huq : ∀ x y : BiHom 1 2 (S_0_0 : SyntheticSpectrum), x ≠ 0 → y ≠ 0 → x = y)
     (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum)) (eta : BiHom 1 2 (S_0_0 : SyntheticSpectrum))
     (hlambda : lambdaMultiply 1 h0=syntheticTwo)
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))
     (htheta : theta+theta=0) (hb : b+b=0)
     (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum)) (hz : TripleToda theta syntheticTwo b z)
     (hv : TripleToda syntheticTwo theta syntheticTwo (lambdaMultiply 2 (sphereProduct eta theta))) :
-    lambdaMultiply 2 (sphereProduct h0 z)=lambdaMultiply 3 (sphereProduct eta (sphereProduct theta b)) := by
+    quotientClass 9 (lambdaMultiply 2 (sphereProduct h0 z))=
+      quotientClass 9 (lambdaMultiply 3 (sphereProduct eta (sphereProduct theta b))) := by
   classical
   letI := model.exactness.syntheticTriangulated
   have two_shuffle
@@ -159,14 +160,6 @@ private theorem theta_b_shuffle_from_low_degrees
     rw [Functor.map_comp,hb] at hh
     have hh':=congrArg (fun z => d.hom≫z≫x) hh
     simpa only [Category.assoc,d.hom_inv_id_assoc] using hh'
-  have source_iso_fixed_action
-      {m n k l:ℤ} {X:SyntheticSpectrum} (f:BiHom m n (S_0_0:SyntheticSpectrum))
-      (hf:∀a:Smn (Syn:=SyntheticSpectrum) m n≅Smn m n,a.hom≫f=f)
-      (x:BiHom k l X) (a:Smn (Syn:=SyntheticSpectrum) (m+k) (n+l)≅Smn (m+k) (n+l)) :
-      a.hom≫sphereAction f x=sphereAction f x := by
-    exact source_iso_fixed_transport (SyntheticCategory.biShift (k,l))
-      (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (k,l)) f hf
-      ((SyntheticCategory.biShift_comp (m,n) (k,l)).app (S_0_0:SyntheticSpectrum)).symm x a
   have source_iso_fixed_lambda
       {m n:ℤ} {X:SyntheticSpectrum} (k:ℕ) (f:BiHom m n X)
       (hf:∀a:Smn (Syn:=SyntheticSpectrum) m n≅Smn m n,a.hom≫f=f)
@@ -183,29 +176,20 @@ private theorem theta_b_shuffle_from_low_degrees
     rw [he]
     exact source_iso_fixed_transport F
       (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (0,-(k:ℤ))) f hf d (lambdaPow k X) a
-  have eta_source_iso_fixed
-      (unique : ∀ x y : BiHom 1 2 (S_0_0:SyntheticSpectrum), x≠0 → y≠0 → x=y)
-      (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) (a:Smn (Syn:=SyntheticSpectrum) 1 2≅Smn 1 2) :
-      a.hom≫eta=eta := by
-    by_cases he:eta=0
-    · simp [he]
-    apply unique _ _ ?_ he
-    intro hh
-    apply he
-    have h:=congrArg (fun z => a.inv≫z) hh
-    simpa only [←Category.assoc,a.inv_hom_id,Category.id_comp,comp_zero] using h
   have theta_b_shuffle_double
       (coh : BiShiftCoherence SyntheticSpectrum) [IsTriangulated SyntheticSpectrum]
       [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)).CommShift ℤ]
       [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)).IsTriangulated]
-      (unique : ∀ x y : BiHom 1 2 (S_0_0:SyntheticSpectrum), x≠0 → y≠0 → x=y)
       (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum))
       (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))
       (htheta : theta+theta=0) (hb : b+b=0)
       (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum))
       (hz : TripleToda theta syntheticTwo b z)
-      (hv : TripleToda syntheticTwo theta syntheticTwo (lambdaMultiply 2 (sphereProduct eta theta))) :
-      z+z=sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b := by
+      (hv : TripleToda syntheticTwo theta syntheticTwo (lambdaMultiply 2 (sphereProduct eta theta)))
+      (hfixed : ∀aa:Smn (Syn:=SyntheticSpectrum) 125 134≅Smn 125 134,
+        aa.hom≫quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b)=
+          quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b)) :
+      quotientClass 9 (z+z)=quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b) := by
     let F:=SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)
     let v:BiHom 63 64 (S_0_0:SyntheticSpectrum):=lambdaMultiply 2 (sphereProduct eta theta)
     have hs:=shifted_two_toda_shuffle coh theta b htheta hb z v hz hv
@@ -227,18 +211,18 @@ private theorem theta_b_shuffle_from_low_degrees
       change z+z=-((src.hom≫((F.commShiftIso (1:ℤ)).app (Smn 62 64)).inv≫F.map sv.hom≫c.hom)≫
         c.inv≫F.map v≫b)
       simpa only [Category.assoc,c.hom_inv_id_assoc] using hh
-    have hvfix:∀aa:Smn (Syn:=SyntheticSpectrum) 63 64≅Smn 63 64,aa.hom≫v=v := by
-      intro aa
-      exact source_iso_fixed_lambda 2 (sphereProduct eta theta)
-        (source_iso_fixed_action eta (eta_source_iso_fixed unique eta) theta) aa
-    have hp:a.hom≫sphereProduct v b=sphereProduct v b :=
-      source_iso_fixed_action v hvfix b a
-    rw [hp] at he
+    have heq : quotientClass 9 (z+z) = -(a.hom≫quotientClass 9 (sphereProduct v b)) := by
+      simpa only [quotientClass,Preadditive.neg_comp,Category.assoc] using
+        congrArg (fun t => t≫XModLambdaN.incl (S_0_0:SyntheticSpectrum) 9) he
+    rw [hfixed a] at heq
     have ht:sphereProduct v b+sphereProduct v b=0 := by
       dsimp only [sphereProduct]
       simp only [←Preadditive.comp_add,hb,comp_zero]
     have hn:-(sphereProduct v b)=sphereProduct v b := neg_eq_of_add_eq_zero_right ht
-    exact he.trans hn
+    have hnq := congrArg (fun t => t≫XModLambdaN.incl (S_0_0:SyntheticSpectrum) 9) hn
+    have hnq' : -(quotientClass 9 (sphereProduct v b))=quotientClass 9 (sphereProduct v b) := by
+      simpa only [quotientClass,Preadditive.neg_comp] using hnq
+    exact heq.trans hnq'
   let shiftSwap (a b : ℤ × ℤ) (A : SyntheticSpectrum) :
       (SyntheticCategory.biShift b).obj ((SyntheticCategory.biShift a).obj A) ≅
       (SyntheticCategory.biShift a).obj ((SyntheticCategory.biShift b).obj A) :=
@@ -498,19 +482,42 @@ private theorem theta_b_shuffle_from_low_degrees
   letI:=model.exactness.syntheticTriangulated
   letI:=model.exactness.shiftCommShift (62,70)
   letI:=model.exactness.shiftExact (62,70)
-  have hd:=theta_b_shuffle_double model.quotients.coherence huq eta theta b htheta hb z hz hv
+  have hfixed : ∀aa:Smn (Syn:=SyntheticSpectrum) 125 134≅Smn 125 134,
+      aa.hom≫quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b)=
+        quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b) := by
+    intro aa
+    have he : quotientClass 9 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b) =
+        lambdaMultiply 2 (sphereAction eta (sphereAction theta (quotientClass 9 b))) := by
+      change quotientClass 9 (sphereAction (lambdaMultiply 2 (sphereAction eta theta)) b) = _
+      rw [shuffle_lambda_left_two,shuffle_action_associativity]
+      simp only [quotientClass,lambdaMultiply,sphereAction,Category.assoc,
+        Nat.cast_ofNat,Int.reduceAdd,Int.reduceSub]
+    rw [he]
+    exact source_iso_fixed_lambda 2 _
+      (fun a => KIP126.Main.Internal.eta_action_source_iso_fixed_in_finite_quotient
+        9 (by decide) eta (sphereAction theta (quotientClass 9 b)) a) aa
+  have hd:=theta_b_shuffle_double model.quotients.coherence eta theta b htheta hb z hz hv hfixed
+  have hdl : quotientClass 9 (lambdaMultiply 1 (z+z)) =
+      quotientClass 9 (lambdaMultiply 1 (sphereProduct (lambdaMultiply 2 (sphereProduct eta theta)) b)) := by
+    simpa only [quotientClass,lambdaMultiply,Category.assoc,Nat.cast_ofNat,
+      Int.reduceAdd,Int.reduceSub] using congrArg (lambdaMultiply 1) hd
   have ht:sphereAction syntheticTwo z=z+z := by
     dsimp only [sphereAction]
     erw [reassoc_of% (shuffle_two_normalized model.quotients.coherence)]
     simp [two_smul,Preadditive.add_comp]
-  change lambdaMultiply 2 (sphereAction h0 z)=lambdaMultiply 3 (sphereAction eta (sphereAction theta b))
+  change quotientClass 9 (lambdaMultiply 2 (sphereAction h0 z))=
+    quotientClass 9 (lambdaMultiply 3 (sphereAction eta (sphereAction theta b)))
   calc
-    _ = lambdaMultiply 1 (lambdaMultiply 1 (sphereAction h0 z)) := (shuffle_lambda_one_one _).symm
-    _ = lambdaMultiply 1 (sphereAction (lambdaMultiply 1 h0) z) := by rw [shuffle_lambda_h0_left_one]
-    _ = lambdaMultiply 1 (z+z) := by rw [hlambda,ht]
-    _ = lambdaMultiply 1 (sphereAction (lambdaMultiply 2 (sphereAction eta theta)) b) := congrArg (lambdaMultiply 1) hd
-    _ = lambdaMultiply 1 (lambdaMultiply 2 (sphereAction (sphereAction eta theta) b)) := by rw [shuffle_lambda_left_two]
-    _ = lambdaMultiply 3 (sphereAction (sphereAction eta theta) b) := shuffle_lambda_one_two _
+    _ = quotientClass 9 (lambdaMultiply 1 (lambdaMultiply 1 (sphereAction h0 z))) :=
+      congrArg (quotientClass 9) (shuffle_lambda_one_one _).symm
+    _ = quotientClass 9 (lambdaMultiply 1 (sphereAction (lambdaMultiply 1 h0) z)) := by
+      rw [shuffle_lambda_h0_left_one]
+    _ = quotientClass 9 (lambdaMultiply 1 (z+z)) := by rw [hlambda,ht]
+    _ = quotientClass 9 (lambdaMultiply 1 (sphereAction (lambdaMultiply 2 (sphereAction eta theta)) b)) := hdl
+    _ = quotientClass 9 (lambdaMultiply 1 (lambdaMultiply 2 (sphereAction (sphereAction eta theta) b))) := by
+      rw [shuffle_lambda_left_two]
+    _ = quotientClass 9 (lambdaMultiply 3 (sphereAction (sphereAction eta theta) b)) :=
+      congrArg (quotientClass 9) (shuffle_lambda_one_two _)
     _ = _ := by rw [shuffle_action_associativity]
 
 end

@@ -1,0 +1,118 @@
+--- a/KIP126/Main/Internal/High125/Source.lean
++++ b/KIP126/Main/Internal/High125/Source.lean
+@@ -15,6 +15,18 @@
+ noncomputable section
+ set_option backward.isDefEq.respectTransparency false
+ set_option maxHeartbeats 800000
++
++private theorem odd_postcompose {X Y Z : Spectrum} (a : X ⟶ Y) (f : Y ⟶ Z)
++    (ha : IsOddTorsionMap a) : IsOddTorsionMap (a≫f) := by
++  obtain ⟨n,hn,hp,hz⟩ := ha
++  refine ⟨n,hn,hp,?_⟩
++  rw [←Preadditive.nsmul_comp,hz,zero_comp]
++
++private theorem odd_neg {X Y : Spectrum} (a : X ⟶ Y)
++    (ha : IsOddTorsionMap (-a)) : IsOddTorsionMap a := by
++  obtain ⟨n,hn,hp,hz⟩ := ha
++  refine ⟨n,hn,hp,?_⟩
++  simpa only [smul_neg,neg_eq_zero] using hz
+ 
+ theorem source_high_detected : ClassicalDetects (model.classicalConvergence .sphere) (25,150)
+     KIP126.Computation.Standard.highClass Standard.high125 := by
+@@ -44,20 +56,9 @@
+   have hm' : Standard.high125 ∈
+       (model.classicalTower.tower SphereSpectrum).filtrationSubmodule 26 125 := by
+     simpa [F,AbstractAdamsTower.filtration,AbstractAdamsTower.homotopy,OrderIso.apply_symm_apply] using hm
+-  have hz := classical_filtration26_zero Standard.high125 hm'
+-  exact Standard.tmf_high125_nonzero (by rw [hz,zero_comp])
++  exact Standard.tmf_high125_nonzero (odd_postcompose Standard.high125 Standard.tmfUnit
++    (classical_filtration26_odd_torsion Standard.high125 hm'))
+ 
+-/-- The actual source product has nonzero detector image.  This only uses
+-its sourced tmf image and the specified comparison; no uniqueness of arbitrary
+-classes with the same associated-graded detector is asserted. -/
+-theorem high125_detector_nonzero :
+-    Standard.high125 ≫ model.auxiliary.detectorUnit ≠ 0 := by
+-  rw [←Standard.tmfUnit_agrees,←Category.assoc]
+-  intro hz
+-  have hzero : Standard.high125 ≫ Standard.tmfUnit=0 := by
+-    apply (cancel_mono Standard.tmfIso.hom).mp
+-    simpa only [zero_comp] using hz
+-  exact Standard.tmf_high125_nonzero hzero
+ 
+ end
+ end KIP126.Main.Internal.High125
+--- a/KIP126/Main/Internal/High125/Injectivity.lean
++++ b/KIP126/Main/Internal/High125/Injectivity.lean
+@@ -97,24 +97,6 @@
+   exact sphere_frame_of_permanent_quotient 25 150 20 KIP126.Computation.Standard.highClass
+     (permanent_quotient_frame_of_page 5 21 (by decide) (by decide) 25 150 _ ⟨z,hz⟩ a ha hall)
+ 
+-private theorem high_exhaustion
+-    (b : BiHom 125 150 (S_0_0 : SyntheticSpectrum))
+-    (hb : sphereFirstQuotient model 25 150 (quotientClass 1 b)=KIP126.Computation.Standard.highClass)
+-    (a : BiHom 125 130 (S_0_0 : SyntheticSpectrum))
+-    (ha : FiltrationAtLeast model.syntheticTower 15 a) :
+-    a=0 ∨ a=lambdaMultiply 20 b := by
+-  have h25 := synthetic_filtration_fifteen_to_twentyfive a ha
+-  rcases theta_detection_step (25,150,130) _ high_frame a h25 with hd|h26
+-  · right
+-    have hb' := model.sphereDetectionCompatible.homotopy_lambda 25 150 20 b
+-    change KIP126.AdamsSynthetic.sphereFirstQuotient model.nu model.quotients.functoriality
+-      model.firstQuotient 25 150 (quotientClass 1 b)=_ at hb
+-    rw [hb] at hb'
+-    apply sub_eq_zero.mp
+-    exact synthetic_filtration26_zero _
+-      (detects_sub_filtration (model.convergence .sphere) (25,150,130) hd.1 hb')
+-  · exact Or.inl (synthetic_filtration26_zero a h26)
+-
+ private theorem realize_lambda {m w : ℤ} (k : ℕ)
+     (b : BiHom m w (S_0_0 : SyntheticSpectrum)) :
+     Standard.realizeSphere m (w-k) (lambdaMultiply k b)=Standard.realizeSphere m w b := by
+@@ -165,9 +147,12 @@
+ theorem detector_injective_filtration15
+     (a : BiHom 125 130 (S_0_0 : SyntheticSpectrum))
+     (ha : FiltrationAtLeast model.syntheticTower 15 a)
++    (h2 : a+a=0)
+     (hz : a ≫ detectorMap=0) : a=0 := by
++  have hImageNonodd := Standard.tmf_high125_nonzero
+   obtain ⟨b0,hb0,hreal⟩ := Standard.selected_realization_prescribed_lift .sphere 25 150
+-    KIP126.Computation.Standard.highClass Standard.high125 high_nonzero_survival source_high_detected
++    KIP126.Computation.Standard.highClass Standard.high125
++    high_nonzero_survival source_high_detected
+   let f := SyntheticCategory.biShift_zero.hom.app (model.nu.functor.obj SphereSpectrum) ≫ model.nu.unitIso.hom
+   let b : BiHom 125 150 (S_0_0 : SyntheticSpectrum) := b0 ≫ f
+   have hb : sphereFirstQuotient model 25 150 (quotientClass 1 b)=KIP126.Computation.Standard.highClass := by
+@@ -177,14 +162,25 @@
+       exact congrArg (fun h => b0 ≫ h) (XModLambdaN.incl_naturality f 1)
+     rw [hc,hb0]
+     exact KIP126.ProofTools.Operations.sphere_first_quotient_label 25 150 _
+-  rcases high_exhaustion b hb a ha with h0|h1
+-  · exact h0
+-  · have hr : Standard.realizeSphere 125 130 a=Standard.high125 := by
+-      rw [h1]
+-      exact (realize_lambda 20 b).trans ((realize_lift b0).trans hreal)
++  have h25 := synthetic_filtration_fifteen_to_twentyfive a ha
++  rcases theta_detection_step (25,150,130) _ high_frame a h25 with hd|h26
++  · have hbdet := model.sphereDetectionCompatible.homotopy_lambda 25 150 20 b
++    change KIP126.AdamsSynthetic.sphereFirstQuotient model.nu model.quotients.functoriality
++      model.firstQuotient 25 150 (quotientClass 1 b)=_ at hb
++    rw [hb] at hbdet
++    have hdiff : FiltrationAtLeast model.syntheticTower 26 (a-(show BiHom 125 130 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 20 b)) :=
++      detects_sub_filtration (model.convergence .sphere) (25,150,130) hd.1 hbdet
++    have hOdd := infinite_realization_odd _ (synthetic_filtration26_infinite _ hdiff)
+     have hzero := realize_detector_zero a hz
+-    rw [hr] at hzero
+-    exact False.elim (high125_detector_nonzero hzero)
++    have hzeroTmf : Standard.realizeSphere 125 130 a ≫ Standard.tmfUnit=0 := by
++      apply (cancel_mono Standard.tmfIso.hom).mp
++      simpa only [Category.assoc,Standard.tmfUnit_agrees,zero_comp] using hzero
++    have hr : Standard.realizeSphere 125 130 (lambdaMultiply 20 b)=Standard.high125 :=
++      (realize_lambda 20 b).trans ((realize_lift b0).trans hreal)
++    have hOddImage := odd_postcompose _ Standard.tmfUnit hOdd
++    rw [map_sub,Preadditive.sub_comp,hzeroTmf,hr,zero_sub] at hOddImage
++    exact False.elim (hImageNonodd (odd_neg _ hOddImage))
++  · exact synthetic_filtration26_zero a h26 h2
+ 
+ end
+ end KIP126.Main.Internal.High125

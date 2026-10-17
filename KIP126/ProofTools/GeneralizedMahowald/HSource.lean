@@ -30,7 +30,7 @@ private theorem shifted_first_detection_unique (X : ClassicalObject) (e s t : �
   have hdiff := detects_sub_filtration (model.convergence (.quotient 1 (.shift (0,e) (.nu X))))
     (s,t,t+e) ha hb
   apply sub_eq_zero.mp
-  apply synthetic_homotopy_separated (.quotient 1 (.shift (0,e) (.nu X))) (t-s) (t+e) (a-b)
+  apply synthetic_homotopy_separated (.shift (0,e) (.nu X)) 1 (t-s) (t+e) (a-b)
   intro j
   by_cases hj : s+1 ≤ (j:ℤ)
   · exact (filtration_iff_of_infinity_zero

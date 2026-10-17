@@ -81,7 +81,7 @@ theorem anyy_toda_h0_error_formula
         (show BiHom 125 133 (XModLambdaN (S_0_0:SyntheticSpectrum) 9) from lambdaMultiply 7 a3) := by
   obtain ⟨a2,a3,hr,he⟩:=ha.2.2.1 u hu
   refine ⟨a3,?_⟩
-  rw [y_detection_toda_main_toda_h0_relation eta_unique_from_low_degrees eta syntheticH0
+  rw [y_detection_toda_main_toda_h0_relation eta syntheticH0
     KIP126.Literature.Standard.toda_eta_squared KIP126.Literature.Standard.toda_low_indeterminacy _ ha.2.2.2 z hz,hr]
   have hadd (v w:BiHom 124 131 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)):
       sphereAction eta (v+w)=sphereAction eta v+sphereAction eta w := by

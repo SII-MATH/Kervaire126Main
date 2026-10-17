@@ -1,0 +1,114 @@
+--- a/KIP126/Computation/Standard.lean
++++ b/KIP126/Computation/Standard.lean
+@@ -1,4 +1,6 @@
+ module
++
++import Lean
+ 
+ public import KIP126.Computation.Basis
+ import all KIP126.Computation.Internal.SphereQuotient
+@@ -18,6 +20,14 @@
+ 
+ set_option backward.isDefEq.respectTransparency false
+ 
++
++-- Research candidate only; actual-project scale remains unverified.
++local syntax (name := inlinePrivate) "inline_private% " term : term
++@[local term_elab inlinePrivate] private meta def elabInlinePrivate :
++    Lean.Elab.Term.TermElab := fun stx expectedType => Lean.withoutExporting do
++  let e ← Lean.Elab.Term.elabTermAndSynthesize stx[1] expectedType
++  Lean.Meta.deltaExpand e Lean.isPrivateName
++
+ @[expose] section
+ namespace KIP126.Computation.Standard
+ open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+@@ -25,12 +35,12 @@
+ open KIP126.AdamsSynthetic.Standard
+ 
+ /-- The complete generator catalogue of the pinned sphere archive. -/
+-public noncomputable def generators : GeneratorCatalogue := private_decl% (
++public noncomputable def generators : GeneratorCatalogue := inline_private% (
+   let result : GeneratorCatalogue :=
+     Internal.Archive.generators
+   result)
+ 
+-public noncomputable def atomIndex (a : Atom) : Fin generators.count := private_decl% (
++public noncomputable def atomIndex (a : Atom) : Fin generators.count := inline_private% (
+   let result : Fin generators.count :=
+     Internal.Archive.atomIndex a
+   result)
+@@ -38,13 +48,13 @@
+ public theorem atom_record (a : Atom) :
+     ((atomIndex a).val, generators.record (atomIndex a)) = a.record :=
+   Internal.Archive.atom_record a
+-public noncomputable def basisCount : ℕ → ℕ → ℕ := private_decl% (
++public noncomputable def basisCount : ℕ → ℕ → ℕ := inline_private% (
+   let result : ℕ → ℕ → ℕ :=
+     Internal.Archive.basisCount
+   result)
+ 
+ public noncomputable def basisMonomial (s t : ℕ) (i : Fin (basisCount s t)) :
+-    SourceMonomial generators s t := private_decl% (
++    SourceMonomial generators s t := inline_private% (
+   let result : SourceMonomial generators s t :=
+     Internal.Archive.basisMonomial s t i
+   result)
+@@ -57,24 +67,24 @@
+   basisCount := basisCount
+   basisMonomial := basisMonomial
+ 
+-public noncomputable def sourceComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := private_decl% (
++public noncomputable def sourceComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := inline_private% (
+   let result : ℕ → ℕ → ModuleCat.{0} (ZMod 2) :=
+     Internal.SphereCoordinates.component generators
+   result)
+ 
+ public noncomputable def sourceProduct (s t s' t' : ℕ) :
+     sourceComponent s t →ₗ[ZMod 2] sourceComponent s' t' →ₗ[ZMod 2]
+-      sourceComponent (s+s') (t+t') := private_decl% (
++      sourceComponent (s+s') (t+t') := inline_private% (
+   let result : sourceComponent s t →ₗ[ZMod 2] sourceComponent s' t' →ₗ[ZMod 2] sourceComponent (s+s') (t+t') :=
+     Internal.SphereCoordinates.product generators s t s' t'
+   result)
+ 
+-public noncomputable def sourceUnit : sourceComponent 0 0 := private_decl% (
++public noncomputable def sourceUnit : sourceComponent 0 0 := inline_private% (
+   let result : sourceComponent 0 0 :=
+     Internal.SphereCoordinates.unit generators
+   result)
+ 
+-public noncomputable def sourceAtom (a : Atom) : sourceComponent a.degree.1 a.degree.2 := private_decl% (
++public noncomputable def sourceAtom (a : Atom) : sourceComponent a.degree.1 a.degree.2 := inline_private% (
+   let result : sourceComponent a.degree.1 a.degree.2 :=
+     by
+       have hdegree : generators.degree (atomIndex a) = a.degree :=
+@@ -89,7 +99,7 @@
+   unit := sourceUnit
+   atom := sourceAtom
+ public noncomputable def sourceGenerator (i : Fin archive.generators.count) :
+-    sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 := private_decl% (
++    sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 := inline_private% (
+   let result : sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 :=
+     Internal.SphereCoordinates.generatorValue generators i
+   result)
+@@ -719,17 +729,17 @@
+ end DetectorCoordinates
+ 
+ /-- The pinned detector calculation, before comparison with the actual object. -/
+-public noncomputable def detectorComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := private_decl% (
++public noncomputable def detectorComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := inline_private% (
+   let result : ℕ → ℕ → ModuleCat.{0} (ZMod 2) :=
+     fun s t => ModuleCat.of (ZMod 2) (DetectorCoordinates.E2At s t)
+   result)
+ 
+-public noncomputable def detectorV2Sixteen : detectorComponent 16 112 := private_decl% (
++public noncomputable def detectorV2Sixteen : detectorComponent 16 112 := inline_private% (
+   let result : detectorComponent 16 112 :=
+     ⟨DetectorCoordinates.v2SixteenValue, DetectorCoordinates.v2SixteenValue_mem⟩
+   result)
+ 
+-public noncomputable def detectorBetaGFour : detectorComponent 19 114 := private_decl% (
++public noncomputable def detectorBetaGFour : detectorComponent 19 114 := inline_private% (
+   let result : detectorComponent 19 114 :=
+     ⟨DetectorCoordinates.betaGFourValue, DetectorCoordinates.betaGFourValue_mem⟩
+   result)

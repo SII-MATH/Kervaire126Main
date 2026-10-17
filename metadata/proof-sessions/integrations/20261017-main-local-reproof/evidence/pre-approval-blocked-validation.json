@@ -1,0 +1,767 @@
+{
+  "schema_version": 1,
+  "integration_id": "20261017-main-local-reproof",
+  "role": "integration evidence organizer and lambda implementer; not an independent reviewer",
+  "organizer_agent": "/root/downstream_adaptation",
+  "baseline_commit": "2c703812db7edb830b995c53e9fe648747a66429",
+  "captured_at_utc": "2026-10-17T06:23:14.219440+00:00",
+  "scope": "local Main reproofs consuming the approved finite-quotient separation and primary stem62 interfaces",
+  "status": "blocked_pending_human_interface_decision",
+  "production_target_builds": [
+    {
+      "log": "evidence/kip-main-reproof-local-build.log",
+      "reported_exit_code": 0,
+      "jobs": 2809,
+      "success_marker_verified_in_log": "Build completed successfully (2809 jobs).",
+      "execution_owner": "/root",
+      "exact_invocation": null,
+      "limitation": "selected production targets, not default lake build or all Main"
+    },
+    {
+      "log": "evidence/kip-main-high125-filtration-build.log",
+      "reported_exit_code": 0,
+      "jobs": 2766,
+      "success_marker_verified_in_log": "Build completed successfully (2766 jobs).",
+      "execution_owner": "/root",
+      "exact_invocation": null,
+      "limitation": "High125.Filtration dependency closure only; does not close High125.Source/nonodd interface"
+    },
+    {
+      "log": "evidence/detector-restored-build.log",
+      "reported_exit_code": 0,
+      "jobs": 2757,
+      "success_marker_verified_in_log": "Build completed successfully (2757 jobs).",
+      "execution_owner": "/root",
+      "exact_invocation": "lake build KIP126.Main.Internal.High125.Detector",
+      "limitation": "restores a valid realization-injectivity helper and verifies Detector; does not supply the unapproved nonodd-image input"
+    }
+  ],
+  "default_build": {
+    "status": "blocked_pending_human_interface_decision",
+    "passed": false,
+    "full_main_completed": false,
+    "log": "evidence/default-build-after-detector.log",
+    "organizer_has_not_run_default_build": true,
+    "latest_completed_attempt": 2,
+    "final_result_pending": false,
+    "current_result": "blocked_pending_human_interface_decision",
+    "tool_session_id": 76840,
+    "exit_code_reported_by_coordinator": 1,
+    "failed_targets": [
+      "KIP126.Main.Internal.High125.Source"
+    ]
+  },
+  "obligations_snapshot": {
+    "source": "metadata/proof-obligations.json",
+    "sha256": "bc390df37bb141eb30f5bb04d030fcbb7253378677007866a65f72eecf200ca2",
+    "summary": {
+      "total": 299,
+      "by_module": {
+        "AdamsSynthetic": 90,
+        "Computation": 88,
+        "Literature": 119,
+        "ProofTools": 2
+      },
+      "by_kind": {
+        "pending-construction": 86,
+        "pending-proof": 213
+      }
+    },
+    "main_direct_pending_count": 0,
+    "interpretation": "299 retained upstream direct obligations; local proofs do not discharge their transitive dependencies",
+    "reconfirmed_at_utc": "2026-10-17T06:26:16.848392+00:00"
+  },
+  "public_main_api": {
+    "intended_change": false,
+    "final_interface_audit": "full Main/Architecture/Trust completion is blocked by High125.Source; no full-Main-consumer success claim",
+    "path": "metadata/main-api.json",
+    "sha256": "5e0fdd14db28dc3caaa8fd96e9f3f8261bd29f804babe859d4b154d0227e8a56",
+    "head_sha256": "5e0fdd14db28dc3caaa8fd96e9f3f8261bd29f804babe859d4b154d0227e8a56",
+    "lock_bytes_unchanged_from_head": true
+  },
+  "pending_interface": {
+    "report": "metadata/interface-reviews/Main/20261017-high125-detector-nonodd/report.md",
+    "status": "pending-human-review",
+    "human_decision": null,
+    "current_type": "high125 ≫ tmfUnit ≠ 0",
+    "proposed_type": "¬ IsOddTorsionMap (high125 ≫ tmfUnit)",
+    "authorized_for_implementation": false,
+    "effect": "strictly strengthens an existing Literature responsibility; no additional Main premise or direct obligation added",
+    "user_async_reply_received": false,
+    "same_public_name": true,
+    "approved": false,
+    "decision_as_of_utc": "2026-10-17T06:26:16.848392+00:00"
+  },
+  "publication": {
+    "commit_created": false,
+    "pushed": false,
+    "release_cache_uploaded": false,
+    "reason": "final current default build exits 1 at High125.Source; same-name nonzero-to-nonodd interface strengthening remains unapproved"
+  },
+  "evidence": [
+    {
+      "source_path": "/tmp/kip-main-reproof-lambda.md",
+      "evidence_path": "evidence/kip-main-reproof-lambda.md",
+      "kind": "implementation-report",
+      "author_or_owner": "/root/downstream_adaptation",
+      "captured_at_utc": "2026-10-17T06:22:01.878084+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:43.406113+00:00",
+      "sha256": "d8a7803daba1d785384e90858389140b2f9a251c303215bd36594938d89c21b6",
+      "size_bytes": 8500,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-lambda-validation.json",
+      "evidence_path": "evidence/kip-main-reproof-lambda-validation.json",
+      "kind": "validation-tool-result-transcription",
+      "author_or_owner": "/root/downstream_adaptation",
+      "captured_at_utc": "2026-10-17T06:22:01.878310+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:43.402113+00:00",
+      "sha256": "99de040eb58df3f7a85182bb3fc596c155dcc3692e76c83f1a573e3f5436612e",
+      "size_bytes": 1222,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-loweta.md",
+      "evidence_path": "evidence/kip-main-reproof-loweta.md",
+      "kind": "implementation-report",
+      "author_or_owner": "/root/separation_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.878492+00:00",
+      "source_mtime_utc": "2026-10-17T06:06:04.259259+00:00",
+      "sha256": "500601422cfab3d8304a294d27adb6bf33e06a9b652db55ba273877d8853e08f",
+      "size_bytes": 6102,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-selected-b.md",
+      "evidence_path": "evidence/kip-main-reproof-selected-b.md",
+      "kind": "implementation-and-followup-review-report",
+      "author_or_owner": "/root/literature_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.878667+00:00",
+      "source_mtime_utc": "2026-10-17T06:15:43.873098+00:00",
+      "sha256": "7b6ccb5feac6c09be3c1bac8d90710f60255556d0abae94f3f0a1f30aba3aa1c",
+      "size_bytes": 9119,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-selected-b-hashes.json",
+      "evidence_path": "evidence/kip-main-reproof-selected-b-hashes.json",
+      "kind": "source-snapshots",
+      "author_or_owner": "/root/literature_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.878809+00:00",
+      "source_mtime_utc": "2026-10-17T06:07:59.157187+00:00",
+      "sha256": "bd4154942a825b14867c63f179a10ed6922cf92ba9f6cd525ccd37befb086a24",
+      "size_bytes": 739,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-shuffle.md",
+      "evidence_path": "evidence/kip-main-reproof-shuffle.md",
+      "kind": "implementation-report",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:01.878975+00:00",
+      "source_mtime_utc": "2026-10-17T06:09:08.094355+00:00",
+      "sha256": "7bc32f79aad36803cc4830ad61a8525bd27b238c6a72fbcdaa240ff410b9edf1",
+      "size_bytes": 5098,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-infinite-lambda-kernel-result.md",
+      "evidence_path": "evidence/kip-main-infinite-lambda-kernel-result.md",
+      "kind": "implementation-report",
+      "author_or_owner": "/root/main_interface_report",
+      "captured_at_utc": "2026-10-17T06:22:01.879139+00:00",
+      "source_mtime_utc": "2026-10-17T06:18:32.039966+00:00",
+      "sha256": "1b44da464f3b116a085580015750b028027fe261f903ea757fa7e2afda477945",
+      "size_bytes": 6605,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-infinite-lambda-kernel.lean",
+      "evidence_path": "evidence/kip-main-infinite-lambda-kernel.lean",
+      "kind": "validated-private-scratch-source",
+      "author_or_owner": "/root/main_interface_report",
+      "captured_at_utc": "2026-10-17T06:22:01.879327+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:54.730307+00:00",
+      "sha256": "9d749e787aac8f4df9f0a9bf1292d6899e7f6a9c2fc17b75af79a87df08dc11e",
+      "size_bytes": 16432,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-infinite-lambda-kernel-validation.log",
+      "evidence_path": "evidence/kip-main-infinite-lambda-kernel-validation.log",
+      "kind": "bare-lean-validation-log",
+      "author_or_owner": "/root/main_interface_report",
+      "captured_at_utc": "2026-10-17T06:22:01.879474+00:00",
+      "source_mtime_utc": "2026-10-17T06:17:01.006413+00:00",
+      "sha256": "525169412e969c8da2024b235a1b97b4f5cff613f080628bfbdfa2edca9c8eff",
+      "size_bytes": 1159,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-infinite-lambda-kernel-audit.lean",
+      "evidence_path": "evidence/kip-main-infinite-lambda-kernel-audit.lean",
+      "kind": "axiom-audit-scratch-source",
+      "author_or_owner": "/root/main_interface_report",
+      "captured_at_utc": "2026-10-17T06:22:01.879657+00:00",
+      "source_mtime_utc": "2026-10-17T06:17:41.299101+00:00",
+      "sha256": "232cf3014cdfe1e05f814ab7e355cd023bc0cbc937071df0cb3e5b11803f08fb",
+      "size_bytes": 16753,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-infinite-lambda-kernel-audit.log",
+      "evidence_path": "evidence/kip-main-infinite-lambda-kernel-audit.log",
+      "kind": "axiom-audit-log",
+      "author_or_owner": "/root/main_interface_report",
+      "captured_at_utc": "2026-10-17T06:22:01.879822+00:00",
+      "source_mtime_utc": "2026-10-17T06:17:47.651209+00:00",
+      "sha256": "570111954fae0a1dd2030edbdd966c7615eb2f33c9b9de43efd1f051fdcb7aa0",
+      "size_bytes": 2061,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-counteraudit.md",
+      "evidence_path": "evidence/kip-main-reproof-counteraudit.md",
+      "kind": "independent-mathematical-audit",
+      "author_or_owner": "/root/independent_math_audit",
+      "captured_at_utc": "2026-10-17T06:22:01.880012+00:00",
+      "source_mtime_utc": "2026-10-17T06:19:50.985311+00:00",
+      "sha256": "3afea0ac8ddfdddc5add0c33574442b54fad59cc538e023219290501916f8d46",
+      "size_bytes": 27387,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-lambda-independent-audit.md",
+      "evidence_path": "evidence/kip-main-lambda-independent-audit.md",
+      "kind": "independent-proof-audit",
+      "author_or_owner": "/root/separation_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.880208+00:00",
+      "source_mtime_utc": "2026-10-17T06:17:25.214826+00:00",
+      "sha256": "a0662eba21d05b0f8741dbdca32d85258f1d10c7b344300c4faf38c02be69b41",
+      "size_bytes": 8272,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-lambda-independent-audit.lean",
+      "evidence_path": "evidence/kip-main-lambda-independent-audit.lean",
+      "kind": "independent-kernel-dependency-audit-source",
+      "author_or_owner": "/root/separation_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.880380+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:30.753898+00:00",
+      "sha256": "7b2bfce0e3b289317e9624b6c903bc3f730fab11409e4b5dae13b40372cdbc7c",
+      "size_bytes": 20398,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-lambda-independent-audit.log",
+      "evidence_path": "evidence/kip-main-lambda-independent-audit.log",
+      "kind": "independent-kernel-dependency-audit-log",
+      "author_or_owner": "/root/separation_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.880526+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:36.986004+00:00",
+      "sha256": "3e37af6aeeaccb19233de6b3c334edfad3e41e84a1cfd5a33dac00d70beafde0",
+      "size_bytes": 251,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-lambda-independent-deps.json",
+      "evidence_path": "evidence/kip-main-lambda-independent-deps.json",
+      "kind": "independent-kernel-dependency-audit-data",
+      "author_or_owner": "/root/separation_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.880756+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:36.890002+00:00",
+      "sha256": "e07954a5bd819108a46687ef9654172a92baf50aaa7f2ae4b8bae46f9f1136dc",
+      "size_bytes": 80995,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-local-build.log",
+      "evidence_path": "evidence/kip-main-reproof-local-build.log",
+      "kind": "coordinator-production-target-build-log",
+      "author_or_owner": "/root",
+      "captured_at_utc": "2026-10-17T06:22:01.880994+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:12.405585+00:00",
+      "sha256": "3078c8804a557ae6eeab0c6a0f9c4b2b541d2b1b478019d2dc5dab25427061e7",
+      "size_bytes": 39456,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-high125-filtration-build.log",
+      "evidence_path": "evidence/kip-main-high125-filtration-build.log",
+      "kind": "coordinator-production-target-build-log",
+      "author_or_owner": "/root",
+      "captured_at_utc": "2026-10-17T06:22:01.881198+00:00",
+      "source_mtime_utc": "2026-10-17T06:19:35.341045+00:00",
+      "sha256": "265e77e2fbf062c7a3d6eccf375d73f9149522b0832e88dc572face643dd8b11",
+      "size_bytes": 39381,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-any-y-shuffle.log",
+      "evidence_path": "evidence/kip-main-any-y-shuffle.log",
+      "kind": "bare-lean-production-log",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:01.881343+00:00",
+      "source_mtime_utc": "2026-10-17T06:08:17.193491+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-theta-shuffle.log",
+      "evidence_path": "evidence/kip-main-theta-shuffle.log",
+      "kind": "bare-lean-production-log",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:01.881455+00:00",
+      "source_mtime_utc": "2026-10-17T06:08:20.241543+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-b-arithmetic.log",
+      "evidence_path": "evidence/kip-b-arithmetic.log",
+      "kind": "bare-lean-scratch-log",
+      "author_or_owner": "/root/literature_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.881551+00:00",
+      "source_mtime_utc": "2026-10-17T06:04:48.589966+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-b-local.log",
+      "evidence_path": "evidence/kip-b-local.log",
+      "kind": "bare-lean-kernel-parameter-isolation-log",
+      "author_or_owner": "/root/literature_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.881647+00:00",
+      "source_mtime_utc": "2026-10-17T06:06:15.023443+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-toda-right-order-two.log",
+      "evidence_path": "evidence/kip-toda-right-order-two.log",
+      "kind": "bare-lean-scratch-log",
+      "author_or_owner": "/root/literature_interfaces",
+      "captured_at_utc": "2026-10-17T06:22:01.881744+00:00",
+      "source_mtime_utc": "2026-10-17T06:06:58.580177+00:00",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-high125-conditional.lean",
+      "evidence_path": "evidence/kip-high125-conditional.lean",
+      "kind": "conditional-scratch-only-source",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:22:37.433565+00:00",
+      "source_mtime_utc": "2026-10-17T06:21:07.570616+00:00",
+      "sha256": "c0d7176185edf348511c9c6dde00f4198aacd938e6428a9b534b25d72a8e3475",
+      "size_bytes": 51591,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-high125-bridge.lean",
+      "evidence_path": "evidence/kip-high125-bridge.lean",
+      "kind": "validated-private-realization-odd-bridge-source",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:22:37.433758+00:00",
+      "source_mtime_utc": "2026-10-17T06:16:13.353601+00:00",
+      "sha256": "d5d756491978f33f245adc95d1b31a88a6b5fe9ab79f0403c91c27ee7a2525f9",
+      "size_bytes": 17067,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-metadata-reproof-result.md",
+      "evidence_path": "evidence/kip-main-metadata-reproof-result.md",
+      "kind": "metadata-organizer-report",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:37.433955+00:00",
+      "source_mtime_utc": "2026-10-17T06:21:19.646822+00:00",
+      "sha256": "c95dcfc76d7e05f87ab2be07c022bd0f7ef87a3f6e4a6f44ea6221a770798f56",
+      "size_bytes": 4537,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-metadata-field-diff.json",
+      "evidence_path": "evidence/kip-main-metadata-field-diff.json",
+      "kind": "metadata-change-detail",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:37.434131+00:00",
+      "source_mtime_utc": "2026-10-17T06:20:50.806331+00:00",
+      "sha256": "8ca0466a9daea66b2894d3563aba16bdc2b03870a32060257c02fbc5249f1e70",
+      "size_bytes": 9993,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-metadata-validation.json",
+      "evidence_path": "evidence/kip-main-metadata-validation.json",
+      "kind": "metadata-consistency-validation",
+      "author_or_owner": "/root/compose_interface",
+      "captured_at_utc": "2026-10-17T06:22:37.434286+00:00",
+      "source_mtime_utc": "2026-10-17T06:20:50.806331+00:00",
+      "sha256": "af6f6ae9847636fce2077c06970124ef2fe647a2092c4cf66e630d8582455e83",
+      "size_bytes": 321,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-high125.md",
+      "evidence_path": "evidence/kip-main-reproof-high125.md",
+      "kind": "implementation-report-final-with-production-validation",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:23:14.218838+00:00",
+      "source_mtime_utc": "2026-10-17T06:22:41.668218+00:00",
+      "sha256": "98ea4540b20389e5657367e3f1184870c5ab99dea9083d878a82bdad04cb4e28",
+      "size_bytes": 8506,
+      "independently_executed_by_organizer": false,
+      "superseded_capture_sha256": "3686ef16be3c08e97a740a1f9cd5ef1d8d1ba52167da48db386edbcd8cf7c704",
+      "recaptured_after_final_worker_validation_update": true
+    },
+    {
+      "source_path": "/tmp/kip-high125-conditional-validation.log",
+      "evidence_path": "evidence/kip-high125-conditional-validation.log",
+      "kind": "conditional-scratch-bare-lean-log",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:23:14.219103+00:00",
+      "source_mtime_utc": "2026-10-17T06:22:30.796033+00:00",
+      "sha256": "124d6e550106a3879ac11d5d4bd30effa19a29c72af3bd7aa1aa3322521b8f3b",
+      "size_bytes": 1440,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-high125-conditional-validation.json",
+      "evidence_path": "evidence/kip-high125-conditional-validation.json",
+      "kind": "conditional-scratch-machine-validation",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:23:14.219249+00:00",
+      "source_mtime_utc": "2026-10-17T06:22:30.976036+00:00",
+      "sha256": "3c6170bba3fff8f60341180ad6deeace4fcc43358de7f0ad7dab59e934dbd7f1",
+      "size_bytes": 418,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-high125-after-nonodd-approval.patch",
+      "evidence_path": "evidence/kip-high125-after-nonodd-approval.patch",
+      "kind": "unapplied-patch-requires-unapproved-interface",
+      "author_or_owner": "/root/high125_local_repair",
+      "captured_at_utc": "2026-10-17T06:23:14.219429+00:00",
+      "source_mtime_utc": "2026-10-17T06:21:58.167478+00:00",
+      "sha256": "7a552cce3e3adb589840a11cf5d1b5b553f8e81250063a97cce06caa378cdf06",
+      "size_bytes": 6244,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-full-build.log",
+      "evidence_path": "evidence/default-build-attempt-1.log",
+      "kind": "coordinator-default-build-failed-attempt-history",
+      "author_or_owner": "/root",
+      "captured_at_utc": "2026-10-17T06:24:28.827633+00:00",
+      "source_mtime_utc": "2026-10-17T06:21:56.559451+00:00",
+      "sha256": "b96f9019ac1cfc325d47dfed8614e96f9a404480155007d6ec53ad2ced7c0df4",
+      "size_bytes": 97803,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-reproof-full-build-after-detector.log",
+      "evidence_path": "evidence/default-build-after-detector.log",
+      "kind": "coordinator-final-current-default-build-log",
+      "author_or_owner": "/root",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "source_mtime_utc": "2026-10-17T06:25:01.218589+00:00",
+      "sha256": "c2809d4f0c6381a7c930513c70e99c863482b692b530e441c588454e6fef81e8",
+      "size_bytes": 96209,
+      "independently_executed_by_organizer": false
+    },
+    {
+      "source_path": "/tmp/kip-main-detector-restored-build.log",
+      "evidence_path": "evidence/detector-restored-build.log",
+      "kind": "coordinator-restored-valid-helper-target-build-log",
+      "author_or_owner": "/root",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "source_mtime_utc": "2026-10-17T06:23:35.541134+00:00",
+      "sha256": "69030950e03adb7fe219e899d94296e731621d47654f8c75969f360961368f2c",
+      "size_bytes": 37946,
+      "independently_executed_by_organizer": false
+    }
+  ],
+  "high125_report_capture": {
+    "status": "final_worker_snapshot_captured_after_explicit_stability_notice",
+    "path": "evidence/kip-main-reproof-high125.md",
+    "expected_sha256_confirmed": "98ea4540b20389e5657367e3f1184870c5ab99dea9083d878a82bdad04cb4e28",
+    "note": "final worker-stable report recaptured after its final production-build/conditional-machine-validation additions"
+  },
+  "limits": [
+    "Archived reports preserve their original task-time statements; coordinator production logs supersede earlier import-blocked or kernel-parameter-only checks for the built targets.",
+    "Independent reviews are attributed to their original authors; this organizer does not convert implementation reports into independent reviews.",
+    "No default-build, commit, push, Release cache, or absence-of-transitive-upstream-sorry claim is made."
+  ],
+  "conditional_f25_validation": {
+    "source": "evidence/kip-high125-conditional.lean",
+    "additional_local_parameter": "hImageNonodd : ¬ IsOddTorsionMap (high125 ≫ tmfUnit)",
+    "bare_lean_exit_code_reported_by_worker": 0,
+    "production_integrated": false,
+    "proves_unconditional_main": false,
+    "approval": "pending-human-review; not implemented into public interface",
+    "machine_validation": "evidence/kip-high125-conditional-validation.json",
+    "log": "evidence/kip-high125-conditional-validation.log",
+    "unapplied_patch": "evidence/kip-high125-after-nonodd-approval.patch",
+    "patch_applied_to_production": false
+  },
+  "source_snapshots_at_capture": {
+    "KIP126/Main/ChoiceIndependence.lean": {
+      "sha256": "bc1b0be9951572cc61f198cbd874eb66e656739aeda6bf10ee16d9c39ed34df0",
+      "captured_at_utc": "2026-10-17T06:22:37.439770+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/DifferentialCriterion.lean": {
+      "sha256": "a1a54deb14187d34947fbe458057de602e0f653bc84fb7b6334c75d1c1d3a4d1",
+      "captured_at_utc": "2026-10-17T06:22:37.439814+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/Invariance.lean": {
+      "sha256": "92856f6d5b0ce04f4e1d3875e347d12f10d22a34a0fa5617c58b4f49873cb1cb",
+      "captured_at_utc": "2026-10-17T06:22:37.439857+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/LambdaInjectivity.lean": {
+      "sha256": "b81366348b59acc32aa35f203a231d522c13819421bcd74d59a8b7c3fd5b7813",
+      "captured_at_utc": "2026-10-17T06:22:37.439916+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/OrderTwo.lean": {
+      "sha256": "fe74084ffe7fa3be32b72c43a63e2f3074b151c8e307d8458102cfd5bcad891e",
+      "captured_at_utc": "2026-10-17T06:22:37.439951+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Filtration.lean": {
+      "sha256": "a449d7e6e9141cd470b9588824cb1b6aed7de3816f0808e3d023dc040da15dd0",
+      "captured_at_utc": "2026-10-17T06:22:37.440026+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Injectivity.lean": {
+      "sha256": "1f61501126f5079475a2c25ac897e6b296de322cb518495d4a4a1b698078b0ff",
+      "captured_at_utc": "2026-10-17T06:22:37.440071+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Source.lean": {
+      "sha256": "183e7a9bf4ea394a526c83986d0b0318e971737e738a872e3d4731f80b87a82a",
+      "captured_at_utc": "2026-10-17T06:22:37.440107+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/LowEta.lean": {
+      "sha256": "4944aaa62da6b331cc6af4655e8b4105ca5a9dee5610184500eaa181608b6bb4",
+      "captured_at_utc": "2026-10-17T06:22:37.440147+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/OrderTwo.lean": {
+      "sha256": "aaa2cb95bf3a4b57c2f2d36695658b6783d03fa82c2d5f04c15614339b27db74",
+      "captured_at_utc": "2026-10-17T06:22:37.440191+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/RealizationKernel.lean": {
+      "sha256": "c1e39f6940fba0be3fc370214bdc40a6ab1b97f7deb15a9fd2429f1d5eebba17",
+      "captured_at_utc": "2026-10-17T06:22:37.440241+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/Shuffle.lean": {
+      "sha256": "7868d66a183d6ca2ba06f7104498a2e5429e14a19a31b9e2eda7d70f34fabe0c",
+      "captured_at_utc": "2026-10-17T06:22:37.440303+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/TodaExistence.lean": {
+      "sha256": "2db40ff94ed52ce459d7974db9e968477deb6db4349e77274421856135367d60",
+      "captured_at_utc": "2026-10-17T06:22:37.440341+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/AnyYError.lean": {
+      "sha256": "a46add18b94fc61cd1f7e4cc22d8659940490283a3154b1a35f9a205b494c3e9",
+      "captured_at_utc": "2026-10-17T06:22:37.440377+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/AnyYShuffle.lean": {
+      "sha256": "9bf2cd2522b2cf034bed9f918319922cff37a181a6c94ba0cf9536ec9e226f9a",
+      "captured_at_utc": "2026-10-17T06:22:37.440428+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/NuTarget.lean": {
+      "sha256": "c768d01ececdfb7f3f1797fd53640324f26094f8bb665270c0994b29a5d844fe",
+      "captured_at_utc": "2026-10-17T06:22:37.440463+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/ThetaToda.lean": {
+      "sha256": "fb39de24d36297f4039af94c256cb92206bc843ca257580612d1e09236409bdd",
+      "captured_at_utc": "2026-10-17T06:22:37.440499+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/WeakRepresentative.lean": {
+      "sha256": "83c39706e2baf9fd86cd2083768cb9802d46d401c118595618dbcbda0ef23d66",
+      "captured_at_utc": "2026-10-17T06:22:37.440541+00:00",
+      "not_a_commit_cache_fingerprint": true
+    }
+  },
+  "default_build_history": [
+    {
+      "attempt": 1,
+      "tool_session_id": 52034,
+      "command": "lake build",
+      "exit_code_reported_by_coordinator": 1,
+      "log": "evidence/default-build-attempt-1.log",
+      "failed_targets": [
+        "KIP126.Main.Internal.High125.Detector",
+        "KIP126.Main.Internal.High125.Source"
+      ],
+      "causes": [
+        "a valid realization_injective_of_lambda_powers helper was removed with the obsolete arbitrary-theta order-two proof; coordinator is restoring this valid helper",
+        "High125.Source still references the retired classical_filtration26_zero; the replacement source F25 proof requires the unapproved nonodd-image interface"
+      ],
+      "not_final_current_result": true,
+      "subsequent_resolution": {
+        "target": "KIP126.Main.Internal.High125.Detector",
+        "status": "fixed_and_target_build_passed",
+        "log": "evidence/detector-restored-build.log",
+        "note": "restored the valid realization_injective_of_lambda_powers helper and same-module import; no arbitrary-theta exponent-two claim restored"
+      }
+    },
+    {
+      "attempt": 2,
+      "tool_session_id": 76840,
+      "command": "lake build",
+      "exit_code_reported_by_coordinator": 1,
+      "log": "evidence/default-build-after-detector.log",
+      "failed_targets": [
+        "KIP126.Main.Internal.High125.Source"
+      ],
+      "causes": [
+        "retired classical_filtration26_zero call remains in the source F25 argument; its actual replacement is checked only conditionally on the unapproved same-object nonodd-image theorem"
+      ],
+      "not_final_current_result": false,
+      "current_result": "blocked_pending_human_interface_decision"
+    }
+  ],
+  "updated_at_utc": "2026-10-17T06:26:30.042473+00:00",
+  "organizer_archive_checks": {
+    "checked_at_utc": "2026-10-17T06:26:30.042473+00:00",
+    "all_evidence_hashes_sizes_and_unique_relative_paths_match": true,
+    "conditional_machine_record_matches_archived_source_and_log": true,
+    "evidence_files": 35,
+    "no_lean_or_lake_run_by_organizer_for_this_record": true,
+    "final_two_coordinator_logs_captured_and_hashed": true,
+    "default_attempt_1_preserved": true,
+    "final_state_boundaries_verified": true
+  },
+  "current_result": "blocked_pending_human_interface_decision",
+  "coordinator_final_checks": {
+    "reported_at_utc": "2026-10-17T06:26:16.848392+00:00",
+    "source_inventory": {
+      "command": "python3 scripts/check-source-inventory.py",
+      "reported_exit_code": 0,
+      "project_source_files": 473,
+      "consumer_audit_files": 28,
+      "performed_by": "/root",
+      "independently_repeated_by_organizer": false
+    },
+    "git_diff_check": {
+      "command": "git diff --check",
+      "reported_exit_code": 0,
+      "performed_by": "/root",
+      "independently_repeated_by_organizer": false
+    },
+    "source": "coordinator final-result message in this session"
+  },
+  "source_snapshots_after_default_recheck": {
+    "KIP126/Main/ChoiceIndependence.lean": {
+      "sha256": "bc1b0be9951572cc61f198cbd874eb66e656739aeda6bf10ee16d9c39ed34df0",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/DifferentialCriterion.lean": {
+      "sha256": "a1a54deb14187d34947fbe458057de602e0f653bc84fb7b6334c75d1c1d3a4d1",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/Invariance.lean": {
+      "sha256": "92856f6d5b0ce04f4e1d3875e347d12f10d22a34a0fa5617c58b4f49873cb1cb",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/LambdaInjectivity.lean": {
+      "sha256": "b81366348b59acc32aa35f203a231d522c13819421bcd74d59a8b7c3fd5b7813",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Choice/OrderTwo.lean": {
+      "sha256": "c7f69c5dc75d9eb753840539707c7c1a2a499767983bedc9d5cbb13b82d4d23b",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Filtration.lean": {
+      "sha256": "a449d7e6e9141cd470b9588824cb1b6aed7de3816f0808e3d023dc040da15dd0",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Injectivity.lean": {
+      "sha256": "1f61501126f5079475a2c25ac897e6b296de322cb518495d4a4a1b698078b0ff",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/High125/Source.lean": {
+      "sha256": "183e7a9bf4ea394a526c83986d0b0318e971737e738a872e3d4731f80b87a82a",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/LowEta.lean": {
+      "sha256": "4944aaa62da6b331cc6af4655e8b4105ca5a9dee5610184500eaa181608b6bb4",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/OrderTwo.lean": {
+      "sha256": "aaa2cb95bf3a4b57c2f2d36695658b6783d03fa82c2d5f04c15614339b27db74",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/RealizationKernel.lean": {
+      "sha256": "c1e39f6940fba0be3fc370214bdc40a6ab1b97f7deb15a9fd2429f1d5eebba17",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/Shuffle.lean": {
+      "sha256": "7868d66a183d6ca2ba06f7104498a2e5429e14a19a31b9e2eda7d70f34fabe0c",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/Internal/Theta/TodaExistence.lean": {
+      "sha256": "2db40ff94ed52ce459d7974db9e968477deb6db4349e77274421856135367d60",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/AnyYError.lean": {
+      "sha256": "a46add18b94fc61cd1f7e4cc22d8659940490283a3154b1a35f9a205b494c3e9",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/AnyYShuffle.lean": {
+      "sha256": "9bf2cd2522b2cf034bed9f918319922cff37a181a6c94ba0cf9536ec9e226f9a",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/NuTarget.lean": {
+      "sha256": "c768d01ececdfb7f3f1797fd53640324f26094f8bb665270c0994b29a5d844fe",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/ThetaToda.lean": {
+      "sha256": "fb39de24d36297f4039af94c256cb92206bc843ca257580612d1e09236409bdd",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    },
+    "KIP126/Main/SectionSeven/WeakRepresentative.lean": {
+      "sha256": "83c39706e2baf9fd86cd2083768cb9802d46d401c118595618dbcbda0ef23d66",
+      "captured_at_utc": "2026-10-17T06:26:16.848392+00:00",
+      "not_a_commit_cache_fingerprint": true
+    }
+  },
+  "report_sha256": "81385ed40ff6cf859d9232afcfa5bfbc45ace6f3491de764d02d7274cb6c1134"
+}

@@ -1,6 +1,8 @@
 module
 
 public import KIP126.AdamsSynthetic.Standard.Background
+public import KIP126.AdamsSynthetic.AdamsFiltration
+import KIP126.AdamsSynthetic.Standard.Filtration
 import all KIP126.AdamsSynthetic.Internal.SphereBHS.Tower
 
 /-! Support properties of the fixed classical Adams system, retained from
@@ -58,18 +60,18 @@ public theorem sphere_page_filtration_zero (r : ℤ) (t : ℕ) (ht : t ≠ 0) :
       |>.toLinearEquiv.injective.subsingleton
   exact page_subsingleton_of_ambient D _
 
-/-- The original classical sphere Hausdorff condition used by the paper.
-It is a foundational producer obligation (ClassicalSphereSeparated), not
-implied merely by the associated-graded convergence isomorphism.
-The migrated private `Internal.SphereBHS.Tower` proves the finite-kernel
-route to completeness and separation. Specializing its actual residual
-1-shift hypothesis to this model is still pending; the old completed-source
-argument must not be applied to the recognized ordinary source silently. -/
+/-- Infinite HF₂ Adams filtration on the ordinary sphere implies odd torsion.
+The source is the actual finite shifted sphere and the target is the ordinary
+sphere. This follows from the finite-map separation producer obligation;
+it does not assert that these ordinary sphere classes vanish. -/
 public theorem classical_sphere_separated (m : ℤ)
     (a : HomotopyGroup (C := Spectrum) m SphereSpectrum)
     (ha : ∀ s : ℕ, a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s m) :
-    a = 0 := by
-  sorry
+    KIP126.AdamsSynthetic.IsOddTorsionMap a := by
+  apply finite_map_separation
+    (IsFiniteSpectrum.shift m IsFiniteSpectrum.sphere) IsFiniteSpectrum.sphere a
+  intro s
+  exact ha s.toNat
 
 /-- The migrated argument specializes to exactly the tower in the public
 obligation above. Its residual-acyclicity and finite-kernel premises remain

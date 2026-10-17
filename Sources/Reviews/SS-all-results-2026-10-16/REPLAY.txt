@@ -1,0 +1,48 @@
+本目录阅读与复现说明
+
+先读 final-review.txt。它综合六个并行分工的结论，区分静态配置、实际成功输出、
+顶层分支分类、候选父提示，以及尚未证明的数学／算法桥梁。
+
+分报告：inputs.txt、success-logs.txt、recursive-mh2.txt、gl-decoding.txt、
+wang-coverage.txt、native-e2.txt。后两类数学报告给的是明确充分版本或证明路线，
+并非声明所有历史成功调用已经满足全部前提。报告未新增 Lean 证明。
+
+证据一致性可直接运行：
+  python Sources/Reviews/SS-all-results-2026-10-16/validate_audit.py
+它比较独立输出、全部3736个像向量和306个复合零值，核对日志与分支计数；
+不把这些检查叫作历史依赖图认证。
+
+完整重放需外部官方数据，未将235MB数据库或编译产物加入工程：
+  https://zenodo.org/records/14875701
+  kervaire_database.rar，MD5 91ea5d8ef613828b9ef66f6d9f879166
+  proofs.db.rar，MD5 f4c5a97a96a822092ce1ceb57c0a9d43
+  source code.zip，SHA256 dd784541626f4d693c35f3ca84d4a67e83758ac463aabe58ab6c9cc92be22a15
+
+审计脚本忠实保存了本次使用的临时路径。要完整重放，把本目录内容复制到
+/tmp/SS-All-Results-Audit-20261016/，再准备：
+  full-inputs/kervaire-49/：完整官方数据库归档解压结果；
+  native/SSeqCpp-master/：官方source code.zip展开结果；
+  /tmp/mh2-machine-proof-audit/proofs.db：单独官方proofs归档中的完整DB；
+  /tmp/mh2-machine-proof-audit/database-subset/kervaire-49/ss.json：复制完整输入中的同字节配置；
+  /tmp/mh2-machine-proof-audit/database-inventory.json：复制本目录同名官方归档目录清单。
+最后一项用于额外配置外文件集合比对；input-inventory和完整DB清单也保留其结果。
+不需要改公共接口或生产数据库。
+
+在该临时工作目录依次运行：
+  python inventory_inputs.py full-inputs/kervaire-49/ss.json
+  python logs-audit.py
+  python evaluate_e2.py full-inputs/kervaire-49
+原生C++编译和三组求像命令见 native-e2.txt；编译直接使用官方代数源文件。
+随后运行 logs-branch-summary.py、logs-gl-E2-requests.py、logs-gl-branches.py
+重算分支汇总。唯一正m1方块由 logs-positive-m0-square.py 重放。
+
+说明：工具中的branch=M0/M1在纯E2求像输出里只表示零／非零；必须结合实际
+调用者和最终输出长度才能推断SS真实控制流。GL有D-candidate，不应把它改称
+已确定D。3736条SynCs因输出长度严格大于map.AF，已排除D，故其分类可以确定。
+
+files-sha256.json记录本目录交付文件；source-evidence.json记录主要外部输入。
+完整数据库MD5、成员CRC和362个只读SQLite quick_check均已通过，见
+full-inputs-verified.json。报告只认证其声明的检查，不认证全部数学数据来源。
+
+本任务只新增本目录报告、重放工具和证据，未修改公共接口、Lean实现、
+官方SS源码或任何生产数据库。工作区同时已有的模块路径迁移不属于本任务。

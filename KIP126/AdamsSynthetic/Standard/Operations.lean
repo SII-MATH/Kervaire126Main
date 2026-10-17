@@ -3,6 +3,7 @@ module
 public import KIP126.AdamsSynthetic.Standard.Filtration
 public import KIP126.AdamsSynthetic.MappingEnrichment
 public import KIP126.AdamsSynthetic.Enrichment
+import all KIP126.AdamsSynthetic.Enrichment
 public import Mathlib.Algebra.Polynomial.Eval.Defs
 public import Mathlib.Algebra.Module.LinearMap.End
 public import Mathlib.Algebra.Module.RingHom
@@ -342,19 +343,235 @@ public theorem graded_lambda_smul : ∀ (X Y : SyntheticSpectrum) (w : ℤ) (f :
   rw [Polynomial.eval₂_X]
   exact totalLambda_of X Y w f
 
-/-- Fixed GradedLambdaEnrichment.compose; construction or proof deferred to its owning module. -/
-public def graded_compose : ∀ X Y Z : SyntheticSpectrum,
+/-- Preserve the previously exported commutation witness at its original name and type. -/
+public theorem graded_compose._proof_1 (X Z : SyntheticSpectrum) :
+    @SMulCommClass (Polynomial ℤ) (Polynomial ℤ) (TotalWeightHom X Z)
+      (@SemigroupAction.toSMul _ _ (@Monoid.toSemigroup (Polynomial ℤ) (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing)))) (@MulAction.toSemigroupAction _ _ (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing)))
+        (@DistribMulAction.toMulAction _ _ (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing))) _ (@Module.toDistribMulAction _ _ _ _ (graded_module X Z)))))
+      (@SemigroupAction.toSMul _ _ (@Monoid.toSemigroup (Polynomial ℤ) (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing)))) (@MulAction.toSemigroupAction _ _ (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing)))
+        (@DistribMulAction.toMulAction _ _ (@CommMonoid.toMonoid (Polynomial ℤ) (@CommRing.toCommMonoid (Polynomial ℤ) (@Polynomial.commRing ℤ Int.instCommRing))) _ (@Module.toDistribMulAction _ _ _ _ (graded_module X Z))))) := by
+  letI := graded_module X Z
+  exact smulCommClass_self _ _
+
+private def totalComp (X Y Z : SyntheticSpectrum) :
+    TotalWeightHom Y Z →+ (TotalWeightHom X Y →+ TotalWeightHom X Z) := by
+  letI : ∀ p : ℤ × ℤ,
+      (SyntheticCategory.biShift p : SyntheticSpectrum ⥤ SyntheticSpectrum).Additive :=
+    exactness.shiftAdditive
+  exact DirectSum.toAddMonoid fun b =>
+    { toFun := fun g => DirectSum.toAddMonoid fun a =>
+        { toFun := fun f => weightHomInclusion (a+b) (weightHomComp f g)
+          map_zero' := by
+            dsimp only [weightHomComp]
+            rw [Functor.map_zero, Limits.zero_comp, Limits.comp_zero, map_zero]
+          map_add' := by
+            intro f f'
+            dsimp only [weightHomComp]
+            rw [Functor.map_add, Preadditive.add_comp, Preadditive.comp_add, map_add] }
+      map_zero' := by
+        apply DirectSum.addHom_ext
+        intro a f
+        change (DirectSum.toAddMonoid (γ := TotalWeightHom X Z) _)
+          (DirectSum.of (WeightHom X Y) a f) = 0
+        rw [DirectSum.toAddMonoid_of]
+        change weightHomInclusion (a+b) (weightHomComp f (0 : WeightHom Y Z b)) = 0
+        dsimp only [weightHomComp]
+        rw [Limits.comp_zero, Limits.comp_zero, map_zero]
+      map_add' := by
+        intro g g'
+        apply DirectSum.addHom_ext
+        intro a f
+        rw [AddMonoidHom.add_apply]
+        change (DirectSum.toAddMonoid (γ := TotalWeightHom X Z) _)
+          (DirectSum.of (WeightHom X Y) a f) =
+          (DirectSum.toAddMonoid (γ := TotalWeightHom X Z) _)
+            (DirectSum.of (WeightHom X Y) a f) +
+          (DirectSum.toAddMonoid (γ := TotalWeightHom X Z) _)
+            (DirectSum.of (WeightHom X Y) a f)
+        rw [DirectSum.toAddMonoid_of, DirectSum.toAddMonoid_of, DirectSum.toAddMonoid_of]
+        change weightHomInclusion (a+b) (weightHomComp f (g+g')) =
+          weightHomInclusion (a+b) (weightHomComp f g) +
+          weightHomInclusion (a+b) (weightHomComp f g')
+        dsimp only [weightHomComp]
+        rw [Preadditive.comp_add, Preadditive.comp_add, map_add] }
+
+private theorem totalComp_of (X Y Z : SyntheticSpectrum) (a b : ℤ)
+    (f : WeightHom X Y a) (g : WeightHom Y Z b) :
+    totalComp X Y Z (weightHomInclusion b g) (weightHomInclusion a f) =
+      weightHomInclusion (a+b) (weightHomComp f g) := by
+  change (DirectSum.toAddMonoid (γ := TotalWeightHom X Y →+ TotalWeightHom X Z) _)
+    (DirectSum.of (WeightHom Y Z) b g) (weightHomInclusion a f) = _
+  rw [DirectSum.toAddMonoid_of]
+  change (DirectSum.toAddMonoid (γ := TotalWeightHom X Z) _)
+    (DirectSum.of (WeightHom X Y) a f) = _
+  rw [DirectSum.toAddMonoid_of]
+  rfl
+
+private theorem totalComp_assoc (W X Y Z : SyntheticSpectrum)
+    (f : TotalWeightHom W X) (g : TotalWeightHom X Y) (h : TotalWeightHom Y Z) :
+    totalComp W Y Z h (totalComp W X Y g f) =
+      totalComp W X Z (totalComp X Y Z h g) f := by
+  induction f using DirectSum.induction_on with
+  | zero => simp only [map_zero]
+  | add f f' hf hf' => simp only [map_add, hf, hf']
+  | of a f =>
+    induction g using DirectSum.induction_on with
+    | zero => simp only [map_zero, AddMonoidHom.zero_apply]
+    | add g g' hg hg' => simp only [map_add, AddMonoidHom.add_apply, hg, hg']
+    | of b g =>
+      induction h using DirectSum.induction_on with
+      | zero => simp only [map_zero, AddMonoidHom.zero_apply]
+      | add h h' hh hh' => simp only [map_add, AddMonoidHom.add_apply, hh, hh']
+      | of c h =>
+        change totalComp W Y Z (weightHomInclusion c h)
+          (totalComp W X Y (weightHomInclusion b g) (weightHomInclusion a f)) =
+          totalComp W X Z (totalComp X Y Z (weightHomInclusion c h) (weightHomInclusion b g))
+            (weightHomInclusion a f)
+        rw [totalComp_of, totalComp_of, totalComp_of, totalComp_of]
+        exact homogeneous_assoc quotients.coherence a b c f g h
+
+private theorem lambda_comm_named (a c : ℤ × ℤ)
+    (hac : a + (0,-1) = c) (hca : (0,-1) + a = c) (X : SyntheticSpectrum) :
+    SyntheticCategory.lam.app ((SyntheticCategory.biShift a).obj X) =
+      (biShiftAddIso a (0,-1) c hac).hom.app X ≫
+        (biShiftAddIso (0,-1) a c hca).inv.app X ≫
+          (SyntheticCategory.biShift a).map (SyntheticCategory.lam.app X) := by
+  cases hac
+  exact quotients.coherence.lambda_comm a X
+
+private theorem totalComp_lambda_central (X Y : SyntheticSpectrum) (f : TotalWeightHom X Y) :
+    totalComp X X Y f (weightHomInclusion (-1) (SyntheticCategory.lam.app X)) =
+      totalComp X Y Y (weightHomInclusion (-1) (SyntheticCategory.lam.app Y)) f := by
+  induction f using DirectSum.induction_on with
+  | zero => simp only [map_zero, AddMonoidHom.zero_apply]
+  | add f f' hf hf' => simp only [map_add, AddMonoidHom.add_apply, hf, hf']
+  | of w f =>
+    change totalComp X X Y (weightHomInclusion w f) _ = totalComp X Y Y _ (weightHomInclusion w f)
+    rw [totalComp_of, totalComp_of]
+    rw [homogeneous_regrade (-1) w (w-1) (by omega), homogeneous_regrade w (-1) (w-1) (by omega)]
+    apply congrArg (weightHomInclusion (w-1))
+    rw [SyntheticCategory.lam.naturality]
+    rw [lambda_comm_named (0,w) (0,w-1) (by ext <;> simp [sub_eq_add_neg]) (by ext <;> simp [sub_eq_add_neg, add_comm]) X]
+    repeat rw [Category.assoc]
+    rw [Iso.inv_hom_id_app_assoc, Functor.id_map]
+
+private def compLambda (X Y : SyntheticSpectrum) :
+    TotalWeightHom X Y →ₗ[ℤ] TotalWeightHom X Y :=
+  (totalComp X Y Y (weightHomInclusion (-1) (SyntheticCategory.lam.app Y))).toIntLinearMap
+
+private theorem compLambda_of (X Y : SyntheticSpectrum) (w : ℤ) (f : WeightHom X Y w) :
+    compLambda X Y (weightHomInclusion w f) =
+      weightHomInclusion (w-1) (weightHomLambda f) := by
+  simp only [compLambda, AddMonoidHom.coe_toIntLinearMap]
+  rw [totalComp_of]
+  change weightHomInclusion (w + -1)
+    ((biShiftAddIso (0,w) (0,-1) (0,w + -1) _).inv.app X ≫
+      (SyntheticCategory.biShift (0,-1)).map f ≫ SyntheticCategory.lam.app Y) = _
+  rw [SyntheticCategory.lam.naturality]
+  rfl
+
+private theorem totalComp_lambda_left (X Y Z : SyntheticSpectrum)
+    (f : TotalWeightHom X Y) (g : TotalWeightHom Y Z) :
+    totalComp X Y Z (compLambda Y Z g) f =
+      compLambda X Z (totalComp X Y Z g f) := by
+  simpa only [compLambda, AddMonoidHom.coe_toIntLinearMap] using
+    (totalComp_assoc X Y Z Z f g (weightHomInclusion (-1) (SyntheticCategory.lam.app Z))).symm
+
+private theorem totalComp_lambda_right (X Y Z : SyntheticSpectrum)
+    (f : TotalWeightHom X Y) (g : TotalWeightHom Y Z) :
+    totalComp X Y Z g (compLambda X Y f) =
+      compLambda X Z (totalComp X Y Z g f) := by
+  simp only [compLambda, AddMonoidHom.coe_toIntLinearMap]
+  rw [totalComp_assoc, totalComp_lambda_central]
+  exact (totalComp_assoc X Y Z Z f g (weightHomInclusion (-1) (SyntheticCategory.lam.app Z))).symm
+
+private theorem additive_polynomial_smul {M N : Type*} [AddCommGroup M] [AddCommGroup N]
+    [Module (Polynomial ℤ) M] [Module (Polynomial ℤ) N]
+    (f : M →+ N)
+    (hX : ∀ m, f ((Polynomial.X : Polynomial ℤ) • m) = (Polynomial.X : Polynomial ℤ) • f m)
+    (p : Polynomial ℤ) (m : M) : f (p • m) = p • f m := by
+  induction p using Polynomial.induction_on generalizing m with
+  | C a =>
+    have ha : (Polynomial.C a : Polynomial ℤ) = (a : Polynomial ℤ) := Polynomial.C_eq_intCast a
+    rw [ha]
+    exact map_intCast_smul f (Polynomial ℤ) (Polynomial ℤ) a m
+  | add p q hp hq => simp only [add_smul, map_add, hp, hq]
+  | monomial n a ih =>
+    rw [pow_succ, ← mul_assoc]
+    rw [mul_smul, ih, hX]
+    simp only [mul_smul]
+
+private theorem totalLambda_eq_compLambda (X Y : SyntheticSpectrum) :
+    totalLambda X Y = compLambda X Y := by
+  apply LinearMap.ext
+  intro f
+  induction f using DirectSum.induction_on with
+  | zero => simp only [map_zero]
+  | add f g hf hg => simp only [map_add, hf, hg]
+  | of w f =>
+    change totalLambda X Y (weightHomInclusion w f) = compLambda X Y (weightHomInclusion w f)
+    rw [totalLambda_of, compLambda_of]
+
+private theorem graded_X_smul (X Y : SyntheticSpectrum) (f : TotalWeightHom X Y) :
+    letI := graded_module X Y
+    (Polynomial.X : Polynomial ℤ) • f = compLambda X Y f := by
+  letI := graded_module X Y
+  change (Polynomial.eval₂ (Int.castRingHom _) (totalLambda X Y) Polynomial.X) f = _
+  rw [Polynomial.eval₂_X, totalLambda_eq_compLambda]
+
+/-- Actual shifted composition, extended bilinearly over the polynomial action. -/
+@[no_expose] public def graded_compose : ∀ X Y Z : SyntheticSpectrum,
     letI := graded_module X Y
     letI := graded_module Y Z
     letI := graded_module X Z
     TotalWeightHom Y Z →ₗ[Polynomial ℤ]
-      TotalWeightHom X Y →ₗ[Polynomial ℤ] TotalWeightHom X Z := by sorry
+      TotalWeightHom X Y →ₗ[Polynomial ℤ] TotalWeightHom X Z := by
+  intro X Y Z
+  letI := graded_module X Y
+  letI := graded_module Y Z
+  letI := graded_module X Z
+  let C : TotalWeightHom Y Z →+ (TotalWeightHom X Y →+ TotalWeightHom X Z) :=
+    totalComp X Y Z
+  let F : TotalWeightHom Y Z →+ (TotalWeightHom X Y →ₗ[Polynomial ℤ] TotalWeightHom X Z) :=
+    { toFun := fun g =>
+        { toFun := C g
+          map_add' := (C g).map_add
+          map_smul' := by
+            intro p f
+            apply additive_polynomial_smul (C g) (fun f => ?_) p f
+            change totalComp X Y Z g ((Polynomial.X : Polynomial ℤ) • f) =
+              (Polynomial.X : Polynomial ℤ) • totalComp X Y Z g f
+            rw [graded_X_smul, graded_X_smul]
+            exact totalComp_lambda_right X Y Z f g }
+      map_zero' := by
+        apply LinearMap.ext
+        intro f
+        exact congrArg (fun h : TotalWeightHom X Y →+ TotalWeightHom X Z => h f) (map_zero (totalComp X Y Z))
+      map_add' := by
+        intro g g'
+        apply LinearMap.ext
+        intro f
+        exact congrArg (fun h : TotalWeightHom X Y →+ TotalWeightHom X Z => h f) ((totalComp X Y Z).map_add g g') }
+  exact
+    { toFun := F
+      map_add' := F.map_add
+      map_smul' := by
+        intro p g
+        apply additive_polynomial_smul F (fun g => ?_) p g
+        apply LinearMap.ext
+        intro f
+        change totalComp X Y Z ((Polynomial.X : Polynomial ℤ) • g) f =
+          (Polynomial.X : Polynomial ℤ) • totalComp X Y Z g f
+        rw [graded_X_smul, graded_X_smul]
+        exact totalComp_lambda_left X Y Z f g }
 
-/-- Fixed GradedLambdaEnrichment.compose_homogeneous; construction or proof deferred to its owning module. -/
+/-- The extension agrees with actual composition on homogeneous maps. -/
 public theorem graded_compose_homogeneous : ∀ (X Y Z : SyntheticSpectrum) (a b : ℤ)
       (f : WeightHom X Y a) (g : WeightHom Y Z b),
     graded_compose X Y Z (weightHomInclusion b g) (weightHomInclusion a f) =
-      weightHomInclusion (a+b) (weightHomComp f g) := by sorry
+      weightHomInclusion (a+b) (weightHomComp f g) := by
+  intro X Y Z a b f g
+  exact totalComp_of X Y Z a b f g
 
 public def gradedEnrichment : GradedLambdaEnrichment SyntheticSpectrum where
   coherence := graded_coherence

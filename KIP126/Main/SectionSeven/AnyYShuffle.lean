@@ -183,49 +183,30 @@ private theorem y_detection_toda_module_low_normalized_source (coh:BiShiftCohere
   erw [reassoc_of% ((SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1).inv.naturality
     ((SyntheticCategory.biShift_comp (1,3) (123,129)).hom.app (S_0_0:SyntheticSpectrum)))]
 
-private theorem y_detection_toda_source_iso_fixed_transport
-    {A B U X:SyntheticSpectrum} (F:SyntheticSpectrum⥤SyntheticSpectrum) (ff:F.FullyFaithful)
-    (f:A⟶B) (hf:∀a:A≅A,a.hom≫f=f) (d:U≅F.obj A) (x:F.obj B⟶X)
-    (a:U≅U) : a.hom≫d.hom≫F.map f≫x=d.hom≫F.map f≫x := by
-  let b:=ff.preimageIso (d.symm≪≫a≪≫d)
-  have hb:F.map b.hom=d.inv≫a.hom≫d.hom := ff.map_preimage _
-  have hh:=congrArg F.map (hf b)
-  rw [Functor.map_comp,hb] at hh
-  have hh':=congrArg (fun z => d.hom≫z≫x) hh
-  simpa only [Category.assoc,d.hom_inv_id_assoc] using hh'
-
-private theorem y_detection_toda_source_iso_fixed_action
-    {m n k l:ℤ} {X:SyntheticSpectrum} (f:BiHom m n (S_0_0:SyntheticSpectrum))
-    (hf:∀a:Smn (Syn:=SyntheticSpectrum) m n≅Smn m n,a.hom≫f=f)
-    (x:BiHom k l X) (a:Smn (Syn:=SyntheticSpectrum) (m+k) (n+l)≅Smn (m+k) (n+l)) :
-    a.hom≫sphereAction f x=sphereAction f x := by
-  exact y_detection_toda_source_iso_fixed_transport (SyntheticCategory.biShift (k,l))
-    (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (k,l)) f hf
-    ((SyntheticCategory.biShift_comp (m,n) (k,l)).app (S_0_0:SyntheticSpectrum)).symm x a
-
-private theorem y_detection_toda_eta_source_iso_fixed
-    (unique : ∀ x y : BiHom 1 2 (S_0_0:SyntheticSpectrum), x≠0 → y≠0 → x=y)
-    (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) (a:Smn (Syn:=SyntheticSpectrum) 1 2≅Smn 1 2) :
-    a.hom≫eta=eta := by
-  by_cases he:eta=0
-  · simp [he]
-  apply unique _ _ ?_ he
-  intro hh
-  apply he
-  have h:=congrArg (fun z => a.inv≫z) hh
-  simpa only [←Category.assoc,a.inv_hom_id,Category.id_comp,comp_zero] using h
+private theorem y_detection_toda_eta_double_action (coh:BiShiftCoherence SyntheticSpectrum)
+    (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) {X:SyntheticSpectrum} (a:BiHom 123 129 X) :
+    sphereAction (sphereProduct (m:=1) (n:=2) (k:=1) (l:=2) eta eta) a =
+      sphereAction eta (sphereAction eta a) := by
+  have ha:=shift_assoc_inv coh (1,2) (1,2) (123,129) (2,4) (124,131) (125,133)
+    (by decide) (by decide) (by decide) (by decide) (S_0_0:SyntheticSpectrum)
+  simp only [biShiftAddIso,Iso.trans_inv,eqToIso.inv,
+    eqToHom_refl,Category.id_comp] at ha
+  dsimp only [sphereProduct,sphereAction]
+  simp only [Functor.map_comp,Category.assoc,Int.reduceAdd]
+  erw [reassoc_of% ha]
+  erw [←reassoc_of% ((SyntheticCategory.biShift_comp (1,2) (123,129)).inv.naturality eta)]
+  rfl
 
 private theorem y_detection_toda_module_low_shuffle_exact
     (coh:BiShiftCoherence SyntheticSpectrum)
     [IsTriangulated SyntheticSpectrum]
     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (123,129)).CommShift ℤ]
     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (123,129)).IsTriangulated]
-    (unique:∀x y:BiHom 1 2 (S_0_0:SyntheticSpectrum),x≠0→y≠0→x=y)
     (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) (h0:BiHom 0 1 (S_0_0:SyntheticSpectrum))
     (hlow:TripleToda h0 eta h0 (sphereProduct (m:=1) (n:=2) (k:=1) (l:=2) eta eta))
     (hind:∀a:BiHom 2 3 (S_0_0:SyntheticSpectrum),sphereProduct h0 a=0)
-    {X:SyntheticSpectrum} (a:BiHom 123 129 X) (ha:sphereAction h0 a=0)
-    (z:BiHom 125 132 X) (hz:ModuleTripleToda a h0 eta z) :
+    (a:BiHom 123 129 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)) (ha:sphereAction h0 a=0)
+    (z:BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)) (hz:ModuleTripleToda a h0 eta z) :
     sphereAction h0 z=sphereAction (sphereProduct (m:=1) (n:=2) (k:=1) (l:=2) eta eta) a := by
   let F:=SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (123,129)
   let G:=SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (1,3)
@@ -273,13 +254,13 @@ private theorem y_detection_toda_module_low_shuffle_exact
     simp only [Category.assoc]
     erw [Iso.hom_inv_id_app_assoc]
     exact hh
-  have hv:∀aa:Smn (Syn:=SyntheticSpectrum) 2 4≅Smn 2 4,aa.hom≫v=v := by
-    intro aa
-    exact y_detection_toda_source_iso_fixed_action eta (y_detection_toda_eta_source_iso_fixed unique eta) eta aa
   have hp:∀aa:Smn (Syn:=SyntheticSpectrum) 125 133≅Smn 125 133,
       aa.hom≫sphereAction v a=sphereAction v a := by
     intro aa
-    exact y_detection_toda_source_iso_fixed_action v hv a aa
+    change aa.hom≫sphereAction (sphereProduct eta eta) a = sphereAction (sphereProduct eta eta) a
+    rw [y_detection_toda_eta_double_action coh]
+    exact KIP126.Main.Internal.eta_action_source_iso_fixed_in_finite_quotient
+      9 (by decide) eta (sphereAction eta a) aa
   rw [hp au] at he
   let negIso:Smn (Syn:=SyntheticSpectrum) 125 133≅Smn 125 133 :=
     ⟨-𝟙 _, -𝟙 _,by simp,by simp⟩
@@ -323,32 +304,17 @@ private theorem y_detection_toda_eta_action_right_three     (η : BiHom 1 2 (S_0
   rfl
 
 
-private theorem y_detection_toda_eta_double_action (coh:BiShiftCoherence SyntheticSpectrum)
-    (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) {X:SyntheticSpectrum} (a:BiHom 123 129 X) :
-    sphereAction (sphereProduct (m:=1) (n:=2) (k:=1) (l:=2) eta eta) a =
-      sphereAction eta (sphereAction eta a) := by
-  have ha:=shift_assoc_inv coh (1,2) (1,2) (123,129) (2,4) (124,131) (125,133)
-    (by decide) (by decide) (by decide) (by decide) (S_0_0:SyntheticSpectrum)
-  simp only [biShiftAddIso,Iso.trans_inv,eqToIso.inv,
-    eqToHom_refl,Category.id_comp] at ha
-  dsimp only [sphereProduct,sphereAction]
-  simp only [Functor.map_comp,Category.assoc,Int.reduceAdd]
-  erw [reassoc_of% ha]
-  erw [←reassoc_of% ((SyntheticCategory.biShift_comp (1,2) (123,129)).inv.naturality eta)]
-  rfl
-
-private theorem y_detection_toda_main_toda_h0_relation     (unique:∀x y:BiHom 1 2 (S_0_0:SyntheticSpectrum),x≠0→y≠0→x=y)
-    (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) (h0:BiHom 0 1 (S_0_0:SyntheticSpectrum))
+private theorem y_detection_toda_main_toda_h0_relation     (eta:BiHom 1 2 (S_0_0:SyntheticSpectrum)) (h0:BiHom 0 1 (S_0_0:SyntheticSpectrum))
     (hlow:TripleToda h0 eta h0 (sphereProduct (m:=1) (n:=2) (k:=1) (l:=2) eta eta))
     (hind:∀a:BiHom 2 3 (S_0_0:SyntheticSpectrum),sphereProduct h0 a=0)
-    {X:SyntheticSpectrum} (a:BiHom 123 132 X) (ha:lambdaMultiply 3 (sphereAction h0 a)=0)
-    (z:BiHom 125 132 X) (hz:ModuleTripleToda (lambdaMultiply 3 a) h0 eta z) :
+    (a:BiHom 123 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)) (ha:lambdaMultiply 3 (sphereAction h0 a)=0)
+    (z:BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)) (hz:ModuleTripleToda (lambdaMultiply 3 a) h0 eta z) :
     sphereAction h0 z=sphereAction eta (lambdaMultiply 3 (sphereAction eta a)) := by
   letI:=model.exactness.syntheticTriangulated
   letI:=model.exactness.shiftCommShift (123,129)
   letI:=model.exactness.shiftExact (123,129)
   have hh:sphereAction h0 (lambdaMultiply 3 a)=0 := (y_detection_toda_h0_action_lambda_three h0 a).trans ha
-  have he:=y_detection_toda_module_low_shuffle_exact model.quotients.coherence unique eta h0 hlow hind (lambdaMultiply 3 a) hh z hz
+  have he:=y_detection_toda_module_low_shuffle_exact model.quotients.coherence eta h0 hlow hind (lambdaMultiply 3 a) hh z hz
   rw [y_detection_toda_eta_double_action model.quotients.coherence,y_detection_toda_eta_action_right_three] at he
   exact he
 

@@ -53,7 +53,7 @@ private theorem shifted_nu_to_shifted_finite_no_return (X Y : ClassicalObject)
       ((essShift ε).filtered (.quotient r (.nu Y)) (m-ε.1,w-ε.2)) k
     have he := hz.of_iso e.symm
     simpa only [e,B,Prod.fst_add,Prod.snd_add,sub_add_cancel] using he
-  apply synthetic_homotopy_separated B m w (c≫z)
+  apply shifted_quotient_homotopy_separated (.nu Y) r ε m w (c≫z)
   intro k
   by_cases hk : L≤(k:ℤ)
   · exact (filtration_iff_of_infinity_zero (model.convergence B) L k m w hk

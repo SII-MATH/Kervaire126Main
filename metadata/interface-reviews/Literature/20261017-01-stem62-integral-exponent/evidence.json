@@ -1,0 +1,203 @@
+{
+  "baseline": "bef90640c4594af4db32c86837f9d95340d1e171",
+  "historical": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+  "head": "bef90640c4594af4db32c86837f9d95340d1e171",
+  "snapshots": [
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/Literature/Standard.lean",
+      "sha256": "357a5d3c66d720303eee69e51147d1b2457977539308b5995bad40ed71c2f680",
+      "excerpt": "139: public theorem eta_normalized :\n140:   eta = (etaSourceIso model eta_exponent).hom ≫\n141:     (model.normalizedMap (.shift 1 .sphere) .sphere model.auxiliary.etaMap).map ≫ model.nu.unitIso.hom := rfl\n142: \n143: /-- The fixed mathematical object on the project background. -/\n144: public def theta5 :\n145:   HomotopyGroup (C := Spectrum) 62 SphereSpectrum := by\n146:   sorry\n147: \n148: /-- Source or comparison proof remains to be supplied. -/\n149: public theorem h5Square_permanent :\n150:   NonzeroSurvival model.classical.sphere (2,64)\n151:     (model.standardClasses.standardHiSquare 5) := by\n152:   sorry\n153: \n154: /-- Source or comparison proof remains to be supplied. -/\n155: public theorem theta5_detection :\n156:   ClassicalTheta5Detected model theta5 := by\n157:   sorry\n158: \n159: /-- Source or comparison proof remains to be supplied. -/\n160: public theorem stem62_exponent_two :\n161:   ∀ a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum, a+a=0 := by\n162:   sorry\n163: \n164: /-- Source or comparison proof remains to be supplied. -/\n165: public theorem theta5_filtration_gap :\n166:   ∀ a b, ClassicalTheta5Detected model a → ClassicalTheta5Detected model b →\n167:     a-b ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62 := by\n168:   sorry\n169: \n170: /-- Source or comparison proof remains to be supplied. -/\n171: public theorem eta_detection :\n172:   ClassicalDetects (model.classicalConvergence .sphere) (1,2)\n173:     (model.standardClasses.standardHi 1) model.auxiliary.etaMap := by\n174:   sorry\n175: \n176: /-- Source or comparison proof remains to be supplied. -/\n177: public theorem nu_detection :\n178:   ClassicalDetects (model.classicalConvergence .sphere) (1,4)\n179:     (model.standardClasses.standardHi 2) model.auxiliary.nuMap := by\n180:   sorry\n181: \n182: /-- Source or comparison proof remains to be supplied. -/\n183: public theorem eta_permanent :\n184:   NonzeroSurvival model.classical.sphere (1,2) (model.standardClasses.standardHi 1) := by\n185:   sorry\n186: \n187: /-- Source or comparison proof remains to be supplied. -/\n188: public theorem nu_permanent :\n189:   NonzeroSurvival model.classical.sphere (1,4) (model.standardClasses.standardHi 2) := by\n190:   sorry\n191: \n192: /-- Source or comparison proof remains to be supplied. -/\n193: public theorem eta_label :\n194:   sphereFirstQuotient model 1 2 (quotientClass 1 eta) = model.standardClasses.standardHi 1 := by\n195:   sorry\n196: \n197: /-- Source or comparison proof remains to be supplied. -/\n198: public theorem eta_realization :\n199:   realizeSphere 1 2 eta = model.auxiliary.etaMap := by\n200:   sorry\n201: \n202: /-- Source or comparison proof remains to be supplied. -/\n203: public theorem theta5_lift :\n204:   ∃ a : BiHom 62 64 (S_0_0 : SyntheticSpectrum),\n205:     Theta5Detected model a ∧ realizeSphere 62 64 a = theta5 := by\n206:   sorry\n207: \n208: /-- Derived from the fixed objects and previously established operations. -/\n209: public theorem theta5_order_two :\n210:   theta5 + theta5 = 0 := stem62_exponent_two theta5\n211: "
+    },
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/Literature/Classical.lean",
+      "sha256": "e0303eecdb15323e6257d398433c247ea3712ae982ffe1c3cffa296c446173f6",
+      "excerpt": "109: private structure ClassicalBindings where\n110:   realization : RealizationCoordinates D\n111:   eta : BiHom 1 2 (S_0_0 : Syn)\n112:   eta_exponent : normalizedExponent D.classicalTower D.auxiliary.etaMap = 1\n113:   eta_normalized : eta = (etaSourceIso D eta_exponent).hom ≫\n114:     (D.normalizedMap (.shift 1 .sphere) .sphere D.auxiliary.etaMap).map ≫ D.nu.unitIso.hom\n115:   theta5 : HomotopyGroup (C := C) 62 SphereSpectrum\n116:   tmf : TmfBindings D\n117: \n118: /-- Xu Corollary 1.3, IWX's 62-stem, and standard Hopf detections.\n119: The stronger arbitrary-choice synthetic consequences are derived separately. -/\n120: private structure ClassicalResults (B : ClassicalBindings D) : Prop where\n121:   h5Square_permanent : NonzeroSurvival D.classical.sphere (2,64)\n122:     (D.standardClasses.standardHiSquare 5)\n123:   theta5_detection : ClassicalTheta5Detected D B.theta5\n124:   stem62_exponent_two : ∀ a : HomotopyGroup (C := C) 62 SphereSpectrum, a+a=0\n125:   theta5_filtration_gap : ∀ a b, ClassicalTheta5Detected D a → ClassicalTheta5Detected D b →\n126:     a-b ∈ (D.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62\n127:   eta_detection : ClassicalDetects (D.classicalConvergence .sphere) (1,2)\n128:     (D.standardClasses.standardHi 1) D.auxiliary.etaMap\n129:   nu_detection : ClassicalDetects (D.classicalConvergence .sphere) (1,4)\n130:     (D.standardClasses.standardHi 2) D.auxiliary.nuMap\n131:   eta_permanent : NonzeroSurvival D.classical.sphere (1,2) (D.standardClasses.standardHi 1)\n132:   nu_permanent : NonzeroSurvival D.classical.sphere (1,4) (D.standardClasses.standardHi 2)\n133:   eta_label : sphereFirstQuotient D 1 2 (quotientClass 1 B.eta) = D.standardClasses.standardHi 1\n134:   eta_realization : B.realization.sphereMap D 1 2 B.eta = D.auxiliary.etaMap\n135:   theta5_lift : ∃ a : BiHom 62 64 (S_0_0 : Syn),\n136:     Theta5Detected D a ∧ B.realization.sphereMap D 62 64 a = B.theta5\n137: \n138: /-- The chosen classical θ₅ has order dividing two by the 62-stem result. -/\n139: private theorem ClassicalResults.theta5_order_two {B : ClassicalBindings D}\n140:     (R : ClassicalResults D B) : B.theta5 + B.theta5 = 0 :=\n141:   R.stem62_exponent_two B.theta5\n142: \n143: /-- The precise additional comparison needed for arbitrary synthetic choices.\n144: These transport obligations are explicit parameters, not silently upgraded\n145: classical source facts or new unconditional Literature results. -/\n146: private structure Theta5Transport (B : ClassicalBindings D) : Prop where\n147:   detection : ∀ a, Theta5Detected D a →\n148:     ClassicalTheta5Detected D (B.realization.sphereMap D 62 64 a)\n149:   doubling_kernel : ∀ a, Theta5Detected D a →\n150:     B.realization.sphereMap D 62 64 (a+a) = 0 → a+a=0\n151:   filtration_reflection : ∀ a b, Theta5Detected D a → Theta5Detected D b →\n152:     B.realization.sphereMap D 62 64 (a-b) ∈\n153:       (D.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62 →\n154:     FiltrationAtLeast D.syntheticTower 6 (a-b)\n155: \n156: private theorem theta5_order_two {B : ClassicalBindings D} (R : ClassicalResults D B)\n157:     (T : Theta5Transport D B) (a : BiHom 62 64 (S_0_0 : Syn)) (ha : Theta5Detected D a) : a+a=0 :=\n158:   T.doubling_kernel a ha (by rw [map_add]; exact R.stem62_exponent_two _)\n159: \n160: private theorem theta5_indeterminacy_AF_ge_6 {B : ClassicalBindings D} (R : ClassicalResults D B)"
+    },
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/AdamsSynthetic/Context.lean",
+      "sha256": "b2c4994e874dc3139c0a905be85a88f51727a6fec907953cc0217113c32480b1",
+      "excerpt": "77: /-- The sphere spectrum is the monoidal unit. -/\n78: public abbrev SphereSpectrum : C := 𝟙_ C\n79: \n80: /-- The `n`-sphere is the `n`-fold shift of the sphere spectrum. -/\n81: public abbrev Sphere (n : ℤ) : C := (shiftFunctor C n).obj SphereSpectrum\n82: \n83: /-- Stable homotopy classes represented by maps from the `n`-sphere. -/\n84: public abbrev HomotopyGroup (n : ℤ) (X : C) : Type v := Sphere n ⟶ X"
+    },
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/AdamsSynthetic/Standard/Source.lean",
+      "sha256": "e0ede96f00d8a506cd7200d990d9bc32982fd9a67a6f7615368dcd26779eb84f",
+      "excerpt": "20: /-! Source recognition for the fixed background. These declarations constrain\n21: the already selected objects; they do not add hypotheses to Main. Pending\n22: comparisons are individually recorded, rather than counted as constructions.\n23: The ordinary stable source and HF₂ completion are kept distinct. -/\n24: \n25: @[expose] section\n26: namespace KIP126.AdamsSynthetic.Standard\n27: open CategoryTheory KIP126.StableHomotopy KIP126.Core.SpectralSequence\n28: open KIP126.Classical.Adams\n29: noncomputable section\n30: set_option backward.isDefEq.respectTransparency false\n31: \n32: /-- Recognition of the fixed ordinary category, sphere, integer homotopy,\n33: HF₂ object, coordinate and normalized actual point-set unit. -/\n34: public def sourceRecognition : ClassicalSourceRecognition Spectrum coefficients := by\n35:   sorry"
+    },
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/AdamsSynthetic/Internal/Source/Recognition.lean",
+      "sha256": "96e795f052af3fed462b36649186af40c1bf07548899e7d065db2a3d04fdb698",
+      "excerpt": "30: open CategoryTheory Topology KIP126.StableHomotopy\n31: open scoped Topology\n32: \n33: universe u v\n34: \n35: /-- Recognition of one background by the explicit ordinary stable source,\n36: including its sphere, shifts, integer stable homotopy, and mod-two unit. -/\n37: structure SourceRecognition (C : Type u) [StableHomotopyCategory.{u,v} C]\n38:     (H : ModTwoCoefficients C) where\n39:   equivalence : SourceCategory.{0} ≌ C\n40:   sphereIso : equivalence.functor.obj (sourceLocalization.obj Prespectrum.sphere) ≅\n41:     SphereSpectrum\n42:   suspensionIso : ∀ (X : Prespectrum.{0}), X.IsWellBased →\n43:     (equivalence.functor.obj (sourceLocalization.obj X.suspension) ≅\n44:       (shiftFunctor C (1 : ℤ)).obj\n45:         (equivalence.functor.obj (sourceLocalization.obj X)))\n46:   suspension_natural : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y)\n47:       (hX : X.IsWellBased) (hY : Y.IsWellBased),\n48:     equivalence.functor.map (sourceLocalization.map (Prespectrum.suspensionMap f)) ≫\n49:       (suspensionIso Y hY).hom =\n50:         (suspensionIso X hX).hom ≫ (shiftFunctor C (1 : ℤ)).map\n51:           (equivalence.functor.map (sourceLocalization.map f))\n52:   desuspensionIso : ∀ X : Prespectrum.{0},\n53:     equivalence.functor.obj (sourceLocalization.obj X.desuspension) ≅\n54:       (shiftFunctor C (-1 : ℤ)).obj\n55:         (equivalence.functor.obj (sourceLocalization.obj X))\n56:   desuspension_natural : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y),\n57:     equivalence.functor.map (sourceLocalization.map (Prespectrum.desuspensionMap f)) ≫\n58:       (desuspensionIso Y).hom =\n59:         (desuspensionIso X).hom ≫ (shiftFunctor C (-1 : ℤ)).map\n60:           (equivalence.functor.map (sourceLocalization.map f))\n61:   homotopy : ∀ (X : Prespectrum.{0}) (d : ℤ),\n62:     HomotopyGroup d (equivalence.functor.obj (sourceLocalization.obj X)) ≃\n63:       Prespectrum.StableHomotopy X d\n64:   homotopy_natural : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y) (d : ℤ)\n65:       (a : HomotopyGroup d (equivalence.functor.obj (sourceLocalization.obj X))),\n66:     homotopy Y d (a ≫ equivalence.functor.map (sourceLocalization.map f)) =\n67:       Prespectrum.stableHomotopyMap f d (homotopy X d a)\n68:   homotopy_zero : ∀ (X : Prespectrum.{0}) (d : ℤ) (n r : ℕ)\n69:       (h : (r : ℤ) = d + n),\n70:     homotopy X d 0 = Prespectrum.loopClass X d n r h GenLoop.const\n71:   /-- Stable addition is the actual concatenation of cubical loops. Two\n72:   coordinates ensure the displayed representative lies in the abelian range. -/\n73:   homotopy_add : ∀ (X : Prespectrum.{0}) (d : ℤ) (n r : ℕ)\n74:       (h : ((r + 2 : ℕ) : ℤ) = d + n)\n75:       (p q : GenLoop (Fin (r + 2)) (X.level n) (X.level n).point),\n76:     (homotopy X d).symm\n77:         (Prespectrum.loopClass X d n (r + 2) h (GenLoop.transAt 0 p q)) =\n78:       (homotopy X d).symm (Prespectrum.loopClass X d n (r + 2) h p) +\n79:         (homotopy X d).symm (Prespectrum.loopClass X d n (r + 2) h q)\n80:   /-- The identity of the selected sphere has the actual positive point-set\n81:   generator, fixing the normalization of the source sphere comparison. -/\n82:   sphere_identity : homotopy Prespectrum.sphere 0\n83:       ((shiftFunctorZero C ℤ).hom.app SphereSpectrum ≫ sphereIso.inv) =\n84:     Prespectrum.sphereGenerator\n85:   sourceHF2 : Prespectrum.{0}\n86:   sourceHF2Pi0 : Prespectrum.StableHomotopy sourceHF2 0 ≃ ZMod 2\n87:   sourceHF2Vanishes : ∀ d : ℤ, d ≠ 0 →\n88:     Subsingleton (Prespectrum.StableHomotopy sourceHF2 d)\n89:   hf2Iso : equivalence.functor.obj (sourceLocalization.obj sourceHF2) ≅ H.object"
+    },
+    {
+      "commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+      "path": "KIP126/AdamsSynthetic/Internal/Source/Prespectrum.lean",
+      "sha256": "3159088d3d950f8b0b44b28b8944b41e93f6aa2016ee4d1815f827cd820e843e",
+      "excerpt": "110:     (a : Representative X d) : Representative X d where\n111:   stage := a.stage + 1\n112:   dimension := a.dimension + 1\n113:   degree := by have := a.degree; omega\n114:   loop := stabilizeLoop X a.stage a.dimension a.loop\n115: \n116: /-- Relations generating the colimit of the based homotopy sets. -/\n117: inductive StableRelation (X : Prespectrum.{u}) (d : ℤ) :\n118:     Representative X d → Representative X d → Prop\n119:   | homotopy (a : Representative X d)\n120:       (p : GenLoop (Fin a.dimension) (X.level a.stage) (X.level a.stage).point)\n121:       (h : GenLoop.Homotopic a.loop p) : StableRelation X d a { a with loop := p }\n122:   | stabilization (a : Representative X d) : StableRelation X d a a.next\n123: \n124: -- Use the source construction's stable-homotopy name within this module.\n125: set_option linter.dupNamespace false in\n126: /-- The set underlying the usual integer-graded stable homotopy group. -/\n127: def StableHomotopy (X : Prespectrum.{u}) (d : ℤ) := Quot (StableRelation X d)\n128: \n129: def Representative.map {X Y : Prespectrum.{u}} (f : X ⟶ Y) {d : ℤ}\n130:     (a : Representative X d) : Representative Y d where\n131:   stage := a.stage\n132:   dimension := a.dimension\n133:   degree := a.degree\n134:   loop := ⟨(f.level a.stage).comp a.loop.val, by\n135:     intro t ht\n136:     change f.level a.stage (a.loop t) = _\n137:     exact (congrArg (fun x => f.level a.stage x) (a.loop.property t ht)).trans\n138:       (f.point a.stage)⟩\n139: \n140: /-- Based homotopies and stabilization are respected by the actual maps.\n141: This proof obligation does not choose a new induced map. -/\n142: theorem Representative.map_relation {X Y : Prespectrum.{u}} (f : X ⟶ Y) {d : ℤ}\n143:     {a b : Representative X d} (h : StableRelation X d a b) :\n144:     StableRelation Y d (a.map f) (b.map f) := by\n145:   cases h with\n146:   | homotopy p h =>\n147:     exact StableRelation.homotopy (a.map f) _\n148:       (h.comp_continuousMap (f.level a.stage))\n149:   | stabilization =>\n150:     have hm : a.next.map f = (a.map f).next := by\n151:       unfold Representative.next Representative.map\n152:       congr 1\n153:       apply Subtype.ext\n154:       ext t\n155:       exact f.bond a.stage _ _\n156:     rw [hm]\n157:     exact StableRelation.stabilization (a.map f)\n158: \n159: def stableHomotopyMap {X Y : Prespectrum.{u}} (f : X ⟶ Y) (d : ℤ) :\n160:     StableHomotopy X d → StableHomotopy Y d :=\n161:   Quot.map (Representative.map f) (fun _ _ h => Representative.map_relation f h)\n162: \n163: /-- Quotient class of a displayed cubical loop. -/\n164: def loopClass (X : Prespectrum.{u}) (d : ℤ) (n r : ℕ)\n165:     (h : (r : ℤ) = d + n)\n166:     (p : GenLoop (Fin r) (X.level n) (X.level n).point) : StableHomotopy X d :=\n167:   Quot.mk _ ⟨n,r,h,p⟩\n168: \n169: /-- Stable weak equivalences, defined using the actual point-set system. -/\n170: def stableEquivalences : MorphismProperty Prespectrum.{u} :=\n171:   fun _ _ f => ∀ d : ℤ, Function.Bijective (stableHomotopyMap f d)\n172: \n173: end Prespectrum\n174: \n175: /-- The uncompleted stable homotopy category presented by sequential spectra.\n176: This is the explicit localization construction, not a supplied category. -/\n177: abbrev SourceCategory := Prespectrum.stableEquivalences.{u}.Localization\n178: \n179: abbrev sourceLocalization : Prespectrum.{u} ⥤ SourceCategory.{u} :=\n180:   Prespectrum.stableEquivalences.Q"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Source.lean",
+      "sha256": "80fad1c52768fd9ba0e2e7868de514b86a4deb1658df3b81b04ea52556def207",
+      "excerpt": "55: variable {C : Type u} [StableHomotopyCategory.{u, v} C]\n56:   [HasFunctorialCofiber (C := C)]\n57:   {H : Mod2EilenbergMacLane (C := C)} {M : MilnorCooperations H}\n58: \n59: /-- Xu Cor.1.3, the IWX 62-stem computation and the ordinary low-stem\n60: Hopf detections, with one actual convergence and concrete homotopy maps.\n61: No synthetic or arbitrary-choice strengthening is included. -/\n62: structure ClassicalSourceResults (M : MilnorCooperations H) (S : ClassicalHopfThetaClasses H) : Prop where\n63:   h5Square_permanent : NonzeroSurvival\n64:     (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) (2,64)\n65:       (Sphere.Internal.hiSquare H M 5)\n66:   theta5_detection : TowerDetection.Detects S.convergence (2,64)\n67:     (Sphere.Internal.hiSquare H M 5) S.theta5\n68:   theta5_order_two : S.theta5 + S.theta5 = 0\n69:   stem62_exponent_two : ∀ a : HomotopyGroup (C := C) 62 SphereSpectrum, a+a=0\n70:   theta5_filtration_gap : ∀ a b : HomotopyGroup (C := C) 62 SphereSpectrum,\n71:     TowerDetection.Detects S.convergence (2,64) (Sphere.Internal.hiSquare H M 5) a →\n72:     TowerDetection.Detects S.convergence (2,64) (Sphere.Internal.hiSquare H M 5) b →\n73:     a-b ∈ TowerDetection.filtrationSubmodule H.unit SphereSpectrum 6 62\n74:   two_detection : TowerDetection.Detects S.convergence (1,1) (Sphere.Internal.hi H M 0)\n75:     ((shiftFunctorZero C ℤ).hom.app SphereSpectrum ≫ (2 • 𝟙 _))\n76:   eta_detection : TowerDetection.Detects S.convergence (1,2) (Sphere.Internal.hi H M 1) S.eta\n77:   nu_detection : TowerDetection.Detects S.convergence (1,4) (Sphere.Internal.hi H M 2) S.nu\n78:   eta_permanent : NonzeroSurvival\n79:     (adamsTowerInternalSpectralSequence H.unit SphereSpectrum) (1,2) (Sphere.Internal.hi H M 1)\n80:   nu_permanent : NonzeroSurvival"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Hypotheses.lean",
+      "sha256": "03c9fc8358e5a71c21ae74483b0a1076b0b3851ac271379ad6f9dd63cff288b3",
+      "excerpt": "53: structure LiteratureTheorems (sources : LiteratureSources) : Prop where\n54:   /-- BR21 Table 5.4 / Theorem 5.18 on the source endpoint classes.\n55:   This asserts only the differential equation, with no extra survival claim. -/\n56:   br21 : HasDifferential\n57:     (adamsTowerInternalSpectralSequence standardFoundation.hf2.unit\n58:       sources.sourceComparisons.tmfSource.spectrum) 3 (16, 112) (19, 114)\n59:     sources.br21Classes.v2Sixteen sources.br21Classes.betaGFour\n60:   sphereVanishing : SphereVanishingLine standardFoundation.hf2\n61:   adamsOneLine_d2 (j : ℕ) (hj : 4 ≤ j) :\n62:       HasNonzeroDifferential sphereAdamsData 2\n63:         (1, ((2 ^ j : ℕ) : ℤ)) (3, ((1 + 2 ^ (j - 1 + 1) : ℕ) : ℤ))\n64:         (Sphere.Internal.hi standardFoundation.hf2 standardMilnorCooperations j)\n65:         (Sphere.Internal.h0HiSquare standardFoundation.hf2 standardMilnorCooperations (j - 1))\n66:   classical_h5Square_permanent : NonzeroSurvival\n67:     (adamsTowerInternalSpectralSequence standardFoundation.hf2.unit SphereSpectrum) (2,64)\n68:       (Sphere.Internal.hiSquare standardFoundation.hf2 standardMilnorCooperations 5)\n69:   classical_theta5_detection : TowerDetection.Detects sources.sourceComparisons.classicalSource.convergence (2,64)\n70:     (Sphere.Internal.hiSquare standardFoundation.hf2 standardMilnorCooperations 5) sources.sourceComparisons.classicalSource.theta5\n71:   classical_theta5_order_two : sources.sourceComparisons.classicalSource.theta5 + sources.sourceComparisons.classicalSource.theta5 = 0\n72:   classical_stem62_exponent_two : ∀ a : HomotopyGroup (C := standardFoundation.Spectrum) 62 SphereSpectrum, a+a=0\n73:   classical_theta5_filtration_gap : ∀ a b : HomotopyGroup (C := standardFoundation.Spectrum) 62 SphereSpectrum,\n74:     TowerDetection.Detects sources.sourceComparisons.classicalSource.convergence (2,64) (Sphere.Internal.hiSquare standardFoundation.hf2 standardMilnorCooperations 5) a →\n75:     TowerDetection.Detects sources.sourceComparisons.classicalSource.convergence (2,64) (Sphere.Internal.hiSquare standardFoundation.hf2 standardMilnorCooperations 5) b →\n76:     a-b ∈ TowerDetection.filtrationSubmodule standardFoundation.hf2.unit SphereSpectrum 6 62\n77:   classical_two_detection : TowerDetection.Detects sources.sourceComparisons.classicalSource.convergence (1,1) (Sphere.Internal.hi standardFoundation.hf2 standardMilnorCooperations 0)\n78:     ((shiftFunctorZero standardFoundation.Spectrum ℤ).hom.app SphereSpectrum ≫ (2 • 𝟙 _))"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Standard.lean",
+      "sha256": "4f2c84371a6ac09eb166b25b603d5f178a40a28f2d5ce417b4ddd94908c0e761",
+      "excerpt": "1: module\n2: \n3: public import KIP126.Literature.Standard.ClassicalContext\n4: \n5: @[expose] public section\n6: \n7: /-! The classical context underlying the standard Adams/synthetic comparison.\n8: All sphere classes, synthetic objects and external results use the same\n9: HF₂-local category and the same Milnor coordinates. -/\n10: namespace KIP126.AdamsSynthetic.Standard\n11: \n12: /-- The classical HF₂ Adams context fixed by `Def.standardHF2AdamsContext`. -/\n13: noncomputable def classicalContext : KIP126.HF2AdamsContext KIP126.StableHomotopy.Spectra.completionModel := KIP126.Def.standardHF2AdamsContext\n14: \n15: end KIP126.AdamsSynthetic.Standard"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Standard/ClassicalContext.lean",
+      "sha256": "069ee85385ee459d7c703696db19db7f7a6efdb38bd2fd47de02d0be535aae95",
+      "excerpt": "1: module\n2: \n3: public import KIP126.Literature.Background.ClassicalAdams\n4: \n5: @[expose] public section\n6: \n7: /-! The fixed HF₂-local classical Adams context.\n8: The choice below uses the explicitly assumed existence of an `HF2AdamsContext`.\n9: Its category, H𝔽₂, Milnor coordinates and smash product are the ones used\n10: throughout the classical and synthetic comparisons. -/\n11: namespace KIP126.Def\n12: \n13: /-- The standard classical Adams context selected from the background\n14: existence assumption. This definition does not prove that assumption. -/\n15: noncomputable def standardHF2AdamsContext : KIP126.HF2AdamsContext KIP126.StableHomotopy.Spectra.completionModel :=\n16:   Classical.choice KIP126.AdamsSynthetic.hf2AdamsContext_exists\n17: \n18: end KIP126.Def"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Standard/Foundation.lean",
+      "sha256": "ff84b43c8bc1e5dec5f8ee8194f6cc2c43380d03cd7f36f0e960547f123e95a9",
+      "excerpt": "1: module\n2: \n3: public import KIP126.Literature.Standard\n4: \n5: @[expose] public section\n6: \n7: /-! Compatibility name for the foundation fixed in Def. -/\n8: namespace KIP126.Classical.Adams\n9: \n10: noncomputable def standardFoundation : StandardAdamsFoundation :=\n11:   KIP126.AdamsSynthetic.Standard.classicalContext.foundation\n12: \n13: end KIP126.Classical.Adams"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Background/ClassicalAdams.lean",
+      "sha256": "71b6e1db53f371cc71cc0425e8e0783656183cfbd972e9cf01f17f7d4473e17c",
+      "excerpt": "1: module\n2: \n3: public import KIP126.Def.ClassicalAdams.Context.Data\n4: public import KIP126.Literature.Background.HF2Completion\n5: \n6: @[expose] public section\n7: \n8: /-! Existence assumption for the standard classical mod-two Adams context.\n9: The context includes an HF₂-local stable category, its mod-two coefficient\n10: object and Milnor coordinates, and the compatible tensor and cooperation\n11: structures. Its equivalence with HF₂-local prespectra preserves the specified\n12: suspensions, cofibers, homotopy groups and smash product.\n13: This module assumes existence of all these data together. -/\n14: namespace KIP126.AdamsSynthetic\n15: \n16: /-- Existence of an HF₂ Adams context with compatible Milnor coordinates\n17: and the specified HF₂-local stable homotopy interpretation. -/\n18: axiom hf2AdamsContext_exists : Nonempty (KIP126.HF2AdamsContext KIP126.StableHomotopy.Spectra.completionModel)\n19: \n20: end KIP126.AdamsSynthetic"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Literature/Background/HF2Completion.lean",
+      "sha256": "8402cc92cddc0383ef8814075e5d406e18488ab0ebb9588a3f09a57113f39e3e",
+      "excerpt": "1: module\n2: \n3: public import KIP126.Def.StableHomotopy.Spectra.Completion\n4: \n5: @[expose] public section\n6: \n7: /-! The existence of the HF₂-local reflection on the specified prespectrum\n8: category, taken as a literature hypothesis. The chosen functor retains its\n9: actual unit and universal property; its construction is not proved here. -/\n10: namespace KIP126.StableHomotopy.Spectra\n11: \n12: open CategoryTheory\n13: \n14: /-- Existence of an HF₂-local reflection with the specified point-set unit\n15: and universal property. Source: the standard HF₂ localization background\n16: recorded under Ravenel in the source inventory. -/\n17: axiom completionModel_exists : Nonempty CompletionModel\n18: \n19: /-- The one reflection selected from the external existence hypothesis. -/\n20: noncomputable def completionModel : CompletionModel := Classical.choice completionModel_exists\n21: \n22: /-- The localization functor of that same selected reflection. -/\n23: noncomputable def completedLocalization : Prespectrum.{0} ⥤ CompletedSpectrum :=\n24:   completionModel.localization\n25: \n26: end KIP126.StableHomotopy.Spectra"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Def/ClassicalAdams/Context/Data.lean",
+      "sha256": "9887923cbeed2c4e104fc0c2d995292ac4598ea65b35ecc17d4123eb710db82b",
+      "excerpt": "284: /-- The mod-two Adams context on an HF₂-local stable homotopy category.\n285: It comprises H𝔽₂, the Milnor cobar coordinates, compatible tensor and\n286: cooperation structures, and an equivalence with the specified HF₂-local\n287: prespectrum category respecting suspension, cofibers, homotopy and smash.\n288: All comparisons use the one HF₂-local reflection `Q`.\n289: Existence is the separate assumption `AdamsSynthetic.hf2AdamsContext_exists`. -/\n290: structure HF2AdamsContext (Q : StableHomotopy.Spectra.CompletionModel) where\n291:   stableContext : Foundation.Mod2StableHomotopyContext\n292:   milnorCoordinates : Foundation.MilnorCoordinates stableContext\n293:   tensorStructure : Foundation.TensorTriangulatedStructure stableContext\n294:   cooperationStructure : @Foundation.MilnorCooperationStructure stableContext tensorStructure milnorCoordinates\n295:   sourceComparison : StableHomotopy.Spectra.SourceComparison Q stableContext.hf2\n296:   sourceTensor : letI := tensorStructure\n297:     StableHomotopy.Spectra.TensorComparison sourceComparison\n298: \n299: namespace HF2AdamsContext\n300: \n301: open Foundation\n302: \n303: variable {Q : StableHomotopy.Spectra.CompletionModel}\n304: \n305: /-- 此 HF₂ Adams 背景中的稳定同伦范畴与模二系数对象。 -/\n306: def foundation (c : KIP126.HF2AdamsContext Q) : StandardAdamsFoundation :=\n307:   c.stableContext.toStandard\n308: \n309: /-- 此背景中球面 Adams 第一页的 Milnor 坐标与微分相容性。 -/\n310: def milnor (c : KIP126.HF2AdamsContext Q) :\n311:     @MilnorCooperations c.foundation.Spectrum c.foundation.stable"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Def/StableHomotopy/Spectra/Comparison.lean",
+      "sha256": "8be4bb5fbbbd6efa533ac02d253f081d03aa78e7f19a08d9aee8781a34bef388",
+      "excerpt": "15: open CategoryTheory MonoidalCategory\n16: open KIP126.StableHomotopy.Cohomology\n17: \n18: universe u v\n19: \n20: variable {C : Type u} [StableHomotopyCategory.{u,v} C]\n21:   [HasFunctorialCofiber (C := C)]\n22: \n23: /-- Comparison of the completed prespectrum category with the stable category. In addition to the\n24: category equivalence, the selected shifts and cofibers must match the actual\n25: point-set suspension and mapping-cone sequence, including both arrows.\n26: The homotopy comparison is natural for the actual point-set maps.\n27: \n28: `HF2` is identified via its supplied homotopy groups, this recognition of\n29: integer stable homotopy of the specified local replacement, and its unit.\n30: The sphere is the completion of the ordinary point-set sphere under the\n31: specified reflection `Q`; every comparison uses this same reflection. -/\n32: structure SourceComparison (Q : CompletionModel) (H : Mod2EilenbergMacLane (C := C)) where\n33:   equivalence : CompletedSpectrum ≌ C\n34:   sphere : equivalence.functor.obj (Q.localization.obj Prespectrum.sphere) ≅ SphereSpectrum\n35:   suspension : ∀ X : Prespectrum.{0}, X.IsWellBased →\n36:     (equivalence.functor.obj (Q.localization.obj X.suspension) ≅\n37:       (shiftFunctor C (1 : ℤ)).obj (equivalence.functor.obj (Q.localization.obj X)))\n38:   suspension_natural : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y)\n39:       (hX : X.IsWellBased) (hY : Y.IsWellBased),\n40:     equivalence.functor.map (Q.localization.map (Prespectrum.suspensionMap f)) ≫\n41:       (suspension Y hY).hom =\n42:         (suspension X hX).hom ≫\n43:           (shiftFunctor C (1 : ℤ)).map (equivalence.functor.map (Q.localization.map f))\n44:   cofiber : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y), X.IsWellBased → Y.IsWellBased →\n45:     (equivalence.functor.obj (Q.localization.obj (Prespectrum.cone f)) ≅\n46:       HasFunctorialCofiber.cofib (equivalence.functor.map (Q.localization.map f)))\n47:   cofiber_inclusion : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y)\n48:       (hX : X.IsWellBased) (hY : Y.IsWellBased),\n49:     equivalence.functor.map (Q.localization.map (Prespectrum.coneInclusion f)) ≫\n50:       (cofiber f hX hY).hom =\n51:         HasFunctorialCofiber.cofibι (equivalence.functor.map (Q.localization.map f))\n52:   cofiber_boundary : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y)\n53:       (hX : X.IsWellBased) (hY : Y.IsWellBased),\n54:     equivalence.functor.map (Q.localization.map (Prespectrum.coneBoundary f)) ≫\n55:       (suspension X hX).hom =\n56:         (cofiber f hX hY).hom ≫\n57:           HasFunctorialCofiber.cofibδ (equivalence.functor.map (Q.localization.map f))\n58:   homotopy : ∀ (X : Prespectrum.{0}) (d : ℤ),\n59:     HomotopyGroup d (equivalence.functor.obj (Q.localization.obj X)) ≃\n60:       Prespectrum.StableHomotopy (Q.replacement.obj X) d\n61:   homotopy_natural : ∀ {X Y : Prespectrum.{0}} (f : X ⟶ Y) (d : ℤ)\n62:       (a : HomotopyGroup d (equivalence.functor.obj (Q.localization.obj X))),\n63:     homotopy Y d (a ≫ equivalence.functor.map (Q.localization.map f)) =\n64:       Prespectrum.stableHomotopyMap (Q.replacement.map f) d (homotopy X d a)\n65:   /-- Addition is the actual loop concatenation in the local replacement. -/"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Main/Literature/SourceComparisons/Theorems.lean",
+      "sha256": "467ecec09f3add160e1f033bfe993813bceb05db70058529872bfb6f0ac11963",
+      "excerpt": "64: using the weight-shift naturality theorem proved in Def. -/\n65: namespace KIP126.ExternalHypotheses.LiteratureTheorems\n66: open CategoryTheory Classical.Adams SpectralSequence\n67: open StableHomotopy StableHomotopy.Cohomology Synthetic.Context Synthetic.SpectralSequence\n68: open KIP126.Literature.AdamsSynthetic\n69: variable {sources : KIP126.ExternalHypotheses.LiteratureSources}\n70: \n71: noncomputable def sourceTheorems (input : LiteratureTheorems sources)\n72:     (shiftNatural : sources.eInftyWeightShift.Natural) :\n73:     Literature.AdamsSynthetic.SourceTheorems standardAdamsComparison Def.standardEta\n74:       sources.tmfLabels sources.sourceComparisons where\n75:   classical := {\n76:     h5Square_permanent := input.classical_h5Square_permanent\n77:     theta5_detection := input.classical_theta5_detection\n78:     theta5_order_two := input.classical_theta5_order_two\n79:     stem62_exponent_two := input.classical_stem62_exponent_two\n80:     theta5_filtration_gap := input.classical_theta5_filtration_gap\n81:     two_detection := input.classical_two_detection\n82:     eta_detection := input.classical_eta_detection\n83:     nu_detection := input.classical_nu_detection\n84:     eta_permanent := input.classical_eta_permanent\n85:     nu_permanent := input.classical_nu_permanent"
+    },
+    {
+      "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+      "path": "KIP126/Main/Literature/AdamsSynthetic/Theorems.lean",
+      "sha256": "7834ce6c4119dccea31f198e3891a466515e8a930af10691bde7f7fa7d6b5f35",
+      "excerpt": "85: variable {Syn : Type w} [SyntheticCategory.{w, v} Syn] [HasFunctorialCofiber (C := Syn)]\n86: \n87: /-- Ordinary transport along the displayed source equalities. The sole\n88: synthetic premise is supplied separately, so the classical source theorem\n89: does not assert it or normalized-map compatibility. -/\n90: theorem classicalTheoremsOfSource (D : AdamsComparison H M Syn) (η : BiHom 1 2 (S_0_0 : Syn))\n91:     (S : ClassicalHopfThetaClasses H) (hS : ClassicalSourceResults M S)\n92:     (B : ClassicalHopfComparison D η S) (hη : EtaChoice M D.toAdamsComparisonData η) :\n93:     ClassicalTheorems D η where\n94:   theta5_exists := ⟨hS.h5Square_permanent, S.theta5,\n95:     by simpa [ClassicalTheta, B.convergence, ClassicalObject.obj] using hS.theta5_detection,\n96:     hS.theta5_order_two⟩\n97:   stem62_exponent_two := hS.stem62_exponent_two\n98:   theta5_filtration_gap := by\n99:     intro a b ha hb\n100:     exact hS.theta5_filtration_gap a b\n101:       (by simpa [ClassicalTheta, B.convergence, ClassicalObject.obj] using ha)"
+    }
+  ],
+  "live_metadata_hashes": {
+    "metadata/literature-api.json": "7a986fdb9f9a9f889568182d05ad238e9a6543bbbaed3c47028aa0c0494dcc10",
+    "metadata/literature-contracts.json": "8cd063fe3571f58ce3d2718998191438da1920258d08184392438f75fcb9611f",
+    "metadata/literature-sources.json": "88459772c47efff2478ec4c5920af3f8574aadc0e4819a776502265414aec271",
+    "metadata/proof-obligations.json": "0a280a67d556db33ce9dacc3bce3aa53fb737de64656413110c7843bce9c25d4"
+  },
+  "api_target": {
+    "axioms": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext",
+      "sorryAx"
+    ],
+    "full_type": "∀ (a : KIP126.StableHomotopy.HomotopyGroup.{1, 0} 62 KIP126.StableHomotopy.SphereSpectrum.{1, 0}),\n  Eq.{1} (HAdd.hAdd.{0, 0, 0} a a) 0",
+    "kind": "generated",
+    "module": "KIP126.Literature.Standard",
+    "name": "KIP126.Literature.Standard.stem62_exponent_two",
+    "type_dependencies": [
+      "KIP126.StableHomotopy.HomotopyGroup",
+      "KIP126.AdamsSynthetic.Standard.Spectrum",
+      "KIP126.AdamsSynthetic.Standard.spectrumCategory",
+      "OfNat.ofNat",
+      "Int",
+      "instOfNat",
+      "KIP126.StableHomotopy.SphereSpectrum",
+      "Eq",
+      "HAdd.hAdd",
+      "instHAdd",
+      "AddCommMagma.toAdd",
+      "AddCommSemigroup.toAddCommMagma",
+      "AddCommMonoid.toAddCommSemigroup",
+      "AddCommGroup.toAddCommMonoid",
+      "CategoryTheory.Preadditive.homGroup",
+      "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+      "KIP126.StableHomotopy.StableHomotopyCategory.toPreadditive",
+      "KIP126.StableHomotopy.Sphere",
+      "Zero.toOfNat0",
+      "CategoryTheory.Limits.HasZeroMorphisms.zero",
+      "CategoryTheory.Preadditive.preadditiveHasZeroMorphisms"
+    ],
+    "type_fingerprint": "10913749501484541634",
+    "universes": [],
+    "proof_status": "pending-direct",
+    "directly_callable": true,
+    "responsibility_owner": "Literature",
+    "source": "KIP126/Literature/Standard.lean",
+    "type_consumers": [],
+    "capability_evidence": [
+      "literature-classical"
+    ],
+    "source_kind": "theorem",
+    "line": 160,
+    "category": "operation-theorem",
+    "responsibility": "pending-upstream-proof"
+  },
+  "direct_references": "bef90640c4594af4db32c86837f9d95340d1e171:KIP126/Literature/Classical.lean:124:  stem62_exponent_two : ∀ a : HomotopyGroup (C := C) 62 SphereSpectrum, a+a=0\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Literature/Classical.lean:141:  R.stem62_exponent_two B.theta5\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Literature/Classical.lean:158:  T.doubling_kernel a ha (by rw [map_add]; exact R.stem62_exponent_two _)\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Literature/Standard.lean:160:public theorem stem62_exponent_two :\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Literature/Standard.lean:210:  theta5 + theta5 = 0 := stem62_exponent_two theta5\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Main/Internal/Choice/OrderTwo.lean:69:  have h := KIP126.Literature.Standard.stem62_exponent_two α\nbef90640c4594af4db32c86837f9d95340d1e171:KIP126/Main/Internal/Theta/OrderTwo.lean:59:      have h := KIP126.Literature.Standard.stem62_exponent_two α\n",
+  "finite_arithmetic": {
+    "moduli": [
+      2,
+      2,
+      2,
+      2,
+      3
+    ],
+    "a": [
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "a_plus_a": [
+      0,
+      0,
+      0,
+      0,
+      2
+    ],
+    "a_plus_a_plus_a": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "zero": [
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "result": "PASS; arithmetic only, not a Lean/project counterexample"
+  }
+}

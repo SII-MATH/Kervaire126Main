@@ -8,9 +8,9 @@
   "type_fingerprint_algorithm": "Lean hash (toString ConstantInfo.type), checked with universe parameter names",
   "type_rendering": "Elaborated full type, universe parameters shown; inferred arguments use Lean implicit notation. Fingerprint locks the exact kernel expression, including elaborated proof terms.",
   "classification": "Explicit named public source commands are separated from generated fields, constructors, recursors, instances and generated proof helpers. Generated declarations are not independent mathematical promises.",
-  "public_source_commands": 556,
-  "named_public_declarations": 556,
-  "generated_declaration_count": 1269,
+  "public_source_commands": 557,
+  "named_public_declarations": 557,
+  "generated_declaration_count": 1268,
   "declarations": [
     {
       "axioms": [
@@ -3473,7 +3473,9 @@
       "directly_callable": false,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Suspension.lean",
-      "type_consumers": [],
+      "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension"
+      ],
       "capability_evidence": [
         "classical-suspension"
       ],
@@ -5818,6 +5820,7 @@
       "source": "KIP126/AdamsSynthetic/AdamsFiltration.lean",
       "type_consumers": [
         "KIP126.AdamsSynthetic.MappingDetectionInput.detect_non_odd",
+        "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
         "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
         "KIP126.AdamsSynthetic.Standard.finite_map_separation",
         "KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd",
@@ -8516,6 +8519,8 @@
         "KIP126.AdamsSynthetic.Standard.finite_map_separation",
         "KIP126.AdamsSynthetic.Standard.firstPage",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.homologyShift",
         "KIP126.AdamsSynthetic.Standard.homology_exact",
@@ -8664,6 +8669,8 @@
         "KIP126.AdamsSynthetic.Standard.exactness",
         "KIP126.AdamsSynthetic.Standard.family",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
@@ -9853,7 +9860,7 @@
         "propext",
         "sorryAx"
       ],
-      "full_type": "∀ (m : ℤ) (a : KIP126.StableHomotopy.HomotopyGroup.{1, 0} m KIP126.StableHomotopy.SphereSpectrum.{1, 0}),\n  (∀ (s : ℕ),\n      Membership.mem.{0, 0}\n        (KIP126.AdamsSynthetic.AbstractAdamsTower.filtrationSubmodule.{1, 0}\n          (KIP126.AdamsSynthetic.ClassicalTowerPresentation.tower.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            KIP126.StableHomotopy.SphereSpectrum.{1, 0})\n          (↑s) m)\n        a) →\n    Eq.{1} a 0",
+      "full_type": "∀ (m : ℤ) (a : KIP126.StableHomotopy.HomotopyGroup.{1, 0} m KIP126.StableHomotopy.SphereSpectrum.{1, 0}),\n  (∀ (s : ℕ),\n      Membership.mem.{0, 0}\n        (KIP126.AdamsSynthetic.AbstractAdamsTower.filtrationSubmodule.{1, 0}\n          (KIP126.AdamsSynthetic.ClassicalTowerPresentation.tower.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            KIP126.StableHomotopy.SphereSpectrum.{1, 0})\n          (↑s) m)\n        a) →\n    KIP126.AdamsSynthetic.IsOddTorsionMap.{1, 0} a",
       "kind": "generated",
       "module": "KIP126.AdamsSynthetic.Standard.ClassicalSupport",
       "name": "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
@@ -9896,9 +9903,9 @@
         "CategoryTheory.Limits.HasZeroMorphisms.zero",
         "CategoryTheory.Preadditive.preadditiveHasZeroMorphisms"
       ],
-      "type_fingerprint": "13871155274652150538",
+      "type_fingerprint": "2589553746949959948",
       "universes": [],
-      "proof_status": "pending-direct",
+      "proof_status": "provided-with-pending-dependencies",
       "directly_callable": true,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Standard/ClassicalSupport.lean",
@@ -9907,9 +9914,10 @@
         "adams-synthetic-main-proof-consumption"
       ],
       "source_kind": "theorem",
-      "line": 68,
+      "line": 67,
       "category": "operation-theorem",
-      "responsibility": "pending-upstream-proof"
+      "responsibility": "proved-operation",
+      "approved_revision": "metadata/interface-reviews/approved-upstream-20261017/approval.json"
     },
     {
       "axioms": [
@@ -11452,7 +11460,7 @@
       ],
       "type_fingerprint": "8046296169434938693",
       "universes": [],
-      "proof_status": "pending-direct",
+      "proof_status": "provided-with-pending-dependencies",
       "directly_callable": true,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Standard/Operations.lean",
@@ -11488,7 +11496,88 @@
       "source_kind": "def",
       "line": 346,
       "category": "mathematical-definition",
-      "responsibility": "pending-upstream-construction"
+      "responsibility": "fixed-mathematical-object-or-operation",
+      "ordinary_import_exposes_body": false,
+      "approved_revision": "metadata/interface-reviews/approved-upstream-20261017/approval.json"
+    },
+    {
+      "axioms": [
+        "Classical.choice",
+        "Quot.sound",
+        "propext",
+        "sorryAx"
+      ],
+      "full_type": "∀ (X Z : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum),\n  SMulCommClass.{0, 0, 0} (Polynomial.{0} ℤ) (Polynomial.{0} ℤ) (KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} X Z)",
+      "kind": "generated",
+      "module": "KIP126.AdamsSynthetic.Standard.Operations",
+      "name": "KIP126.AdamsSynthetic.Standard.graded_compose._proof_1",
+      "type_dependencies": [
+        "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
+        "SMulCommClass",
+        "Polynomial",
+        "Int",
+        "Int.instSemiring",
+        "KIP126.AdamsSynthetic.TotalWeightHom",
+        "KIP126.AdamsSynthetic.Standard.syntheticCategory",
+        "SemigroupAction.toSMul",
+        "Monoid.toSemigroup",
+        "CommMonoid.toMonoid",
+        "CommRing.toCommMonoid",
+        "Polynomial.commRing",
+        "Int.instCommRing",
+        "MulAction.toSemigroupAction",
+        "DistribMulAction.toMulAction",
+        "AddCommMonoid.toAddMonoid",
+        "instAddCommMonoidDirectSum",
+        "KIP126.AdamsSynthetic.WeightHom",
+        "AddCommGroup.toAddCommMonoid",
+        "CategoryTheory.Preadditive.homGroup",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
+        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
+        "KIP126.StableHomotopy.StableHomotopyCategory.toPreadditive",
+        "CategoryTheory.Functor.obj",
+        "KIP126.Synthetic.Context.SyntheticCategory.biShift",
+        "Prod.mk",
+        "OfNat.ofNat",
+        "instOfNat",
+        "Module.toDistribMulAction",
+        "Polynomial.semiring",
+        "KIP126.AdamsSynthetic.Standard.graded_module"
+      ],
+      "type_fingerprint": "13301073175485286128",
+      "universes": [],
+      "proof_status": "provided-with-pending-dependencies",
+      "directly_callable": true,
+      "responsibility_owner": "AdamsSynthetic",
+      "source": "KIP126/AdamsSynthetic/Standard/Operations.lean",
+      "type_consumers": [],
+      "capability_evidence": [
+        "standard-sphere-classes",
+        "shift-lambda-coherence",
+        "sphere-detection-and-multiplication",
+        "obligation-adams-composition-converging-s-s-pairing-parity",
+        "obligation-adams-composition-converging-s-s-pairing-e-infty-associative",
+        "obligation-adams-composition-converging-s-s-pairing-abutment-associative",
+        "obligation-adams-composition-converging-s-s-pairing-e-infty-left-unital",
+        "obligation-adams-composition-converging-s-s-pairing-e-infty-right-unital",
+        "obligation-adams-composition-converging-s-s-pairing-abutment-left-unital",
+        "obligation-adams-composition-converging-s-s-pairing-abutment-right-unital",
+        "obligation-sphere-mapping-adams-s-s",
+        "obligation-adams-spectral-sequence-enrichment",
+        "obligation-zlambda-enrichment",
+        "obligation-einfty-nu-x-weight-map",
+        "obligation-synthetic-adams-e-s-s-shift-system-axiom",
+        "support-mapping",
+        "support-mapping-composition",
+        "support-mapping-enrichment",
+        "support-e-s-s-shift",
+        "support-enrichment",
+        "support-weight"
+      ],
+      "category": "operation-theorem",
+      "responsibility": "proved-operation",
+      "source_kind": "theorem",
+      "explicitly_preserved_existing_helper": true
     },
     {
       "axioms": [
@@ -11555,7 +11644,7 @@
       ],
       "type_fingerprint": "8232704509103874837",
       "universes": [],
-      "proof_status": "pending-direct",
+      "proof_status": "provided-with-pending-dependencies",
       "directly_callable": true,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Standard/Operations.lean",
@@ -11567,7 +11656,7 @@
       "source_kind": "theorem",
       "line": 354,
       "category": "operation-theorem",
-      "responsibility": "pending-upstream-proof"
+      "responsibility": "proved-operation"
     },
     {
       "axioms": [
@@ -14861,6 +14950,8 @@
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
         "KIP126.AdamsSynthetic.Standard.essShift",
         "KIP126.AdamsSynthetic.Standard.essShiftSystem",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.shift_filtered",
         "KIP126.AdamsSynthetic.Standard.shift_page",
@@ -16341,6 +16432,8 @@
         "KIP126.AdamsSynthetic.Standard.finite_map_separation",
         "KIP126.AdamsSynthetic.Standard.firstPage",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.homologyShift",
         "KIP126.AdamsSynthetic.Standard.homology_exact",
@@ -16499,6 +16592,8 @@
         "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
         "KIP126.AdamsSynthetic.Standard.finite_map_separation",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.mappingComposition",
         "KIP126.AdamsSynthetic.Standard.mappingConvergence",
@@ -18033,6 +18128,8 @@
         "KIP126.AdamsSynthetic.Standard.exactness",
         "KIP126.AdamsSynthetic.Standard.family",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.gradedEnrichment",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
@@ -18137,6 +18234,8 @@
         "KIP126.AdamsSynthetic.Standard.essShift",
         "KIP126.AdamsSynthetic.Standard.essShiftSystem",
         "KIP126.AdamsSynthetic.Standard.firstQuotient",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.model",
         "KIP126.AdamsSynthetic.Standard.model._proof_1",
@@ -18422,7 +18521,7 @@
         "propext",
         "sorryAx"
       ],
-      "full_type": "∀ (X : KIP126.Kervaire.Route.SyntheticObject),\n  KIP126.AdamsSynthetic.HomotopySeparated.{1, 0}\n    (KIP126.Kervaire.Route.ModelData.syntheticTower.{1, 0, 1}\n      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n    (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n      X)",
+      "full_type": "∀ (X : KIP126.Kervaire.Route.SyntheticObject) (n : ℕ),\n  KIP126.AdamsSynthetic.HomotopySeparated.{1, 0}\n    (KIP126.Kervaire.Route.ModelData.syntheticTower.{1, 0, 1}\n      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n    (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}\n        (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n        X)\n      n)",
       "kind": "generated",
       "module": "KIP126.AdamsSynthetic.Standard.Separation",
       "name": "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
@@ -18450,7 +18549,7 @@
         "KIP126.Kervaire.Route.SyntheticObject.obj",
         "KIP126.Kervaire.Route.ModelData.auxiliary"
       ],
-      "type_fingerprint": "824254188236161023",
+      "type_fingerprint": "12941819698726124070",
       "universes": [],
       "proof_status": "pending-direct",
       "directly_callable": true,
@@ -18463,7 +18562,8 @@
       "source_kind": "theorem",
       "line": 20,
       "category": "operation-theorem",
-      "responsibility": "pending-upstream-proof"
+      "responsibility": "pending-upstream-proof",
+      "approved_revision": "metadata/interface-reviews/approved-upstream-20261017/approval.json"
     },
     {
       "axioms": [
@@ -23877,6 +23977,8 @@
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/ESSShift.lean",
       "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.ambient_eq",
         "KIP126.AdamsSynthetic.SyntheticESSShiftComparison.casesOn",
@@ -24874,6 +24976,8 @@
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
         "KIP126.AdamsSynthetic.Standard.differentialDegree",
         "KIP126.AdamsSynthetic.Standard.firstPage",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
         "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit",
@@ -25679,6 +25783,8 @@
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
         "KIP126.AdamsSynthetic.Standard.differentialDegree",
         "KIP126.AdamsSynthetic.Standard.firstPage",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.mapping_sphere_product",
         "KIP126.AdamsSynthetic.Standard.mapping_sphere_unit",
@@ -26871,6 +26977,8 @@
         "KIP126.AdamsSynthetic.Standard.classicalConvergence",
         "KIP126.AdamsSynthetic.Standard.classicalSuspension",
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.normalizedMap",
         "KIP126.AdamsSynthetic.Standard.weight_map",
@@ -27087,6 +27195,8 @@
         "KIP126.AdamsSynthetic.Standard.classicalConvergence",
         "KIP126.AdamsSynthetic.Standard.classicalSuspension",
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.normalizedMap",
         "KIP126.AdamsSynthetic.Standard.weight_map",
@@ -31156,6 +31266,7 @@
         "KIP126.AdamsSynthetic.Standard.classicalTower",
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
         "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.mappingComposition",
         "KIP126.AdamsSynthetic.Standard.mappingConvergence",
         "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment",
@@ -33480,6 +33591,8 @@
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.mk._flat_ctor",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.rec",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.recOn",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
@@ -35038,6 +35151,8 @@
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.mk._flat_ctor",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.rec",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.recOn",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
         "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
@@ -35865,9 +35980,12 @@
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.mk._flat_ctor",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.rec",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.recOn",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
         "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
+        "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated",
         "KIP126.AdamsSynthetic.sphereFirstQuotient",
         "KIP126.AdamsSynthetic.sphereFirstQuotient._proof_1",
         "KIP126.Kervaire.Route.ComparisonCompatible.casesOn",
@@ -36076,6 +36194,8 @@
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.mk._flat_ctor",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.rec",
         "KIP126.AdamsSynthetic.SphereDetectionCompatible.recOn",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
         "KIP126.Synthetic.Context.FiniteLambdaQuotientTower.casesOn",
         "KIP126.Synthetic.Context.FiniteLambdaQuotientTower.mk",
@@ -36303,6 +36423,8 @@
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Quotients.lean",
       "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.Synthetic.Context.FiniteLambdaQuotientTower.Hom.casesOn",
         "KIP126.Synthetic.Context.FiniteLambdaQuotientTower.Hom.delta_naturality",
         "KIP126.Synthetic.Context.FiniteLambdaQuotientTower.Hom.lambda_naturality",
@@ -36715,7 +36837,10 @@
       "directly_callable": false,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Compatibility.lean",
-      "type_consumers": [],
+      "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension"
+      ],
       "capability_evidence": [
         "sphere-detection-and-multiplication"
       ],
@@ -65577,7 +65702,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65616,7 +65741,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65654,7 +65779,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65686,7 +65811,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65726,7 +65851,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65765,84 +65890,7 @@
         "first-quotient-shift-suspension-compatibility"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
-    },
-    {
-      "axioms": [
-        "Classical.choice",
-        "Quot.sound",
-        "propext",
-        "sorryAx"
-      ],
-      "full_type": "∀ (X Z : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum),\n  SMulCommClass.{0, 0, 0} (Polynomial.{0} ℤ) (Polynomial.{0} ℤ) (KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} X Z)",
-      "kind": "generated",
-      "module": "KIP126.AdamsSynthetic.Standard.Operations",
-      "name": "KIP126.AdamsSynthetic.Standard.graded_compose._proof_1",
-      "type_dependencies": [
-        "KIP126.AdamsSynthetic.Standard.SyntheticSpectrum",
-        "SMulCommClass",
-        "Polynomial",
-        "Int",
-        "Int.instSemiring",
-        "KIP126.AdamsSynthetic.TotalWeightHom",
-        "KIP126.AdamsSynthetic.Standard.syntheticCategory",
-        "SemigroupAction.toSMul",
-        "Monoid.toSemigroup",
-        "CommMonoid.toMonoid",
-        "CommRing.toCommMonoid",
-        "Polynomial.commRing",
-        "Int.instCommRing",
-        "MulAction.toSemigroupAction",
-        "DistribMulAction.toMulAction",
-        "AddCommMonoid.toAddMonoid",
-        "instAddCommMonoidDirectSum",
-        "KIP126.AdamsSynthetic.WeightHom",
-        "AddCommGroup.toAddCommMonoid",
-        "CategoryTheory.Preadditive.homGroup",
-        "KIP126.StableHomotopy.StableHomotopyCategory.toCategory",
-        "KIP126.Synthetic.Context.SyntheticCategory.toStableHomotopyCategory",
-        "KIP126.StableHomotopy.StableHomotopyCategory.toPreadditive",
-        "CategoryTheory.Functor.obj",
-        "KIP126.Synthetic.Context.SyntheticCategory.biShift",
-        "Prod.mk",
-        "OfNat.ofNat",
-        "instOfNat",
-        "Module.toDistribMulAction",
-        "Polynomial.semiring",
-        "KIP126.AdamsSynthetic.Standard.graded_module"
-      ],
-      "type_fingerprint": "13301073175485286128",
-      "universes": [],
-      "proof_status": "provided-with-pending-dependencies",
-      "directly_callable": true,
-      "responsibility_owner": "AdamsSynthetic",
-      "source": "KIP126/AdamsSynthetic/Standard/Operations.lean",
-      "type_consumers": [],
-      "capability_evidence": [
-        "standard-sphere-classes",
-        "shift-lambda-coherence",
-        "sphere-detection-and-multiplication",
-        "obligation-adams-composition-converging-s-s-pairing-parity",
-        "obligation-adams-composition-converging-s-s-pairing-e-infty-associative",
-        "obligation-adams-composition-converging-s-s-pairing-abutment-associative",
-        "obligation-adams-composition-converging-s-s-pairing-e-infty-left-unital",
-        "obligation-adams-composition-converging-s-s-pairing-e-infty-right-unital",
-        "obligation-adams-composition-converging-s-s-pairing-abutment-left-unital",
-        "obligation-adams-composition-converging-s-s-pairing-abutment-right-unital",
-        "obligation-sphere-mapping-adams-s-s",
-        "obligation-adams-spectral-sequence-enrichment",
-        "obligation-zlambda-enrichment",
-        "obligation-einfty-nu-x-weight-map",
-        "obligation-synthetic-adams-e-s-s-shift-system-axiom",
-        "support-mapping",
-        "support-mapping-composition",
-        "support-mapping-enrichment",
-        "support-e-s-s-shift",
-        "support-enrichment",
-        "support-weight"
-      ],
-      "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -65922,7 +65970,7 @@
         "support-weight"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [],
@@ -65952,7 +66000,7 @@
         "concrete-classical-source-identification"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -66023,7 +66071,7 @@
         "concrete-classical-source-identification"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -66095,7 +66143,7 @@
         "concrete-classical-source-identification"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -66132,7 +66180,7 @@
         "concrete-classical-source-identification"
       ],
       "category": "generated-declaration",
-      "responsibility": "field-constructor-recursion-instance-or-generated-proof-support"
+      "responsibility": "fixed-mathematical-object-or-operation"
     },
     {
       "axioms": [
@@ -81651,6 +81699,7 @@
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Configuration.lean",
       "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.Kervaire.Route.ClassicalObject.casesOn",
         "KIP126.Kervaire.Route.ClassicalObject.obj.eq_4",
         "KIP126.Kervaire.Route.ClassicalObject.obj.match_1",
@@ -87877,6 +87926,8 @@
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.representative",
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.shift_filtered",
         "KIP126.AdamsSynthetic.Standard.shift_page",
@@ -88104,6 +88155,8 @@
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.recOn",
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.representative",
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.shift_filtered",
         "KIP126.AdamsSynthetic.Standard.shift_page",
@@ -88341,6 +88394,8 @@
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.representative",
         "KIP126.AdamsSynthetic.Standard.classical_page_negative",
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero",
         "KIP126.AdamsSynthetic.Standard.weight_representative",
         "KIP126.AdamsSynthetic.nuWeightLabel",
@@ -88519,7 +88574,9 @@
       "directly_callable": false,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/System.lean",
-      "type_consumers": [],
+      "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension"
+      ],
       "capability_evidence": [
         "shared-consumer-model"
       ],
@@ -88560,6 +88617,7 @@
       "source": "KIP126/AdamsSynthetic/System.lean",
       "type_consumers": [
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.Kervaire.Route.FiniteExtensionWitness.casesOn",
         "KIP126.Kervaire.Route.FiniteExtensionWitness.equation",
         "KIP126.Kervaire.Route.FiniteExtensionWitness.length_lower",
@@ -88640,6 +88698,7 @@
       "source": "KIP126/AdamsSynthetic/System.lean",
       "type_consumers": [
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.shift_filtered",
         "KIP126.AdamsSynthetic.Standard.shift_representative_iff",
@@ -89138,6 +89197,8 @@
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/System.lean",
       "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.Kervaire.Route.ComparisonCompatible.casesOn",
         "KIP126.Kervaire.Route.ComparisonCompatible.first_quotient",
         "KIP126.Kervaire.Route.ComparisonCompatible.mk",
@@ -89780,6 +89841,8 @@
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.rec",
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.recOn",
         "KIP126.AdamsSynthetic.NuInfinityWeightMaps.representative",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.shift_ambient_eq",
         "KIP126.AdamsSynthetic.Standard.shift_filtered",
         "KIP126.AdamsSynthetic.Standard.shift_page",
@@ -97114,6 +97177,7 @@
         "KIP126.AdamsSynthetic.Standard.convergence_natural",
         "KIP126.AdamsSynthetic.Standard.convergentMap",
         "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.homologyShift",
         "KIP126.AdamsSynthetic.Standard.homology_exact",
@@ -101032,6 +101096,8 @@
         "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
         "KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd",
         "KIP126.AdamsSynthetic.Standard.finite_map_separation",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
         "KIP126.AdamsSynthetic.Standard.graded_compose",
@@ -101805,6 +101871,7 @@
         "KIP126.AdamsSynthetic.NuExactTriangleInput.preserves",
         "KIP126.AdamsSynthetic.NuExactTriangleInput.rec",
         "KIP126.AdamsSynthetic.NuExactTriangleInput.recOn",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.homologyShift",
         "KIP126.AdamsSynthetic.Standard.mapping_abutment_compatible",
         "KIP126.AdamsSynthetic.Standard.nu_preserves_triangle",
@@ -102163,6 +102230,8 @@
         "KIP126.AdamsSynthetic.Standard.canonicalFirstDifferential",
         "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
         "KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
         "KIP126.AdamsSynthetic.Standard.graded_compose",
@@ -111317,6 +111386,8 @@
         "KIP126.AdamsSynthetic.Standard.convergence",
         "KIP126.AdamsSynthetic.Standard.convergence_natural",
         "KIP126.AdamsSynthetic.Standard.convergentMap",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.model._proof_2",
         "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
@@ -112011,7 +112082,9 @@
       "directly_callable": false,
       "responsibility_owner": "AdamsSynthetic",
       "source": "KIP126/AdamsSynthetic/Context.lean",
-      "type_consumers": [],
+      "type_consumers": [
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension"
+      ],
       "capability_evidence": [
         "stable-background",
         "nu-functor"
@@ -112188,6 +112261,8 @@
         "KIP126.AdamsSynthetic.Standard.biShift_lambda_comm",
         "KIP126.AdamsSynthetic.Standard.biShift_left_unit",
         "KIP126.AdamsSynthetic.Standard.biShift_right_unit",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
         "KIP126.AdamsSynthetic.Standard.graded_compose",
@@ -112557,6 +112632,8 @@
         "KIP126.AdamsSynthetic.GradedLambdaEnrichment.right_unit",
         "KIP126.AdamsSynthetic.Standard.biShift_left_unit",
         "KIP126.AdamsSynthetic.Standard.biShift_right_unit",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.graded_left_unit",
         "KIP126.AdamsSynthetic.Standard.graded_right_unit",
         "KIP126.Synthetic.Context.BiShiftCoherence.casesOn",
@@ -113322,6 +113399,8 @@
         "KIP126.AdamsSynthetic.Standard.convergence",
         "KIP126.AdamsSynthetic.Standard.convergence_natural",
         "KIP126.AdamsSynthetic.Standard.convergentMap",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+        "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
         "KIP126.AdamsSynthetic.Standard.first_quotient",
         "KIP126.AdamsSynthetic.Standard.graded_associative",
         "KIP126.AdamsSynthetic.Standard.graded_compose",
@@ -119231,5 +119310,20 @@
     "KIP126.Synthetic.SpectralSequence.syntheticAdamsRawShift",
     "KIP126.Synthetic.SpectralSequence.syntheticAdamsRawShift.eq_1",
     "KIP126.Synthetic.SpectralSequence.syntheticHomotopy"
-  ]
+  ],
+  "approved_interface_revision_20261017": {
+    "approval": "metadata/interface-reviews/approved-upstream-20261017/approval.json",
+    "capture": "metadata/interface-reviews/approved-upstream-20261017/evidence/kip-approved-adams-public.json",
+    "changed_types": [
+      "KIP126.AdamsSynthetic.Standard.classical_sphere_separated",
+      "KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated"
+    ],
+    "added_exports": [],
+    "removed_exports": [],
+    "exports": 1825,
+    "all_other_complete_types_and_universes_unchanged": true,
+    "original_graded_compose_helper_exactly_preserved": true,
+    "ordinary_graded_compose_body": "no_expose as approved",
+    "status": "Adams root build and exact ordinary capture passed; Main integration pending"
+  }
 }

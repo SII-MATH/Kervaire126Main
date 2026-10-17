@@ -1,6 +1,7 @@
 module
 
 import KIP126.Computation
+import KIP126.Computation.Table.Internal.SourceExpression
 
 /-! Consumers use the fixed objects and callable source theorems. Only actual
 mathematical variables and range hypotheses are parameters. -/
@@ -90,3 +91,7 @@ theorem sharedLiteratureLabel : atom .g = KIP126.Literature.Standard.g := g_agre
 #check_failure KIP126.Computation.Near126Results
 #check_failure KIP126.Computation.Bindings
 end Tests.Computation
+
+-- Direct ordinary imports must keep the new comparison helper private.
+#check_failure KIP126.Computation.Table.sourceValue
+#check_failure KIP126.Computation.Table.value_comparison

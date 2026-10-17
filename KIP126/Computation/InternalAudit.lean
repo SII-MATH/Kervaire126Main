@@ -7,6 +7,7 @@ import all KIP126.Computation.Table
 import all KIP126.Computation.Table.Archive
 import all KIP126.Computation.Table.Data
 import all KIP126.Computation.Table.Dimensions
+import all KIP126.Computation.Table.Internal.SourceExpression
 import all KIP126.Computation.Table.Internal.ZeroDimension
 import all KIP126.Computation.Table.Relations
 import all KIP126.Computation.Table.Syntax

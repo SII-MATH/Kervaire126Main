@@ -111,7 +111,7 @@ private theorem lambda_eta_theta_square_independent
   have hsquare : FiltrationAtLeast model.syntheticTower 12
       (sphereProduct theta theta - sphereProduct theta' theta') := by
     rw [Internal.Choice.theta_square_difference theta theta'
-      (Internal.Choice.theta_degree_order_two theta')]
+      KIP126.Literature.Standard.bx_order_two]
     exact KIP126.Literature.Standard.action_filtration .sphere 62 64 62 64 6 6
       (theta-theta') (theta-theta') hgap hgap
   have herror := Internal.Selected.eta_weight128_branches_filtration_fifteen _
@@ -126,7 +126,9 @@ private theorem lambda_eta_theta_square_independent
         sphereProduct KIP126.Literature.Standard.eta (sphereProduct theta' theta') := by
     simp only [sphereProduct, Int.reduceAdd, CategoryTheory.Preadditive.comp_sub]
   rw [hlinear] at herror
-  have heq := Internal.High125.detector_injective_filtration15 _ herror (by
+  have heq := Internal.High125.detector_injective_filtration15 _ herror
+    (Internal.High125.eta_product_difference_order_two 124 128
+      (sphereProduct theta theta) (sphereProduct theta' theta')) (by
     rw [CategoryTheory.Preadditive.sub_comp,
       Internal.High125.synthetic_eta_theta_square_detector_zero theta,
       Internal.High125.synthetic_eta_theta_square_detector_zero theta', sub_self])

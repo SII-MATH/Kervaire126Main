@@ -39,9 +39,9 @@ private theorem target_nu_divisible (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensio
   have hzn := weak_initial_twice_h0_nonzero hc3 syntheticH0 z t ht he
   let theta := KIP126.Literature.Standard.bxTheta5
   have htheta : ThetaChoice theta := KIP126.Literature.Standard.bx_theta_label
-  obtain ⟨b,zTheta,hb,hzTheta,hToda⟩ := synthetic_theta_b_toda theta htheta
+  obtain ⟨b,zTheta,hb,hzTheta,hToda⟩ := synthetic_theta_b_toda theta htheta KIP126.Literature.Standard.bx_order_two
   obtain ⟨y,hf,hn⟩ := main_weak_high_representative eta KIP126.Literature.Standard.eta_label
-    syntheticH0 theta htheta b hb zTheta hzTheta (theta_b_multiplied_shuffle theta htheta b zTheta hToda) z hzn
+    syntheticH0 theta htheta b hb zTheta hzTheta (theta_b_multiplied_shuffle theta htheta KIP126.Literature.Standard.bx_order_two b zTheta hToda) z hzn
   have hd := model.sphereDetectionCompatible.homotopy_lambda 1 1 0 syntheticH0
   change Detects (model.convergence .sphere) (1,1,1)
     (sphereLabel 1 1 0 (KIP126.Literature.sphereFirstQuotient model 1 1 (quotientClass 1 syntheticH0)))

@@ -67,18 +67,45 @@ private theorem synthetic_theta_b_bracket_nonempty
   rw [Iso.inv_hom_id_assoc]
   exact hv
 
+private theorem tripleToda_right_order_two
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
+    (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))
+    (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum))
+    (hz : TripleToda theta syntheticTwo b z) : b+b=0 := by
+  let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)
+  let g := (SyntheticCategory.biShift_comp (0,0) (62,70)).inv.app (S_0_0:SyntheticSpectrum) ≫ F.map syntheticTwo
+  have hg : g=2 • 𝟙 (Smn 62 70 : SyntheticSpectrum) := by
+    have hc := model.quotients.coherence.left_unit (62,70) (S_0_0:SyntheticSpectrum)
+    change (biShiftAddIso (0,0) (62,70) (62,70) (by decide)).hom.app _=_ at hc
+    have he : (SyntheticCategory.biShift_comp (0,0) (62,70)).hom.app (S_0_0:SyntheticSpectrum)=
+        F.map (SyntheticCategory.biShift_zero.hom.app (S_0_0:SyntheticSpectrum)) := by
+      simpa only [biShiftAddIso,Iso.trans_hom,NatTrans.comp_app,eqToIso.hom,
+        eqToHom_app,eqToHom_refl,Category.comp_id,F] using hc
+    dsimp only [g,syntheticTwo]
+    rw [Functor.map_comp,←he,←Category.assoc,Iso.inv_hom_id_app,Category.id_comp]
+    simp only [Functor.map_nsmul]
+    change 2 • F.map (𝟙 (S_0_0 : SyntheticSpectrum)) = 2 • 𝟙 (F.obj (S_0_0 : SyntheticSpectrum))
+    rw [CategoryTheory.Functor.map_id]
+  have hb := (Toda.composable hz).2
+  change g ≫ b=0 at hb
+  rw [hg] at hb
+  simp only [two_smul,Preadditive.add_comp] at hb
+  erw [Category.id_comp] at hb
+  exact hb
+
 private theorem theta_b_multiplied_shuffle
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta)
+    (htheta2 : theta+theta=0)
     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))
     (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum))
     (hz : TripleToda theta syntheticTwo b z) :
-    lambdaMultiply 2 (sphereProduct KIP126.Literature.Standard.syntheticH0 z) =
-      lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta (sphereProduct theta b)) := by
-  have horder := Choice.theta_degree_order_two theta
-  exact theta_b_shuffle_from_low_degrees eta_unique_from_low_degrees
+    quotientClass 9 (lambdaMultiply 2 (sphereProduct KIP126.Literature.Standard.syntheticH0 z)) =
+      quotientClass 9 (lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta (sphereProduct theta b))) := by
+  exact theta_b_shuffle_from_low_degrees
     KIP126.Literature.Standard.syntheticH0 KIP126.Literature.Standard.eta
-    KIP126.Literature.Standard.toda_lambda_h0 theta b horder
-    (two_torsion_62_70 b) z hz (KIP126.Literature.Standard.toda_symmetric theta horder)
+    KIP126.Literature.Standard.toda_lambda_h0 theta b htheta2
+    (tripleToda_right_order_two theta b z hz) z hz
+    (KIP126.Literature.Standard.toda_symmetric theta htheta2)
 
 end
 end KIP126.Main.Internal.Theta
