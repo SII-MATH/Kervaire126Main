@@ -3,6 +3,9 @@ module
 public import KIP126.AdamsSynthetic.Standard.Filtration
 public import KIP126.AdamsSynthetic.MappingEnrichment
 public import KIP126.AdamsSynthetic.Enrichment
+public import Mathlib.Algebra.Polynomial.Eval.Defs
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Algebra.Module.RingHom
 public import KIP126.AdamsSynthetic.ESSShift
 public import KIP126.AdamsSynthetic.Weight
 public import KIP126.AdamsSynthetic.PageExtensions
@@ -102,7 +105,35 @@ public theorem mappingEnriched_composition_page : letI := mappingEnriched_monoid
       f.sequence.pageMap r (i+j) ((mappingEnriched_tensorPairing X Y Z).ssPairing.pair r i j x y) =
         (mappingComposition.pairing X Y Z).ssPairing.pair r i j x y := by sorry
 
-/-- Fixed MappingEnrichment.composition_eInfty; construction or proof deferred to its owning module. -/
+private theorem infinityToPageAt_naturality
+    {D D' : (ℤ × ℤ) → SSData (ModuleCat.{0} ℤ)}
+    (g : SSDataMorphism (ℤ × ℤ) D D') (p : ℤ × ℤ)
+    (n m : WithTop ℕ) (hn : n = m)
+    (z : (Subobject.underlying.obj ((D p).Z ⊤) : ModuleCat ℤ)) :
+    (g.pageMap p n ≫ eqToHom (congrArg (D' p).page hn))
+      ((Subobject.ofLE _ _ ((D p).Z_anti (le_top : n ≤ ⊤)) ≫ (D p).pageπ n) z) =
+      (Subobject.ofLE _ _ ((D' p).Z_anti (le_top : m ≤ ⊤)) ≫ (D' p).pageπ m)
+        (g.cycleMap p ⊤ z) := by
+  subst m
+  simp only [eqToHom_refl, Category.comp_id]
+  have h : (Subobject.ofLE _ _ ((D p).Z_anti (le_top : n ≤ ⊤)) ≫
+      (D p).pageπ n) ≫ g.pageMap p n =
+      g.cycleMap p ⊤ ≫ Subobject.ofLE _ _ ((D' p).Z_anti (le_top : n ≤ ⊤)) ≫
+        (D' p).pageπ n := by
+    rw [Category.assoc, g.pageπ_pageMap, ← Category.assoc,
+      g.cycleMap_ofLE p (le_top : n ≤ ⊤)]
+    exact Category.assoc _ _ _
+  exact congrArg (fun m => m z) h
+
+private theorem infinityToPage_naturality
+    {E E' : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) (ℤ × ℤ)}
+    (f : E ⟶ E') (r : ℤ) (p : ℤ × ℤ) (z : InfiniteCycles E p) :
+    f.pageMap r p (infinityToPage E r p z) =
+      infinityToPage E' r p (f.toSSDataMorphism.cycleMap p ⊤ z) := by
+  exact infinityToPageAt_naturality f.toSSDataMorphism p
+    ↑(r - E.r₀).toNat ↑(r - E'.r₀).toNat (by rw [f.r₀_eq]) z
+
+/-- Enriched composition agrees at E∞ by its page law on common infinite cycles. -/
 public theorem mappingEnriched_composition_eInfty : letI := mappingEnriched_monoidal
     ∀ (X Y Z : MappingObject (IsFiniteSpectrum (C := Spectrum))) (i j : ℤ × ℤ)
       (x : ((mappingSystem.hom X Y).underlying.E.ssData i).eInfty)
@@ -112,7 +143,49 @@ public theorem mappingEnriched_composition_eInfty : letI := mappingEnriched_mono
           (mappingEnriched_hom_eq X Y).symm (mappingEnriched_hom_eq Y Z).symm) ≫ mappingEnriched_enriched.comp X Y Z ≫
             eqToHom (mappingEnriched_hom_eq X Z)
       f.sequence.eInftyMap (i+j) ((mappingEnriched_tensorPairing X Y Z).eInftyPair i j x y) =
-        (mappingComposition.pairing X Y Z).eInftyPair i j x y := by sorry
+        (mappingComposition.pairing X Y Z).eInftyPair i j x y := by
+  letI := mappingEnriched_monoidal
+  intro X Y Z i j x y
+  let f : (mappingSystem.hom X Y ⊗ mappingSystem.hom Y Z) ⟶ mappingSystem.hom X Z :=
+    eqToHom (congrArg₂ (fun A B : ConvergingSequence.{0,0} ℤ => A ⊗ B)
+      (mappingEnriched_hom_eq X Y).symm (mappingEnriched_hom_eq Y Z).symm) ≫
+        mappingEnriched_enriched.comp X Y Z ≫ eqToHom (mappingEnriched_hom_eq X Z)
+  let P := mappingEnriched_tensorPairing X Y Z
+  let Q := mappingComposition.pairing X Y Z
+  haveI : Epi (((mappingSystem.hom X Y).underlying.E.ssData i).pageπ ⊤) :=
+    inferInstanceAs (Epi (cokernel.π _))
+  haveI : Epi (((mappingSystem.hom Y Z).underlying.E.ssData j).pageπ ⊤) :=
+    inferInstanceAs (Epi (cokernel.π _))
+  obtain ⟨a, rfl⟩ := (ModuleCat.epi_iff_surjective
+    (((mappingSystem.hom X Y).underlying.E.ssData i).pageπ ⊤)).mp inferInstance x
+  obtain ⟨b, rfl⟩ := (ModuleCat.epi_iff_surjective
+    (((mappingSystem.hom Y Z).underlying.E.ssData j).pageπ ⊤)).mp inferInstance y
+  have h₀ (U V : MappingObject (IsFiniteSpectrum (C := Spectrum))) :
+      (mappingSystem.hom U V).underlying.E.r₀ ≤ 2 :=
+    le_of_eq (classical.firstPage _)
+  have hT : (mappingSystem.hom X Y ⊗ mappingSystem.hom Y Z).underlying.E.r₀ ≤ 2 :=
+    f.sequence.r₀_eq.le.trans (h₀ X Z)
+  have h := mappingEnriched_composition_page X Y Z 2 i j
+    (infinityToPage _ 2 i a) (infinityToPage _ 2 j b)
+  change f.sequence.pageMap 2 (i+j)
+      (P.ssPairing.pair 2 i j (infinityToPage _ 2 i a) (infinityToPage _ 2 j b)) =
+    Q.ssPairing.pair 2 i j (infinityToPage _ 2 i a) (infinityToPage _ 2 j b) at h
+  rw [P.finitePagePair_compatible 2 i j (h₀ X Y) (h₀ Y Z) hT,
+    infinityToPage_naturality,
+    Q.finitePagePair_compatible 2 i j (h₀ X Y) (h₀ Y Z) (h₀ X Z)] at h
+  have hinf := ((mappingSystem.hom X Z).underlying.E.ssData (i+j)).infinity_projection_eq_of_page_projection_eq
+    ↑(2 - (mappingSystem.hom X Z).underlying.E.r₀).toNat
+    (f.sequence.toSSDataMorphism.cycleMap (i+j) ⊤ (P.cyclePairAtInfinity i j a b))
+    (Q.cyclePairAtInfinity i j a b) h
+  have htop := congrArg (fun m => m (P.cyclePairAtInfinity i j a b))
+    (f.sequence.toSSDataMorphism.pageπ_pageMap (i+j) ⊤)
+  change f.sequence.eInftyMap (i+j)
+      (P.eInftyPair i j (((mappingSystem.hom X Y).underlying.E.ssData i).pageπ ⊤ a)
+        (((mappingSystem.hom Y Z).underlying.E.ssData j).pageπ ⊤ b)) =
+    Q.eInftyPair i j (((mappingSystem.hom X Y).underlying.E.ssData i).pageπ ⊤ a)
+      (((mappingSystem.hom Y Z).underlying.E.ssData j).pageπ ⊤ b)
+  rw [← P.eInftyPair_induced, ← Q.eInftyPair_induced]
+  exact htop.trans hinf
 
 /-- Fixed MappingEnrichment.composition_abutment; construction or proof deferred to its owning module. -/
 public theorem mappingEnriched_composition_abutment : letI := mappingEnriched_monoidal
@@ -138,12 +211,28 @@ public theorem mappingEnriched_identity_page : letI := mappingEnriched_monoidal
         mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
       f.sequence.pageMap r (0,0) (mappingEnriched_unit_data.page r) = (mappingComposition.identity X).page r := by sorry
 
-/-- Fixed MappingEnrichment.identity_eInfty; construction or proof deferred to its owning module. -/
+/-- The enriched identity agrees at E∞ by its page law on the same infinite cycle. -/
 public theorem mappingEnriched_identity_eInfty : letI := mappingEnriched_monoidal
     ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
       let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
         mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
-      f.sequence.eInftyMap (0,0) mappingEnriched_unit_data.eInfty = (mappingComposition.identity X).eInfty := by sorry
+      f.sequence.eInftyMap (0,0) mappingEnriched_unit_data.eInfty = (mappingComposition.identity X).eInfty := by
+  letI := mappingEnriched_monoidal
+  intro X
+  let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
+    mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
+  have h := mappingEnriched_identity_page X 2
+  change f.sequence.pageMap 2 (0,0)
+      (infinityToPage _ 2 (0,0) mappingEnriched_unit_data.cycle) =
+    infinityToPage _ 2 (0,0) (mappingComposition.identity X).cycle at h
+  rw [infinityToPage_naturality] at h
+  have hinf := ((mappingSystem.hom X X).underlying.E.ssData (0,0)).infinity_projection_eq_of_page_projection_eq
+      ↑(2 - (mappingSystem.hom X X).underlying.E.r₀).toNat
+      (f.sequence.toSSDataMorphism.cycleMap (0,0) ⊤ mappingEnriched_unit_data.cycle)
+      (mappingComposition.identity X).cycle h
+  have htop := congrArg (fun m => m mappingEnriched_unit_data.cycle)
+    (f.sequence.toSSDataMorphism.pageπ_pageMap (0,0) ⊤)
+  exact htop.trans hinf
 
 /-- Fixed MappingEnrichment.identity_abutment; construction or proof deferred to its owning module. -/
 public theorem mappingEnriched_identity_abutment : letI := mappingEnriched_monoidal
@@ -194,14 +283,64 @@ public theorem graded_coherence : BiShiftCoherence SyntheticSpectrum := quotient
 /-- Fixed GradedLambdaEnrichment.shiftAdditive; construction or proof deferred to its owning module. -/
 public theorem graded_shiftAdditive : ∀ p : ℤ × ℤ, (SyntheticCategory.biShift p : SyntheticSpectrum ⥤ SyntheticSpectrum).Additive := exactness.shiftAdditive
 
-/-- Fixed GradedLambdaEnrichment.module; construction or proof deferred to its owning module. -/
-@[implicit_reducible] public def graded_module : ∀ X Y : SyntheticSpectrum, Module (Polynomial ℤ) (TotalWeightHom X Y) := by sorry
+/-! The total λ map is the direct-sum extension of actual precomposition.
+The polynomial action evaluates at this same map, with no new graded object. -/
 
-/-- Fixed GradedLambdaEnrichment.lambda_smul; construction or proof deferred to its owning module. -/
+private def totalLambda (X Y : SyntheticSpectrum) :
+    TotalWeightHom X Y →ₗ[ℤ] TotalWeightHom X Y :=
+  (DirectSum.toAddMonoid fun w =>
+    (weightHomInclusion (w-1)).comp
+      (Preadditive.leftComp Y
+        (weightHomLambda (X := X) (𝟙 ((SyntheticCategory.biShift (0,w)).obj X))))).toIntLinearMap
+
+private theorem totalLambda_of (X Y : SyntheticSpectrum) (w : ℤ) (f : WeightHom X Y w) :
+    totalLambda X Y (weightHomInclusion w f) =
+      weightHomInclusion (w-1) (weightHomLambda f) := by
+  change DirectSum.toAddMonoid
+    (fun v : ℤ => (DirectSum.of (WeightHom X Y) (v-1)).comp
+      (Preadditive.leftComp Y
+        (weightHomLambda (X := X) (𝟙 ((SyntheticCategory.biShift (0,v)).obj X)))))
+    (DirectSum.of (WeightHom X Y) w f) =
+      DirectSum.of (WeightHom X Y) (w-1) (weightHomLambda f)
+  rw [DirectSum.toAddMonoid_of]
+  change DirectSum.of (WeightHom X Y) (w-1)
+      ((weightHomLambda (X := X) (𝟙 ((SyntheticCategory.biShift (0,w)).obj X))) ≫ f) =
+    DirectSum.of (WeightHom X Y) (w-1) (weightHomLambda f)
+  apply congrArg (DirectSum.of (WeightHom X Y) (w-1))
+  dsimp only [weightHomLambda, Functor.id_obj, Functor.comp_obj]
+  rw [Category.comp_id, Category.assoc]
+
+/-- The polynomial action obtained by evaluating X at actual graded λ. -/
+@[implicit_reducible] public def graded_module : ∀ X Y : SyntheticSpectrum, Module (Polynomial ℤ) (TotalWeightHom X Y) := by
+  intro X Y
+  exact
+    (fun (M : Type) [AddCommGroup M] (D : M →+ M) =>
+      let A := Module.End ℤ M
+      letI : Ring A := inferInstance
+      let ring : NonAssocRing A := inferInstance
+      letI : Module A M := inferInstance
+      let L : A := D.toIntLinearMap
+      let hom : Polynomial ℤ →+* A :=
+        Polynomial.eval₂RingHom' (Int.castRingHom A) L
+          (fun a => @Int.cast_commute A ring a L)
+      Module.compHom M hom)
+      (TotalWeightHom X Y)
+      (DirectSum.toAddMonoid fun w =>
+        (weightHomInclusion (w-1)).comp
+          (Preadditive.leftComp Y
+            (weightHomLambda (X := X) (𝟙 ((SyntheticCategory.biShift (0,w)).obj X)))))
+
+
+/-- The polynomial generator acts by the specified degree-lowering λ map. -/
 public theorem graded_lambda_smul : ∀ (X Y : SyntheticSpectrum) (w : ℤ) (f : WeightHom X Y w),
     letI := graded_module X Y
     (Polynomial.X : Polynomial ℤ) • weightHomInclusion w f =
-      weightHomInclusion (w-1) (weightHomLambda f) := by sorry
+      weightHomInclusion (w-1) (weightHomLambda f) := by
+  intro X Y w f
+  letI := graded_module X Y
+  change (Polynomial.eval₂ (Int.castRingHom _) (totalLambda X Y) Polynomial.X) _ = _
+  rw [Polynomial.eval₂_X]
+  exact totalLambda_of X Y w f
 
 /-- Fixed GradedLambdaEnrichment.compose; construction or proof deferred to its owning module. -/
 public def graded_compose : ∀ X Y Z : SyntheticSpectrum,

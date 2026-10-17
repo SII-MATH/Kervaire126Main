@@ -13,6 +13,7 @@ namespace KIP126.AdamsSynthetic.Standard
 open CategoryTheory CategoryTheory.Limits MonoidalCategory
 open KIP126.StableHomotopy KIP126.Classical.Adams
 noncomputable section
+set_option backward.isDefEq.respectTransparency false
 
 /-- The closed symmetric tensor structure of the fixed category of spectra. -/
 public def closedBackground : ClosedSymmetricTensorTriangulated Spectrum := by sorry
@@ -61,11 +62,77 @@ public theorem filtration_excludes_nonzero (X : Spectrum) (hX : IsFiniteSpectrum
   boundedness.excludes_nonzero X hX hr hl i
 
 public def homologyShift (X : Spectrum) :
-    coefficients.object ⊗ X⟦(1 : ℤ)⟧ ≅ (coefficients.object ⊗ X)⟦(1 : ℤ)⟧ := by sorry
+    coefficients.object ⊗ X⟦(1 : ℤ)⟧ ≅ (coefficients.object ⊗ X)⟦(1 : ℤ)⟧ := by
+  letI := closedBackground.symmetric
+  letI := closedBackground.tensorShift coefficients.object
+  exact (β_ coefficients.object (X⟦(1 : ℤ)⟧)) ≪≫
+    ((tensorRight coefficients.object).commShiftIso (1 : ℤ)).app X ≪≫
+    (shiftFunctor Spectrum (1 : ℤ)).mapIso (β_ coefficients.object X).symm
+
+private theorem desuspend_injective (X : Spectrum) (i : ℤ) :
+    Function.Injective (AbstractAdamsTower.desuspend X i) := by
+  let e := (shiftFunctorAdd' Spectrum i (-1) (i - 1) (by omega)).app SphereSpectrum
+  let d := (shiftFunctorCompIsoId Spectrum 1 (-1) (by omega)).app X
+  intro a b h
+  change e.hom ≫ (shiftFunctor Spectrum (-1 : ℤ)).map a ≫ d.hom =
+    e.hom ≫ (shiftFunctor Spectrum (-1 : ℤ)).map b ≫ d.hom at h
+  apply (shiftFunctor Spectrum (-1 : ℤ)).map_injective
+  apply (cancel_epi e.hom).mp
+  apply (cancel_mono d.hom).mp
+  simpa only [Category.assoc] using h
+
+private theorem homology_triangle_distinguished (T : HoCofiberSequence (C := Spectrum)) :
+    Pretriangulated.Triangle.mk (coefficients.object ◁ T.f) (coefficients.object ◁ T.g)
+      (coefficients.object ◁ T.h ≫ (homologyShift T.X).hom) ∈ distTriang Spectrum := by
+  letI := closedBackground.symmetric
+  letI := closedBackground.tensorShift coefficients.object
+  letI := closedBackground.tensorExact coefficients.object
+  let F := tensorRight coefficients.object
+  refine Pretriangulated.isomorphic_distinguished _
+    (F.map_distinguished _ T.distinguished) _ ?_
+  refine Pretriangulated.Triangle.isoMk _ _ (β_ coefficients.object T.X)
+    (β_ coefficients.object T.Y) (β_ coefficients.object T.Z) ?_ ?_ ?_
+  · exact BraidedCategory.braiding_naturality_right _ T.f
+  · exact BraidedCategory.braiding_naturality_right _ T.g
+  · change (coefficients.object ◁ T.h ≫
+        ((β_ coefficients.object (T.X⟦(1 : ℤ)⟧)).hom ≫
+          ((tensorRight coefficients.object).commShiftIso (1 : ℤ)).hom.app T.X ≫
+          (shiftFunctor Spectrum (1 : ℤ)).map (β_ coefficients.object T.X).inv)) ≫
+        (shiftFunctor Spectrum (1 : ℤ)).map (β_ coefficients.object T.X).hom =
+      (β_ coefficients.object T.Z).hom ≫
+        (T.h ▷ coefficients.object ≫
+          ((tensorRight coefficients.object).commShiftIso (1 : ℤ)).hom.app T.X)
+    simp only [Category.assoc, ← Functor.map_comp, Iso.inv_hom_id,
+      BraidedCategory.braiding_naturality_right_assoc]
+    rw [(shiftFunctor Spectrum (1 : ℤ)).map_id ((tensorRight coefficients.object).obj T.X)]
+    exact congrArg (fun k => (β_ coefficients.object T.Z).hom ≫
+      T.h ▷ coefficients.object ≫ k)
+      (Category.comp_id (((tensorRight coefficients.object).commShiftIso (1 : ℤ)).hom.app T.X))
 
 public theorem homology_exact (T : HoCofiberSequence (C := Spectrum)) (i : ℤ) :
     Function.Exact (modTwoHomologyMap coefficients T.g i)
-      (modTwoConnecting coefficients homologyShift T i) := by sorry
+      (modTwoConnecting coefficients homologyShift T i) := by
+  let U := Pretriangulated.Triangle.mk (coefficients.object ◁ T.f)
+    (coefficients.object ◁ T.g) (coefficients.object ◁ T.h ≫ (homologyShift T.X).hom)
+  have hU : U ∈ distTriang Spectrum := homology_triangle_distinguished T
+  intro z
+  change AbstractAdamsTower.desuspend (coefficients.object ⊗ T.X) i
+    (z ≫ U.mor₃) = 0 ↔ ∃ y, y ≫ U.mor₂ = z
+  have hzero : AbstractAdamsTower.desuspend (coefficients.object ⊗ T.X) i
+      (z ≫ U.mor₃) = 0 ↔ z ≫ U.mor₃ = 0 := by
+    constructor
+    · intro hz
+      apply desuspend_injective (coefficients.object ⊗ T.X) i
+      simpa only [map_zero] using hz
+    · intro hz
+      rw [hz, map_zero]
+  rw [hzero]
+  constructor
+  · intro hz
+    obtain ⟨y, hy⟩ := Pretriangulated.Triangle.coyoneda_exact₃ U hU z hz
+    exact ⟨y, hy.symm⟩
+  · rintro ⟨y, rfl⟩
+    rw [Category.assoc, Pretriangulated.comp_distTriang_mor_zero₂₃ U hU, comp_zero]
 
 private def homologyExactness : ModTwoHomologyExactness coefficients :=
   ⟨homologyShift, homology_exact⟩

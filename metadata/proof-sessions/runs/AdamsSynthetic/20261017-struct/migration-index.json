@@ -1,0 +1,851 @@
+{
+  "kind": "independent-read-only-navigation",
+  "baseline_commit": "bef90640c4594af4db32c86837f9d95340d1e171",
+  "source_commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+  "no_source_proof_search_boundary": "git grep exact declaration/structural keywords under a48 KIP126/Def plus targeted source reads; absence is not an exhaustive mathematical nonexistence result",
+  "rows": [
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose_lambda_right",
+      "current_module": "KIP126.AdamsSynthetic.Enrichment",
+      "current_path": "KIP126/AdamsSynthetic/Enrichment.lean",
+      "baseline_line": 71,
+      "baseline_source_sha256": "3740cdc4a66423187c69416817a23e3599e4b14678d4b182e8a11e49a999f559",
+      "full_kernel_type": "∀ {Syn : Type u} [inst : KIP126.Synthetic.Context.SyntheticCategory.{u, v} Syn]\n  (E : KIP126.AdamsSynthetic.GradedLambdaEnrichment.{u, v} Syn) (X Y Z : Syn)\n  (g : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} Y Z) (f : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} X Y),\n  Eq.{v + 1}\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Z) g)\n      (HSMul.hSMul.{0, v, v} Polynomial.X.{0} f))\n    (HSMul.hSMul.{0, v, v} Polynomial.X.{0}\n      (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Z) g) f))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "任意 Syn : Type u、Hom universe v；实际 TotalWeightHom 上的 Polynomial ℤ 线性复合已作为 E 的输入。不是 Standard module/compose 的存在证明。",
+      "actual_proof_dependencies": [
+        "E.module",
+        "E.compose",
+        "LinearMap.map_smul",
+        "LinearMap.congr_fun"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose_lambda_left",
+      "current_module": "KIP126.AdamsSynthetic.Enrichment",
+      "current_path": "KIP126/AdamsSynthetic/Enrichment.lean",
+      "baseline_line": 83,
+      "baseline_source_sha256": "3740cdc4a66423187c69416817a23e3599e4b14678d4b182e8a11e49a999f559",
+      "full_kernel_type": "∀ {Syn : Type u} [inst : KIP126.Synthetic.Context.SyntheticCategory.{u, v} Syn]\n  (E : KIP126.AdamsSynthetic.GradedLambdaEnrichment.{u, v} Syn) (X Y Z : Syn)\n  (g : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} Y Z) (f : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} X Y),\n  Eq.{v + 1}\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Z) (HSMul.hSMul.{0, v, v} Polynomial.X.{0} g))\n      f)\n    (HSMul.hSMul.{0, v, v} Polynomial.X.{0}\n      (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Z) g) f))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "任意 Syn : Type u、Hom universe v；实际 TotalWeightHom 上的 Polynomial ℤ 线性复合已作为 E 的输入。不是 Standard module/compose 的存在证明。",
+      "actual_proof_dependencies": [
+        "E.module",
+        "E.compose",
+        "LinearMap.map_smul",
+        "LinearMap.congr_fun"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.left_unit",
+      "current_module": "KIP126.AdamsSynthetic.Enrichment",
+      "current_path": "KIP126/AdamsSynthetic/Enrichment.lean",
+      "baseline_line": 169,
+      "baseline_source_sha256": "3740cdc4a66423187c69416817a23e3599e4b14678d4b182e8a11e49a999f559",
+      "full_kernel_type": "∀ {Syn : Type u} [inst : KIP126.Synthetic.Context.SyntheticCategory.{u, v} Syn]\n  (E : KIP126.AdamsSynthetic.GradedLambdaEnrichment.{u, v} Syn) (X Y : Syn)\n  (f : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} X Y),\n  Eq.{v + 1}\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Y)\n        ((KIP126.AdamsSynthetic.weightHomInclusion.{u, v} 0)\n          (CategoryTheory.NatTrans.app.{v, v, u, u}\n            (CategoryTheory.Iso.hom.{max v u, max v u} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{u, v})\n            Y)))\n      f)\n    f",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 WeightHom、biShiftAddIso、实际 weightHomComp；a48 未搜到当前总分次 Polynomial enrichment 的完整对应生产者。",
+      "actual_proof_dependencies": [
+        "E.coherence",
+        "E.compose_homogeneous",
+        "DirectSum.induction_on",
+        "private homogeneous_regrade/unit/assoc"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.right_unit",
+      "current_module": "KIP126.AdamsSynthetic.Enrichment",
+      "current_path": "KIP126/AdamsSynthetic/Enrichment.lean",
+      "baseline_line": 179,
+      "baseline_source_sha256": "3740cdc4a66423187c69416817a23e3599e4b14678d4b182e8a11e49a999f559",
+      "full_kernel_type": "∀ {Syn : Type u} [inst : KIP126.Synthetic.Context.SyntheticCategory.{u, v} Syn]\n  (E : KIP126.AdamsSynthetic.GradedLambdaEnrichment.{u, v} Syn) (X Y : Syn)\n  (f : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} X Y),\n  Eq.{v + 1}\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X X Y) f)\n      ((KIP126.AdamsSynthetic.weightHomInclusion.{u, v} 0)\n        (CategoryTheory.NatTrans.app.{v, v, u, u}\n          (CategoryTheory.Iso.hom.{max v u, max v u} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{u, v})\n          X)))\n    f",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 WeightHom、biShiftAddIso、实际 weightHomComp；a48 未搜到当前总分次 Polynomial enrichment 的完整对应生产者。",
+      "actual_proof_dependencies": [
+        "E.coherence",
+        "E.compose_homogeneous",
+        "DirectSum.induction_on",
+        "private homogeneous_regrade/unit/assoc"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.GradedLambdaEnrichment.assoc",
+      "current_module": "KIP126.AdamsSynthetic.Enrichment",
+      "current_path": "KIP126/AdamsSynthetic/Enrichment.lean",
+      "baseline_line": 191,
+      "baseline_source_sha256": "3740cdc4a66423187c69416817a23e3599e4b14678d4b182e8a11e49a999f559",
+      "full_kernel_type": "∀ {Syn : Type u} [inst : KIP126.Synthetic.Context.SyntheticCategory.{u, v} Syn]\n  (E : KIP126.AdamsSynthetic.GradedLambdaEnrichment.{u, v} Syn) (W X Y Z : Syn)\n  (f : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} W X) (g : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} X Y)\n  (h : KIP126.AdamsSynthetic.TotalWeightHom.{u, v} Y Z),\n  Eq.{v + 1}\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E W Y Z) h)\n      (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E W X Y) g) f))\n    (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E W X Z)\n        (((KIP126.AdamsSynthetic.GradedLambdaEnrichment.compose.{u, v} E X Y Z) h) g))\n      f)",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 WeightHom、biShiftAddIso、实际 weightHomComp；a48 未搜到当前总分次 Polynomial enrichment 的完整对应生产者。",
+      "actual_proof_dependencies": [
+        "E.coherence",
+        "E.compose_homogeneous",
+        "DirectSum.induction_on",
+        "private homogeneous_regrade/unit/assoc"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_associative",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 93,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (W X Y Z : KIP126.AdamsSynthetic.MappingObject.{u} scope)\n  (i j k : Prod.{0, 0} ℤ ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{v + 1, v}\n        (KIP126.Core.SpectralSequence.PreSS.ssData.{v + 1, v, 0}\n          (KIP126.Core.SpectralSequence.toPreSS.{v + 1, v, 0}\n            (KIP126.Core.SpectralSequence.ConvergingSS.E.{v + 1, v, 0}\n              (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n                (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S W X))))\n          i)))\n  (y :\n    ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{v + 1, v}\n        (KIP126.Core.SpectralSequence.PreSS.ssData.{v + 1, v, 0}\n          (KIP126.Core.SpectralSequence.toPreSS.{v + 1, v, 0}\n            (KIP126.Core.SpectralSequence.ConvergingSS.E.{v + 1, v, 0}\n              (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n                (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))))\n          j)))\n  (z :\n    ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{v + 1, v}\n        (KIP126.Core.SpectralSequence.PreSS.ssData.{v + 1, v, 0}\n          (KIP126.Core.SpectralSequence.toPreSS.{v + 1, v, 0}\n            (KIP126.Core.SpectralSequence.ConvergingSS.E.{v + 1, v, 0}\n              (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n                (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S Y Z))))\n          k))),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W Y Z) (HAdd.hAdd.{0, 0, 0} i j) k)\n        (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n              (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W X Y) i j)\n            x)\n          y))\n      z)\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W X Z) i (HAdd.hAdd.{0, 0, 0} j k))\n        x)\n      (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n            (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X Y Z) j k)\n          y)\n        z))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 S/B/P/scope 的 actual mapping systems；E∞ 用共同无限 cycle quotient，非任取有限页代表。",
+      "actual_proof_dependencies": [
+        "M.page_associative/page_left_unital/page_right_unital",
+        "M.identity",
+        "ConvergingSSPairing.finitePagePair_compatible",
+        "ConvergingSSPairing.eInftyPair_induced",
+        "SSData.infinity_projection_eq_of_page_projection_eq",
+        "cokernel π surjective"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_left_unital",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 124,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (X Y : KIP126.AdamsSynthetic.MappingObject.{u} scope)\n  (k : Prod.{0, 0} ℤ ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{v + 1, v}\n        (KIP126.Core.SpectralSequence.PreSS.ssData.{v + 1, v, 0}\n          (KIP126.Core.SpectralSequence.toPreSS.{v + 1, v, 0}\n            (KIP126.Core.SpectralSequence.ConvergingSS.E.{v + 1, v, 0}\n              (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n                (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))))\n          k))),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X X Y) (Prod.mk.{0, 0} 0 0) k)\n        (KIP126.Core.SpectralSequence.ConvergingSSUnit.eInfty.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.identity.{u, v} M X)))\n      x)\n    x",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 S/B/P/scope 的 actual mapping systems；E∞ 用共同无限 cycle quotient，非任取有限页代表。",
+      "actual_proof_dependencies": [
+        "M.page_associative/page_left_unital/page_right_unital",
+        "M.identity",
+        "ConvergingSSPairing.finitePagePair_compatible",
+        "ConvergingSSPairing.eInftyPair_induced",
+        "SSData.infinity_projection_eq_of_page_projection_eq",
+        "cokernel π surjective"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.eInfty_right_unital",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 140,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (X Y : KIP126.AdamsSynthetic.MappingObject.{u} scope)\n  (k : Prod.{0, 0} ℤ ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{v + 1, v}\n        (KIP126.Core.SpectralSequence.PreSS.ssData.{v + 1, v, 0}\n          (KIP126.Core.SpectralSequence.toPreSS.{v + 1, v, 0}\n            (KIP126.Core.SpectralSequence.ConvergingSS.E.{v + 1, v, 0}\n              (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n                (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))))\n          k))),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.eInftyPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X Y Y) k (Prod.mk.{0, 0} 0 0))\n        x)\n      (KIP126.Core.SpectralSequence.ConvergingSSUnit.eInfty.{0, v}\n        (KIP126.AdamsSynthetic.MappingComposition.identity.{u, v} M Y)))\n    x",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 S/B/P/scope 的 actual mapping systems；E∞ 用共同无限 cycle quotient，非任取有限页代表。",
+      "actual_proof_dependencies": [
+        "M.page_associative/page_left_unital/page_right_unital",
+        "M.identity",
+        "ConvergingSSPairing.finitePagePair_compatible",
+        "ConvergingSSPairing.eInftyPair_induced",
+        "SSData.infinity_projection_eq_of_page_projection_eq",
+        "cokernel π surjective"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_associative",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 233,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (W X Y Z : KIP126.AdamsSynthetic.MappingObject.{u} scope)\n  (i j k : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.ConvergingSS.A.{v + 1, v, 0}\n        (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n          (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S W X))\n        i))\n  (y :\n    ↑(KIP126.Core.SpectralSequence.ConvergingSS.A.{v + 1, v, 0}\n        (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n          (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))\n        j))\n  (z :\n    ↑(KIP126.Core.SpectralSequence.ConvergingSS.A.{v + 1, v, 0}\n        (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n          (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S Y Z))\n        k)),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W Y Z) (HAdd.hAdd.{0, 0, 0} i j) k)\n        (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n              (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W X Y) i j)\n            x)\n          y))\n      z)\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M W X Z) i (HAdd.hAdd.{0, 0, 0} j k))\n        x)\n      (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n            (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X Y Z) j k)\n          y)\n        z))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 closed adjunction 的 mappingHomotopyEquiv；比较 actual shifted map composition，保留 M 的实际 compatibility 输入。",
+      "actual_proof_dependencies": [
+        "M.abutment_compatible",
+        "M.identity_actual",
+        "mappingHomotopyEquiv",
+        "shiftFunctorAdd_assoc_hom_app",
+        "shiftFunctorAdd_zero_add_hom_app",
+        "shiftFunctorAdd_add_zero_hom_app"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_left_unital",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 217,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (X Y : KIP126.AdamsSynthetic.MappingObject.{u} scope) (n : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.ConvergingSS.A.{v + 1, v, 0}\n        (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n          (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))\n        n)),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X X Y) 0 n)\n        (KIP126.Core.SpectralSequence.ConvergingSSUnit.abutment.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.identity.{u, v} M X)))\n      x)\n    x",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 closed adjunction 的 mappingHomotopyEquiv；比较 actual shifted map composition，保留 M 的实际 compatibility 输入。",
+      "actual_proof_dependencies": [
+        "M.abutment_compatible",
+        "M.identity_actual",
+        "mappingHomotopyEquiv",
+        "shiftFunctorAdd_assoc_hom_app",
+        "shiftFunctorAdd_zero_add_hom_app",
+        "shiftFunctorAdd_add_zero_hom_app"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingComposition.abutment_right_unital",
+      "current_module": "KIP126.AdamsSynthetic.MappingComposition",
+      "current_path": "KIP126/AdamsSynthetic/MappingComposition.lean",
+      "baseline_line": 225,
+      "baseline_source_sha256": "b85d2da1e0a938942ace0f9acea553bceecd998b68c87333954c46f39f1db487",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : C}\n  {unit : Quiver.Hom.{v, u} KIP126.StableHomotopy.SphereSpectrum.{u, v} H}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {P : KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} unit A} {scope : C → Prop}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P scope}\n  (M : KIP126.AdamsSynthetic.MappingComposition.{u, v} S) (X Y : KIP126.AdamsSynthetic.MappingObject.{u} scope) (n : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.ConvergingSS.A.{v + 1, v, 0}\n        (KIP126.Core.SpectralSequence.ConvergingSequence.underlying.{0, v}\n          (KIP126.AdamsSynthetic.MappingSpectrumSystem.hom.{u, v} S X Y))\n        n)),\n  HEq.{v + 1}\n    (((KIP126.Core.SpectralSequence.ConvergingSSPairing.abutmentPair.{0, v}\n          (KIP126.AdamsSynthetic.MappingComposition.pairing.{u, v} M X Y Y) n 0)\n        x)\n      (KIP126.Core.SpectralSequence.ConvergingSSUnit.abutment.{0, v}\n        (KIP126.AdamsSynthetic.MappingComposition.identity.{u, v} M Y)))\n    x",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 closed adjunction 的 mappingHomotopyEquiv；比较 actual shifted map composition，保留 M 的实际 compatibility 输入。",
+      "actual_proof_dependencies": [
+        "M.abutment_compatible",
+        "M.identity_actual",
+        "mappingHomotopyEquiv",
+        "shiftFunctorAdd_assoc_hom_app",
+        "shiftFunctorAdd_zero_add_hom_app",
+        "shiftFunctorAdd_add_zero_hom_app"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.graded_associative",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Operations",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Operations.lean",
+      "baseline_line": 316,
+      "baseline_source_sha256": "4e7e9e1916bbef4c18abba0510448a11b6b2a0b688e4db87c098d9afe8b24bd2",
+      "full_kernel_type": "∀ (W X Y Z : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum) (f : KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} W X)\n  (g : KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} X Y) (h : KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} Y Z),\n  Eq.{1}\n    (((KIP126.AdamsSynthetic.Standard.graded_compose W Y Z) h)\n      (((KIP126.AdamsSynthetic.Standard.graded_compose W X Y) g) f))\n    (((KIP126.AdamsSynthetic.Standard.graded_compose W X Z)\n        (((KIP126.AdamsSynthetic.Standard.graded_compose X Y Z) h) g))\n      f)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "固定 SyntheticSpectrum : Type 1、Hom universe 0 的 wrapper 基线已有；gradedEnrichment 存在仍传递依赖 graded_module/compose 等未证生产者。",
+      "actual_proof_dependencies": [
+        "Standard.gradedEnrichment",
+        "GradedLambdaEnrichment.assoc/left_unit/right_unit"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.graded_left_unit",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Operations",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Operations.lean",
+      "baseline_line": 322,
+      "baseline_source_sha256": "4e7e9e1916bbef4c18abba0510448a11b6b2a0b688e4db87c098d9afe8b24bd2",
+      "full_kernel_type": "∀ (X Y : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum) (f : KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} X Y),\n  Eq.{1}\n    (((KIP126.AdamsSynthetic.Standard.graded_compose X Y Y)\n        ((KIP126.AdamsSynthetic.weightHomInclusion.{1, 0} 0)\n          (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n            (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0}) Y)))\n      f)\n    f",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "固定 SyntheticSpectrum : Type 1、Hom universe 0 的 wrapper 基线已有；gradedEnrichment 存在仍传递依赖 graded_module/compose 等未证生产者。",
+      "actual_proof_dependencies": [
+        "Standard.gradedEnrichment",
+        "GradedLambdaEnrichment.assoc/left_unit/right_unit"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.graded_right_unit",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Operations",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Operations.lean",
+      "baseline_line": 327,
+      "baseline_source_sha256": "4e7e9e1916bbef4c18abba0510448a11b6b2a0b688e4db87c098d9afe8b24bd2",
+      "full_kernel_type": "∀ (X Y : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum) (f : KIP126.AdamsSynthetic.TotalWeightHom.{1, 0} X Y),\n  Eq.{1}\n    (((KIP126.AdamsSynthetic.Standard.graded_compose X X Y) f)\n      ((KIP126.AdamsSynthetic.weightHomInclusion.{1, 0} 0)\n        (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n          (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0}) X)))\n    f",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "固定 SyntheticSpectrum : Type 1、Hom universe 0 的 wrapper 基线已有；gradedEnrichment 存在仍传递依赖 graded_module/compose 等未证生产者。",
+      "actual_proof_dependencies": [
+        "Standard.gradedEnrichment",
+        "GradedLambdaEnrichment.assoc/left_unit/right_unit"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.sphereFirstQuotient",
+      "current_module": "KIP126.AdamsSynthetic.Compatibility",
+      "current_path": "KIP126/AdamsSynthetic/Compatibility.lean",
+      "baseline_line": 80,
+      "baseline_source_sha256": "69abbf22400a8b26f2189dc08a30e34185e590fee8ab64717e6cf42589ed97a3",
+      "full_kernel_type": "{C : Type u} →\n  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →\n    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →\n      {Syn : Type w} →\n        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →\n          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →\n            {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C} →\n              (N : KIP126.Synthetic.Context.NuFunctorData.{u, v, w, v} C Syn) →\n                {aux : KIP126.Kervaire.Route.AuxiliaryData.{u, v} C} →\n                  KIP126.Synthetic.Context.LambdaQuotientFunctoriality.{w, v} →\n                    KIP126.AdamsSynthetic.FirstQuotientComparison.{u, v, w} A N aux →\n                      (s t : ℤ) →\n                        LinearEquiv.{0, 0, v, v} (RingHom.id.{0} ℤ)\n                          (KIP126.Synthetic.Context.BiHom.{w, v} (HSub.hSub.{0, 0, 0} t s) t\n                            (KIP126.Synthetic.Context.XModLambdaN.{w, v} KIP126.Synthetic.Context.S_0_0.{w, v} 1))\n                          ↑(KIP126.Core.SpectralSequence.Page.{v + 1, v, 0}\n                              (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{u, v} A) 2 (Prod.mk.{0, 0} s t))",
+      "universes": [
+        "u",
+        "v",
+        "w"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/Comparison/ClassicalSynthetic/FirstQuotient/Restricted/Data.lean",
+        "line": 18,
+        "locator": "def sphereFirstQuotientOfLambdaFunctor",
+        "sha256": "542b9df2021029f380520f55227578a5a329ba4f1854155fd72222df6564b1a4"
+      },
+      "status": "当前已具备",
+      "object_conditions_and_differences": "a48 additive equivalence；当前提升为 ℤ-linear equivalence。相同 ν unit iso、零 shift iso 和 actual quotient functor；仅对象同构运输，不是 detection。",
+      "actual_proof_dependencies": [
+        "Q.functor 1 mapIso",
+        "N.unitIso",
+        "SyntheticCategory.biShift_zero",
+        "biHomTargetIso",
+        "supplied FirstQuotientComparison"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.convergence_natural",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 90,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "∀ (X Y : KIP126.Kervaire.Route.SyntheticObject)\n  (f :\n    Quiver.Hom.{0, 1}\n      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n        KIP126.AdamsSynthetic.Standard.auxiliary X)\n      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n        KIP126.AdamsSynthetic.Standard.auxiliary Y)),\n  Nonempty.{1}\n    (KIP126.AdamsSynthetic.ConvergentMap.{1, 0} KIP126.AdamsSynthetic.Standard.family f\n      (KIP126.AdamsSynthetic.SyntheticTowerConvergence.toConvergence.{1, 0}\n        (KIP126.AdamsSynthetic.Standard.convergence X))\n      (KIP126.AdamsSynthetic.SyntheticTowerConvergence.toConvergence.{1, 0}\n        (KIP126.AdamsSynthetic.Standard.convergence Y)))",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 60,
+        "locator": "  convergence_natural :",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 是 ComparisonCompatible 假设字段；当前是固定 Standard 的独立公开生产者目标，不能从 Standard.model 同名封装反向投影。",
+      "actual_proof_dependencies": [
+        "a48 ComparisonCompatible input field, not source proof",
+        "current fixed convergence/family/nu/firstQuotient"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "直接责任已完成，传递待补保留"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.first_quotient",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 95,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (a s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0} KIP126.AdamsSynthetic.Standard.classical\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X))\n        2 (Prod.mk.{0, 0} s t))),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence\n      (KIP126.Kervaire.Route.SyntheticObject.quotient 1\n        (KIP126.Kervaire.Route.SyntheticObject.shift (Prod.mk.{0, 0} 0 a)\n          (KIP126.Kervaire.Route.SyntheticObject.nu X))))\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HAdd.hAdd.{0, 0, 0} t a)))\n    ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.pageMap.{1, 0} KIP126.AdamsSynthetic.Standard.family\n          (KIP126.StableHomotopy.HasFunctorialCofiber.cofibι.{1, 0}\n            (KIP126.Synthetic.Context.lambdaPow.{1, 0} 1\n              (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 a))\n                (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                  (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)))))\n          2 (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HAdd.hAdd.{0, 0, 0} t a)))))\n      (Eq.mp.{1}\n        (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n          (congrArg.{1, 2}\n            (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n              (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}\n                (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0} KIP126.AdamsSynthetic.Standard.family\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 a))\n                    (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                      (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0} KIP126.AdamsSynthetic.Standard.nu)\n                      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0} KIP126.AdamsSynthetic.Standard.auxiliary X)))))\n              2)\n            (congrArg.{1, 1} (Prod.mk.{0, 0} s)\n              (congrArg.{1, 1} (Prod.mk.{0, 0} t)\n                (Eq.trans.{1} (congrArg.{1, 1} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t a)) Nat.cast_zero.{0})\n                  (sub_zero.{0} (HAdd.hAdd.{0, 0, 0} t a)))))))\n        ((KIP126.AdamsSynthetic.E2Comparison.nuE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison X a s t 0) x)))\n    ((LinearEquiv.symm.{0, 0, 0, 0} (KIP126.AdamsSynthetic.Standard.firstQuotient X a s t)) x)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 47,
+        "locator": "  nu_first_quotient :",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 是 ComparisonCompatible 假设字段；当前是固定 Standard 的独立公开生产者目标，不能从 Standard.model 同名封装反向投影。",
+      "actual_proof_dependencies": [
+        "a48 ComparisonCompatible input field, not source proof",
+        "current fixed convergence/family/nu/firstQuotient"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 106,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "∀ (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2\n        (Prod.mk.{0, 0} s t))),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence\n      (KIP126.Kervaire.Route.SyntheticObject.quotient 1 KIP126.Kervaire.Route.SyntheticObject.sphere))\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t t))\n    ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}\n        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.pageMap.{1, 0} KIP126.AdamsSynthetic.Standard.family\n          (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0} KIP126.Synthetic.Context.S_0_0.{1, 0} 1) 2\n          (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t t))))\n      (id.{1}\n        (Eq.mp.{1}\n          (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n            (congrArg.{1, 2}\n              (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}\n                  (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}\n                    KIP126.AdamsSynthetic.Standard.family KIP126.Synthetic.Context.S_0_0.{1, 0}))\n                2)\n              (congrArg.{1, 1} (Prod.mk.{0, 0} s)\n                (congrArg.{1, 1} (Prod.mk.{0, 0} t)\n                  (Eq.trans.{1} (congrArg.{1, 1} (HSub.hSub.{0, 0, 0} t) Nat.cast_zero.{0}) (sub_zero.{0} t))))))\n          ((KIP126.AdamsSynthetic.E2Comparison.sphereE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison s t 0) x))))\n    ((LinearEquiv.symm.{0, 0, 0, 0}\n        (KIP126.AdamsSynthetic.sphereFirstQuotient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n          (KIP126.Synthetic.Context.LambdaQuotientSystem.functoriality.{1, 0} KIP126.AdamsSynthetic.Standard.quotients)\n          KIP126.AdamsSynthetic.Standard.firstQuotient s t))\n      x)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 29,
+        "locator": "  first_quotient :",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 是 ComparisonCompatible 假设字段；当前是固定 Standard 的独立公开生产者目标，不能从 Standard.model 同名封装反向投影。",
+      "actual_proof_dependencies": [
+        "a48 ComparisonCompatible input field, not source proof",
+        "current fixed convergence/family/nu/firstQuotient"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "直接责任已完成，传递待补保留"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 113,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "∀ (s t : ℤ) (k : ℕ)\n  (x : KIP126.Synthetic.Context.BiHom.{1, 0} (HSub.hSub.{0, 0, 0} t s) t KIP126.Synthetic.Context.S_0_0.{1, 0}),\n  KIP126.AdamsSynthetic.Detects.{1, 0}\n    (KIP126.AdamsSynthetic.Standard.convergence KIP126.Kervaire.Route.SyntheticObject.sphere)\n    (Prod.mk.{0, 0} s (Prod.mk.{0, 0} t (HSub.hSub.{0, 0, 0} t ↑k)))\n    ((KIP126.AdamsSynthetic.E2Comparison.sphereE2.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison s t k)\n      ((KIP126.AdamsSynthetic.sphereFirstQuotient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.nu\n          (KIP126.Synthetic.Context.LambdaQuotientSystem.functoriality.{1, 0} KIP126.AdamsSynthetic.Standard.quotients)\n          KIP126.AdamsSynthetic.Standard.firstQuotient s t)\n        (KIP126.Synthetic.Context.quotientClass.{1, 0} 1 x)))\n    (KIP126.Synthetic.Context.lambdaMultiply.{1, 0} k x)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 32,
+        "locator": "  homotopy_lambda :",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 是 ComparisonCompatible 假设字段；当前是固定 Standard 的独立公开生产者目标，不能从 Standard.model 同名封装反向投影。",
+      "actual_proof_dependencies": [
+        "a48 ComparisonCompatible input field, not source proof",
+        "current fixed convergence/family/nu/firstQuotient"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.multiplicationCompatible",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 118,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "KIP126.AdamsSynthetic.MultiplicationCompatible.{1, 0, 1} KIP126.AdamsSynthetic.Standard.comparison\n  KIP126.AdamsSynthetic.Standard.sphereAlgebra\n  (KIP126.AdamsSynthetic.Standard.convergence KIP126.Kervaire.Route.SyntheticObject.sphere)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 70,
+        "locator": "def MultiplicationCompatible",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 Prop 定义和 AdamsComparison 的输入字段，不含该结论的证明；当前保留固定 sphere 实际 product、topological sign、完整自然数范围。",
+      "actual_proof_dependencies": [
+        "a48 AdamsComparison field",
+        "same Standard sphereAlgebra/comparison/convergence"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.sphereProductCommutative",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Background",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Background.lean",
+      "baseline_line": 120,
+      "baseline_source_sha256": "9052dd7a4488d6c50c4abf06d1a5fe12ae8300485d366066fd949a36ff9ddb1c",
+      "full_kernel_type": "KIP126.AdamsSynthetic.SphereProductCommutative.{0, 1}",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/AdamsSynthetic/Comparison/Predicates.lean",
+        "line": 92,
+        "locator": "def SphereProductCommutative",
+        "sha256": "24de62ee33ac83755155b8cd99cd91183476461c4bd4df250f80ecde912a0ff3"
+      },
+      "status": "源中仍未证明",
+      "object_conditions_and_differences": "a48 Prop 定义和 AdamsComparison 的输入字段，不含该结论的证明；当前保留固定 sphere 实际 product、topological sign、完整自然数范围。",
+      "actual_proof_dependencies": [
+        "a48 AdamsComparison field",
+        "same Standard sphereAlgebra/comparison/convergence"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中仍未证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift",
+      "current_module": "KIP126.AdamsSynthetic.Standard.FirstQuotientCompatibility",
+      "current_path": "KIP126/AdamsSynthetic/Standard/FirstQuotientCompatibility.lean",
+      "baseline_line": 22,
+      "baseline_source_sha256": "02b1951901c4263d46b4bfcbe38e1080ade1afd24258a509ab1a2eecbb518f3d",
+      "full_kernel_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (ε :\n    CategoryTheory.Iso.{0, 1}\n      (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n        (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n          (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X)))\n        1)\n      (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n        (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1))),\n  Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n            (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                X)))\n          1)\n        (CategoryTheory.Iso.hom.{0, 1} ε))\n      (CategoryTheory.Functor.map.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 0 1))\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1)) →\n    Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.homotopyRegrade.{1, 0}\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_1 s t)\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_2 s t)\n          (KIP126.AdamsSynthetic.shiftHomotopyClass.{0, 1} (Prod.mk.{0, 0} 0 1)\n            (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s) t)\n            (CategoryTheory.CategoryStruct.comp.{0, 1}\n              (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n                (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_3 s t)\n                ((LinearEquiv.symm.{0, 0, 0, 0}\n                    (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 0 s t))\n                  x))\n              (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n                (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                  (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X)))\n                1))))\n        (CategoryTheory.Iso.inv.{0, 1} ε))\n      ((LinearEquiv.symm.{0, 0, 0, 0}\n          (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 1 s t))\n        x)",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "源中没有对应证明",
+      "object_conditions_and_differences": "授权后新增的 strict first-quotient label compatibility；a48 只给 arbitrary first-quotient equivalence。ε 对所有 inclusion-compatible iso 量化；共同 detection 仅给较高滤过差，不能消去。",
+      "actual_proof_dependencies": [
+        "fixed Standard.firstQuotient construction remains pending",
+        "quotient map functoriality",
+        "actual biShift/nu suspension coherence",
+        "needed relevant-BiHom rigidity not yet supplied"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中没有对应证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.firstQuotient_suspension",
+      "current_module": "KIP126.AdamsSynthetic.Standard.FirstQuotientCompatibility",
+      "current_path": "KIP126/AdamsSynthetic/Standard/FirstQuotientCompatibility.lean",
+      "baseline_line": 40,
+      "baseline_source_sha256": "02b1951901c4263d46b4bfcbe38e1080ade1afd24258a509ab1a2eecbb518f3d",
+      "full_kernel_type": "∀ (X : KIP126.Kervaire.Route.ClassicalObject) (s t : ℤ)\n  (x :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            X))\n        2 (Prod.mk.{0, 0} s t)))\n  (sx :\n    ↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n        (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n          (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n            (KIP126.Kervaire.Route.ClassicalObject.shift 1 X)))\n        2 (Prod.mk.{0, 0} s (HAdd.hAdd.{0, 0, 0} t 1))))\n  (ε :\n    CategoryTheory.Iso.{0, 1}\n      (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n        (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n          (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X)))\n        1)\n      (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n        (KIP126.Synthetic.Context.XModLambdaN.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1))),\n  Eq.{1}\n      (CategoryTheory.CategoryStruct.comp.{0, 1}\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n            (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                X)))\n          1)\n        (CategoryTheory.Iso.hom.{0, 1} ε))\n      (CategoryTheory.Functor.map.{0, 0, 1, 1}\n        (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0} (Prod.mk.{0, 0} 1 1))\n        (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}\n          (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n            (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n            (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n              X))\n          1)) →\n    KIP126.AdamsSynthetic.ClassicalTowerSuspension.DesuspendsClass.{1, 0}\n        (KIP126.Kervaire.Route.ModelData.classicalSuspension.{1, 0, 1}\n          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X)\n        s (HAdd.hAdd.{0, 0, 0} t 1) sx\n        (Eq.mpr.{1}\n          (id.{0}\n            (congrArg.{2, 2} ModuleCat.carrier.{0, 0}\n              (congrArg.{1, 2}\n                (KIP126.Core.SpectralSequence.Page.{1, 0, 0}\n                  (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X))\n                  2)\n                (congrArg.{1, 1} (Prod.mk.{0, 0} s) (add_sub_cancel_right.{0} t 1)))))\n          x) →\n      Eq.{1}\n        (CategoryTheory.CategoryStruct.comp.{0, 1}\n          (CategoryTheory.CategoryStruct.comp.{0, 1}\n            (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n              (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_1 t)\n              ((LinearEquiv.symm.{0, 0, 0, 0}\n                  (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)\n                    (KIP126.Kervaire.Route.ClassicalObject.shift 1 X) 0 s (HAdd.hAdd.{0, 0, 0} t 1)))\n                sx))\n            (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n              (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                  (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                    (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    (KIP126.Kervaire.Route.ClassicalObject.shift 1 X))))\n              1))\n          (CategoryTheory.CategoryStruct.comp.{0, 1}\n            (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n              (CategoryTheory.Iso.hom.{0, 1}\n                (KIP126.Synthetic.Context.NuFunctorData.suspensionIso.{1, 0, 1, 0}\n                  (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                    X)))\n              1)\n            (CategoryTheory.Iso.hom.{0, 1} ε)))\n        (KIP126.Synthetic.Context.homotopyRegrade.{1, 0}\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_3 s t)\n          (KIP126.AdamsSynthetic.Standard.firstQuotient_suspension._proof_4 s t)\n          (KIP126.AdamsSynthetic.shiftHomotopyClass.{0, 1} (Prod.mk.{0, 0} 1 1)\n            (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s) t)\n            (CategoryTheory.CategoryStruct.comp.{0, 1}\n              (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} rfl.{1}\n                (KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift._proof_3 s t)\n                ((LinearEquiv.symm.{0, 0, 0, 0}\n                    (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}\n                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X 0 s t))\n                  x))\n              (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}\n                (CategoryTheory.NatTrans.app.{0, 0, 1, 1}\n                  (CategoryTheory.Iso.hom.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})\n                  (CategoryTheory.Functor.obj.{0, 0, 1, 1}\n                    (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}\n                      (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))\n                    (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}\n                      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}\n                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))\n                      X)))\n                1))))",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "源中没有对应证明",
+      "object_conditions_and_differences": "授权后新增的 strict first-quotient label compatibility；a48 只给 arbitrary first-quotient equivalence。ε 对所有 inclusion-compatible iso 量化；共同 detection 仅给较高滤过差，不能消去。",
+      "actual_proof_dependencies": [
+        "fixed Standard.firstQuotient construction remains pending",
+        "quotient map functoriality",
+        "actual biShift/nu suspension coherence",
+        "needed relevant-BiHom rigidity not yet supplied"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "源中没有对应证明",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.mapAdamsFiltration_zero",
+      "current_module": "KIP126.AdamsSynthetic.AdamsFiltration",
+      "current_path": "KIP126/AdamsSynthetic/AdamsFiltration.lean",
+      "baseline_line": 75,
+      "baseline_source_sha256": "12dcb22b5fe2aa4804f0a32bacaea9ffaa227eb22c4e2f47c92a2b00b46964bf",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  (P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A)\n  {X Y : C} (f : Quiver.Hom.{v, u} X Y), KIP126.AdamsSynthetic.MapAdamsFiltration.{u, v} P f 0",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一目标塔；finite filtration 保留 hX/hY finite 和 ¬IsOddTorsionMap。不会将 ordinary universal separation 当假设。",
+      "actual_proof_dependencies": [
+        "AbstractAdamsTower.zeroIso/map_self/projection_compat",
+        "FiniteMapSeparation P (only finite_filtration_of_not_odd)",
+        "Nat.find (only finite_filtration_of_not_odd)",
+        "Submodule.zero_mem"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.mapAdamsFiltration_mono",
+      "current_module": "KIP126.AdamsSynthetic.AdamsFiltration",
+      "current_path": "KIP126/AdamsSynthetic/AdamsFiltration.lean",
+      "baseline_line": 84,
+      "baseline_source_sha256": "12dcb22b5fe2aa4804f0a32bacaea9ffaa227eb22c4e2f47c92a2b00b46964bf",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  (P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A)\n  {X Y : C} (f : Quiver.Hom.{v, u} X Y) {s t : ℤ},\n  LE.le.{0} s t →\n    KIP126.AdamsSynthetic.MapAdamsFiltration.{u, v} P f t → KIP126.AdamsSynthetic.MapAdamsFiltration.{u, v} P f s",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一目标塔；finite filtration 保留 hX/hY finite 和 ¬IsOddTorsionMap。不会将 ordinary universal separation 当假设。",
+      "actual_proof_dependencies": [
+        "AbstractAdamsTower.zeroIso/map_self/projection_compat",
+        "FiniteMapSeparation P (only finite_filtration_of_not_odd)",
+        "Nat.find (only finite_filtration_of_not_odd)",
+        "Submodule.zero_mem"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.finite_filtration_of_not_odd",
+      "current_module": "KIP126.AdamsSynthetic.AdamsFiltration",
+      "current_path": "KIP126/AdamsSynthetic/AdamsFiltration.lean",
+      "baseline_line": 110,
+      "baseline_source_sha256": "12dcb22b5fe2aa4804f0a32bacaea9ffaa227eb22c4e2f47c92a2b00b46964bf",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  (P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A),\n  KIP126.AdamsSynthetic.FiniteMapSeparation.{u, v} P →\n    ∀ {X Y : C},\n      KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} X →\n        KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} Y →\n          ∀ (f : Quiver.Hom.{v, u} X Y),\n            ¬KIP126.AdamsSynthetic.IsOddTorsionMap.{u, v} f →\n              ∃ s, KIP126.AdamsSynthetic.ExactMapAdamsFiltration.{u, v} P f s",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一目标塔；finite filtration 保留 hX/hY finite 和 ¬IsOddTorsionMap。不会将 ordinary universal separation 当假设。",
+      "actual_proof_dependencies": [
+        "AbstractAdamsTower.zeroIso/map_self/projection_compat",
+        "FiniteMapSeparation P (only finite_filtration_of_not_odd)",
+        "Nat.find (only finite_filtration_of_not_odd)",
+        "Submodule.zero_mem"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.filtration_contains_zero",
+      "current_module": "KIP126.AdamsSynthetic.AdamsFiltration",
+      "current_path": "KIP126/AdamsSynthetic/AdamsFiltration.lean",
+      "baseline_line": 163,
+      "baseline_source_sha256": "12dcb22b5fe2aa4804f0a32bacaea9ffaa227eb22c4e2f47c92a2b00b46964bf",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  (P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A)\n  (X : C) (s i : ℤ),\n  Membership.mem.{v, v}\n    (KIP126.AdamsSynthetic.AbstractAdamsTower.filtrationSubmodule.{u, v}\n      (KIP126.AdamsSynthetic.ClassicalTowerPresentation.tower.{u, v} P X) s i)\n    0",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一目标塔；finite filtration 保留 hX/hY finite 和 ¬IsOddTorsionMap。不会将 ordinary universal separation 当假设。",
+      "actual_proof_dependencies": [
+        "AbstractAdamsTower.zeroIso/map_self/projection_compat",
+        "FiniteMapSeparation P (only finite_filtration_of_not_odd)",
+        "Nat.find (only finite_filtration_of_not_odd)",
+        "Submodule.zero_mem"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.ModTwoHomologyExactness.cofiber_card_bound",
+      "current_module": "KIP126.AdamsSynthetic.HomologyExactness",
+      "current_path": "KIP126/AdamsSynthetic/HomologyExactness.lean",
+      "baseline_line": 72,
+      "baseline_source_sha256": "61201aa0e6bf80fcef7f18afe3ed0b476efdd16c90a0cf3e97850f525d4febbe",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C} (E : KIP126.AdamsSynthetic.ModTwoHomologyExactness.{u, v} H)\n  (T : KIP126.StableHomotopy.HoCofiberSequence.{u, v}) (i : ℤ) (nX nY : ℕ),\n  (∀\n      (S :\n        Finset.{v}\n          (KIP126.AdamsSynthetic.ModTwoHomology.{u, v} H (HSub.hSub.{0, 0, 0} i 1)\n            (KIP126.StableHomotopy.HoCofiberSequence.X.{u, v} T))),\n      LE.le.{0} (Finset.card.{v} S) nX) →\n    (∀\n        (S :\n          Finset.{v}\n            (KIP126.AdamsSynthetic.ModTwoHomology.{u, v} H i (KIP126.StableHomotopy.HoCofiberSequence.Y.{u, v} T))),\n        LE.le.{0} (Finset.card.{v} S) nY) →\n      ∀\n        (S :\n          Finset.{v}\n            (KIP126.AdamsSynthetic.ModTwoHomology.{u, v} H i (KIP126.StableHomotopy.HoCofiberSequence.Z.{u, v} T))),\n        LE.le.{0} (Finset.card.{v} S) (HMul.hMul.{0, 0, 0} nX nY)",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "实际 connecting map 与 exact 输入固定；有限范围 hX/hY 是所有有限子集的基数上界，结论为 nX*nY。",
+      "actual_proof_dependencies": [
+        "E.exact",
+        "private exactEmbedding B ↪ A×D",
+        "Finset.card_map/card_product",
+        "Nat.mul_le_mul"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.nonzeroClassicalDetection_of_exact",
+      "current_module": "KIP126.AdamsSynthetic.MappingDetection",
+      "current_path": "KIP126/AdamsSynthetic/MappingDetection.lean",
+      "baseline_line": 49,
+      "baseline_source_sha256": "c566f2fa0cc696e1d5c90e1352155c9020e1047642305c3b62624f4b1d593a05",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A}\n  {X : C} (c : KIP126.AdamsSynthetic.ClassicalTowerConvergence.{u, v} P X) (p : Prod.{0, 0} ℤ ℤ)\n  (a : KIP126.StableHomotopy.HomotopyGroup.{u, v} (HSub.hSub.{0, 0, 0} p.2 p.1) X),\n  Membership.mem.{v, v}\n      (KIP126.AdamsSynthetic.AbstractAdamsTower.filtrationSubmodule.{u, v}\n        (KIP126.AdamsSynthetic.ClassicalTowerPresentation.tower.{u, v} P X) p.1 (HSub.hSub.{0, 0, 0} p.2 p.1))\n      a →\n    a ∉\n        KIP126.AdamsSynthetic.AbstractAdamsTower.filtrationSubmodule.{u, v}\n          (KIP126.AdamsSynthetic.ClassicalTowerPresentation.tower.{u, v} P X) (HAdd.hAdd.{0, 0, 0} p.1 1)\n          (HSub.hSub.{0, 0, 0} p.2 p.1) →\n      Nonempty.{v + 1} (KIP126.AdamsSynthetic.NonzeroClassicalDetection.{u, v} c p a)",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 actual mapping spectrum，实际 homotopy class 和 E∞ 共同见证。exact target filtration/finite hX hY/非奇挠条件全部保留。",
+      "actual_proof_dependencies": [
+        "ClassicalTowerConvergence.identification",
+        "actual filtration quotient nonzero criterion",
+        "cokernel π surjectivity",
+        "MappingFiltrationComparison.agrees",
+        "FiniteMapSeparation only in detect_non_odd"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detects_exact",
+      "current_module": "KIP126.AdamsSynthetic.MappingDetection",
+      "current_path": "KIP126/AdamsSynthetic/MappingDetection.lean",
+      "baseline_line": 122,
+      "baseline_source_sha256": "c566f2fa0cc696e1d5c90e1352155c9020e1047642305c3b62624f4b1d593a05",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v}},\n  KIP126.AdamsSynthetic.MappingDetectionInput.{u, v} B P S →\n    ∀ {X Y : C} (hX : KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} X)\n      (hY : KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} Y) (f : Quiver.Hom.{v, u} X Y) (s : ℤ),\n      KIP126.AdamsSynthetic.ExactMapAdamsFiltration.{u, v} P f s →\n        Nonempty.{v + 1}\n          (KIP126.AdamsSynthetic.NonzeroClassicalDetection.{u, v}\n            (KIP126.AdamsSynthetic.MappingSpectrumSystem.convergence.{u, v} S X Y hX hY) (Prod.mk.{0, 0} s s)\n            (KIP126.AdamsSynthetic.mappingClass.{u, v} B f s))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 actual mapping spectrum，实际 homotopy class 和 E∞ 共同见证。exact target filtration/finite hX hY/非奇挠条件全部保留。",
+      "actual_proof_dependencies": [
+        "ClassicalTowerConvergence.identification",
+        "actual filtration quotient nonzero criterion",
+        "cokernel π surjectivity",
+        "MappingFiltrationComparison.agrees",
+        "FiniteMapSeparation only in detect_non_odd"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.MappingDetectionInput.detect_non_odd",
+      "current_module": "KIP126.AdamsSynthetic.MappingDetection",
+      "current_path": "KIP126/AdamsSynthetic/MappingDetection.lean",
+      "baseline_line": 139,
+      "baseline_source_sha256": "c566f2fa0cc696e1d5c90e1352155c9020e1047642305c3b62624f4b1d593a05",
+      "full_kernel_type": "∀ {C : Type u} [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C]\n  [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] {H : KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C}\n  {A : KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C}\n  {P :\n    KIP126.AdamsSynthetic.ClassicalTowerPresentation.{u, v} (KIP126.StableHomotopy.ModTwoCoefficients.unit.{u, v} H) A}\n  {B : KIP126.StableHomotopy.ClosedSymmetricTensorTriangulated.{u, v} C}\n  {S : KIP126.AdamsSynthetic.MappingSpectrumSystem.{u, v} B P KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v}},\n  KIP126.AdamsSynthetic.MappingDetectionInput.{u, v} B P S →\n    KIP126.AdamsSynthetic.FiniteMapSeparation.{u, v} P →\n      ∀ {X Y : C} (hX : KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} X)\n        (hY : KIP126.AdamsSynthetic.IsFiniteSpectrum.{u, v} Y) (f : Quiver.Hom.{v, u} X Y),\n        ¬KIP126.AdamsSynthetic.IsOddTorsionMap.{u, v} f →\n          ∃ s,\n            KIP126.AdamsSynthetic.ExactMapAdamsFiltration.{u, v} P f s ∧\n              Nonempty.{v + 1}\n                (KIP126.AdamsSynthetic.NonzeroClassicalDetection.{u, v}\n                  (KIP126.AdamsSynthetic.MappingSpectrumSystem.convergence.{u, v} S X Y hX hY) (Prod.mk.{0, 0} s s)\n                  (KIP126.AdamsSynthetic.mappingClass.{u, v} B f s))",
+      "universes": [
+        "u",
+        "v"
+      ],
+      "exports_in_frozen_api": true,
+      "a48_source": null,
+      "status": "当前已具备",
+      "object_conditions_and_differences": "同一 actual mapping spectrum，实际 homotopy class 和 E∞ 共同见证。exact target filtration/finite hX hY/非奇挠条件全部保留。",
+      "actual_proof_dependencies": [
+        "ClassicalTowerConvergence.identification",
+        "actual filtration quotient nonzero criterion",
+        "cokernel π surjectivity",
+        "MappingFiltrationComparison.agrees",
+        "FiniteMapSeparation only in detect_non_odd"
+      ],
+      "next_step": "无需重复迁移；保留固定生产者的传递待补。",
+      "initial_source_status": "当前已具备",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    },
+    {
+      "current_declaration": "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff",
+      "current_module": "KIP126.AdamsSynthetic.Standard.Filtration",
+      "current_path": "KIP126/AdamsSynthetic/Standard/Filtration.lean",
+      "baseline_line": 28,
+      "baseline_source_sha256": "d8518c440822e3d592b24f0a4864220be0b9d7a76a75ebe38a7cefddb0628874",
+      "full_kernel_type": "∀ {X Y : KIP126.AdamsSynthetic.Standard.Spectrum} (f : Quiver.Hom.{0, 1} X Y) (s : ℤ),\n  KIP126.AdamsSynthetic.FactorizationFiltration.{1, 0} KIP126.AdamsSynthetic.Standard.coefficients f s ↔\n    KIP126.AdamsSynthetic.MapAdamsFiltration.{1, 0} KIP126.AdamsSynthetic.Standard.classicalTower f s",
+      "universes": [],
+      "exports_in_frozen_api": true,
+      "a48_source": {
+        "commit": "a484b981fad612eabe2bc7a01b54e049e9a01ce4",
+        "path": "KIP126/Def/ClassicalAdams/MapFiltration/Proofs.lean",
+        "line": 47,
+        "locator": "theorem AdamsFiltrationAtLeast.hasMod2ZeroFactorization",
+        "sha256": "7e25743bb63d35417bddd40623189671cd58c1342065fa6707e055c10fa0b174"
+      },
+      "status": "数学依赖阻塞",
+      "object_conditions_and_differences": "a48 只有 actual recursive HF₂ tower lift→zero-factorization 的显式方向。当前任意 frozen AbstractAdamsTower presentation、ModTwoCoefficients 不携带 Mod2RingStructure；反向 ghost lift 所需 projectivity/识别未在该证明给出。",
+      "actual_proof_dependencies": [
+        "a48 Mod2RingStructure H",
+        "tensorLeft H.HF2 PreservesZeroMorphisms",
+        "mod2_adamsTowerStep_eq_zero",
+        "actual adamsTower/chain and unit"
+      ],
+      "next_step": "保留直接待补；需从实际固定对象构造证明，不能将输入字段/axiom投影当证明。",
+      "initial_source_status": "数学依赖阻塞",
+      "session_result": "基线已有实现或原待补/研究状态保留；参阅各worker报告"
+    }
+  ],
+  "session_completed_direct_responsibilities": [
+    "KIP126.AdamsSynthetic.Standard.classical_page_negative",
+    "KIP126.AdamsSynthetic.Standard.convergence_natural",
+    "KIP126.AdamsSynthetic.Standard.graded_lambda_smul",
+    "KIP126.AdamsSynthetic.Standard.graded_module",
+    "KIP126.AdamsSynthetic.Standard.homologyShift",
+    "KIP126.AdamsSynthetic.Standard.homology_exact",
+    "KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty",
+    "KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_eInfty",
+    "KIP126.AdamsSynthetic.Standard.sphere_first_quotient",
+    "KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero"
+  ],
+  "source_mapping_supplements": [
+    "background/migration.md",
+    "filtration/migration.md",
+    "filtration/mapping-infinity.md",
+    "graded/REPORT.md",
+    "quotient/research.md",
+    "quotient/negative-filtration-followup.md",
+    "quotient-classical-support/REPORT.md",
+    "counterexamples/operations/report.md"
+  ],
+  "required_status_vocabulary": [
+    "当前已具备",
+    "可直接迁移",
+    "需要适配",
+    "接口人审阻塞",
+    "数学依赖阻塞",
+    "源中仍未证明",
+    "源中没有对应证明",
+    "本轮范围外"
+  ]
+}
