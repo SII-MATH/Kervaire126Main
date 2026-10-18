@@ -25,6 +25,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from blueprint_paper import load_paper, display_body, export_paper, validate_paper_graph, reference_targets, prepare_web_blueprint, resolve_paper_bindings
 import blueprint_semantic as semantic
 import blueprint_map
+import blueprint_memo
 from blueprint_annotations import sync_authoring_notes
 
 from hgraph.analysis import Analysis
@@ -70,7 +71,9 @@ def site_inputs():
              'Tests/test_blueprint.py', 'Tests/test_blueprint_semantic.py', 'Tests/test_blueprint_annotations.py', 'Tests/check_blueprint_formulae.py', 'hgraph/config.yaml', 'site/config.yaml', 'site/overview.html')]
     paths.extend(p for p in (ROOT / 'blueprint').rglob('*')
                  if p.is_file() and 'generated' not in p.parts)
-    paths.extend([ROOT / 'MEMO.md', ROOT / 'scripts/blueprint_map.py', ROOT / 'Tests/test_blueprint_map.py',
+    paths.extend([ROOT / 'corrections.yaml', ROOT / 'site/memo.html', ROOT / 'site/memo.css',
+                  ROOT / 'scripts/blueprint_memo.py', ROOT / 'scripts/preview-memo.py', ROOT / 'Tests/test_blueprint_memo.py',
+                  ROOT / 'scripts/blueprint_map.py', ROOT / 'Tests/test_blueprint_map.py',
                   ROOT / 'Tests/check_blueprint_map.py'])
     paths.extend(ROOT / 'AimPaper' / p for p in ('main.tex', '112.tex', 'main.bib', 'algtop.sty', '2412.10879.pdf'))
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -472,13 +475,14 @@ def stage_workspace():
     links = {workspace / 'config.yaml': ROOT / 'site/config.yaml',
              workspace / 'site': ROOT / 'site'}
     web_blueprint = prepare_web_blueprint(ROOT, STATE / 'web-blueprint')
-    links.update({project / name: ROOT / name for name in ('KIP126', 'hgraph', '.lake', 'MEMO.md')})
+    links.update({project / name: ROOT / name for name in ('KIP126', 'hgraph', '.lake', 'corrections.yaml')})
     links[project / 'blueprint'] = web_blueprint
     for target, source in links.items():
         if target.is_symlink() and target.resolve() != source.resolve():
             target.unlink()
         if not target.is_symlink():
             target.symlink_to(source, target_is_directory=source.is_dir())
+    blueprint_memo.stage_memo(ROOT, project)
     return workspace
 
 
@@ -555,6 +559,7 @@ def export_site(evidence, paper_records, out, still_current):
         write_from_manifest(workspace / 'config.yaml', out_path=staging / 'index.html')
         export_sources(staging)
         export_paper(ROOT, staging, paper_records)
+        evidence['memo'] = blueprint_memo.export_memo(ROOT, staging)
         evidence['blueprint_map'] = blueprint_map.export_map(ROOT, staging)
         (staging / 'validation.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
         (staging / 'inputs.json').write_text(json.dumps(evidence['inputs'], ensure_ascii=False, indent=2) + '\n')

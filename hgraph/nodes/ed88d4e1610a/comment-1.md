@@ -42,7 +42,7 @@ connecting maps. At page = r = 2, m = 0 and l = 2, all printed hypotheses
 hold while the conclusion would require a nonzero d_4 from a permanent
 HZ class. The low-filtration lambda-torsion obstruction survives division
 even though its lambda image vanishes. The complete construction and
-independent source checks are recorded in MEMO.md and
+independent source checks are recorded in corrections.yaml and
 `local-history/metadata/interface-reviews/ProofTools/20261018-gl-crossing-lambda-lift/report.md`.
 The example has not been realized in the fixed ClassicalObject closure;
 the current Lean GL interface has not been formally refuted. Its interface
@@ -57,7 +57,7 @@ inessential infinite extension to Pc_0, using sigma times lambda Ph_1 =
 lambda^2 Pc_0. The complete low-stem ring and original classical data rule
 out all three paper crossings, but the conclusion would be d_4(0) = Pc_0.
 This is an actual-sphere mathematical counterexample, not a Lean certificate
-transporting these elements to the deferred Standard.model. See MEMO.md
+transporting these elements to the deferred Standard.model. See corrections.yaml
 and the independent sigma-audit report in the archived session.
 
 The proved left edge is now used by the original GL proof. The actual
@@ -76,7 +76,7 @@ refer to the actual left or top edge and the propagated bottom edge, all at
 the same weight. The complete level-zero finite witness is compatible with
 the original definition. These private proofs retain existing upstream
 obligations and do not discharge either hole or alter the binding of the
-frozen public theorem. See the gl-level-2026-10-18 session and MEMO.md.
+frozen public theorem. See the gl-level-2026-10-18 session and corrections.yaml.
 
 The user subsequently instructed the session to follow the teacher's group replies. The level theorem now has its own public entry, Standard.generalizedLeibnizAtLevel, with exposed actual extension/crossing predicates and a public level-zero input conversion. This separately authorized addition leaves the old public GL and its two holes unchanged. Conditional finite lambda division additionally excludes essential small-layer extensions whose target is killed by the actual lambda map within the closed-source, open-target filtration triangle. See the gl-public-level-2026-10-18 session for the authorization and validation evidence.
 

@@ -1,0 +1,239 @@
+# Canonical AimPaper correction records. Authoring: docs/corrections.md
+version: 1
+scope: 局部修正不表示原论文已整体形式化，也不消除已登记的上游待补责任。AimPaper/main.tex 保留原文；原文与修正版分别由 AimPaper 和 Blueprint 节点维护。
+corrections:
+- id: mahowald
+  title: 广义 Mahowald trick 不能直接消去 λ 层
+  reference: THEOREM 6.12
+  status:
+    kind: proposed
+    label: 修正方案待证
+  original:
+    statements:
+    - '6.12'
+    source_line: 1780
+  revision:
+    nodes: []
+    note: 尚无已确定的完整修正版。
+  problem: |-
+    **原文与问题。** 原文标签 `thm:158d451a`，采用 Notation 2.2、Definition 5.4、Remark 5.7 的约定：素数为 2，谱为 2 完备的 connective finite-type 谱。证明末尾从带层关系
+
+    $$
+    d_n^{\hat f_r}(\lambda^{l_1}x)=\lambda^{r'-1}y
+    $$
+
+    直接消去 $\lambda^{l_1}$；但降层可以杀掉非零边界，原指定源可能不在结论所需微分的定义域。
+  counterexample: |-
+    **反例要点。** 取旋转的 $\nu$ 余纤维三角
+
+    $$
+    S^0\xrightarrow{j}C\nu\xrightarrow{p}S^4\xrightarrow{-\Sigma\nu}S^1,
+    \quad (e(f),e(g),e(h))=(0,0,1),
+    \quad(n,m,l,s,t)=(1,0,2,1,16).
+    $$
+
+    令 $x=b=d_2(h_4)=h_0h_3^2\ne0$，其余标签为零，则 $l_1=1$、$r=r'=3$。前提只看到 $b\bmod B_2=0$；而 $\operatorname{Ext}_{\mathcal A}^{2,13}=0$ 保证 $j_2(b)\ne0$，故底层 $d_0^{\hat j_2}(b)\ne0$，阻止所需的 $d_1$。Definition 5.4 的源位于第零层，只模 $B_1=0$，不能改读成经典 $E_3$ 中的零类。
+  progress: |-
+    形式化反证为 [StatementReview.lean](KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的 `rotated_nu_generalized_mahowald_law_false`，前提与非零性见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证依赖既有登记的上游接口，不调用待证 MH2 或 GL。一般 MH2 的公共接口尚未修改，原待补保留；Main 使用 $l_1=0$ 的特例，本反例针对 $l_1=1$。
+  history: |-
+    **目标调整与状态。** 不再把消去 λ 当作合法的一般推导。候选修正是额外要求源属于所需微分的定义域：令 $Q=n+m+e(h)$、$F=\hat f_Q$，要求 $x\in Z_Q$ 且底层标签 $x_0\in{}^F Z_{n-1}$；另一方向是保留 $l_1$ 层结论，另证降层引理。候选条件是否足以恢复完整目标同余，仍未证明。
+  links:
+  - node: paper:6.12
+    title: Theorem 6.12 · 原文与对应范围
+- id: descent
+  title: 扩张下降时，补上早页的长度合法域
+  reference: PROPOSITION 6.20 · FIRST ASSERTION
+  status:
+    kind: revised
+    label: 修正版局部证明完成
+  original:
+    statements:
+    - '6.20'
+    source_line: 1981
+  revision:
+    nodes:
+    - sem:ProofTools:finite-extension-descent
+  problem: |-
+    **原文与问题。** 原文标签 `prop:dec738d3`，断言 $d_n^{f,E_r}(x)=y$ 可下降到所有 $2\le r'<r$。但 Definition 5.4 要求 $e(f)\le n\le r'-2+e(f)$。例如 $r=3,n=e(f)+1,r'=2$，晚页合法，早页已超出定义域；这是量化范围问题。
+  progress: |-
+    王老师同意增加条件。修正版已公开为 [finiteExtension_descends](KIP126/ProofTools/Paper/ExtensionDescent.lean:83)，无本地证明洞，仍依赖已登记的上游输入。[审查与验证](local-history/metadata/interface-reviews/ProofTools/20261017-paper-prop620-domain/wang-validation.json)。
+  history: |-
+    **修正目标。** 在同一个 $f,x,y$ 上下降时补上
+
+    $$
+    2\le r'\le r,\qquad n\le r'-2+e(f).
+    $$
+  links:
+  - node: sem:ProofTools:finite-extension-descent
+    title: Descent of finite-page extensions in the valid length range
+  - node: paper:6.20
+    title: Proposition 6.20 · 下降与不定性
+- id: indeterminacy
+  title: 保留差集时，需要增加晚页 crossing 分支
+  reference: PROPOSITION 6.20 · SECOND ASSERTION
+  status:
+    kind: revised
+    label: 二择版本局部证明完成
+  original:
+    statements:
+    - '6.20'
+    source_line: 1981
+  revision:
+    nodes:
+    - sem:ProofTools:nonliftable-or-crossing
+  problem: |-
+    **范围与问题。** 原文允许较低目标 $y'$ 及参数 $b$。若要求保持原目标 $y$，分次迫使 $b=0$；在这个加强版中，再要求短源属于早晚 cycle 的严格差集，并不能由早页 inessential 推出。整体修正不可提升，不保证其首项不可提升且能支持到原 $y$ 的短扩张。
+  counterexample: |-
+    反例使用 $E=H\mathbb Z_2^\wedge$、$M=H(\mathbb Z/16)$ 的标准连接 $\delta$，取
+
+    $$
+    X=\Sigma E_x\oplus\Sigma E_u\oplus M,\quad
+    Y=\Sigma E_z\oplus\Sigma E_{y_0},\quad
+    f(x)=8y_0,\quad f(u)=2z,\quad f|_M=(\delta,2\delta).
+    $$
+
+    在 $r'=5,r=7,n=3,e(f)=0,(s,t)=(0,1)$ 时，原目标 $y=h_0^3y_0$ 在晚页 essential、早页 inessential；但所有差集候选源都被非零 $d_0$ 阻挡，无法支持所需短扩张。这是经独立审查的纸面实际谱反例，另有有限算术 Lean 核验；当前固定 `ClassicalObject` 尚未表示这些 HZ 对象，故不标为固定 Lean 模型中的形式化谱反例。它也不反驳允许较低目标的一般 $b$ 形式。[反例及适用范围](local-history/metadata/interface-reviews/ProofTools/20261017-prop620-fixed-target-bzero/report.md)。
+  progress: |-
+    二择已公开为 [finiteExtension_nonliftableShort_or_lateCrossing](KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:450)，差集分支由同文件的 `FiniteExtensionNonliftableShortTo` 固定。去差集 iff 继续保留；含差集、固定目标且没有 crossing 分支的加强版不标为已证。新二择无 ProofTools 本地证明洞，仍依赖既有上游待补。[最新修改依据](local-history/metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/report.md)与[验证](local-history/metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/validation.json)。
+
+    **尚未跨越的边界。** 此 crossing 尚未直接识别为 Definition 5.9 的经典有限页 crossing；原文一般 $b$ 版本的完整 iff 也未由上述结果证明。升页推论实际编号为 6.23（6.21 是公式号），其升页存在性不能从已经假定晚页扩张存在的二择直接推出。
+  history: |-
+    **当前采用的修正二：保留差集，增加晚页 crossing 分支。** 王老师随后提出：若晚页 essential、早页 inessential，却不存在满足差集条件的短源，则应存在 crossing。用户已明确要求形式化此版本。
+
+    令 $D_y$ 表示上述短式另满足
+
+    $$
+    x'\notin Z_{r-1-a}^{s+a,t+a}(X),
+    $$
+
+    令 $C_{\mathrm{晚}}$ 表示原晚商同一 normalized-map synthetic ESS 中的 crossing。当前结论为
+
+    $$
+    \text{晚页 essential}\ \land\ \text{早页 inessential}
+    \quad\Longrightarrow\quad D_y\ \lor\ C_{\mathrm{晚}}.
+    $$
+
+    完整范围为 $2\le r'\le r$、$e(f)\le n\le r'-2+e(f)$，并假定同一 $x,y$ 的早晚扩张均已存在。否定 $D_y$ 是否定所有合法见证的存在，不是某个随选短源不满足条件。晚页 crossing 位于同一 stem、weight 和实际晚商映射，滤过范围为 $s<u\le v\le s+n$，靶非零但允许不同于原 $y$。
+
+    **已完成的修正一：去掉差集条件。** 王老师于 2026-10-17 明确要求先去掉差集。保留同一 $x,y$ 的合法早晚扩张及晚页 essential，固定 $y,b=0$，则早页 inessential 当且仅当存在 $0<a\le n-e(f)$ 及早循环源 $x'$，满足
+
+    $$
+    x'\in Z_{r'-1-a}^{s+a,t+a}(X),\qquad
+    d_{n-a}^{\hat f_{r'-1}}(\lambda^a x')=\lambda^{n-e(f)}y.
+    $$
+
+    源仍须支持所写的 ESS 微分；短扩张无需 essential，源类也允许为零。修正版已公开为 [finiteExtension_inessential_iff_shorter](KIP126/ProofTools/Paper/ExtensionIndeterminacy.lean:300)，没有额外增加目标绑定前提。[修改依据与验证](local-history/metadata/interface-reviews/ProofTools/20261017-prop620-remove-difference/report.md)。
+  links:
+  - node: sem:ProofTools:nonliftable-or-crossing
+    title: 修正版 · 短扩张或晚页 crossing
+  - node: paper:6.20
+    title: Proposition 6.20 · 原文
+- id: leibniz
+  title: 保留 λ level，并为除 λ 增加实际 crossing 条件
+  reference: PROPOSITION 5.10 / THEOREM 6.1
+  status:
+    kind: partial
+    label: 新增版本局部证明完成
+  original:
+    statements:
+    - '5.10'
+    - '6.1'
+    source_line: 1606
+  revision:
+    nodes:
+    - sem:ProofTools:generalized-leibniz-at-level
+    - sem:ProofTools:finite-lambda-division
+    definitions:
+    - sem:ProofTools:level-source-label
+    - sem:ProofTools:level-finite-extension
+    - sem:ProofTools:level-no-crossing
+    - sem:ProofTools:finite-lambda-kernel-no-crossing
+  problem: |-
+    **原文与问题。** Proposition 5.10（`prop:cross-f-Er`）从交换的 λ 方块直接提升扩张，但除以 λ 后的像可能出现低滤过 λ-torsion，不能保证所需的像滤过。此问题也影响 Theorem 6.1（`thm:e73f481e`）原文的无 crossing 前提；本轮已独立核验一个满足完整 GL 前提的一般实际谱反例，而不只是反驳其证明中的某一步。
+  counterexample: |-
+    令 $E=H\mathbb Z_2^\wedge$、$T=H(\mathbb Z/4)$，取标准三角的商映射 $j:E\to T$ 与连接 $\delta:T\to\Sigma E$，以及
+
+    $$
+    X=T_a\oplus E_b,\qquad Y=\Sigma E_c\oplus T_d\oplus E_e,
+    \qquad f(a,b)=(\delta a,jb,2b).
+    $$
+
+    这里 $e(f)=0$。取 $\mathrm{page}=r=2,m=0,l=2,(s,t)=(0,1)$，并取
+    $x=v_a$、$x_\infty=h_0^2u_a=d_2(v_a)$、$y=c$、$y_\infty=h_0^4e$。
+    有限扩张由 $Q_1\nu\delta$ 给出；无限扩张的实际源代表为
+    $h_0^2u_a+\lambda h_0^3b$，其像为 $\lambda^2h_0^4e$。
+    该无限扩张是 inessential，但 GL 没有要求 essential；原文明确 $B_\infty\subset Z_\infty$，所以被 $d_2$ 击中的 $x_\infty$ 也满足其永久循环前提。
+    三个可能的经典无限 crossing 位置全部被低滤过 $T_d$ 分量或 $B_2,B_3$ 排除；经典 $d_2$ 在第二页的 no-crossing 条件为空。原结论却要求 $d_4(c)=h_0^4e$，而两个自由 $E$ 分量的 Adams 塔永久且无边界，故结论不成立。
+
+    **证据与边界。** May–Milgram 的 HZ/HZ4 Adams 计算、BHS 的 synthetic 比较与收敛结果给出实际谱、指定映射及滤过的数学识别；有限系数穷举及独立 Lean 算术证据通过，但这些算术检查本身不等于谱反例的 Lean 形式化。上述 HZ 谱与直和不在当前 `ClassicalObject` 闭包中，因此尚未形式化反驳固定 `Standard.generalizedLeibniz`。详细前提表、独立复核和复现见 [GL/crossing 人审报告](local-history/metadata/interface-reviews/ProofTools/20261018-gl-crossing-lambda-lift/report.md)。
+
+    **后续球面核验。** 独立审查又给出仅使用 $X=S^7$、$Y=S^0$、$f=\sigma$ 的数学反例，位于预期的球面/移位对象范围。取 $\mathrm{page}=r=2,m=1,l=3,(s,t)=(2,19)$，$x=y=x_\infty=0$，$y_\infty=Pc_0\in\mathrm{Ext}^{7,23}$。BHS Proposition A.20 给出
+    $\widetilde\sigma\,\widetilde{Ph_1}=\widetilde\eta^2\widetilde\kappa+\lambda\widetilde{Pc_0}$ 与 $\lambda\widetilde\eta^2\widetilde\kappa=0$，故高滤过代表 $\lambda\widetilde{Ph_1}$ 在源的指定 grade 表示零，却映到 $\lambda^2\widetilde{Pc_0}$。原式允许该非 essential 扩张。全部三个经典 crossing 位置分别因低滤过项、$h_1^2d_0=d_2(e_0)\in B_2$ 或源群消失被排除；原结论却为 $d_4(0)=Pc_0\ne0$。全部代表由 BHS 完整低维环与滤过计算核对，经典边界及存活由 IWX 原始数据独立核对。
+
+    BHS 的生成元表把 $Pc_0$ weight 印为 24；其两张图、三条齐次关系以及 IWX 的 $(\mathrm{stem},\mathrm{AF})=(16,7)$ 一致确定应为 23，审查明确保存原印值，不把排印修正隐藏在接口中。这是实际球面上的数学反例，尚未在 Lean 中将这些元素运输到待构造的 `Standard.model`；不能称为 kernel 已证明固定 GL 的否定。详见[独立球面核验](local-history/proof-sessions/gl-2026-10-18/fixed-object-review/sigma-audit/report.md)。
+  progress: |-
+    新版本没有本地证明洞，仍依赖登记的上游责任。原 GL 公共接口与原两个待补位置保持不变；新增版本不等于证明原 GL，也未声称新旧 crossing 条件等价。Main 的既有 GL/MH2 依赖禁用边界保留。
+
+    反例的实际谱／球面识别属于数学核验；有限算术 Lean 检查不能替代把这些元素运输到固定 `Standard.model` 的形式化。
+  history: |-
+    **另行公开带 level 的 GL。** 保留实际 $\lambda$ 层：固定经典页 $n$，任意 $k\ge0$，使用实际商与 weight
+
+    $$q=n+k-1,\qquad w=t+e(f)-k.$$
+
+    在同一方块、同一 weight 的实际左边或上边，以及实际底边，要求无 essential crossing，结论仍为原经典微分 $d_{r+l-m}(y)=y_\infty$。没有额外的 $k$ 上界。公开接口为 `Standard.generalizedLeibnizAtLevel`。
+
+    **除 λ 单独补条件。** `FiniteLambdaKernelNoCrossing` 排除小层中目标被实际 $\lambda^i$ 杀死的 essential 扩张，检查范围为
+
+    $$s+i\le u\le v<N.$$
+
+    公开 `finiteLambdaDivision` 在此条件下同时保留实际源、实际像与所需目标滤过。
+
+    **当前状态与候选修正。** GL 公共接口保持不变，仍保留原两个待补位置。已证私有 `gl_left_edge` 接回原证明，连接指定 `WFinite.source` 与指定 `WInfinity` 的底边源类，不增加 crossing 或代表相容性前提；最小底边长度 $l\le e(f)$ 的实际无 crossing 也已证明并接入可闭合分支。剩余两洞只承担尚未闭合的 crossing 输入。待补清单仅同步该原声明的实际证明体指纹，不增加或豁免责任。人审方案 B 保留 GL 的原有无 crossing 条件，在有限分支及无限底边分别增加同一商、同一 weight 上的实际 synthetic no-crossing 条件；其私有候选完整证明和独立依赖审计已通过，仍保留 61 项上游责任。未全局改写经典 crossing 谓词，未声称新旧条件等价，尚未获得修改批准。Main 的既有 GL/MH2 依赖禁用边界保留。
+
+    **按王老师建议保留 level 的私有版本。** 用户随后明确要求先写带 level 的 GL，沿 AimPaper 的证明补证，原公共接口不动。新私有定理 `generalizedLeibniz_at_level` 已在 [LevelGL.lean](KIP126/ProofTools/GeneralizedLeibniz/LevelGL.lean) 完成局部证明：固定经典页 $n$，任意 $k\in\mathbb N$ 使用实际商 $q=n+k-1$ 与 weight $w=t+e(f)-k$，没有额外的 $k$ 上界。顶部为 $\lambda^k x\mapsto\lambda^{k+m-e(f)}y$；原无限扩张经实际 $\lambda^{r-n}$ 前推构成底边。无 crossing 假设直接检查同一方块、同一 weight 的实际左边或上边，以及实际底边；不从原零层 no-crossing 无条件提升。
+
+    证明按原文方块进行：先用有限 $\lambda^k$ 映射构造左边 $\delta_q(\lambda^k x)=\lambda^{r-n}x_\infty$，再应用已证滤过方块，最后由加权边界反向比较得到原经典 $d_{r+l-m}(y)=y_\infty$，不弱化为另一个同余结论。归一化源标签由实际 shift 与商同构定义；level $0$ 的完整扩张 witness 与原定义相容，已由私有 `level_finite_extension_of_zero` 证明。新版本没有本地证明洞，仍使用既有上游待补；原 GL 文件、公共 Law、crossing 谓词、接口锁和待补清单在本轮均保持不变，原两洞不因该私有结果而标为完成。[准确陈述与证明路线](local-history/proof-sessions/gl-level-2026-10-18/statement.md)，完整核验记录保存在同一会话目录。
+
+    **按群内后续意见公开 level 版本。** 用户要求读取王老师回复并据此继续工作；2026-10-18 北京时间 15:58 王老师要求“先写一个 public 的带 level 的版本”，15:59 要求“然后除 lambda 的操作加额外的 crossing 条件”。据此新增独立公共 `Standard.generalizedLeibnizAtLevel`、实际 level 扩张和三种 crossing 谓词，并公开零层输入转换 `finiteExtensionAtLevelZero`。公共条件直接展开为真实代表／扩张方程和 essential crossing 量词，复用既有私有证明；原有公共声明保持不变，新增接口另行锁定。此次公开新增不等于批准此前修改原 GL 的方案 B。授权出处与核验记录见 `local-history/proof-sessions/gl-public-level-2026-10-18/`。
+
+    除 $\lambda$ 的补充条件已公开为 `FiniteLambdaKernelNoCrossing`：排除小层实际 ESS 中、有限滤过三角 $s+i\le u\le v<N$ 内目标被实际 $\operatorname{gr}_v(\lambda^i)$ 杀死的 essential 扩张。这里必须包含起始源层 $u=s+i$；它针对同时保留实际 source 与 image 时的低层障碍，不可只用 $\lambda$ 映射自身无 crossing 代替。公共 `finiteLambdaDivision` 已证明：在该条件下，实际源 $a$ 可除出 $b$，保留两条精确的源与像方程，且小层像仍具有所需的 $F^N$ 滤过。小层源由构造得到，不预设任意小层标签，最终目标层的 $\lambda$-核不定性仍保留。私有 ESS 推论同时映回原来指定的大层源、目标。新证明无本地证明洞，仍依赖登记的上游责任；核验与两页 Adams chart 见同一会话及 `local-history/reports/gl-public-level-20261018/charts/`。
+  links:
+  - node: sem:ProofTools:generalized-leibniz-at-level
+    title: 修正版 · 带 level 的 GL
+  - node: sem:ProofTools:finite-lambda-division
+    title: 修正版 · 有条件的有限 λ 除法
+  - node: paper:6.1
+    title: Theorem 6.1 · 原接口与缺口
+  - node: paper:5.10
+    title: Proposition 5.10 · crossing 比较
+- id: two-line
+  title: 第三页候选补回 h₀h₄，保留正确的分类终点
+  reference: COROLLARY 1.5 · PROOF INPUT
+  status:
+    kind: revised
+    label: 输入已修正 · 上游待补
+  original:
+    statements:
+    - '1.5'
+    source_line: 151
+    include_proof_claim: true
+  revision:
+    nodes:
+    - sem:AdamsCalculations:two-line-d2-candidates
+    - sem:AdamsCalculations:two-line-d2-screening
+    - paper:1.5
+  problem: |-
+    **来源核查发现的接口错误。** 原文及上一轮新增的第三页候选清单遗漏了 $h_0h_4$。Lin Theorem 1.3(1) 给出 $h_0^2h_3^2=0$，由 Adams 微分及 Leibniz 有 $d_2(h_0h_4)=0$；IWX Table 6，p. 222，首行明确给出非零 $d_3(h_0h_4)=h_0d_0$。因此上一轮 `AdamsCalculations.two_line_d2_candidates` 在所声称的经典 Adams 对象上不成立，当时依赖它的 Main 组合证明不能称为已有正确上游支持的完整证明。上一轮只去除了平方指标的提前截断，没有独立检查全部混合乘积，这是本次发现的遗漏。
+  progress: |-
+    用户已授权补齐其上游接口并完成 Main 的组合证明。完整分类由 `Main.adams_two_line_classification` 给出，陈述仍是实际球面第二线上任意元素非零存活当且仅当属于原文清单，没有额外调用者前提。文献存活及排除结论归 Literature，无界 E₂ 基底归 E2Computation，首次微分后的候选筛选归 AdamsCalculations；Main 不接手这些上游待补证明。
+  history: |-
+    用户随后明确回复“批准，按此修正”。已据此在公共候选谓词补入 $(0,4)$；Literature 新增实际双次数 $(2,17)\to(5,19)$ 的非零 $d_3$ 接口 `iwx_h0_h4_d3`；Main 增加第四条混合项排除分支。最终永久存活分类及 Main 公共定理类型不变，新增一项独立的上游待补责任（309→310），并保留此前全部责任；Main 不新增本地证明洞。修正后的筛选与实际模型比较仍是上游待补，引用核查和有限检验不能替代全指标形式证明。批准范围与独立依据见 [接口复核](local-history/reports/two-line-source-alignment-2026-10-18/interface-review.md)，来源及实施验证见 [本次记录](local-history/reports/two-line-source-alignment-2026-10-18/report.md)。
+
+    原文在第三页候选清单中提前印出平方指标 $j\le6$。形式化按逻辑阶段拆开：$d_2$ 候选保留全部 $h_j^2$，再单独用 HHR 排除 $j\ge7$，不把最终截断当成第三页计算输入。八项文献来源/对象比较、一项 E₂ 基底比较及一项 Adams 候选计算是本次新增的十项待补责任；Main 组合证明没有本地证明洞，整体仍待这些上游责任及既有责任补齐。此次后续来源核查已定位 May 1964 原始博士论文，并与原 bibliography 中实际对应 1966 代数论文的 `Maythesis` 区分。各项直接来源及仍待核验的原始定位由 Blueprint 维护，引用核查不等于上游 Lean 证明完成。
+  links:
+  - node: paper:1.5
+    title: Corollary 1.5 · 第二线存活分类
+  - node: sem:AdamsCalculations:two-line-d2-screening
+    title: 修正版 · 第三页候选筛选
+  - node: sem:Literature:two-line-classical-inputs
+    title: 文献输入 · 存活与排除

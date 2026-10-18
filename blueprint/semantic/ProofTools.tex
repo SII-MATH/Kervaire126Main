@@ -242,6 +242,39 @@ For $0<n<m$, its finite version has target $\Sigma^{1,-n}(\nu X/\lambda^{m-n})$.
 
 \section{Representative criteria and changing the page}
 
+\begin{theorem}[Descent of finite-page extensions in the valid length range]
+\label{sem:ProofTools:finite-extension-descent}
+\level{coarse}
+(Adapted from \cite{LWX126}, Prop. 6.20, first assertion, with the page--length domain of Def. 5.4.)\par{}
+
+In the fixed model, let $X,Y$ be classical objects and $f:X\to Y$ a map, and put $e=e(f)$. Take finite pages $r_{\rm early},r_{\rm late}\in\mathbb N$, integers $n,s,t$, and common labels
+\[
+x\in E_2^{s,t}(X),\qquad y\in E_2^{s+n,t+n}(Y).
+\]
+Suppose that
+\[
+2\leq r_{\rm early}\leq r_{\rm late},\qquad
+n\leq r_{\rm early}-2+e,
+\]
+and that there is an extension, in the sense of Definition 5.4,
+\[
+d_n^{f,E_{r_{\rm late}}}(x)=y.
+\]
+Then the same map and the same specified labels admit the earlier-page extension
+\[
+d_n^{f,E_{r_{\rm early}}}(x)=y.
+\]
+The late extension includes the lower length bound $e\leq n$ and the cycle conditions
+\[
+x\in Z_{r_{\rm late}-1}^{s,t}(X),\qquad
+y\in Z_{r_{\rm late}-1-n+e}^{s+n,t+n}(Y).
+\]
+The conclusion includes the corresponding earlier-page cycle conditions. The extension need not be essential; no crossing hypothesis is imposed.
+\lean{KIP126.ProofTools.Paper.finiteExtension_descends}
+\uses{paper:5.4}
+% Blueprint note: The explicit earlier-page upper length bound is indispensable. The proof uses the actual quotient reductions on source and target and naturality of their extension equation. This is the corrected descent statement, not the unrestricted first assertion printed in Proposition 6.20. Its proof has no local hole; registered upstream construction and proof obligations remain visible through the compiled dependency closure.
+\end{theorem}
+
 
 \begin{definition}[Higher-source extension ranges]
 \label{sem:ProofTools:crossing-ranges}
