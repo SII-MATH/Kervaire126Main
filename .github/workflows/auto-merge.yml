@@ -32,10 +32,20 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      - name: Merge when required checks and branch protection allow
+      - name: Enqueue or merge when required checks and branch protection allow
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token }}
           GH_REPO: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: gh pr merge "$PR_NUMBER" --auto --merge --match-head-commit "$PR_HEAD_SHA"
+        run: |
+          owner="${GH_REPO%%/*}"
+          repository="${GH_REPO#*/}"
+          queue_id=$(gh api graphql -f owner="$owner" -f name="$repository" \
+            -f 'query=query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { mergeQueue(branch: "main") { id } } }' \
+            --jq '.data.repository.mergeQueue.id // empty')
+          if [[ -n "$queue_id" ]]; then
+            gh pr merge "$PR_NUMBER" --auto --match-head-commit "$PR_HEAD_SHA"
+          else
+            gh pr merge "$PR_NUMBER" --auto --merge --match-head-commit "$PR_HEAD_SHA"
+          fi
