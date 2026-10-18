@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:30.002362+00:00'
 ---
 **Formal scope:** public counterparts; scope is specified below.
 
@@ -18,7 +18,7 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing`: [implementation](implementation/index.html#decl:1b6be446b6483c14)
+\item `KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing`
 
 \end{itemize}
 

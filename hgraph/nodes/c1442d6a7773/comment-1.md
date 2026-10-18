@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:30.000049+00:00'
 ---
 **Formal scope:** public counterparts; scope is specified below.
 
@@ -18,13 +18,13 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute`: [implementation](implementation/index.html#decl:eedf6ddb7e1f7ce1)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite`: [implementation](implementation/index.html#decl:4ef31a493b9ef817)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes`: [implementation](implementation/index.html#decl:9ee455c902bcda6c)
+\item `KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes`: [implementation](implementation/index.html#decl:1b13f26250672867)
+\item `KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes`
 
 \end{itemize}
 
