@@ -72,14 +72,27 @@ private theorem shifted_quotient_bottom_filtration (X : ClassicalObject)
   · exact (filtration_iff_of_infinity_zero (model.convergence A) 0 u m w (by omega)
       (fun j _ hj => hzero j hj) a).mp ha0
 
-private theorem finite_normalized_image_filtration (X Y : ClassicalObject)
+/-- Divide the source in the actual finite lambda triangle and carry its
+normalized image through the same naturality square. The resulting image
+has the bottom filtration of the smaller quotient. No cancellation of lambda
+and no reflection of a higher target filtration is asserted here. -/
+private theorem normalized_finite_source_image_division (X Y : ClassicalObject)
     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
     (q i : ℕ) (hi : 0 < i) (hiq : i < q) (s t : ℤ)
     (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)
       (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q))
     (ha : FiltrationAtLeast model.syntheticTower (s+i) a) :
-    FiltrationAtLeast model.syntheticTower (s+i+normalizedExponent model.classicalTower f)
-      (a≫finiteExtensionMap model X Y f q) := by
+    ∃ b : BiHom (t-s) (t+normalizedExponent model.classicalTower f)
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).obj
+          (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) (q-i))),
+      b ≫ ((model.quotients.tower _).triangle hi hiq).lambdaMap = a ∧
+      (b ≫ (SyntheticCategory.biShift (0,-(i:ℤ))).map
+        (finiteExtensionMap model X Y f (q-i))) ≫
+          ((model.quotients.tower _).triangle hi hiq).lambdaMap =
+        a ≫ finiteExtensionMap model X Y f q ∧
+      FiltrationAtLeast model.syntheticTower (s+i+normalizedExponent model.classicalTower f)
+        (b ≫ (SyntheticCategory.biShift (0,-(i:ℤ))).map
+          (finiteExtensionMap model X Y f (q-i))) := by
   let e : ℤ := normalizedExponent model.classicalTower f
   let A := (extensionSourceObject model X Y f).obj model.nu model.auxiliary
   let B := model.nu.functor.obj (Y.obj model.auxiliary)
@@ -99,9 +112,24 @@ private theorem finite_normalized_image_filtration (X Y : ClassicalObject)
   have he : c≫Tb.lambdaMap=a≫finiteExtensionMap model X Y f q := by
     dsimp only [c]
     rw [Category.assoc,hcomm,←Category.assoc,hb]
-  rw [←he]
-  exact map_preserves_filtration (model.convergentMap (.shift (0,-(i:ℤ)) (.quotient (q-i) (.nu Y)))
-    (.quotient q (.nu Y)) Tb.lambdaMap) (t-s,t+e) (s+i+e) c hc
+  exact ⟨b,hb,he,hc⟩
+
+private theorem finite_normalized_image_filtration (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (q i : ℕ) (hi : 0 < i) (hiq : i < q) (s t : ℤ)
+    (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)
+      (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q))
+    (ha : FiltrationAtLeast model.syntheticTower (s+i) a) :
+    FiltrationAtLeast model.syntheticTower (s+i+normalizedExponent model.classicalTower f)
+      (a≫finiteExtensionMap model X Y f q) := by
+  obtain ⟨b,_,himage,hfil⟩ :=
+    normalized_finite_source_image_division X Y f q i hi hiq s t a ha
+  rw [←himage]
+  exact map_preserves_filtration (model.convergentMap
+    (.shift (0,-(i:ℤ)) (.quotient (q-i) (.nu Y))) (.quotient q (.nu Y))
+    ((model.quotients.tower _).triangle hi hiq).lambdaMap)
+    (t-s,t+normalizedExponent model.classicalTower f)
+    (s+i+normalizedExponent model.classicalTower f) _ hfil
 
 private theorem finite_crossing_target_bound (X Y : ClassicalObject)
     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (q : ℕ) (hq : 0 < q)

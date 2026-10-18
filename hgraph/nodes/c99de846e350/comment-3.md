@@ -30,10 +30,10 @@ Module-level interface conventions; completion remains derived from verified Lea
 
 - **weight_direction_correction.compatibility**: Intentional signature correction; former type freeze updated and tracking retained.
 
-- **nu_cofiber_condition_correction.statement**: NuExactTriangleInput requires injectivity, middle exactness and surjectivity in every HF2-homology degree.
+- **nu_cofiber_condition_correction.statement**: ModelData.nuExactTriangle requires injectivity, middle exactness and surjectivity in every HF2-homology degree.
 
 - **nu_cofiber_condition_correction.reason**: Middle exactness of a distinguished triangle alone does not imply that nu preserves its cofiber.
 
-- **nu_cofiber_condition_correction.affected_type**: KIP126.AdamsSynthetic.NuExactTriangleInput.preserves
+- **nu_cofiber_condition_correction.affected_type**: KIP126.Kervaire.Route.ModelData.nuExactTriangle
 
 - **nu_cofiber_condition_correction.compatibility**: Intentional correction of an overly strong legacy input; the same predicate is reused by the full Literature iff.

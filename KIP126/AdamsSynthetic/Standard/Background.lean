@@ -593,7 +593,7 @@ public def model : Model Spectrum SyntheticSpectrum where
   classical := classical
   nu := nu
   family := family
-  nuExactTriangle := ⟨nu_preserves_triangle⟩
+  nuExactTriangle := nu_preserves_triangle
   recovery := recovery
   exactness := exactness
   auxiliary := auxiliary

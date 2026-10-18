@@ -60,6 +60,15 @@ run_cmd do
 #check_failure KIP126.Core.SpectralSequence.FilteredComplex
 #check_failure KIP126.Core.SpectralSequence.submoduleCokernelIso
 
+-- Redundant proof records stay retired; their mathematical premises are
+-- passed directly to generic results and fixed producers remain callable.
+#check_failure KIP126.AdamsSynthetic.NuExactTriangleInput
+#check_failure KIP126.AdamsSynthetic.FactorizationFiltrationComparison
+#check_failure KIP126.AdamsSynthetic.AdamsBoundednessInput
+#check_failure KIP126.AdamsSynthetic.MappingFiltrationComparison
+#check_failure KIP126.AdamsSynthetic.MappingDetectionInput
+#check_failure KIP126.StableHomotopy.SphereTwistSign
+
 -- A source result package must never become an ordinary downstream premise.
 #check_failure KIP126.Challenge2
 #check_failure KIP126.Literature.LiteratureInterface

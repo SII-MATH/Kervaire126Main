@@ -274,3 +274,109 @@ Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{
 % Blueprint note: This disjunction is distinct from the set-difference equivalence printed in Proposition~\ref{paper:6.20}.
 \lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
 \end{theorem}
+
+\section{Generalized Leibniz at an explicit lambda level}
+
+\begin{definition}[The normalized finite source at a specified level]
+\label{sem:ProofTools:level-source-label}
+\level{coarse}
+Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
+\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
+The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
+\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel}
+\end{definition}
+
+\begin{definition}[A finite extension retaining its lambda level]
+\label{sem:ProofTools:level-finite-extension}
+\level{coarse}
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
+\[2\le n,\qquad e\le m\le n-2+e,\]
+and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
+at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
+\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
+Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
+The extension need not be essential, and zero labels are allowed.
+\lean{KIP126.ProofTools.Standard.LevelFiniteExtension}
+\uses{sem:ProofTools:level-source-label}
+\end{definition}
+
+\begin{definition}[No crossing on the three actual level edges]
+\label{sem:ProofTools:level-no-crossing}
+\level{coarse}
+For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. With $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
+\[
+NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
+NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
+\lean{KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
+\end{definition}
+
+\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
+\label{sem:ProofTools:generalized-leibniz-at-level}
+\level{coarse}
+Adapted from the quotient-boundary square proof of Theorem 6.1 of \cite{LWX126}, with its crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
+\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
+Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
+\[
+x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
+x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
+y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
+\]
+Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
+and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
+\[
+\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
+\land NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+Then the classical Adams differential is
+\[d_{r+l-m}(y)=y_\infty.\]
+There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
+\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
+\uses{sem:ProofTools:level-finite-extension,sem:ProofTools:level-no-crossing}
+% Blueprint note: This separate public theorem has a complete local proof relative to the registered upstream construction and proof obligations. It does not discharge either hole in the frozen original public GL, and does not identify the old crossing predicates with these actual conditions.
+\end{theorem}
+
+\begin{theorem}[The original finite extension supplies level zero]
+\label{sem:ProofTools:finite-extension-at-level-zero}
+\level{coarse}
+Every original finite extension $d_m^{f,E_n}(x)=y$ supplies the level-zero finite extension in quotient $n-1$. The actual map equation and its prescribed source and target are retained through the proved representative comparisons. No additional cycle or crossing premise is required. This result does not compare the two sets of no-crossing hypotheses.
+\lean{KIP126.ProofTools.Standard.finiteExtensionAtLevelZero}
+\uses{sem:ProofTools:level-finite-extension}
+\end{theorem}
+
+\section{Conditional division by lambda}
+
+\begin{definition}[The additional target-kernel crossing condition]
+\label{sem:ProofTools:finite-lambda-kernel-no-crossing}
+\level{coarse}
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. Fix $0<i<q$, $p=(t-s,t+e)$ and a target filtration $N$. In the actual lambda square put
+\[
+A'=\Sigma^{0,-i}(A/\lambda^{q-i}),\quad
+B'=\Sigma^{0,-i}(B/\lambda^{q-i}),\quad
+F'=\Sigma^{0,-i}F_{q-i}.
+\]
+Let $L_A:A'\to A/\lambda^q$ and $L_B:B'\to B/\lambda^q$ be the actual finite lambda maps. The extra crossing condition states that, for every
+\[s+i\le u\le v<N,\]
+an essential extension $d_{v-u}^{F'}(\xi)=\eta$ at $p$ has target satisfying
+\[\operatorname{gr}_v(L_B)(\eta)\ne0.\]
+The initial source row $u=s+i$ is included, while the terminal target row $v=N$ is excluded. This rules out essential smaller-layer targets killed by lambda; it neither requires injectivity on the entire graded target nor follows merely from absence of positive-length extensions of the lambda map itself.
+\lean{KIP126.ProofTools.Standard.FiniteLambdaKernelNoCrossing}
+\end{definition}
+
+\begin{theorem}[Finite lambda division preserving the actual source and image]
+\label{sem:ProofTools:finite-lambda-division}
+\level{coarse}
+Use the objects, maps, stem and weight of the preceding definition. Assume $s+i\le N$ and the additional target-kernel crossing condition. If an actual representative
+\[a\in F^{s+i}\pi_{t-s,t+e}(A/\lambda^q)\]
+has $F_q(a)\in F^N\pi_{t-s,t+e}(B/\lambda^q)$, there exists
+\[b\in F^{s+i}\pi_{t-s,t+e}(A')\]
+such that
+\[L_A(b)=a,\qquad L_B(F'(b))=F_q(a),\qquad F'(b)\in F^N\pi_{t-s,t+e}(B').\]
+Thus division preserves the specified actual source and image and reflects the requested target filtration. The smaller-layer source class is the class of the constructed $b$; no independently selected smaller source is prescribed, and kernel ambiguity at the final target grade is allowed.
+\lean{KIP126.ProofTools.Standard.finiteLambdaDivision}
+\uses{sem:ProofTools:finite-lambda-kernel-no-crossing}
+% Blueprint note: The proof uses a finite correction over source and target filtrations, followed by the existing actual finite lambda source lift. It adds no separation or completeness hypothesis, and retains registered upstream obligations. The corresponding private essential-extension comparison maps both constructed smaller classes back to the specified larger classes.
+\end{theorem}

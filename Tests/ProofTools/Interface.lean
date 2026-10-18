@@ -102,6 +102,12 @@ run_cmd do
 #check_failure KIP126.ProofTools.Internal.Mahowald.selected_mahowald_case
 
 #check_failure KIP126.ProofTools.Internal.Leibniz.square_frames
+#check_failure KIP126.ProofTools.Internal.Leibniz.generalizedLeibniz_at_level
+#check_failure KIP126.ProofTools.Internal.Leibniz.LevelFiniteExtensionWitness
+#check_failure KIP126.ProofTools.Internal.Leibniz.level_finite_extension_of_zero
+#check_failure KIP126.ProofTools.Internal.Leibniz.TowerKernelNoCrossing
+#check_failure KIP126.ProofTools.Internal.Leibniz.normalized_finite_division_of_kernel_no_crossing
+#check_failure KIP126.ProofTools.Internal.Leibniz.finite_essential_division_of_kernel_no_crossing
 #check_failure KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_detects_unshifted
 #check_failure KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_high_filtration
 #check_failure KIP126.ProofTools.Internal.Leibniz.gl_witness_square_high_filtration

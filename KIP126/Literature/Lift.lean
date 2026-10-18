@@ -33,12 +33,6 @@ public def NuCofiberCriterion : Prop :=
   ∀ T : Triangle C, T ∈ distTriang C →
     (NuImageIsCofiber D T ↔ HomologyShortExact D.coefficients T)
 
-/-- The forward preservation input is obtained from the same full source
-criterion, with exactly the shared short-exactness predicate. -/
-public def NuCofiberCriterion.toNuExactTriangleInput (h : NuCofiberCriterion D) :
-    NuExactTriangleInput D.coefficients D.nu where
-  preserves T hT hH := (h T hT).mpr hH
-
 /-- An actual λᵏ factorization of νf in the negative-target convention. -/
 public structure SyntheticFullLift {X Y : C} (f : X ⟶ Y) (k : ℕ) where
   map : D.nu.functor.obj X ⟶

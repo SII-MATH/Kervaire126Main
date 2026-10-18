@@ -10,9 +10,9 @@ updated: '2026-10-17T17:47:44'
 Scope of the related interface family `obligation-adams-separated`. This note does not assert equivalence with a broader paper statement or mark any proof complete.
 
 
-- **mathematical_purpose**: For finite source and target, a map in every actual target-tower filtration of P is odd torsion. FactorizationFiltrationComparison binds the old same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.
+- **mathematical_purpose**: For finite source and target, a map in every actual target-tower filtration of P is odd torsion. The explicit equivalence premise binds the same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.
 
-- **constraints**: For finite source and target, a map in every actual target-tower filtration of P is odd torsion. FactorizationFiltrationComparison binds the old same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.
+- **constraints**: For finite source and target, a map in every actual target-tower filtration of P is odd torsion. The explicit equivalence premise binds the same-HF2 ghost-factorization filtration to this tower filtration; separated_factorization derives the old-form conclusion.
 
 - **constraints**: Retain this as a foundational producer proof obligation; it is not proved or reclassified as an automatic literature fact.
 
