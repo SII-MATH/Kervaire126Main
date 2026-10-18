@@ -339,7 +339,6 @@ def publish(*, refresh_source_evidence=False):
     selected = {ROOT / s['file'] for s in sources.values()}
     represented_inputs = {s['file']: s['source_sha256'] for s in sources.values()}
     authored = b.site_inputs()
-    b.write_index(ROOT, records, stats)
     b.generate_blueprint(sources, dependencies, obligations, records)
     projection = b.semantic.prepare(ROOT, sources, dependencies, obligations, records)
     b.phase('Synchronizing native bindings, source links and actual dependency states…')
