@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.553966+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1030-1050](paper/main.tex.html#L1030). The infinite-page quotient formulas make the lambda/rho sequence exact; the null-composite result rules out higher extensions.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The finite-quotient and infinite versions concern the same actual maps $\lambda$ and $\rho$: they exclude essential extensions of positive length, identify the actual $d_0$ equations, and establish the absence of crossings.
@@ -18,9 +20,9 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite`: [implementation](implementation/index.html#decl:b3cfccaa50c6a3cd)
+\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite`
 
-\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite`: [implementation](implementation/index.html#decl:60aa58f04dc1023c)
+\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite`
 
 \end{itemize}
 

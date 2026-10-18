@@ -22,7 +22,7 @@ import tempfile
 from datetime import datetime, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from blueprint_paper import load_paper, display_body, export_paper, validate_paper_graph, reference_targets, prepare_web_blueprint, resolve_paper_bindings, implementation_links
+from blueprint_paper import load_paper, display_body, export_paper, validate_paper_graph, reference_targets, prepare_web_blueprint, resolve_paper_bindings
 import blueprint_semantic as semantic
 import blueprint_map
 from blueprint_annotations import sync_authoring_notes
@@ -287,6 +287,7 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
     It neither modifies hgraph nor manufactures substitute Lean source.
     """
     changes = 0
+    interfaces = semantic.public_interfaces(ROOT)
     status = {}
     lean_ids = {}
     seen = set()
@@ -302,7 +303,7 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
                 'lean_status': status[name], 'file': source['file'],
                 'statement': source['statement'], 'docstring': source['doc'] or None,
                 'context': source['context'] or None,
-                'private': True if name.startswith('_private.') else None})
+                'private': True if name not in interfaces else None})
         seen.add(nid)
     document = read_blueprint(ROOT / 'blueprint/content.tex')
     if projection is not None:
@@ -318,7 +319,7 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
     for order, statement in enumerate(statements):
         correspondence = []
         if statement['label'].startswith('paper:'):
-            correspondence = list(statement['uses'])
+            correspondence = [target for target in statement['uses'] if target.startswith('decl:')]
             statement = {**statement, 'lean': resolve_paper_bindings(statement, source_labels)}
         if projection is not None and statement['label'] in projection['uses']:
             statement = {**statement,
@@ -330,17 +331,23 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
         # conservative draft status instead of turning it green.
         if any(status.get(name) == 'empty' for name in statement['lean']):
             local_status = 'sorry' if any(status.get(name) == 'sorry' for name in statement['lean']) else 'empty'
+        semantic_entry = projection['entries'].get(statement['label']) if projection else None
+        if semantic_entry is not None:
+            local_status = semantic_entry['local_status']
         warnings.extend(_status_warnings(statement, status))
         nid = ids[statement['label']]
         seen.add(nid)
         is_paper = statement['label'].startswith('paper:')
-        content = implementation_links(display_body(statement['body'], statement['label'].removeprefix('paper:'), paper_refs)) if is_paper and projection is not None else display_body(statement['body'], statement['label'].removeprefix('paper:'), paper_refs) if is_paper else statement['body']
+        content = display_body(statement['body'], statement['label'].removeprefix('paper:'), paper_refs) if is_paper else statement['body']
         archived = projection is not None and statement['label'].startswith('decl:')
         changes += _upsert(graph, nid, title=statement['title'], type='implementation' if archived else 'tex',
             content=content, owned={
                 'content_type': statement['content_type'], 'generated': 'blueprint',
                 'author': 'sync', 'label': statement['label'], 'chapter': statement['chapter'],
                 'order': order, 'lean_status': local_status,
+                'source_local_status': semantic_entry['source_local_status'] if semantic_entry else None,
+                'internal_obligations': [sources[name]['label'] for name in
+                    semantic_entry['internal_producers']] if semantic_entry else None,
                 'mathlib_name': mathlib_names or None, 'ref': statement.get('ref') or None,
                 'level': statement.get('level') or None,
                 'sketch': True if statement.get('sketch') else None})
@@ -365,14 +372,23 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
     sync_authoring_notes(graph, ROOT)
     existing = {(e.source, e.target): e for e in graph.edges()
                 if e.attrs.get('generated') == 'blueprint'}
+    authored_pairs = {(node_id('bp', label), node_id('bp', target))
+                      for label, targets in (projection or {}).get('authored_uses', {}).items()
+                      for target in targets}
+    compiled_pairs = {(node_id('bp', label), node_id('bp', target))
+                      for label, targets in (projection or {}).get('compiled_uses', {}).items()
+                      for target in targets}
     edge_changes = 0
     for pair, kind in desired_edges.items():
         old = existing.get(pair)
+        provenance = ({'mathematical_authoring': pair in authored_pairs,
+                       'compiled_fallback': pair in compiled_pairs}
+                      if pair in authored_pairs or pair in compiled_pairs else {})
         if old is None:
-            graph.add_edge(*pair, kind, generated='blueprint')
+            graph.add_edge(*pair, kind, generated='blueprint', **provenance)
             edge_changes += 1
-        elif old.type != kind:
-            graph.add_edge(*pair, kind, replace=True, **old.attrs)
+        elif old.type != kind or any(old.attrs.get(key) != value for key, value in provenance.items()):
+            graph.add_edge(*pair, kind, replace=True, **{**old.attrs, **provenance})
             edge_changes += 1
     for pair in existing.keys() - desired_edges.keys():
         edge = existing[pair]
@@ -401,6 +417,7 @@ def annotate_graph(graph, sources, dependencies, obligations):
     too. Only edges marked with this importer are reconciled here.
     """
     nodes = {n.id: n for n in graph.nodes()}
+    interfaces = semantic.public_interfaces(ROOT)
     desired = set()
     for name, source in sources.items():
         row = source['row']
@@ -409,7 +426,7 @@ def annotate_graph(graph, sources, dependencies, obligations):
         for nid in (blueprint_id, source['lean_id']):
             node = nodes[nid]
             auto_tags = {'module:' + source['owner'],
-                         'visibility:private' if row['name'].startswith('_private.') else 'visibility:public'}
+                         'visibility:public' if name in interfaces else 'visibility:private'}
             if obligation:
                 auto_tags.add(obligation['status'])
             tags = set(node.meta.get('tags') or [])
@@ -510,7 +527,7 @@ def write_evidence(sources, dependencies, rows, analysis, before, authored_input
             and all(not sources[d]['row']['direct_sorry'] for d in dependencies[name])
             for name in sources),
         'ready_semantics': 'The native Summary Ready now uses local status of direct prerequisites. '
-                           'Native CLI Analysis ready and this verification table require their full closure.',
+                           'Native CLI Analysis ready requires their full closure.',
         'checks': {'source_inventory': True, 'lake_build': True, 'blueprint_boundary_tests': True,
                    'pinned_native_code_and_frontend_verified': True,
                    'source_to_kernel_unique': True, 'all_locked_public_interfaces_visible': True,
@@ -526,21 +543,10 @@ def write_evidence(sources, dependencies, rows, analysis, before, authored_input
                  'This imports formal dependency evidence, not a new informal proof or mathematical review.',
     }
     (STATE / 'validation.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
-    body = '<h2>Verified source snapshot</h2><p>Input fingerprint: <code>' + evidence['input_fingerprint'] + '</code></p>'
-    body += f'<p>{len(sources)} source declarations; {len(rows)} compiled declarations; {evidence["direct_obligations"]} individually registered obligations.</p>'
-    body += '<p>The complete Lean build, source inventory, exact public interface locks, and dependency closure checks passed. Both native hgraph states and compiled transitive axiom dependencies are checked.</p>'
-    body += f'<p>AimPaper: {paper_stats["statements"]} original statements, with {paper_stats["bibliography_entries"]} bibliography entries. Original wording, correspondence scope and citation keys are checked.</p>'
-    body += '<table><tr><th>Module</th><th>Declarations</th><th>Fully closed</th><th>Locally complete, dependencies open</th><th>Ready</th><th>Blocked</th></tr>'
-    for row in chapter_rows:
-        body += '<tr>' + ''.join('<td>' + html.escape(str(row.get(key, 0))) + '</td>'
-            for key in ('module', 'declarations', 'closed', 'formalized_open', 'ready', 'blocked')) + '</tr>'
-    body += '</table><p>This is a working-tree snapshot. Local completion does not imply that all transitive prerequisites are closed. Partial article correspondences retain their scope notes and sketch marker. Source and paper entries can refer to the same obligation; the registry counts each original responsibility once.</p>'
-    body += '<p>The native Summary Ready now uses local completion of direct prerequisites; the verification and CLI ready state require their full dependency closure. No review is automatically approved by this import.</p>'
-    (STATE / 'verification.html').write_text(body)
     return evidence
 
 
-def export_site(evidence, paper_records, out, still_current, source_archive=None):
+def export_site(evidence, paper_records, out, still_current):
     workspace = stage_workspace()
     out = out.resolve()
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -549,11 +555,7 @@ def export_site(evidence, paper_records, out, still_current, source_archive=None
         write_from_manifest(workspace / 'config.yaml', out_path=staging / 'index.html')
         export_sources(staging)
         export_paper(ROOT, staging, paper_records)
-        if source_archive is not None:
-            semantic.export_implementation(staging, *source_archive)
         evidence['blueprint_map'] = blueprint_map.export_map(ROOT, staging)
-        (staging / 'verification.html').write_text(
-            blueprint_map.verification_document((STATE / 'verification.html').read_text()))
         (staging / 'validation.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
         (staging / 'inputs.json').write_text(json.dumps(evidence['inputs'], ensure_ascii=False, indent=2) + '\n')
         # A complete native declaration/dependency index is large. Compress at
@@ -641,11 +643,9 @@ def main():
     evidence = write_evidence(sources, dependencies, rows, analysis, before, authored_inputs, paper_stats)
     evidence['publication_mode'] = 'curated-mathematical-blueprint'
     evidence['semantic_blueprint'] = semantic_stats
-    semantic.write_verification(STATE, evidence)
     phase('7/7 Exporting the pinned native frontend and current source snapshot…')
     export_site(evidence, paper_records, args.out,
-                lambda: inputs() == before and site_inputs() == authored_inputs,
-                (sources, dependencies, obligations, analysis))
+                lambda: inputs() == before and site_inputs() == authored_inputs)
     semantic.save_source_snapshot(STATE, sources, dependencies, evidence)
 
 

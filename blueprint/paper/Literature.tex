@@ -1,35 +1,7 @@
 % Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
 \section{Synthetic spheres and cofiber comparison}
 
-% AimPaper: 3.2 definition 770 772
-\begin{definition}[Bigraded synthetic spheres]
-\label{paper:3.2}
-\source{AimPaper Definition 3.2}
-\level{coarse}
-(From \cite{LWX126}, Def. 3.2.)\par{}
 
-% BEGIN AIMPAPER STATEMENT
-[{\cite[Definition 4.6]{Pst}}]
-The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w}\nu (S^w)$.
-% END AIMPAPER STATEMENT
-
-
-% Correspondence: partial.
-% Blueprint note: Bigraded spheres are public objects; \texttt{Smn} is defined by applying \texttt{biShift} to the unit. The comparison with $\Sigma^{s-w}\nu(S^w)$ for every integer $w$ in the paper is not supplied as a single directly exported equality or isomorphism theorem.
-% Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
-% Blueprint note: \par Bound declarations (private names are resolved through stable source references, without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.Synthetic.Context.Smn}: \ref{decl:d0bffa98dc8c5ac5}
-% Blueprint note: \item \texttt{KIP126.Literature.nuSphereOne}: \ref{decl:c4c019e12e365d1d}
-% Blueprint note: \item \texttt{KIP126.Literature.nuSphereTwo}: \ref{decl:65aeb528511f0f0f}
-% Blueprint note: \item \texttt{KIP126.Literature.nuSphereThree}: \ref{decl:dd1386c8671c4325}
-% Blueprint note: \end{itemize}
-\lean{KIP126.Synthetic.Context.Smn,KIP126.Literature.nuSphereOne,KIP126.Literature.nuSphereTwo,KIP126.Literature.nuSphereThree}
-\uses{decl:d0bffa98dc8c5ac5,decl:c4c019e12e365d1d,decl:65aeb528511f0f0f,decl:dd1386c8671c4325}
-\sketch
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. The immutable raw statement is exactly Pstragowski’s definition as restated by AimPaper, but the current bindings contain only Smn and the three nu-sphere isomorphisms in weights 1, 2, 3. They do not establish the general all-integral formula; retain its existing partial/sketch status. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
-% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Definition 3.2, quoting \cite{Pst}, Definition 4.6; the current binding is partial.)
-\end{definition}
 
 % AimPaper: 3.1 proposition 759 767
 \begin{proposition}[Synthetic cofiber sequences and homology exactness]
@@ -49,13 +21,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
     $$0\to {\HF}_*X\fto{{\HF}_*f} {\HF}_*Y\fto{{\HF}_*g} {\HF}_*Z\to 0$$
     is a short exact sequence.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{sem:AdamsSynthetic:nu,sem:AdamsSynthetic:homology-exact}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 759-767](paper/main.tex.html#L759). This external Pstragowski result compares the synthetic analogue of a cofiber triangle with short exactness in coefficient homology.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The correspondence retains both directions between full mod-two homology short exactness and the same synthetic cofiber triangle. Its classical objects range over the classical category of the fixed model.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.nu\_cofiber}: \ref{decl:4315e2097a4b26e1}
-% Blueprint note: \item \texttt{KIP126.Literature.NuCofiberCriterion}: \ref{decl:744362a28fbc2990}
-\lean{KIP126.Literature.Standard.nu_cofiber,KIP126.Literature.NuCofiberCriterion}
-\uses{decl:4315e2097a4b26e1,decl:744362a28fbc2990}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.nu\_cofiber}.
+\lean{KIP126.Literature.Standard.nu_cofiber}
+\uses{decl:4315e2097a4b26e1}
 % Blueprint note: Source verification (2026-10-18): Original source text. Specialization to mod-two homology and the project’s precise nu and coefficient functors; no finiteness, connectivity, or completeness premise is introduced. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Lemma 4.23; pages 43; arXiv:1803.01804v3, 10 November 2022
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.1, specializing \cite{Pst}, Lemma 4.23.)
 \end{proposition}
@@ -80,17 +55,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
     $$d_r: \SynSS_r^{s,t,w}\to \SynSS_r^{s+r,t+r-1,w}.$$
     Here $E_2^{*,*}(X) \cong \Ext_A^{*,*}(X)$ is the classical Adams $E_2$-page of $X$. An element in $E_2^{s,t}(X)$ is viewed as having tridegree $(s, t, t)$ in $\SynSS_2^{s,t,t}(\nu X)$, and $\lambda$ is in tridegree $(0, 0, -1)$. Given a classical Adams differential $d_r^{\mathrm{cl}}(x)=y$, the corresponding synthetic differential is $d_r(x)=\lambda^{r-1}y$, which is $\lambda$-linear, and all synthetic Adams differentials arise in this way.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.3,sem:AdamsSynthetic:families}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 799-807](paper/main.tex.html#L799). BHS supplies the polynomial-lambda Adams page and its differential rule for the synthetic analogue.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The public statements separate page coordinates, the free-lambda range, and differential rigidity. Their object scope is the project ClassicalObject closure; it is not a claim about every arbitrary external spectrum.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.nuPage\_e2}: \ref{decl:1d26482c4d8ea8a8}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.free\_component}: \ref{decl:652ffe9884ae34de}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.free\_e2}: \ref{decl:c3f86a64173843eb}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.free\_lambda}: \ref{decl:c337631480655e3f}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.free\_differential}: \ref{decl:2c2f3805d0ba662a}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_differentials}: \ref{decl:c47a6ad44122fa0e}
-\lean{KIP126.Literature.Standard.nuPage_e2,KIP126.Literature.Standard.free_component,KIP126.Literature.Standard.free_e2,KIP126.Literature.Standard.free_lambda,KIP126.Literature.Standard.free_differential,KIP126.Literature.Standard.bhs_differentials}
-\uses{decl:1d26482c4d8ea8a8,decl:652ffe9884ae34de,decl:c3f86a64173843eb,decl:c337631480655e3f,decl:2c2f3805d0ba662a,decl:c47a6ad44122fa0e}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.nuPage\_e2}, \texttt{KIP126.Literature.Standard.bhs\_differentials}.
+\lean{KIP126.Literature.Standard.nuPage_e2,KIP126.Literature.Standard.bhs_differentials}
+\uses{decl:1d26482c4d8ea8a8,decl:c47a6ad44122fa0e}
 % Blueprint note: Source verification (2026-10-18): Original source text. From refers to the immutable AimPaper body, not to a claim that all clauses are already covered by the selected Lean bindings. Bound free comparison statements cover part of the full rigidity theorem, with their existing proof obligations. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Theorem 3.6 and Remark 3.7; pages local PDF p. 16; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Theorem 3.6; adapted there from \cite{BHS}, Theorem A.8, with the regrading in Remark 3.7.)
 \end{theorem}
@@ -115,12 +89,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
         is equal to $d_r(x)$.
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.3,sem:AdamsSynthetic:families}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 813-823](paper/main.tex.html#L813). BHS identifies the Adams and lambda-Bockstein sequences, including lifts and the connecting differential. It is a separate external input, not a consequence asserted from Theorem 3.6 alone.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The public correspondence uses the actual first quotient and classical labels, finite lifts, and Bockstein differentials, retaining the selected objects and comparison conditions.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_finite\_lift}: \ref{decl:4ba428f997649b6e}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_bockstein}: \ref{decl:f5927c0039d00786}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_differentials}: \ref{decl:c47a6ad44122fa0e}
+% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_finite\_lift}
+% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_bockstein}
+% Blueprint note: \item \texttt{KIP126.Literature.Standard.bhs\_differentials}
 \lean{KIP126.Literature.Standard.bhs_finite_lift,KIP126.Literature.Standard.bhs_bockstein,KIP126.Literature.Standard.bhs_differentials}
 \uses{decl:4ba428f997649b6e,decl:f5927c0039d00786,decl:c47a6ad44122fa0e}
 % Blueprint note: Source verification (2026-10-18): Original source text. Do not alter the original occurrence of tau-Bockstein in the AimPaper raw block. The source attribution should not silently strengthen the chosen Lean bindings into a proof of the complete spectral-sequence isomorphism. Theorem A.1 has E-nilpotent completeness and strong-convergence hypotheses; finite-page information is proved earlier under weaker hypotheses, while untruncated homotopy applications retain the full hypotheses. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Theorem 3.8; pages local PDF p. 16; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(1); Theorem A.8; proof of Proposition A.16; pages arXiv PDF pp. 70-72,75-76; published pp. 304-307,311-312; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
@@ -143,13 +121,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
         0 & \text{ otherwise }.
     \end{cases}$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.6}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 839-847](paper/main.tex.html#L839). The lambda-linear differential pattern gives the infinite-page cycle/boundary quotient described by BHS Corollary A.9.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The formula and labels use the actual classical cycle/boundary quotient on the selected ClassicalObject scope.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.eInfinity\_nu}: \ref{decl:83d5e1d1af520759}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.eInfinity\_nu\_labels}: \ref{decl:4c64d2a51882bf40}
-\lean{KIP126.Literature.Standard.eInfinity_nu,KIP126.Literature.Standard.eInfinity_nu_labels}
-\uses{decl:83d5e1d1af520759,decl:4c64d2a51882bf40}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.eInfinity\_nu}.
+\lean{KIP126.Literature.Standard.eInfinity_nu}
+\uses{decl:83d5e1d1af520759}
 % Blueprint note: Source verification (2026-10-18): Original source text. BHS Corollary A.9 gives the untruncated E-infinity subquotient, and Corollary A.11 gives the finite quotient. All formula indices transform by s-omega=t-w. The finite formula holds for q>=1 in BHS, while AimPaper Proposition 3.12 explicitly states q>=2. Additive equivalences are viewed as Z-linear without a change of scalar structure. Matching a specific E2 representative to its quotient class requires the canonical label-compatible presentation, not an arbitrary abstract isomorphism. Zero labels are permitted in subgroup and quotient statements. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Proposition 3.11; pages local PDF p. 17; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.9(1)-(4), including its final surjectivity sentence; pages arXiv PDF pp. 72-73; published pp. 307-308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.11; adapted there from \cite{BHS}, Corollary A.9.)
 \end{proposition}
@@ -170,13 +151,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
         0 & \text{otherwise}.
     \end{cases}$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.3,paper:3.6}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 839-855](paper/main.tex.html#L839). The finite lambda quotient truncates the polynomial-lambda sequence and gives the BHS Corollary A.11 window.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The finite-lambda-quotient infinite-page window and its valid range are explicit.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.eInfinity\_finite}: \ref{decl:6b1170ab5a6ff05d}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.eInfinity\_finite\_labels}: \ref{decl:583149f3b73288f1}
-\lean{KIP126.Literature.Standard.eInfinity_finite,KIP126.Literature.Standard.eInfinity_finite_labels}
-\uses{decl:6b1170ab5a6ff05d,decl:583149f3b73288f1}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.eInfinity\_finite}.
+\lean{KIP126.Literature.Standard.eInfinity_finite}
+\uses{decl:6b1170ab5a6ff05d}
 % Blueprint note: Source verification (2026-10-18): Original source text. BHS Corollary A.9 gives the untruncated E-infinity subquotient, and Corollary A.11 gives the finite quotient. All formula indices transform by s-omega=t-w. The finite formula holds for q>=1 in BHS, while AimPaper Proposition 3.12 explicitly states q>=2. Additive equivalences are viewed as Z-linear without a change of scalar structure. Matching a specific E2 representative to its quotient class requires the canonical label-compatible presentation, not an arbitrary abstract isomorphism. Zero labels are permitted in subgroup and quotient statements. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Proposition 3.12; pages local PDF p. 17; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.11(1)-(3) and its proof; Notation A.10; pages arXiv PDF p. 73; published p. 308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.12; adapted there from \cite{BHS}, Corollary A.11.)
 \end{proposition}
@@ -200,14 +184,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
     }$$
     where $\tilde f: \Sus^{0,k}\nu X\to \nu Y$ is called a synthetic lift of $f$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.3,sem:AdamsSynthetic:filtration-comparison}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 912-919](paper/main.tex.html#L912). BHS's filtration factorization is expressed using powers of lambda and the Adams-filtration bound.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The same classical map and an actual tower-filtration bound give the factorization through a lambda power.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.lift}: \ref{decl:f5227c15ec1381e8}
-% Blueprint note: \item \texttt{KIP126.Literature.SyntheticFullLift}: \ref{decl:1d3eeae5375e6c50}
-% Blueprint note: \item \texttt{KIP126.Literature.SyntheticLiftComparison}: \ref{decl:94c09dff696f6394}
-\lean{KIP126.Literature.Standard.lift,KIP126.Literature.SyntheticFullLift,KIP126.Literature.SyntheticLiftComparison}
-\uses{decl:f5227c15ec1381e8,decl:1d3eeae5375e6c50,decl:94c09dff696f6394}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.lift}.
+\lean{KIP126.Literature.Standard.lift}
+\uses{decl:f5227c15ec1381e8}
 % Blueprint note: Source verification (2026-10-18): Original source text. The displayed raw AimPaper statement is unchanged. The bound Lean SyntheticFullLift uses the same negative-target convention. SyntheticLiftComparison accepts filtration at least k, a natural bound version obtained from k successive filtration-one factorizations (including k=0). It remains an admitted comparison for the fixed project tower. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Proposition 3.16; pages PDF pp. 18–19; main.tex lines 912–927; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf; exact local source snapshot [BHS](https://arxiv.org/pdf/1910.14116v3): Lemma 9.15 and its proof; pages PDF pp. 34–35; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.16; see \cite{BHS}, Lemma 9.15.)
 \end{proposition}
@@ -230,13 +216,16 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
     $$\nu X\fto{\nu f}\nu Y\fto{\nu g} \nu Z\fto{\Sus^{0,-1}\hat h} \Sus^{0,-1}\nu \Sus X=\Sus^{1,0}\nu X$$
     such that $\nu h=\lambda \hat h$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.1,paper:3.3}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 929-940](paper/main.tex.html#L929). Apply synthetic cofiber preservation to the homology-exact triangle and use the suspension comparison for its boundary; the proof is in BHS Lemma 9.15.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: Positive filtration and the full homology short exactness are retained. The factorization concerns the same connecting arrow and distinguished triangle; comparison of arbitrary full lifts is only modulo lambda torsion.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.triangle\_lift}: \ref{decl:4b47adcbe06e1a4c}
-% Blueprint note: \item \texttt{KIP126.Literature.SyntheticTriangleLiftComparison}: \ref{decl:57c7f0154935f70d}
-\lean{KIP126.Literature.Standard.triangle_lift,KIP126.Literature.SyntheticTriangleLiftComparison}
-\uses{decl:4b47adcbe06e1a4c,decl:57c7f0154935f70d}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.triangle\_lift}.
+\lean{KIP126.Literature.Standard.triangle_lift}
+\uses{decl:4b47adcbe06e1a4c}
 % Blueprint note: Source verification (2026-10-18): Original source text. The interface existentially chooses a connecting arrow and its distinguished triangle under positive filtration and homology exactness; its full-lift comparison is only modulo lambda torsion, as in AimPaper Remark 3.18. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Lemma 9.15 and its proof; pages 34–35; arXiv:1910.14116v3, 10 May 2022 [LWX126](https://arxiv.org/abs/2412.10879): Propositions 3.16–3.17; Remark 3.18; pages 18–19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.17; see the proof of \cite{BHS}, Lemma 9.15, and \cite{LWX126}, Remark 3.18.)
 \end{proposition}
@@ -256,14 +245,16 @@ Suppose that we have a distinguished triangle of spectra
     $$\nu X\fto{\hat f} \Sus^{0,-e(f)}\nu Y\fto{\hat g} \Sus^{0,-e(f)-e(g)}\nu Z\fto{\hat h} \Sus^{0,-1}\nu \Sus X$$
     (For simplicity we often omit the suspensions before maps but keep the suspensions before spectra.)
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.17,sem:AdamsSynthetic:normalized-map}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 946-971](paper/main.tex.html#L946). Rewrite the lifted triangle using the normalized maps and their filtration-shift convention; rotations cover the three possible positions.
+
 
 % Correspondence: partial
 % Blueprint note: The implementation constructs a normalized triangle and a cofiber comparison for its normalized first arrow. There is no general public theorem deducing that the three prescribed normalized arrows form a distinguished triangle merely from their exponent sum being one. NormalizedTriangleCompatible is a proposition recording the required condition; defining it does not deliver that conclusion.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.normalizedTriangle}: \ref{decl:6583730dffc56d1f}
-% Blueprint note: \item \texttt{KIP126.Literature.NormalizedTriangleCompatible}: \ref{decl:aac9a177da29dd4e}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.normalized\_cofiber}: \ref{decl:8c1d0a43af63032f}
-\lean{KIP126.Literature.Standard.normalizedTriangle,KIP126.Literature.NormalizedTriangleCompatible,KIP126.Literature.Standard.normalized_cofiber}
-\uses{decl:6583730dffc56d1f,decl:aac9a177da29dd4e,decl:8c1d0a43af63032f}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.normalizedTriangle}, \texttt{KIP126.Literature.Standard.normalized\_cofiber}.
+\lean{KIP126.Literature.Standard.normalizedTriangle,KIP126.Literature.Standard.normalized_cofiber}
+\uses{decl:6583730dffc56d1f,decl:8c1d0a43af63032f}
 \sketch
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. Keep the original raw block unchanged. The source assumes exponent sum one and uses shifted vertices. The current binding includes a cofiber-comparison obligation and a distinguishedness predicate, not a theorem for the three already selected normalized arrows. Retain partial/sketch status. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Notation 3.19; Proposition 3.20; pages 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 3.20; the current binding is partial.)
@@ -293,14 +284,16 @@ Suppose that we have a distinguished triangle of spectra
         \item $a$ and $c$ map to the same element via boundary maps in $\pi_{n-1}(X\sma X')$.
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{sem:AdamsSynthetic:categories}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1755-1777](paper/main.tex.html#L1755). May's external tensor-triangulated push-pull result supplies the smash-product diagram; its boundary identity is not proved by a later Mahowald application.
+
 
 % Correspondence: public correspondence with the scope stated below
 % Blueprint note: The public data deliver the May push-pull diagram and its signed boundary comparison. Removing the sign still requires the stated exponent-two condition.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.may\_pushpull}: \ref{decl:9f9bafae3ac3e1f5}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.may\_signed\_boundary}: \ref{decl:a7f38634d33d0a16}
-% Blueprint note: \item \texttt{KIP126.Literature.Route.MayPushpullData}: \ref{decl:2062b7fbc95c00d1}
-\lean{KIP126.Literature.Standard.may_pushpull,KIP126.Literature.Standard.may_signed_boundary,KIP126.Literature.Route.MayPushpullData}
-\uses{decl:9f9bafae3ac3e1f5,decl:a7f38634d33d0a16,decl:2062b7fbc95c00d1}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.may\_pushpull}, \texttt{KIP126.Literature.Standard.may\_signed\_boundary}.
+\lean{KIP126.Literature.Standard.may_pushpull,KIP126.Literature.Standard.may_signed_boundary}
+\uses{decl:9f9bafae3ac3e1f5,decl:a7f38634d33d0a16}
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. Keep the original raw block unchanged. May’s TC3 boundary equality has a minus sign; Lean may_signed_boundary preserves it. The unsigned equality printed in AimPaper Lemma 6.11 is only justified after an exponent-two image condition or compatible sign convention is supplied. F2 Adams-page coefficients alone do not imply this condition. Primary references: [May01](https://www.math.uchicago.edu/~may/PAPERS/AddJan01.pdf): Axiom TC3; Lemma 4.6; pages 12–14; Author-hosted January 2001 preprint, 31 pages; numbered statements retain published numbering
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Lemma 6.11, based on \cite{May01}, Axiom TC3 and Lemma 4.6; the general boundary identity is signed.)
 \end{lemma}
@@ -325,14 +318,18 @@ Suppose that we have a distinguished triangle of spectra
  $$\lambda \eta \theta_5^2 = 0 \ \text{in} \ \pi_{125,125+4} S^{0,0}.$$ 
  \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.3,sem:Literature:theta-five,sem:Literature:hopf-classes}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 2110-2140](paper/main.tex.html#L2110). The external BJM/BX criterion is stated using lambda quotients, a detected theta-five and eta. The existing normalization and choice-scope qualifications remain in force.
+
 
 \sketch
 \par The fixed-choice interfaces use the distinguished $\theta_5^{\mathrm{BX}}$ and a positive finite-page parameter. The normalized criterion at every admissible theta choice, including the zero-parameter case, is stated in \ref{sem:Main:any-choice-criterion}.
 % Correspondence: Partial correspondence for the distinguished theta-five
 % Blueprint note: The bound Literature interfaces give the BX criterion only for the distinguished theta-five. The finite-page interface assumes a positive natural-number parameter and uses its stated quotient convention; these bindings alone do not establish the full choice and parameter scope of the paper statement. Both source-interface proofs remain registered as unfinished.
 % Blueprint note: For the normalized version at every admissible theta choice and every natural-number parameter, including the separate zero case, see \ref{sem:Main:any-choice-criterion} in Main. That theorem has a completed local proof using the upstream interfaces; its transitive proof dependencies are not all complete.
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bx\_finite}: \ref{decl:fb5782fb94528550}
-% Blueprint note: \item \texttt{KIP126.Literature.Standard.bx\_untruncated}: \ref{decl:86da32a1e44cbcdf}
+% Blueprint note: \item \texttt{KIP126.Literature.Standard.bx\_finite}
+% Blueprint note: \item \texttt{KIP126.Literature.Standard.bx\_untruncated}
 \lean{KIP126.Literature.Standard.bx_finite,KIP126.Literature.Standard.bx_untruncated}
 \uses{decl:fb5782fb94528550,decl:86da32a1e44cbcdf}
 % Blueprint note: Source verification (2026-10-18): Original source text. The protected AimPaper statement block is the paper theorem verbatim. Its existential theta choice and lambda-normalized quotient are not identical to the two fixed-choice bound BX interfaces. The existing sketch/partial correspondence must remain; no replacement of the block is proposed. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution [BurklundXu](https://arxiv.org/pdf/2302.11869v3): Proposition 7.19 and its proof; Theorem 7.20 and its proof; pages 54; arXiv:2302.11869v3, 9 November 2024; accepted version

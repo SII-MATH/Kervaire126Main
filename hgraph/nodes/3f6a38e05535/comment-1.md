@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.556571+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The definitions use the direction of classical differential crossings and the valid page range specified in the article. They are distinct from Moss crossings.
@@ -18,9 +20,9 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.HasCrossingOn`: [implementation](implementation/index.html#decl:7e04ee02f4a57b31)
+\item `KIP126.ProofTools.HasCrossingOn`
 
-\item `KIP126.ProofTools.NoCrossingOn`: [implementation](implementation/index.html#decl:cd43aa102f21f4d4)
+\item `KIP126.ProofTools.NoCrossingOn`
 
 \end{itemize}
 

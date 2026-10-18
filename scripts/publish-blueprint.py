@@ -7,7 +7,6 @@ Full repository verification remains available through build-blueprint.py.
 """
 import argparse
 from collections import Counter, defaultdict, deque
-from copy import deepcopy
 from datetime import datetime, timezone
 import hashlib
 import gzip
@@ -46,32 +45,12 @@ def full_build_report():
             'scope': 'Latest recorded build run; subsequent source edits are not implicitly verified.'}
 
 
-def verification_html(evidence):
-    if evidence.get('semantic_blueprint'):
-        b.semantic.write_verification(STATE, evidence)
-        return (STATE / 'verification.html').read_text()
-    stats, target = evidence['aimpaper'], evidence['targeted_verification']
-    status = evidence['full_project_build']['status']
-    body = '<h2>Paper mappings and publication verification</h2><p>Publication and whole-project verification are tracked separately. A failed whole-project build does not prevent publishing reviewed correspondences.</p>'
-    body += f'<p>{stats["statements"]} paper statements; {stats["bound_statements"]} bound statements, including {stats["partial_bound_statements"]} partial correspondences marked as sketches. Geometric endpoints have their own chapter.</p>'
-    body += f'<p>{evidence["baseline"]["source_declarations"]} declarations reuse a verified compiled snapshot. Independent support-module verification: {"passed" if target["target_build"] else "failed; affected nodes remain unverified"}. Unverified source nodes: {len(evidence["unverified_source_labels"])}.</p>'
-    body += '<p>Latest recorded whole-project build: ' + {'passed':'passed', 'failed':'failed', 'unknown':'in progress or no complete result recorded'}[status] + '. This report does not gate publication. Existing proof obligations and unverified source states are recorded separately.</p>'
-    body += f'<p>There are {evidence["direct_obligations"]} unique Lean proof or construction obligations. Paper and source entries can refer to the same obligation; displayed entries do not create additional obligations.</p>'
-    return body + '<p>Local completion and transitive dependency closure are checked separately. Partial correspondences retain their sketch markers and explicit scope; local status does not assert the full generality of the original paper.</p>'
-
-
 def refresh_build_report():
-    """Refresh the secondary report, preserving mathematics and other tabs.
-
-    Older exports may still embed a verification tab. Update that tab when
-    present; an export without it keeps data/project files byte-for-byte intact.
-    """
+    """Update machine-readable build evidence without changing the Blueprint."""
     live = ROOT / '_site'
-    paths = ['validation.json', 'Kervaire126/data.json', 'Kervaire126/project.json']
-    if (live / 'verification.html').exists():
-        paths.append('verification.html')
-    original = {name: (live / name).read_bytes() for name in paths}
-    evidence = json.loads(original['validation.json'])
+    path = live / 'validation.json'
+    original = path.read_bytes()
+    evidence = json.loads(original)
     if evidence.get('publication_mode') not in ('paper-mappings-with-scoped-verification', 'curated-mathematical-blueprint'):
         raise ValueError('Publish the authored paper mappings first')
     evidence['full_project_build'] = full_build_report()
@@ -79,39 +58,16 @@ def refresh_build_report():
         'updated_at_utc': datetime.now(timezone.utc).isoformat(),
         'publisher_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
         'all_mathematical_payloads_and_bindings_unchanged': True}
-    body = verification_html(evidence)
-    payloads = {'validation.json': evidence}
-    for name in ('Kervaire126/data.json', 'Kervaire126/project.json'):
-        before = json.loads(original[name])
-        after = deepcopy(before)
-        tabs = [tab for tab in after.get('customTabs', []) if tab['id'] == 'verification']
-        if len(tabs) > 1:
-            raise ValueError('Expected at most one native verification tab')
-        if not tabs:
-            continue
-        tabs[0]['html'] = body
-        restored = deepcopy(after)
-        next(tab for tab in restored['customTabs'] if tab['id'] == 'verification')['html'] = next(
-            tab for tab in before['customTabs'] if tab['id'] == 'verification')['html']
-        if restored != before:
-            raise ValueError('Build report refresh changed mathematical payloads')
-        payloads[name] = after
-    documents = {name: json.dumps(payload, ensure_ascii=False) for name, payload in payloads.items()}
-    documents['verification.html'] = b.blueprint_map.verification_document(body)
     with tempfile.TemporaryDirectory(dir=STATE, prefix='build-report-') as directory:
-        replacements = []
-        for index, (name, document) in enumerate(documents.items()):
-            temporary = Path(directory) / str(index)
-            temporary.write_text(document)
-            compressed = temporary.with_suffix('.gz')
-            compressed.write_bytes(gzip.compress(temporary.read_bytes(), mtime=0))
-            replacements.extend([(temporary, live / name), (compressed, live / (name + '.gz'))])
-        if any((live / name).read_bytes() != content for name, content in original.items()):
+        temporary = Path(directory) / 'validation.json'
+        temporary.write_text(json.dumps(evidence, ensure_ascii=False, indent=2) + '\n')
+        compressed = temporary.with_suffix('.json.gz')
+        compressed.write_bytes(gzip.compress(temporary.read_bytes(), mtime=0))
+        if path.read_bytes() != original:
             raise ValueError('Published snapshot changed while updating build report')
-        for source, destination in replacements:
-            source.replace(destination)
-    (STATE / 'verification.html').write_text(body)
-    print('Updated full-build report; all declaration/proof/binding data preserved.')
+        temporary.replace(path)
+        compressed.replace(path.with_suffix('.json.gz'))
+    print('Updated validation.json build evidence; all Blueprint payloads preserved.')
 
 
 def hashes(paths):
@@ -238,18 +194,6 @@ def cached_sources(data, evidence, graph):
     return result, dependencies
 
 
-def new_support(sources, required):
-    existing = {s['label'] for s in sources.values()}
-    missing = required - existing
-    paths = set()
-    for path in (ROOT / 'KIP126').rglob('*.lean'):
-        module = str(path.relative_to(ROOT).with_suffix('')).replace('/', '.')
-        for declaration in source_declarations(path.read_text()):
-            if b.label(module, declaration['fqname']) in missing:
-                paths.add(path)
-    return paths
-
-
 def capture_support(paths):
     modules = sorted(str(p.relative_to(ROOT).with_suffix('')).replace('/', '.') for p in paths)
     before = module_inputs(modules)
@@ -350,27 +294,11 @@ def publish(*, refresh_source_evidence=False):
         data = json.loads((BASELINE / 'data.json').read_text())
         original = json.loads((BASELINE / 'validation.json').read_text())
         sources, dependencies = cached_sources(data, original, graph)
-    required = {label for path in (ROOT / 'blueprint/paper').glob('*.tex')
-                for label in re.findall(r'\\ref\{(decl:[^}]+)\}', path.read_text())}
-    # New public semantic bindings receive the same independently compiled
-    # support-module treatment as new paper correspondences.
-    semantic_statements, _ = b.parse_blueprint(b.read_blueprint(ROOT / 'blueprint/content.tex'))
-    # Main remarks identify private proofs by explicit stable declaration IDs;
-    # their source spellings are not public kernel names to rediscover.
-    required.update(label for row in semantic_statements
-                    if row['label'].startswith('sem:Main:remark-')
-                    for label in row['uses'] if label.startswith('decl:'))
-    needed_names = {name for row in semantic_statements if row['label'].startswith('sem:')
-                    and not row['label'].startswith('sem:Main:remark-')
-                    for name in row['lean']} - sources.keys()
-    if needed_names:
-        for path in (ROOT / 'KIP126').rglob('*.lean'):
-            module = str(path.relative_to(ROOT).with_suffix('')).replace('/', '.')
-            for declaration in source_declarations(path.read_text()):
-                if declaration['fqname'] in needed_names:
-                    required.add(b.label(module, declaration['fqname']))
-    paths = new_support(sources, required)
-    paths.update(public_source_paths(needed_names))
+    # Discover new formal counterparts from actual public bindings, independently
+    # of retired implementation-index links in authoring notes.
+    statements, _ = b.parse_blueprint(b.read_blueprint(ROOT / 'blueprint/content.tex'))
+    needed_names = {name for statement in statements for name in statement['lean']} - sources.keys()
+    paths = public_source_paths(needed_names)
     if refresh_source_evidence:
         paths.update(mathematical_source_paths())
     b.phase(f'Publishing paper mappings using {len(sources)} cached declarations and {len(paths)} support module(s)…')
@@ -466,14 +394,11 @@ def publish(*, refresh_source_evidence=False):
                    'paper_bindings_match_actual_lean_and_partial_scopes_are_marked': True,
                    'native_closure_matches_selected_compiled_evidence': True,
                    'unverified_nodes_cannot_be_marked_complete': True}}
-    body = verification_html(evidence)
-    (STATE / 'verification.html').write_text(body)
     (STATE / 'mapping-publication.json').write_text(json.dumps(evidence, ensure_ascii=False, indent=2))
     (STATE / 'mapping-sync.json').write_text(json.dumps(report, ensure_ascii=False, indent=2))
     b.phase('Exporting the native frontend; full-project verification remains separate…')
     b.export_site(evidence, records, ROOT / '_site',
-                  lambda: hashes(selected) == represented_inputs and b.site_inputs() == authored,
-                  (sources, dependencies, obligations, analysis))
+                  lambda: hashes(selected) == represented_inputs and b.site_inputs() == authored)
 
 
 if __name__ == '__main__':

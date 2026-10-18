@@ -6,9 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T05:24:37.460925+00:00'
+updated: '2026-10-18T07:48:14.533386+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
+
+Mathematical dependency review: [AimPaper source, lines 156-161](paper/main.tex.html#L156). The exhaustive second line, Adams--Lin--Leibniz screening, classical permanence/exclusions and the new h6-square case yield the classification. Use the corrected screening including h0 h4, as recorded in the existing scope note.
 
 **Formal scope:** Public correspondence; complete local classification proof using the corrected third-page candidate interface.
 

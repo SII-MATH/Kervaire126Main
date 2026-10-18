@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.560611+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
+
 **Formal scope:** no public counterpart yet.
 
 There is no public theorem identifying a normalized $f$-extension on the $E_\infty$ page with an extension in the classical $f$-extension spectral sequence. The existing definitions on the two sides do not supply this bridge.

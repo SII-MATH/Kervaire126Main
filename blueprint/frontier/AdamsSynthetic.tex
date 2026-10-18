@@ -316,28 +316,9 @@ The ordinary stable localization of sequential prespectra is equivalent to $\mat
 \lean{KIP126.AdamsSynthetic.Standard.sourceRecognition}
 \end{definition}
 
-\begin{theorem}[The tower differential on quotient pages]
-\label{frontier:AdamsSynthetic:cd228df26336}
-\level{fine}
-Let $T$ be a coefficient-unit Adams tower, $r\geq2$, and $p=(s,t)\in\mathbb Z^2$. There exists a homomorphism
-\[
-d_r\colon E_r^p(T)\longrightarrow E_r^{p+(r,r-1)}(T)
-\]
-with the following representative formula. If $z$ is a cycle representative and its connecting class lifts to $a\in\pi_{t-s-1}T^{s+r}$, then $d_r[z]$ is represented by the layer image of $a$. This formula holds for every such lift and every target cycle representing that layer image.
-\lean{_private.KIP126.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerDifferential_exists}
-\end{theorem}
 
-\begin{theorem}[Tower differential identities]
-\label{frontier:AdamsSynthetic:dc3e6f2c2b31}
-\level{fine}
-Let $T$ be a coefficient-unit Adams tower and $p\in\mathbb Z^2$. For every integer $r$, one has $d_r^2=0$. For $r\geq2$, with $n=r-2$ and quotient map $q\colon Z_n\to Z_n/B_n$, one has
-\[
-\ker d_r=\operatorname{im}(Z_{n+1}\longrightarrow Z_n/B_n),\qquad
-\operatorname{im}d_r=\operatorname{im}(B_{n+1}\longrightarrow Z_n/B_n).
-\]
-The kernel formula is in degree $p$, and the image formula is in degree $p+(r,r-1)$.
-\lean{_private.KIP126.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_image,_private.KIP126.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_comp,_private.KIP126.AdamsSynthetic.Internal.Source.AdamsSequence.0.KIP126.AdamsSynthetic.Internal.Source.towerD_kernel}
-\end{theorem}
+
+
 
 \begin{theorem}[Detection, products, and exactness of the synthetic analogue]
 \label{frontier:AdamsSynthetic:791f3c0e6a4a}
@@ -352,15 +333,7 @@ For $s,t,s',t',k,l\in\mathbb N$, $x\in E_2^{s,t}(S)$, and $y\in E_2^{s',t'}(S)$,
 \lean{KIP126.AdamsSynthetic.Standard.first_quotient,KIP126.AdamsSynthetic.Standard.sphereProductCommutative,KIP126.AdamsSynthetic.Standard.nu_preserves_triangle,KIP126.AdamsSynthetic.Standard.multiplicationCompatible,KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda}
 \end{theorem}
 
-\begin{theorem}[The Milnor differential squares to zero]
-\label{frontier:AdamsSynthetic:0923caf5acf5}
-\level{fine}
-For $s,t\in\mathbb N$ and $x\in C^{s,t}_{\mathrm{Milnor}}$, one has
-\[
-d_{s+1,t}(d_{s,t}x)=0.
-\]
-\lean{_private.KIP126.AdamsSynthetic.Internal.Milnor.Complex.0.KIP126.AdamsSynthetic.Milnor.differential_squared}
-\end{theorem}
+
 
 \begin{theorem}[Infinite filtration of maps between finite spectra]
 \label{frontier:AdamsSynthetic:1ae83419acab}
@@ -476,4 +449,20 @@ For $s,t\in\mathbb N$ and $x\in E_1^{s,t}(T(S))$, one has
 \]
 where $d_1$ is the connecting-map differential of the canonical sphere tower.
 \lean{KIP126.AdamsSynthetic.Standard.milnorCoordinates_differential}
+\end{theorem}
+
+\begin{theorem}[First-quotient labels under positive weight shift]
+\label{frontier:AdamsSynthetic:894dd8ba400f}
+\level{fine}
+Let $x\in E_2^{s,t}(X)$ and let $\epsilon$ identify the first lambda quotient of $\Sigma^{0,1}\nu X$ with $\Sigma^{0,1}(\nu X/\lambda)$. Suppose that $\epsilon$ commutes with the quotient inclusion. Shifting the first-quotient label of $x$ by $(0,1)$ and transporting it through $\epsilon^{-1}$ gives the fixed first-quotient label of $x$ in weight shift one.
+\lean{KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift}
+% Blueprint note: This exposes the existing separately registered positive-shift compatibility responsibility. It adds no Lean declaration or proof obligation; the fresh compiled consumer incidence requires a separate public carrier for this member of the combined shift-compatibility entry.
+\end{theorem}
+
+\begin{theorem}[First-quotient labels under classical suspension]
+\label{frontier:AdamsSynthetic:837d666cb875}
+\level{fine}
+Let $x\in E_2^{s,t}(X)$ and let $sx\in E_2^{s,t+1}(\Sigma X)$ desuspend to $x$ under the fixed classical suspension comparison. Suppose that $\epsilon$ identifies the first lambda quotient of $\Sigma^{1,1}\nu X$ with the shifted quotient and commutes with the quotient inclusion. Transporting the label of $sx$ through the fixed nu-suspension comparison and $\epsilon$ agrees with shifting the label of $x$ by $(1,1)$.
+\lean{KIP126.AdamsSynthetic.Standard.firstQuotient_suspension}
+% Blueprint note: This exposes the existing separately registered suspension compatibility responsibility, with its actual desuspension premise and inclusion-compatible quotient comparison. It adds no Lean declaration or proof obligation.
 \end{theorem}

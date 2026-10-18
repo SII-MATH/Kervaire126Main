@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.555708+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements cover the full valid range of weights, the zero endpoint $a=n$, and vanishing when the source or target lies outside the strip.
@@ -18,13 +20,13 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute`: [implementation](implementation/index.html#decl:eedf6ddb7e1f7ce1)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite`: [implementation](implementation/index.html#decl:4ef31a493b9ef817)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes`: [implementation](implementation/index.html#decl:9ee455c902bcda6c)
+\item `KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes`: [implementation](implementation/index.html#decl:1b13f26250672867)
+\item `KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes`
 
 \end{itemize}
 

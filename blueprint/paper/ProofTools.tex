@@ -1,6 +1,27 @@
 % Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
 \section{No-crossing criteria for filtered extensions}
 
+% AimPaper: 2.6 corollary 327 330
+\begin{corollary}[Vanishing below the Adams filtration]
+\label{paper:2.6}
+\source{AimPaper Corollary 2.6}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.6.)
+% BEGIN AIMPAPER STATEMENT
+If the Adams filtration of $f$ is $k$, then
+    $d^f_i=0$ for $i<k$.
+% END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.5,sem:AdamsSynthetic:filtration-comparison}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 332-339](paper/main.tex.html#L332). Factor f into positive-filtration maps, then apply Proposition 2.5(1) to rule out shorter extension differentials.
+
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem asserting that $\operatorname{AF}(f)=k$ forces every $d_i^f$ with $i<k$ to vanish has been identified. The result \texttt{action\_filtration} provides related support but does not state this conclusion.
+% Blueprint note: Original statement and context: paper/main.tex.html#L327; paper/2412.10879.pdf.
+\end{corollary}
+
 % AimPaper: 2.7 definition 344 352
 \begin{definition}[Crossings of extensions]
 \label{paper:2.7}
@@ -17,13 +38,18 @@
     \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing if it has no crossing that hits the range AF$\ge \AF(x) + 1$.
 \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.3}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 344-352](paper/main.tex.html#L344). A crossing is a competing extension from a higher-filtration source, using the extension relation already defined.
+
+% Blueprint note: The generic filtered-map crossing predicate belongs to \ref{sem:SpectralSequence:crossing-transport}. The bindings here are the two stated no-crossing predicates with an arbitrary filtration threshold.
 
 
 % Correspondence: partial.
 % Blueprint note: Public representative-level definitions \texttt{FilteredNoCrossingRange} and \texttt{ExtensionNoCrossingRange} allow arbitrary filtration thresholds. Their comparison with \texttt{DifferentialDatum} and \texttt{HasCrossingAt} for a general classical $f$-extension spectral sequence has not yet been assembled into a complete public bridge, so this correspondence remains partial.
-% Blueprint note: Formal counterparts: \item \texttt{KIP126.Core.SpectralSequence.FilteredMapTransport.NoCrossing}: \ref{decl:60c806ba7a38bec7} \item \texttt{KIP126.ProofTools.Paper.FilteredNoCrossingRange}: \ref{decl:89fda1e3f535171f} \item \texttt{KIP126.ProofTools.Paper.ExtensionNoCrossingRange}: \ref{decl:44d0052f39f760c7}
-\lean{KIP126.Core.SpectralSequence.FilteredMapTransport.NoCrossing,KIP126.ProofTools.Paper.FilteredNoCrossingRange,KIP126.ProofTools.Paper.ExtensionNoCrossingRange}
-\uses{decl:60c806ba7a38bec7,decl:89fda1e3f535171f,decl:44d0052f39f760c7}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Paper.FilteredNoCrossingRange}, \texttt{KIP126.ProofTools.Paper.ExtensionNoCrossingRange}.
+\lean{KIP126.ProofTools.Paper.FilteredNoCrossingRange,KIP126.ProofTools.Paper.ExtensionNoCrossingRange}
+\uses{decl:89fda1e3f535171f,decl:44d0052f39f760c7}
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L344; paper/2412.10879.pdf.
 \end{definition}
@@ -44,11 +70,15 @@
         \item If $\AF(f)=n$, then all $d^f_n$-differentials have no crossing in the $f$-ESS.
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.5,paper:2.7}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 418-430](paper/main.tex.html#L418). Proposition 2.5(3) and the definition of a crossing turn universal representative behavior into the no-crossing criterion.
+
 
 
 % Correspondence: public counterpart, within the scope described below.
 % Blueprint note: The full representative-level equivalence and its three clauses are public for arbitrary filtered abelian groups. An $E_\infty$ formulation for the same synthetic map is also available. This does not establish the missing general classical $f$-extension spectral sequence construction in Definition~2.1.
-% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossingRange\_iff}: \ref{decl:8937ab8449f2f5f8} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_iff}: \ref{decl:7a4f928ddc60ba93} \item \texttt{KIP126.ProofTools.Paper.filtered\_zero\_extension\_noCrossing\_iff}: \ref{decl:d2bad3a7f86619e4} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_of\_filtration\_bound}: \ref{decl:cff569382c0d7bdf}
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossingRange\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_zero\_extension\_noCrossing\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_of\_filtration\_bound}
 \lean{KIP126.ProofTools.Paper.filtered_extension_noCrossingRange_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_zero_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_of_filtration_bound}
 \uses{decl:8937ab8449f2f5f8,decl:7a4f928ddc60ba93,decl:d2bad3a7f86619e4,decl:cff569382c0d7bdf}
 % Blueprint note: Original statement and context: paper/main.tex.html#L408; paper/2412.10879.pdf.
@@ -84,15 +114,17 @@
     \end{enumerate}
     Then $d^{q}_{m+l-n}(y)=w$. (See Figure \ref{fig:4f154a8}.)
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 483-505](paper/main.tex.html#L483). Use the representative criterion to choose a common source and transport its images around the commutative square.
 
 
-% Correspondence: partial.
+
+% Correspondence: partial; no direct public binding.
 % Blueprint note: The existing theorem \texttt{square\_frames} works in one convergent synthetic tower, using actual representatives on the four edges and no-crossing synchronization. It covers the special case in which the target edge also has no crossing. The general chase under the weaker $k$-range condition of the paper, and the comparison with a general classical $f$-extension spectral sequence, remain unavailable.
-% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Internal.Leibniz.square\_frames}: \ref{decl:0d629ca12f041ee7}
-\lean{KIP126.ProofTools.Internal.Leibniz.square_frames}
-\uses{decl:0d629ca12f041ee7}
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L461; paper/2412.10879.pdf.
+% Blueprint note: The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.
 \end{theorem}
 
 % AimPaper: 2.15 corollary 555 574
@@ -122,15 +154,17 @@
     \end{enumerate}
     Then $d^{q}_{m+l-n}(y)=w$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.12}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 555-574](paper/main.tex.html#L555). Specialize the square theorem to the full no-crossing hypothesis on the lower extension.
 
 
-% Correspondence: partial.
+
+% Correspondence: partial; no direct public binding.
 % Blueprint note: The private theorem \texttt{square\_frames} supplies a commutative four-edge square with synchronized representatives; its conclusion identifies the image along the right edge with the lower-right representative. The present model uses \texttt{TowerExtensionEquation} and \texttt{TowerNoCrossing} in a convergent synthetic tower. The bridge to the general classical $f$-extension spectral sequence of the paper remains a separate obligation.
-% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Internal.Leibniz.square\_frames}: \ref{decl:0d629ca12f041ee7}
-\lean{KIP126.ProofTools.Internal.Leibniz.square_frames}
-\uses{decl:0d629ca12f041ee7}
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
+% Blueprint note: The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.
 \end{corollary}
 
 % AimPaper: 2.16 corollary 576 591
@@ -156,6 +190,10 @@
     \end{enumerate}
     Then $d^{q}_{m-n}(y)=z$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 593-595](paper/main.tex.html#L593). Specialize Corollary 2.15 to an identity lower horizontal map.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -185,6 +223,10 @@
     \end{enumerate}
     Then $d^{q}_{m+l}(x)=w$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 613-615](paper/main.tex.html#L613). Specialize Corollary 2.15 to an identity upper horizontal map.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -211,6 +253,10 @@
     $$(d^p_r, d^q_r): E_\infty^{*,*}(X)\oplus E_\infty^{*,*}(Y)\to E_\infty^{*,*}(Z)\oplus E_\infty^{*,*}(W)$$
     induces a map from the $f$-ESS to the $g$-ESS.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15,paper:2.1}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 628-630](paper/main.tex.html#L628). Apply the square corollary inductively to obtain commuting maps on every page of the extension spectral sequences.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -229,6 +275,10 @@
     If the composition $g\circ f$ of two maps $f:X\to Y$, $g:Y\to Z$ is trivial, and $d_n^f(x)=y$ for $x\in E_\infty^{s,t}(X)$ and $y\in E_\infty^{s+n,t+n}(Y)$, then $y$ is a permanent cycle in the $g$-ESS, i.e., we have
     $d^g_m(y)=0$ for all $m\ge 0$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15,paper:2.5}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 637-646](paper/main.tex.html#L637). The null-composite square proves permanence; the article also gives a representative proof using Proposition 2.5.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -250,6 +300,10 @@
     $$\pi_*X\fto{\pi_*f}\pi_*Y\fto{\pi_*g}\pi_*Z$$
     that is exact in $\pi_*Y$. Then all permanent cycles in $E^{*,*}_\infty(Y)$ of the $g$-ESS are boundaries in the $f$-ESS.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.1,paper:2.5}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 656-664](paper/main.tex.html#L656). Convergence of the filtered complex and exactness identify permanent cycles with extension boundaries; representatives give the alternative proof.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -271,6 +325,10 @@ The only nonzero differentials in the extension spectral sequences for the maps 
 $$d^{\lambda^n}_0=\lambda^n \ \text{and} \ d^{\rho}_0=\rho.$$ 
 As a result, these $d_0$'s have no crossings.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.11,paper:3.12,paper:2.19}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1030-1050](paper/main.tex.html#L1030). The infinite-page quotient formulas make the lambda/rho sequence exact; the null-composite result rules out higher extensions.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -278,8 +336,8 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite}: \ref{decl:b3cfccaa50c6a3cd}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite}: \ref{decl:60aa58f04dc1023c}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.Paper.lambda_rho_extension_collapse_finite,KIP126.ProofTools.Paper.lambda_rho_extension_collapse_infinite}
 \uses{decl:b3cfccaa50c6a3cd,decl:60aa58f04dc1023c}
@@ -313,6 +371,10 @@ As a result, these $d_0$'s have no crossings.
         $$d^{\delta}_r(\lambda^{n+1-r}x)=y.$$
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.8,paper:3.11,paper:3.12,paper:4.2,paper:2.16,paper:2.17}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -320,10 +382,10 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute}: \ref{decl:78b712b68310cbde}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute}: \ref{decl:803d5471bdaa89a9}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite}: \ref{decl:b8495f874a1b2818}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite}: \ref{decl:c3bbbea6d1f12b34}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_finite,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_finite}
 \uses{decl:78b712b68310cbde,decl:803d5471bdaa89a9,decl:b8495f874a1b2818,decl:c3bbbea6d1f12b34}
@@ -345,6 +407,10 @@ As a result, these $d_0$'s have no crossings.
     \end{equation}
     if $0\le a\le n$ and $0\le a+r-n-1<m-n$ (the differential is trivial if $a$ exceeds this range).
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:4.6,paper:4.2}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -352,10 +418,10 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute}: \ref{decl:eedf6ddb7e1f7ce1}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite}: \ref{decl:4ef31a493b9ef817}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes}: \ref{decl:9ee455c902bcda6c}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes}: \ref{decl:1b13f26250672867}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_finite,KIP126.ProofTools.Paper.syntheticDeltaSource_vanishes,KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget_vanishes}
 \uses{decl:eedf6ddb7e1f7ce1,decl:4ef31a493b9ef817,decl:9ee455c902bcda6c,decl:1b13f26250672867}
@@ -381,6 +447,10 @@ As a result, these $d_0$'s have no crossings.
     $$x^\prime\in E_2^{s+a,t+a}(X), \hspace{.5cm} y^\prime\in E_2^{s+r-b,t+r-b-1}(X),$$
     with $0<a\le n-1$ and $0\le b\le r-n-1$. See Figure \ref{fig:f5eae42a}.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{sem:SpectralSequence:differential,sem:SpectralSequence:cycles-boundaries}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -388,8 +458,8 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.HasCrossingOn}: \ref{decl:7e04ee02f4a57b31}
-% Blueprint note: \item \texttt{KIP126.ProofTools.NoCrossingOn}: \ref{decl:cd43aa102f21f4d4}
+% Blueprint note: \item \texttt{KIP126.ProofTools.HasCrossingOn}
+% Blueprint note: \item \texttt{KIP126.ProofTools.NoCrossingOn}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.HasCrossingOn,KIP126.ProofTools.NoCrossingOn}
 \uses{decl:7e04ee02f4a57b31,decl:cd43aa102f21f4d4}
@@ -411,6 +481,10 @@ As a result, these $d_0$'s have no crossings.
     $$\delta_{n}:\nu X/\lambda^{n}\to \Sus^{1,-n}\nu X$$
     has a crossing.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:4.14,paper:2.7,paper:3.11,paper:3.12,paper:4.6,paper:4.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1225-1234](paper/main.tex.html#L1225). Translate extension crossings through the infinity-page quotient coordinates and the lambda-multiple boundary formula.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -418,7 +492,7 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing}: \ref{decl:1b6be446b6483c14}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.Paper.classical_crossing_iff_delta_crossing}
 \uses{decl:1b6be446b6483c14}
@@ -428,47 +502,7 @@ As a result, these $d_0$'s have no crossings.
 
 \section{Extension witnesses on finite and infinite pages}
 
-% AimPaper: 5.4 definition 1301 1317
-\begin{definition}[Extensions on the $E_r$-page]
-\label{paper:5.4}
-\source{AimPaper Definition 5.4}
-\level{coarse}
-(From \cite{LWX126}, Definition 5.4.)\par
-% BEGIN AIMPAPER STATEMENT
-\label{def:6c076a33}
-    Let $x\in Z^{s,t}_{r-1}(X)$ and $y\in Z^{s+n,t+n}_{r-1-n+e(f)}(Y)$ for some 
-    $$e(f)\le n\le r-2+e(f).$$
-    We say that there is an $(f,E_r)$-extension from $x$ to $y$, denoted by
-    \begin{equation}\label{eq:b98be76a}
-    d_{n}^{f,E_r}(x)=y
-    \end{equation}
-    if there exists a synthetic $\hat f_{r-1}$-extension
-    \begin{equation}\label{eq:a020bad3}
-        d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y.
-    \end{equation}
-    where $x$ is viewed as an element of the subgroup (\ref{eq:eae450fe}) with $k=0$, and $\lambda^{n-e(f)} y$ is viewed as an element of the quotient group (\ref{eq:334248d2}) with $k=0$. 
 
-   We say that this $(f,E_r)$-extension in (\ref{eq:b98be76a}) is \emph{essential} if the corresponding synthetic $\hat f_{r-1}$-extension in (\ref{eq:a020bad3}) is an essential differential in the $\hat f_{r-1}$-ESS.
-    
-    For $r=\infty$, we similar define an $(f,E_\infty)$-extension using the corresponding synthetic $\hat f$-extension.
-% END AIMPAPER STATEMENT
-
-
-% Correspondence: public counterparts; scope is specified below.
-% Blueprint note: The finite- and infinite-page extension definitions are tied to the actual normalized map, cycle labels, degrees, and witnesses.
-% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.Kervaire.Route.FiniteExtension}: \ref{decl:2fc0d83dcb3e63a8}
-% Blueprint note: \item \texttt{KIP126.Kervaire.Route.FiniteExtensionWitness}: \ref{decl:deaf51e8761d76aa}
-% Blueprint note: \item \texttt{KIP126.Kervaire.Route.InfiniteExtension}: \ref{decl:14f44b2ceb2905ed}
-% Blueprint note: \item \texttt{KIP126.Kervaire.Route.InfiniteExtensionWitness}: \ref{decl:dd30d23a64893f71}
-% Blueprint note: \end{itemize}
-\lean{KIP126.Kervaire.Route.FiniteExtension,KIP126.Kervaire.Route.FiniteExtensionWitness,KIP126.Kervaire.Route.InfiniteExtension,KIP126.Kervaire.Route.InfiniteExtensionWitness}
-\uses{decl:2fc0d83dcb3e63a8,decl:deaf51e8761d76aa,decl:14f44b2ceb2905ed,decl:dd30d23a64893f71}
-% Blueprint note: The original article number is 5.4; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
-% Blueprint note: \href{paper/main.tex.html#L1301}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
-\end{definition}
 
 % AimPaper: 5.9 definition 1437 1441
 \begin{definition}[Crossings of $E_r$-extensions]
@@ -482,6 +516,10 @@ As a result, these $d_0$'s have no crossings.
     $$y'\in Z_{r-1-n+b+e(f)}^{s+n-b,t+n-b}(Y)\backslash B_{1+n-b-e(f)}^{s+n-b,t+n-b}(Y)$$
     (where $\backslash$ denotes the difference of sets and it means that $y'$ should survive to the classical Adams $E_{r-n+b+e(f)}$ page while it should not be hit by an Adams differential of length at most $1+n-b-e(f)$) for $0<a \le r-2$ and $0\le b\le n-a-e(f)$. See Figure \ref{fig:66241bf6}.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1437-1441](paper/main.tex.html#L1437). Define a crossing by an essential page extension with the displayed smaller-page and filtration bounds.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -489,10 +527,10 @@ As a result, these $d_0$'s have no crossings.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
 % Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteHasCrossing}: \ref{decl:b7b799dc6331df44}
-% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteNoCrossing}: \ref{decl:56ca21bee23b451d}
-% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteHasCrossing}: \ref{decl:1fcd89913d4c2a9a}
-% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteNoCrossing}: \ref{decl:c835e45ecedd37af}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteHasCrossing}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteNoCrossing}
+% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteHasCrossing}
+% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteNoCrossing}
 % Blueprint note: \end{itemize}
 \lean{KIP126.ProofTools.FiniteHasCrossing,KIP126.ProofTools.FiniteNoCrossing,KIP126.ProofTools.InfiniteHasCrossing,KIP126.ProofTools.InfiniteNoCrossing}
 \uses{decl:b7b799dc6331df44,decl:56ca21bee23b451d,decl:1fcd89913d4c2a9a,decl:c835e45ecedd37af}
@@ -510,18 +548,17 @@ As a result, these $d_0$'s have no crossings.
 \label{prop:cross-f-Er}
     An $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ (\ref{eq:b98be76a}) has a crossing if and only if the synthetic $\hat f_{r-1}$-extension $d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y$ (\ref{eq:a020bad3}) has a crossing.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.9,paper:2.7,paper:3.12,paper:4.2,paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
+
+% Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. This paper proposition therefore has no direct formal binding; its partial scope and the implementation audit remain visible.
 
 
 % Correspondence: partial.
 % Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved; these local steps do not establish the full equivalence.
-% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Internal.Leibniz.finite\_normalized\_image\_filtration}: \ref{decl:a3e71ed8816e6f4f}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Internal.Leibniz.minimal\_length\_finite\_tower\_no\_crossing}: \ref{decl:bf55fd088d292215}
-% Blueprint note: \end{itemize}
-\lean{KIP126.ProofTools.Internal.Leibniz.finite_normalized_image_filtration,KIP126.ProofTools.Internal.Leibniz.minimal_length_finite_tower_no_crossing}
-\uses{decl:a3e71ed8816e6f4f,decl:bf55fd088d292215}
+
+
 \sketch
 % Blueprint note: The original article number is 5.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1515}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
@@ -540,6 +577,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     implies that
     $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
+
 
 
 % Correspondence: no public counterpart yet.
@@ -573,18 +614,23 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     Then we have an Adams differential
     $$d_{r+l-m}(y)= y_\infty.$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,paper:4.6,paper:4.10,paper:4.16,paper:5.10,paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1623-1656](paper/main.tex.html#L1623). Translate the hypotheses into synthetic extensions, transfer the no-crossing conditions, apply the square corollary, and translate the resulting boundary extension back.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
-% Blueprint note: The public proposition and callable theorem retain the no-crossing hypotheses, degrees, and page ranges. The API currently records a direct proof obligation for the theorem.
+% Blueprint note: The public proposition and callable theorem retain the no-crossing hypotheses, degrees, and page ranges. The API currently records a direct proof obligation for the theorem. The proved left edge is now used in both branches, and the minimal bottom-length case is discharged whenever the source no-crossing input comes from the classical boundary or minimal finite length. Both remaining holes concern the crossing inputs; no additional obligation is introduced.
+% Blueprint note: Partial local proof in GeneralizedLeibniz/CrossingLift: a divided source whose image has the required filtration supplies a finite extension witness at any allowed length. The finite lambda target grade vanishes precisely modulo the boundary submodule B_{1+t-(w-k)}; the untruncated bottom-label version gives B_{k+1}. Essentiality reflects from a mapped extension through a commuting square. The separate private left-edge proof now matches the specified finite source with the propagated infinite source, including normalized shifts and lambda compatibility, without extra hypotheses. These steps do not establish simultaneous source/image filtration lifting or either general no-crossing conversion, and neither GL proof hole has been discharged.
+% Blueprint note: The finite lambda square now supplies the full crossing conclusion from a smaller witness whose lambda source supports the prescribed large-quotient essential extension. Both essentiality of the smaller witness and the exact boundary exclusion are proved, with page and length bounds checked. Existence of such a smaller witness with the required source and image filtrations remains unfinished under the original printed hypotheses. The separate finite lambda division theorem supplies it under the added target-kernel crossing condition; it does not discharge the original Proposition cross-f-Er or GL.
+% Blueprint note: The 2026-10-18 review exhibits an actual-spectrum counterexample to the general crossing comparison and to the printed GL statement. For E = HZ_2 and T = H(Z/4), the map T + E to Sigma E + T + E given by (delta,j,2), with page = r = 2, m = 0 and l = 2, satisfies the printed hypotheses but would force a nonzero d_4 from a permanent HZ class. The independent Adams inputs are Lemmas 3 and 4, p. 129 of \cite{MayMilgramBockstein1981}; the synthetic comparison and convergence inputs are in Appendix A of \cite{BHS}. Low-filtration lambda torsion prevents simultaneous source/image lifting. This is a mathematical general-spectrum counterexample, not a realization in the fixed Lean ClassicalObject closure. The frozen GL interface and its two proof holes remain unchanged; strengthening its crossing premises with actual same-quotient, same-weight conditions requires explicit review and approval. See MEMO.md and the archived 20261018 GL/crossing review for the full hypotheses and evidence.
+% Blueprint note: A subsequent independent review gives a sphere/shift mathematical counterexample using sigma from S^7 to S^0, page = r = 2, m = 1, l = 3, s = 2, t = 19, three zero source labels and target Pc_0. Proposition A.20, relations (11) and (15), of \cite{BHS} give sigma times lambda Ph_1 = lambda^2 Pc_0; the source represents zero in its specified grade. The full low-stem ring excludes every possible crossing, with h_1^2 d_0 excluded by the d_2(e_0) boundary. The original data in \cite{IWXCharts} independently verify the degrees, boundary and nonzero survival of Pc_0, so the conclusion d_4(0) = Pc_0 is false. The isolated weight 24 in the BHS generator table is explicitly corrected to 23 using its own figures, homogeneous relations and the classical data. This example belongs to the intended sphere object closure, but the comparisons with the deferred fixed Lean model have not been formalized. The independent review does not authorize a public interface change.
+% Blueprint note: A separate level-indexed theorem, now exported through the public entry point, follows the paper's square proof with classical page n, arbitrary lambda level k >= 0, quotient exponent q = n+k-1, and weight w = t+e(f)-k. Its finite input is the actual extension from lambda^k x to lambda^(k+m-e(f)) y; the original infinite input is propagated to bottom level r-n. Absence of essential crossing is required on either the actual left edge or the actual top edge, and also on the actual bottom edge at that same weight. Finite lambda multiplication proves the left edge, and the weighted reverse boundary comparison gives the original classical differential d_(r+l-m)(y) = y_infty. A private zero-level witness comparison relates this language to the original finite extension. These level results have no local proof gaps but retain registered upstream obligations. They do not prove the frozen public statement or change its binding, crossing predicates, or two remaining proof holes.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.GeneralizedLeibnizLaw}: \ref{decl:f3ddfa6a0ab7e3cd}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.generalizedLeibniz}: \ref{decl:32f8e3b6bd1522b7}
-% Blueprint note: \end{itemize}
-\lean{KIP126.ProofTools.GeneralizedLeibnizLaw,KIP126.ProofTools.Standard.generalizedLeibniz}
-\uses{decl:f3ddfa6a0ab7e3cd,decl:32f8e3b6bd1522b7}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Standard.generalizedLeibniz}.
+\lean{KIP126.ProofTools.Standard.generalizedLeibniz}
+\uses{decl:32f8e3b6bd1522b7}
 % Blueprint note: The original article number is 6.1; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1606}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
 \end{theorem}
@@ -616,18 +662,18 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     $$d^{f,E_{n+m+1+e(h)}}_{n}x\equiv y \mod B_{r'}^{s+n+l,t+n+l-1}(Y).$$
     (See Figure \ref{fig:2aa45b21}.)
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.20,paper:5.4,paper:4.6,paper:4.16,paper:5.10,paper:2.10,paper:3.12,paper:6.11}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1860-1918](paper/main.tex.html#L1860). Normalize the triangle, choose common representatives with no crossings, use the finite-quotient coordinates and May's push-pull lemma, then read the output as a page extension.
+
 
 
 % Correspondence: partial.
 % Blueprint note: The public Mahowald theorem additionally requires \texttt{NormalizedTriangleCompatible} and a \texttt{DesuspendsClass} relation between the specified \texttt{suspendedX} and $x$. Without the general bridge in Proposition~3.20, it does not establish the conclusion of the article under the same hypotheses. The theorem also has a direct proof obligation.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.GeneralizedMahowaldLaw}: \ref{decl:8a2032df991194a4}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.generalizedMahowald}: \ref{decl:0d9ec345dafe720f}
-% Blueprint note: \end{itemize}
-\lean{KIP126.ProofTools.GeneralizedMahowaldLaw,KIP126.ProofTools.Standard.generalizedMahowald}
-\uses{decl:8a2032df991194a4,decl:0d9ec345dafe720f}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Standard.generalizedMahowald}.
+\lean{KIP126.ProofTools.Standard.generalizedMahowald}
+\uses{decl:0d9ec345dafe720f}
 \sketch
 % Blueprint note: The original article number is 6.12; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1780}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
@@ -654,19 +700,18 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     $$d^{\hat f_{r'-1}}_{n-a'-b}(\lambda^{a'} x')=\lambda^{n-b-e(f)} y'$$
     for some $b\ge 0$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,paper:2.18,paper:4.2,paper:3.12,paper:5.9}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1995-2070](paper/main.tex.html#L1995). Restriction induces a morphism of ESSs; quotient coordinates and higher-source crossings describe the loss of essentiality.
+
 
 
 % Correspondence: partial.
 % Blueprint note: The first assertion has a public counterpart with the required valid page-length bounds. The printed second assertion, including its set-difference condition, remains unproved. A revised equivalence is proved publicly after removing that condition, fixing the original target $y$, and setting $b=0$; it retains the same actual earlier quotient, a classical source cycle, the original target, and all length bounds. This entry remains a partial correspondence with the original article; completion of the revised statement is recorded separately.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtension\_descends}: \ref{decl:929856ed2e86801d}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel}: \ref{decl:bcf49d9d672e92f0}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtension\_inessential\_iff\_shorter}: \ref{decl:405d4a4bc5a35eb6}
-% Blueprint note: \end{itemize}
-\lean{KIP126.ProofTools.Paper.finiteExtension_descends,KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel,KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
-\uses{decl:929856ed2e86801d,decl:bcf49d9d672e92f0,decl:405d4a4bc5a35eb6}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Paper.finiteExtension\_descends}, \texttt{KIP126.ProofTools.Paper.finiteExtension\_inessential\_iff\_shorter}.
+\lean{KIP126.ProofTools.Paper.finiteExtension_descends,KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
+\uses{decl:929856ed2e86801d,decl:405d4a4bc5a35eb6}
 \sketch
 % Blueprint note: The original article number is 6.20; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1981}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
@@ -687,19 +732,18 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     Under these conditions, we also have an $(f,E_{r})$-extension
     $$d^{f,E_{r}}_n(x)=y.$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:6.20,paper:5.9}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 2071-2081](paper/main.tex.html#L2071). Take the contrapositive of the restriction obstruction in Proposition 6.20 with the stated no-crossing condition.
+
 
 
 % Correspondence: partial.
 % Blueprint note: The current interface treats only a finite later page and requires the source and target to satisfy the later-page cycle conditions. It excludes every nonzero short extension in the same earlier finite quotient that does not lift, which is stronger than excluding only the essential crossings in the article. It does not establish the case $r=\infty$.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
-% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
-% Blueprint note: \begin{itemize}
-% Blueprint note: \item \texttt{KIP126.ProofTools.FinitePageExtensionStretchingLaw}: \ref{decl:ab859bf3801f86c1}
-% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteExtensionNonliftableCrossing}: \ref{decl:a094c51b29f055f0}
-% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.finitePageExtensionStretching}: \ref{decl:d5b2c280de2a8a19}
-% Blueprint note: \end{itemize}
-\lean{KIP126.ProofTools.FinitePageExtensionStretchingLaw,KIP126.ProofTools.FiniteExtensionNonliftableCrossing,KIP126.ProofTools.Standard.finitePageExtensionStretching}
-\uses{decl:ab859bf3801f86c1,decl:a094c51b29f055f0,decl:d5b2c280de2a8a19}
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Standard.finitePageExtensionStretching}.
+\lean{KIP126.ProofTools.Standard.finitePageExtensionStretching}
+\uses{decl:d5b2c280de2a8a19}
 \sketch
 % Blueprint note: The original article number is 6.23; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L2074}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}

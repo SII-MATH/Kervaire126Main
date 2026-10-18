@@ -31,7 +31,7 @@ def fixture(dependencies, *, holes=(), unknown=(), owners=None, kinds=None):
     for name in dependencies:
         source = {'owner': owners.get(name, 'SpectralSequence'),
                   'label': 'decl:' + name, 'fqname': name,
-                  'file': 'KIP126/SpectralSequence/' + name + '.lean',
+                  'file': 'KIP126/' + owners.get(name, 'SpectralSequence') + '/' + name + '.lean',
                   'row': {'direct_sorry': name in holes}}
         if name in unknown:
             source['lean_status'] = 'empty'
@@ -78,28 +78,37 @@ class MainRemarkBindingTests(unittest.TestCase):
             r'A mathematical consequence.\end{remark}')
         return rows[0], sources
 
-    def test_private_remark_uses_explicit_source_identity(self):
+    def test_private_remark_is_rejected_even_with_an_explicit_source_identity(self):
         statement, sources = self.fixture()
-        self.assertEqual(semantic.resolve_main_remark(statement, sources), ['_private.A.proof'])
-        statement['uses'] = ['decl:_private.B.proof']
-        self.assertEqual(semantic.resolve_main_remark(statement, sources), ['_private.B.proof'])
+        for target in ('decl:_private.A.proof', 'decl:_private.B.proof'):
+            statement['uses'] = [target]
+            with self.assertRaisesRegex(ValueError, 'Non-public Blueprint binding'):
+                semantic.resolve_main_remark(statement, sources, {})
         statement['uses'].append('decl:_private.A.proof')
         with self.assertRaisesRegex(ValueError, 'does not uniquely match'):
-            semantic.resolve_main_remark(statement, sources)
+            semantic.resolve_main_remark(statement, sources, {})
+
+    def test_public_remark_retains_its_source_identity(self):
+        row, sources = self.fixture()
+        source = sources['_private.A.proof']
+        source['lean_name'] = 'public.proof'
+        sources = {'public.proof': source}
+        self.assertEqual(semantic.resolve_main_remark(row, sources, {'public.proof': 'Main'}),
+                         ['public.proof'])
 
     def test_remark_cannot_move_ownership_or_assert_completion(self):
         statement, sources = self.fixture()
         sources['_private.A.proof']['owner'] = 'Literature'
         with self.assertRaisesRegex(ValueError, 'own implementation proofs'):
-            semantic.resolve_main_remark(statement, sources)
+            semantic.resolve_main_remark(statement, sources, {})
         sources['_private.A.proof']['owner'] = 'Main'
         statement['leanok'] = True
         with self.assertRaisesRegex(ValueError, 'compiled evidence'):
-            semantic.resolve_main_remark(statement, sources)
+            semantic.resolve_main_remark(statement, sources, {})
         statement['leanok'] = False
         statement['content_type'] = 'theorem'
         with self.assertRaisesRegex(ValueError, 'Invalid Main remark binding'):
-            semantic.resolve_main_remark(statement, sources)
+            semantic.resolve_main_remark(statement, sources, {})
 
 
 class ProjectionTests(unittest.TestCase):
@@ -246,48 +255,218 @@ class ProjectionTests(unittest.TestCase):
             semantic.make_projection(sources, deps, obligations, [statement('sem:a', 'a')])
 
 
+class PublicProjectionTests(unittest.TestCase):
+    def check(self, sources, deps, obligations, rows, public):
+        projection = semantic.make_projection(sources, deps, obligations, rows,
+                                             public_names=public)
+        model = native_model(projection)
+        for index, (label, row) in enumerate(projection['entries'].items()):
+            self.assertLessEqual(set(row['lean']), set(public), label)
+            actual = reached(row['lean'], deps)
+            closed = bool(row['lean']) and all(
+                semantic.local_status([name], sources) in semantic.DONE for name in actual)
+            self.assertEqual(row['expected_closed'], closed, label)
+            self.assertEqual(model.closed[index], closed, label)
+        return projection
+
+    def test_private_holes_remain_recorded_and_block_the_public_result(self):
+        sources, deps, obligations = fixture({'_private.pending': [],
+            '_private.helper': ['_private.pending'], 'public.result': ['_private.helper'],
+            'public.independent': [], '_private.unused': []},
+            holes=['_private.pending', '_private.unused'])
+        rows = [statement('result', 'public.result'), statement('independent', 'public.independent')]
+        p = self.check(sources, deps, obligations, rows, {'public.result', 'public.independent'})
+        self.assertEqual(p['frontiers'], {})
+        self.assertCountEqual(p['private_producer_names'], obligations)
+        self.assertEqual(p['entries']['result']['source_local_status'], 'lean_ok')
+        self.assertEqual(p['entries']['result']['local_status'], 'sorry')
+        self.assertEqual(p['entries']['result']['internal_producers'], ['_private.pending'])
+        self.assertEqual(p['entries']['independent']['local_status'], 'lean_ok')
+        self.assertEqual(semantic.local_status(['public.result'], sources), 'lean_ok')
+        sources['_private.pending']['row']['direct_sorry'] = False
+        sources['_private.pending']['lean_status'] = 'empty'
+        p = self.check(sources, deps, {}, rows, {'public.result', 'public.independent'})
+        self.assertEqual(p['entries']['result']['local_status'], 'empty')
+
+    def test_adversarial_private_public_dags_preserve_exact_compiled_closure(self):
+        rng = random.Random(126126)
+        names = [f'n{i}' for i in range(10)]
+        for case in range(100):
+            deps = {name: [prior for prior in names[:i] if rng.random() < .3]
+                    for i, name in enumerate(names)}
+            public = set(rng.sample(names, rng.randrange(1, len(names) + 1)))
+            sources, deps, obligations = fixture(deps, holes=rng.sample(names, rng.randrange(6)))
+            rows = [statement(f'result:{i}', *rng.sample(sorted(public), rng.randrange(len(public) + 1)))
+                    for i in range(4)]
+            with self.subTest(case=case):
+                p = self.check(sources, deps, obligations, rows, public)
+                self.assertCountEqual(p['producer_names'], obligations)
+                self.assertCountEqual(sum(p['frontiers'].values(), []), set(obligations) & public)
+                self.assertCountEqual(p['private_producer_names'], set(obligations) - public)
+
+    def test_native_graph_retains_private_implementation_without_a_private_blueprint_binding(self):
+        import importlib.util
+        from hgraph.analysis import Analysis
+        from hgraph.graph import Graph, node_id
+        spec = importlib.util.spec_from_file_location('private_obligation_builder', ROOT / 'scripts/build-blueprint.py')
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            builder.ROOT = root
+            path = root / 'KIP126/Main/Result.lean'
+            path.parent.mkdir(parents=True)
+            path.write_text('module\nnamespace KIP126.Main\n'
+                'private theorem internal_proof : True := by sorry\n'
+                'public theorem result : True := internal_proof\nend KIP126.Main\n')
+            private = '_private.KIP126.Main.Result.0.KIP126.Main.internal_proof'
+            public = 'KIP126.Main.result'
+            sources = builder.index_sources([
+                {'module': 'KIP126.Main.Result', 'source_name': 'KIP126.Main.internal_proof',
+                 'name': private, 'dependencies': [], 'direct_sorry': True, 'line': 3},
+                {'module': 'KIP126.Main.Result', 'source_name': public,
+                 'name': public, 'dependencies': [private], 'direct_sorry': False, 'line': 4}])
+            (root / 'metadata').mkdir()
+            (root / 'metadata/main-api.json').write_text(json.dumps({
+                'module': 'Main', 'declarations': [{'name': public}], 'exports': [public]}))
+            deps = {private: set(), public: {private}}
+            obligations = {private: {'status': 'pending-proof'}}
+            builder.generate_blueprint(sources, deps, obligations)
+            (root / 'blueprint/content.tex').write_text(
+                '\\chapter{Main}\n\\begin{theorem}[A result]\\label{sem:result}'
+                '\\lean{' + public + '}The result holds.\\end{theorem}\n')
+            projection = semantic.prepare(root, sources, deps, obligations, [])
+            graph = Graph.open(root)
+            builder.sync_kernel_graph(graph, sources, deps, projection)
+            builder.annotate_graph(graph, sources, deps, obligations)
+            analysis = Analysis(graph)
+            evidence = semantic.validate(graph, projection, analysis)
+            self.assertTrue(evidence['binding_owners']['public_interfaces_verified'])
+            self.assertEqual(evidence['unique_unfinished_producers'], 1)
+            self.assertEqual(evidence['private_implementation_producers'], 1)
+            self.assertTrue(graph.has_node(node_id('lean', private)))
+            self.assertTrue(graph.has_node(node_id('bp', sources[private]['label'])))
+            self.assertEqual(graph.get_node(node_id('lean', public)).meta['lean_status'], 'lean_ok')
+            self.assertEqual(graph.get_node(node_id('bp', 'sem:result')).meta['lean_status'], 'sorry')
+            for edge in graph.edges():
+                if edge.type == 'formalizes' and graph.get_node(edge.source).type == 'tex':
+                    self.assertEqual(edge.target, node_id('lean', public))
+
+
 class AuthoredPublicBindingTests(unittest.TestCase):
-    def test_curated_entries_bind_real_locked_public_declarations(self):
-        import hashlib
-        from hgraph.sync import parse_blueprint, parse_lean
-        public = {r['name'] for path in (ROOT / 'metadata').glob('*-api.json')
-                  for r in json.loads(path.read_text()).get('declarations', [])}
-        private_main = {}
-        for path in (ROOT / 'KIP126/Main').rglob('*.lean'):
-            module = '.'.join(path.relative_to(ROOT).with_suffix('').parts)
-            for declaration in parse_lean(path.read_text()):
-                if not declaration.get('private'):
-                    continue
-                name = module + ':' + declaration['fqname']
-                private_main[name] = {'owner': 'Main', 'fqname': declaration['fqname'],
-                    'lean_name': name, 'label': 'decl:' + hashlib.sha256(
-                        (module + ':' + declaration['fqname']).encode()).hexdigest()[:16]}
-        files, visited = set(), set()
-        def collect(path):
-            path = path.resolve()
-            if path.parent == ROOT / 'blueprint/generated':
-                return  # Generated output is not curated public authoring.
-            if path in visited:
-                return
-            visited.add(path)
-            self.assertTrue(path.exists(), str(path))
-            if path.parent == ROOT / 'blueprint/semantic':
-                files.add(path)
-            active = semantic.active_tex(path.read_text())
-            for target in re.findall(r'\\input\{([^}]+)\}', active):
-                child = path.parent / target.strip()
-                collect(child if child.suffix else child.with_suffix('.tex'))
-        collect(ROOT / 'blueprint/content.tex')
-        self.assertTrue(files, 'The primary Blueprint must include mathematical statements')
-        for path in files:
-            rows, _ = parse_blueprint(semantic.active_tex(path.read_text()))
-            for row in rows:
-                if (row['label'].startswith('sem:Main:remark-')
-                        and any(name not in public for name in row['lean'])):
-                    self.assertTrue(semantic.resolve_main_remark(row, private_main))
-                else:
+    def test_every_authored_binding_is_a_locked_interface_of_the_same_module(self):
+        from hgraph.sync import parse_blueprint
+        interfaces = semantic.public_interfaces(ROOT)
+        for folder in ('semantic', 'paper', 'frontier'):
+            for path in (ROOT / 'blueprint' / folder).glob('*.tex'):
+                for row in parse_blueprint(semantic.active_tex(path.read_text()))[0]:
                     for name in row['lean']:
-                        self.assertIn(name, public, str(path) + ': ' + name)
+                        self.assertEqual(interfaces.get(name), path.stem,
+                                         str(path) + ': ' + row['label'] + ': ' + name)
+
+
+class BindingOwnershipTests(unittest.TestCase):
+    def test_namespace_and_dependency_do_not_make_an_upstream_object_local(self):
+        sources, _, _ = fixture({'KIP126.Computation.label': [], 'differential': []},
+            owners={'KIP126.Computation.label': 'E2Computation',
+                    'differential': 'AdamsCalculations'})
+        row = {**statement('later-result', 'differential'),
+               'chapter': 'AdamsCalculations --- Differentials'}
+        self.assertTrue(semantic.validate_binding_owners([row], sources, {'differential': 'AdamsCalculations', 'KIP126.Computation.label': 'E2Computation'})['same_module_verified'])
+        row['lean'].append('KIP126.Computation.label')
+        with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding.*E2Computation'):
+            semantic.validate_binding_owners([row], sources, {'differential': 'AdamsCalculations', 'KIP126.Computation.label': 'E2Computation'})
+        # An inaccurate owner field cannot override the actual source location.
+        sources['KIP126.Computation.label']['owner'] = 'AdamsCalculations'
+        with self.assertRaisesRegex(ValueError, 'Invalid source module ownership'):
+            semantic.validate_binding_owners([row], sources, {'differential': 'AdamsCalculations', 'KIP126.Computation.label': 'E2Computation'})
+
+    def test_private_and_paper_bindings_obey_the_same_rule(self):
+        sources, _, _ = fixture({'_private.helper': []}, owners={'_private.helper': 'Main'})
+        for label in ('paper:7.16', 'frontier:Main:group', 'sem:Main:remark-7.4'):
+            row = {**statement(label, '_private.helper'), 'chapter': 'Main — Argument'}
+            with self.assertRaisesRegex(ValueError, 'Non-public Blueprint binding'):
+                semantic.validate_binding_owners([row], sources, {})
+            row['chapter'] = 'ProofTools — Operations'
+            with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding'):
+                semantic.validate_binding_owners([row], sources, {})
+        row['chapter'] = 'Geometry'
+        with self.assertRaisesRegex(ValueError, 'must name its mathematical module'):
+            semantic.validate_binding_owners([row], sources, {})
+        self.assertTrue(semantic.validate_binding_owners([
+            {**statement('geometry'), 'chapter': 'Geometry'}], sources, {})['same_module_verified'])
+
+    def test_exposed_private_name_without_kernel_prefix_is_rejected(self):
+        sources, _, _ = fixture({'KIP126.ProofTools.Internal.Leibniz.square_frames': []},
+            owners={'KIP126.ProofTools.Internal.Leibniz.square_frames': 'ProofTools'})
+        row = {**statement('paper:2.12', *sources), 'chapter': 'ProofTools'}
+        with self.assertRaisesRegex(ValueError, 'Non-public Blueprint binding'):
+            semantic.validate_binding_owners([row], sources, {})
+
+    def test_every_authored_binding_belongs_to_its_source_module(self):
+        """Read current sources; no generated site or compiled snapshot is required."""
+        from collections import defaultdict
+        from hgraph.sync import parse_blueprint, parse_lean
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('ownership_builder', ROOT / 'scripts/build-blueprint.py')
+        builder = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(builder)
+        sources, aliases, labels = {}, defaultdict(set), {}
+        interfaces = semantic.public_interfaces(ROOT)
+        scoped_interfaces = {}
+        for path in (ROOT / 'KIP126').rglob('*.lean'):
+            module = '.'.join(path.relative_to(ROOT).with_suffix('').parts)
+            # The lexical parser handles namespace scopes but omits `alias`.
+            # Present only that command as a named theorem to recover its name.
+            lexical = re.sub(r'^([ \t]*(?:(?:public|private|protected)[ \t]+)*)'
+                             r'alias[ \t]+([^\s:=]+)[ \t]*:=.*$',
+                             r'\1theorem \2 : True := by trivial', path.read_text(), flags=re.M)
+            for decl in parse_lean(lexical):
+                name = module + ':' + decl['fqname']
+                sources[name] = {'owner': module.split('.')[1],
+                    'file': str(path.relative_to(ROOT))}
+                aliases[decl['fqname']].add(name)
+                labels[builder.label(module, decl['fqname'])] = name
+        for folder in ('semantic', 'paper', 'frontier'):
+            for path in (ROOT / 'blueprint' / folder).glob('*.tex'):
+                rows, _ = parse_blueprint(semantic.active_tex(path.read_text()))
+                for row in rows:
+                    names = []
+                    for spelling in row['lean']:
+                        private = re.fullmatch(r'_private\.(KIP126\..+)\.\d+\.(.+)', spelling)
+                        if private:
+                            matches = {private[1] + ':' + private[2]} & sources.keys()
+                        else:
+                            matches = aliases[spelling]
+                            refs = {labels[label] for label in row['uses'] if label in labels}
+                            if refs:
+                                matches = matches & refs
+                        self.assertEqual(len(matches), 1, str(path) + ': ' + spelling)
+                        names.append(next(iter(matches)))
+                        if spelling in interfaces:
+                            scoped_interfaces[names[-1]] = interfaces[spelling]
+                    semantic.validate_binding_owners([
+                        {**row, 'chapter': path.stem, 'lean': names}], sources, scoped_interfaces)
+
+    def test_result_bindings_exclude_background_and_partial_proof_steps(self):
+        from hgraph.sync import parse_blueprint
+        rows = {}
+        for folder in ('semantic', 'paper'):
+            for path in (ROOT / 'blueprint' / folder).glob('*.tex'):
+                for row in parse_blueprint(semantic.active_tex(path.read_text()))[0]:
+                    rows[row['label']] = row
+        self.assertEqual(rows['sem:Computation:d7-source']['lean'],
+                         ['KIP126.Computation.Standard.d7_source'])
+        self.assertEqual(rows['sem:E2Computation:d7-label']['lean'],
+                         ['KIP126.Computation.Standard.d7Source'])
+        self.assertEqual(rows['paper:3.2']['lean'], ['KIP126.Synthetic.Context.Smn'])
+        self.assertEqual(rows['paper:6.1']['lean'],
+                         ['KIP126.ProofTools.Standard.generalizedLeibniz'])
+        for label in ('paper:2.12', 'paper:2.15', 'paper:5.10', 'paper:7.16', 'paper:7.18'):
+            self.assertEqual(rows[label]['lean'], [], label)
+            self.assertFalse(any(target.startswith('decl:') for target in rows[label]['uses']), label)
+            self.assertTrue(rows[label]['uses'], label)
+            self.assertTrue(rows[label]['sketch'], label)
 
 
 class FrontierAuthoringTests(unittest.TestCase):
@@ -298,17 +477,18 @@ class FrontierAuthoringTests(unittest.TestCase):
         (self.root / 'blueprint/frontier').mkdir(parents=True)
         (self.root / 'metadata').mkdir()
         (self.root / 'metadata/spectral-sequence-api.json').write_text(json.dumps({
-            'declarations': [{'name': 'public.result'}]}))
+            'module': 'SpectralSequence',
+            'declarations': [{'name': 'public.result'}, {'name': 'public.pending'}]}))
         (self.root / 'blueprint/content.tex').write_text(
-            '\\chapter{Spectral sequences}\n'
+            '\\chapter{SpectralSequence --- Spectral sequences}\n'
             '\\begin{theorem}[A consequence]\n\\label{sem:result}\n'
             '\\lean{public.result}\nThe consequence holds.\n\\end{theorem}\n'
             '\\input{generated/frontier-SpectralSequence.tex}\n')
         self.sources, self.deps, self.obligations = fixture({
-            '_private.pending': [], 'public.result': ['_private.pending']},
-            holes=['_private.pending'])
-        self.sources['_private.pending']['fqname'] = 'Local.pending'
-        self.sources['_private.pending']['lean_name'] = '_private.pending'
+            'public.pending': [], 'public.result': ['public.pending']},
+            holes=['public.pending'])
+        self.sources['public.pending']['fqname'] = 'Local.pending'
+        self.sources['public.pending']['lean_name'] = 'public.pending'
         self.baseline = semantic.make_projection(self.sources, self.deps,
             self.obligations, [statement('sem:result', 'public.result')])
         self.label = next(label for label, row in self.baseline['entries'].items()
@@ -323,7 +503,7 @@ class FrontierAuthoringTests(unittest.TestCase):
             'For every $n>0$, the specified group in degree $n$ is zero.\n'
             '\\end{theorem}\n')
 
-    def test_mathematical_prose_preserves_private_binding_and_compiled_closure(self):
+    def test_mathematical_prose_preserves_public_binding_and_compiled_closure(self):
         self.write_entry()
         projection = semantic.prepare(self.root, self.sources, self.deps,
                                       self.obligations, [])
@@ -336,7 +516,7 @@ class FrontierAuthoringTests(unittest.TestCase):
         generated = (self.root / 'blueprint/generated/frontier-SpectralSequence.tex').read_text()
         self.assertIn('\\begin{theorem}[Vanishing in positive degrees]', generated)
         self.assertIn('For every $n>0$', generated)
-        self.assertIn('\\lean{_private.pending}', generated)
+        self.assertIn('\\lean{public.pending}', generated)
         self.assertNotIn('% Blueprint note:', generated)
         self.assertNotIn('Supply the specified', generated)
         self.assertNotIn('Construction and proof frontier', generated)
@@ -355,12 +535,20 @@ class FrontierAuthoringTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'bindings differ from compiled group'):
             semantic.read_frontier_authoring(self.root, self.baseline, self.sources)
 
-    def test_ambiguous_private_spelling_and_duplicate_members_are_rejected(self):
+    def test_private_frontier_cannot_be_reintroduced_with_a_scoped_name(self):
+        self.sources['_private.hidden'] = {
+            **self.sources['public.pending'], 'lean_name': '_private.hidden',
+            'fqname': 'Private.hidden'}
+        self.write_entry(binding='Private.hidden')
+        with self.assertRaisesRegex(ValueError, 'Non-public or wrong-module frontier'):
+            semantic.read_frontier_authoring(self.root, self.baseline, self.sources)
+
+    def test_ambiguous_source_spelling_and_duplicate_members_are_rejected(self):
         self.sources['public.result']['fqname'] = 'Local.pending'
         self.write_entry()
         with self.assertRaisesRegex(ValueError, 'ambiguous frontier Lean binding'):
             semantic.read_frontier_authoring(self.root, self.baseline, self.sources)
-        self.write_entry(binding='_private.pending,_private.pending')
+        self.write_entry(binding='public.pending,public.pending')
         with self.assertRaisesRegex(ValueError, 'bindings differ from compiled group'):
             semantic.read_frontier_authoring(self.root, self.baseline, self.sources)
 
@@ -374,8 +562,8 @@ class FrontierAuthoringTests(unittest.TestCase):
             semantic.read_frontier_authoring(self.root, self.baseline, self.sources)
 
     def test_unverified_mathematical_statement_stays_unverified(self):
-        self.sources['_private.pending']['row']['direct_sorry'] = False
-        self.sources['_private.pending']['lean_status'] = 'empty'
+        self.sources['public.pending']['row']['direct_sorry'] = False
+        self.sources['public.pending']['lean_status'] = 'empty'
         self.write_entry()
         projection = semantic.prepare(self.root, self.sources, self.deps, {}, [])
         row = projection['entries'][self.label]
@@ -391,6 +579,72 @@ class FrontierAuthoringTests(unittest.TestCase):
         self.assertEqual(set(rows), {self.label})
         self.assertFalse(rows[self.label]['leanok'])
         self.assertEqual(rows[self.label]['lean'], ['Local.pending'])
+
+
+class AuthoredPaperDependencyTests(unittest.TestCase):
+    def projection(self):
+        sources, deps, obligations = fixture(
+            {'left': [], 'right': [], 'consumer': ['left']})
+        return semantic.make_projection(sources, deps, obligations, [
+            statement('sem:group', 'left', 'right'),
+            statement('paper:result', 'consumer'), statement('paper:unformalized')])
+
+    def test_partial_consumption_and_unbound_math_use_survive_without_all_bindings(self):
+        projection = self.projection()
+        self.assertNotIn('sem:group', projection['uses']['paper:result'])
+        original = {label: set(targets) for label, targets in projection['uses'].items()}
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['sem:group']},
+            {'label': 'paper:unformalized', 'mathematical_uses': ['paper:result']}])
+        self.assertEqual(projection['compiled_uses'], original)
+        self.assertIn('sem:group', projection['uses']['paper:result'])
+        self.assertIn('paper:result', projection['uses']['paper:unformalized'])
+        self.assertFalse(projection['entries']['paper:unformalized']['expected_display_closed'])
+
+    def test_mathematical_prerequisite_can_block_a_locally_proved_formal_counterpart(self):
+        projection = self.projection()
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['paper:unformalized']},
+            {'label': 'paper:unformalized', 'mathematical_uses': []}])
+        row = projection['entries']['paper:result']
+        self.assertTrue(row['expected_closed'])  # Original compiled oracle retained.
+        self.assertEqual(row['local_status'], 'lean_ok')
+        self.assertFalse(row['expected_display_closed'])
+
+    def test_alias_references_resolve_to_one_node_without_a_self_edge(self):
+        projection = self.projection()
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['sem:group']},
+            {'label': 'paper:repeat', 'canonical_label': 'paper:result',
+             'mathematical_uses': ['paper:result']},
+            {'label': 'paper:unformalized', 'mathematical_uses': ['paper:repeat']}])
+        self.assertEqual(projection['uses']['paper:unformalized'], {'paper:result'})
+        self.assertNotIn('paper:repeat', projection['uses'])
+
+    def test_cycles_unknown_targets_and_self_dependencies_are_rejected(self):
+        cases = [([{'label': 'paper:result', 'mathematical_uses': ['paper:unformalized']},
+                   {'label': 'paper:unformalized', 'mathematical_uses': ['paper:result']}], 'Cyclic'),
+                 ([{'label': 'paper:result', 'mathematical_uses': ['paper:unknown']}], 'Unknown'),
+                 ([{'label': 'paper:result', 'mathematical_uses': ['paper:result']}], 'Self-dependent')]
+        for records, error in cases:
+            with self.subTest(error=error), self.assertRaisesRegex(ValueError, error):
+                semantic.add_paper_dependencies(self.projection(), records)
+
+    def test_authored_paper_chain_uses_results_not_circular_condition_references(self):
+        from hgraph.sync import parse_blueprint, read_blueprint
+        rows = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))[0]
+        paper = {row['label']: row for row in rows if row['label'].startswith('paper:')}
+        self.assertEqual(len(paper), 56)
+        aliases = {alias: row['label'] for row in paper.values() for alias in row['labels']}
+        self.assertEqual(aliases['paper:7.1'], 'paper:1.4')
+        self.assertEqual(aliases['thm:126survives'], 'paper:1.4')
+        for label in ('paper:7.10', 'paper:7.11', 'paper:7.16', 'paper:7.18', 'paper:7.9'):
+            self.assertNotIn('paper:7.8', paper[label]['uses'], label)
+        self.assertTrue({'paper:7.8', 'paper:7.9'} <= set(paper['paper:1.4']['uses']))
+        self.assertTrue({'paper:1.3', 'paper:1.4'} <= set(paper['paper:1.1']['uses']))
+        self.assertIn('paper:7.16', paper['paper:7.18']['uses'])
+        for row in paper.values():
+            self.assertTrue(any(not target.startswith('decl:') for target in row['uses']), row['label'])
 
 
 class ChapterDependencyTests(unittest.TestCase):

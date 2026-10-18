@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.554802+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The four public statements cover both ranges of differential lengths, for finite and absolute $\delta$-extensions.
@@ -18,13 +20,13 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute`: [implementation](implementation/index.html#decl:78b712b68310cbde)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute`: [implementation](implementation/index.html#decl:803d5471bdaa89a9)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite`: [implementation](implementation/index.html#decl:b8495f874a1b2818)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite`
 
-\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite`: [implementation](implementation/index.html#decl:c3bbbea6d1f12b34)
+\item `KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite`
 
 \end{itemize}
 

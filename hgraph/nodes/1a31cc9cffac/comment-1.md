@@ -6,12 +6,14 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T07:48:14.547015+00:00'
 ---
-**Formal scope:** partial.
+Mathematical dependency review: [AimPaper source, lines 555-574](paper/main.tex.html#L555). Specialize the square theorem to the full no-crossing hypothesis on the lower extension.
+
+**Formal scope:** partial; no direct public binding.
 
 The private theorem `square\_frames` supplies a commutative four-edge square with synchronized representatives; its conclusion identifies the image along the right edge with the lower-right representative. The present model uses `TowerExtensionEquation` and `TowerNoCrossing` in a convergent synthetic tower. The bridge to the general classical $f$-extension spectral sequence of the paper remains a separate obligation.
 
-Formal counterparts: \item `KIP126.ProofTools.Internal.Leibniz.square\_frames`: [implementation](implementation/index.html#decl:0d629ca12f041ee7)
-
 Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
+
+The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.

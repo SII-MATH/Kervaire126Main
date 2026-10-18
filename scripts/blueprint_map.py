@@ -89,15 +89,3 @@ def export_map(root, out):
         raise ValueError('The pinned hgraph native map renderer is missing')
     (destination / 'data.json').write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')))
     return data['stats']
-
-
-def verification_document(body):
-    """Retain review evidence as a secondary document, outside main navigation."""
-    return ('<!doctype html><html lang="en"><meta charset="utf-8">'
-            '<meta name="viewport" content="width=device-width,initial-scale=1">'
-            '<title>Blueprint verification — Kervaire 126</title>'
-            '<style>body{max-width:900px;margin:36px auto;padding:0 20px;'
-            'font:16px/1.65 system-ui;color:#202738;background:#fafbfc}'
-            'a{color:#4938d1}table{border-collapse:collapse}td,th{padding:6px 12px;'
-            'border:1px solid #dce0e7;text-align:left}</style>'
-            '<p><a href="./#/Kervaire126">← Blueprint</a></p><main>' + body + '</main></html>')

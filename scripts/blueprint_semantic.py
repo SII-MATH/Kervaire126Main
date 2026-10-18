@@ -1,14 +1,12 @@
 """Curated mathematical Blueprint over an independently retained source graph.
 
-All states and dependencies come from actual compiled declarations.  A hidden
-producer is represented by a native, Lean-bound frontier entry. Producers may
-share an entry only if every mathematical consumer AND every producer has the
-same strict dependency on them. This preserves closure and frontier readiness.
+All states and dependencies come from actual compiled declarations. Public
+producers have Lean-bound frontier entries. Private producers stay in the
+internal source graph and contribute to the dependent mathematical status.
 No proof responsibility, interface or native frontend is changed.
 """
 from collections import Counter, defaultdict
 import hashlib
-import html
 import json
 import re
 
@@ -19,6 +17,59 @@ from blueprint_paper import active_tex, resolve_paper_bindings
 DONE = {'lean_ok', 'mathlib_ok'}
 MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature',
            'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main')
+
+
+def public_interfaces(root):
+    """The seven locks partition the public interfaces by actual module owner."""
+    result = {}
+    for path in (root / 'metadata').glob('*-api.json'):
+        lock = json.loads(path.read_text())
+        if lock.get('module') not in MODULES:
+            continue  # Only mathematical module locks determine ownership.
+        for name in lock.get('exports', [row['name'] for row in lock['declarations']]):
+            if name in result:
+                raise ValueError('Public interface has multiple module owners: ' + name)
+            result[name] = lock['module']
+    return result
+
+
+def validate_binding_owners(statements, sources, interfaces):
+    """Bind each chapter only to declarations defined in its own Lean module.
+
+    Namespaces and statement labels do not determine
+    ownership. Sources come from the compiled declaration/source-file index.
+    Upstream objects may be referenced in prose and in compiled dependencies.
+    """
+    checked = Counter()
+    for statement in statements:
+        names = statement['lean']
+        if not names:
+            continue
+        chapter = statement.get('chapter', '')
+        match = re.match(r'^([A-Za-z][A-Za-z0-9]*)\b', chapter)
+        owner = match[1] if match else None
+        if owner not in MODULES:
+            raise ValueError('Lean-bound chapter must name its mathematical module: '
+                             + statement['label'] + ': ' + chapter)
+        for name in names:
+            if name not in sources:
+                raise ValueError('Unknown chapter Lean binding: ' + name)
+            source = sources[name]
+            parts = source['file'].split('/')
+            actual = parts[1].removesuffix('.lean') if len(parts) > 1 and parts[0] == 'KIP126' else None
+            if actual not in MODULES or actual != source['owner']:
+                raise ValueError('Invalid source module ownership: ' + name)
+            if actual != owner:
+                raise ValueError(f'Cross-module Blueprint binding: {statement["label"]} '
+                                 f'in {owner} binds {name} defined in {source["file"]} '
+                                 f'({actual}); reference the upstream mathematical entry instead')
+            if name not in interfaces:
+                raise ValueError('Non-public Blueprint binding: ' + statement['label'] + ': ' + name)
+            if interfaces[name] != owner:
+                raise ValueError('Public interface lock/source owner mismatch: ' + name)
+            checked[owner] += 1
+    return {'same_module_verified': True, 'public_interfaces_verified': True,
+            'bindings_by_module': dict(checked)}
 
 
 def validate_chapter_dependencies(projection, statements):
@@ -79,16 +130,28 @@ def local_status(names, sources):
             else 'lean_ok')
 
 
-def make_projection(sources, dependencies, obligations, statements):
+def make_projection(sources, dependencies, obligations, statements, public_names=None):
     """Pure projection. Statements have label/title/lean(actual kernel names).
 
     Result: entries keyed by label (lean, ancestors, local_status,
     expected_closed, frontier), uses keyed by label, and frontier member lists.
     Every visible dependency is justified by ALL target bindings occurring in
-    the consumer's strict actual ancestry. Frontier grouping includes producer
-    incidence, so no internal pending prerequisite is erased by grouping.
+    the consumer's strict actual ancestry. Private prerequisites remain in the
+    complete source graph and affect mathematical status without a binding.
     """
     ancestry = ancestor_sets(dependencies)
+    producers = sorted(n for n in sources if local_status([n], sources) not in DONE)
+    private_producers = set(producers) - set(public_names) if public_names is not None else set()
+    public_producers = set(producers) - private_producers
+
+    def status(names):
+        # The source archive retains exact declaration-local completion. At the
+        # mathematical boundary, unfinished private implementation must not
+        # disappear merely because private Lean bindings are prohibited.
+        internal = private_producers.intersection(
+            set(names) | set().union(*(ancestry[n] for n in names)))
+        return local_status(set(names) | internal, sources), sorted(internal)
+
     entries = {}
     for statement in statements:
         label = statement['label']
@@ -98,14 +161,18 @@ def make_projection(sources, dependencies, obligations, statements):
         if label in entries:
             raise ValueError('Duplicate mathematical label: ' + label)
         ancestors = set().union(*(ancestry[n] for n in names)) - names if names else set()
+        effective_status, internal = status(names)
         entries[label] = {**statement, 'lean': sorted(names), 'ancestors': ancestors,
-                          'local_status': local_status(names, sources), 'frontier': False}
+                          'local_status': effective_status,
+                          'source_local_status': local_status(names, sources),
+                          'internal_producers': internal,
+                          'internal_obligation_labels': [sources[n]['label'] for n in internal],
+                          'frontier': False}
     # Include unknown producers as unknowns; they are never invented sorries.
-    producers = sorted(n for n in sources if local_status([n], sources) not in DONE)
     consumers = [(label, entry['ancestors']) for label, entry in sorted(entries.items())]
     consumers += [('producer:' + n, ancestry[n] - {n}) for n in producers]
     groups = defaultdict(list)
-    for name in producers:
+    for name in sorted(public_producers):
         source = sources[name]
         kind = obligations.get(name, {}).get('status', 'unverified')
         incidence = tuple(index for index, (_label, ancestors) in enumerate(consumers) if name in ancestors)
@@ -125,10 +192,14 @@ def make_projection(sources, dependencies, obligations, statements):
         if len(files) > 3:
             title += ' and related objects'
         ancestors = set().union(*(ancestry[n] for n in names)) - set(names)
+        effective_status, internal = status(names)
         entries[label] = {'label': label, 'title': title, 'lean': names,
                           'owner': owner, 'obligation_kind': kind,
                           'ancestors': ancestors, 'frontier': True,
-                          'local_status': local_status(names, sources)}
+                          'source_local_status': local_status(names, sources),
+                          'internal_producers': internal,
+                          'internal_obligation_labels': [sources[n]['label'] for n in internal],
+                          'local_status': effective_status}
         frontiers[label] = names
     uses = {label: set() for label in entries}
     for label, entry in entries.items():
@@ -137,10 +208,11 @@ def make_projection(sources, dependencies, obligations, statements):
             names = set(candidate['lean'])
             if label != target and names and names <= actual:
                 uses[label].add(target)
-        # All actual pending ancestors must have a visible, exact carrier.
+        # Public pending ancestors have an exact public carrier. Private pending
+        # ancestors remain in the implementation graph and in effective status.
         represented = set().union(*(set(frontiers[target]) for target in uses[label]
                                     if target in frontiers)) if uses[label] else set()
-        if represented != actual.intersection(producers):
+        if represented != actual.intersection(public_producers):
             raise ValueError('Frontier projection lost or invented a producer: ' + label)
         entry['expected_closed'] = bool(entry['lean']) and all(
             local_status([n], sources) in DONE and not ancestry[n].intersection(producers)
@@ -175,17 +247,19 @@ def make_projection(sources, dependencies, obligations, statements):
         if closed[label] != entries[label]['expected_closed']:
             raise ValueError('Semantic projection changed actual compiled closure: ' + label)
     return {'entries': entries, 'uses': uses, 'frontiers': frontiers,
-            'producer_names': producers, 'source_ancestors': ancestry}
+            'producer_names': producers, 'private_producer_names': sorted(private_producers),
+            'source_ancestors': ancestry}
 
 
 def read_frontier_authoring(root, projection, sources):
     """Read mathematical prose without changing the compiled frontier quotient.
 
     Kernel names remain authoritative. A source spelling is accepted only when
-    it identifies exactly one kernel declaration, including private producers.
+    it identifies exactly one public kernel declaration.
     Coverage and bindings are checked before any presentation is substituted.
     """
     aliases = defaultdict(set)
+    interfaces = public_interfaces(root)
     for name, source in sources.items():
         for spelling in (name, source.get('fqname'), source.get('lean_name')):
             if spelling:
@@ -221,7 +295,10 @@ def read_frontier_authoring(root, projection, sources):
                 matches = {spelling} if spelling in sources else aliases.get(spelling, set())
                 if len(matches) != 1:
                     raise ValueError('Unknown or ambiguous frontier Lean binding: ' + spelling)
-                bindings.append(next(iter(matches)))
+                name = next(iter(matches))
+                if interfaces.get(name) != owner:
+                    raise ValueError('Non-public or wrong-module frontier Lean binding: ' + spelling)
+                bindings.append(name)
             if len(bindings) != len(set(bindings)) or set(bindings) != set(expected[label]['lean']):
                 raise ValueError('Frontier mathematical bindings differ from compiled group: ' + label)
             if not row['title'] or not re.sub(r'(?m)%[^\n]*', '', row['body']).strip():
@@ -233,12 +310,59 @@ def read_frontier_authoring(root, projection, sources):
     return authored
 
 
-def resolve_main_remark(statement, sources):
-    """Bind Main remarks to explicit, scoped implementation declarations.
+def add_paper_dependencies(projection, paper_records):
+    """Add reviewed mathematical edges without reducing them by Lean ancestry.
 
-    Public semantic entries keep their API-only rule. Remarks may expose a
-    private Main proof in the blueprint without changing the Lean interface.
+    During migration the old compiled projection remains a conservative fallback.
+    Its independent closure oracle is retained verbatim, rather than making
+    mathematical uses pass an ALL-bindings test or hiding unfinished producers.
     """
+    if not paper_records:
+        return
+    aliases = {r['label']: r.get('canonical_label', r['label']) for r in paper_records}
+    compiled = {label: set(targets) for label, targets in projection['uses'].items()}
+    authored = {}
+    for record in paper_records:
+        label = aliases[record['label']]
+        if label not in projection['entries']:
+            raise ValueError('Canonical paper node is not displayed: ' + label)
+        if label != record['label']:
+            continue
+        targets = {aliases.get(target, target) for target in record['mathematical_uses']}
+        if label in targets:
+            raise ValueError('Self-dependent mathematical paper statement: ' + label)
+        if not targets <= projection['entries'].keys():
+            raise ValueError('Unknown mathematical paper dependency: '
+                             + str(targets - projection['entries'].keys()))
+        authored[label] = targets
+        projection['uses'][label].update(targets)
+    # Explicit mathematical prerequisites must not disappear just because a
+    # transitive route or a compiler-selected implementation also exists.
+    closed, active = {}, []
+    def visit(label):
+        if label in active:
+            raise ValueError('Cyclic mathematical dependency: '
+                             + ' -> '.join(active[active.index(label):] + [label]))
+        if label in closed:
+            return closed[label]
+        active.append(label)
+        prerequisites = [visit(target) for target in sorted(projection['uses'][label])]
+        active.pop()
+        row = projection['entries'][label]
+        closed[label] = row['local_status'] in DONE and all(prerequisites)
+        if closed[label] and not row['expected_closed']:
+            raise ValueError('Mathematical dependency migration hid compiled work: ' + label)
+        row['expected_display_closed'] = closed[label]
+        return closed[label]
+    for label in projection['entries']:
+        visit(label)
+    projection['compiled_uses'] = compiled
+    projection['authored_uses'] = authored
+    projection['paper_aliases'] = aliases
+
+
+def resolve_main_remark(statement, sources, interfaces):
+    """Resolve explicit source identities, subject to the same public-only rule."""
     label = statement['label']
     if (not re.fullmatch(r'sem:Main:remark-\d+(?:\.\d+)*', label)
             or statement['content_type'] != 'remark'):
@@ -250,6 +374,8 @@ def resolve_main_remark(statement, sources):
     names = resolve_paper_bindings(statement, {s['label']: s for s in sources.values()})
     if not names or any(sources[name]['owner'] != 'Main' for name in names):
         raise ValueError('Main remark must bind its own implementation proofs: ' + label)
+    if any(interfaces.get(name) != 'Main' for name in names):
+        raise ValueError('Non-public Blueprint binding: ' + label)
     return names
 
 
@@ -263,21 +389,21 @@ def prepare(root, sources, dependencies, obligations, paper_records):
     if proofs:
         raise ValueError('Unexpected informal proof block in curated document')
     papers = {r['label']: r for r in paper_records}
-    api = {d['name'] for path in (root / 'metadata').glob('*-api.json')
-           for d in json.loads(path.read_text()).get('declarations', [])}
+    api = public_interfaces(root)
     for row in authored:
         if row['label'] in papers:
             row['lean'] = papers[row['label']]['lean']
         elif row['label'].startswith('sem:Main:remark-'):
-            row['lean'] = resolve_main_remark(row, sources)
+            row['lean'] = resolve_main_remark(row, sources, api)
         elif row['label'].startswith('sem:'):
-            if not row['lean'] or not set(row['lean']) <= api:
+            if not row['lean'] or not set(row['lean']) <= api.keys():
                 raise ValueError('Curated entry must bind actual public interfaces: ' + row['label'])
             if row['leanok'] or row['mathlibok']:
                 raise ValueError('Curated status must be derived from compiled evidence')
         else:
             raise ValueError('Unexpected primary Blueprint label: ' + row['label'])
-    projection = make_projection(sources, dependencies, obligations, authored)
+    validate_binding_owners(authored, sources, api)
+    projection = make_projection(sources, dependencies, obligations, authored, public_names=api)
     frontier_authoring = read_frontier_authoring(root, projection, sources)
     for label, statement in frontier_authoring.items():
         # Presentation only: membership, status, ancestors and closure retain
@@ -314,6 +440,10 @@ def prepare(root, sources, dependencies, obligations, paper_records):
     (generated / 'implementation.tex').write_text(''.join(
         '\\chapter{' + owner + ' implementation}\n\\input{' + owner + '.tex}\n' for owner in MODULES))
     primary, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
+    projection['binding_owners'] = validate_binding_owners([
+        {**row, 'lean': projection['entries'][row['label']]['lean']} for row in primary
+    ], sources, api)
+    add_paper_dependencies(projection, paper_records)
     projection['chapter_dependencies'] = validate_chapter_dependencies(projection, primary)
     return projection
 
@@ -321,7 +451,7 @@ def prepare(root, sources, dependencies, obligations, paper_records):
 def validate(graph, projection, analysis):
     """Validate CLI/full graph AND the frontend's entries-only graph."""
     from hgraph.layout import _Model
-    entries = []
+    entries, compiled_entries = [], []
     hard_edges = defaultdict(set)
     formalizes = defaultdict(set)
     for edge in graph.edges():
@@ -338,45 +468,47 @@ def validate(graph, projection, analysis):
         expected_bindings = {node_id('lean', name) for name in row['lean']}
         if actual != expected or actual_bindings != expected_bindings or node.meta.get('lean_status') != row['local_status']:
             raise ValueError('Native semantic bindings/status/edges changed: ' + label)
-        if analysis.closed[nid] != row['expected_closed']:
-            raise ValueError('Native semantic closure differs from compiled evidence: ' + label)
+        if (node.meta.get('source_local_status') != row['source_local_status'] or
+                node.meta.get('internal_obligations') != row['internal_obligation_labels']):
+            # Private audit identities do not introduce formalizes edges.
+            raise ValueError('Native internal-obligation evidence changed: ' + label)
+        display_closed = row.get('expected_display_closed', row['expected_closed'])
+        if analysis.closed[nid] != display_closed:
+            raise ValueError('Native semantic closure differs from mathematical evidence: ' + label)
         entries.append({'id': nid, 'lean_status': row['local_status'],
                         'deps': [{'id': target, 'type': 'uses'} for target in expected]})
+        compiled_entries.append({'id': nid, 'lean_status': row['local_status'],
+            'deps': [{'id': node_id('bp', target), 'type': 'uses'} for target in
+                     projection.get('compiled_uses', projection['uses'])[label]]})
     model = _Model({'entries': entries})
+    compiled_model = _Model({'entries': compiled_entries})
     for index, label in enumerate(projection['entries']):
-        if model.closed[index] != projection['entries'][label]['expected_closed']:
-            raise ValueError('Frontend semantic closure differs from compiled evidence: ' + label)
+        row = projection['entries'][label]
+        if compiled_model.closed[index] != row['expected_closed']:
+            raise ValueError('Independent compiled projection differs from source closure: ' + label)
+        if model.closed[index] != row.get('expected_display_closed', row['expected_closed']):
+            raise ValueError('Frontend semantic closure differs from mathematical evidence: ' + label)
     return {'mathematical_entries': sum(not r['frontier'] for r in projection['entries'].values()),
             'frontier_entries': sum(r['frontier'] for r in projection['entries'].values()),
             'statements': len(entries), 'unique_unfinished_producers': len(projection['producer_names']),
+            'private_implementation_producers': len(projection['private_producer_names']),
+            'entries_with_internal_obligations': sum(bool(r['internal_producers'])
+                                                    for r in projection['entries'].values()),
             'dependency_edges': sum(map(len, projection['uses'].values())),
+            'authored_paper_dependency_edges': sum(map(len, projection.get('authored_uses', {}).values())),
+            'compiled_fallback_dependency_edges': sum(map(len, projection.get('compiled_uses', projection['uses']).values())),
+            'dependency_migration': 'Reviewed AimPaper uses plus the retained compiled fallback; '
+                                    'mathematical edges are independent of Lean bindings.',
+            'paper_aliases': {alias: target for alias, target in projection.get('paper_aliases', {}).items()
+                             if alias != target},
             'chapter_dependencies': projection.get('chapter_dependencies'),
+            'binding_owners': projection.get('binding_owners'),
             'states': dict(Counter(analysis.states[node_id('bp', label)] for label in projection['entries'])),
-            'all_primary_and_frontend_closures_match_compiled_evidence': True}
-
-
-def write_verification(state, evidence):
-    stats = evidence['semantic_blueprint']
-    paper = evidence['aimpaper']
-    body = '<h2>Blueprint verification</h2><p>The primary blueprint is organized by mathematical content across seven formalization modules and an eighth geometry chapter. The chapter order is checked against every displayed dependency.</p>'
-    body += (f'<p><strong>{stats["statements"]} blueprint entries</strong>: '
-             f'{stats["mathematical_entries"]} mathematical and paper entries, '
-             f'{stats["frontier_entries"]} additional construction and proof frontier groups. '
-             f'The complete implementation index retains {evidence["source_declarations"]} source declarations.</p>')
-    body += (f'<p><strong>{evidence["direct_obligations"]} unique registered Lean obligations</strong> remain in the existing registry. '
-             'Grouping changes presentation only. It adds no axioms, assumptions or proof responsibilities.</p>')
-    body += '<p>Every visible dependency is supported by actual compiled type or proof ancestry. Frontier groups combine unfinished producers only when every mathematical consumer and every unfinished producer depends on each member in exactly the same way. Both the native full graph and the native frontend graph have been checked against the compiled dependency closure for every primary entry.</p>'
-    body += f'<p>AimPaper: {paper["statements"]} original statements, {paper["bound_statements"]} bound counterparts, including {paper["partial_bound_statements"]} partial correspondences. Partial correspondences retain sketch and explicit scope limitations. The three geometric endpoints remain unformalized in Chapter 8.</p>'
-    body += '<table><tr><th>Dependency state</th><th>Entries</th></tr>'
-    for name in ('closed', 'formalized_open', 'ready', 'blocked'):
-        body += '<tr><td>' + name + '</td><td>' + str(stats['states'].get(name, 0)) + '</td></tr>'
-    body += '</table><p>The top formalized percentage describes local completion. Fully closed also requires all transitive prerequisites. Native Summary Ready now uses local states of direct prerequisites; verification and CLI ready require their complete closure.</p>'
-    status = evidence.get('full_project_build', {}).get('status') or ('passed' if evidence['checks'].get('lake_build') else 'unknown')
-    body += '<p>Latest complete repository build: <strong>' + html.escape(status) + '</strong>. Publication is independent of a complete build; unknown source evidence is never marked complete.</p>'
-    body += '<p>This is a working-tree snapshot. Interface locks, source inventory and full build checks remain in place. Native hgraph code and frontend match the pinned distribution.</p>'
-    body += '<p><a href="implementation/index.html" target="_blank">Open the complete implementation index</a> · <a href="validation.json" target="_blank">Verification evidence</a></p>'
-    (state / 'verification.html').write_text(body)
-    (state / 'implementation-index.html').write_text('<h2>Implementation index</h2><p>The mathematical blueprint groups public definitions and results. All source declarations, private implementation details, exact Lean bodies, compiled dependencies and original proof obligations remain available in a separate searchable archive.</p><p><a href="implementation/index.html" target="_blank">Open the complete implementation index</a></p>')
+            'compiled_projection_closure_matches_source_evidence': True,
+            'all_primary_and_frontend_closures_match_compiled_evidence': all(
+                model.closed[i] == projection['entries'][label]['expected_closed']
+                for i, label in enumerate(projection['entries'])),
+            'display_closure_includes_all_compiled_and_mathematical_prerequisites': True}
 
 
 def save_source_snapshot(state, sources, dependencies, evidence):
@@ -387,32 +519,3 @@ def save_source_snapshot(state, sources, dependencies, evidence):
     temporary.write_text(json.dumps(snapshot, ensure_ascii=False))
     temporary.replace(path)
     path.with_suffix('.sha256').write_text(hashlib.sha256(path.read_bytes()).hexdigest())
-
-
-def export_implementation(out, sources, dependencies, obligations, analysis):
-    """Searchable full implementation archive, separate from statement counts."""
-    target = out / 'implementation'
-    target.mkdir(exist_ok=True)
-    rows = []
-    for name, source in sorted(sources.items(), key=lambda p: (p[1]['owner'], p[1]['file'], p[1]['row']['line'] or 0)):
-        rows.append({'label': source['label'], 'name': name, 'title': source['fqname'],
-                     'module': source['owner'], 'file': source['file'], 'line': source['row']['line'] or 1,
-                     'status': local_status([name], sources), 'state': analysis.states[source['lean_id']],
-                     'obligation': obligations.get(name, {}).get('status'),
-                     'dependencies': sorted(sources[n]['label'] for n in dependencies[name]),
-                     'code': source['body'], 'statement': source['statement']})
-    (target / 'data.json').write_text(json.dumps(rows, ensure_ascii=False))
-    # No dependency or body is injected as HTML; code uses textContent.
-    page = '''<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kervaire 126 — Implementation index</title><style>
-body{font:15px/1.6 system-ui;margin:0;background:#f7f8fb;color:#202738}main{max-width:1120px;margin:auto;padding:28px}a{color:#4938d1}input{padding:12px;width:95%;border:1px solid #ccd2df;border-radius:8px}details{background:white;border:1px solid #e1e5ee;border-radius:8px;margin:9px 0;padding:12px}summary{cursor:pointer;overflow-wrap:anywhere}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f5f6fa;padding:12px}small{color:#647088}.sorry{color:#b94b24}.empty{color:#697383}.lean_ok{color:#13743e}#count{margin:12px 0}</style>
-<main><a href="../#/Kervaire126">← Mathematical blueprint</a><h1>Implementation index</h1>
-<p>All source declarations and their actual compiled dependencies. These implementation records are separate from the mathematical statement count. Unfinished declarations retain their original responsibility.</p>
-<input id="search" aria-label="Search implementation" placeholder="Search names, modules, files, proof or construction status…"><div id="count"></div><div id="rows"></div></main>
-<script>
-fetch('data.json').then(r=>r.json()).then(data=>{const byLabel=new Map(data.map(r=>[r.label,r]));const box=document.querySelector('#rows');const search=document.querySelector('#search');
-function render(){box.replaceChildren();const q=search.value.toLowerCase();const selected=data.filter(r=>JSON.stringify([r.title,r.module,r.file,r.state,r.obligation]).toLowerCase().includes(q));document.querySelector('#count').textContent=selected.length+' / '+data.length+' source declarations';
-for(const r of selected){const d=document.createElement('details');d.id=r.label;const s=document.createElement('summary');s.textContent=r.title+' · '+r.state+(r.obligation?' · '+r.obligation:'');s.className=r.status;d.append(s);d.addEventListener('toggle',()=>{if(!d.open||d.childNodes.length>1)return;const a=document.createElement('a');a.href='../source/'+r.file+'.html#L'+r.line;a.textContent=r.file+':'+r.line;d.append(a);const p=document.createElement('pre');p.textContent=r.code;d.append(p);const deps=document.createElement('p');deps.textContent='Compiled dependencies: ';for(const key of r.dependencies){const a=document.createElement('a');a.href='#'+key;a.textContent=(byLabel.get(key)||{}).title||key;deps.append(a,document.createTextNode(' · '));}d.append(deps);});box.append(d);}jump();}
-function jump(){if(!location.hash)return;const d=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(d){d.open=true;d.scrollIntoView();}}search.addEventListener('input',render);window.addEventListener('hashchange',jump);render();});
-</script></html>'''
-    (target / 'index.html').write_text(page)
