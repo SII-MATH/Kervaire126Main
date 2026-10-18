@@ -22,7 +22,7 @@ import tempfile
 from datetime import datetime, timezone
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from blueprint_paper import load_paper, display_body, write_index, export_paper, validate_paper_graph, reference_targets, prepare_web_blueprint, resolve_paper_bindings, implementation_links
+from blueprint_paper import load_paper, display_body, export_paper, validate_paper_graph, reference_targets, prepare_web_blueprint, resolve_paper_bindings, implementation_links
 import blueprint_semantic as semantic
 import blueprint_map
 from blueprint_annotations import sync_authoring_notes
@@ -70,7 +70,7 @@ def site_inputs():
              'Tests/test_blueprint.py', 'Tests/test_blueprint_semantic.py', 'Tests/test_blueprint_annotations.py', 'Tests/check_blueprint_formulae.py', 'hgraph/config.yaml', 'site/config.yaml', 'site/overview.html')]
     paths.extend(p for p in (ROOT / 'blueprint').rglob('*')
                  if p.is_file() and 'generated' not in p.parts)
-    paths.extend([ROOT / 'scripts/blueprint_map.py', ROOT / 'Tests/test_blueprint_map.py',
+    paths.extend([ROOT / 'MEMO.md', ROOT / 'scripts/blueprint_map.py', ROOT / 'Tests/test_blueprint_map.py',
                   ROOT / 'Tests/check_blueprint_map.py'])
     paths.extend(ROOT / 'AimPaper' / p for p in ('main.tex', '112.tex', 'main.bib', 'algtop.sty', '2412.10879.pdf'))
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
@@ -455,7 +455,7 @@ def stage_workspace():
     links = {workspace / 'config.yaml': ROOT / 'site/config.yaml',
              workspace / 'site': ROOT / 'site'}
     web_blueprint = prepare_web_blueprint(ROOT, STATE / 'web-blueprint')
-    links.update({project / name: ROOT / name for name in ('KIP126', 'hgraph', '.lake')})
+    links.update({project / name: ROOT / name for name in ('KIP126', 'hgraph', '.lake', 'MEMO.md')})
     links[project / 'blueprint'] = web_blueprint
     for target, source in links.items():
         if target.is_symlink() and target.resolve() != source.resolve():
@@ -622,7 +622,6 @@ def main():
     open_nodes = validate_kernel(rows, sources, dependencies, obligations)
     phase(f'3/7 Generating seven mathematical chapters and the geometry reference chapter ({len(sources)} source declarations)…')
     paper_records, paper_stats = load_paper(ROOT, {s['label']: s for s in sources.values()})
-    write_index(ROOT, paper_records, paper_stats)
     generate_blueprint(sources, dependencies, obligations, paper_records)
     projection = semantic.prepare(ROOT, sources, dependencies, obligations, paper_records)
     phase('4/7 Synchronizing native hgraph nodes and Blueprint dependencies…')
