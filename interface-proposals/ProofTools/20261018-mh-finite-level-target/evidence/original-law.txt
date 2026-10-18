@@ -1,0 +1,36 @@
+Source: KIP126/ProofTools/Laws.lean
+Generic context: universe u v w; C : Type u, StableHomotopyCategory.{u,v} C, HasFunctorialCofiber C; Syn : Type w, SyntheticCategory.{w,v} Syn, HasFunctorialCofiber Syn; D : Model C Syn.
+Public proof entry: Standard.generalizedMahowald (T : TriangleData Standard.model.auxiliary) : GeneralizedMahowaldLaw Standard.model T.
+
+public def GeneralizedMahowaldLaw (T : TriangleData D.auxiliary) : Prop :=
+  ∀ he : (normalizedExponent D.classicalTower T.f : ℤ) + normalizedExponent D.classicalTower T.g +
+      normalizedExponent D.classicalTower T.h = 1,
+  KIP126.Literature.NormalizedTriangleCompatible D T he →
+  ∀ (n m l s t : ℤ),
+    let r := n + m + l
+    let n₁ := n - normalizedExponent D.classicalTower T.f
+    let m₁ := m - normalizedExponent D.classicalTower T.g
+    let l₁ := l - normalizedExponent D.classicalTower T.h
+    let r' := r - m₁
+    ∀ (x : Ambient D (T.X) (s + l, t + l - 1))
+      (y : Ambient D (T.Y) (s + l + n, t + l - 1 + n))
+      (xBar : Ambient D (T.Z) (s, t))
+      (yBar : Ambient D (T.Z) (s + l + n + m, t + l - 1 + n + m))
+      (suspendedX : Ambient D (.shift 1 T.X) (s + l, t + l)),
+      1 ≤ n₁ → 0 ≤ m₁ → 0 ≤ l₁ →
+      IsCycle D (T.X) n₁ (s + l, t + l - 1) x →
+      IsCycle D (T.Y) (m₁ + 1) (s + l + n, t + l - 1 + n) y →
+      IsCycle D (T.Z) (r - 1) (s, t) xBar →
+      IsPermanent D (T.Z) (s + l + n + m, t + l - 1 + n + m) yBar →
+      (D.classicalSuspension T.X).DesuspendsClass (s + l) (t + l) suspendedX x →
+      FiniteExtension D T.Z (.shift 1 T.X) T.h r'.toNat l s t xBar suspendedX →
+      DifferentialAt D (T.Z) r (s, t)
+        (s + l + n + m, t + l - 1 + n + m) xBar yBar →
+      (FiniteNoCrossing D T.Z (.shift 1 T.X) T.h r'.toNat l s t ∨
+        NoCrossingOn D (T.Z) r r' (s, t)) →
+      FiniteExtension D T.Y T.Z T.g (m₁ + 2).toNat m (s + l + n) (t + l - 1 + n) y yBar →
+      IsCycle D (T.X) (n + m + normalizedExponent D.classicalTower T.h) (s + l, t + l - 1) x ∧
+        ∃ y' : Ambient D (T.Y) (s + l + n, t + l - 1 + n),
+          FiniteExtension D T.X T.Y T.f (n + m + 1 + normalizedExponent D.classicalTower T.h).toNat
+            n (s + l) (t + l - 1) x y' ∧
+          Congruent D (T.Y) r' (s + l + n, t + l - 1 + n) y' y

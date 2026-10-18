@@ -32,14 +32,14 @@ corrections:
   reference: THEOREM 6.12
   status:
     kind: proposed
-    label: 修正方案待证
+    label: 强有限商带层候选已明确 · 同步与输出桥梁待证
   original:
     statements:
     - '6.12'
     source_line: 1780
   revision:
     nodes: []
-    note: 尚无已确定的完整修正版。
+    note: 群内研究已给出保留强有限商、双输入层数和共同实际代表的具体数学候选；尚无已公开并证明的完整修正版 Blueprint 节点。实际 no-crossing 的代表同步、普通 Adams 解码与保留目标的经典提升仍待补。
   problem: |-
     **原文与问题。** 原文标签 `thm:158d451a`，采用 Notation 2.2、Definition 5.4、Remark 5.7 的约定：素数为 2，谱为 2 完备的 connective finite-type 谱。证明末尾从带层关系
 
@@ -60,8 +60,14 @@ corrections:
     令 $x=b=d_2(h_4)=h_0h_3^2\ne0$，其余标签为零，则 $l_1=1$、$r=r'=3$。前提只看到 $b\bmod B_2=0$；而 $\operatorname{Ext}_{\mathcal A}^{2,13}=0$ 保证 $j_2(b)\ne0$，故底层 $d_0^{\hat j_2}(b)\ne0$，阻止所需的 $d_1$。Definition 5.4 的源位于第零层，只模 $B_1=0$，不能改读成经典 $E_3$ 中的零类。
   progress: |-
     形式化反证为 [StatementReview.lean](KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的 `rotated_nu_generalized_mahowald_law_false`，前提与非零性见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证依赖既有登记的上游接口，不调用待证 MH2 或 GL。一般 MH2 的公共接口尚未修改，原待补保留；Main 使用 $l_1=0$ 的特例，本反例针对 $l_1=1$。
+
+    **后续调研核对（2026-10-18）。** 已实际读取 project-math-assistant 群中 4 月 24 日原始 TeX、10 月 16 日复核与 10 月 17 日《广义MH与论文计算认证研究报告》。建议目标已收敛为保留强有限商与双输入层数、交付同一个实际代表及两条像方程的有限 MH；具体候选、完整前提和下游影响见[ProofTools 提案草稿](interface-proposals/ProofTools/20261018-mh-finite-level-target/report.md)。这是研究汇总，未冒充新增独立审查或已通过 Lean 的完整新接口。实际 no-crossing 到代表同步的推论、普通 Adams 方框解码与保留指定目标的经典提升仍须分别证明。
+
+    Main 已改接独立的零层 ν 余纤维数值特例；当前一般私有零层证明的范围还要求中间对象为球谱，不能扩大成任意对象的零层定理已交付。现有 public 带 level GL 与有限除 λ 定理不自动恢复旧 MH 的指定零层源及目标，也不自动认证全部 SS 调用。此次不改变公共接口、证明洞清单或上述上游责任。
   history: |-
-    **目标调整与状态。** 不再把消去 λ 当作合法的一般推导。候选修正是额外要求源属于所需微分的定义域：令 $Q=n+m+e(h)$、$F=\hat f_Q$，要求 $x\in Z_Q$ 且底层标签 $x_0\in{}^F Z_{n-1}$；另一方向是保留 $l_1$ 层结论，另证降层引理。候选条件是否足以恢复完整目标同余，仍未证明。
+    **早期候选与后续排除。** 不再把消去 λ 当作合法的一般推导。早期曾考虑额外要求源属于所需微分的定义域：令 $Q=n+m+e(h)$、$F=\hat f_Q$，要求 $x\in Z_Q$ 且底层标签 $x_0\in{}^F Z_{n-1}$。群内 10 月 16 日的补充复核随后给出纸面实际有限谱反例，说明只补这个条件仍不能保留原目标同余：取 $f=(2,\kappa):S^{14}\to S^{14}\vee S^0$ 的余纤维三角，$(e(f),e(g),e(h))=(1,0,0)$、$(n,m,l,s,t)=(5,0,1,2,31)$，$x=h_0h_3^2=d_2(h_4)$，其余标签为零。源可支持所需 $d_5$，但目标为非零永久类 $d_0^2$，不能模 $B_6$ 改成零。该补充反例尚非本仓库固定模型中的 Lean 反证；[原群完整说明与来源](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1455)。
+
+    **当前候选方向。** 王老师修改稿保留输出的 $l_1$ 层。后续研究进一步要求保留强有限商及实际目标商，不先投影到可能截断目标的小商；任意正输入层的推广还必须调整商长、保证可见范围并同步实际代表。经典 extension 另需保留目标的提升，不能由源永久性直接推出。具体数学规格维护于上述接口提案，不将未证候选冒写成 Blueprint 已形式化修正版。
   links:
   - node: paper:6.12
     title: Theorem 6.12 · 原文与对应范围

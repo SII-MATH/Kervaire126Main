@@ -115,6 +115,13 @@ def markdown(text):
         url, label = html.unescape(match[1]), match[2]
         if url.startswith('local-history/'):
             return '<span class="memo-local-ref">' + label + ' <small>本地审查记录</small></span>'
+        if url.startswith('interface-proposals/'):
+            from blueprint_proposals import read_reports
+            report = next((r for r in read_reports(Path(__file__).resolve().parents[1]) if r['path'] == url), None)
+            if report:
+                url = 'proposals/index.html#' + quote(report['meta']['issue_id'], safe='')
+            else:
+                return '<span class="memo-local-ref">' + label + ' <small>未随本次导出提供</small></span>'
         if url == 'AimPaper/main.tex':
             url = 'paper/main.tex.html'
         source = re.fullmatch(r'(KIP126/[^:#]+\.lean)(?::(\d+))?', url)

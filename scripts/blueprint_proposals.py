@@ -66,8 +66,9 @@ def read_reports(root):
         if not isinstance(meta.get('targets'), list) or not meta['targets'] or any(
                 not isinstance(t, str) or not t.strip() for t in meta['targets']):
             raise ValueError(f'{path}: expected nonempty targets')
-        if meta.get('independent_of_discoverer_and_implementer') is not True:
-            raise ValueError(f'{path}: independent reporter declaration required')
+        independent = meta.get('independent_of_discoverer_and_implementer')
+        if type(independent) is not bool or (not independent and meta['status'] != 'draft'):
+            raise ValueError(f'{path}: independent reporter required except for explicitly marked research drafts')
         if 'human_decision' not in meta:
             raise ValueError(f'{path}: human_decision must be explicit (null if unapproved)')
         decision = meta['human_decision']
@@ -170,6 +171,8 @@ def render_reports(root):
     for report in reports:
         m = report['meta']
         group, label = STATUSES[m['status']]
+        if not m['independent_of_discoverer_and_implementer']:
+            label = '研究草稿 · 待独立复核'
         decision = m['human_decision'] or '未记录人类批准；不表示当前必须等待决定。具体行动范围见报告。'
         cards.append(f'''<article class="proposal-card" id="{esc(m['issue_id'], quote=True)}"
  data-module="{esc(m['responsibility_module'], quote=True)}" data-status="{group}">

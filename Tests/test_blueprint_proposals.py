@@ -48,7 +48,8 @@ class InterfaceProposalTests(unittest.TestCase):
                             template.replace('status: draft', 'status: typo'),
                             template.replace('targets:', 'status: draft\ntargets:'),
                             template.replace('independent_of_discoverer_and_implementer: true',
-                                             'independent_of_discoverer_and_implementer: false'),
+                                             'independent_of_discoverer_and_implementer: false').replace(
+                                                 'status: draft', 'status: pending-human-review'),
                             template.replace('human_decision: null\n', ''),
                             template.replace('targets:\n  - KIP126.Main.example', 'targets: []')):
                 with self.subTest(content=content[:140]):
@@ -57,6 +58,9 @@ class InterfaceProposalTests(unittest.TestCase):
                         proposals.read_reports(root)
             path.write_text(template)
             self.assertEqual(len(proposals.read_reports(root)), 1)
+            path.write_text(template.replace('independent_of_discoverer_and_implementer: true',
+                                            'independent_of_discoverer_and_implementer: false'))
+            self.assertFalse(proposals.read_reports(root)[0]['meta']['independent_of_discoverer_and_implementer'])
             duplicate = path.parent.parent / 'duplicate/report.md'
             duplicate.parent.mkdir()
             duplicate.write_text(template)

@@ -20,7 +20,7 @@ Dashboard 的“接口提案”页签集中展示 agent 对形式化接口的独
   --title '具体接口问题' --reporter '/root/independent_reporter'
 ```
 
-也可复制 `interface-proposals/TEMPLATE.md`。填写真实 targets、完整上下文、证据、实际检查、候选的精确差异、下游影响及阻塞范围。文件头的 `independent_of_discoverer_and_implementer` 必须如实填写；模板由独立报告员使用，非独立发现笔记不应冒充独立报告。
+也可复制 `interface-proposals/TEMPLATE.md`。填写真实 targets、完整上下文、证据、实际检查、候选的精确差异、下游影响及阻塞范围。文件头的 `independent_of_discoverer_and_implementer` 必须如实填写。研究汇总可使用 `draft` 且填 `false`，页面明确标记“研究草稿 · 待独立复核”；进入正式人审或批准状态前必须完成独立复核，不得把发现笔记冒充独立报告。
 
 必填文件头字段为 `issue_id`、`title`、`summary`、`responsibility_module`、`targets`、`baseline_commit`、`reporter_agent`、`independent_of_discoverer_and_implementer`、`evidence_level`、`status`、`human_decision`。额外来源元数据完整显示于“来源与原始状态”，不会被丢弃。重复 YAML 键或 ID、缺失字段及没有人审依据的批准状态会使提案校验失败。
 
