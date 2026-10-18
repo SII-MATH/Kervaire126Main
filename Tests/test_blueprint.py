@@ -60,6 +60,7 @@ class BlueprintBoundaryTests(unittest.TestCase):
             self.assertIn('Second revision.', updated[0]['html'])
             self.assertNotIn('First revision.', updated[0]['html'])
 
+
     def test_computation_moves_preserve_source_review_ids(self):
         name = 'KIP126.Computation.Standard.d2_h6'
         old = blueprint.label('KIP126.Computation.Standard', name)
@@ -201,7 +202,7 @@ class DraftPublicationTests(unittest.TestCase):
                                        'state':'formalized_open', 'deps':['pending'],
                                        'statement':'All original hypotheses remain.'}],
                            'edges':[{'source':'paper:2.12', 'target':'pending', 'type':'uses'}],
-                           'customTabs':[{'id':'aimpaper', 'html':'Original concordance'}],
+                           'customTabs':[{'id':'memo', 'html':'Original memo'}],
                            'map':{'chapters':['SpectralSequence', 'Main'], 'edges':[[0,1]]}}
                 path = live / 'Kervaire126' / name
                 path.write_text(json.dumps(payload, indent=3))

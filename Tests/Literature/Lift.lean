@@ -46,8 +46,12 @@ example (T : Triangle Spectrum) (hT : T ∈ distTriang Spectrum)
   obtain ⟨F,hF⟩ := triangle_lift T hT hfil hH
   exact ⟨F,F.distinguished,hF⟩
 
-example : NuExactTriangleInput model.coefficients model.nu :=
-  nu_cofiber.toNuExactTriangleInput model
+-- The fixed model supplies preservation directly, with no adapter package.
+example (T : Triangle Spectrum) (hT : T ∈ distTriang Spectrum)
+    (hH : HomologyShortExact model.coefficients T) :
+    NuImageIsCofiber model T := model.nuExactTriangle T hT hH
+
+#check_failure KIP126.Literature.NuCofiberCriterion.toNuExactTriangleInput
 
 /-- Middle exactness alone is rejected by the corrected model input. -/
 example (T : Triangle Spectrum) (_hT : T ∈ distTriang Spectrum)
@@ -55,5 +59,5 @@ example (T : Triangle Spectrum) (_hT : T ∈ distTriang Spectrum)
       (modTwoHomologyMap model.coefficients T.mor₁ n)
       (modTwoHomologyMap model.coefficients T.mor₂ n)) : True := by
   fail_if_success
-    have wrong := model.nuExactTriangle.preserves T _hT _hmid
+    have wrong := model.nuExactTriangle T _hT _hmid
   trivial

@@ -159,4 +159,142 @@ example (X : ClassicalObject) (n m k a : ℕ)
 #check_failure KIP126.Challenge2
 #check_failure KIP126.Literature.LiteratureResults
 #check_failure KIP126.Main.h6_sq_permanent
+
+/-- The public arbitrary-level GL is consumed through the ordinary module
+entry, with all its mathematical premises explicit. -/
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page level : ℕ) (r m l s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+m,t+m))
+    (xInfinity : Ambient model X (s+r,t+r-1))
+    (yInfinity : Ambient model Y (s+r+l,t+r-1+l))
+    (hpage : 2 ≤ page) (hpr : (page:ℤ) ≤ r)
+    (hm : (normalizedExponent model.classicalTower f:ℤ) ≤ m)
+    (hmUpper : m ≤ (page:ℤ)-2+normalizedExponent model.classicalTower f)
+    (hl : (normalizedExponent model.classicalTower f:ℤ) ≤ l)
+    (hxInfinity : IsPermanent model X (s+r,t+r-1) xInfinity)
+    (hyInfinity : IsPermanent model Y (s+r+l,t+r-1+l) yInfinity)
+    (hdx : DifferentialAt model X r (s,t) (s+r,t+r-1) x xInfinity)
+    (hFinite : Standard.LevelFiniteExtension X Y f page level m s t x y)
+    (hInfinity : InfiniteExtension model X Y f l (s+r) (t+r-1) xInfinity yInfinity)
+    (hsourceCrossing : Standard.LevelBoundaryNoCrossing X Y f page level r s t ∨
+      Standard.LevelFiniteNoCrossing X Y f page level m s t)
+    (hbottomCrossing : Standard.LevelBottomNoCrossing X Y f page level r l s t) :
+    DifferentialAt model Y (r+l-m) (s+m,t+m) (s+r+l,t+r-1+l) y yInfinity :=
+  Standard.generalizedLeibnizAtLevel X Y f page level r m l s t
+    x y xInfinity yInfinity hpage hpr hm hmUpper hl hxInfinity hyInfinity
+    hdx hFinite hInfinity hsourceCrossing hbottomCrossing
+
+/-- The old finite extension can be supplied at level zero without any
+additional representative or crossing premise. -/
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page : ℕ) (m s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+m,t+m))
+    (h : FiniteExtension model X Y f page m s t x y) :
+    Standard.LevelFiniteExtension X Y f page 0 m s t x y :=
+  Standard.finiteExtensionAtLevelZero X Y f page m s t x y h
+section PublicLevelPredicates
+open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
+open KIP126.Core.SpectralSequence KIP126.Classical.Adams
+open KIP126.ProofTools.Standard
+
+-- The public predicate is actually usable as a witness, not an opaque axiom.
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page level : ℕ) (m s t : ℤ)
+    (x : Ambient model X (s,t)) (y : Ambient model Y (s+m,t+m))
+    (h : LevelFiniteExtension X Y f page level m s t x y) : 2 ≤ page := by
+  unfold LevelFiniteExtension at h
+  exact h.1
+
+-- The exposed crossing predicate reduces to its actual quantified ESS condition.
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page level : ℕ) (m s t : ℤ) :
+    LevelFiniteNoCrossing X Y f page level m s t ↔ (
+  ∀ u v : ℤ, s < u → u ≤ v → v ≤ s+m →
+    ∀ source target, ¬ TowerEssentialExtension
+      (model.convergentMap
+        (.quotient (page+level-1) (extensionSourceObject model X Y f))
+        (.quotient (page+level-1) (.nu Y)) (finiteExtensionMap model X Y f (page+level-1)))
+      (t-s,t+normalizedExponent model.classicalTower f-level) u (v-u) source target ) := Iff.rfl
+
+-- The exposed crossing predicate reduces to its actual quantified ESS condition.
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page level : ℕ) (r s t : ℤ) :
+    LevelBoundaryNoCrossing X Y f page level r s t ↔ (
+  ∀ u v : ℤ, s < u → u ≤ v → v ≤ s+r →
+    ∀ source target, ¬ TowerEssentialExtension
+      (model.convergentMap
+        (.quotient (page+level-1) (extensionSourceObject model X Y f))
+        (.shift (1,-((page+level-1:ℕ):ℤ)) (extensionSourceObject model X Y f))
+        (XModLambdaN.proj ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)
+          (page+level-1) ≫
+          (KIP126.ProofTools.Operations.biSuspensionIso (page+level-1:ℕ)
+            ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).inv))
+      (t-s,t+normalizedExponent model.classicalTower f-level) u (v-u) source target ) := Iff.rfl
+
+-- The exposed crossing predicate reduces to its actual quantified ESS condition.
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (page level : ℕ) (r l s t : ℤ) :
+    LevelBottomNoCrossing X Y f page level r l s t ↔ (
+  ∀ u v : ℤ, s+r < u → u ≤ v → v ≤ s+r+l →
+    ∀ source target, ¬ TowerEssentialExtension
+      (model.convergentMap
+        (.shift (1,-((page+level-1:ℕ):ℤ)) (extensionSourceObject model X Y f))
+        (.shift (1,-((page+level-1:ℕ):ℤ)) (.nu Y))
+        ((SyntheticCategory.biShift (1,-((page+level-1:ℕ):ℤ))).map
+          (model.normalizedMap X Y f).map))
+      (t-s,t+normalizedExponent model.classicalTower f-level) u (v-u) source target ) := Iff.rfl
+
+end PublicLevelPredicates
+section PublicLambdaDivision
+open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
+open KIP126.Core.SpectralSequence KIP126.Classical.Adams
+open KIP126.ProofTools.Standard
+
+-- The complete public statement is callable with its stated hypotheses only.
+example
+    (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (q i : ℕ) (hi : 0 < i) (hiq : i < q) (s t N : ℤ) (hsN : s+i ≤ N)
+    (hcross : FiniteLambdaKernelNoCrossing X Y f q i hi hiq s t N)
+    (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)
+      (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q))
+    (ha : FiltrationAtLeast model.syntheticTower (s+i) a)
+    (hfa : FiltrationAtLeast model.syntheticTower N (a ≫ finiteExtensionMap model X Y f q)) :
+    ∃ b : BiHom (t-s) (t+normalizedExponent model.classicalTower f)
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).obj
+          (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) (q-i))),
+      b ≫ ((model.quotients.tower _).triangle hi hiq).lambdaMap = a ∧
+      FiltrationAtLeast model.syntheticTower (s+i) b ∧
+      (b ≫ (SyntheticCategory.biShift (0,-(i:ℤ))).map
+        (finiteExtensionMap model X Y f (q-i))) ≫
+          ((model.quotients.tower _).triangle hi hiq).lambdaMap =
+        a ≫ finiteExtensionMap model X Y f q ∧
+      FiltrationAtLeast model.syntheticTower N
+        (b ≫ (SyntheticCategory.biShift (0,-(i:ℤ))).map
+          (finiteExtensionMap model X Y f (q-i))) :=
+  finiteLambdaDivision
+    X Y f q i hi hiq s t N hsN hcross a ha hfa
+
+
+-- Ordinary import exposes the complete kernel crossing range and actual target lambda arrow.
+example (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (q i : ℕ) (hi : 0 < i) (hiq : i < q) (s t N : ℤ) :
+    FiniteLambdaKernelNoCrossing X Y f q i hi hiq s t N ↔ (
+  ∀ u v : ℤ, s+i ≤ u → u ≤ v → v < N → ∀ source target,
+    TowerEssentialExtension
+      (model.convergentMap
+        (.shift (0,-(i:ℤ)) (.quotient (q-i) (extensionSourceObject model X Y f)))
+        (.shift (0,-(i:ℤ)) (.quotient (q-i) (.nu Y)))
+        ((SyntheticCategory.biShift (0,-(i:ℤ))).map (finiteExtensionMap model X Y f (q-i))))
+      (t-s,t+normalizedExponent model.classicalTower f) u (v-u) source target →
+      (model.family.functor.map
+        ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).triangle
+          hi hiq).lambdaMap).eInftyMap
+        (u+(v-u),(t-s)+(u+(v-u)),t+normalizedExponent model.classicalTower f) target ≠ 0 ) := Iff.rfl
+
+end PublicLambdaDivision
 end Tests.ProofTools

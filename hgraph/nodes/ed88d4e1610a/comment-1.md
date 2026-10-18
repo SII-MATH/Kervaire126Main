@@ -50,6 +50,35 @@ and two original proof holes remain unchanged. A GL-specific strengthening
 that retains the original premises and adds actual same-quotient, same-weight
 synthetic conditions is proposed for human review; no semantic change is approved.
 
+A subsequent independent review uses only the intended sphere and shift
+objects: sigma from S^7 to S^0 with page = r = 2, m = 1, l = 3,
+s = 2 and t = 19. The original law allows three zero source labels and an
+inessential infinite extension to Pc_0, using sigma times lambda Ph_1 =
+lambda^2 Pc_0. The complete low-stem ring and original classical data rule
+out all three paper crossings, but the conclusion would be d_4(0) = Pc_0.
+This is an actual-sphere mathematical counterexample, not a Lean certificate
+transporting these elements to the deferred Standard.model. See MEMO.md
+and the independent sigma-audit report in the archived session.
+
+The proved left edge is now used by the original GL proof. The actual
+bottom edge has no crossing at minimal length l <= e(f); this branch is
+also integrated when the source condition is classical or of minimal finite
+length. The two original debts remain crossing obligations. Their permitted
+declaration set is unchanged; only the actual partial proof body is recorded.
+
+
+An explicitly authorized private level-indexed development now keeps the
+classical page n and arbitrary lambda level k separate: q = n+k-1 and
+w = t+e(f)-k. Its proof follows the actual boundary square, from the finite
+lambda construction of the left edge through the filtered square argument
+to the weighted readout of d_(r+l-m)(y) = y_infty. The no-crossing inputs
+refer to the actual left or top edge and the propagated bottom edge, all at
+the same weight. The complete level-zero finite witness is compatible with
+the original definition. These private proofs retain existing upstream
+obligations and do not discharge either hole or alter the binding of the
+frozen public theorem. See the gl-level-2026-10-18 session and MEMO.md.
+
+The user subsequently instructed the session to follow the teacher's group replies. The level theorem now has its own public entry, Standard.generalizedLeibnizAtLevel, with exposed actual extension/crossing predicates and a public level-zero input conversion. This separately authorized addition leaves the old public GL and its two holes unchanged. Conditional finite lambda division additionally excludes essential small-layer extensions whose target is killed by the actual lambda map within the closed-source, open-target filtration triangle. See the gl-public-level-2026-10-18 session for the authorization and validation evidence.
 
 Paper locators: thm:e73f481e:1606.
 

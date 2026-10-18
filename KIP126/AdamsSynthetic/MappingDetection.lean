@@ -99,53 +99,42 @@ private theorem homotopy_filtration_transport {X : C}
   subst m
   simp
 
-/-- The target-tower map filtration agrees with the actual internal-hom
-filtration, on finite spectra. This bridge must be supplied for the same P. -/
-public structure MappingFiltrationComparison (B : ClosedSymmetricTensorTriangulated C)
-    (P : ClassicalTowerPresentation H.unit A) : Prop where
-  agrees : ∀ {X Y : C}, IsFiniteSpectrum X → IsFiniteSpectrum Y →
-    ∀ (f : X ⟶ Y) (s : ℤ), MapAdamsFiltration P f s ↔
-      (mappingHomotopyZeroEquiv B X Y).symm f ∈
-        (P.tower (mappingSpectrum B X Y)).filtrationSubmodule s 0
-
-/-- Consumer contract for detection, with all comparisons tied to the same
-coefficient tower, mapping spectra, finite scope and canonical convergence.
-It does not supply the separate filtration-separation proof. -/
-public structure MappingDetectionInput (B : ClosedSymmetricTensorTriangulated C)
-    (P : ClassicalTowerPresentation H.unit A)
-    (_S : MappingSpectrumSystem B P (IsFiniteSpectrum (C := C))) where
-  factorizationComparison : FactorizationFiltrationComparison P
-  mappingComparison : MappingFiltrationComparison B P
-
 /-- The nonzero detection witness is derived from exact filtration through
 the same mapping-spectrum comparison and canonical convergence. -/
-public theorem MappingDetectionInput.detects_exact
+public theorem nonzeroClassicalDetection_of_exact_map
     {B : ClosedSymmetricTensorTriangulated C}
     {S : MappingSpectrumSystem B P (IsFiniteSpectrum (C := C))}
-    (D : MappingDetectionInput B P S)
+    (comparison : ∀ {X Y : C}, IsFiniteSpectrum X → IsFiniteSpectrum Y →
+      ∀ (f : X ⟶ Y) (s : ℤ), MapAdamsFiltration P f s ↔
+        (mappingHomotopyZeroEquiv B X Y).symm f ∈
+          (P.tower (mappingSpectrum B X Y)).filtrationSubmodule s 0)
     {X Y : C} (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y)
     (f : X ⟶ Y) (s : ℤ) (hs : ExactMapAdamsFiltration P f s) :
     Nonempty (NonzeroClassicalDetection (S.convergence X Y hX hY) (s,s) (mappingClass B f s)) := by
   apply nonzeroClassicalDetection_of_exact
-  · have ha := (D.mappingComparison.agrees hX hY f s).mp hs.1
+  · have ha := (comparison hX hY f s).mp hs.1
     exact (homotopy_filtration_transport (P := P) (s-s) 0 s (sub_self s) _).mpr ha
   · intro ha
     apply hs.2
-    apply (D.mappingComparison.agrees hX hY f (s+1)).mpr
+    apply (comparison hX hY f (s+1)).mpr
     exact (homotopy_filtration_transport (P := P) (s-s) 0 (s+1) (sub_self s) _).mp ha
 
 /-- The revised nonzero-map statement requires non-odd-torsion and finite
 objects; its nonzero E∞ class detects that very map in its mapping spectrum. -/
-public theorem MappingDetectionInput.detect_non_odd
+public theorem nonzeroClassicalDetection_of_not_odd_map
     {B : ClosedSymmetricTensorTriangulated C}
     {S : MappingSpectrumSystem B P (IsFiniteSpectrum (C := C))}
-    (D : MappingDetectionInput B P S) (separation : FiniteMapSeparation P)
+    (comparison : ∀ {X Y : C}, IsFiniteSpectrum X → IsFiniteSpectrum Y →
+      ∀ (f : X ⟶ Y) (s : ℤ), MapAdamsFiltration P f s ↔
+        (mappingHomotopyZeroEquiv B X Y).symm f ∈
+          (P.tower (mappingSpectrum B X Y)).filtrationSubmodule s 0)
+    (separation : FiniteMapSeparation P)
     {X Y : C} (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y)
     (f : X ⟶ Y) (hf : ¬ IsOddTorsionMap f) :
     ∃ s : ℤ, ExactMapAdamsFiltration P f s ∧
       Nonempty (NonzeroClassicalDetection (S.convergence X Y hX hY) (s,s) (mappingClass B f s)) := by
   obtain ⟨s,hs⟩ := finite_filtration_of_not_odd P separation hX hY f hf
-  exact ⟨s,hs,D.detects_exact hX hY f s hs⟩
+  exact ⟨s,hs,nonzeroClassicalDetection_of_exact_map comparison hX hY f s hs⟩
 
 end
 end KIP126.AdamsSynthetic

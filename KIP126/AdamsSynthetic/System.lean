@@ -43,7 +43,12 @@ public structure ModelData where
   classical : ClassicalAdamsFamily C
   nu : NuFunctorData C Syn
   family : SyntheticAdamsFamily Syn
-  nuExactTriangle : NuExactTriangleInput coefficients nu
+  /-- Preservation uses the complete homology short-exactness premise. -/
+  nuExactTriangle : ∀ (T : CategoryTheory.Pretriangulated.Triangle C),
+    T ∈ distTriang C → HomologyShortExact coefficients T →
+    ∃ h : nu.functor.obj T.obj₃ ⟶ (shiftFunctor Syn (1 : ℤ)).obj (nu.functor.obj T.obj₁),
+      CategoryTheory.Pretriangulated.Triangle.mk
+        (nu.functor.map T.mor₁) (nu.functor.map T.mor₂) h ∈ distTriang Syn
   recovery : LambdaRecovery nu
   exactness : StructuralExactness nu recovery
   auxiliary : AuxiliaryData C

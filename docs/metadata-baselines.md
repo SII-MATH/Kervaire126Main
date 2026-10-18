@@ -25,3 +25,9 @@ python3 -m unittest discover -s Tests -p 'test_metadata_baselines.py'
 python3 scripts/check-source-inventory.py
 lake build
 ```
+
+## AdamsSynthetic 证明包装清理（2026-10-18）
+
+用户授权清理没有独立用途的单字段命题包装，以及重复要求提交已有证明的结果包。本次移除 `NuExactTriangleInput`、`FactorizationFiltrationComparison`、`AdamsBoundednessInput`、`MappingFiltrationComparison`、`MappingDetectionInput` 和未使用的 `SphereTwistSign`；通用定理直接接收原有数学命题，固定系统直接调用登记定理。`ModelData.nuExactTriangle` 直接保存带完整同调短正合条件的保持性证明，Literature 的旧包装转换器同步移除。映射检测不再额外要求其证明没有使用的因子分解滤过比较。
+
+这些是接口简化，不是完成或移除待补数学责任。90 项 AdamsSynthetic 证明／构造洞的责任、声明原文和类型保持不变。删除前置声明使 `Standard.Filtration` 中四项未改动的 `sorry` 获得新的源码位置／宏标签：`finite_map_separation`、`mappingConvergence`、`mapping_filtration_iff`、`adams_filtration_bounded`。逐项核对声明原文完全相同、编译后类型指纹相同及精确证明洞集合后，仅迁移这四项包含诊断标签的证明体指纹；其余证明洞基线不变。接口锁依据重新编译后的捕获更新，既有完整导出、前提和信任检查继续执行。
