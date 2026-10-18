@@ -1,7 +1,8 @@
 """Curated mathematical Blueprint over an independently retained source graph.
 
-All states and dependencies come from actual compiled declarations. Public
-producers have Lean-bound frontier entries. Private producers stay in the
+Proof states come from actual compiled declarations; reviewed mathematical
+dependencies augment the retained compiled projection. Public producers have
+Lean-bound frontier entries. Private producers stay in the
 internal source graph and contribute to the dependent mathematical status.
 No proof responsibility, interface or native frontend is changed.
 """
@@ -310,6 +311,57 @@ def read_frontier_authoring(root, projection, sources):
     return authored
 
 
+def add_paper_dependencies(projection, paper_records):
+    """Add reviewed mathematical edges without reducing them by Lean ancestry.
+
+    During migration the old compiled projection remains a conservative fallback.
+    Its independent closure oracle is retained verbatim, rather than making
+    mathematical uses pass an ALL-bindings test or hiding unfinished producers.
+    """
+    if not paper_records:
+        return
+    aliases = {r['label']: r.get('canonical_label', r['label']) for r in paper_records}
+    compiled = {label: set(targets) for label, targets in projection['uses'].items()}
+    authored = {}
+    for record in paper_records:
+        label = aliases[record['label']]
+        if label not in projection['entries']:
+            raise ValueError('Canonical paper node is not displayed: ' + label)
+        if label != record['label']:
+            continue
+        targets = {aliases.get(target, target) for target in record['mathematical_uses']}
+        if label in targets:
+            raise ValueError('Self-dependent mathematical paper statement: ' + label)
+        if not targets <= projection['entries'].keys():
+            raise ValueError('Unknown mathematical paper dependency: '
+                             + str(targets - projection['entries'].keys()))
+        authored[label] = targets
+        projection['uses'][label].update(targets)
+    # Explicit mathematical prerequisites must not disappear just because a
+    # transitive route or a compiler-selected implementation also exists.
+    closed, active = {}, []
+    def visit(label):
+        if label in active:
+            raise ValueError('Cyclic mathematical dependency: '
+                             + ' -> '.join(active[active.index(label):] + [label]))
+        if label in closed:
+            return closed[label]
+        active.append(label)
+        prerequisites = [visit(target) for target in sorted(projection['uses'][label])]
+        active.pop()
+        row = projection['entries'][label]
+        closed[label] = row['local_status'] in DONE and all(prerequisites)
+        if closed[label] and not row['expected_closed']:
+            raise ValueError('Mathematical dependency migration hid compiled work: ' + label)
+        row['expected_display_closed'] = closed[label]
+        return closed[label]
+    for label in projection['entries']:
+        visit(label)
+    projection['compiled_uses'] = compiled
+    projection['authored_uses'] = authored
+    projection['paper_aliases'] = aliases
+
+
 def resolve_main_remark(statement, sources, interfaces):
     """Resolve explicit source identities, subject to the same public-only rule."""
     label = statement['label']
@@ -392,6 +444,7 @@ def prepare(root, sources, dependencies, obligations, paper_records):
     projection['binding_owners'] = validate_binding_owners([
         {**row, 'lean': projection['entries'][row['label']]['lean']} for row in primary
     ], sources, api)
+    add_paper_dependencies(projection, paper_records)
     projection['chapter_dependencies'] = validate_chapter_dependencies(projection, primary)
     return projection
 
@@ -399,7 +452,7 @@ def prepare(root, sources, dependencies, obligations, paper_records):
 def validate(graph, projection, analysis):
     """Validate CLI/full graph AND the frontend's entries-only graph."""
     from hgraph.layout import _Model
-    entries = []
+    entries, compiled_entries = [], []
     hard_edges = defaultdict(set)
     formalizes = defaultdict(set)
     for edge in graph.edges():
@@ -420,14 +473,22 @@ def validate(graph, projection, analysis):
                 node.meta.get('internal_obligations') != row['internal_obligation_labels']):
             # Private audit identities do not introduce formalizes edges.
             raise ValueError('Native internal-obligation evidence changed: ' + label)
-        if analysis.closed[nid] != row['expected_closed']:
-            raise ValueError('Native semantic closure differs from compiled evidence: ' + label)
+        display_closed = row.get('expected_display_closed', row['expected_closed'])
+        if analysis.closed[nid] != display_closed:
+            raise ValueError('Native semantic closure differs from mathematical evidence: ' + label)
         entries.append({'id': nid, 'lean_status': row['local_status'],
                         'deps': [{'id': target, 'type': 'uses'} for target in expected]})
+        compiled_entries.append({'id': nid, 'lean_status': row['local_status'],
+            'deps': [{'id': node_id('bp', target), 'type': 'uses'} for target in
+                     projection.get('compiled_uses', projection['uses'])[label]]})
     model = _Model({'entries': entries})
+    compiled_model = _Model({'entries': compiled_entries})
     for index, label in enumerate(projection['entries']):
-        if model.closed[index] != projection['entries'][label]['expected_closed']:
-            raise ValueError('Frontend semantic closure differs from compiled evidence: ' + label)
+        row = projection['entries'][label]
+        if compiled_model.closed[index] != row['expected_closed']:
+            raise ValueError('Independent compiled projection differs from source closure: ' + label)
+        if model.closed[index] != row.get('expected_display_closed', row['expected_closed']):
+            raise ValueError('Frontend semantic closure differs from mathematical evidence: ' + label)
     return {'mathematical_entries': sum(not r['frontier'] for r in projection['entries'].values()),
             'frontier_entries': sum(r['frontier'] for r in projection['entries'].values()),
             'statements': len(entries), 'unique_unfinished_producers': len(projection['producer_names']),
@@ -435,10 +496,20 @@ def validate(graph, projection, analysis):
             'entries_with_internal_obligations': sum(bool(r['internal_producers'])
                                                     for r in projection['entries'].values()),
             'dependency_edges': sum(map(len, projection['uses'].values())),
+            'authored_paper_dependency_edges': sum(map(len, projection.get('authored_uses', {}).values())),
+            'compiled_fallback_dependency_edges': sum(map(len, projection.get('compiled_uses', projection['uses']).values())),
+            'dependency_migration': 'Reviewed AimPaper uses plus the retained compiled fallback; '
+                                    'mathematical edges are independent of Lean bindings.',
+            'paper_aliases': {alias: target for alias, target in projection.get('paper_aliases', {}).items()
+                             if alias != target},
             'chapter_dependencies': projection.get('chapter_dependencies'),
             'binding_owners': projection.get('binding_owners'),
             'states': dict(Counter(analysis.states[node_id('bp', label)] for label in projection['entries'])),
-            'all_primary_and_frontend_closures_match_compiled_evidence': True}
+            'compiled_projection_closure_matches_source_evidence': True,
+            'all_primary_and_frontend_closures_match_compiled_evidence': all(
+                model.closed[i] == projection['entries'][label]['expected_closed']
+                for i, label in enumerate(projection['entries'])),
+            'display_closure_includes_all_compiled_and_mathematical_prerequisites': True}
 
 
 def save_source_snapshot(state, sources, dependencies, evidence):

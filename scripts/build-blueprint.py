@@ -319,7 +319,7 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
     for order, statement in enumerate(statements):
         correspondence = []
         if statement['label'].startswith('paper:'):
-            correspondence = list(statement['uses'])
+            correspondence = [target for target in statement['uses'] if target.startswith('decl:')]
             statement = {**statement, 'lean': resolve_paper_bindings(statement, source_labels)}
         if projection is not None and statement['label'] in projection['uses']:
             statement = {**statement,
@@ -372,14 +372,23 @@ def sync_kernel_graph(graph, sources, dependencies, projection=None):
     sync_authoring_notes(graph, ROOT)
     existing = {(e.source, e.target): e for e in graph.edges()
                 if e.attrs.get('generated') == 'blueprint'}
+    authored_pairs = {(node_id('bp', label), node_id('bp', target))
+                      for label, targets in (projection or {}).get('authored_uses', {}).items()
+                      for target in targets}
+    compiled_pairs = {(node_id('bp', label), node_id('bp', target))
+                      for label, targets in (projection or {}).get('compiled_uses', {}).items()
+                      for target in targets}
     edge_changes = 0
     for pair, kind in desired_edges.items():
         old = existing.get(pair)
+        provenance = ({'mathematical_authoring': pair in authored_pairs,
+                       'compiled_fallback': pair in compiled_pairs}
+                      if pair in authored_pairs or pair in compiled_pairs else {})
         if old is None:
-            graph.add_edge(*pair, kind, generated='blueprint')
+            graph.add_edge(*pair, kind, generated='blueprint', **provenance)
             edge_changes += 1
-        elif old.type != kind:
-            graph.add_edge(*pair, kind, replace=True, **old.attrs)
+        elif old.type != kind or any(old.attrs.get(key) != value for key, value in provenance.items()):
+            graph.add_edge(*pair, kind, replace=True, **{**old.attrs, **provenance})
             edge_changes += 1
     for pair in existing.keys() - desired_edges.keys():
         edge = existing[pair]

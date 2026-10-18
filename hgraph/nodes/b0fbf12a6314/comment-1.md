@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.985379+00:00'
+updated: '2026-10-18T08:16:05.557831+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2110-2140](paper/main.tex.html#L2110). The external BJM/BX criterion is stated using lambda quotients, a detected theta-five and eta. The existing normalization and choice-scope qualifications remain in force.
+
 **Formal scope:** Partial correspondence for the distinguished theta-five
 
 The bound Literature interfaces give the BX criterion only for the distinguished theta-five. The finite-page interface assumes a positive natural-number parameter and uses its stated quotient convention; these bindings alone do not establish the full choice and parameter scope of the paper statement. Both source-interface proofs remain registered as unfinished.

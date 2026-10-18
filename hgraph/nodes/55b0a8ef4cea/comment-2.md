@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.997714+00:00'
+updated: '2026-10-18T08:16:05.575748+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1030-1050](paper/main.tex.html#L1030). The infinite-page quotient formulas make the lambda/rho sequence exact; the null-composite result rules out higher extensions.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The finite-quotient and infinite versions concern the same actual maps $\lambda$ and $\rho$: they exclude essential extensions of positive length, identify the actual $d_0$ equations, and establish the absence of crossings.

@@ -60,7 +60,6 @@ class BlueprintBoundaryTests(unittest.TestCase):
             self.assertIn('Second revision.', updated[0]['html'])
             self.assertNotIn('First revision.', updated[0]['html'])
 
-
     def test_computation_moves_preserve_source_review_ids(self):
         name = 'KIP126.Computation.Standard.d2_h6'
         old = blueprint.label('KIP126.Computation.Standard', name)
@@ -455,6 +454,11 @@ class AimPaperBoundaryTests(unittest.TestCase):
             labels = self.paper_fixture(root)
             records, stats = blueprint.load_paper(root, labels)
             self.assertEqual(stats['statements'], 57)
+            self.assertEqual(stats['displayed_nodes'], 56)
+            self.assertEqual(stats['mathematical_dependencies_reviewed'], 57)
+            self.assertEqual(stats['mathematical_dependency_edges'], 175)
+            repeated = next(r for r in records if r['number'] == '7.1')
+            self.assertEqual(repeated['canonical_label'], 'paper:1.4')
             self.assertEqual(stats['cited_entries'], 56)
             partial = next(r for r in records if r['number'] == '2.1')
             self.assertEqual(len(partial['lean']), 1)
@@ -583,7 +587,16 @@ class AimPaperBoundaryTests(unittest.TestCase):
             destination = prepare_web_blueprint(root, Path(directory) / 'web')
             statements, _ = parse_blueprint(read_blueprint(destination / 'content.tex'))
             paper = [row for row in statements if row['label'].startswith('paper:')]
-            self.assertEqual(len(paper), 57)
+            self.assertEqual(len(paper), 56)
+            permanence = next(row for row in paper if row['label'] == 'paper:1.4')
+            self.assertIn('paper:7.1', permanence['labels'])
+            self.assertIn('thm:126survives', permanence['labels'])
+            self.assertFalse(any(row['label'] == 'paper:7.1' for row in paper))
+            self.assertEqual(permanence['title'], 'Permanence of $h_6^2$')
+            self.assertIn(r'(From \cite{LWX126}, Theorem 1.4, Theorem 7.1.)', permanence['body'])
+            self.assertNotIn('[Theorem', permanence['body'])
+            original_permanence = next(row for row in original if row['label'] == 'paper:1.4')
+            self.assertNotIn('[Theorem', display_body(original_permanence['body'], '1.4', refs))
             by_label = {row['label']: row for row in paper}
             for source in diagram_sources:
                 with self.subTest(label=source['label']):

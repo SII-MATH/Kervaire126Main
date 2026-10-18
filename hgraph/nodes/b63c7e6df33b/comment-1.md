@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.976405+00:00'
+updated: '2026-10-18T08:16:05.550345+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 759-767](paper/main.tex.html#L759). This external Pstragowski result compares the synthetic analogue of a cofiber triangle with short exactness in coefficient homology.
+
 **Formal scope:** public correspondence with the scope stated below
 
 The correspondence retains both directions between full mod-two homology short exactness and the same synthetic cofiber triangle. Its classical objects range over the classical category of the fixed model.

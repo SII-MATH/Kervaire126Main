@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.967852+00:00'
+updated: '2026-10-18T08:16:05.541957+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2611-2615](paper/main.tex.html#L2611). The E6 survival and absence of incoming differentials come from the stem-122 sphere table.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements give survival of $X$ to $E_6$ and exclude incoming differentials.

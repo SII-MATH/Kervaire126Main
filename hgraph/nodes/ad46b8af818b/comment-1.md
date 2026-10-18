@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.998875+00:00'
+updated: '2026-10-18T08:16:05.576503+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The four public statements cover both ranges of differential lengths, for finite and absolute $\delta$-extensions.

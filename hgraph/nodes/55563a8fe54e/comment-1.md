@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.968654+00:00'
+updated: '2026-10-18T08:16:05.542834+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2683-2696](paper/main.tex.html#L2683). Both permanent-cycle inputs are extracted from the stem-122 table before the proof of Proposition 7.9.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements give nonzero permanent survival of $P=h_6Md_0$ and $Q=h_5x_{91,11}$.

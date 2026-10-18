@@ -1,8 +1,8 @@
 """AimPaper provenance checks and rendering compatibility for native hgraph.
 
 The authored statements, hidden correspondence metadata, labels and Lean links
-live in blueprint/paper/*.tex. Explicit uses bind declarations independently of
-the mathematical prose. Historical metadata only seeded that authoring.
+live in blueprint/paper/*.tex. Declaration correspondences and reviewed
+mathematical uses are distinct, even though both use native TeX annotations.
 """
 from collections import Counter
 import hashlib
@@ -99,7 +99,7 @@ def load_paper(root, source_labels):
     expected = {(r['kind'], r['start_line'], r['end_line']): r for r in source_statements(original)}
     result = []
     seen = set()
-    for path in sorted((root / 'blueprint/paper').glob('*.tex')):
+    for path in sorted((root / 'blueprint/paper').rglob('*.tex')):
         text = path.read_text()
         blocks = re.split(r'(?=^% AimPaper: )', text, flags=re.M)[1:]
         for block in blocks:
@@ -122,16 +122,37 @@ def load_paper(root, source_labels):
             if statement['leanok'] or statement['mathlibok']:
                 raise ValueError(f'AimPaper must derive status from real Lean declarations: {number}')
             names = resolve_paper_bindings(statement, source_labels)
-            if set(statement['uses']) != refs:
-                raise ValueError(f'Paper dependencies must inherit every bound source: {number}')
+            mathematical_uses = set(statement['uses']) - refs
+            if any(not label.startswith(('paper:', 'sem:')) for label in mathematical_uses):
+                raise ValueError(f'Invalid mathematical paper dependency: {number}')
+            if len(re.findall(r'^% Mathematical dependencies: reviewed$', block, re.M)) != 1:
+                raise ValueError(f'Missing mathematical dependency review: {number}')
+            canonical = re.findall(r'^% Canonical node: (paper:[0-9]+\.[0-9]+)$', block, re.M)
+            if len(canonical) > 1:
+                raise ValueError(f'Ambiguous canonical paper node: {number}')
             status = correspondence_status(block, number)
             if (status in ('部分对应', '相关步骤待补齐') or status.lower().startswith(('partial', 'incomplete', 'related steps remain'))) and not statement['sketch']:
                 raise ValueError(f'Partial correspondence needs native sketch and scope notes: {number}')
             result.append({**statement, 'authored_lean': statement['lean'], 'lean': names, 'number': number, 'kind': kind, 'start_line': int(start),
                            'end_line': int(end), 'raw': raw, 'mapping_labels': sorted(refs),
+                           'mathematical_uses': sorted(mathematical_uses),
+                           'canonical_label': canonical[0] if canonical else statement['label'],
                            'mapping_status': status, 'owner': path.stem})
     if seen != expected.keys() or len({r['number'] for r in result}) != len(expected):
         raise ValueError('AimPaper statement coverage is not exhaustive and unique')
+    by_label = {r['label']: r for r in result}
+    for row in result:
+        canonical = row['canonical_label']
+        if canonical == row['label']:
+            continue
+        target = by_label.get(canonical)
+        # This is an explicitly reviewed repetition of the permanence theorem,
+        # not a general rule equating mathematical statements by Lean bindings.
+        if (row['label'], canonical) != ('paper:7.1', 'paper:1.4') or target is None:
+            raise ValueError('Unreviewed repeated paper statement: ' + row['label'])
+        if (set(row['lean']) != set(target['lean']) or row['sketch'] != target['sketch']
+                or row['label'] not in target['labels'] or 'thm:126survives' not in target['labels']):
+            raise ValueError('Repeated permanence statement lost its canonical binding or aliases')
     bib = discover_bib(root / 'blueprint/content.tex')
     keys = [r['key'] for r in bib]
     cited = citation_keys(original)
@@ -145,6 +166,10 @@ def load_paper(root, source_labels):
         raise ValueError('Native bibliography differs from AimPaper/main.bib; update explicitly')
     return sorted(result, key=lambda r: tuple(map(int, r['number'].split('.')))), {
         'statements': len(result), 'by_kind': dict(Counter(r['kind'] for r in result)),
+        'displayed_nodes': len({r['canonical_label'] for r in result}),
+        'mathematical_dependency_edges': sum(len(r['mathematical_uses']) for r in result
+                                            if r['canonical_label'] == r['label']),
+        'mathematical_dependencies_reviewed': len(result),
         'mapping_status': dict(Counter(r['mapping_status'] for r in result)),
         'with_source_links': sum(bool(r['mapping_labels']) for r in result),
         'bound_statements': sum(bool(r['lean']) for r in result),
@@ -244,6 +269,11 @@ def display_enumeration(body):
 def display_body(body, number, reference_targets=None):
     """Use native links for unsupported XY diagrams; keep original TeX intact."""
     body = display_enumeration(active_tex(body))
+    if number == '1.4':
+        # The merged permanence node cites both original occurrences in its
+        # source prefix. The original optional heading would link to itself.
+        # Omit it only in the rendering copy; provenance stays verbatim.
+        body = body.replace(r'[Theorem~\ref{thm:126survives}]', '', 1)
     spans = []
     for match in re.finditer(r'\\xymatrix\s*\{', body):
         _inner, end = _brace_span(body, body.index('{', match.start()))
@@ -275,9 +305,10 @@ def validate_paper_graph(graph, records, analysis, projection=None):
     for edge in graph.edges():
         by_source.setdefault(edge.source, []).append(edge)
     for record in records:
-        nid = node_id('bp', record['label'])
+        label = record.get('canonical_label', record['label'])
+        nid = node_id('bp', label)
         node = graph.get_node(nid)
-        mappings = {node_id('bp', target) for target in (projection['uses'][record['label']]
+        mappings = {node_id('bp', target) for target in (projection['uses'][label]
                     if projection else record['mapping_labels'])}
         hard = {e.target for e in by_source.get(nid, []) if e.hard}
         if record['lean']:
@@ -285,20 +316,24 @@ def validate_paper_graph(graph, records, analysis, projection=None):
             statuses = [graph.get_node(target).meta.get('lean_status') or 'empty' for target in targets]
             expected_local = 'sorry' if 'sorry' in statuses else 'empty' if 'empty' in statuses else 'lean_ok'
             if projection is not None:
-                expected_local = projection['entries'][record['label']]['local_status']
+                expected_local = projection['entries'][label]['local_status']
             formal = {e.target for e in by_source.get(nid, []) if e.type == 'formalizes'}
-            if (analysis.closed[nid] != all(analysis.closed[target] for target in targets)
+            expected_closed = (projection['entries'][label].get('expected_display_closed',
+                               projection['entries'][label]['expected_closed']) if projection
+                               else all(analysis.closed[target] for target in targets))
+            if (analysis.closed[nid] != expected_closed
                     or node.meta.get('lean_status') != expected_local
                     or hard != mappings or formal != set(targets)):
                 raise ValueError('Paper binding lost actual local status/closure: ' + record['number'])
-        elif node.meta.get('lean_status') != 'empty' or hard:
+        elif node.meta.get('lean_status') != 'empty' or hard != mappings:
             raise ValueError('Unmapped paper node acquired proof status: ' + record['number'])
         if bool(node.meta.get('sketch')) != record['sketch']:
             raise ValueError('Paper mapping scope marker differs: ' + record['number'])
         tags = set(node.meta.get('tags') or [])
         tags.add('source:AimPaper')
         graph.modify_node(nid, set_meta={'tags': sorted(tags)})
-    return dict(Counter(analysis.states[node_id('bp', r['label'])] for r in records))
+    return dict(Counter(analysis.states[node_id('bp', label)]
+                        for label in {r.get('canonical_label', r['label']) for r in records}))
 
 
 def export_paper(root, out, records):

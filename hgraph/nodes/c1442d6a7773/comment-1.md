@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.000049+00:00'
+updated: '2026-10-18T08:16:05.577237+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements cover the full valid range of weights, the zero endpoint $a=n$, and vanishing when the source or target lies outside the strip.

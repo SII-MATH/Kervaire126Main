@@ -28,8 +28,10 @@ def authoring_notes(root):
                 common += NOTE.findall(chapter.read_text().split(r'\input', 1)[0])
             for block in blocks:
                 labels = re.findall(r'\\label\{((?:sem:|paper:|frontier:)[^}]+)\}', block[0])
-                if len(labels) != 1 or labels[0] in result:
+                if not labels or labels[0] in result:
                     raise ValueError('Ambiguous annotation target in ' + str(path))
+                if '% Canonical node:' in block[0]:
+                    continue  # An archived repetition has no second displayed node.
                 notes = list(dict.fromkeys(common + NOTE.findall(block[0])))
                 if notes:
                     result[labels[0]] = {'path': str(path.relative_to(root)), 'notes': notes}

@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.002362+00:00'
+updated: '2026-10-18T08:16:05.578736+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1225-1234](paper/main.tex.html#L1225). Translate extension crossings through the infinity-page quotient coordinates and the lambda-multiple boundary formula.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public theorem gives the equivalence between classical crossings and crossings in the actual $\delta$-extension spectral sequence throughout the range $2\leq\mathrm{page}\leq r$.

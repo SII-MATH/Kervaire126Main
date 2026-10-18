@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.974460+00:00'
+updated: '2026-10-18T08:16:05.547160+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1275-1317](paper/main.tex.html#L1275). Define page extensions as ESS differentials of the chosen normalized map on lambda quotients. The coordinate description in the preceding paragraph is explanatory; no theorem about later extensions is used to define the relation.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The finite- and infinite-page extension definitions are tied to the actual normalized map, cycle labels, degrees, and witnesses.

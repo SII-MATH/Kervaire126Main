@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T08:16:05.571890+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 593-595](paper/main.tex.html#L593). Specialize Corollary 2.15 to an identity lower horizontal map.
+
 **Formal scope:** no public counterpart identified.
 
 No public interface for the triangular-diagram consequence deriving the third extension from two extensions with a common source has been identified.

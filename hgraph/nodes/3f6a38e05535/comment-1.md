@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.001193+00:00'
+updated: '2026-10-18T08:16:05.577973+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The definitions use the direction of classical differential crossings and the valid page range specified in the article. They are distinct from Moss crossings.

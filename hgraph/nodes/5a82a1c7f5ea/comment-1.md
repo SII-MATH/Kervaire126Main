@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T05:53:06.223537+00:00'
+updated: '2026-10-18T08:16:05.580194+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
+
 The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. This paper proposition therefore has no direct formal binding; its partial scope and the implementation audit remain visible.
 
 **Formal scope:** partial.

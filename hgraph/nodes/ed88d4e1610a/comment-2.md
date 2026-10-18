@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.005760+00:00'
+updated: '2026-10-18T08:16:05.581769+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1623-1656](paper/main.tex.html#L1623). Translate the hypotheses into synthetic extensions, transfer the no-crossing conditions, apply the square corollary, and translate the resulting boundary extension back.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public proposition and callable theorem retain the no-crossing hypotheses, degrees, and page ranges. The API currently records a direct proof obligation for the theorem.

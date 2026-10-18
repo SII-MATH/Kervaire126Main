@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.982234+00:00'
+updated: '2026-10-18T08:16:05.554423+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 912-919](paper/main.tex.html#L912). BHS's filtration factorization is expressed using powers of lambda and the Adams-filtration bound.
+
 **Formal scope:** public correspondence with the scope stated below
 
 The same classical map and an actual tower-filtration bound give the factorization through a lambda power.

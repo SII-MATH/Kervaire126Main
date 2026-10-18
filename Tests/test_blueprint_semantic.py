@@ -464,7 +464,8 @@ class BindingOwnershipTests(unittest.TestCase):
                          ['KIP126.ProofTools.Standard.generalizedLeibniz'])
         for label in ('paper:2.12', 'paper:2.15', 'paper:5.10', 'paper:7.16', 'paper:7.18'):
             self.assertEqual(rows[label]['lean'], [], label)
-            self.assertEqual(rows[label]['uses'], [], label)
+            self.assertFalse(any(target.startswith('decl:') for target in rows[label]['uses']), label)
+            self.assertTrue(rows[label]['uses'], label)
             self.assertTrue(rows[label]['sketch'], label)
 
 
@@ -578,6 +579,72 @@ class FrontierAuthoringTests(unittest.TestCase):
         self.assertEqual(set(rows), {self.label})
         self.assertFalse(rows[self.label]['leanok'])
         self.assertEqual(rows[self.label]['lean'], ['Local.pending'])
+
+
+class AuthoredPaperDependencyTests(unittest.TestCase):
+    def projection(self):
+        sources, deps, obligations = fixture(
+            {'left': [], 'right': [], 'consumer': ['left']})
+        return semantic.make_projection(sources, deps, obligations, [
+            statement('sem:group', 'left', 'right'),
+            statement('paper:result', 'consumer'), statement('paper:unformalized')])
+
+    def test_partial_consumption_and_unbound_math_use_survive_without_all_bindings(self):
+        projection = self.projection()
+        self.assertNotIn('sem:group', projection['uses']['paper:result'])
+        original = {label: set(targets) for label, targets in projection['uses'].items()}
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['sem:group']},
+            {'label': 'paper:unformalized', 'mathematical_uses': ['paper:result']}])
+        self.assertEqual(projection['compiled_uses'], original)
+        self.assertIn('sem:group', projection['uses']['paper:result'])
+        self.assertIn('paper:result', projection['uses']['paper:unformalized'])
+        self.assertFalse(projection['entries']['paper:unformalized']['expected_display_closed'])
+
+    def test_mathematical_prerequisite_can_block_a_locally_proved_formal_counterpart(self):
+        projection = self.projection()
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['paper:unformalized']},
+            {'label': 'paper:unformalized', 'mathematical_uses': []}])
+        row = projection['entries']['paper:result']
+        self.assertTrue(row['expected_closed'])  # Original compiled oracle retained.
+        self.assertEqual(row['local_status'], 'lean_ok')
+        self.assertFalse(row['expected_display_closed'])
+
+    def test_alias_references_resolve_to_one_node_without_a_self_edge(self):
+        projection = self.projection()
+        semantic.add_paper_dependencies(projection, [
+            {'label': 'paper:result', 'mathematical_uses': ['sem:group']},
+            {'label': 'paper:repeat', 'canonical_label': 'paper:result',
+             'mathematical_uses': ['paper:result']},
+            {'label': 'paper:unformalized', 'mathematical_uses': ['paper:repeat']}])
+        self.assertEqual(projection['uses']['paper:unformalized'], {'paper:result'})
+        self.assertNotIn('paper:repeat', projection['uses'])
+
+    def test_cycles_unknown_targets_and_self_dependencies_are_rejected(self):
+        cases = [([{'label': 'paper:result', 'mathematical_uses': ['paper:unformalized']},
+                   {'label': 'paper:unformalized', 'mathematical_uses': ['paper:result']}], 'Cyclic'),
+                 ([{'label': 'paper:result', 'mathematical_uses': ['paper:unknown']}], 'Unknown'),
+                 ([{'label': 'paper:result', 'mathematical_uses': ['paper:result']}], 'Self-dependent')]
+        for records, error in cases:
+            with self.subTest(error=error), self.assertRaisesRegex(ValueError, error):
+                semantic.add_paper_dependencies(self.projection(), records)
+
+    def test_authored_paper_chain_uses_results_not_circular_condition_references(self):
+        from hgraph.sync import parse_blueprint, read_blueprint
+        rows = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))[0]
+        paper = {row['label']: row for row in rows if row['label'].startswith('paper:')}
+        self.assertEqual(len(paper), 56)
+        aliases = {alias: row['label'] for row in paper.values() for alias in row['labels']}
+        self.assertEqual(aliases['paper:7.1'], 'paper:1.4')
+        self.assertEqual(aliases['thm:126survives'], 'paper:1.4')
+        for label in ('paper:7.10', 'paper:7.11', 'paper:7.16', 'paper:7.18', 'paper:7.9'):
+            self.assertNotIn('paper:7.8', paper[label]['uses'], label)
+        self.assertTrue({'paper:7.8', 'paper:7.9'} <= set(paper['paper:1.4']['uses']))
+        self.assertTrue({'paper:1.3', 'paper:1.4'} <= set(paper['paper:1.1']['uses']))
+        self.assertIn('paper:7.16', paper['paper:7.18']['uses'])
+        for row in paper.values():
+            self.assertTrue(any(not target.startswith('decl:') for target in row['uses']), row['label'])
 
 
 class ChapterDependencyTests(unittest.TestCase):

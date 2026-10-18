@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.977570+00:00'
+updated: '2026-10-18T08:16:05.551098+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 799-807](paper/main.tex.html#L799). BHS supplies the polynomial-lambda Adams page and its differential rule for the synthetic analogue.
+
 **Formal scope:** public correspondence with the scope stated below
 
 The public statements separate page coordinates, the free-lambda range, and differential rigidity. Their object scope is the project ClassicalObject closure; it is not a claim about every arbitrary external spectrum.

@@ -6,9 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T05:53:06.214452+00:00'
+updated: '2026-10-18T08:16:05.565693+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
+
+Mathematical dependency review: [AimPaper source, lines 2577-2584](paper/main.tex.html#L2577). Read the h0 multiple from the bracket proof and absorb the higher-filtration correction into the chosen target representative; the same ambiguity argument handles every source representative.
 
 A goal predicate and a theorem restricted to Toda-bracket members do not establish the quantified assertion for every detected representative. No direct formal counterpart is bound here.
 
