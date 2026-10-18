@@ -163,6 +163,42 @@ private theorem alpha_toda_restrict_three_unique
   rw [he', hb] at hh
   exact sub_eq_zero.mp hh
 
+/-- The actual indeterminacy lies in F11. Thus removing either low
+candidate layer by an arbitrary correction would change the bracket unless
+that correction itself belongs to F11. -/
+private theorem alpha_toda_difference_filtration_eleven
+    (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))
+    (ha : AlphaOneProperties a11)
+    (z₁ z₂ : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
+    (h₁ : ModuleTripleToda (lambdaMultiply 3
+      (a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)))
+      syntheticH0 eta z₁)
+    (h₂ : ModuleTripleToda (lambdaMultiply 3
+      (a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)))
+      syntheticH0 eta z₂) :
+    FiltrationAtLeast model.syntheticTower 11 (z₁ - z₂) := by
+  apply ninth_stem125_weight132_filtration_eleven_of_third
+  rw [Preadditive.sub_comp, alpha_toda_restrict_three_unique a11 ha z₁ z₂ h₁ h₂,
+    sub_self]
+  exact (model.syntheticTower.filtrationSubmodule _ 10 (125,132)).zero_mem
+
+/-- The nonzero part of Lemma 7.16 holds for every member of the specified
+bracket before identifying its leading filtration. -/
+private theorem alpha_toda_nonzero
+    (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection)
+    (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))
+    (ha : AlphaOneProperties a11)
+    (z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
+    (hz : ModuleTripleToda (lambdaMultiply 3
+      (a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)))
+      syntheticH0 eta z) : z ≠ 0 := by
+  obtain ⟨t, ht, he, _⟩ := anyy_bracket_exact_target hc3 hc5 a11 ha z hz
+  have hn := weak_initial_twice_h0_nonzero hc3 syntheticH0 z t ht he
+  intro hzero
+  apply hn
+  rw [hzero]
+  simp only [sphereAction, lambdaMultiply, comp_zero]
+
 /-- Exact reduction of the paper's full detection statement to the actual
 Q3 image of the specified bracket member. No Q3 vanishing is assumed here. -/
 private theorem alpha_toda_detected_iff_restrict_three_zero
@@ -210,6 +246,32 @@ private theorem alpha_toda_detected_iff_restrict_three_zero
       rw [←Category.assoc, Iso.inv_hom_id_app, Category.id_comp]
     rw [hh0, hzero] at hd
     exact weak_y_detected_of_f11_and_nonzero syntheticH0 hd z hf hn
+
+/-- One genuinely F11 member suffices for the full, same-bracket universal
+conclusion of Lemma 7.16. The existence of that member remains separate:
+nonzero-preserving removal of low layers alone does not supply it. -/
+private theorem alpha_toda_all_detected_of_one_high_member
+    (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection)
+    (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))
+    (ha : AlphaOneProperties a11)
+    (z₀ : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
+    (hz₀ : ModuleTripleToda (lambdaMultiply 3
+      (a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)))
+      syntheticH0 eta z₀)
+    (hf₀ : FiltrationAtLeast model.syntheticTower 11 z₀) :
+    ∀ z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
+      ModuleTripleToda (lambdaMultiply 3
+        (a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)))
+        syntheticH0 eta z →
+      FiniteDetected 9 (by decide) 11 136 4 KIP126.Computation.Standard.Y z ∧ z ≠ 0 := by
+  have hr₀ : z₀ ≫ (model.quotients.tower S_0_0).rho 3 9 (by decide) = 0 := by
+    apply sphere_quotient_high_filtration_zero 3 (by decide) 125 132 11 (by decide)
+    exact map_filtration (.quotient 9 .sphere) (.quotient 3 .sphere)
+      ((model.quotients.tower S_0_0).rho 3 9 (by decide)) _ hf₀
+  intro z hz
+  refine ⟨(alpha_toda_detected_iff_restrict_three_zero hc3 hc5 a11 ha z hz).mpr ?_,
+    alpha_toda_nonzero hc3 hc5 a11 ha z hz⟩
+  exact (alpha_toda_restrict_three_unique a11 ha z z₀ hz hz₀).trans hr₀
 
 end
 end KIP126.Main.Paper.Internal

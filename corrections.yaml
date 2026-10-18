@@ -237,3 +237,116 @@ corrections:
     title: 修正版 · 第三页候选筛选
   - node: sem:Literature:two-line-classical-inputs
     title: 文献输入 · 存活与排除
+
+- id: proposition-7-9-weak-representative-route
+  title: Proposition 7.9 保留较弱代表控制的反证路线
+  reference: PROPOSITION 7.9 · LEMMAS 7.11, 7.16 · COROLLARY 7.18 · PROPOSITION 7.20 · FACT 7.21
+  status:
+    kind: partial
+    label: 已采用替代路线 · 局部组合完成 · 上游待补
+  original:
+    statements:
+    - '7.9'
+    - '7.16'
+    - '7.18'
+    source_line: 2698
+  revision:
+    nodes:
+    - sem:Main:weak-representative-route
+  problem: |-
+    **原文编号与调整范围。** Proposition 7.9 的原证明（第 2698–2778 行）通过 Lemma 7.16 的指定 Toda 括号检测及 Corollary 7.18 的任意代表精确 $h_0$ 扩张，再结合 Proposition 7.20 的 $\nu$ 扩张、Fact 7.21 的乘法计算和 $\nu$ 余纤维存活窗口导出矛盾。两个局部缺口分别见本页 Lemma 7.16 与 Corollary 7.18 条目；它们没有构成满足全部原始前提的定理反例。
+
+    当前保留 Proposition 7.9 的原结论和完整数学前提：$d_6(x_{126,8,4}+x_{126,8})=0$，以及存在由 $h_0^2x_{124,8}$ 非零检测的 $u$，使 $\lambda^3\eta u$ 被 $\lambda^6h_1h_4x_{109,12}$ 检测。不额外假设新的第 126 茎计算结论。
+  progress: |-
+    **已采用的新路线。** Blueprint 节点 `sem:Main:weak-representative-route` 说明：从实际括号成员的精确关系出发，剥除低滤过项时只保留非零的 $\lambda^2h_0$ 值，取得所需高滤过检测代表，再接回 Proposition 7.20、Fact 7.21 及余纤维矛盾，终点仍为 `paper:7.9`。这不声称新代表仍在原括号中，也不声称已经证明 Corollary 7.18 对任意代表的未乘 $\lambda^2$ 精确关系。私有辅助步骤不另作公开 Lean 绑定。
+
+    **原文中复用的输入。** 滤过九修正所需的消失推导复用 Lemma 7.11 证明中的第 124 茎滤过 11、12 消失及滤过 13 的 $h_1$ 乘积计算，以及 Lemma 7.16 已使用的 $h_5^2b=0$。辅助 Toda 括号改用余纤维、商代数和第一商乘法比较构造。相关结构原文定位为 Remark 3.4、Propositions 3.11–3.12；具体上游范围由下列 Blueprint 节点维护。
+
+    **上游接口核验。** `sem:AdamsSynthetic:finite-quotient-separation` 只涉及有限 $\lambda$ 商，有无需原谱完备性假设的来源证明路线；固定模型与固定塔的正式构造仍待补。`sem:Literature:selected-lifts` 中的滤过—$\lambda$ 比较已在独立审计文件中以原完整签名通过 Lean 检查，使用有限商窗口、有限商分离性和余纤维正合性，无目标自身或 Main 回用；其正式生产证明仍未替换，仍继承 33 项登记上游待补。不能把普通球版本称为 BHS Corollary A.19 在完备假设下的直接应用，也不能恢复未截断对象的无限制分离性。此核验仅针对该节点的滤过—$\lambda$ 分句，不表示同节点的永久提升或实现核已完成。
+
+    **未完成边界。** Proposition 7.9 的局部组合已有证明，但整体继续继承上述模型、比较、结构及计算责任。Lemma 7.16 与 Corollary 7.18 的两个原始公开 `sorry` 保留；没有通过替代路线将它们标为完成。本次没有改变任何公共数学接口、固定对象或待补清单，也不主张这条路线的数学原创性。
+  history: |-
+    用户在核查上游接口与原文条件后明确决定“保留现在的证明路线”，并要求在 AimPaper corrections 中列明原文序号与新路线的 Blueprint 节点。本条记录该路线选择；它不是批准修改 Lemma 7.16、Corollary 7.18 或上游公共陈述。
+
+    完整来源、固定对象与同签名依赖核验见 `local-history/interface-reviews/2026-10-18-upstream-fidelity/`。原证明的两项局部缺口核验见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`；审计证据不代替正式生产证明。
+  links:
+  - node: sem:Main:weak-representative-route
+    title: 采用路线 · 保留非零 λ²h₀ 值的代表修正
+  - node: paper:7.9
+    title: Proposition 7.9 · 保持原结论的反证终点
+  - node: paper:7.11
+    title: Lemma 7.11 · 代表独立性及复用的滤过计算
+  - node: paper:7.16
+    title: Lemma 7.16 · 原始括号检测仍待补
+  - node: paper:7.18
+    title: Corollary 7.18 · 任意代表精确扩张仍待补
+  - node: paper:7.20
+    title: Proposition 7.20 · 接回第九商的 ν 扩张
+  - node: paper:7.21
+    title: Fact 7.21 · 余纤维矛盾所需乘法计算
+  - node: sem:AdamsSynthetic:finite-quotient-separation
+    title: 上游 · 实际有限 λ 商的滤过分离性
+  - node: sem:Literature:infinite-nu-window
+    title: 上游 · 未截断对象的 E∞ 窗口
+  - node: sem:Literature:infinite-finite-window
+    title: 上游 · 有限 λ 商的 E∞ 窗口
+  - node: sem:Literature:selected-lifts
+    title: 上游 · 固定对象的滤过—λ 比较及独立提升责任
+  - node: sem:Literature:quotient-algebras
+    title: 上游 · Remark 3.4 的 λ 商代数结构
+  - node: sem:Literature:first-quotient-products
+    title: 上游 · 第一 λ 商与 Ext 乘法的比较
+  - node: sem:Literature:may-tensor
+    title: 上游 · Toda 构造的张量正合结构
+  - node: sem:Computation:nondivisibility
+    title: 上游 · 非整除性计算
+  - node: sem:Computation:cofiber-results
+    title: 上游 · ν 余纤维存活窗口
+- id: toda-bracket-detection
+  title: 同一 Toda 括号的检测仍需排除共同低滤过像
+  reference: LEMMA 7.16 · PROOF
+  status:
+    kind: partial
+    label: 局部归约已证 · 原结论待补
+  original:
+    statements:
+    - '7.16'
+    source_line: 2470
+  revision:
+    nodes: []
+    note: 公共陈述保持原样；尚未构造属于指定括号的高滤过成员，不把辅助归约作为原陈述的完整修正版。
+  problem: |-
+    原证明排除低滤过候选时，需要保留实际商 $Q_9=S^{0,0}/\lambda^9$ 中的同一个 Toda 括号。AF7 的一个选定代表被 $\lambda^2$ 消灭，并不自动控制其高滤过误差；AF9 分支在原文第 2557–2560 行从 $\eta$ 作用后的等式推回原等式，尚缺相应核控制。这些是当前证明路线的未闭合步骤，未构成满足全部前提的原定理反例。
+  progress: |-
+    已证明同一实际括号任意两成员的差属于 $F^{11}$，每个成员非零；只要构造一个属于 $F^{11}$ 的实际成员，便可推出所有成员的完整非零检测结论。现有精确归约把检测等价于该成员在 $Q_9\to Q_3$ 下的像为零。剥除低层并保留 $\lambda^2h_0$ 的既有构造没有证明新代表仍属于原括号，不能替代缺失的存在性。
+
+    新增结果均为 Main 私有引理，不新增公共声明或待补责任。`lemma_toda2ext` 的原 `sorry` 保留，已有上游待补仍然继承。独立复核记录见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
+  links:
+  - node: paper:7.16
+    title: Lemma 7.16 · 原始 Toda 括号的检测
+- id: arbitrary-y-extension
+  title: 任意检测代表的精确扩张需要实际消灭 h₀ 误差
+  reference: COROLLARY 7.18 · PROOF
+  status:
+    kind: partial
+    label: 精确误差条件已证 · 原结论待补
+  original:
+    statements:
+    - '7.18'
+    source_line: 2571
+  revision:
+    nodes: []
+    note: 保留任意检测代表和未乘 λ² 的原等式；没有把已证的乘 λ² 版本替换为公共结论。
+  problem: |-
+    原证明从一个括号代表的精确关系推广到任意同标签代表时，仅有高滤过信息不足以消灭 $h_0$ 误差。在当前固定对象及分次下，所有 $T$ 检测代表的 $\lambda^6$ 像已经证明相同，因此不能依靠更换目标代表吸收任意非零误差。
+  counterexample: |-
+    独立 Lean 检查在实际 $Q_9$ 中构造了 $q\in F^{15}\pi_{125,132}Q_9$，且 $h_0q\ne0$。其标签为 $\lambda^8\operatorname{basis}(15,140,3)$；$h_0$ 像的标签为 $\lambda^8\operatorname{basis}(16,141,3)$，后者的非零 $d_2$ 排除其属于相关边界。有限商比较和实际作用检测给出同伦类，而不只是一张抽象滤过群表。
+
+    因而，给定一个 $Y$ 检测代表 $y_0$ 及其精确 $T$ 目标，$y_0+q$ 仍有同一 $Y$ 检测，却没有任何满足原精确等式的 $T$ 目标。这反驳的是从一个代表的关系无条件推广到所有同标签代表的步骤；它没有提供同时满足原推论中第六微分消失与指定 $\eta$ 扩张检测条件的实例，不能称为原推论完整条件下的反例。证据继承既有上游待补，不调用两个待证结论或后续 Main 矛盾定理。可复现检查见 `local-history/proof-sessions/main-paper-proofs/audit/FiniteObstruction.lean`。
+  progress: |-
+    新增私有等价引理：给定初始精确非零关系 $h_0y_0=\lambda^6t_0$，另一代表 $y$ 存在原结论要求的目标，当且仅当 $h_0(y-y_0)=0$；同样的等价保留对所有 $Y$ 检测代表的量词。原有结果只保证此误差被 $\lambda^2$ 消灭，尚不能推出未乘 $\lambda^2$ 的零性。
+
+    这是一项精确的剩余责任归约，不是原推论的否定。公共类型、接口锁及两项 Main 待补责任均保持不变；不调用后续条件不相容定理或主定理来替代原文路线。独立复核与证据范围见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
+  links:
+  - node: paper:7.18
+    title: Corollary 7.18 · 任意代表的精确 h₀ 扩张

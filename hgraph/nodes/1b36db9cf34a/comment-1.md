@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T11:19:44.120334+00:00'
+updated: '2026-10-18T12:58:46.843397+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 
@@ -16,7 +16,7 @@ The public theorem states the complete nonzero detection conclusion for the same
 
 **Formal scope:** Partial correspondence: complete formal statement; proof pending.
 
-Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. All members have the same actual image under $Q_9\to Q_3$, and, under the stated hypotheses, detection by $\lambda^4Y$ is equivalent to that image being zero. The vanishing of this common image remains unproved; the original bracket member cannot be replaced by a different high-filtration representative.
+Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. All members have the same actual image under $Q_9\to Q_3$, and, under the stated hypotheses, detection by $\lambda^4Y$ is equivalent to that image being zero. The vanishing of this common image remains unproved; the original bracket member cannot be replaced by a different high-filtration representative. The difference of any two actual bracket members is now proved to lie in $F^{11}$, and every member is nonzero. One actual $F^{11}$ bracket member would therefore establish the full universal detection conclusion. Removing low-filtration terms while preserving only $\lambda^2h_0$ does not establish membership in this same bracket. The original proof also passes from an equality of eta images to an equality before applying eta; the required kernel control has not been supplied.
 
 Original statement: paper/main.tex.html#L2470; article PDF: paper/2412.10879.pdf.
 
