@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.008649+00:00'
+updated: '2026-10-18T08:16:05.583495+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1995-2070](paper/main.tex.html#L1995). Restriction induces a morphism of ESSs; quotient coordinates and higher-source crossings describe the loss of essentiality.
+
 **Formal scope:** partial.
 
 The first assertion has a public counterpart with the required valid page-length bounds. The printed second assertion, including its set-difference condition, remains unproved. A revised equivalence is proved publicly after removing that condition, fixing the original target $y$, and setting $b=0$; it retains the same actual earlier quotient, a classical source cycle, the original target, and all length bounds. This entry remains a partial correspondence with the original article; completion of the revised statement is recorded separately.

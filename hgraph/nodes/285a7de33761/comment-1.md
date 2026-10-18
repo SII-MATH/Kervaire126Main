@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.969476+00:00'
+updated: '2026-10-18T08:16:05.543732+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 774-782](paper/main.tex.html#L774). The suspension comparison defines lambda between bigraded spheres; its cofibers define the quotient objects.
+
 The synthetic category and its comparison map are background. This definition binds the single-lambda quotient object; higher-power quotients are defined separately in \ref{sem:AdamsSynthetic:lambda-quotients}.
 
 **Formal scope:** partial.

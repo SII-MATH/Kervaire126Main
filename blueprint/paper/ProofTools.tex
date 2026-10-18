@@ -1,6 +1,27 @@
 % Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
 \section{No-crossing criteria for filtered extensions}
 
+% AimPaper: 2.6 corollary 327 330
+\begin{corollary}[Vanishing below the Adams filtration]
+\label{paper:2.6}
+\source{AimPaper Corollary 2.6}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.6.)
+% BEGIN AIMPAPER STATEMENT
+If the Adams filtration of $f$ is $k$, then
+    $d^f_i=0$ for $i<k$.
+% END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.5,sem:AdamsSynthetic:filtration-comparison}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 332-339](paper/main.tex.html#L332). Factor f into positive-filtration maps, then apply Proposition 2.5(1) to rule out shorter extension differentials.
+
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem asserting that $\operatorname{AF}(f)=k$ forces every $d_i^f$ with $i<k$ to vanish has been identified. The result \texttt{action\_filtration} provides related support but does not state this conclusion.
+% Blueprint note: Original statement and context: paper/main.tex.html#L327; paper/2412.10879.pdf.
+\end{corollary}
+
 % AimPaper: 2.7 definition 344 352
 \begin{definition}[Crossings of extensions]
 \label{paper:2.7}
@@ -17,6 +38,10 @@
     \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing if it has no crossing that hits the range AF$\ge \AF(x) + 1$.
 \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.3}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 344-352](paper/main.tex.html#L344). A crossing is a competing extension from a higher-filtration source, using the extension relation already defined.
+
 % Blueprint note: The generic filtered-map crossing predicate belongs to \ref{sem:SpectralSequence:crossing-transport}. The bindings here are the two stated no-crossing predicates with an arbitrary filtration threshold.
 
 
@@ -45,6 +70,10 @@
         \item If $\AF(f)=n$, then all $d^f_n$-differentials have no crossing in the $f$-ESS.
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.5,paper:2.7}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 418-430](paper/main.tex.html#L418). Proposition 2.5(3) and the definition of a crossing turn universal representative behavior into the no-crossing criterion.
+
 
 
 % Correspondence: public counterpart, within the scope described below.
@@ -85,6 +114,10 @@
     \end{enumerate}
     Then $d^{q}_{m+l-n}(y)=w$. (See Figure \ref{fig:4f154a8}.)
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 483-505](paper/main.tex.html#L483). Use the representative criterion to choose a common source and transport its images around the commutative square.
+
 
 
 % Correspondence: partial; no direct public binding.
@@ -121,6 +154,10 @@
     \end{enumerate}
     Then $d^{q}_{m+l-n}(y)=w$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.12}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 555-574](paper/main.tex.html#L555). Specialize the square theorem to the full no-crossing hypothesis on the lower extension.
+
 
 
 % Correspondence: partial; no direct public binding.
@@ -153,6 +190,10 @@
     \end{enumerate}
     Then $d^{q}_{m-n}(y)=z$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 593-595](paper/main.tex.html#L593). Specialize Corollary 2.15 to an identity lower horizontal map.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -182,6 +223,10 @@
     \end{enumerate}
     Then $d^{q}_{m+l}(x)=w$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 613-615](paper/main.tex.html#L613). Specialize Corollary 2.15 to an identity upper horizontal map.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -208,6 +253,10 @@
     $$(d^p_r, d^q_r): E_\infty^{*,*}(X)\oplus E_\infty^{*,*}(Y)\to E_\infty^{*,*}(Z)\oplus E_\infty^{*,*}(W)$$
     induces a map from the $f$-ESS to the $g$-ESS.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15,paper:2.1}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 628-630](paper/main.tex.html#L628). Apply the square corollary inductively to obtain commuting maps on every page of the extension spectral sequences.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -226,6 +275,10 @@
     If the composition $g\circ f$ of two maps $f:X\to Y$, $g:Y\to Z$ is trivial, and $d_n^f(x)=y$ for $x\in E_\infty^{s,t}(X)$ and $y\in E_\infty^{s+n,t+n}(Y)$, then $y$ is a permanent cycle in the $g$-ESS, i.e., we have
     $d^g_m(y)=0$ for all $m\ge 0$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.15,paper:2.5}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 637-646](paper/main.tex.html#L637). The null-composite square proves permanence; the article also gives a representative proof using Proposition 2.5.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -247,6 +300,10 @@
     $$\pi_*X\fto{\pi_*f}\pi_*Y\fto{\pi_*g}\pi_*Z$$
     that is exact in $\pi_*Y$. Then all permanent cycles in $E^{*,*}_\infty(Y)$ of the $g$-ESS are boundaries in the $f$-ESS.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:2.1,paper:2.5}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 656-664](paper/main.tex.html#L656). Convergence of the filtered complex and exactness identify permanent cycles with extension boundaries; representatives give the alternative proof.
+
 
 
 % Correspondence: no public counterpart identified.
@@ -268,6 +325,10 @@ The only nonzero differentials in the extension spectral sequences for the maps 
 $$d^{\lambda^n}_0=\lambda^n \ \text{and} \ d^{\rho}_0=\rho.$$ 
 As a result, these $d_0$'s have no crossings.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.11,paper:3.12,paper:2.19}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1030-1050](paper/main.tex.html#L1030). The infinite-page quotient formulas make the lambda/rho sequence exact; the null-composite result rules out higher extensions.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -310,6 +371,10 @@ As a result, these $d_0$'s have no crossings.
         $$d^{\delta}_r(\lambda^{n+1-r}x)=y.$$
     \end{enumerate}
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.8,paper:3.11,paper:3.12,paper:4.2,paper:2.16,paper:2.17}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -342,6 +407,10 @@ As a result, these $d_0$'s have no crossings.
     \end{equation}
     if $0\le a\le n$ and $0\le a+r-n-1<m-n$ (the differential is trivial if $a$ exceeds this range).
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:4.6,paper:4.2}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -378,6 +447,10 @@ As a result, these $d_0$'s have no crossings.
     $$x^\prime\in E_2^{s+a,t+a}(X), \hspace{.5cm} y^\prime\in E_2^{s+r-b,t+r-b-1}(X),$$
     with $0<a\le n-1$ and $0\le b\le r-n-1$. See Figure \ref{fig:f5eae42a}.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{sem:SpectralSequence:differential,sem:SpectralSequence:cycles-boundaries}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -408,6 +481,10 @@ As a result, these $d_0$'s have no crossings.
     $$\delta_{n}:\nu X/\lambda^{n}\to \Sus^{1,-n}\nu X$$
     has a crossing.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:4.14,paper:2.7,paper:3.11,paper:3.12,paper:4.6,paper:4.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1225-1234](paper/main.tex.html#L1225). Translate extension crossings through the infinity-page quotient coordinates and the lambda-multiple boundary formula.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -439,6 +516,10 @@ As a result, these $d_0$'s have no crossings.
     $$y'\in Z_{r-1-n+b+e(f)}^{s+n-b,t+n-b}(Y)\backslash B_{1+n-b-e(f)}^{s+n-b,t+n-b}(Y)$$
     (where $\backslash$ denotes the difference of sets and it means that $y'$ should survive to the classical Adams $E_{r-n+b+e(f)}$ page while it should not be hit by an Adams differential of length at most $1+n-b-e(f)$) for $0<a \le r-2$ and $0\le b\le n-a-e(f)$. See Figure \ref{fig:66241bf6}.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1437-1441](paper/main.tex.html#L1437). Define a crossing by an essential page extension with the displayed smaller-page and filtration bounds.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -467,6 +548,10 @@ As a result, these $d_0$'s have no crossings.
 \label{prop:cross-f-Er}
     An $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ (\ref{eq:b98be76a}) has a crossing if and only if the synthetic $\hat f_{r-1}$-extension $d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y$ (\ref{eq:a020bad3}) has a crossing.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.9,paper:2.7,paper:3.12,paper:4.2,paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
+
 % Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. This paper proposition therefore has no direct formal binding; its partial scope and the implementation audit remain visible.
 
 
@@ -492,6 +577,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     implies that
     $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
+
 
 
 % Correspondence: no public counterpart yet.
@@ -525,6 +614,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     Then we have an Adams differential
     $$d_{r+l-m}(y)= y_\infty.$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,paper:4.6,paper:4.10,paper:4.16,paper:5.10,paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1623-1656](paper/main.tex.html#L1623). Translate the hypotheses into synthetic extensions, transfer the no-crossing conditions, apply the square corollary, and translate the resulting boundary extension back.
+
 
 
 % Correspondence: public counterparts; scope is specified below.
@@ -567,6 +660,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     $$d^{f,E_{n+m+1+e(h)}}_{n}x\equiv y \mod B_{r'}^{s+n+l,t+n+l-1}(Y).$$
     (See Figure \ref{fig:2aa45b21}.)
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:3.20,paper:5.4,paper:4.6,paper:4.16,paper:5.10,paper:2.10,paper:3.12,paper:6.11}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1860-1918](paper/main.tex.html#L1860). Normalize the triangle, choose common representatives with no crossings, use the finite-quotient coordinates and May's push-pull lemma, then read the output as a page extension.
+
 
 
 % Correspondence: partial.
@@ -601,6 +698,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     $$d^{\hat f_{r'-1}}_{n-a'-b}(\lambda^{a'} x')=\lambda^{n-b-e(f)} y'$$
     for some $b\ge 0$.
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:5.4,paper:2.18,paper:4.2,paper:3.12,paper:5.9}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1995-2070](paper/main.tex.html#L1995). Restriction induces a morphism of ESSs; quotient coordinates and higher-source crossings describe the loss of essentiality.
+
 
 
 % Correspondence: partial.
@@ -629,6 +730,10 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     Under these conditions, we also have an $(f,E_{r})$-extension
     $$d^{f,E_{r}}_n(x)=y.$$
 % END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{paper:6.20,paper:5.9}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 2071-2081](paper/main.tex.html#L2071). Take the contrapositive of the restriction obstruction in Proposition 6.20 with the stated no-crossing condition.
+
 
 
 % Correspondence: partial.

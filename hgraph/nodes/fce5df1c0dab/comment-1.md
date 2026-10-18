@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.973143+00:00'
+updated: '2026-10-18T08:16:05.546404+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 770-772](paper/main.tex.html#L770). Define bigraded spheres by suspension of the synthetic analogue of an ordinary sphere.
+
 The object definition belongs to AdamsSynthetic. The separate low-weight comparison isomorphisms are stated in \ref{sem:Literature:low-sphere-comparisons}; they do not formalize the all-integral definition here.
 
 **Formal scope:** partial.

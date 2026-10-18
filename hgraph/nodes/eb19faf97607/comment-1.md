@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.966110+00:00'
+updated: '2026-10-18T08:16:05.540259+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2375-2385](paper/main.tex.html#L2375). The survival range and specified d2 differential are independent inputs from the stem-123 and stem-125 sphere tables.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements give survival of $V$ to $E_{12}$, the absence of incoming differentials, and the specified nonzero $d_2$ differential.

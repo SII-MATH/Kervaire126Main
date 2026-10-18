@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.007139+00:00'
+updated: '2026-10-18T08:16:05.582552+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 1860-1918](paper/main.tex.html#L1860). Normalize the triangle, choose common representatives with no crossings, use the finite-quotient coordinates and May's push-pull lemma, then read the output as a page extension.
+
 **Formal scope:** partial.
 
 The public Mahowald theorem additionally requires `NormalizedTriangleCompatible` and a `DesuspendsClass` relation between the specified `suspendedX` and $x$. Without the general bridge in Proposition~3.20, it does not establish the conclusion of the article under the same hypotheses. The theorem also has a direct proof obligation.

@@ -6,9 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T05:53:06.212966+00:00'
+updated: '2026-10-18T08:16:05.564744+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
+
+Mathematical dependency review: [AimPaper source, lines 2482-2566](paper/main.tex.html#L2482). Form the bracket using alpha-one, identify its nonzero h0 multiple, and rule out the lower-filtration candidates using the low and symmetric Toda laws, Moss convergence and the sphere computations. The assumed conditions do not invoke Proposition 7.8 as a theorem.
 
 Nonemptiness of the bracket and an equation after multiplication by h0 are supporting results, not the stated nonzero detection of every bracket member. No direct formal counterpart is bound here.
 

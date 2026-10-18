@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.981142+00:00'
+updated: '2026-10-18T08:16:05.553570+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 839-855](paper/main.tex.html#L839). The finite lambda quotient truncates the polynomial-lambda sequence and gives the BHS Corollary A.11 window.
+
 **Formal scope:** public correspondence with the scope stated below
 
 The finite-lambda-quotient infinite-page window and its valid range are explicit.

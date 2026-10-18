@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.009793+00:00'
+updated: '2026-10-18T08:16:05.584255+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2071-2081](paper/main.tex.html#L2071). Take the contrapositive of the restriction obstruction in Proposition 6.20 with the stated no-crossing condition.
+
 **Formal scope:** partial.
 
 The current interface treats only a finite later page and requires the source and target to satisfy the later-page cycle conditions. It excludes every nonzero short extension in the same earlier finite quotient that does not lift, which is stronger than excluding only the essential crossings in the article. It does not establish the case $r=\infty$.

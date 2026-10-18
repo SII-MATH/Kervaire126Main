@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.964974+00:00'
+updated: '2026-10-18T08:16:05.539277+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 2142-2177](paper/main.tex.html#L2142). The four survival and incoming-differential facts are read from the stated sphere tables and the near-126 chart, rather than deduced from the permanence theorem.
+
 **Formal scope:** public counterparts; scope is specified below.
 
 The public statements separate the four computational inputs: survival of $W$ to a finite page, the cycle condition and possible incoming differentials for $T$, survival of $U$, and the restriction in high filtration.

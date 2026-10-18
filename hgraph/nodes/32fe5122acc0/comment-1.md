@@ -6,9 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.991415+00:00'
+updated: '2026-10-18T08:16:05.563906+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
+
+Mathematical dependency review: [AimPaper source, lines 2405-2447](paper/main.tex.html#L2405). Lift the class from Fact 7.13, repeat the ambiguity estimate of Lemma 7.11, and eliminate the residual products with the displayed d3/d7 computations.
 
 **Formal scope:** Public correspondence.
 

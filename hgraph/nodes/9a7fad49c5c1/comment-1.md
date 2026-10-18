@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:30.010931+00:00'
+updated: '2026-10-18T08:16:05.585011+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 253-271](paper/main.tex.html#L253). Filter the two-term complex by Adams filtration to form the extension spectral sequence.
+
 The direct binding is the bounded extension spectral sequence construction. The separate theorem identifying its differentials with extension equations is stated in \ref{sem:SpectralSequence:ess-equation}.
 
 **Formal scope:** partial.

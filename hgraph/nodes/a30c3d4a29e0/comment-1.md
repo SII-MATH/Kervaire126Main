@@ -6,8 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T06:58:29.983015+00:00'
+updated: '2026-10-18T08:16:05.555396+00:00'
 ---
+Mathematical dependency review: [AimPaper source, lines 929-940](paper/main.tex.html#L929). Apply synthetic cofiber preservation to the homology-exact triangle and use the suspension comparison for its boundary; the proof is in BHS Lemma 9.15.
+
 **Formal scope:** public correspondence with the scope stated below
 
 Positive filtration and the full homology short exactness are retained. The factorization concerns the same connecting arrow and distinguished triangle; comparison of arbitrary full lifts is only modulo lambda torsion.
