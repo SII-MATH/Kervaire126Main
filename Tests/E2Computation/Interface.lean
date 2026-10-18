@@ -6,9 +6,8 @@ import Lean
 open Lean Elab Command
 set_option maxHeartbeats 0
 
-/-! The E₂ entry is independently consumable before ProofTools. Its exported
-partition is copied from the historical Computation lock, without accepting
-new types, universes, axioms, or generated declarations. -/
+/-! The E₂ entry is independently consumable before ProofTools. Its own lock
+fixes public types, universes, axiom dependencies and generated declarations. -/
 run_cmd do
   let contract ← ofExcept <| Json.parse (include_str "../../metadata/e2-computation-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
@@ -22,7 +21,7 @@ run_cmd do
         !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
         !(`KIP126.Literature).isPrefixOf mod &&
         !(`KIP126.E2Computation).isPrefixOf mod then
-      throwError "E2Computation imports a later mathematical layer or compatibility facade: {mod}"
+      throwError "E2Computation imports a later or unowned mathematical layer: {mod}"
   for decl in named ++ generated do
     let name ← ofExcept <| decl.getObjValAs? String "name"
     let expectedType ← ofExcept <| decl.getObjValAs? String "type_fingerprint"

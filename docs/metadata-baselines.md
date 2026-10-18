@@ -1,14 +1,14 @@
 # 元数据检查基线
 
-`metadata/` 保留十份构建输入，不作为数学说明或进度展示的第二份数据库。
+`metadata/` 保留九份构建输入，不作为数学说明或进度展示的第二份数据库。
 
 | 文件 | 保留内容 | 消费者 |
 | --- | --- | --- |
-| 八份 `*-api.json` | 七个数学模块与 Computation 兼容入口的公开与生成声明分组；每项名称、类型指纹、宇宙参数、公理依赖；完整导出集合 | 各模块及兼容入口 Lean 接口测试、Main 审计、Blueprint 绑定检查 |
+| 七份 `*-api.json` | 七个数学模块的公开与生成声明分组；每项名称、类型指纹、宇宙参数、公理依赖；完整导出集合 | 各模块 Lean 接口测试、Main 审计、Blueprint 绑定检查 |
 | `proof-obligations.json` | 每个许可证明洞的名称、模块、类型与证明体指纹、类别；精确 Main 根与 ProofTools 边界名单 | 七个数学模块 Lean 审计、hgraph 编译导入与分类 |
 | `mathematical-naming-restoration.json` | 已审查的标识符改名对应 | 源清单检查 |
 
-接口基线 schema 为 4，证明洞基线 schema 为 2。数组按声明逐行存储。格式精简保留原有检查值，不重新接受当前源码或放宽 Lean 检查。后续已授权的模块分层和第二线分类接口更新单独反映在基线中；E₂ 与 Adams 计算两份接口锁必须精确分区覆盖 Computation 兼容接口锁。
+接口基线 schema 为 4，证明洞基线 schema 为 2。数组按声明逐行存储。格式精简保留原有检查值，不重新接受当前源码或放宽 Lean 检查。后续已授权的模块分层和第二线分类接口更新单独反映在基线中；E₂ 与 Adams 计算分别使用独立接口锁，原 Computation 兼容入口及其重复接口锁已删除；各模块接口仍核验完整导出与实际定义归属，源清单检查核验公开声明归属唯一。
 
 数学说明和论文对应维护在 `blueprint/semantic/` 与 `blueprint/paper/`；接口范围说明是 hgraph 原生节点附件。出处使用 bibliography，固定代码提交见 `blueprint/source-snapshots.bib`。完整类型文本、依赖关系和完成状态由 Lean 捕获与 hgraph 导出，不在基线中重复维护。重要目标修正仍记录在根目录 `MEMO.md`。
 

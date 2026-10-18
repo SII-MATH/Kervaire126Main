@@ -40,4 +40,6 @@ example (t : ℤ) (x : model.classical.sphere.Page 2 (2,t)) (hx : x ≠ 0) :
           (KIP126.Literature.Standard.hiProduct i j) :=
   KIP126.E2Computation.two_line_exhaustive t x hx
 
+theorem sharedLiteratureLabel : atom .g = KIP126.Literature.Standard.g := g_agrees
+
 end Tests.E2Computation
