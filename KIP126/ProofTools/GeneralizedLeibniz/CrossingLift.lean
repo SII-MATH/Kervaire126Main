@@ -11,7 +11,7 @@ Once the divided source has an image in the required target filtration,
 the fixed finite-window comparisons supply both classical cycle labels
 and an actual extension witness, at any allowed length. The unconditional
 simultaneous-lifting assertion has an actual-spectrum counterexample in
-the paper's generality; see MEMO.md and the 20261018 GL/crossing review.
+the paper's generality; see corrections.yaml and the 20261018 GL/crossing review.
 These conditional lemmas do not assert such a lift in the fixed model. -/
 
 @[expose] section

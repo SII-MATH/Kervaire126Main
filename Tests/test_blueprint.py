@@ -33,33 +33,45 @@ def fixture():
 
 
 class BlueprintBoundaryTests(unittest.TestCase):
-    def test_native_memo_tab_reads_the_root_file_in_the_export_workspace(self):
+    def test_native_memo_tab_renders_the_root_record_in_the_export_workspace(self):
         from unittest.mock import patch
         import yaml
         from hgraph.site import _project_site_options
 
         config = (blueprint.ROOT / 'hgraph/config.yaml').read_text()
-        with tempfile.TemporaryDirectory() as directory:
+        template = blueprint.ROOT / 'site/memo.html'
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(blueprint.blueprint_memo, 'original_statements',
+                          return_value=({'6.12': {'raw': 'Original.', 'kind': 'theorem'}}, {})):
             root = Path(directory)
             (root / 'hgraph').mkdir()
             (root / 'hgraph/config.yaml').write_text(config)
-            memo = root / 'MEMO.md'
-            memo.write_text('# Root memo\n\nFirst revision.\n')
+            (root / 'site').mkdir()
+            shutil.copyfile(template, root / 'site/memo.html')
+            memo = root / 'corrections.yaml'
+            record = yaml.safe_dump({'version': 1, 'scope': 'Test scope', 'corrections': [{
+                'id': 'test', 'reference': 'Test', 'title': 'Test',
+                'status': {'kind': 'proposed', 'label': 'Pending'},
+                'original': {'statements': ['6.12'], 'source_line': 1},
+                'revision': {'nodes': [], 'note': 'Proposed.'},
+                'problem': 'First revision.', 'progress': 'Not proved.',
+                'links': [{'node': 'paper:6.12', 'title': 'Test'}]}]})
+            memo.write_text(record)
             with patch.object(blueprint, 'ROOT', root), \
                  patch.object(blueprint, 'STATE', root / '.lake/blueprint'), \
                  patch.object(blueprint, 'prepare_web_blueprint', return_value=root / 'blueprint'):
                 project = blueprint.stage_workspace() / 'Kervaire126'
             site = yaml.safe_load((project / 'hgraph/config.yaml').read_text())['site']
-            self.assertEqual([tab['content'] for tab in site['tabs']], ['MEMO.md'])
-            self.assertEqual((project / 'MEMO.md').resolve(), memo)
+            self.assertEqual([tab['content'] for tab in site['tabs']], ['site/memo.html'])
+            self.assertEqual((project / 'corrections.yaml').resolve(), memo)
             tabs = _project_site_options(site, base=project)['customTabs']
             self.assertEqual([tab['id'] for tab in tabs], ['memo'])
             self.assertIn('First revision.', tabs[0]['html'])
-            memo.write_text('# Root memo\n\nSecond revision.\n')
+            memo.write_text(record.replace('First revision.', 'Second revision.'))
+            blueprint.blueprint_memo.stage_memo(root, project)
             updated = _project_site_options(site, base=project)['customTabs']
             self.assertIn('Second revision.', updated[0]['html'])
             self.assertNotIn('First revision.', updated[0]['html'])
-
 
     def test_computation_moves_preserve_source_review_ids(self):
         name = 'KIP126.Computation.Standard.d2_h6'
