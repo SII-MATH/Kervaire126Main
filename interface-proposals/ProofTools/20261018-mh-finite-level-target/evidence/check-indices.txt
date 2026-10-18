@@ -1,0 +1,44 @@
+# Independent finite arithmetic audit; no Lean or geometric proof is claimed.
+from itertools import product
+mh = 0
+for ef, eg, eh in [(1,0,0), (0,1,0), (0,0,1)]:
+    for n1, m1, k, i in product(range(1,9), range(8), range(8), range(8)):
+        n,m,l=n1+ef,m1+eg,k+eh
+        r=n+m+l
+        for j in range(n1):
+            A=n1+k+i-j; B=m1+j+1; N=A+B
+            K=i+k; J=A+j; Q=N-K
+            assert A>0 and B>0
+            assert 0<=i<A and 0<=K<A and 0<=j<B and 0<=J<N
+            assert N==r+i and Q==r-k==n+m+eh
+            assert A-K==n1-j and N-J==m1+1 and J-K==n1
+            assert i+r-A-1==B-1==j+m1
+            for t in [-11,0,19]:
+                wa=t-i; wb=t+l+n-1-j; wc=t+eh-1-i
+                assert wa+A==wb+eg
+                assert wc+ef==wb-A==t-i-eg
+            mh+=1
+# Minimal strong-quotient example: in weak Q=2, layer J=2 is invisible.
+n1,m1,k,i,j=1,0,1,0,0
+A=n1+k+i-j; B=m1+j+1; N=A+B; K=i+k; J=A+j; Q=N-K
+assert (A,B,N,K,J,Q)==(2,1,3,1,2,2)
+print(f'MH checked: {mh} parameter tuples, each at 3 weights; no assertion failed.')
+print(f'Strong-quotient example: A={A}, B={B}, N={N}, K={K}, J={J}, Q={Q}; J>=Q.')
+gl=0
+for ef in [0,1]:
+    for A,B in product(range(1,9),range(1,9)):
+        for j in range(A):
+            for M,b,L in product(range(ef,9),range(2,10),range(ef,9)):
+                u=j+M-ef; d=j+b-A-1; v=d+L-ef; q=b+L-M
+                if not (0<=u<A and 0<=d<B and 0<=v<B and q>=2):
+                    continue
+                assert q==A+1+v-u
+                assert q-1>=v+1
+                assert M<=b-2+ef
+                for t in [-11,0,19]:
+                    assert t-j+ef==t+M-u
+                    assert t-j+A==t+b-1-d
+                    assert t-j+A+ef==t+b+L-1-v
+                gl+=1
+print(f'Finite-finite GL checked: {gl} parameter tuples, each at 3 weights; no assertion failed.')
+print('Limits: finite index/weight arithmetic only; no representative, crossing, lifting, or source-model theorem checked.')

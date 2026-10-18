@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>接口提案 · Kervaire 126</title>
+  <link rel="stylesheet" href="proposals.css">
+  <script src="../hgraph-custom-page.js" defer></script>
+  <script src="proposals.js" defer></script>
+  <!-- PROPOSAL_MATH -->
+</head>
+<body>
+<main class="proposal-page">
+  <header class="proposal-header">
+    <div class="proposal-eyebrow">AGENT PROPOSALS · INTERFACE REVIEW</div>
+    <h1>接口提案</h1>
+    <p>集中审阅形式化接口的问题、证据和修改方案。</p>
+    <div class="proposal-header-links"><span><!-- PROPOSAL_COUNT --> 份提案与审查报告</span>
+      <a href="guide.html" target="_blank">Agent 投递指南 ↗</a><a href="TEMPLATE.md" download>下载报告模板 ↓</a></div>
+  </header>
+  <aside class="proposal-note">报告保留原始人审状态与证据边界。“未获人审批准”不表示必须暂停工作；批准范围、当前阻塞项和可继续项以全文为准。原论文的修正记录请在 AimPaper corrections 查阅。</aside>
+  <form class="proposal-filters" role="search">
+    <label>搜索报告<input id="proposal-search" type="search" placeholder="标题、接口名、证据、agent…" autocomplete="off"></label>
+    <label>责任模块<select id="proposal-module"><option value="">全部模块</option></select></label>
+    <label>人审状态<select id="proposal-status">
+      <option value="">全部状态</option><option value="pending">未获人审批准</option>
+      <option value="partial">部分批准</option><option value="approved">已批准</option>
+      <option value="draft">草稿</option><option value="rejected">不采纳</option><option value="withdrawn">已撤回</option>
+    </select></label>
+    <button type="reset">重置</button>
+  </form>
+  <p id="proposal-results" role="status" aria-live="polite"></p>
+  <div id="proposal-empty" hidden>没有匹配的报告。请调整关键词或筛选条件。</div>
+  <div class="proposal-records"><!-- PROPOSAL_CARDS --></div>
+  <noscript>可直接阅读全部报告；启用 JavaScript 后可搜索和筛选。</noscript>
+  <dialog id="proposal-review">
+    <form method="dialog">
+      <h2>审阅反馈</h2><p id="proposal-review-id"></p>
+      <label>意见与范围<textarea id="proposal-feedback" rows="7" placeholder="请写明具体方案、批准或保留的范围、所需补证及未完成边界。"></textarea></label>
+      <p class="proposal-note">反馈可复制或下载后交给 agent 回写。本页不会保存意见或改变提案状态；接口修改仍需明确的人类授权。</p>
+      <p id="proposal-feedback-status" role="status"></p>
+      <div class="proposal-actions"><button type="button" id="proposal-copy">复制反馈</button><button type="button" id="proposal-download">下载反馈</button><button value="close">关闭</button></div>
+    </form>
+  </dialog>
+</main>
+</body>
+</html>

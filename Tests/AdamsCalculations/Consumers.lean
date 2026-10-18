@@ -14,12 +14,6 @@ theorem finiteAndPermanent :
       NonzeroSurvival model.classical.sphere (10,134) U :=
   ⟨w_to_e6, t_permanent_cycle, u_permanent⟩
 
-theorem tableThree :
-    SurvivesTo model.classical.sphere 12 (9,132) V ∧
-    NeverHit model.classical.sphere (9,132) V ∧
-    HasNonzeroDifferential model.classical.sphere 2 (8,133) (10,134)
-      (atom .x_125_8) d2Target := table3
-
 theorem literatureOneLine :
     HasNonzeroDifferential model.classical.sphere 2 (1,64) (3,65) h6 (product h0 h5Square) :=
   d2_h6

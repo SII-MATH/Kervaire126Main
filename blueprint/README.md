@@ -30,6 +30,8 @@ ProofTools binds its representative, filtration, shift and zero-layer results di
 
 `corrections.yaml` remains the sole authored record of corrections relative to AimPaper. The native AimPaper corrections tab renders that record and reads revised statements from the native project payload. Scope notes and unfinished mathematical bridges remain in the Lean sources, the registry and the authored explanations. Reading links do not create mathematical dependencies or claim proof completion. See [the correction authoring guide](../docs/corrections.md).
 
+The native **接口提案** tab presents independent agent interface reports from tracked `interface-proposals/<module>/<id>/report.md` files. It supports full-report search, module/status filters, report downloads and review feedback for agents to write back to the same record. Existing archived reports retain their original approval scope and evidence limits. Export does not require the local archive or change formal interfaces, mathematical dependencies or proof states. See [the proposal guide](../docs/interface-proposals.md).
+
 Generated hgraph nodes, edges, web presentation copies and `_site/` are reproducible outputs. Existing native comments and reviews remain attached to their nodes. Historical compiler evidence and retired graph-import material belong under ignored `local-history/`, not in the active export pipeline. The old implementation-index and verification web pages remain retired.
 
 ## Installation and export

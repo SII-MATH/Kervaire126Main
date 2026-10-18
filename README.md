@@ -20,6 +20,8 @@ SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、Ad
 
 历史计算审计、接口审查、证明会话、报告及完整契约和来源 JSON 统一放在被 Git 忽略的 `local-history/`，本地文件保留，整理与恢复方式见 [历史材料归档](docs/history-archive.md)。修正记录统一维护在根目录 [corrections.yaml](corrections.yaml)，按 [结构化格式](docs/corrections.md) 供 agent 编辑并生成网页；历史证据仍指向本地归档。构建、hgraph 导出与精简基线更新均不要求归档目录存在。
 
+持续审阅的独立接口报告统一投递到 Git 跟踪的 `interface-proposals/`，在 dashboard 的“接口提案”区域搜索、筛选、阅读并生成审阅反馈。17 份既有报告已迁入，原件作为历史快照保留；后续只更新提案目录。投递格式及人审回写见 [接口提案指南](docs/interface-proposals.md)。
+
 Geometry 只复现 AimPaper Theorem 1.1 与 Corollary 1.2：126 维存在性和六个维数的精确分类。两个推论无本地证明洞；Literature 提供真实闭光滑流形及稳定标架的数据模型，分别登记 Kervaire 不变量构造与 Browder 固定模型比较的待补责任。Browder 的几何索引取 `j ≥ 1`，不把零维的 `h₀²` 纳入几何维数分类。
 
 测试集中在 `Tests/`。`Tests.Architecture` 通过普通根导入检查八个数学模块和固定主目标；各模块子目录保留精确接口、公共消费及边界测试，`Tests.Integration` 另外验证上游消费无需导入 Main。`Tests.Trust` 汇总全部测试，检查测试自身没有引入公理或未完成证明。各模块独立入口检查验证实际定义归属与完整导出，源清单检查同时验证公开接口归属唯一。上述检查及各数学模块内部审计都纳入默认 `lake build`；单独检查总入口可运行 `lake build ArchitectureChecks`。修改后还应运行 `python3 scripts/check-source-inventory.py`，核对源文件覆盖与模块依赖边界。

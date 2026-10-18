@@ -25,6 +25,10 @@
 
 归档不随后续 Git 提交分发。完整 `lake build` 保持独立于本地归档；当前清单中指向归档的路径用于查阅历史依据，不作为新增证明前提。
 
+## 持续审阅的接口提案
+
+17 份独立接口审查报告已从 `local-history/metadata/interface-reviews/<模块>/<ID>/report.md` 迁入 Git 跟踪的 `interface-proposals/<模块>/<ID>/report.md`，用于 dashboard 持续审阅。归档原件保留为历史快照；提案文件记录原路径与原件 SHA-256，完整保留原元数据和正文。后续投递及状态更新只写提案目录，见 [接口提案指南](interface-proposals.md)。未迁入的小型证据仍留在本地归档，网页明确标记为本地证据，不冒充已公开可访问。
+
 ## 从 Git 历史恢复
 
 对尚无 `local-history/` 的新检出仓库，可在仓库根目录运行以下命令恢复整理前已提交的历史版本：

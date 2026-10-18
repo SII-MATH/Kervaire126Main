@@ -7,6 +7,7 @@ Adapted from SII-MATH/Kervaire126, commit
 8cb35dad5f75ecc095e474df6c765baec9b175bf.
 -/
 
+public import KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Data
 import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Multiplication
 
 @[expose] section
@@ -24,7 +25,7 @@ noncomputable section
 
 
 /-- The actual normalized cobar differential. -/
-def differential (s t : ℕ) : cochains s t →ₗ[F2] cochains (s + 1) t :=
+@[no_expose] public def differential (s t : ℕ) : cochains s t →ₗ[F2] cochains (s + 1) t :=
   ((differentialPolynomial s).comp (cochains s t).subtype).codRestrict _
     (differentialPolynomial_mem s t)
 

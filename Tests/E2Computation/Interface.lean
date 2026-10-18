@@ -56,7 +56,7 @@ run_cmd do
 
 #check_failure KIP126.Computation.Standard.d2_h6
 #check_failure KIP126.Computation.Standard.w_to_e6
-#check_failure KIP126.Computation.Standard.table3
+#check_failure KIP126.Computation.Standard.v_not_hit
 #check_failure KIP126.Computation.Table.Raw.Kind
 #check_failure KIP126.Computation.Table.Raw.Claim
 #check_failure KIP126.Computation.Table.sourceValue

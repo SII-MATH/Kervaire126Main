@@ -12,6 +12,14 @@ open KIP126.AdamsSynthetic.Standard
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
+
+-- The original polynomial square-zero obligation is directly available through
+-- the ordinary module entry with its actual cochain space and differential.
+example (s t : ℕ) (x : KIP126.AdamsSynthetic.Milnor.cochains s t) :
+    KIP126.AdamsSynthetic.Milnor.differential (s + 1) t
+      (KIP126.AdamsSynthetic.Milnor.differential s t x) = 0 :=
+  KIP126.AdamsSynthetic.Milnor.differential_squared s t x
+
 example (X : Spectrum) : classical.map (𝟙 X) = 𝟙 (classical.obj X) := classical.map_id X
 
 example {X Y Z : Spectrum} (f : X ⟶ Y) (g : Y ⟶ Z) :
