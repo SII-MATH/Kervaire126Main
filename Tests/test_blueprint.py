@@ -108,7 +108,7 @@ class BlueprintBoundaryTests(unittest.TestCase):
                 blueprint.ROOT = original_root
 
 
-    def test_main_remark_sync_uses_compiled_private_identity_and_status(self):
+    def test_main_remark_sync_uses_compiled_public_identity_and_status(self):
         from hgraph.sync import parse_blueprint
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -116,11 +116,11 @@ class BlueprintBoundaryTests(unittest.TestCase):
             try:
                 blueprint.ROOT = root
                 module = 'KIP126.Main.Remarks'
-                name = '_private.' + module + '.0.KIP126.Main.local_proof'
+                name = 'KIP126.Main.local_proof'
                 path = root / 'KIP126/Main/Remarks.lean'
                 path.parent.mkdir(parents=True)
                 path.write_text('module\nnamespace KIP126.Main\n'
-                                'private theorem local_proof : True := by trivial\n'
+                                'public theorem local_proof : True := by trivial\n'
                                 'end KIP126.Main\n')
                 sources = blueprint.index_sources([{'module': module,
                     'source_name': 'KIP126.Main.local_proof', 'name': name,
@@ -138,7 +138,7 @@ class BlueprintBoundaryTests(unittest.TestCase):
                 (root / 'blueprint/content.tex').write_text(document)
                 (root / 'blueprint/generated/implementation.tex').write_text('\\input{Main.tex}\n')
                 rows, _ = parse_blueprint(document)
-                rows[0]['lean'] = blueprint.semantic.resolve_main_remark(rows[0], sources)
+                rows[0]['lean'] = blueprint.semantic.resolve_main_remark(rows[0], sources, {name: 'Main'})
                 projection = blueprint.semantic.make_projection(sources, deps, {}, rows)
                 graph = Graph.open(root)
                 blueprint.sync_kernel_graph(graph, sources, deps, projection)
@@ -150,85 +150,53 @@ class BlueprintBoundaryTests(unittest.TestCase):
 
 
 class DraftPublicationTests(unittest.TestCase):
-    def test_build_report_refresh_preserves_mathematics_and_map_without_a_verification_tab(self):
+    def test_build_report_refresh_updates_json_without_recreating_retired_pages(self):
         import gzip
         import json
-        from copy import deepcopy
-        spec = importlib.util.spec_from_file_location('publisher_secondary_report',
+        spec = importlib.util.spec_from_file_location('publisher_build_evidence',
             Path(__file__).resolve().parents[1] / 'scripts/publish-blueprint.py')
         publisher = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(publisher)
-        for legacy_tabs in (set(), {'data.json', 'project.json'}, {'project.json'}):
-            with self.subTest(legacy_tabs=legacy_tabs), tempfile.TemporaryDirectory() as directory:
-                root = Path(directory)
-                original_root, original_state = publisher.ROOT, publisher.STATE
-                try:
-                    publisher.ROOT, publisher.STATE = root, root / 'state'
-                    publisher.STATE.mkdir()
-                    live = root / '_site'
-                    (live / 'Kervaire126').mkdir(parents=True)
-                    evidence = {'publication_mode':'curated-mathematical-blueprint',
-                                'full_project_build':{'status':'unknown'},
-                                'checks':{'native_closure_matches_selected_compiled_evidence':True},
-                                'source_declarations':4159, 'direct_obligations':299}
-                    (live / 'validation.json').write_text(json.dumps(evidence))
-                    if legacy_tabs:
-                        (live / 'verification.html').write_text('Previous standalone report')
-                    before = {}
-                    for name in ('data.json', 'project.json'):
-                        payload = {'entries':[{'label':'paper:2.12', 'lean_status':'lean_ok',
-                                               'state':'formalized_open', 'deps':['pending'],
-                                               'statement':'All original hypotheses remain.'}],
-                                   'edges':[{'source':'paper:2.12', 'target':'pending', 'type':'uses'}],
-                                   'customTabs':[{'id':'aimpaper', 'html':'Original concordance'},
-                                                 {'id':'blueprint-map', 'html':'<iframe src="blueprint-map.html"></iframe>'}],
-                                   'map':{'chapters':['SpectralSequence', 'Main'], 'edges':[[0,1]]}}
-                        if name in legacy_tabs:
-                            payload['customTabs'].insert(1, {'id':'verification', 'html':'Old embedded report'})
-                        path = live / 'Kervaire126' / name
-                        path.write_text(json.dumps(payload, indent=3))
-                        path.with_suffix('.json.gz').write_bytes(gzip.compress(path.read_bytes(), mtime=0))
-                        before[name] = (payload, path.read_bytes(), path.with_suffix('.json.gz').read_bytes())
-                    report = {'status':'failed', 'required_for_publication':False,
-                              'blocking_module':'Tests.Main.Interface'}
-                    publisher.full_build_report = lambda: report
-                    body = '<h2>Verification</h2><p>Whole-project build failed.</p>'
-                    publisher.verification_html = lambda _evidence: body
-                    publisher.refresh_build_report()
-                    updated = json.loads((live / 'validation.json').read_text())
-                    self.assertEqual(updated['full_project_build'], report)
-                    self.assertTrue(updated.pop('build_report_refresh')['all_mathematical_payloads_and_bindings_unchanged'])
-                    updated['full_project_build'] = evidence['full_project_build']
-                    self.assertEqual(updated, evidence)
-                    for name, (payload, raw, compressed) in before.items():
-                        path = live / 'Kervaire126' / name
-                        expected = deepcopy(payload)
-                        if name in legacy_tabs:
-                            next(tab for tab in expected['customTabs'] if tab['id']=='verification')['html'] = body
-                        else:
-                            self.assertEqual(path.read_bytes(), raw)
-                            self.assertEqual(path.with_suffix('.json.gz').read_bytes(), compressed)
-                        self.assertEqual(json.loads(path.read_text()), expected)
-                        self.assertEqual(gzip.decompress(path.with_suffix('.json.gz').read_bytes()), path.read_bytes())
-                    document = (live / 'verification.html').read_text()
-                    self.assertIn('<html', document.lower())
-                    self.assertIn(body, document)
-                    self.assertEqual((publisher.STATE / 'verification.html').read_text(), body)
-                    for name in ('verification.html', 'validation.json'):
-                        path = live / name
-                        self.assertEqual(gzip.decompress(Path(str(path)+'.gz').read_bytes()), path.read_bytes())
-                    project = live / 'Kervaire126/project.json'
-                    duplicate = json.loads(project.read_text())
-                    duplicate['customTabs'] = [tab for tab in duplicate['customTabs']
-                                               if tab['id'] != 'verification'] + [
-                        {'id':'verification', 'html':'first'}, {'id':'verification', 'html':'second'}]
-                    project.write_text(json.dumps(duplicate))
-                    unchanged = {path: path.read_bytes() for path in live.rglob('*') if path.is_file()}
-                    with self.assertRaisesRegex(ValueError, 'at most one'):
-                        publisher.refresh_build_report()
-                    self.assertEqual({path: path.read_bytes() for path in unchanged}, unchanged)
-                finally:
-                    publisher.ROOT, publisher.STATE = original_root, original_state
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            publisher.ROOT, publisher.STATE = root, root / 'state'
+            publisher.STATE.mkdir()
+            live = root / '_site'
+            (live / 'Kervaire126').mkdir(parents=True)
+            evidence = {'publication_mode':'curated-mathematical-blueprint',
+                        'full_project_build':{'status':'unknown'},
+                        'checks':{'native_closure_matches_selected_compiled_evidence':True},
+                        'source_declarations':4159, 'direct_obligations':299}
+            (live / 'validation.json').write_text(json.dumps(evidence))
+            before = {}
+            for name in ('data.json', 'project.json'):
+                payload = {'entries':[{'label':'paper:2.12', 'lean_status':'lean_ok',
+                                       'state':'formalized_open', 'deps':['pending'],
+                                       'statement':'All original hypotheses remain.'}],
+                           'edges':[{'source':'paper:2.12', 'target':'pending', 'type':'uses'}],
+                           'customTabs':[{'id':'aimpaper', 'html':'Original concordance'}],
+                           'map':{'chapters':['SpectralSequence', 'Main'], 'edges':[[0,1]]}}
+                path = live / 'Kervaire126' / name
+                path.write_text(json.dumps(payload, indent=3))
+                path.with_suffix('.json.gz').write_bytes(gzip.compress(path.read_bytes(), mtime=0))
+                before[path] = path.read_bytes()
+                before[path.with_suffix('.json.gz')] = path.with_suffix('.json.gz').read_bytes()
+            report = {'status':'failed', 'required_for_publication':False,
+                      'blocking_module':'Tests.Main.Interface'}
+            publisher.full_build_report = lambda: report
+            publisher.refresh_build_report()
+            updated = json.loads((live / 'validation.json').read_text())
+            self.assertEqual(updated['full_project_build'], report)
+            self.assertTrue(updated.pop('build_report_refresh')['all_mathematical_payloads_and_bindings_unchanged'])
+            updated['full_project_build'] = evidence['full_project_build']
+            self.assertEqual(updated, evidence)
+            for path, raw in before.items():
+                self.assertEqual(path.read_bytes(), raw)
+            self.assertEqual(gzip.decompress((live / 'validation.json.gz').read_bytes()),
+                             (live / 'validation.json').read_bytes())
+            self.assertFalse((live / 'verification.html').exists())
+            self.assertFalse((live / 'implementation').exists())
+            self.assertFalse((publisher.STATE / 'verification.html').exists())
 
     def test_restored_verified_source_does_not_inherit_stale_ui_open_state(self):
         spec = importlib.util.spec_from_file_location('publisher_restoration',
@@ -461,9 +429,9 @@ class AimPaperBoundaryTests(unittest.TestCase):
             self.assertEqual(stats['statements'], 57)
             self.assertEqual(stats['cited_entries'], 56)
             partial = next(r for r in records if r['number'] == '2.1')
-            self.assertEqual(len(partial['lean']), 2)
+            self.assertEqual(len(partial['lean']), 1)
             self.assertTrue(partial['sketch'])
-            self.assertEqual(stats['bound_statements'], 47)
+            self.assertEqual(stats['bound_statements'], 42)
             self.assertNotIn('% Blueprint note:', partial['body'])
             self.assertNotIn('% Correspondence:', partial['body'])
             path, _ = self.paper_source(root, 'paper:2.1')
@@ -571,7 +539,7 @@ class AimPaperBoundaryTests(unittest.TestCase):
                 blueprint.load_paper(root, labels)
 
     def test_chapter_and_detail_rendering_both_use_compatible_math(self):
-        from blueprint_paper import (display_body, implementation_links,
+        from blueprint_paper import (display_body,
                                      prepare_web_blueprint, reference_targets)
         from hgraph.sync import read_blueprint, parse_blueprint
         root = Path(__file__).resolve().parents[1]
@@ -593,7 +561,7 @@ class AimPaperBoundaryTests(unittest.TestCase):
                 with self.subTest(label=source['label']):
                     number = source['label'].removeprefix('paper:')
                     chapter_body = by_label[source['label']]['body']
-                    detail_body = implementation_links(display_body(source['body'], number, refs))
+                    detail_body = display_body(source['body'], number, refs)
                     self.assertNotIn(r'\xymatrix', chapter_body)
                     self.assertNotIn(r'\xymatrix', detail_body)
                     footer = (r'\par\href{paper/diagrams/' + number

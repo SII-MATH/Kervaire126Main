@@ -6,15 +6,13 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T04:35:45.860099+00:00'
+updated: '2026-10-18T06:58:29.979986+00:00'
 ---
 **Formal scope:** public correspondence with the scope stated below
 
 The formula and labels use the actual classical cycle/boundary quotient on the selected ClassicalObject scope.
 
-\item `KIP126.Literature.Standard.eInfinity\_nu`: [implementation](implementation/index.html#decl:83d5e1d1af520759)
-
-\item `KIP126.Literature.Standard.eInfinity\_nu\_labels`: [implementation](implementation/index.html#decl:4c64d2a51882bf40)
+Direct formal counterparts: `KIP126.Literature.Standard.eInfinity\_nu`.
 
 Source verification (2026-10-18): Original source text. BHS Corollary A.9 gives the untruncated E-infinity subquotient, and Corollary A.11 gives the finite quotient. All formula indices transform by s-omega=t-w. The finite formula holds for q>=1 in BHS, while AimPaper Proposition 3.12 explicitly states q>=2. Additive equivalences are viewed as Z-linear without a change of scalar structure. Matching a specific E2 representative to its quotient class requires the canonical label-compatible presentation, not an arbitrary abstract isomorphism. Zero labels are permitted in subgroup and quotient statements. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Proposition 3.11; pages local PDF p. 17; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.9(1)-(4), including its final surjectivity sentence; pages arXiv PDF pp. 72-73; published pp. 307-308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 

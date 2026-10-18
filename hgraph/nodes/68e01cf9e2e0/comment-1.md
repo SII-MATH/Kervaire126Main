@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:29.987317+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 
@@ -14,7 +14,7 @@ The local argument retains its actual upstream dependencies; the final theorem i
 
 This repeats Theorem 1.4 in the proof section of the paper. Both occurrences bind the same fixed nonzero-permanence theorem.
 
-Formal counterparts: [implementation](implementation/index.html#decl:1f8cdeb3f7818088).
+Formal counterparts: `KIP126.Main.h6\_sq\_permanent`.
 
 The original paper presents this same conclusion twice; the two blueprint occurrences represent one mathematical target.
 

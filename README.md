@@ -1,6 +1,6 @@
 # Kervaire126Main
 
-证明管理前端采用原生 hgraph：一个项目，八章依次为 SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry；第八章单列尚未形式化的几何终点。主蓝图用英文按数学内容组织，一个条目可绑定多个现有 Lean 声明；完整源码另作实现索引，真实编译依赖与既有待补责任继续核验。生成、发布与预览方式见 [Blueprint 使用说明](blueprint/README.md)；现有接口锁和默认构建检查继续保留。
+证明管理前端采用原生 hgraph：一个项目，八章依次为 SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry；第八章单列尚未形式化的几何终点。主蓝图用英文按数学内容组织，一个条目可绑定多个现有 Lean 声明；源码与完整编译依赖保留在内部审计中，既有待补责任继续核验。生成、发布与预览方式见 [Blueprint 使用说明](blueprint/README.md)；现有接口锁和默认构建检查继续保留。
 
 [AimPaper](AimPaper/main.tex) 关于 Kervaire 不变量 126 维情形的 Lean 形式化。
 

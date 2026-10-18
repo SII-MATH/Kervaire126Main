@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:29.997714+00:00'
 ---
 **Formal scope:** public counterparts; scope is specified below.
 
@@ -18,9 +18,9 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite`: [implementation](implementation/index.html#decl:b3cfccaa50c6a3cd)
+\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite`
 
-\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite`: [implementation](implementation/index.html#decl:60aa58f04dc1023c)
+\item `KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite`
 
 \end{itemize}
 

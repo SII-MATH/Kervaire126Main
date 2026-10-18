@@ -201,7 +201,7 @@ def prepare_web_blueprint(root, destination):
             for index in range(1, len(blocks)):
                 number = re.match(r'% AimPaper: (\d+\.\d+)', blocks[index])[1]
                 blocks[index] = display_body(blocks[index], number, refs)
-            target.write_text(implementation_links(''.join(blocks)))
+            target.write_text(''.join(blocks))
         elif path.suffix == '.bib':
             target.write_text(web_bibliography(path.read_text()))
         else:
@@ -210,11 +210,6 @@ def prepare_web_blueprint(root, destination):
             target.write_bytes(path.read_bytes())
     return destination
 
-
-def implementation_links(body):
-    """Stable source labels now open the separate implementation archive."""
-    return re.sub(r'\\ref\{(decl:[^}]+)\}',
-        lambda m: r'\href{implementation/index.html#' + m[1] + '}{implementation}', body)
 
 
 def display_enumeration(body):
@@ -289,6 +284,8 @@ def validate_paper_graph(graph, records, analysis, projection=None):
             targets = [node_id('lean', name) for name in record['lean']]
             statuses = [graph.get_node(target).meta.get('lean_status') or 'empty' for target in targets]
             expected_local = 'sorry' if 'sorry' in statuses else 'empty' if 'empty' in statuses else 'lean_ok'
+            if projection is not None:
+                expected_local = projection['entries'][record['label']]['local_status']
             formal = {e.target for e in by_source.get(nid, []) if e.type == 'formalizes'}
             if (analysis.closed[nid] != all(analysis.closed[target] for target in targets)
                     or node.meta.get('lean_status') != expected_local

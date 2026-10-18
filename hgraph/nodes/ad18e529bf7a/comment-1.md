@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:30.003532+00:00'
 ---
 **Formal scope:** public counterparts; scope is specified below.
 
@@ -18,13 +18,13 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.FiniteHasCrossing`: [implementation](implementation/index.html#decl:b7b799dc6331df44)
+\item `KIP126.ProofTools.FiniteHasCrossing`
 
-\item `KIP126.ProofTools.FiniteNoCrossing`: [implementation](implementation/index.html#decl:56ca21bee23b451d)
+\item `KIP126.ProofTools.FiniteNoCrossing`
 
-\item `KIP126.ProofTools.InfiniteHasCrossing`: [implementation](implementation/index.html#decl:1fcd89913d4c2a9a)
+\item `KIP126.ProofTools.InfiniteHasCrossing`
 
-\item `KIP126.ProofTools.InfiniteNoCrossing`: [implementation](implementation/index.html#decl:c835e45ecedd37af)
+\item `KIP126.ProofTools.InfiniteNoCrossing`
 
 \end{itemize}
 
