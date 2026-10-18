@@ -27,3 +27,5 @@ SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、Ad
 拉取并合并或变基更新源码后，即使没有要求编译，也须在同一任务中检查 Release：先核对元数据，选择与源码及环境匹配的缓存，再下载并校验归档（含分片校验）。已有本地匹配缓存可直接复用；只有不影响构建输入的文档变化可在核实后跨提交复用，其他旧缓存仅作为增量构建基线。安装前确认没有构建进程写入缓存，临时安全解压并检查路径和文件类型，备份后安装，保留更新的本地编译进度。后续仍运行 `lake build` 验证。没有兼容缓存或下载失败时说明情况并继续源码更新和增量构建；上传失败则明确报告缓存未同步。完整要求见 [AGENTS.md](AGENTS.md)。
 
 项目 Release 缓存与 Mathlib 依赖缓存分别恢复；`lake exe cache get` 获取后者。[CI](.github/workflows/ci.yml) 的 GitHub Actions 缓存保存 `.lake` 以加速 CI，不能代替面向其他工作者的 Release 附件；普通 Git 推送、拉取也不会自动同步这些附件。
+
+CI 的触发去重、依赖／项目缓存拆分及经过校验的 Release 缓存复用见 [CI 缓存说明](docs/ci-cache.md)。PR、main 与手动运行保留全量检查；develop 只在同提交已有面向 main 的 PR 时省去重复运行。
