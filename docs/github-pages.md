@@ -7,18 +7,11 @@ Set the repository's **Settings → Pages → Source** to **GitHub Actions**.
 Changes developed on `develop` reach the site through a normal pull request and
 merge into `main`; no `gh-pages` branch or manually copied export is required.
 
-## Private hgraph access
+## Public hgraph dependency
 
-The workflow checks out the exact private `SII-MATH/hgraph` revision pinned in
-`requirements-blueprint.txt`. Configure a dedicated SSH deploy key:
-
-1. Add its public key to `SII-MATH/hgraph` under **Settings → Deploy keys**,
-   with write access disabled.
-2. Add its private key to this repository's Actions secrets as
-   `HGRAPH_DEPLOY_KEY`.
-
-Do not commit either private credentials or substitute personal credentials.
-The private checkout is outside the cached `.lake/` directory; the Python virtual
+The workflow checks out the exact public `SII-MATH/hgraph` revision pinned in
+`requirements-blueprint.txt`. No cross-repository secret or deploy key is needed.
+The checkout is outside the cached `.lake/` directory; the Python virtual
 environment is under `RUNNER_TEMP`. Neither is included in caches or the Pages artifact. The artifact
 contains only the generated public site and its verification/provenance data.
 

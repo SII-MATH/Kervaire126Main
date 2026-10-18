@@ -41,7 +41,7 @@ The new second-line entries follow the same concise source-prefix and native sco
 
 ## Installation and full generation
 
-Run from the repository root. Python dependencies are pinned separately from the existing Lean/Lake toolchain. The private SII-MATH/hgraph repository requires GitHub read access; for GitHub CLI credentials, run `gh auth setup-git --hostname github.com` before installing:
+Run from the repository root. Python dependencies are pinned separately from the existing Lean/Lake toolchain. The pinned SII-MATH/hgraph repository is public; no GitHub credential is required to install it:
 
 ```sh
 python3 -m venv .lake/blueprint-env
@@ -99,6 +99,6 @@ Native CLI queries remain available from the repository root:
 .lake/blueprint-env/bin/hgraph list --type implementation --json
 ```
 
-The Overview, Summary, dependency graph, native map, Lean panels and review interface use the pinned private [SII-MATH/hgraph](https://github.com/SII-MATH/hgraph) distribution (Apache-2.0; based on AxelDlv00/hgraph, revision in `requirements-blueprint.txt`). Map is disabled by default in the library and enabled explicitly by this project. Custom project tabs may use `presentation: modal`; inline close buttons use `data-hgraph-close`, while same-origin iframe pages load `hgraph-custom-page.js` and call `hgraph.close()`. The host validates frame identity, origin and protocol version; see the fork's `docs/CUSTOM_PAGES.md`. Verification and the implementation archive are exported reference pages reached through secondary links. Native comments and review attachments under `hgraph/nodes/<id>/` remain maintainable; synchronization preserves human-authored fields and attachments. The static preview can prepare GitHub issue submissions, which the user submits explicitly.
+The Overview, Summary, dependency graph, native map, Lean panels and review interface use the pinned public [SII-MATH/hgraph](https://github.com/SII-MATH/hgraph) distribution (Apache-2.0; based on AxelDlv00/hgraph, revision in `requirements-blueprint.txt`). Map is disabled by default in the library and enabled explicitly by this project. Custom project tabs may use `presentation: modal`; inline close buttons use `data-hgraph-close`, while same-origin iframe pages load `hgraph-custom-page.js` and call `hgraph.close()`. The host validates frame identity, origin and protocol version; see the fork's `docs/CUSTOM_PAGES.md`. Verification and the implementation archive are exported reference pages reached through secondary links. Native comments and review attachments under `hgraph/nodes/<id>/` remain maintainable; synchronization preserves human-authored fields and attachments. The static preview can prepare GitHub issue submissions, which the user submits explicitly.
 
 No mathematical interface, Lean dependency lock or proof responsibility is changed by this presentation. Compact metadata retains all existing type/universe/trust/export checks, exact permitted-hole fingerprints and Main/ProofTools boundary checks; see [metadata baselines](../docs/metadata-baselines.md). Historical prose and generated declaration payloads are archived instead of duplicated in those baselines.
