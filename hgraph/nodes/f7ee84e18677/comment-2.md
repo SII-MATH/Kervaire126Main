@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T11:19:44.121589+00:00'
+updated: '2026-10-18T12:58:46.844794+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 
@@ -16,6 +16,6 @@ The public theorem states the complete assertion for every detected source repre
 
 **Formal scope:** Partial correspondence: complete formal statement; proof pending.
 
-The predicate AnyYH0Extension states the full goal for every detected representative. Private proofs establish the exact nonzero $h_0$ equation for members of the same Toda bracket, choice independence of $\lambda^2h_0y$ for all $Y$-detected representatives, and choice independence of $\lambda^6t$ for all $T$-detected representatives. The unmultiplied assertion remains unproved: higher filtration alone does not make an $h_0$ error vanish or allow it to be absorbed by changing $t$. A separately checked finite-quotient construction produces an actual filtration-15 error with nonzero $h_0$ image; it does not supply a counterexample satisfying all hypotheses of this corollary.
+The predicate AnyYH0Extension states the full goal for every detected representative. Private proofs establish the exact nonzero $h_0$ equation for members of the same Toda bracket, choice independence of $\lambda^2h_0y$ for all $Y$-detected representatives, and choice independence of $\lambda^6t$ for all $T$-detected representatives. The unmultiplied assertion remains unproved: higher filtration alone does not make an $h_0$ error vanish or allow it to be absorbed by changing $t$. A separately checked finite-quotient construction produces an actual filtration-15 error with nonzero $h_0$ image; it does not supply a counterexample satisfying all hypotheses of this corollary. A new private equivalence makes the remaining condition exact: given an initial nonzero equation $h_0y_0=\lambda^6t_0$, a specified representative $y$ admits the required target if and only if $h_0(y-y_0)=0$. The same equivalence holds with the original universal quantifier over all $Y$-detected representatives. It adds no premise to the public corollary and does not discharge its pending proof.
 
 Original statement: paper/main.tex.html#L2571; article PDF: paper/2412.10879.pdf.

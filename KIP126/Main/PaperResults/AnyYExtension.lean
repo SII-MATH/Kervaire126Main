@@ -78,6 +78,54 @@ private theorem any_y_target_lambda_six_independent
   have hh := anyy_lambda_six_filtration_fifteen_zero (t-t') hd
   simpa only [lambdaMultiply,Preadditive.comp_sub,sub_eq_zero] using hh
 
+/-- At the specified bidegrees, changing the T representative cannot absorb
+an h0 error: all such representatives have the same lambda-six image.
+Thus the exact extension for another Y representative is equivalent to
+actual annihilation of its difference from the initial representative. -/
+private theorem any_y_exact_extension_iff_difference_zero
+    (y0 y : BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9))
+    (t0 : BiHom 125 139 (XModLambdaN (S_0_0:SyntheticSpectrum) 9))
+    (ht0 : FiniteDetected 9 (by decide) 14 139 0 T t0)
+    (he0 : sphereAction syntheticH0 y0 = lambdaMultiply 6 t0)
+    (hn0 : lambdaMultiply 6 t0 ≠ 0) :
+    (∃ t : BiHom 125 139 (XModLambdaN (S_0_0:SyntheticSpectrum) 9),
+      FiniteDetected 9 (by decide) 14 139 0 T t ∧
+      sphereAction syntheticH0 y = lambdaMultiply 6 t ∧ lambdaMultiply 6 t ≠ 0) ↔
+      sphereAction syntheticH0 (y-y0) = 0 := by
+  have hsub : sphereAction syntheticH0 (y-y0) =
+      sphereAction syntheticH0 y - sphereAction syntheticH0 y0 := by
+    simp only [sphereAction, Preadditive.comp_sub]
+  rw [hsub, sub_eq_zero]
+  constructor
+  · rintro ⟨t, ht, he, _⟩
+    exact he.trans ((any_y_target_lambda_six_independent t t0 ht ht0).trans he0.symm)
+  · intro he
+    exact ⟨t0, ht0, he.trans he0, hn0⟩
+
+/-- Precise remaining condition in the paper's passage from one bracket
+representative to every representative with the same Y label. Filtration
+fifteen alone proves only the lambda-squared comparison below; this
+criterion retains the required unmultiplied annihilation. -/
+private theorem any_y_universal_extension_iff_difference_zero
+    (y0 : BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9))
+    (t0 : BiHom 125 139 (XModLambdaN (S_0_0:SyntheticSpectrum) 9))
+    (ht0 : FiniteDetected 9 (by decide) 14 139 0 T t0)
+    (he0 : sphereAction syntheticH0 y0 = lambdaMultiply 6 t0)
+    (hn0 : lambdaMultiply 6 t0 ≠ 0) :
+    (∀ y : BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9),
+      FiniteDetected 9 (by decide) 11 136 4 Y y →
+      ∃ t : BiHom 125 139 (XModLambdaN (S_0_0:SyntheticSpectrum) 9),
+        FiniteDetected 9 (by decide) 14 139 0 T t ∧
+        sphereAction syntheticH0 y = lambdaMultiply 6 t ∧ lambdaMultiply 6 t ≠ 0) ↔
+    (∀ y : BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9),
+      FiniteDetected 9 (by decide) 11 136 4 Y y →
+      sphereAction syntheticH0 (y-y0) = 0) := by
+  constructor
+  · intro h y hy
+    exact (any_y_exact_extension_iff_difference_zero y0 y t0 ht0 he0 hn0).mp (h y hy)
+  · intro h y hy
+    exact (any_y_exact_extension_iff_difference_zero y0 y t0 ht0 he0 hn0).mpr (h y hy)
+
 /-- An actual initial exact equation propagates to every Y representative
 only after multiplying by lambda squared. The initial representative and
 its target remain the same actual Q9 classes throughout. -/

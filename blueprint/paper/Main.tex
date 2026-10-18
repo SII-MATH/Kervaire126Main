@@ -94,7 +94,7 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 \end{proposition}
 
 % AimPaper: 7.9 proposition 2208 2210
-\begin{proposition}[Incompatibility of $C_3$ and $C_5$]
+\begin{proposition}[The sixth-differential vanishing excludes the eta extension]
 \label{paper:7.9}
 \source{AimPaper Proposition 7.9}
 \level{coarse}
@@ -103,11 +103,11 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 \label{prop:state5false}
     If statement $(3)$ is true, then statement $(5)$ in Proposition~\ref{prop:possible_h_6_sq} must be false.
 % END AIMPAPER STATEMENT
-\uses{paper:7.11,paper:7.18,paper:7.20,paper:7.21,paper:7.6,paper:4.6,paper:3.6,sem:Computation:nondivisibility,sem:Computation:cofiber-results}
-% Blueprint note: Mathematical dependency review: [AimPaper source, lines 2698-2778](paper/main.tex.html#L2698). Assume the two detection conditions, combine the h0 and nu extensions, narrow the remaining products using Fact 7.21, then contradict the nu-cofiber survival window. Condition names refer to hypotheses, not the conclusion of Proposition 7.8.
+\uses{sem:Main:weak-representative-route,paper:7.11,paper:7.20,paper:7.21,paper:7.6,paper:4.6,paper:3.6,sem:Computation:nondivisibility,sem:Computation:cofiber-results}
+% Blueprint note: Original proof: [AimPaper source, lines 2698-2778](paper/main.tex.html#L2698), using Lemma 7.16 and Corollary 7.18 before the nu extension and cofiber contradiction. The retained formal route is explained at sem:Main:weak-representative-route: it preserves the nonzero lambda-squared h0 value while removing low-filtration terms and does not invoke either pending public statement. The authored dependencies follow this retained route; the original statements and their unresolved proof obligations remain separately visible.
 
 % Correspondence: Public correspondence.
-% Blueprint note: The public theorem proves $C_3\Rightarrow\neg C_5$ for the fixed detection predicates.
+% Blueprint note: The public theorem proves that vanishing of the specified sixth differential excludes the specified eta-extension detection, with no additional caller premise. Its locally completed proof inherits registered upstream obligations.
 \lean{KIP126.Main.eta_extension_excluded_of_d6_vanishes}
 % Blueprint note: Formal counterparts: \texttt{KIP126.Main.eta\_extension\_excluded\_of\_d6\_vanishes}.
 
@@ -223,7 +223,7 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 % Correspondence: Partial correspondence: complete formal statement; proof pending.
 \lean{KIP126.Main.Paper.lemma_toda2ext}
 
-% Blueprint note: Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. All members have the same actual image under $Q_9\to Q_3$, and, under the stated hypotheses, detection by $\lambda^4Y$ is equivalent to that image being zero. The vanishing of this common image remains unproved; the original bracket member cannot be replaced by a different high-filtration representative.
+% Blueprint note: Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. All members have the same actual image under $Q_9\to Q_3$, and, under the stated hypotheses, detection by $\lambda^4Y$ is equivalent to that image being zero. The vanishing of this common image remains unproved; the original bracket member cannot be replaced by a different high-filtration representative. The difference of any two actual bracket members is now proved to lie in $F^{11}$, and every member is nonzero. One actual $F^{11}$ bracket member would therefore establish the full universal detection conclusion. Removing low-filtration terms while preserving only $\lambda^2h_0$ does not establish membership in this same bracket. The original proof also passes from an equality of eta images to an equality before applying eta; the required kernel control has not been supplied.
 
 
 \sketch
@@ -250,7 +250,7 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 % Correspondence: Partial correspondence: complete formal statement; proof pending.
 \lean{KIP126.Main.Paper.corollary_2ext125}
 
-% Blueprint note: The predicate AnyYH0Extension states the full goal for every detected representative. Private proofs establish the exact nonzero $h_0$ equation for members of the same Toda bracket, choice independence of $\lambda^2h_0y$ for all $Y$-detected representatives, and choice independence of $\lambda^6t$ for all $T$-detected representatives. The unmultiplied assertion remains unproved: higher filtration alone does not make an $h_0$ error vanish or allow it to be absorbed by changing $t$. A separately checked finite-quotient construction produces an actual filtration-15 error with nonzero $h_0$ image; it does not supply a counterexample satisfying all hypotheses of this corollary.
+% Blueprint note: The predicate AnyYH0Extension states the full goal for every detected representative. Private proofs establish the exact nonzero $h_0$ equation for members of the same Toda bracket, choice independence of $\lambda^2h_0y$ for all $Y$-detected representatives, and choice independence of $\lambda^6t$ for all $T$-detected representatives. The unmultiplied assertion remains unproved: higher filtration alone does not make an $h_0$ error vanish or allow it to be absorbed by changing $t$. A separately checked finite-quotient construction produces an actual filtration-15 error with nonzero $h_0$ image; it does not supply a counterexample satisfying all hypotheses of this corollary. A new private equivalence makes the remaining condition exact: given an initial nonzero equation $h_0y_0=\lambda^6t_0$, a specified representative $y$ admits the required target if and only if $h_0(y-y_0)=0$. The same equivalence holds with the original universal quantifier over all $Y$-detected representatives. It adds no premise to the public corollary and does not discharge its pending proof.
 
 
 \sketch
