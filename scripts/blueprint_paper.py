@@ -10,6 +10,7 @@ import html
 from pathlib import Path
 import re
 import shutil
+import xml.etree.ElementTree as ET
 
 from hgraph.dashboard import discover_bib
 from hgraph.sync import parse_blueprint, _brace_span
@@ -267,7 +268,7 @@ def display_enumeration(body):
 
 
 def display_body(body, number, reference_targets=None):
-    """Use native links for unsupported XY diagrams; keep original TeX intact."""
+    """Place styled native SVG links at each diagram's original reading position."""
     body = display_enumeration(active_tex(body))
     if number == '1.4':
         # The merged permanence node cites both original occurrences in its
@@ -277,12 +278,17 @@ def display_body(body, number, reference_targets=None):
     spans = []
     for match in re.finditer(r'\\xymatrix\s*\{', body):
         _inner, end = _brace_span(body, body.index('{', match.start()))
-        spans.append((match.start(), end))
-    for start, end in reversed(spans):
-        index = next(i for i, span in enumerate(spans, 1) if span[0] == start)
-        body = body[:start] + r'\text{see the original commutative diagram}' + body[end:]
-    if spans:
-        body += '\n\\par\\href{paper/diagrams/' + number + '.html}{Original diagrams and hypotheses}\n'
+        # A link belongs in prose, outside the formula renderer. Only unwrap a
+        # display containing this diagram alone; never discard adjoining math.
+        opening = re.search(r'(\$\$|\\\[)\s*$', body[:match.start()])
+        closing = re.match(r'\s*([.,;:]?)\s*' + (r'\$\$' if opening and opening[1] == '$$' else r'\\\]'), body[end:])
+        if not opening or not closing:
+            raise ValueError('Expected a standalone display for AimPaper diagram ' + number)
+        spans.append((opening.start(), end + closing.end(), closing[1]))
+    for index, (start, end, punctuation) in reversed(list(enumerate(spans, 1))):
+        link = (r'\href{paper/diagrams/' + number + '-' + str(index)
+                + '.svg}{Commutative diagram ' + number + ' (' + str(index) + ')' + punctuation + '}')
+        body = body[:start] + '\n\n' + link + '\n\n' + body[end:]
     # TeX layout/counter commands are not mathematical content. Retain them in
     # the authored source, omit them from the native browser's text renderer.
     if reference_targets:
@@ -297,6 +303,30 @@ def display_body(body, number, reference_targets=None):
     body = re.sub(r'\\setcounter\{[^}]*\}\{[^}]*\}', '', body)
     body = re.sub(r'\\vspace\*?\{[^}]*\}', '', body)
     return body
+
+
+def inline_diagram_styles(diagrams):
+    """Use the native link and stylesheet APIs without patching pinned hgraph.
+
+    SVG coordinates are TeX points at 10pt. Scale to the surrounding font size;
+    cap wide diagrams at the reading column while preserving their aspect ratio.
+    Link text stays available to assistive technology and without the stylesheet.
+    """
+    rules = []
+    for stem, svg in diagrams:
+        box = [float(v) for v in ET.fromstring(svg.read_text()).attrib['viewBox'].split()]
+        width, height = box[2:]
+        if width <= 0 or height <= 0:
+            raise ValueError('Invalid diagram dimensions: ' + stem)
+        rules.append('a.tex-link[href="paper/diagrams/' + stem + '.svg"] {'
+                     ' display:block; box-sizing:content-box;'
+                     f' width:{width / 10:.6f}em; aspect-ratio:{width:.6f}/{height:.6f};'
+                     ' max-width:calc(100% - 1.5em); margin:1.2em auto; padding:.5em;'
+                     ' background:white url("' + stem + '.svg") center / contain no-repeat;'
+                     ' background-origin:content-box; background-clip:padding-box;'
+                     ' border-radius:.25em; text-indent:200%; white-space:nowrap; overflow:hidden;'
+                     ' }')
+    return '\n'.join(rules) + '\n'
 
 
 def validate_paper_graph(graph, records, analysis, projection=None):
@@ -352,6 +382,7 @@ def export_paper(root, out, records):
     diagram_dir.mkdir(exist_ok=True)
     work = root / '.lake/blueprint/paper-diagrams'
     work.mkdir(parents=True, exist_ok=True)
+    rendered_diagrams = []
     for r in records:
         diagrams = []
         for match in re.finditer(r'\\xymatrix\s*\{', r['raw']):
@@ -377,6 +408,14 @@ def export_paper(root, out, records):
                         raise ValueError('AimPaper diagram rendering failed: ' + process.stdout[-3000:] + process.stderr[-1000:])
                 stamp.write_text(signature)
             shutil.copyfile(svg, diagram_dir / (stem + '.svg'))
+            rendered_diagrams.append((stem, svg))
             page += '<p><img alt="AimPaper ' + r['number'] + ' original commutative diagrams" src="' + stem + '.svg"></p>'
         page += '<p><a href="../main.tex.html#L' + str(r['start_line']) + '">Full source, hypotheses and context</a> · <a href="../2412.10879.pdf">Original paper PDF</a></p>'
         (diagram_dir / (r['number'] + '.html')).write_text(page)
+    # Project presentation only: preserve the pinned native JS/CSS assets.
+    (diagram_dir / 'inline.css').write_text(inline_diagram_styles(rendered_diagrams))
+    index = out / 'index.html'
+    text = index.read_text()
+    tag = '<link rel="stylesheet" href="paper/diagrams/inline.css" data-paper-diagrams>'
+    if tag not in text:
+        index.write_text(text.replace('</head>', tag + '\n</head>', 1))
