@@ -9,6 +9,7 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+import textwrap
 import unittest
 from unittest.mock import patch
 
@@ -31,7 +32,8 @@ class EventPolicyTests(unittest.TestCase):
         self.assertFalse(ci.needs_build(*args, [pull()]))
         self.assertTrue(ci.needs_build(*args, []))
         for event, ref in [('pull_request', 'refs/pull/1/merge'), ('push', 'refs/heads/main'),
-                           ('workflow_dispatch', 'refs/heads/develop')]:
+                           ('workflow_dispatch', 'refs/heads/develop'),
+                           ('merge_group', 'refs/heads/gh-readonly-queue/main/pr-12-abc')]:
             self.assertTrue(ci.needs_build(event, ref, 'owner/repo', 'a' * 40, [pull()]))
 
     def test_stale_foreign_closed_or_other_base_pr_cannot_suppress_build(self):
@@ -54,6 +56,80 @@ class EventPolicyTests(unittest.TestCase):
                     patch.object(ci, 'api', side_effect=subprocess.CalledProcessError(1, 'gh')):
                 ci.plan()
             self.assertEqual(out.read_text(), 'build=true\n')
+
+
+    def test_merge_group_always_builds_without_a_pr_lookup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            out = Path(temporary) / 'output'
+            with patch.dict(os.environ, {
+                    'GITHUB_EVENT_NAME': 'merge_group',
+                    'GITHUB_REF': 'refs/heads/gh-readonly-queue/main/pr-12-abc',
+                    'GITHUB_REPOSITORY': 'owner/repo', 'GITHUB_SHA': 'a' * 40,
+                    'GITHUB_OUTPUT': str(out)}), patch.object(ci, 'api') as lookup:
+                ci.plan()
+            lookup.assert_not_called()
+            self.assertEqual(out.read_text(), 'build=true\n')
+
+
+class MergeQueuePolicyTests(unittest.TestCase):
+    def test_queue_is_main_only_and_all_checks_are_required(self):
+        rule = json.loads((ROOT / '.github/merge-queue-ruleset.json').read_text())
+        self.assertEqual(rule['conditions']['ref_name'],
+                         {'include': ['refs/heads/main'], 'exclude': []})
+        self.assertEqual(rule['bypass_actors'], [])
+        self.assertEqual(rule['enforcement'], 'active')
+        self.assertEqual([r['type'] for r in rule['rules']], ['merge_queue'])
+        queue = rule['rules'][0]['parameters']
+        self.assertEqual(queue['grouping_strategy'], 'ALLGREEN')
+        self.assertGreaterEqual(queue['check_response_timeout_minutes'], 90)
+        self.assertGreaterEqual(queue['max_entries_to_build'], 1)
+        self.assertLessEqual(queue['min_entries_to_merge'], queue['max_entries_to_merge'])
+
+
+class AutoMergeWorkflowTests(unittest.TestCase):
+    def invoke(self, queue_id='', api_failure=False):
+        workflow = (ROOT / '.github/workflows/auto-merge.yml').read_text()
+        script = textwrap.dedent(workflow.split('        run: |\n', 1)[1])
+        with tempfile.TemporaryDirectory() as temporary:
+            directory = Path(temporary)
+            executable = directory / 'gh'
+            executable.write_text('''#!/usr/bin/env python3
+import json, os, sys
+from pathlib import Path
+with Path(os.environ['MOCK_LOG']).open('a') as stream:
+    stream.write(json.dumps(sys.argv[1:]) + '\\n')
+if sys.argv[1:3] == ['api', 'graphql']:
+    if os.environ['MOCK_API_FAILURE'] == '1':
+        sys.exit(1)
+    print(os.environ['MOCK_QUEUE_ID'])
+''')
+            executable.chmod(0o755)
+            log = directory / 'calls.jsonl'
+            env = {**os.environ, 'PATH': str(directory) + os.pathsep + os.environ['PATH'],
+                   'GH_REPO': 'owner/repo', 'PR_NUMBER': '12', 'PR_HEAD_SHA': 'a' * 40,
+                   'MOCK_LOG': str(log), 'MOCK_QUEUE_ID': queue_id,
+                   'MOCK_API_FAILURE': '1' if api_failure else '0'}
+            result = subprocess.run(['bash', '-euo', 'pipefail', '-c', script], env=env,
+                                    capture_output=True, text=True)
+            calls = [json.loads(row) for row in log.read_text().splitlines()]
+            return result, [call for call in calls if call[:2] == ['pr', 'merge']]
+
+    def test_queue_uses_native_enqueue_with_the_exact_pr_head(self):
+        result, merges = self.invoke('queue-id')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(merges, [['pr', 'merge', '12', '--auto',
+                                 '--match-head-commit', 'a' * 40]])
+
+    def test_bootstrap_without_a_queue_preserves_merge_commit_auto_merge(self):
+        result, merges = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(merges, [['pr', 'merge', '12', '--auto', '--merge',
+                                 '--match-head-commit', 'a' * 40]])
+
+    def test_queue_lookup_failure_does_not_attempt_a_merge(self):
+        result, merges = self.invoke(api_failure=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(merges, [])
 
 
 class InputTests(unittest.TestCase):

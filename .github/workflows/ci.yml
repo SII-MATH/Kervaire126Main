@@ -2,6 +2,9 @@ name: CI
 
 on:
   pull_request:
+  merge_group:
+    types: [checks_requested]
+    branches: [main]
   push:
     branches: [main, develop]
   workflow_dispatch:
@@ -11,7 +14,8 @@ permissions:
   pull-requests: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
+  # Each queue ref is independent; a PR/main run cannot cancel a queue check.
+  group: ci-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
