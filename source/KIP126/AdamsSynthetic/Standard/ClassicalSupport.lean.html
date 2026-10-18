@@ -1,0 +1,97 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Standard/ClassicalSupport.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Standard/ClassicalSupport.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Standard.Background</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.AdamsSynthetic.AdamsFiltration</span>
+<span id="L5"><a href="#L5">   5</a> import KIP126.AdamsSynthetic.Standard.Filtration</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.AdamsSynthetic.Internal.SphereBHS.Tower</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Support properties of the fixed classical Adams system, retained from</span>
+<span id="L9"><a href="#L9">   9</a> bbac1fc05843: ClassicalAdams/TowerVanishing/Proofs:72–75 and</span>
+<span id="L10"><a href="#L10">  10</a> ClassicalAdams/SphereVanishing/Proofs:46–51. Their construction belongs</span>
+<span id="L11"><a href="#L11">  11</a> to the Adams system; the paper uses these original upstream facts. -/</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.AdamsSynthetic.Standard</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Kervaire.Route KIP126.StableHomotopy</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> private theorem page_subsingleton_of_ambient</span>
+<span id="L17"><a href="#L17">  17</a>     (D : KIP126.Core.SpectralSequence.SSData (ModuleCat.{0} ℤ))</span>
+<span id="L18"><a href="#L18">  18</a>     (r : WithTop ℕ) [Subsingleton D.V] : Subsingleton (D.page r) := by</span>
+<span id="L19"><a href="#L19">  19</a>   have hV : IsZero D.V := ModuleCat.isZero_of_subsingleton D.V</span>
+<span id="L20"><a href="#L20">  20</a>   have hZ : IsZero (Subobject.underlying.obj (D.Z r)) :=</span>
+<span id="L21"><a href="#L21">  21</a>     IsZero.of_mono (D.Z r).arrow hV</span>
+<span id="L22"><a href="#L22">  22</a>   letI : Epi (D.pageπ r) := coequalizer.π_epi</span>
+<span id="L23"><a href="#L23">  23</a>   exact ModuleCat.subsingleton_of_isZero (IsZero.of_epi (D.pageπ r) hZ)</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> public theorem classical_page_negative (X : ClassicalObject) (r s t : ℤ)</span>
+<span id="L26"><a href="#L26">  26</a>     (hs : s &lt; 0) :</span>
+<span id="L27"><a href="#L27">  27</a>     Subsingleton ((model.classical.obj (X.obj model.auxiliary)).Page r (s,t)) := by</span>
+<span id="L28"><a href="#L28">  28</a>   let T := model.classicalTower.tower (X.obj model.auxiliary)</span>
+<span id="L29"><a href="#L29">  29</a>   have hi (a b : ℕ) (hab : a ≤ b) (h : a = b) : IsIso (T.map hab) := by</span>
+<span id="L30"><a href="#L30">  30</a>     subst b</span>
+<span id="L31"><a href="#L31">  31</a>     rw [T.map_self]</span>
+<span id="L32"><a href="#L32">  32</a>     infer_instance</span>
+<span id="L33"><a href="#L33">  33</a>   let f := T.mapAt (show s ≤ s+1 by omega)</span>
+<span id="L34"><a href="#L34">  34</a>   haveI : IsIso f := hi s.toNat (s+1).toNat (by omega) (by omega)</span>
+<span id="L35"><a href="#L35">  35</a>   have hLayer : IsZero (T.layer s) :=</span>
+<span id="L36"><a href="#L36">  36</a>     Pretriangulated.Triangle.isZero₃_of_isIso₁</span>
+<span id="L37"><a href="#L37">  37</a>       (Pretriangulated.Triangle.mk f (HasFunctorialCofiber.cofibι f)</span>
+<span id="L38"><a href="#L38">  38</a>         (HasFunctorialCofiber.cofibδ f))</span>
+<span id="L39"><a href="#L39">  39</a>       (HasFunctorialCofiber.cofib_distinguished f) (show IsIso f from inferInstance)</span>
+<span id="L40"><a href="#L40">  40</a>   letI : Subsingleton (T.FirstPage (s,t)) := ⟨fun a b =&gt; hLayer.eq_of_tgt a b⟩</span>
+<span id="L41"><a href="#L41">  41</a>   let D := (model.classical.obj (X.obj model.auxiliary)).ssData (s,t)</span>
+<span id="L42"><a href="#L42">  42</a>   letI : Subsingleton D.V :=</span>
+<span id="L43"><a href="#L43">  43</a>     (model.classicalTower.sequence (X.obj model.auxiliary)).ambient (s,t)</span>
+<span id="L44"><a href="#L44">  44</a>       |&gt;.toLinearEquiv.injective.subsingleton</span>
+<span id="L45"><a href="#L45">  45</a>   exact page_subsingleton_of_ambient D _</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> public theorem sphere_page_filtration_zero (r : ℤ) (t : ℕ) (ht : t ≠ 0) :</span>
+<span id="L48"><a href="#L48">  48</a>     Subsingleton (model.classical.sphere.Page r (0,t)) := by</span>
+<span id="L49"><a href="#L49">  49</a>   let T := model.classicalTower.tower (SphereSpectrum (C := Spectrum))</span>
+<span id="L50"><a href="#L50">  50</a>   let e : T.layer 0 ≅ model.coefficients.object :=</span>
+<span id="L51"><a href="#L51">  51</a>     T.layerIso 0 ≪≫ (tensorLeft model.coefficients.object).mapIso T.zeroIso ≪≫</span>
+<span id="L52"><a href="#L52">  52</a>       ρ_ model.coefficients.object</span>
+<span id="L53"><a href="#L53">  53</a>   letI := model.coefficients.homotopy_vanishes (t : ℤ) (by exact_mod_cast ht)</span>
+<span id="L54"><a href="#L54">  54</a>   letI : Subsingleton (T.FirstPage (0,t)) := by</span>
+<span id="L55"><a href="#L55">  55</a>     change Subsingleton (HomotopyGroup (t : ℤ) (T.layer 0))</span>
+<span id="L56"><a href="#L56">  56</a>     exact (Iso.homCongr (Iso.refl (Sphere (C := Spectrum) (t : ℤ))) e).injective.subsingleton</span>
+<span id="L57"><a href="#L57">  57</a>   let D := model.classical.sphere.ssData (0,t)</span>
+<span id="L58"><a href="#L58">  58</a>   letI : Subsingleton D.V :=</span>
+<span id="L59"><a href="#L59">  59</a>     (model.classicalTower.sequence (SphereSpectrum (C := Spectrum))).ambient (0,t)</span>
+<span id="L60"><a href="#L60">  60</a>       |&gt;.toLinearEquiv.injective.subsingleton</span>
+<span id="L61"><a href="#L61">  61</a>   exact page_subsingleton_of_ambient D _</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> /-- Infinite HF₂ Adams filtration on the ordinary sphere implies odd torsion.</span>
+<span id="L64"><a href="#L64">  64</a> The source is the actual finite shifted sphere and the target is the ordinary</span>
+<span id="L65"><a href="#L65">  65</a> sphere. This follows from the finite-map separation producer obligation;</span>
+<span id="L66"><a href="#L66">  66</a> it does not assert that these ordinary sphere classes vanish. -/</span>
+<span id="L67"><a href="#L67">  67</a> public theorem classical_sphere_separated (m : ℤ)</span>
+<span id="L68"><a href="#L68">  68</a>     (a : HomotopyGroup (C := Spectrum) m SphereSpectrum)</span>
+<span id="L69"><a href="#L69">  69</a>     (ha : ∀ s : ℕ, a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s m) :</span>
+<span id="L70"><a href="#L70">  70</a>     KIP126.AdamsSynthetic.IsOddTorsionMap a := by</span>
+<span id="L71"><a href="#L71">  71</a>   apply finite_map_separation</span>
+<span id="L72"><a href="#L72">  72</a>     (IsFiniteSpectrum.shift m IsFiniteSpectrum.sphere) IsFiniteSpectrum.sphere a</span>
+<span id="L73"><a href="#L73">  73</a>   intro s</span>
+<span id="L74"><a href="#L74">  74</a>   exact ha s.toNat</span>
+<span id="L75"><a href="#L75">  75</a> </span>
+<span id="L76"><a href="#L76">  76</a> /-- The migrated argument specializes to exactly the tower in the public</span>
+<span id="L77"><a href="#L77">  77</a> obligation above. Its residual-acyclicity and finite-kernel premises remain</span>
+<span id="L78"><a href="#L78">  78</a> explicit; neither is obtained from the separation conclusion. -/</span>
+<span id="L79"><a href="#L79">  79</a> private theorem classical_sphere_separated_of_residual_acyclic</span>
+<span id="L80"><a href="#L80">  80</a>     (products : HasProductsOfShape ℕ Spectrum)</span>
+<span id="L81"><a href="#L81">  81</a>     (hacyclic : letI := products;</span>
+<span id="L82"><a href="#L82">  82</a>       IsIso (Internal.SphereBHS.Tower.oneSubShift</span>
+<span id="L83"><a href="#L83">  83</a>         (model.classicalTower.tower SphereSpectrum)))</span>
+<span id="L84"><a href="#L84">  84</a>     (m : ℤ)</span>
+<span id="L85"><a href="#L85">  85</a>     (hfinite : ∀ s : ℕ, Finite (inducedMap</span>
+<span id="L86"><a href="#L86">  86</a>       ((model.classicalTower.tower SphereSpectrum).map (Nat.le_succ s)) m).ker)</span>
+<span id="L87"><a href="#L87">  87</a>     (a : HomotopyGroup (C := Spectrum) m SphereSpectrum)</span>
+<span id="L88"><a href="#L88">  88</a>     (ha : ∀ s : ℕ,</span>
+<span id="L89"><a href="#L89">  89</a>       a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s m) :</span>
+<span id="L90"><a href="#L90">  90</a>     a = 0 := by</span>
+<span id="L91"><a href="#L91">  91</a>   letI := products</span>
+<span id="L92"><a href="#L92">  92</a>   exact Internal.SphereBHS.Tower.filtration_element_separated</span>
+<span id="L93"><a href="#L93">  93</a>     (model.classicalTower.tower SphereSpectrum) m hfinite</span>
+<span id="L94"><a href="#L94">  94</a>     (Internal.SphereBHS.Tower.hom_delta_bijective</span>
+<span id="L95"><a href="#L95">  95</a>       (model.classicalTower.tower SphereSpectrum) hacyclic (Sphere m)).injective a ha</span>
+<span id="L96"><a href="#L96">  96</a> </span>
+<span id="L97"><a href="#L97">  97</a> end KIP126.AdamsSynthetic.Standard</span></pre>

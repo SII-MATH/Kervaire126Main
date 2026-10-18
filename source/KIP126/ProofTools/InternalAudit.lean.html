@@ -1,0 +1,616 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/InternalAudit.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/InternalAudit.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.Paper.ExtensionRepresentatives</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.Paper.ExtensionDescent</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.Paper.ExtensionIndeterminacy</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.Paper.ExtensionEssentialSource</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.Paper.Crossing</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.ProofTools.Paper.SyntheticExtensions</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.ProofTools</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.ProofTools.ConvergenceOperations</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.ProofTools.DetectionOperations</span>
+<span id="L13"><a href="#L13">  13</a> import all KIP126.ProofTools.FiltrationOperations</span>
+<span id="L14"><a href="#L14">  14</a> import all KIP126.ProofTools.FiniteFiltration</span>
+<span id="L15"><a href="#L15">  15</a> import all KIP126.ProofTools.GeneralizedLeibniz</span>
+<span id="L16"><a href="#L16">  16</a> import all KIP126.ProofTools.GeneralizedLeibniz.Boundary</span>
+<span id="L17"><a href="#L17">  17</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDivision</span>
+<span id="L18"><a href="#L18">  18</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDelta</span>
+<span id="L19"><a href="#L19">  19</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite</span>
+<span id="L20"><a href="#L20">  20</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingShift</span>
+<span id="L21"><a href="#L21">  21</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLabels</span>
+<span id="L22"><a href="#L22">  22</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingRange</span>
+<span id="L23"><a href="#L23">  23</a> import all KIP126.ProofTools.GeneralizedLeibniz.Filtration</span>
+<span id="L24"><a href="#L24">  24</a> import all KIP126.ProofTools.GeneralizedLeibniz.Square</span>
+<span id="L25"><a href="#L25">  25</a> import all KIP126.ProofTools.GeneralizedLeibniz.SquareRepresentatives</span>
+<span id="L26"><a href="#L26">  26</a> import all KIP126.ProofTools.GeneralizedLeibniz.WitnessSquare</span>
+<span id="L27"><a href="#L27">  27</a> import all KIP126.ProofTools.GeneralizedLeibniz.BottomTarget</span>
+<span id="L28"><a href="#L28">  28</a> import all KIP126.ProofTools.GeneralizedLeibniz.Survival</span>
+<span id="L29"><a href="#L29">  29</a> import all KIP126.ProofTools.GeneralizedLeibniz.Reverse</span>
+<span id="L30"><a href="#L30">  30</a> import all KIP126.ProofTools.GeneralizedLeibniz.RightEdge</span>
+<span id="L31"><a href="#L31">  31</a> import all KIP126.ProofTools.GeneralizedLeibniz.Propagation</span>
+<span id="L32"><a href="#L32">  32</a> import all KIP126.ProofTools.GeneralizedLeibniz.DivisionLabels</span>
+<span id="L33"><a href="#L33">  33</a> import all KIP126.ProofTools.GeneralizedLeibniz.SphereAutomorphisms</span>
+<span id="L34"><a href="#L34">  34</a> import all KIP126.ProofTools.GeneralizedLeibniz.BoundaryDivision</span>
+<span id="L35"><a href="#L35">  35</a> import all KIP126.ProofTools.GeneralizedLeibniz.WeightedReverse</span>
+<span id="L36"><a href="#L36">  36</a> import all KIP126.ProofTools.GeneralizedMahowald.CofiberIdentification</span>
+<span id="L37"><a href="#L37">  37</a> import all KIP126.ProofTools.GeneralizedMahowald.QuotientShift</span>
+<span id="L38"><a href="#L38">  38</a> import all KIP126.ProofTools.GeneralizedMahowald.HSource</span>
+<span id="L39"><a href="#L39">  39</a> import all KIP126.ProofTools.GeneralizedMahowald.HSourceSelection</span>
+<span id="L40"><a href="#L40">  40</a> import all KIP126.ProofTools.GeneralizedMahowald.HMapCoherence</span>
+<span id="L41"><a href="#L41">  41</a> import all KIP126.ProofTools.GeneralizedMahowald.HTarget</span>
+<span id="L42"><a href="#L42">  42</a> import all KIP126.ProofTools.GeneralizedMahowald.HTargetDetection</span>
+<span id="L43"><a href="#L43">  43</a> import all KIP126.ProofTools.GeneralizedMahowald.TargetSurvival</span>
+<span id="L44"><a href="#L44">  44</a> import all KIP126.ProofTools.GeneralizedMahowald.SuspensionTarget</span>
+<span id="L45"><a href="#L45">  45</a> import all KIP126.ProofTools.GeneralizedMahowald.FiniteLambdaShift</span>
+<span id="L46"><a href="#L46">  46</a> import all KIP126.ProofTools.GeneralizedMahowald.SuspensionDetection</span>
+<span id="L47"><a href="#L47">  47</a> import all KIP126.ProofTools.GeneralizedMahowald.ShiftLabels</span>
+<span id="L48"><a href="#L48">  48</a> import all KIP126.ProofTools.GeneralizedMahowald.Synchronization</span>
+<span id="L49"><a href="#L49">  49</a> import all KIP126.ProofTools.GeneralizedMahowald.Geometry</span>
+<span id="L50"><a href="#L50">  50</a> import all KIP126.ProofTools.GeneralizedMahowald.OctahedralPullback</span>
+<span id="L51"><a href="#L51">  51</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonShiftEdge</span>
+<span id="L52"><a href="#L52">  52</a> import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerAssembly</span>
+<span id="L53"><a href="#L53">  53</a> import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerTarget</span>
+<span id="L54"><a href="#L54">  54</a> import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerSpecial</span>
+<span id="L55"><a href="#L55">  55</a> import all KIP126.ProofTools.GeneralizedMahowald.StatementReview</span>
+<span id="L56"><a href="#L56">  56</a> import all KIP126.ProofTools.GeneralizedMahowald.BottomNuInjection</span>
+<span id="L57"><a href="#L57">  57</a> import all KIP126.ProofTools.GeneralizedMahowald.CorrectedTotalTarget</span>
+<span id="L58"><a href="#L58">  58</a> import all KIP126.ProofTools.GeneralizedMahowald.RotatedNuPremises</span>
+<span id="L59"><a href="#L59">  59</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonTotalTarget</span>
+<span id="L60"><a href="#L60">  60</a> import all KIP126.ProofTools.GeneralizedMahowald.SuspensionClassLabels</span>
+<span id="L61"><a href="#L61">  61</a> import all KIP126.ProofTools.GeneralizedMahowald.RotatedNuTriangle</span>
+<span id="L62"><a href="#L62">  62</a> import all KIP126.ProofTools.GeneralizedMahowald.TotalFTransport</span>
+<span id="L63"><a href="#L63">  63</a> import all KIP126.ProofTools.GeneralizedMahowald.CorrectedCoordinates</span>
+<span id="L64"><a href="#L64">  64</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonEdgeNativeTarget</span>
+<span id="L65"><a href="#L65">  65</a> import all KIP126.ProofTools.GeneralizedMahowald.SourceBoundaryReview</span>
+<span id="L66"><a href="#L66">  66</a> import all KIP126.ProofTools.GeneralizedMahowald.MinimalFinalAssembly</span>
+<span id="L67"><a href="#L67">  67</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceActual</span>
+<span id="L68"><a href="#L68">  68</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceRegrade</span>
+<span id="L69"><a href="#L69">  69</a> import all KIP126.ProofTools.GeneralizedMahowald.ShortSource</span>
+<span id="L70"><a href="#L70">  70</a> import all KIP126.ProofTools.GeneralizedMahowald.NuCofiberMayCorrection</span>
+<span id="L71"><a href="#L71">  71</a> import all KIP126.ProofTools.GeneralizedMahowald.SphereMayActual</span>
+<span id="L72"><a href="#L72">  72</a> import all KIP126.ProofTools.GeneralizedMahowald.SphereResidualLabels</span>
+<span id="L73"><a href="#L73">  73</a> import all KIP126.ProofTools.GeneralizedMahowald.SphereMayCorrection</span>
+<span id="L74"><a href="#L74">  74</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonCoordinates</span>
+<span id="L75"><a href="#L75">  75</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceTransport</span>
+<span id="L76"><a href="#L76">  76</a> import all KIP126.ProofTools.GeneralizedMahowald.FinalDivision</span>
+<span id="L77"><a href="#L77">  77</a> import all KIP126.ProofTools.GeneralizedMahowald.FTransportLambda</span>
+<span id="L78"><a href="#L78">  78</a> import all KIP126.ProofTools.GeneralizedMahowald.MayCorrection</span>
+<span id="L79"><a href="#L79">  79</a> import all KIP126.ProofTools.GeneralizedMahowald.MinimalSource</span>
+<span id="L80"><a href="#L80">  80</a> import all KIP126.ProofTools.GeneralizedMahowald.CumulativeBoundary</span>
+<span id="L81"><a href="#L81">  81</a> import all KIP126.ProofTools.GeneralizedMahowald.FTransport</span>
+<span id="L82"><a href="#L82">  82</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonEdgeLabels</span>
+<span id="L83"><a href="#L83">  83</a> import all KIP126.ProofTools.GeneralizedMahowald.SphereAutomorphismDetection</span>
+<span id="L84"><a href="#L84">  84</a> import all KIP126.ProofTools.GeneralizedMahowald.Signs</span>
+<span id="L85"><a href="#L85">  85</a> import all KIP126.ProofTools.GeneralizedMahowald.ExtensionImage</span>
+<span id="L86"><a href="#L86">  86</a> import all KIP126.ProofTools.GeneralizedMahowald</span>
+<span id="L87"><a href="#L87">  87</a> import all KIP126.ProofTools.GeneralizedMahowald.Adjacent</span>
+<span id="L88"><a href="#L88">  88</a> import all KIP126.ProofTools.GeneralizedMahowald.BoundaryDetection</span>
+<span id="L89"><a href="#L89">  89</a> import all KIP126.ProofTools.GeneralizedMahowald.BoundaryLambda</span>
+<span id="L90"><a href="#L90">  90</a> import all KIP126.ProofTools.GeneralizedMahowald.Coherence</span>
+<span id="L91"><a href="#L91">  91</a> import all KIP126.ProofTools.GeneralizedMahowald.Detection</span>
+<span id="L92"><a href="#L92">  92</a> import all KIP126.ProofTools.GeneralizedMahowald.Filtration</span>
+<span id="L93"><a href="#L93">  93</a> import all KIP126.ProofTools.GeneralizedMahowald.FinalOperations</span>
+<span id="L94"><a href="#L94">  94</a> import all KIP126.ProofTools.GeneralizedMahowald.KernelCorrection</span>
+<span id="L95"><a href="#L95">  95</a> import all KIP126.ProofTools.GeneralizedMahowald.KernelTriangles</span>
+<span id="L96"><a href="#L96">  96</a> import all KIP126.ProofTools.GeneralizedMahowald.NoReturn</span>
+<span id="L97"><a href="#L97">  97</a> import all KIP126.ProofTools.GeneralizedMahowald.PageCalculus</span>
+<span id="L98"><a href="#L98">  98</a> import all KIP126.ProofTools.GeneralizedMahowald.Sphere</span>
+<span id="L99"><a href="#L99">  99</a> import all KIP126.ProofTools.GeneralizedMahowald.SphereLabels</span>
+<span id="L100"><a href="#L100"> 100</a> import all KIP126.ProofTools.Language</span>
+<span id="L101"><a href="#L101"> 101</a> import all KIP126.ProofTools.Laws</span>
+<span id="L102"><a href="#L102"> 102</a> import all KIP126.ProofTools.Operations</span>
+<span id="L103"><a href="#L103"> 103</a> import all KIP126.ProofTools.Representatives</span>
+<span id="L104"><a href="#L104"> 104</a> import all KIP126.ProofTools.Standard</span>
+<span id="L105"><a href="#L105"> 105</a> import all KIP126.ProofTools.Stretching</span>
+<span id="L106"><a href="#L106"> 106</a> import all KIP126.ProofTools.StretchingRepresentatives</span>
+<span id="L107"><a href="#L107"> 107</a> </span>
+<span id="L108"><a href="#L108"> 108</a> </span>
+<span id="L109"><a href="#L109"> 109</a> public meta import Checks.Registry</span>
+<span id="L110"><a href="#L110"> 110</a> import Lean</span>
+<span id="L111"><a href="#L111"> 111</a> </span>
+<span id="L112"><a href="#L112"> 112</a> /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually</span>
+<span id="L113"><a href="#L113"> 113</a> registered proof/construction holes are permitted; project axioms and synthetic</span>
+<span id="L114"><a href="#L114"> 114</a> (elaboration-error) holes are always rejected. SpectralSequence stays sorry-free. -/</span>
+<span id="L115"><a href="#L115"> 115</a> open Lean Elab Command</span>
+<span id="L116"><a href="#L116"> 116</a> set_option maxHeartbeats 0</span>
+<span id="L117"><a href="#L117"> 117</a> set_option maxRecDepth 8192</span>
+<span id="L118"><a href="#L118"> 118</a> run_cmd do</span>
+<span id="L119"><a href="#L119"> 119</a>   let ledger ← Lean.ofExcept &lt;| Json.parse proofObligationLedger</span>
+<span id="L120"><a href="#L120"> 120</a>   let entries ← Lean.ofExcept &lt;| ledger.getObjValAs? (Array Json) &quot;obligations&quot;</span>
+<span id="L121"><a href="#L121"> 121</a>   let expected : Array Json ← entries.filterM fun (row : Json) =&gt; do</span>
+<span id="L122"><a href="#L122"> 122</a>     let mod ← Lean.ofExcept &lt;| row.getObjValAs? String &quot;module&quot;</span>
+<span id="L123"><a href="#L123"> 123</a>     pure ((`KIP126.ProofTools).isPrefixOf mod.toName)</span>
+<span id="L124"><a href="#L124"> 124</a>   let expectedNames : Array String ← expected.mapM fun (row : Json) =&gt; Lean.ofExcept &lt;| row.getObjValAs? String &quot;name&quot;</span>
+<span id="L125"><a href="#L125"> 125</a>   let env ← getEnv</span>
+<span id="L126"><a href="#L126"> 126</a>   let mut checked : Nat := 0</span>
+<span id="L127"><a href="#L127"> 127</a>   let mut holes : Array String := #[]</span>
+<span id="L128"><a href="#L128"> 128</a>   for (name, info) in env.constants.toList do</span>
+<span id="L129"><a href="#L129"> 129</a>     let some idx := env.getModuleIdxFor? name | continue</span>
+<span id="L130"><a href="#L130"> 130</a>     let mod := env.header.moduleNames[idx.toNat]!</span>
+<span id="L131"><a href="#L131"> 131</a>     unless (`KIP126.ProofTools).isPrefixOf mod do continue</span>
+<span id="L132"><a href="#L132"> 132</a>     if info.isAxiom then throwError &quot;Project axiom declaration: {name}&quot;</span>
+<span id="L133"><a href="#L133"> 133</a>     let body := info.value? (allowOpaque := true)</span>
+<span id="L134"><a href="#L134"> 134</a>     if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then</span>
+<span id="L135"><a href="#L135"> 135</a>       throwError &quot;Synthetic sorry from failed elaboration: {name}&quot;</span>
+<span id="L136"><a href="#L136"> 136</a>     if info.type.hasSorry || body.any (·.hasSorry) then</span>
+<span id="L137"><a href="#L137"> 137</a>       holes := holes.push name.toString</span>
+<span id="L138"><a href="#L138"> 138</a>       let some entry := expected.find? (fun e =&gt; e.getObjValAs? String &quot;name&quot; == .ok name.toString)</span>
+<span id="L139"><a href="#L139"> 139</a>         | throwError &quot;Unregistered proof/construction obligation: {name}&quot;</span>
+<span id="L140"><a href="#L140"> 140</a>       let expectedType ← Lean.ofExcept &lt;| entry.getObjValAs? String &quot;type_fingerprint&quot;</span>
+<span id="L141"><a href="#L141"> 141</a>       let expectedBody ← Lean.ofExcept &lt;| entry.getObjValAs? String &quot;body_fingerprint&quot;</span>
+<span id="L142"><a href="#L142"> 142</a>       unless expectedType == toString (hash (toString info.type)) &amp;&amp;</span>
+<span id="L143"><a href="#L143"> 143</a>           expectedBody == toString (hash (toString body)) do</span>
+<span id="L144"><a href="#L144"> 144</a>         throwError &quot;Registered obligation changed; review its exact type/body: {name}&quot;</span>
+<span id="L145"><a href="#L145"> 145</a>     let axioms ← collectAxioms name</span>
+<span id="L146"><a href="#L146"> 146</a>     let unexpected := axioms.filter fun n =&gt;</span>
+<span id="L147"><a href="#L147"> 147</a>       n != `propext &amp;&amp; n != `Classical.choice &amp;&amp; n != `Quot.sound &amp;&amp; n != `sorryAx</span>
+<span id="L148"><a href="#L148"> 148</a>     unless unexpected.isEmpty do</span>
+<span id="L149"><a href="#L149"> 149</a>       throwError &quot;Unexpected axiom dependency in {name}: {unexpected}&quot;</span>
+<span id="L150"><a href="#L150"> 150</a>     checked := checked + 1</span>
+<span id="L151"><a href="#L151"> 151</a>   unless holes.qsort (· &lt; ·) == expectedNames.qsort (· &lt; ·) do</span>
+<span id="L152"><a href="#L152"> 152</a>     throwError &quot;Proof obligation registry has stale or missing declarations: {holes}&quot;</span>
+<span id="L153"><a href="#L153"> 153</a>   let originalGapDeclarations := #[</span>
+<span id="L154"><a href="#L154"> 154</a>     &quot;KIP126.ProofTools.Standard.generalizedLeibniz&quot;,</span>
+<span id="L155"><a href="#L155"> 155</a>     &quot;KIP126.ProofTools.Standard.generalizedMahowald&quot;]</span>
+<span id="L156"><a href="#L156"> 156</a>   unless holes.qsort (· &lt; ·) == originalGapDeclarations.qsort (· &lt; ·) do</span>
+<span id="L157"><a href="#L157"> 157</a>     throwError &quot;ProofTools permits only the remaining GL1/GL2 and MH2 declarations: {holes}&quot;</span>
+<span id="L158"><a href="#L158"> 158</a>   -- These completed tools may use fixed upstream obligations, but must not</span>
+<span id="L159"><a href="#L159"> 159</a>   -- depend on either unfinished local paper theorem. In particular, the</span>
+<span id="L160"><a href="#L160"> 160</a>   -- general MH1 boundary lift cannot silently use MH2 or generalizedLeibniz.</span>
+<span id="L161"><a href="#L161"> 161</a>   let provedTools := #[</span>
+<span id="L162"><a href="#L162"> 162</a>     `KIP126.ProofTools.Standard.finitePageExtensionStretching,</span>
+<span id="L163"><a href="#L163"> 163</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_detects,</span>
+<span id="L164"><a href="#L164"> 164</a>     `KIP126.ProofTools.Internal.Mahowald.selected_boundary_nonadjacent,</span>
+<span id="L165"><a href="#L165"> 165</a>     `KIP126.ProofTools.Internal.Mahowald.selected_mahowald_case,</span>
+<span id="L166"><a href="#L166"> 166</a>     `KIP126.ProofTools.Internal.Leibniz.absoluteBoundary_natural,</span>
+<span id="L167"><a href="#L167"> 167</a>     `KIP126.ProofTools.Internal.Leibniz.square_frames,</span>
+<span id="L168"><a href="#L168"> 168</a>     `KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_detects_unshifted,</span>
+<span id="L169"><a href="#L169"> 169</a>     `KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_high_filtration,</span>
+<span id="L170"><a href="#L170"> 170</a>     `KIP126.ProofTools.Internal.Leibniz.gl_witness_square_high_filtration,</span>
+<span id="L171"><a href="#L171"> 171</a>     `KIP126.ProofTools.Internal.Leibniz.gl_witness_square_detects,</span>
+<span id="L172"><a href="#L172"> 172</a>     `KIP126.ProofTools.Internal.Leibniz.gl_bottom_target_representative,</span>
+<span id="L173"><a href="#L173"> 173</a>     `KIP126.ProofTools.Internal.Leibniz.tower_extension_map,</span>
+<span id="L174"><a href="#L174"> 174</a>     `KIP126.ProofTools.Internal.CrossingLabels.lambda_nu_label_nonzero,</span>
+<span id="L175"><a href="#L175"> 175</a>     `KIP126.ProofTools.Internal.CrossingLabels.lambda_finite_label_nonzero,</span>
+<span id="L176"><a href="#L176"> 176</a>     `KIP126.ProofTools.Internal.Leibniz.page_two_tower_no_crossing,</span>
+<span id="L177"><a href="#L177"> 177</a>     `KIP126.ProofTools.Internal.Leibniz.differential_absolute_boundary,</span>
+<span id="L178"><a href="#L178"> 178</a>     `KIP126.ProofTools.Internal.Leibniz.absolute_boundary_filtration_cycles,</span>
+<span id="L179"><a href="#L179"> 179</a>     `KIP126.ProofTools.Internal.Leibniz.boundary_detects_differential,</span>
+<span id="L180"><a href="#L180"> 180</a>     `KIP126.ProofTools.Internal.Leibniz.rho_lift_detected_cycles,</span>
+<span id="L181"><a href="#L181"> 181</a>     `KIP126.ProofTools.Internal.Leibniz.rho_lift_detects,</span>
+<span id="L182"><a href="#L182"> 182</a>     `KIP126.ProofTools.Internal.Leibniz.absolute_boundary_detected_cycles_weighted,</span>
+<span id="L183"><a href="#L183"> 183</a>     `KIP126.ProofTools.Internal.Leibniz.gl1_right_edge_survival,</span>
+<span id="L184"><a href="#L184"> 184</a>     `KIP126.ProofTools.Internal.Leibniz.extension_lambda_boundary_shift,</span>
+<span id="L185"><a href="#L185"> 185</a>     `KIP126.ProofTools.Internal.Leibniz.infinite_extension_lambda_boundary_shift,</span>
+<span id="L186"><a href="#L186"> 186</a>     `KIP126.ProofTools.Internal.Leibniz.finite_quotient_lambda_detects,</span>
+<span id="L187"><a href="#L187"> 187</a>     `KIP126.ProofTools.Internal.Leibniz.finite_lambda_division_first_label_congruent,</span>
+<span id="L188"><a href="#L188"> 188</a>     `KIP126.ProofTools.Internal.Leibniz.boundary_detects_differential_of_source_congruent,</span>
+<span id="L189"><a href="#L189"> 189</a>     `KIP126.ProofTools.Internal.Leibniz.finite_detected_source_division_uniform,</span>
+<span id="L190"><a href="#L190"> 190</a>     `KIP126.ProofTools.Internal.Leibniz.finite_lambda_division_differential,</span>
+<span id="L191"><a href="#L191"> 191</a>     `KIP126.ProofTools.Internal.Leibniz.sphere_automorphism_quotient_projection,</span>
+<span id="L192"><a href="#L192"> 192</a>     `KIP126.ProofTools.Internal.Leibniz.divided_boundary_first_quotient,</span>
+<span id="L193"><a href="#L193"> 193</a>     `KIP126.ProofTools.Internal.Leibniz.finite_detected_boundary_differential_weighted,</span>
+<span id="L194"><a href="#L194"> 194</a>     `KIP126.ProofTools.Internal.Mahowald.infinity_zero_no_incoming,</span>
+<span id="L195"><a href="#L195"> 195</a>     `KIP126.ProofTools.Internal.Mahowald.detects_high_infinity_zero,</span>
+<span id="L196"><a href="#L196"> 196</a>     `KIP126.ProofTools.Internal.Mahowald.finite_bottom_high_label_zero,</span>
+<span id="L197"><a href="#L197"> 197</a>     `KIP126.ProofTools.Internal.Mahowald.finite_positive_extension_map_e2_zero,</span>
+<span id="L198"><a href="#L198"> 198</a>     `KIP126.ProofTools.Internal.Mahowald.positive_extension_map_e2_zero,</span>
+<span id="L199"><a href="#L199"> 199</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_finite_bottom_high_label_zero,</span>
+<span id="L200"><a href="#L200"> 200</a>     `KIP126.ProofTools.Internal.Mahowald.finite_positive_extension_shifted_map_e2_zero,</span>
+<span id="L201"><a href="#L201"> 201</a>     `KIP126.ProofTools.Internal.Mahowald.finite_bottom_detects_label_unique,</span>
+<span id="L202"><a href="#L202"> 202</a>     `KIP126.ProofTools.Internal.Mahowald.finite_zero_extension_map_e2_target,</span>
+<span id="L203"><a href="#L203"> 203</a>     `KIP126.ProofTools.Internal.Mahowald.zero_extension_map_e2_target,</span>
+<span id="L204"><a href="#L204"> 204</a>     `KIP126.ProofTools.Internal.Mahowald.zero_extension_map_e2_bottom_target,</span>
+<span id="L205"><a href="#L205"> 205</a>     `KIP126.ProofTools.Internal.Mahowald.may_tensor_common_lift,</span>
+<span id="L206"><a href="#L206"> 206</a>     `KIP126.ProofTools.Internal.Mahowald.finite_quotient_octahedral_pullback,</span>
+<span id="L207"><a href="#L207"> 207</a>     `KIP126.ProofTools.Internal.Mahowald.finite_quotient_octahedral_pullback_desuspended,</span>
+<span id="L208"><a href="#L208"> 208</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_octahedral_comparison,</span>
+<span id="L209"><a href="#L209"> 209</a>     `KIP126.ProofTools.Internal.Mahowald.octahedral_lift_difference_factor,</span>
+<span id="L210"><a href="#L210"> 210</a>     `KIP126.ProofTools.Internal.Mahowald.octahedral_lift_difference_zero_on_boundary,</span>
+<span id="L211"><a href="#L211"> 211</a>     `KIP126.ProofTools.Internal.Leibniz.finite_source_division,</span>
+<span id="L212"><a href="#L212"> 212</a>     `KIP126.ProofTools.Internal.Leibniz.divided_boundary_filtration_iff,</span>
+<span id="L213"><a href="#L213"> 213</a>     `KIP126.ProofTools.Internal.Leibniz.shift_filtration_iff,</span>
+<span id="L214"><a href="#L214"> 214</a>     `KIP126.ProofTools.Internal.Leibniz.classical_noCrossing_absolute_boundary,</span>
+<span id="L215"><a href="#L215"> 215</a>     `KIP126.ProofTools.Internal.Leibniz.classical_noCrossing_shifted_absolute_boundary,</span>
+<span id="L216"><a href="#L216"> 216</a>     `KIP126.ProofTools.Internal.Leibniz.minimal_length_finite_tower_no_crossing,</span>
+<span id="L217"><a href="#L217"> 217</a>     `KIP126.ProofTools.Internal.Leibniz.short_finite_crossing_position,</span>
+<span id="L218"><a href="#L218"> 218</a>     `KIP126.ProofTools.Internal.Leibniz.tower_no_crossing_of_correction,</span>
+<span id="L219"><a href="#L219"> 219</a>     `KIP126.ProofTools.Internal.quotient_shift_exists,</span>
+<span id="L220"><a href="#L220"> 220</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_shift_desuspend_restriction,</span>
+<span id="L221"><a href="#L221"> 221</a>     `KIP126.ProofTools.Internal.Mahowald.positive_finite_source_unshifted,</span>
+<span id="L222"><a href="#L222"> 222</a>     `KIP126.ProofTools.Internal.Mahowald.zero_finite_source_unshifted,</span>
+<span id="L223"><a href="#L223"> 223</a>     `KIP126.ProofTools.Internal.Mahowald.select_finite_extension_source,</span>
+<span id="L224"><a href="#L224"> 224</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_finite_target_unshifted,</span>
+<span id="L225"><a href="#L225"> 225</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_finite_lambda_unshift,</span>
+<span id="L226"><a href="#L226"> 226</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_finite_positive_detects,</span>
+<span id="L227"><a href="#L227"> 227</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_finite_bottom_detects,</span>
+<span id="L228"><a href="#L228"> 228</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_finite_detects,</span>
+<span id="L229"><a href="#L229"> 229</a>     `KIP126.ProofTools.Internal.Mahowald.finite_zero_shift_label,</span>
+<span id="L230"><a href="#L230"> 230</a>     `KIP126.ProofTools.Internal.Mahowald.finite_zero_shift_detects,</span>
+<span id="L231"><a href="#L231"> 231</a>     `KIP126.ProofTools.Internal.Mahowald.relative_boundary_equal_of_no_crossing,</span>
+<span id="L232"><a href="#L232"> 232</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_cofiber_iso,</span>
+<span id="L233"><a href="#L233"> 233</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_cofiber_inclusion,</span>
+<span id="L234"><a href="#L234"> 234</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_cofiber_inclusion_shifted,</span>
+<span id="L235"><a href="#L235"> 235</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_h_target_representative,</span>
+<span id="L236"><a href="#L236"> 236</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_h_target_detects_native,</span>
+<span id="L237"><a href="#L237"> 237</a>     `KIP126.ProofTools.Internal.Mahowald.finite_target_rho_bottom_lift,</span>
+<span id="L238"><a href="#L238"> 238</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_raw_cofiber_boundary,</span>
+<span id="L239"><a href="#L239"> 239</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_shifted_cofiber_inclusion,</span>
+<span id="L240"><a href="#L240"> 240</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_shifted_cofiber_boundary,</span>
+<span id="L241"><a href="#L241"> 241</a>     `KIP126.ProofTools.Internal.Mahowald.finite_target_detects_neg,</span>
+<span id="L242"><a href="#L242"> 242</a>     `KIP126.ProofTools.Internal.Mahowald.finite_source_detects_neg,</span>
+<span id="L243"><a href="#L243"> 243</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_boundary_lift_desuspended,</span>
+<span id="L244"><a href="#L244"> 244</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_lift_image_division,</span>
+<span id="L245"><a href="#L245"> 245</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_octahedron_fill,</span>
+<span id="L246"><a href="#L246"> 246</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_quotient_maps_equal_on_spheres,</span>
+<span id="L247"><a href="#L247"> 247</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unquotiented_boundary_defect,</span>
+<span id="L248"><a href="#L248"> 248</a>     `KIP126.ProofTools.Internal.Mahowald.common_shift_residual_factor,</span>
+<span id="L249"><a href="#L249"> 249</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_common_desuspended_boundary_defect,</span>
+<span id="L250"><a href="#L250"> 250</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_precomp_preserves_filtration,</span>
+<span id="L251"><a href="#L251"> 251</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_automorphism_first_finite,</span>
+<span id="L252"><a href="#L252"> 252</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_precomp_sphere,</span>
+<span id="L253"><a href="#L253"> 253</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_automorphism_finite_positive_detects,</span>
+<span id="L254"><a href="#L254"> 254</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_automorphism_finite_bottom_detects,</span>
+<span id="L255"><a href="#L255"> 255</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_automorphism_finite_detects,</span>
+<span id="L256"><a href="#L256"> 256</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unshift_natural_automorphism_detects,</span>
+<span id="L257"><a href="#L257"> 257</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_suspension_inclusion_exists,</span>
+<span id="L258"><a href="#L258"> 258</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_edge_factors_finite_lambda,</span>
+<span id="L259"><a href="#L259"> 259</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_common_edge_detection,</span>
+<span id="L260"><a href="#L260"> 260</a>     `KIP126.ProofTools.Internal.Mahowald.edgeVerticalCancelIso,</span>
+<span id="L261"><a href="#L261"> 261</a>     `KIP126.ProofTools.Internal.Mahowald.edge_vertical_cancel_common_shift,</span>
+<span id="L262"><a href="#L262"> 262</a>     `KIP126.ProofTools.Internal.Mahowald.commonEdgeTargetIso,</span>
+<span id="L263"><a href="#L263"> 263</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_finite_edge_canonical,</span>
+<span id="L264"><a href="#L264"> 264</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_edge_canonical_factor,</span>
+<span id="L265"><a href="#L265"> 265</a>     `KIP126.ProofTools.Internal.Mahowald.edge_double_vertical_shift,</span>
+<span id="L266"><a href="#L266"> 266</a>     `KIP126.ProofTools.Internal.Mahowald.verticalCancellationIso,</span>
+<span id="L267"><a href="#L267"> 267</a>     `KIP126.ProofTools.Internal.Mahowald.exactSuspensionTransport,</span>
+<span id="L268"><a href="#L268"> 268</a>     `KIP126.ProofTools.Internal.Mahowald.canonicalSuspensionComm,</span>
+<span id="L269"><a href="#L269"> 269</a>     `KIP126.ProofTools.Internal.Mahowald.canonicalSuspensionTransport,</span>
+<span id="L270"><a href="#L270"> 270</a>     `KIP126.ProofTools.Internal.Mahowald.exactSuspensionTransport_tail,</span>
+<span id="L271"><a href="#L271"> 271</a>     `KIP126.ProofTools.Internal.Mahowald.exact_of_canonical_transport_detects,</span>
+<span id="L272"><a href="#L272"> 272</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_boundary_exact_transport,</span>
+<span id="L273"><a href="#L273"> 273</a>     `KIP126.ProofTools.Internal.Mahowald.quotientClassUnshift,</span>
+<span id="L274"><a href="#L274"> 274</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unshift_normalized_map,</span>
+<span id="L275"><a href="#L275"> 275</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_suspended_source_iso,</span>
+<span id="L276"><a href="#L276"> 276</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_boundary_suspended_f,</span>
+<span id="L277"><a href="#L277"> 277</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_raw_boundary_equation,</span>
+<span id="L278"><a href="#L278"> 278</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_raw_boundary_detects,</span>
+<span id="L279"><a href="#L279"> 279</a>     `KIP126.ProofTools.Internal.Mahowald.cumulative_boundary_permanent,</span>
+<span id="L280"><a href="#L280"> 280</a>     `KIP126.ProofTools.Internal.Mahowald.cumulative_boundary_hit,</span>
+<span id="L281"><a href="#L281"> 281</a>     `KIP126.ProofTools.Internal.Mahowald.lambdaMultiply_zero_of_le,</span>
+<span id="L282"><a href="#L282"> 282</a>     `KIP126.ProofTools.Internal.Mahowald.cumulative_boundary_torsion_lift,</span>
+<span id="L283"><a href="#L283"> 283</a>     `KIP126.ProofTools.Internal.Mahowald.cumulative_boundary_torsion_lift_unshifted,</span>
+<span id="L284"><a href="#L284"> 284</a>     `KIP126.ProofTools.Internal.Mahowald.source_detects_reindex,</span>
+<span id="L285"><a href="#L285"> 285</a>     `KIP126.ProofTools.Internal.Mahowald.extension_at_source_of_normalized_source,</span>
+<span id="L286"><a href="#L286"> 286</a>     `KIP126.ProofTools.Internal.Mahowald.transfer_finite_source,</span>
+<span id="L287"><a href="#L287"> 287</a>     `KIP126.ProofTools.Internal.Mahowald.shift_class_sub,</span>
+<span id="L288"><a href="#L288"> 288</a>     `KIP126.ProofTools.Internal.Mahowald.homotopy_regrade_sub,</span>
+<span id="L289"><a href="#L289"> 289</a>     `KIP126.ProofTools.Internal.Mahowald.finite_extension_at_source_minimal_positive,</span>
+<span id="L290"><a href="#L290"> 290</a>     `KIP126.ProofTools.Internal.Mahowald.finite_extension_at_source_minimal_zero,</span>
+<span id="L291"><a href="#L291"> 291</a>     `KIP126.ProofTools.Internal.Mahowald.finite_extension_at_source_minimal,</span>
+<span id="L292"><a href="#L292"> 292</a>     `KIP126.ProofTools.Internal.Mahowald.finite_cycle_image_infinity,</span>
+<span id="L293"><a href="#L293"> 293</a>     `KIP126.ProofTools.Internal.Mahowald.finite_cycle_image_correction,</span>
+<span id="L294"><a href="#L294"> 294</a>     `KIP126.ProofTools.Internal.Mahowald.mh2_actual_defect_correction,</span>
+<span id="L295"><a href="#L295"> 295</a>     `KIP126.ProofTools.Internal.Mahowald.positive_extension_postcompose_e2_zero,</span>
+<span id="L296"><a href="#L296"> 296</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_residual_transpose,</span>
+<span id="L297"><a href="#L297"> 297</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_transposed_lambda_infinity_zero,</span>
+<span id="L298"><a href="#L298"> 298</a>     `KIP126.ProofTools.Internal.Mahowald.differential_target_boundary,</span>
+<span id="L299"><a href="#L299"> 299</a>     `KIP126.ProofTools.Internal.Mahowald.zero_length_differential_residual_zero,</span>
+<span id="L300"><a href="#L300"> 300</a>     `KIP126.ProofTools.Internal.Mahowald.zero_length_actual_toda_residual_detects_zero,</span>
+<span id="L301"><a href="#L301"> 301</a>     `KIP126.ProofTools.Internal.Mahowald.mh2_actual_defect_subtraction,</span>
+<span id="L302"><a href="#L302"> 302</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_common_desuspended_boundary_defect_with_transpose,</span>
+<span id="L303"><a href="#L303"> 303</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_finite_lambda_class_general,</span>
+<span id="L304"><a href="#L304"> 304</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unshift_finite_lambda,</span>
+<span id="L305"><a href="#L305"> 305</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unshift_finite_lambda_detects,</span>
+<span id="L306"><a href="#L306"> 306</a>     `KIP126.ProofTools.Internal.Mahowald.finite_filtered_target_label,</span>
+<span id="L307"><a href="#L307"> 307</a>     `KIP126.ProofTools.Internal.Mahowald.finiteWeightedLambdaClass,</span>
+<span id="L308"><a href="#L308"> 308</a>     `KIP126.ProofTools.Internal.Mahowald.finite_weighted_lambda_detects,</span>
+<span id="L309"><a href="#L309"> 309</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_target_label_congruent,</span>
+<span id="L310"><a href="#L310"> 310</a>     `KIP126.ProofTools.Internal.Mahowald.finiteWeightedLambdaDivisionClass,</span>
+<span id="L311"><a href="#L311"> 311</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_target_label_congruent_uniform,</span>
+<span id="L312"><a href="#L312"> 312</a>     `KIP126.ProofTools.Internal.Mahowald.final_f_division_target,</span>
+<span id="L313"><a href="#L313"> 313</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_inclusion,</span>
+<span id="L314"><a href="#L314"> 314</a>     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_add,</span>
+<span id="L315"><a href="#L315"> 315</a>     `KIP126.ProofTools.Internal.Mahowald.finite_divided_source_exact_label,</span>
+<span id="L316"><a href="#L316"> 316</a>     `KIP126.ProofTools.Internal.Mahowald.finite_detected_source_division_exact,</span>
+<span id="L317"><a href="#L317"> 317</a>     `KIP126.ProofTools.Internal.Mahowald.finite_detected_bottom_first,</span>
+<span id="L318"><a href="#L318"> 318</a>     `KIP126.ProofTools.Internal.Mahowald.finite_detected_source_division_exact_uniform,</span>
+<span id="L319"><a href="#L319"> 319</a>     `KIP126.ProofTools.Internal.Mahowald.finite_target_source_division_exact,</span>
+<span id="L320"><a href="#L320"> 320</a>     `KIP126.ProofTools.Internal.Mahowald.vertical_normalized_finite_lambda_class,</span>
+<span id="L321"><a href="#L321"> 321</a>     `KIP126.ProofTools.Internal.Mahowald.vertical_normalized_finite_lambda_detects,</span>
+<span id="L322"><a href="#L322"> 322</a>     `KIP126.ProofTools.Internal.Mahowald.zeroEdgeQuotientShiftIso,</span>
+<span id="L323"><a href="#L323"> 323</a>     `KIP126.ProofTools.Internal.Mahowald.zero_edge_quotient_shift_inclusion,</span>
+<span id="L324"><a href="#L324"> 324</a>     `KIP126.ProofTools.Internal.Mahowald.zero_edge_shift_homotopy_class,</span>
+<span id="L325"><a href="#L325"> 325</a>     `KIP126.ProofTools.Internal.Mahowald.zero_edge_quotient_source_back,</span>
+<span id="L326"><a href="#L326"> 326</a>     `KIP126.ProofTools.Internal.Mahowald.fSourceRawFunctor,</span>
+<span id="L327"><a href="#L327"> 327</a>     `KIP126.ProofTools.Internal.Mahowald.fSourceChi,</span>
+<span id="L328"><a href="#L328"> 328</a>     `KIP126.ProofTools.Internal.Mahowald.fSourceKappa,</span>
+<span id="L329"><a href="#L329"> 329</a>     `KIP126.ProofTools.Internal.Mahowald.fSourceDifference,</span>
+<span id="L330"><a href="#L330"> 330</a>     `KIP126.ProofTools.Internal.Mahowald.negativeFunctorAutomorphism,</span>
+<span id="L331"><a href="#L331"> 331</a>     `KIP126.ProofTools.Internal.Mahowald.fSourceSignedChi,</span>
+<span id="L332"><a href="#L332"> 332</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_suspended_source_total,</span>
+<span id="L333"><a href="#L333"> 333</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_suspended_source_signed_total,</span>
+<span id="L334"><a href="#L334"> 334</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_unshift_two_natural_transports_detects,</span>
+<span id="L335"><a href="#L335"> 335</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_two_shifts_on_spheres,</span>
+<span id="L336"><a href="#L336"> 336</a>     `KIP126.ProofTools.Internal.Mahowald.double_quotient_unshift_up_to_source_automorphism,</span>
+<span id="L337"><a href="#L337"> 337</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_source_double_unshift_detects,</span>
+<span id="L338"><a href="#L338"> 338</a>     `KIP126.ProofTools.Internal.Mahowald.quotientClassUnshift_shift,</span>
+<span id="L339"><a href="#L339"> 339</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_quotient_total_unshift_detects,</span>
+<span id="L340"><a href="#L340"> 340</a>     `KIP126.ProofTools.Internal.Mahowald.commonCofiberTargetIso,</span>
+<span id="L341"><a href="#L341"> 341</a>     `KIP126.ProofTools.Internal.Mahowald.common_cofiber_target_inclusion,</span>
+<span id="L342"><a href="#L342"> 342</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_common_cofiber_coordinates_exists,</span>
+<span id="L343"><a href="#L343"> 343</a>     `KIP126.ProofTools.Internal.Mahowald.common_cofiber_desuspend_eq_shift_cNu,</span>
+<span id="L344"><a href="#L344"> 344</a>     `KIP126.ProofTools.Internal.Mahowald.commonEdgeFlattenIso,</span>
+<span id="L345"><a href="#L345"> 345</a>     `KIP126.ProofTools.Internal.Mahowald.commonEdgeTargetFlatIso,</span>
+<span id="L346"><a href="#L346"> 346</a>     `KIP126.ProofTools.Internal.Mahowald.common_edge_flatten_preimage,</span>
+<span id="L347"><a href="#L347"> 347</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_nu_to_shifted_finite_no_return,</span>
+<span id="L348"><a href="#L348"> 348</a>     `KIP126.ProofTools.Internal.Mahowald.finite_source_high_target_extensions_equal,</span>
+<span id="L349"><a href="#L349"> 349</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_nu_high_target_map_zero,</span>
+<span id="L350"><a href="#L350"> 350</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_nu_high_target_extension,</span>
+<span id="L351"><a href="#L351"> 351</a>     `KIP126.ProofTools.Internal.Mahowald.detects_zero_of_detects_same_label_zero,</span>
+<span id="L352"><a href="#L352"> 352</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_source_actual_edge_correction,</span>
+<span id="L353"><a href="#L353"> 353</a>     `KIP126.ProofTools.Internal.Mahowald.actual_raw_residual_flat_detects_zero,</span>
+<span id="L354"><a href="#L354"> 354</a>     `KIP126.ProofTools.Internal.Mahowald.actual_extension_source_native_detects,</span>
+<span id="L355"><a href="#L355"> 355</a>     `KIP126.ProofTools.Internal.Mahowald.common_bi_susp_inverse,</span>
+<span id="L356"><a href="#L356"> 356</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_geometric_second_image,</span>
+<span id="L357"><a href="#L357"> 357</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_quotient_second_image,</span>
+<span id="L358"><a href="#L358"> 358</a>     `KIP126.ProofTools.Internal.Mahowald.normalize_common_edge_source_length,</span>
+<span id="L359"><a href="#L359"> 359</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_source_actual_mahowald_second_image,</span>
+<span id="L360"><a href="#L360"> 360</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_shifted_nu_high_target_map_zero,</span>
+<span id="L361"><a href="#L361"> 361</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_nuCofiber_high_target_map_zero,</span>
+<span id="L362"><a href="#L362"> 362</a>     `KIP126.ProofTools.Internal.Mahowald.nuCofiber_high_target_map_zero,</span>
+<span id="L363"><a href="#L363"> 363</a>     `KIP126.ProofTools.Internal.Mahowald.nuCofiber_high_target_extension,</span>
+<span id="L364"><a href="#L364"> 364</a>     `KIP126.ProofTools.Internal.Mahowald.actual_edge_correction_of_extensions,</span>
+<span id="L365"><a href="#L365"> 365</a>     `KIP126.ProofTools.Internal.Mahowald.nuCofiber_source_actual_edge_correction,</span>
+<span id="L366"><a href="#L366"> 366</a>     `KIP126.ProofTools.Internal.Mahowald.nu_classical_shift_iso_exists,</span>
+<span id="L367"><a href="#L367"> 367</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_classical_nuCofiber_high_target_map_zero,</span>
+<span id="L368"><a href="#L368"> 368</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_classical_nuCofiber_high_target_extension,</span>
+<span id="L369"><a href="#L369"> 369</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_classical_nuCofiber_source_actual_edge_correction,</span>
+<span id="L370"><a href="#L370"> 370</a>     `KIP126.ProofTools.Internal.Leibniz.tower_essential_iff_target_nonzero_of_no_crossing,</span>
+<span id="L371"><a href="#L371"> 371</a>     `KIP126.ProofTools.Internal.Leibniz.minimal_length_finite_essential_iff_target_nonzero,</span>
+<span id="L372"><a href="#L372"> 372</a>     `KIP126.ProofTools.Internal.Leibniz.short_finite_has_crossing_iff,</span>
+<span id="L373"><a href="#L373"> 373</a>     `KIP126.ProofTools.Internal.Leibniz.shifted_finite_first_kernel_filtration,</span>
+<span id="L374"><a href="#L374"> 374</a>     `KIP126.ProofTools.Internal.Leibniz.shifted_finite_source_detects_of_first,</span>
+<span id="L375"><a href="#L375"> 375</a>     `KIP126.ProofTools.Internal.Leibniz.positive_finite_source_label_exists,</span>
+<span id="L376"><a href="#L376"> 376</a>     `KIP126.ProofTools.Internal.Leibniz.zero_finite_source_label_exists,</span>
+<span id="L377"><a href="#L377"> 377</a>     `KIP126.ProofTools.Internal.Leibniz.normalized_finite_source_label_exists,</span>
+<span id="L378"><a href="#L378"> 378</a>     `KIP126.ProofTools.Internal.Leibniz.e2_regrade_trans,</span>
+<span id="L379"><a href="#L379"> 379</a>     `KIP126.ProofTools.Internal.Leibniz.minimal_finite_witness_of_detected_source,</span>
+<span id="L380"><a href="#L380"> 380</a>     `KIP126.ProofTools.Internal.Leibniz.minimal_finite_witness_of_source,</span>
+<span id="L381"><a href="#L381"> 381</a>     `KIP126.ProofTools.Internal.Leibniz.finite_lambda_target_not_boundary,</span>
+<span id="L382"><a href="#L382"> 382</a>     `KIP126.ProofTools.Internal.Leibniz.minimal_finite_witness_essential_of_target_not_boundary,</span>
+<span id="L383"><a href="#L383"> 383</a>     `KIP126.ProofTools.Internal.Leibniz.short_crossing_of_lambda_target_not_high,</span>
+<span id="L384"><a href="#L384"> 384</a>     `KIP126.ProofTools.Internal.Leibniz.homotopy_regrade_comp,</span>
+<span id="L385"><a href="#L385"> 385</a>     `KIP126.ProofTools.Internal.Leibniz.vertical_shift_regrade,</span>
+<span id="L386"><a href="#L386"> 386</a>     `KIP126.ProofTools.Internal.Leibniz.short_finite_noCrossing_tower,</span>
+<span id="L387"><a href="#L387"> 387</a>     `KIP126.ProofTools.Internal.Leibniz.source_detects_native,</span>
+<span id="L388"><a href="#L388"> 388</a>     `KIP126.ProofTools.Internal.Leibniz.finite_extension_at_source_short,</span>
+<span id="L389"><a href="#L389"> 389</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_shift_desuspend_as_native_unshift,</span>
+<span id="L390"><a href="#L390"> 390</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_raw_source_unshift_detects,</span>
+<span id="L391"><a href="#L391"> 391</a>     `KIP126.ProofTools.Internal.Mahowald.quotientShiftAlongIso,</span>
+<span id="L392"><a href="#L392"> 392</a>     `KIP126.ProofTools.Internal.Mahowald.quotientShiftAlongIso_inclusion,</span>
+<span id="L393"><a href="#L393"> 393</a>     `KIP126.ProofTools.Internal.Mahowald.quotientShiftAlongIso_evaluation,</span>
+<span id="L394"><a href="#L394"> 394</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_actual_source_unshift_detects,</span>
+<span id="L395"><a href="#L395"> 395</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_zero_unshift_up_to_sphere,</span>
+<span id="L396"><a href="#L396"> 396</a>     `KIP126.ProofTools.Internal.Mahowald.shifted_finite_bottom_detects_exists,</span>
+<span id="L397"><a href="#L397"> 397</a>     `KIP126.ProofTools.Internal.Mahowald.native_bottom_detected_cycles,</span>
+<span id="L398"><a href="#L398"> 398</a>     `KIP126.ProofTools.Internal.Mahowald.native_bottom_detected_first_lift,</span>
+<span id="L399"><a href="#L399"> 399</a>     `KIP126.ProofTools.Internal.Mahowald.positive_finite_source_refold,</span>
+<span id="L400"><a href="#L400"> 400</a>     `KIP126.ProofTools.Internal.Mahowald.zero_finite_source_refold,</span>
+<span id="L401"><a href="#L401"> 401</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_finite_source_bottom_refold,</span>
+<span id="L402"><a href="#L402"> 402</a>     `KIP126.ProofTools.Internal.Mahowald.minimal_final_extension_of_detected_source,</span>
+<span id="L403"><a href="#L403"> 403</a>     `KIP126.ProofTools.Internal.Mahowald.minimal_final_extension_of_native_source,</span>
+<span id="L404"><a href="#L404"> 404</a>     `KIP126.ProofTools.Internal.Mahowald.cycle_add_boundary,</span>
+<span id="L405"><a href="#L405"> 405</a>     `KIP126.ProofTools.Internal.Mahowald.finite_target_rep_add_boundary,</span>
+<span id="L406"><a href="#L406"> 406</a>     `KIP126.ProofTools.Internal.Mahowald.finite_extension_target_add_boundary,</span>
+<span id="L407"><a href="#L407"> 407</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_desuspends_add,</span>
+<span id="L408"><a href="#L408"> 408</a>     `KIP126.ProofTools.Internal.Mahowald.infinite_source_label_add,</span>
+<span id="L409"><a href="#L409"> 409</a>     `KIP126.ProofTools.Internal.Mahowald.positive_extensions_force_boundary_image_zero,</span>
+<span id="L410"><a href="#L410"> 410</a>     `KIP126.ProofTools.Internal.Mahowald.nonzero_leading_image_no_positive_extension,</span>
+<span id="L411"><a href="#L411"> 411</a>     `KIP126.ProofTools.Internal.Mahowald.nonzero_boundary_image_obstructs_translation,</span>
+<span id="L412"><a href="#L412"> 412</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass,</span>
+<span id="L413"><a href="#L413"> 413</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass_differential,</span>
+<span id="L414"><a href="#L414"> 414</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass_nonzero,</span>
+<span id="L415"><a href="#L415"> 415</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass_boundary,</span>
+<span id="L416"><a href="#L416"> 416</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_ext_two_thirteen_zero,</span>
+<span id="L417"><a href="#L417"> 417</a>     `KIP126.ProofTools.Internal.Mahowald.commonTargetUnshift,</span>
+<span id="L418"><a href="#L418"> 418</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_unshift_shift,</span>
+<span id="L419"><a href="#L419"> 419</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_shift_unshift,</span>
+<span id="L420"><a href="#L420"> 420</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_unshift_sub,</span>
+<span id="L421"><a href="#L421"> 421</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_unshift_filtration,</span>
+<span id="L422"><a href="#L422"> 422</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_double_vertical_unshift,</span>
+<span id="L423"><a href="#L423"> 423</a>     `KIP126.ProofTools.Internal.Mahowald.common_edge_positive_shift_evaluation,</span>
+<span id="L424"><a href="#L424"> 424</a>     `KIP126.ProofTools.Internal.Mahowald.common_shift_regrade,</span>
+<span id="L425"><a href="#L425"> 425</a>     `KIP126.ProofTools.Internal.Mahowald.common_regrade_trans,</span>
+<span id="L426"><a href="#L426"> 426</a>     `KIP126.ProofTools.Internal.Mahowald.common_flat_lambda_unshift,</span>
+<span id="L427"><a href="#L427"> 427</a>     `KIP126.ProofTools.Internal.Mahowald.commonCorrectedGeometry,</span>
+<span id="L428"><a href="#L428"> 428</a>     `KIP126.ProofTools.Internal.Mahowald.common_corrected_geometry_desuspend,</span>
+<span id="L429"><a href="#L429"> 429</a>     `KIP126.ProofTools.Internal.Mahowald.common_correction_preserves_native_rho,</span>
+<span id="L430"><a href="#L430"> 430</a>     `KIP126.ProofTools.Internal.Mahowald.native_bottom_detects_of_restriction,</span>
+<span id="L431"><a href="#L431"> 431</a>     `KIP126.ProofTools.Internal.Mahowald.common_target_same_detection_transfer,</span>
+<span id="L432"><a href="#L432"> 432</a>     `KIP126.ProofTools.Internal.Mahowald.common_desuspended_finite_edge_flat_canonical,</span>
+<span id="L433"><a href="#L433"> 433</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_edge_source_native_lift,</span>
+<span id="L434"><a href="#L434"> 434</a>     `KIP126.ProofTools.Internal.Mahowald.actual_common_edge_native_detects,</span>
+<span id="L435"><a href="#L435"> 435</a>     `KIP126.ProofTools.Internal.Mahowald.corrected_actual_common_edge_native_detects,</span>
+<span id="L436"><a href="#L436"> 436</a>     `KIP126.ProofTools.Internal.Mahowald.cancelBiShiftNatIso,</span>
+<span id="L437"><a href="#L437"> 437</a>     `KIP126.ProofTools.Internal.Mahowald.cancelBiShiftNatIso_map,</span>
+<span id="L438"><a href="#L438"> 438</a>     `KIP126.ProofTools.Internal.Mahowald.totalWeightShiftCancellation,</span>
+<span id="L439"><a href="#L439"> 439</a>     `KIP126.ProofTools.Internal.Mahowald.exactTotalSuspensionTransport,</span>
+<span id="L440"><a href="#L440"> 440</a>     `KIP126.ProofTools.Internal.Mahowald.canonicalTotalSuspensionTransport,</span>
+<span id="L441"><a href="#L441"> 441</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_source_iso,</span>
+<span id="L442"><a href="#L442"> 442</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_g_boundary_total_f,</span>
+<span id="L443"><a href="#L443"> 443</a>     `KIP126.ProofTools.Internal.Mahowald.totalSourceRelabel,</span>
+<span id="L444"><a href="#L444"> 444</a>     `KIP126.ProofTools.Internal.Mahowald.totalSourceSignedTransport,</span>
+<span id="L445"><a href="#L445"> 445</a>     `KIP126.ProofTools.Internal.Mahowald.canonicalTotalSourceTransport,</span>
+<span id="L446"><a href="#L446"> 446</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_source_signed,</span>
+<span id="L447"><a href="#L447"> 447</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_total_source_double_unshift_detects,</span>
+<span id="L448"><a href="#L448"> 448</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_raw_boundary_equation,</span>
+<span id="L449"><a href="#L449"> 449</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_actual_source_unshift_detects,</span>
+<span id="L450"><a href="#L450"> 450</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_raw_boundary_detects,</span>
+<span id="L451"><a href="#L451"> 451</a>     `KIP126.ProofTools.Internal.Mahowald.rotatedNuRouteTriangle,</span>
+<span id="L452"><a href="#L452"> 452</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_f_exponent,</span>
+<span id="L453"><a href="#L453"> 453</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_g_exponent,</span>
+<span id="L454"><a href="#L454"> 454</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_projection_one,</span>
+<span id="L455"><a href="#L455"> 455</a>     `KIP126.ProofTools.Internal.Mahowald.map_filtration_one_shift_iff,</span>
+<span id="L456"><a href="#L456"> 456</a>     `KIP126.ProofTools.Internal.Mahowald.map_filtration_one_neg_iff,</span>
+<span id="L457"><a href="#L457"> 457</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_exponent_neg_shift,</span>
+<span id="L458"><a href="#L458"> 458</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_h_exponent,</span>
+<span id="L459"><a href="#L459"> 459</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_exponent_sum,</span>
+<span id="L460"><a href="#L460"> 460</a>     `KIP126.ProofTools.Internal.Mahowald.original_normalized_nu_rotation_distinguished,</span>
+<span id="L461"><a href="#L461"> 461</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_one_negative,</span>
+<span id="L462"><a href="#L462"> 462</a>     `KIP126.ProofTools.Internal.Mahowald.lambda_one_injective_of_quotient_vanishing,</span>
+<span id="L463"><a href="#L463"> 463</a>     `KIP126.ProofTools.Internal.Mahowald.lambda_one_injective_at_diagonal,</span>
+<span id="L464"><a href="#L464"> 464</a>     `KIP126.ProofTools.Internal.Mahowald.negative_lift_factorization,</span>
+<span id="L465"><a href="#L465"> 465</a>     `KIP126.ProofTools.Internal.Mahowald.lambda_to_positive_zero,</span>
+<span id="L466"><a href="#L466"> 466</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_zero_map_form,</span>
+<span id="L467"><a href="#L467"> 467</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_zero_map,</span>
+<span id="L468"><a href="#L468"> 468</a>     `KIP126.ProofTools.Internal.Mahowald.homology_short_exact_of_boundary_zero,</span>
+<span id="L469"><a href="#L469"> 469</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_boundary_homology_zero,</span>
+<span id="L470"><a href="#L470"> 470</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_homology_short_exact,</span>
+<span id="L471"><a href="#L471"> 471</a>     `KIP126.ProofTools.Internal.Mahowald.negative_lift_at_one,</span>
+<span id="L472"><a href="#L472"> 472</a>     `KIP126.ProofTools.Internal.Mahowald.negative_lift_at_one_factorization,</span>
+<span id="L473"><a href="#L473"> 473</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_selected_full_lift,</span>
+<span id="L474"><a href="#L474"> 474</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_triangle_lift,</span>
+<span id="L475"><a href="#L475"> 475</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_source_sphere,</span>
+<span id="L476"><a href="#L476"> 476</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_selected_connecting_eq,</span>
+<span id="L477"><a href="#L477"> 477</a>     `KIP126.ProofTools.Internal.Mahowald.zero_positive_iso,</span>
+<span id="L478"><a href="#L478"> 478</a>     `KIP126.ProofTools.Internal.Mahowald.zero_negative_iso,</span>
+<span id="L479"><a href="#L479"> 479</a>     `KIP126.ProofTools.Internal.Mahowald.negative_lift_zero_map_form,</span>
+<span id="L480"><a href="#L480"> 480</a>     `KIP126.ProofTools.Internal.Mahowald.raw_normalized_connecting,</span>
+<span id="L481"><a href="#L481"> 481</a>     `KIP126.ProofTools.Internal.Mahowald.raw_connecting_zero_zero_one,</span>
+<span id="L482"><a href="#L482"> 482</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_normalized_connecting_square,</span>
+<span id="L483"><a href="#L483"> 483</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_normalized_distinguished,</span>
+<span id="L484"><a href="#L484"> 484</a>     `KIP126.ProofTools.Internal.Mahowald.desuspend_bijective,</span>
+<span id="L485"><a href="#L485"> 485</a>     `KIP126.ProofTools.Internal.Mahowald.desuspend_postcompose,</span>
+<span id="L486"><a href="#L486"> 486</a>     `KIP126.ProofTools.Internal.Mahowald.raw_cycles_iff,</span>
+<span id="L487"><a href="#L487"> 487</a>     `KIP126.ProofTools.Internal.Mahowald.desuspend_mem_raw_cycles,</span>
+<span id="L488"><a href="#L488"> 488</a>     `KIP126.ProofTools.Internal.Mahowald.desuspendFirstPage_bijective,</span>
+<span id="L489"><a href="#L489"> 489</a>     `KIP126.ProofTools.Internal.Mahowald.lift_desuspend,</span>
+<span id="L490"><a href="#L490"> 490</a>     `KIP126.ProofTools.Internal.Mahowald.lift_desuspend_bijective,</span>
+<span id="L491"><a href="#L491"> 491</a>     `KIP126.ProofTools.Internal.Mahowald.lift_desuspend_natural,</span>
+<span id="L492"><a href="#L492"> 492</a>     `KIP126.ProofTools.Internal.Mahowald.lift_desuspend_connecting,</span>
+<span id="L493"><a href="#L493"> 493</a>     `KIP126.ProofTools.Internal.Mahowald.desuspend_mem_raw_cycles_iff,</span>
+<span id="L494"><a href="#L494"> 494</a>     `KIP126.ProofTools.Internal.Mahowald.exists_suspendsClass,</span>
+<span id="L495"><a href="#L495"> 495</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspend_bijective,</span>
+<span id="L496"><a href="#L496"> 496</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspend_postcompose,</span>
+<span id="L497"><a href="#L497"> 497</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspendHom,</span>
+<span id="L498"><a href="#L498"> 498</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspendHom_bijective,</span>
+<span id="L499"><a href="#L499"> 499</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspendHom_zero,</span>
+<span id="L500"><a href="#L500"> 500</a>     `KIP126.ProofTools.Internal.Mahowald.boundary_desuspendHom_natural,</span>
+<span id="L501"><a href="#L501"> 501</a>     `KIP126.ProofTools.Internal.Mahowald.raw_boundaries_iff,</span>
+<span id="L502"><a href="#L502"> 502</a>     `KIP126.ProofTools.Internal.Mahowald.desuspend_mem_raw_boundaries_iff,</span>
+<span id="L503"><a href="#L503"> 503</a>     `KIP126.ProofTools.Internal.Mahowald.initial_class_boundary_iff,</span>
+<span id="L504"><a href="#L504"> 504</a>     `KIP126.ProofTools.Internal.Mahowald.class_boundary_iff,</span>
+<span id="L505"><a href="#L505"> 505</a>     `KIP126.ProofTools.Internal.Mahowald.desuspendsClass_boundary_iff,</span>
+<span id="L506"><a href="#L506"> 506</a>     `KIP126.ProofTools.Internal.Mahowald.desuspendsClass_eq_zero_iff,</span>
+<span id="L507"><a href="#L507"> 507</a>     `KIP126.ProofTools.Internal.Mahowald.desuspendsClass_ne_zero_iff,</span>
+<span id="L508"><a href="#L508"> 508</a>     `KIP126.ProofTools.Internal.Mahowald.suspension_desuspends_sub,</span>
+<span id="L509"><a href="#L509"> 509</a>     `KIP126.ProofTools.Internal.Mahowald.desuspendsClass_eq_iff,</span>
+<span id="L510"><a href="#L510"> 510</a>     `KIP126.ProofTools.Internal.Mahowald.exists_suspendsClass_mem_boundary,</span>
+<span id="L511"><a href="#L511"> 511</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass_suspends,</span>
+<span id="L512"><a href="#L512"> 512</a>     `KIP126.ProofTools.Internal.Mahowald.mh2BoundaryClass_suspends_nonzero,</span>
+<span id="L513"><a href="#L513"> 513</a>     `KIP126.ProofTools.Internal.Mahowald.commonRawSuspensionTransport,</span>
+<span id="L514"><a href="#L514"> 514</a>     `KIP126.ProofTools.Internal.Mahowald.commonTotalSuspensionTransport,</span>
+<span id="L515"><a href="#L515"> 515</a>     `KIP126.ProofTools.Internal.Mahowald.common_edge_flat_iso_factor,</span>
+<span id="L516"><a href="#L516"> 516</a>     `KIP126.ProofTools.Internal.Mahowald.commonTotalQuotientIso,</span>
+<span id="L517"><a href="#L517"> 517</a>     `KIP126.ProofTools.Internal.Mahowald.common_total_quotient_inclusion,</span>
+<span id="L518"><a href="#L518"> 518</a>     `KIP126.ProofTools.Internal.Mahowald.double_pure_unshift_up_to_source_automorphism,</span>
+<span id="L519"><a href="#L519"> 519</a>     `KIP126.ProofTools.Internal.Mahowald.common_total_quotient_sphere_equation,</span>
+<span id="L520"><a href="#L520"> 520</a>     `KIP126.ProofTools.Internal.Mahowald.common_total_native_detection,</span>
+<span id="L521"><a href="#L521"> 521</a>     `KIP126.ProofTools.Internal.Mahowald.unit_first_quotient_11_13_zero,</span>
+<span id="L522"><a href="#L522"> 522</a>     `KIP126.ProofTools.Internal.Mahowald.balanced_four_first_quotient_15_17_zero,</span>
+<span id="L523"><a href="#L523"> 523</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_source_ext_zero,</span>
+<span id="L524"><a href="#L524"> 524</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_no_crossing,</span>
+<span id="L525"><a href="#L525"> 525</a>     `KIP126.ProofTools.Internal.Mahowald.regradeE2_zero,</span>
+<span id="L526"><a href="#L526"> 526</a>     `KIP126.ProofTools.Internal.Mahowald.target_nu_label_zero,</span>
+<span id="L527"><a href="#L527"> 527</a>     `KIP126.ProofTools.Internal.Mahowald.zero_finite_extension_witness,</span>
+<span id="L528"><a href="#L528"> 528</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_g_zero_witness,</span>
+<span id="L529"><a href="#L529"> 529</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_h_zero_witness,</span>
+<span id="L530"><a href="#L530"> 530</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_g_zero_extension,</span>
+<span id="L531"><a href="#L531"> 531</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_h_boundary_witness,</span>
+<span id="L532"><a href="#L532"> 532</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_h_boundary_extension,</span>
+<span id="L533"><a href="#L533"> 533</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_remaining_premises,</span>
+<span id="L534"><a href="#L534"> 534</a>     `KIP126.ProofTools.Internal.Mahowald.common_corrected_geometry_second_image,</span>
+<span id="L535"><a href="#L535"> 535</a>     `KIP126.ProofTools.Internal.Mahowald.common_corrected_total_native_detection,</span>
+<span id="L536"><a href="#L536"> 536</a>     `KIP126.ProofTools.Internal.Mahowald.specific_top_lambda_injective,</span>
+<span id="L537"><a href="#L537"> 537</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_ext_three_fourteen_zero,</span>
+<span id="L538"><a href="#L538"> 538</a>     `KIP126.ProofTools.Internal.Mahowald.sphere_nu_infinity_zero_of_ambient_zero,</span>
+<span id="L539"><a href="#L539"> 539</a>     `KIP126.ProofTools.Internal.Mahowald.nuSphere_pi_11_13_filtration_four,</span>
+<span id="L540"><a href="#L540"> 540</a>     `KIP126.ProofTools.Internal.Mahowald.specific_source_to_first_quotient_zero,</span>
+<span id="L541"><a href="#L541"> 541</a>     `KIP126.ProofTools.Internal.Mahowald.specific_two_cell_first_quotient_injective,</span>
+<span id="L542"><a href="#L542"> 542</a>     `KIP126.ProofTools.Internal.Mahowald.nu_triangle_bottom_boundary_image_nonzero,</span>
+<span id="L543"><a href="#L543"> 543</a>     `KIP126.ProofTools.Internal.Mahowald.nu_bottom_boundary_first_quotient_nonzero,</span>
+<span id="L544"><a href="#L544"> 544</a>     `KIP126.ProofTools.Internal.Mahowald.nu_bottom_boundary_leading_nonzero,</span>
+<span id="L545"><a href="#L545"> 545</a>     `KIP126.ProofTools.Internal.Mahowald.zero_normalized_leading_nonzero,</span>
+<span id="L546"><a href="#L546"> 546</a>     `KIP126.ProofTools.Internal.Mahowald.candidate_zero_differential,</span>
+<span id="L547"><a href="#L547"> 547</a>     `KIP126.ProofTools.Internal.Mahowald.mh2_candidate_refutation_of_bottom_nonzero,</span>
+<span id="L548"><a href="#L548"> 548</a>     `KIP126.ProofTools.Internal.Mahowald.rotated_nu_generalized_mahowald_law_false,</span>
+<span id="L549"><a href="#L549"> 549</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_shift_desuspend_as_unshift,</span>
+<span id="L550"><a href="#L550"> 550</a>     `KIP126.ProofTools.Internal.Mahowald.native_bottom_detects_of_same_restriction,</span>
+<span id="L551"><a href="#L551"> 551</a>     `KIP126.ProofTools.Internal.Mahowald.corrected_native_bottom_detects,</span>
+<span id="L552"><a href="#L552"> 552</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_f_total_raw_boundary_detects_transport,</span>
+<span id="L553"><a href="#L553"> 553</a>     `KIP126.ProofTools.Internal.Mahowald.quotient_class_unshift_regrade_source,</span>
+<span id="L554"><a href="#L554"> 554</a>     `KIP126.ProofTools.Internal.Mahowald.homotopy_regrade_self,</span>
+<span id="L555"><a href="#L555"> 555</a>     `KIP126.ProofTools.Internal.Mahowald.finite_e2_regrade_roundtrip,</span>
+<span id="L556"><a href="#L556"> 556</a>     `KIP126.ProofTools.Internal.Mahowald.minimal_corrected_total_extension,</span>
+<span id="L557"><a href="#L557"> 557</a>     `KIP126.ProofTools.Internal.Mahowald.normalized_included_source_label,</span>
+<span id="L558"><a href="#L558"> 558</a>     `KIP126.ProofTools.Internal.Mahowald.corrected_second_image_finite_label,</span>
+<span id="L559"><a href="#L559"> 559</a>     `KIP126.ProofTools.Internal.Mahowald.finite_edge_detection_source_length,</span>
+<span id="L560"><a href="#L560"> 560</a>     `KIP126.ProofTools.Internal.Mahowald.finite_native_bottom_detection_reindex_exists,</span>
+<span id="L561"><a href="#L561"> 561</a>     `KIP126.ProofTools.Internal.Mahowald.zero_level_native_detection,</span>
+<span id="L562"><a href="#L562"> 562</a>     `KIP126.ProofTools.Internal.Mahowald.ZeroLayerDetectedPair,</span>
+<span id="L563"><a href="#L563"> 563</a>     `KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere,</span>
+<span id="L564"><a href="#L564"> 564</a>     `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer,</span>
+<span id="L565"><a href="#L565"> 565</a>     `KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer,</span>
+<span id="L566"><a href="#L566"> 566</a>     `KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel,</span>
+<span id="L567"><a href="#L567"> 567</a>     `KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter,</span>
+<span id="L568"><a href="#L568"> 568</a>     `KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo,</span>
+<span id="L569"><a href="#L569"> 569</a>     `KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing]</span>
+<span id="L570"><a href="#L570"> 570</a>   let mut pending : Array Name := #[]</span>
+<span id="L571"><a href="#L571"> 571</a>   -- Main checks its ordinary-import dependency frontier against this same ledger.</span>
+<span id="L572"><a href="#L572"> 572</a>   -- Here import-all restores ProofTools proof bodies, so these roots receive the</span>
+<span id="L573"><a href="#L573"> 573</a>   -- full recursive no-local-gap check alongside the completed private helpers.</span>
+<span id="L574"><a href="#L574"> 574</a>   let rewire ← Lean.ofExcept &lt;| ledger.getObjVal? &quot;main_zero_layer_rewire_2026_10_16&quot;</span>
+<span id="L575"><a href="#L575"> 575</a>   let mainBoundary ← Lean.ofExcept &lt;|</span>
+<span id="L576"><a href="#L576"> 576</a>     rewire.getObjValAs? (Array String) &quot;proofTools_boundary_declarations&quot;</span>
+<span id="L577"><a href="#L577"> 577</a>   unless !mainBoundary.isEmpty do</span>
+<span id="L578"><a href="#L578"> 578</a>     throwError &quot;Main-to-ProofTools dependency frontier must not be empty&quot;</span>
+<span id="L579"><a href="#L579"> 579</a>   let mut boundaryNames : NameSet := {}</span>
+<span id="L580"><a href="#L580"> 580</a>   for sourceName in mainBoundary do</span>
+<span id="L581"><a href="#L581"> 581</a>     let name := sourceName.toName</span>
+<span id="L582"><a href="#L582"> 582</a>     if isPrivateName name then</span>
+<span id="L583"><a href="#L583"> 583</a>       throwError &quot;Main dependency frontier contains a private ProofTools declaration: {name}&quot;</span>
+<span id="L584"><a href="#L584"> 584</a>     if boundaryNames.contains name then</span>
+<span id="L585"><a href="#L585"> 585</a>       throwError &quot;Duplicate Main-to-ProofTools boundary declaration: {name}&quot;</span>
+<span id="L586"><a href="#L586"> 586</a>     boundaryNames := boundaryNames.insert name</span>
+<span id="L587"><a href="#L587"> 587</a>     let some _ := env.find? name</span>
+<span id="L588"><a href="#L588"> 588</a>       | throwError &quot;Missing Main-to-ProofTools boundary declaration: {name}&quot;</span>
+<span id="L589"><a href="#L589"> 589</a>     let some idx := env.getModuleIdxFor? name</span>
+<span id="L590"><a href="#L590"> 590</a>       | throwError &quot;Missing module for Main-to-ProofTools boundary declaration: {name}&quot;</span>
+<span id="L591"><a href="#L591"> 591</a>     unless (`KIP126.ProofTools).isPrefixOf env.header.moduleNames[idx.toNat]! do</span>
+<span id="L592"><a href="#L592"> 592</a>       throwError &quot;Main dependency frontier contains a declaration outside ProofTools: {name}&quot;</span>
+<span id="L593"><a href="#L593"> 593</a>     pending := pending.push name</span>
+<span id="L594"><a href="#L594"> 594</a>   for sourceName in provedTools do</span>
+<span id="L595"><a href="#L595"> 595</a>     let some (name, _) := env.constants.toList.find? (fun (name, _) =&gt;</span>
+<span id="L596"><a href="#L596"> 596</a>         ((privateToUserName? name).getD name) == sourceName)</span>
+<span id="L597"><a href="#L597"> 597</a>       | throwError &quot;Missing completed tool: {sourceName}&quot;</span>
+<span id="L598"><a href="#L598"> 598</a>     pending := pending.push name</span>
+<span id="L599"><a href="#L599"> 599</a>   let mut seen : NameSet := {}</span>
+<span id="L600"><a href="#L600"> 600</a>   while !pending.isEmpty do</span>
+<span id="L601"><a href="#L601"> 601</a>     let name := pending.back!</span>
+<span id="L602"><a href="#L602"> 602</a>     pending := pending.pop</span>
+<span id="L603"><a href="#L603"> 603</a>     if seen.contains name then continue</span>
+<span id="L604"><a href="#L604"> 604</a>     seen := seen.insert name</span>
+<span id="L605"><a href="#L605"> 605</a>     let some info := env.find? name | throwError &quot;Missing proof dependency: {name}&quot;</span>
+<span id="L606"><a href="#L606"> 606</a>     let some idx := env.getModuleIdxFor? name | continue</span>
+<span id="L607"><a href="#L607"> 607</a>     let mod := env.header.moduleNames[idx.toNat]!</span>
+<span id="L608"><a href="#L608"> 608</a>     unless (`KIP126).isPrefixOf mod do continue</span>
+<span id="L609"><a href="#L609"> 609</a>     let body := info.value? (allowOpaque := true)</span>
+<span id="L610"><a href="#L610"> 610</a>     if (`KIP126.ProofTools).isPrefixOf mod &amp;&amp;</span>
+<span id="L611"><a href="#L611"> 611</a>         (info.type.hasSorry || body.any (·.hasSorry)) then</span>
+<span id="L612"><a href="#L612"> 612</a>       throwError &quot;Completed tool depends on a local paper proof gap: {name}&quot;</span>
+<span id="L613"><a href="#L613"> 613</a>     pending := pending ++ info.type.getUsedConstants</span>
+<span id="L614"><a href="#L614"> 614</a>     if let some value := body then pending := pending ++ value.getUsedConstants</span>
+<span id="L615"><a href="#L615"> 615</a>   logInfo m!&quot;ProofTools Main dependency boundary audit: {mainBoundary.size} roots have no local paper proof gaps&quot;</span>
+<span id="L616"><a href="#L616"> 616</a>   logInfo m!&quot;ProofTools trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms&quot;</span></pre>

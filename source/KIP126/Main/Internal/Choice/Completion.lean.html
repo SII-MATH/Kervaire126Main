@@ -1,0 +1,379 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Choice/Completion.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Choice/Completion.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Main.Conditions</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.Choice.LambdaInjectivity</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.Choice.Filtration</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.High125.Pages</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.Selected.NormalizedTable</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.Selected.ThetaFrames</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.Internal.Selected.ProductDetection</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> /-! Local finite-page and lambda arguments for LWX Remark 7.4 and Lemma 7.11.</span>
+<span id="L12"><a href="#L12">  12</a> The quotient-frame and eta-product arguments extend the existing Main ports</span>
+<span id="L13"><a href="#L13">  13</a> of Selected/ThetaData and Selected/DetectionData at bbac1fc05843 (MIT; see</span>
+<span id="L14"><a href="#L14">  14</a> the retained source LICENSE). Every computation is read through the fixed</span>
+<span id="L15"><a href="#L15">  15</a> public table API; these helpers introduce no new mathematical input. -/</span>
+<span id="L16"><a href="#L16">  16</a> @[expose] section</span>
+<span id="L17"><a href="#L17">  17</a> namespace KIP126.Main.Internal.Choice.Completion</span>
+<span id="L18"><a href="#L18">  18</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.AdamsSynthetic KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.Main.Internal.Selected</span>
+<span id="L24"><a href="#L24">  24</a> open KIP126.Literature.Standard (eta)</span>
+<span id="L25"><a href="#L25">  25</a> open KIP126.Computation.Standard (correction)</span>
+<span id="L26"><a href="#L26">  26</a> open KIP126.ProofTools.Operations</span>
+<span id="L27"><a href="#L27">  27</a> open KIP126.Main.Internal.Selected.Normalized</span>
+<span id="L28"><a href="#L28">  28</a> noncomputable section</span>
+<span id="L29"><a href="#L29">  29</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L30"><a href="#L30">  30</a> set_option maxHeartbeats 1600000</span>
+<span id="L31"><a href="#L31">  31</a> set_option maxRecDepth 10000</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> private theorem one_basis_cases {A : Type*} [AddCommGroup A] [Module ℤ A]</span>
+<span id="L34"><a href="#L34">  34</a>     (e : A ≃ₗ[ℤ] (Fin 1 →₀ F2)) (b : A)</span>
+<span id="L35"><a href="#L35">  35</a>     (hb : e.symm (Finsupp.single 0 1) = b) (x : A) : x=0 ∨ x=b := by</span>
+<span id="L36"><a href="#L36">  36</a>   have h := finite_basis_expansion e x</span>
+<span id="L37"><a href="#L37">  37</a>   simp only [Fin.sum_univ_one, hb] at h</span>
+<span id="L38"><a href="#L38">  38</a>   split_ifs at h with hc</span>
+<span id="L39"><a href="#L39">  39</a>   · exact Or.inl h</span>
+<span id="L40"><a href="#L40">  40</a>   · exact Or.inr h</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> private theorem stem126_three_d2 : HasDifferential Normalized.sphere 2</span>
+<span id="L43"><a href="#L43">  43</a>     (1,128) (3,129) (basis .sphere 1 128 0) (basis .sphere 3 129 0) := by</span>
+<span id="L44"><a href="#L44">  44</a>   have hrow := result ⟨.sphere,.equation,2,1,128,[0],3,129,[0],&quot;S0_AdamsE2_ss&quot;,2315⟩</span>
+<span id="L45"><a href="#L45">  45</a>     (by exact List.mem_of_getElem? (i := 143) (by rfl))</span>
+<span id="L46"><a href="#L46">  46</a>   dsimp only [Statement] at hrow</span>
+<span id="L47"><a href="#L47">  47</a>   obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L48"><a href="#L48">  48</a>   have vx : KIP126.Computation.Table.Raw.coordinatesValid</span>
+<span id="L49"><a href="#L49">  49</a>       KIP126.Computation.Table.Raw.degrees .sphere 1 128 [0] = true := rfl</span>
+<span id="L50"><a href="#L50">  50</a>   have vy : KIP126.Computation.Table.Raw.coordinatesValid</span>
+<span id="L51"><a href="#L51">  51</a>       KIP126.Computation.Table.Raw.degrees .sphere 3 129 [0] = true := rfl</span>
+<span id="L52"><a href="#L52">  52</a>   simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,</span>
+<span id="L53"><a href="#L53">  53</a>     List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L54"><a href="#L54">  54</a>   rw [←ha,←hb] at h</span>
+<span id="L55"><a href="#L55">  55</a>   exact h</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> private theorem no_outgoing_126_three : NoOutgoingAt model.classical.sphere 3 129 := by</span>
+<span id="L58"><a href="#L58">  58</a>   have hnorm : NoOutgoingAt Normalized.sphere 3 129 := by</span>
+<span id="L59"><a href="#L59">  59</a>     obtain ⟨e,he⟩ := basis_correct ⟨.sphere,3,129,[&quot;0,1,69,2&quot;]⟩</span>
+<span id="L60"><a href="#L60">  60</a>       (by exact List.mem_of_getElem? (i := 108) (by rfl))</span>
+<span id="L61"><a href="#L61">  61</a>     change Normalized.sphere.Page 2 (3,129) ≃ₗ[ℤ] (Fin 1 →₀ F2) at e</span>
+<span id="L62"><a href="#L62">  62</a>     change ∀ i : Fin 1, e.symm (Finsupp.single i 1) = basis .sphere 3 129 i.val at he</span>
+<span id="L63"><a href="#L63">  63</a>     have he0 : e.symm (Finsupp.single 0 1) = basis .sphere 3 129 0 := he 0</span>
+<span id="L64"><a href="#L64">  64</a>     have hp : Subsingleton (Normalized.sphere.Page 3 (3,129)) :=</span>
+<span id="L65"><a href="#L65">  65</a>       choice_single_basis_zero_page (by decide) e _ he0</span>
+<span id="L66"><a href="#L66">  66</a>         (differential_target_later_zero (by decide) (by decide : (2:ℤ)&lt;3) stem126_three_d2)</span>
+<span id="L67"><a href="#L67">  67</a>     intro r hr x</span>
+<span id="L68"><a href="#L68">  68</a>     by_cases h2 : r=2</span>
+<span id="L69"><a href="#L69">  69</a>     · subst r</span>
+<span id="L70"><a href="#L70">  70</a>       rcases one_basis_cases e _ he0 x with hx|hx</span>
+<span id="L71"><a href="#L71">  71</a>       · rw [hx,map_zero]</span>
+<span id="L72"><a href="#L72">  72</a>       · rw [hx]</span>
+<span id="L73"><a href="#L73">  73</a>         obtain ⟨_,hd⟩ := stem126_three_d2.eq_on_page_two</span>
+<span id="L74"><a href="#L74">  74</a>         change Normalized.sphere.d 2 (1,128) (basis .sphere 1 128 0) = _ at hd</span>
+<span id="L75"><a href="#L75">  75</a>         rw [←hd]</span>
+<span id="L76"><a href="#L76">  76</a>         exact congrArg (fun f =&gt; f (basis .sphere 1 128 0))</span>
+<span id="L77"><a href="#L77">  77</a>           (Normalized.sphere.d_comp_d 2 (1,128))</span>
+<span id="L78"><a href="#L78">  78</a>     · have hz := KIP126.Main.Internal.High125.page_subsingleton_of_le Normalized.sphere 3 r 3 129</span>
+<span id="L79"><a href="#L79">  79</a>         (by decide) (by omega) hp</span>
+<span id="L80"><a href="#L80">  80</a>       rw [hz.elim x 0,map_zero]</span>
+<span id="L81"><a href="#L81">  81</a>   rwa [Normalized.sphere_eq] at hnorm</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> private theorem stem125_five_third_zero : Subsingleton (Normalized.sphere.Page 3 (5,130)) := by</span>
+<span id="L84"><a href="#L84">  84</a>   have hrow := result ⟨.sphere,.equation,2,5,130,[0],7,131,[2],&quot;S0_AdamsE2_ss&quot;,2435⟩</span>
+<span id="L85"><a href="#L85">  85</a>     (by exact List.mem_of_getElem? (i := 163) (by rfl))</span>
+<span id="L86"><a href="#L86">  86</a>   dsimp only [Statement] at hrow</span>
+<span id="L87"><a href="#L87">  87</a>   obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L88"><a href="#L88">  88</a>   have vx : KIP126.Computation.Table.Raw.coordinatesValid</span>
+<span id="L89"><a href="#L89">  89</a>       KIP126.Computation.Table.Raw.degrees .sphere 5 130 [0] = true := rfl</span>
+<span id="L90"><a href="#L90">  90</a>   have vy : KIP126.Computation.Table.Raw.coordinatesValid</span>
+<span id="L91"><a href="#L91">  91</a>       KIP126.Computation.Table.Raw.degrees .sphere 7 131 [2] = true := rfl</span>
+<span id="L92"><a href="#L92">  92</a>   simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,</span>
+<span id="L93"><a href="#L93">  93</a>     List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L94"><a href="#L94">  94</a>   rw [←ha,←hb] at h</span>
+<span id="L95"><a href="#L95">  95</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,5,130,[&quot;340,1&quot;]⟩</span>
+<span id="L96"><a href="#L96">  96</a>     (by exact List.mem_of_getElem? (i := 126) (by rfl))</span>
+<span id="L97"><a href="#L97">  97</a>   obtain ⟨f,hf⟩ := basis_correct ⟨.sphere,7,131,[&quot;353,1&quot;,&quot;69,1,75,1&quot;,&quot;0,1,339,1&quot;]⟩</span>
+<span id="L98"><a href="#L98">  98</a>     (by exact List.mem_of_getElem? (i := 148) (by rfl))</span>
+<span id="L99"><a href="#L99">  99</a>   change Normalized.sphere.Page 2 (5,130) ≃ₗ[ℤ] (Fin 1 →₀ F2) at e</span>
+<span id="L100"><a href="#L100"> 100</a>   change Normalized.sphere.Page 2 (7,131) ≃ₗ[ℤ] (Fin 3 →₀ F2) at f</span>
+<span id="L101"><a href="#L101"> 101</a>   change ∀ i : Fin 1, e.symm (Finsupp.single i 1) = basis .sphere 5 130 i.val at he</span>
+<span id="L102"><a href="#L102"> 102</a>   change ∀ i : Fin 3, f.symm (Finsupp.single i 1) = basis .sphere 7 131 i.val at hf</span>
+<span id="L103"><a href="#L103"> 103</a>   have hn : basis .sphere 7 131 2 ≠ 0 := by</span>
+<span id="L104"><a href="#L104"> 104</a>     have hf2 : f.symm (Finsupp.single 2 1) = basis .sphere 7 131 2 := hf 2</span>
+<span id="L105"><a href="#L105"> 105</a>     rw [←hf2]</span>
+<span id="L106"><a href="#L106"> 106</a>     exact basis_vector_ne_zero f 2</span>
+<span id="L107"><a href="#L107"> 107</a>   apply next_page_zero_of_kernel (by decide : Normalized.sphere.r₀ ≤ 2)</span>
+<span id="L108"><a href="#L108"> 108</a>   intro x hx</span>
+<span id="L109"><a href="#L109"> 109</a>   have he0 : e.symm (Finsupp.single 0 1) = basis .sphere 5 130 0 := he 0</span>
+<span id="L110"><a href="#L110"> 110</a>   rcases one_basis_cases e _ he0 x with h0|h1</span>
+<span id="L111"><a href="#L111"> 111</a>   · exact h0</span>
+<span id="L112"><a href="#L112"> 112</a>   · obtain ⟨_,hd⟩ := h.eq_on_page_two</span>
+<span id="L113"><a href="#L113"> 113</a>     change Normalized.sphere.d 2 (5,130) (basis .sphere 5 130 0) = _ at hd</span>
+<span id="L114"><a href="#L114"> 114</a>     rw [h1,hd] at hx</span>
+<span id="L115"><a href="#L115"> 115</a>     exact (hn hx).elim</span>
+<span id="L116"><a href="#L116"> 116</a> </span>
+<span id="L117"><a href="#L117"> 117</a> private theorem no_outgoing_125_low_late (s r : ℤ) (hs : s≤5) (hr : 3≤r)</span>
+<span id="L118"><a href="#L118"> 118</a>     (x : Normalized.sphere.Page r (s,s+125)) : Normalized.sphere.d r (s,s+125) x=0 := by</span>
+<span id="L119"><a href="#L119"> 119</a>   by_cases hs5 : s=5</span>
+<span id="L120"><a href="#L120"> 120</a>   · subst s</span>
+<span id="L121"><a href="#L121"> 121</a>     have hz := KIP126.Main.Internal.High125.page_subsingleton_of_le Normalized.sphere 3 r 5 130</span>
+<span id="L122"><a href="#L122"> 122</a>       (by decide) hr stem125_five_third_zero</span>
+<span id="L123"><a href="#L123"> 123</a>     rw [hz.elim x 0,map_zero]</span>
+<span id="L124"><a href="#L124"> 124</a>   · exact no_outgoing_stem125_low s (by omega) r (by omega) x</span>
+<span id="L125"><a href="#L125"> 125</a> </span>
+<span id="L126"><a href="#L126"> 126</a> private theorem regrade_heq {w w&#x27; : ℤ} (h : w=w&#x27;)</span>
+<span id="L127"><a href="#L127"> 127</a>     (a : BiHom 125 w (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L128"><a href="#L128"> 128</a>     HEq a (homotopyRegrade rfl h a) := by</span>
+<span id="L129"><a href="#L129"> 129</a>   subst w&#x27;</span>
+<span id="L130"><a href="#L130"> 130</a>   rfl</span>
+<span id="L131"><a href="#L131"> 131</a> </span>
+<span id="L132"><a href="#L132"> 132</a> private theorem multiply_heq (n : ℕ) {w w&#x27; : ℤ} (h : w=w&#x27;)</span>
+<span id="L133"><a href="#L133"> 133</a>     {a : BiHom 125 w (S_0_0 : SyntheticSpectrum)}</span>
+<span id="L134"><a href="#L134"> 134</a>     {b : BiHom 125 w&#x27; (S_0_0 : SyntheticSpectrum)} (hab : HEq a b) :</span>
+<span id="L135"><a href="#L135"> 135</a>     HEq (lambdaMultiply n a) (lambdaMultiply n b) := by</span>
+<span id="L136"><a href="#L136"> 136</a>   subst w&#x27;</span>
+<span id="L137"><a href="#L137"> 137</a>   cases hab</span>
+<span id="L138"><a href="#L138"> 138</a>   rfl</span>
+<span id="L139"><a href="#L139"> 139</a> </span>
+<span id="L140"><a href="#L140"> 140</a> private def lambdaAt (n : ℕ) (w v : ℤ)</span>
+<span id="L141"><a href="#L141"> 141</a>     (h : ((125:ℤ),w)+(0,-(n:ℤ))=((125:ℤ),v))</span>
+<span id="L142"><a href="#L142"> 142</a>     (a : BiHom 125 w (S_0_0 : SyntheticSpectrum)) : BiHom 125 v (S_0_0 : SyntheticSpectrum) :=</span>
+<span id="L143"><a href="#L143"> 143</a>   (biShiftAddIso ((125:ℤ),w) (0,-(n:ℤ)) ((125:ℤ),v) h).inv.app S_0_0 ≫</span>
+<span id="L144"><a href="#L144"> 144</a>     lambdaPow n (Smn 125 w) ≫ a</span>
+<span id="L145"><a href="#L145"> 145</a> </span>
+<span id="L146"><a href="#L146"> 146</a> private theorem lambdaAt_heq (n : ℕ) (w v : ℤ)</span>
+<span id="L147"><a href="#L147"> 147</a>     (h : ((125:ℤ),w)+(0,-(n:ℤ))=((125:ℤ),v))</span>
+<span id="L148"><a href="#L148"> 148</a>     (a : BiHom 125 w (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L149"><a href="#L149"> 149</a>     HEq (lambdaAt n w v h a) (lambdaMultiply n a) := by</span>
+<span id="L150"><a href="#L150"> 150</a>   unfold lambdaAt lambdaMultiply</span>
+<span id="L151"><a href="#L151"> 151</a>   simp only [biShiftAddIso,Iso.trans_inv,NatTrans.comp_app,eqToIso.inv,eqToHom_app,</span>
+<span id="L152"><a href="#L152"> 152</a>     Category.assoc,eqToHom_comp_heq_iff,heq_eqToHom_comp_iff]</span>
+<span id="L153"><a href="#L153"> 153</a>   rfl</span>
+<span id="L154"><a href="#L154"> 154</a> </span>
+<span id="L155"><a href="#L155"> 155</a> private theorem lambda_one_power (n : ℕ)</span>
+<span id="L156"><a href="#L156"> 156</a>     (a : BiHom 125 (130+(n:ℤ)) (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L157"><a href="#L157"> 157</a>     HEq (lambdaMultiply 1 (lambdaMultiply n a)) (lambdaMultiply (n+1) a) := by</span>
+<span id="L158"><a href="#L158"> 158</a>   let hn : ((125:ℤ),130+(n:ℤ))+(0,-(n:ℤ))=((125:ℤ),130) := by ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L159"><a href="#L159"> 159</a>   let h1 : ((125:ℤ),130)+(0,-(1:ℤ))=((125:ℤ),129) := by decide</span>
+<span id="L160"><a href="#L160"> 160</a>   let hn1 : ((125:ℤ),130+(n:ℤ))+(0,-((n+1:ℕ):ℤ))=((125:ℤ),129) := by ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L161"><a href="#L161"> 161</a>   have ha := shift_assoc_inv model.quotients.coherence ((125:ℤ),130+(n:ℤ)) (0,-(n:ℤ)) (0,-1)</span>
+<span id="L162"><a href="#L162"> 162</a>     ((125:ℤ),130) (0,-((n+1:ℕ):ℤ)) ((125:ℤ),129)</span>
+<span id="L163"><a href="#L163"> 163</a>     hn (by ext &lt;;&gt; dsimp &lt;;&gt; omega) h1 hn1 (S_0_0 : SyntheticSpectrum)</span>
+<span id="L164"><a href="#L164"> 164</a>   have heq : lambdaAt 1 130 129 h1 (lambdaAt n (130+(n:ℤ)) 130 hn a) =</span>
+<span id="L165"><a href="#L165"> 165</a>       lambdaAt (n+1) (130+(n:ℤ)) 129 hn1 a := by</span>
+<span id="L166"><a href="#L166"> 166</a>     unfold lambdaAt</span>
+<span id="L167"><a href="#L167"> 167</a>     erw [←reassoc_of% (lambdaPow_naturality 1</span>
+<span id="L168"><a href="#L168"> 168</a>       ((biShiftAddIso ((125:ℤ),130+(n:ℤ)) (0,-(n:ℤ)) ((125:ℤ),130) hn).inv.app (S_0_0 : SyntheticSpectrum)))]</span>
+<span id="L169"><a href="#L169"> 169</a>     erw [←reassoc_of% (lambdaPow_naturality 1 (lambdaPow n (Smn 125 (130+(n:ℤ)))))]</span>
+<span id="L170"><a href="#L170"> 170</a>     erw [←Category.assoc,ha]</span>
+<span id="L171"><a href="#L171"> 171</a>     erw [lambdaPow_add model.quotients.coherence n 1 (n+1) rfl (Smn 125 (130+(n:ℤ)))]</span>
+<span id="L172"><a href="#L172"> 172</a>     simp only [lambdaShiftAddIso, lambdaDegree, Category.assoc]</span>
+<span id="L173"><a href="#L173"> 173</a>     rfl</span>
+<span id="L174"><a href="#L174"> 174</a>   have houter := lambdaAt_heq 1 130 129 h1 (lambdaAt n (130+(n:ℤ)) 130 hn a)</span>
+<span id="L175"><a href="#L175"> 175</a>   have hinner := multiply_heq 1 (by omega : (130:ℤ)=130+(n:ℤ)-(n:ℤ))</span>
+<span id="L176"><a href="#L176"> 176</a>     (lambdaAt_heq n (130+(n:ℤ)) 130 hn a)</span>
+<span id="L177"><a href="#L177"> 177</a>   exact (houter.trans hinner).symm.trans ((heq_of_eq heq).trans (lambdaAt_heq (n+1) _ _ hn1 a))</span>
+<span id="L178"><a href="#L178"> 178</a> </span>
+<span id="L179"><a href="#L179"> 179</a> private theorem quotient_zero_iff_multiple (n : ℕ) (w : ℤ)</span>
+<span id="L180"><a href="#L180"> 180</a>     (a : BiHom 125 w (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L181"><a href="#L181"> 181</a>     quotientClass n a=0 ↔ ∃ b : BiHom 125 (w+(n:ℤ)) (S_0_0 : SyntheticSpectrum),</span>
+<span id="L182"><a href="#L182"> 182</a>       HEq (lambdaMultiply n b) a := by</span>
+<span id="L183"><a href="#L183"> 183</a>   generalize hv : w+(n:ℤ)=v</span>
+<span id="L184"><a href="#L184"> 184</a>   have hw : w=v-(n:ℤ) := by omega</span>
+<span id="L185"><a href="#L185"> 185</a>   subst w</span>
+<span id="L186"><a href="#L186"> 186</a>   simpa only [heq_eq_eq] using vanishes_mod_lambda_iff_multiple n 125 v a</span>
+<span id="L187"><a href="#L187"> 187</a> </span>
+<span id="L188"><a href="#L188"> 188</a> private theorem lambda_injective_125_130 :</span>
+<span id="L189"><a href="#L189"> 189</a>     Function.Injective (fun a : BiHom 125 130 (S_0_0 : SyntheticSpectrum) =&gt; lambdaMultiply 1 a) := by</span>
+<span id="L190"><a href="#L190"> 190</a>   have hnu := nu_lambda_injective_from_source .sphere 125 130 no_outgoing_126_three</span>
+<span id="L191"><a href="#L191"> 191</a>   have hone (x : BiHom 125 130 (model.nu.functor.obj SphereSpectrum)) :</span>
+<span id="L192"><a href="#L192"> 192</a>       lambdaMultiply 1 x = lambdaAction 125 130 _ x := by</span>
+<span id="L193"><a href="#L193"> 193</a>     dsimp only [lambdaMultiply, lambdaAction]</span>
+<span id="L194"><a href="#L194"> 194</a>     rw [lambdaPow_one model.quotients.coherence]</span>
+<span id="L195"><a href="#L195"> 195</a>     rfl</span>
+<span id="L196"><a href="#L196"> 196</a>   intro a b hab</span>
+<span id="L197"><a href="#L197"> 197</a>   apply (cancel_mono model.nu.unitIso.inv).mp</span>
+<span id="L198"><a href="#L198"> 198</a>   apply hnu</span>
+<span id="L199"><a href="#L199"> 199</a>   have hh : lambdaMultiply 1 (a ≫ model.nu.unitIso.inv) =</span>
+<span id="L200"><a href="#L200"> 200</a>       lambdaMultiply 1 (b ≫ model.nu.unitIso.inv) := by</span>
+<span id="L201"><a href="#L201"> 201</a>     simpa only [lambdaMultiply,Category.assoc] using</span>
+<span id="L202"><a href="#L202"> 202</a>       congrArg (fun z =&gt; z ≫ model.nu.unitIso.inv) hab</span>
+<span id="L203"><a href="#L203"> 203</a>   exact (hone _).symm.trans (hh.trans (hone _))</span>
+<span id="L204"><a href="#L204"> 204</a> </span>
+<span id="L205"><a href="#L205"> 205</a> private theorem normalized_quotient (n : ℕ)</span>
+<span id="L206"><a href="#L206"> 206</a>     (a : BiHom 125 130 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L207"><a href="#L207"> 207</a>     quotientClass n a=0 ↔ quotientClass (n+1) (lambdaMultiply 1 a)=0 := by</span>
+<span id="L208"><a href="#L208"> 208</a>   rw [quotient_zero_iff_multiple n 130 a,</span>
+<span id="L209"><a href="#L209"> 209</a>     quotient_zero_iff_multiple (n+1) 129 (lambdaMultiply 1 a)]</span>
+<span id="L210"><a href="#L210"> 210</a>   rw [show (129:ℤ)+((n+1:ℕ):ℤ)=130+(n:ℤ) by omega]</span>
+<span id="L211"><a href="#L211"> 211</a>   constructor</span>
+<span id="L212"><a href="#L212"> 212</a>   · rintro ⟨b,hb⟩</span>
+<span id="L213"><a href="#L213"> 213</a>     exact ⟨b,(lambda_one_power n b).symm.trans (multiply_heq 1 (by omega) hb)⟩</span>
+<span id="L214"><a href="#L214"> 214</a>   · rintro ⟨b,hb⟩</span>
+<span id="L215"><a href="#L215"> 215</a>     let c : BiHom 125 130 (S_0_0 : SyntheticSpectrum) :=</span>
+<span id="L216"><a href="#L216"> 216</a>       homotopyRegrade rfl (by omega : 130+(n:ℤ)-(n:ℤ)=130) (lambdaMultiply n b)</span>
+<span id="L217"><a href="#L217"> 217</a>     have hc : HEq (lambdaMultiply n b) c := regrade_heq _ _</span>
+<span id="L218"><a href="#L218"> 218</a>     have he : HEq (lambdaMultiply 1 c) (lambdaMultiply 1 a) :=</span>
+<span id="L219"><a href="#L219"> 219</a>       (multiply_heq 1 (by omega) hc).symm.trans ((lambda_one_power n b).trans hb)</span>
+<span id="L220"><a href="#L220"> 220</a>     have hca := lambda_injective_125_130 (eq_of_heq he)</span>
+<span id="L221"><a href="#L221"> 221</a>     exact ⟨b,hc.trans (heq_of_eq hca)⟩</span>
+<span id="L222"><a href="#L222"> 222</a> </span>
+<span id="L223"><a href="#L223"> 223</a> private theorem choice_quotient_frame_late (s t : ℤ) (k : ℕ) (hst : t=s+124) (hsk : s-(k+2)≤5) (hk : 1≤k)</span>
+<span id="L224"><a href="#L224"> 224</a>     (x : model.classical.sphere.Page 2 (s,t)) (hx : InfinityGenerated model.classical.sphere (s,t) x) :</span>
+<span id="L225"><a href="#L225"> 225</a>     ∃ x&#x27; : permanentCycles model .sphere (s,t), x&#x27;.val=x ∧</span>
+<span id="L226"><a href="#L226"> 226</a>       ∀ q : PermanentQuotient model .sphere (1+(k:ℤ)) (s,t), q=0 ∨ q=subquotientClass _ _ x&#x27; := by</span>
+<span id="L227"><a href="#L227"> 227</a>   let E := Normalized.sphere</span>
+<span id="L228"><a href="#L228"> 228</a>   let A := E.ssData (s,t)</span>
+<span id="L229"><a href="#L229"> 229</a>   have hB : A.B ⊤=A.B (k:WithTop ℕ) := by</span>
+<span id="L230"><a href="#L230"> 230</a>     have hin (r : ℤ) (hr : (k:ℤ)+2≤r) : E.d r ((s,t)-E.diffDeg r)=0 := by</span>
+<span id="L231"><a href="#L231"> 231</a>       change E.d r (s-r,t-(r-1))=0</span>
+<span id="L232"><a href="#L232"> 232</a>       rw [show t-(r-1)=(s-r)+125 by omega]</span>
+<span id="L233"><a href="#L233"> 233</a>       ext z</span>
+<span id="L234"><a href="#L234"> 234</a>       exact no_outgoing_125_low_late (s-r) r (by omega) (by omega) z</span>
+<span id="L235"><a href="#L235"> 235</a>     have h := boundaries_top_eq_of_d_eq_zero E (k+2) (by change (2:ℤ)≤_; omega) (s,t) hin</span>
+<span id="L236"><a href="#L236"> 236</a>     change A.B ⊤=A.B ↑((k:ℤ)+2-2).toNat at h</span>
+<span id="L237"><a href="#L237"> 237</a>     simpa only [add_sub_cancel_right,Int.toNat_natCast] using h</span>
+<span id="L238"><a href="#L238"> 238</a>   obtain ⟨z,hz,_,hall⟩ := hx</span>
+<span id="L239"><a href="#L239"> 239</a>   have hz&#x27; : cycleLabel model .sphere ⊤ (s,t) z=x := by</span>
+<span id="L240"><a href="#L240"> 240</a>     have norm (P : SSData (ModuleCat ℤ)) (n : WithTop ℕ) (hn : n=0) :</span>
+<span id="L241"><a href="#L241"> 241</a>         Subobject.ofLE (P.Z ⊤) (P.Z n) (P.Z_anti le_top) ≫ P.pageπ n =</span>
+<span id="L242"><a href="#L242"> 242</a>           Subobject.ofLE (P.Z ⊤) (P.Z 0) (P.Z_anti le_top) ≫ P.pageπ 0 ≫</span>
+<span id="L243"><a href="#L243"> 243</a>             eqToHom (congrArg P.page hn.symm) := by</span>
+<span id="L244"><a href="#L244"> 244</a>       subst n</span>
+<span id="L245"><a href="#L245"> 245</a>       simp only [eqToHom_refl,Category.comp_id]</span>
+<span id="L246"><a href="#L246"> 246</a>     have hn := norm (model.classical.sphere.ssData (s,t)) (↑(2-model.classical.sphere.r₀).toNat)</span>
+<span id="L247"><a href="#L247"> 247</a>       (by rw [model.classical.firstPage]; rfl)</span>
+<span id="L248"><a href="#L248"> 248</a>     exact (congrArg (fun f =&gt; f z) hn).symm.trans hz</span>
+<span id="L249"><a href="#L249"> 249</a>   let x&#x27; : permanentCycles model .sphere (s,t) := ⟨x,⟨z,hz&#x27;⟩⟩</span>
+<span id="L250"><a href="#L250"> 250</a>   refine ⟨x&#x27;,rfl,?_⟩</span>
+<span id="L251"><a href="#L251"> 251</a>   intro q</span>
+<span id="L252"><a href="#L252"> 252</a>   obtain ⟨y,rfl⟩ := Quotient.exists_rep q</span>
+<span id="L253"><a href="#L253"> 253</a>   obtain ⟨z&#x27;,hz&#x27;&#x27;⟩ := y.property</span>
+<span id="L254"><a href="#L254"> 254</a>   have zero_mem (v : (Subobject.underlying.obj (A.Z ⊤) : ModuleCat ℤ)) (hv : A.pageπ ⊤ v=0) :</span>
+<span id="L255"><a href="#L255"> 255</a>       cycleLabel model .sphere ⊤ (s,t) v∈boundaries model .sphere (1+(k:ℤ)) (s,t) := by</span>
+<span id="L256"><a href="#L256"> 256</a>     apply infinity_zero_boundary_mem (s,t) (1+(k:ℤ)) _ v hv</span>
+<span id="L257"><a href="#L257"> 257</a>     have hb := hB</span>
+<span id="L258"><a href="#L258"> 258</a>     change (Normalized.sphere.ssData (s,t)).B ⊤=(Normalized.sphere.ssData (s,t)).B ↑k at hb</span>
+<span id="L259"><a href="#L259"> 259</a>     rw [Normalized.sphere_eq] at hb</span>
+<span id="L260"><a href="#L260"> 260</a>     simpa only [show 1+(k:ℤ)-1=(k:ℤ) by omega,Int.toNat_natCast] using hb</span>
+<span id="L261"><a href="#L261"> 261</a>   rcases hall (A.pageπ ⊤ z&#x27;) with h0|h1</span>
+<span id="L262"><a href="#L262"> 262</a>   · left</span>
+<span id="L263"><a href="#L263"> 263</a>     apply (subquotientClass_eq_zero_iff _ _ _).mpr</span>
+<span id="L264"><a href="#L264"> 264</a>     rw [←hz&#x27;&#x27;]</span>
+<span id="L265"><a href="#L265"> 265</a>     exact zero_mem z&#x27; h0</span>
+<span id="L266"><a href="#L266"> 266</a>   · right</span>
+<span id="L267"><a href="#L267"> 267</a>     apply sub_eq_zero.mp</span>
+<span id="L268"><a href="#L268"> 268</a>     change subquotientClass _ _ y-subquotientClass _ _ x&#x27;=0</span>
+<span id="L269"><a href="#L269"> 269</a>     rw [←map_sub]</span>
+<span id="L270"><a href="#L270"> 270</a>     apply (subquotientClass_eq_zero_iff _ _ _).mpr</span>
+<span id="L271"><a href="#L271"> 271</a>     change y.val-x&#x27;.val∈_</span>
+<span id="L272"><a href="#L272"> 272</a>     have hzX : cycleLabel model .sphere ⊤ (s,t) z=x&#x27;.val := hz&#x27;</span>
+<span id="L273"><a href="#L273"> 273</a>     rw [←hz&#x27;&#x27;,←hzX,←map_sub]</span>
+<span id="L274"><a href="#L274"> 274</a>     let z0 : (Subobject.underlying.obj (((model.classical.obj (ClassicalObject.sphere.obj model.auxiliary)).ssData (s,t)).Z ⊤) : ModuleCat ℤ) := z</span>
+<span id="L275"><a href="#L275"> 275</a>     exact zero_mem (z&#x27;-z0) (by rw [map_sub,h1]; exact sub_self _)</span>
+<span id="L276"><a href="#L276"> 276</a> </span>
+<span id="L277"><a href="#L277"> 277</a> private theorem choice_sphere_frame_late (s t : ℤ) (k : ℕ) (hst : t=s+124) (hsk : s-(k+2)≤5) (hk : 1≤k)</span>
+<span id="L278"><a href="#L278"> 278</a>     (x : model.classical.sphere.Page 2 (s,t)) (hx : InfinityGenerated model.classical.sphere (s,t) x) :</span>
+<span id="L279"><a href="#L279"> 279</a>     ∀ e : (model.family.sphere.sequence.ssData (s,t,t-k)).eInfty,</span>
+<span id="L280"><a href="#L280"> 280</a>       e=0 ∨ HasInfinityRepresentative model.family.sphere 2 (s,t,t-k)</span>
+<span id="L281"><a href="#L281"> 281</a>         (model.comparison.sphereE2 s t k x) e := by</span>
+<span id="L282"><a href="#L282"> 282</a>   apply sphere_frame_of_permanent_quotient</span>
+<span id="L283"><a href="#L283"> 283</a>   rw [show 1+t-(t-(k:ℤ))=1+(k:ℤ) by omega]</span>
+<span id="L284"><a href="#L284"> 284</a>   exact choice_quotient_frame_late s t k hst hsk hk x hx</span>
+<span id="L285"><a href="#L285"> 285</a> </span>
+<span id="L286"><a href="#L286"> 286</a> private theorem eta_weight131_branches_filtration_fifteen</span>
+<span id="L287"><a href="#L287"> 287</a>     (b : BiHom 124 131 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L288"><a href="#L288"> 288</a>     (hbranch : DetectsNonzero (model.convergence .sphere) (13,137,131)</span>
+<span id="L289"><a href="#L289"> 289</a>         (model.comparison.sphereE2 13 137 6 correction) b ∨</span>
+<span id="L290"><a href="#L290"> 290</a>       ∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum), lambdaMultiply 7 a=b) :</span>
+<span id="L291"><a href="#L291"> 291</a>     FiltrationAtLeast model.syntheticTower 15 (sphereProduct eta b) := by</span>
+<span id="L292"><a href="#L292"> 292</a>   rcases hbranch with h13 | ⟨a,ha⟩</span>
+<span id="L293"><a href="#L293"> 293</a>   · have hd := model.multiplicationCompatible 1 2 13 137 0 6</span>
+<span id="L294"><a href="#L294"> 294</a>       (model.standardClasses.standardHi 1) correction eta b eta_detected h13.1</span>
+<span id="L295"><a href="#L295"> 295</a>     change Detects (model.convergence .sphere) (14,139,133)</span>
+<span id="L296"><a href="#L296"> 296</a>       (model.comparison.sphereE2 14 139 6 (KIP126.Computation.Standard.product (r := (14,139))</span>
+<span id="L297"><a href="#L297"> 297</a>         KIP126.Computation.Standard.h1 correction)) (sphereProduct eta b) at hd</span>
+<span id="L298"><a href="#L298"> 298</a>     rw [KIP126.Computation.Standard.h1_correction_zero,map_zero] at hd</span>
+<span id="L299"><a href="#L299"> 299</a>     exact detects_zero_filtration (model.convergence .sphere) (14,139,133) hd</span>
+<span id="L300"><a href="#L300"> 300</a>   · have had := model.sphereDetectionCompatible.homotopy_lambda 14 138 7 a</span>
+<span id="L301"><a href="#L301"> 301</a>     rw [ha] at had</span>
+<span id="L302"><a href="#L302"> 302</a>     have hd := model.multiplicationCompatible 1 2 14 138 0 7</span>
+<span id="L303"><a href="#L303"> 303</a>       (model.standardClasses.standardHi 1) (sphereFirstQuotient model 14 138 (quotientClass 1 a))</span>
+<span id="L304"><a href="#L304"> 304</a>       eta b eta_detected had</span>
+<span id="L305"><a href="#L305"> 305</a>     change Detects (model.convergence .sphere) (15,140,133) _ (sphereProduct eta b) at hd</span>
+<span id="L306"><a href="#L306"> 306</a>     obtain ⟨e,he,a&#x27;,ha&#x27;,hgr⟩ := hd</span>
+<span id="L307"><a href="#L307"> 307</a>     rw [←ha&#x27;]</span>
+<span id="L308"><a href="#L308"> 308</a>     have hm : ((model.syntheticTower.filtration (S_0_0 : SyntheticSpectrum)).F 15 ((125:ℤ),133)).arrow a&#x27; ∈</span>
+<span id="L309"><a href="#L309"> 309</a>         (ModuleCat.subobjectModule (syntheticHomotopy (S_0_0 : SyntheticSpectrum) ((125:ℤ),133)))</span>
+<span id="L310"><a href="#L310"> 310</a>           ((model.syntheticTower.filtration (S_0_0 : SyntheticSpectrum)).F 15 ((125:ℤ),133)) := ⟨a&#x27;,rfl⟩</span>
+<span id="L311"><a href="#L311"> 311</a>     simpa only [FiltrationAtLeast,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,</span>
+<span id="L312"><a href="#L312"> 312</a>       SyntheticObject.obj,Int.reduceAdd,Int.reduceSub] using hm</span>
+<span id="L313"><a href="#L313"> 313</a> </span>
+<span id="L314"><a href="#L314"> 314</a> private theorem stem124_weight131_filtration11_branches</span>
+<span id="L315"><a href="#L315"> 315</a>     (hframe : ∀ e : (model.family.sphere.sequence.ssData (13,137,131)).eInfty,</span>
+<span id="L316"><a href="#L316"> 316</a>       e=0 ∨ HasInfinityRepresentative model.family.sphere 2 (13,137,131)</span>
+<span id="L317"><a href="#L317"> 317</a>         (model.comparison.sphereE2 13 137 6 correction) e)</span>
+<span id="L318"><a href="#L318"> 318</a>     (a : BiHom 124 131 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L319"><a href="#L319"> 319</a>     (ha11 : FiltrationAtLeast model.syntheticTower 11 a) :</span>
+<span id="L320"><a href="#L320"> 320</a>     DetectsNonzero (model.convergence .sphere) (13,137,131)</span>
+<span id="L321"><a href="#L321"> 321</a>         (model.comparison.sphereE2 13 137 6 correction) a ∨</span>
+<span id="L322"><a href="#L322"> 322</a>       ∃ b : BiHom 124 138 (S_0_0 : SyntheticSpectrum), lambdaMultiply 7 b=a := by</span>
+<span id="L323"><a href="#L323"> 323</a>   have ha13 : FiltrationAtLeast model.syntheticTower 13 a := by</span>
+<span id="L324"><a href="#L324"> 324</a>     apply (filtration_iff_of_infinity_zero (model.convergence .sphere)</span>
+<span id="L325"><a href="#L325"> 325</a>       11 13 124 131 (by decide) ?_ a).mp ha11</span>
+<span id="L326"><a href="#L326"> 326</a>     intro j hj hj&#x27;</span>
+<span id="L327"><a href="#L327"> 327</a>     apply sphere_infinity_zero_of_permanent_quotient_zero j (124+j) 131 (by omega)</span>
+<span id="L328"><a href="#L328"> 328</a>     interval_cases j</span>
+<span id="L329"><a href="#L329"> 329</a>     · exact permanent_quotient_zero_of_page_zero .sphere 5 5 (by decide) (by decide) (11,135)</span>
+<span id="L330"><a href="#L330"> 330</a>         KIP126.Computation.Standard.e5_stem124_af11</span>
+<span id="L331"><a href="#L331"> 331</a>     · exact permanent_quotient_zero_of_page_zero .sphere 4 6 (by decide) (by decide) (12,136)</span>
+<span id="L332"><a href="#L332"> 332</a>         KIP126.Computation.Standard.e4_stem124_af12</span>
+<span id="L333"><a href="#L333"> 333</a>   rcases theta_detection_step (13,137,131)</span>
+<span id="L334"><a href="#L334"> 334</a>     (model.comparison.sphereE2 13 137 6 correction) hframe a ha13 with hdet|ha14</span>
+<span id="L335"><a href="#L335"> 335</a>   · exact Or.inl hdet</span>
+<span id="L336"><a href="#L336"> 336</a>   right</span>
+<span id="L337"><a href="#L337"> 337</a>   have h := KIP126.Literature.Standard.selected_filtration_lambda .sphere 124 131 14 (by decide)</span>
+<span id="L338"><a href="#L338"> 338</a>     (a ≫ model.nu.unitIso.inv)</span>
+<span id="L339"><a href="#L339"> 339</a>   change FiltrationAtLeast model.syntheticTower 14 (a ≫ model.nu.unitIso.inv) ↔</span>
+<span id="L340"><a href="#L340"> 340</a>     ∃ b : BiHom 124 138 (model.nu.functor.obj SphereSpectrum), lambdaMultiply 7 b=a ≫ model.nu.unitIso.inv at h</span>
+<span id="L341"><a href="#L341"> 341</a>   obtain ⟨b,hb⟩ := h.mp (map_filtration .sphere (.nu .sphere) model.nu.unitIso.inv a ha14)</span>
+<span id="L342"><a href="#L342"> 342</a>   refine ⟨b ≫ model.nu.unitIso.hom,?_⟩</span>
+<span id="L343"><a href="#L343"> 343</a>   simpa [lambdaMultiply,Category.assoc] using congrArg (fun q =&gt; q ≫ model.nu.unitIso.hom) hb</span>
+<span id="L344"><a href="#L344"> 344</a> </span>
+<span id="L345"><a href="#L345"> 345</a> </span>
+<span id="L346"><a href="#L346"> 346</a> private theorem u_eta_difference_fifteen</span>
+<span id="L347"><a href="#L347"> 347</a>     (u v : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) (hv : UChoice v) :</span>
+<span id="L348"><a href="#L348"> 348</a>     FiltrationAtLeast model.syntheticTower 15</span>
+<span id="L349"><a href="#L349"> 349</a>       ((show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta u)) -</span>
+<span id="L350"><a href="#L350"> 350</a>         (show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta v))) := by</span>
+<span id="L351"><a href="#L351"> 351</a>   have hu0 := sphere_zero_weight_label_10_134 KIP126.Computation.Standard.U u hu.1</span>
+<span id="L352"><a href="#L352"> 352</a>   have hv0 := sphere_zero_weight_label_10_134 KIP126.Computation.Standard.U v hv.1</span>
+<span id="L353"><a href="#L353"> 353</a>   have hdu := model.sphereDetectionCompatible.homotopy_lambda 10 134 3 u</span>
+<span id="L354"><a href="#L354"> 354</a>   have hdv := model.sphereDetectionCompatible.homotopy_lambda 10 134 3 v</span>
+<span id="L355"><a href="#L355"> 355</a>   dsimp only [KIP126.Literature.sphereFirstQuotient] at hu0 hv0</span>
+<span id="L356"><a href="#L356"> 356</a>   rw [hu0] at hdu</span>
+<span id="L357"><a href="#L357"> 357</a>   rw [hv0] at hdv</span>
+<span id="L358"><a href="#L358"> 358</a>   have hd := detects_sub_filtration (model.convergence .sphere) (10,134,131) hdu hdv</span>
+<span id="L359"><a href="#L359"> 359</a>   have he := eta_weight131_branches_filtration_fifteen _</span>
+<span id="L360"><a href="#L360"> 360</a>     (stem124_weight131_filtration11_branches</span>
+<span id="L361"><a href="#L361"> 361</a>       (choice_sphere_frame_late 13 137 6 (by decide) (by decide) (by decide) _</span>
+<span id="L362"><a href="#L362"> 362</a>         correction_infinity_generated) _ hd)</span>
+<span id="L363"><a href="#L363"> 363</a>   have hlinear : sphereProduct KIP126.Literature.Standard.eta</span>
+<span id="L364"><a href="#L364"> 364</a>       ((show BiHom 124 131 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 u) -</span>
+<span id="L365"><a href="#L365"> 365</a>         (show BiHom 124 131 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 v)) =</span>
+<span id="L366"><a href="#L366"> 366</a>       (show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta u)) -</span>
+<span id="L367"><a href="#L367"> 367</a>         (show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta v)) := by</span>
+<span id="L368"><a href="#L368"> 368</a>     have hh : sphereProduct KIP126.Literature.Standard.eta</span>
+<span id="L369"><a href="#L369"> 369</a>         ((show BiHom 124 131 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 u) -</span>
+<span id="L370"><a href="#L370"> 370</a>           (show BiHom 124 131 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 3 v)) =</span>
+<span id="L371"><a href="#L371"> 371</a>         sphereProduct KIP126.Literature.Standard.eta (lambdaMultiply 3 u) -</span>
+<span id="L372"><a href="#L372"> 372</a>           sphereProduct KIP126.Literature.Standard.eta (lambdaMultiply 3 v) := by</span>
+<span id="L373"><a href="#L373"> 373</a>       simp only [sphereProduct, Int.reduceAdd, Int.reduceSub, Nat.cast_ofNat, Preadditive.comp_sub]</span>
+<span id="L374"><a href="#L374"> 374</a>     rw [hh, eta_lambda3_right, eta_lambda3_right]</span>
+<span id="L375"><a href="#L375"> 375</a>   rwa [hlinear] at he</span>
+<span id="L376"><a href="#L376"> 376</a> </span>
+<span id="L377"><a href="#L377"> 377</a> end</span>
+<span id="L378"><a href="#L378"> 378</a> end KIP126.Main.Internal.Choice.Completion</span>
+<span id="L379"><a href="#L379"> 379</a> end</span></pre>

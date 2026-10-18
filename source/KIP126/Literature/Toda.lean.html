@@ -1,0 +1,551 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Toda.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Toda.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.System</span>
+<span id="L4"><a href="#L4">   4</a> public import Mathlib.CategoryTheory.Triangulated.Triangulated</span>
+<span id="L5"><a href="#L5">   5</a> public import Mathlib.CategoryTheory.Triangulated.Yoneda</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> /-! The actual cone-based Toda relation and its proved laws. Adapted from</span>
+<span id="L10"><a href="#L10">  10</a> Kervaire126 bbac1fc05843bdf2d56057e6114a38839e939378,</span>
+<span id="L11"><a href="#L11">  11</a> Def/StableHomotopy/Toda/{Predicates,Proofs,Coset,Juggling,Law}.</span>
+<span id="L12"><a href="#L12">  12</a> No bracket value or disappearance of indeterminacy is postulated. -/</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> namespace KIP126.StableHomotopy.Toda</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> universe u v</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L21"><a href="#L21">  21</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L22"><a href="#L22">  22</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> /-- A shifted Toda representative obtained from a distinguished cofiber</span>
+<span id="L25"><a href="#L25">  25</a> triangle for `f`. The extension `gbar` of `g` composes with `h` through the</span>
+<span id="L26"><a href="#L26">  26</a> triangle&#x27;s connecting map to give `x`. -/</span>
+<span id="L27"><a href="#L27">  27</a> public def Relation {X Y Z W : C} (x : X⟦(1 : ℤ)⟧ ⟶ W)</span>
+<span id="L28"><a href="#L28">  28</a>     (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W) : Prop :=</span>
+<span id="L29"><a href="#L29">  29</a>   ∃ (Q : C) (i : Y ⟶ Q) (p : Q ⟶ X⟦(1 : ℤ)⟧),</span>
+<span id="L30"><a href="#L30">  30</a>     Triangle.mk f i p ∈ distTriang C ∧</span>
+<span id="L31"><a href="#L31">  31</a>       ∃ gbar : Q ⟶ Z, i ≫ gbar = g ∧ p ≫ x = gbar ≫ h</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> end KIP126.StableHomotopy.Toda</span>
+<span id="L34"><a href="#L34">  34</a> </span>
+<span id="L35"><a href="#L35">  35</a> namespace KIP126.Literature.Route</span>
+<span id="L36"><a href="#L36">  36</a> </span>
+<span id="L37"><a href="#L37">  37</a> open CategoryTheory CategoryTheory.MonoidalCategory</span>
+<span id="L38"><a href="#L38">  38</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L39"><a href="#L39">  39</a> open KIP126.Kervaire.Route</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> universe u v w</span>
+<span id="L42"><a href="#L42">  42</a> noncomputable section</span>
+<span id="L43"><a href="#L43">  43</a> variable {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> /-- The actual suspension comparison used for a synthetic triple bracket. -/</span>
+<span id="L46"><a href="#L46">  46</a> public def tripleTodaSource (a aw b bw c cw : ℤ) :</span>
+<span id="L47"><a href="#L47">  47</a>     Smn (Syn := Syn) (a + (b + c) + 1) (aw + (bw + cw)) ≅</span>
+<span id="L48"><a href="#L48">  48</a>       ((SyntheticCategory.biShift (b+c,bw+cw)).obj (Smn a aw))⟦(1 : ℤ)⟧ := by</span>
+<span id="L49"><a href="#L49">  49</a>   simpa only [Prod.mk_add_mk, add_zero, Smn, Functor.comp_obj] using</span>
+<span id="L50"><a href="#L50">  50</a>     ((SyntheticCategory.biShift_comp (a+(b+c),aw+(bw+cw)) (1,0)).app</span>
+<span id="L51"><a href="#L51">  51</a>       (S_0_0 : Syn)).symm ≪≫</span>
+<span id="L52"><a href="#L52">  52</a>     (SyntheticCategory.biShift (1,0)).mapIso</span>
+<span id="L53"><a href="#L53">  53</a>       ((SyntheticCategory.biShift_comp (a,aw) (b+c,bw+cw)).app S_0_0).symm ≪≫</span>
+<span id="L54"><a href="#L54">  54</a>     (SyntheticCategory.biShift_compat 1).app _</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> /-- Membership in the actual triangulated Toda bracket, including its</span>
+<span id="L57"><a href="#L57">  57</a> full indeterminacy; this is not a freely chosen ternary relation. -/</span>
+<span id="L58"><a href="#L58">  58</a> public def TripleToda {a aw b bw c cw : ℤ}</span>
+<span id="L59"><a href="#L59">  59</a>     (x : BiHom a aw (S_0_0 : Syn)) (y : BiHom b bw (S_0_0 : Syn))</span>
+<span id="L60"><a href="#L60">  60</a>     (z : BiHom c cw (S_0_0 : Syn))</span>
+<span id="L61"><a href="#L61">  61</a>     (value : BiHom (a+(b+c)+1) (aw+(bw+cw)) (S_0_0 : Syn)) : Prop :=</span>
+<span id="L62"><a href="#L62">  62</a>   KIP126.StableHomotopy.Toda.Relation</span>
+<span id="L63"><a href="#L63">  63</a>     ((tripleTodaSource a aw b bw c cw).inv ≫ value)</span>
+<span id="L64"><a href="#L64">  64</a>     ((SyntheticCategory.biShift (b+c,bw+cw)).map x)</span>
+<span id="L65"><a href="#L65">  65</a>     ((SyntheticCategory.biShift_comp (b,bw) (c,cw)).inv.app S_0_0 ≫</span>
+<span id="L66"><a href="#L66">  66</a>       (SyntheticCategory.biShift (c,cw)).map y) z</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> public def syntheticTwo : BiHom 0 0 (S_0_0 : Syn) :=</span>
+<span id="L69"><a href="#L69">  69</a>   SyntheticCategory.biShift_zero.hom.app S_0_0 ≫ (2 • 𝟙 _)</span>
+<span id="L70"><a href="#L70">  70</a> </span>
+<span id="L71"><a href="#L71">  71</a> /-- The source&#x27;s chosen synthetic lift of h₀. -/</span>
+<span id="L72"><a href="#L72">  72</a> public structure TodaSourceData where</span>
+<span id="L73"><a href="#L73">  73</a>   h0 : BiHom 0 1 (S_0_0 : Syn)</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L76"><a href="#L76">  76</a>   [HasFunctorialCofiber (C := C)] [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L77"><a href="#L77">  77</a>   (D : Model C Syn)</span>
+<span id="L78"><a href="#L78">  78</a> </span>
+<span id="L79"><a href="#L79">  79</a> /-- Low-degree Toda input from the fixed source. Every label and product</span>
+<span id="L80"><a href="#L80">  80</a> uses the same supplied synthetic sphere and first-quotient comparison. -/</span>
+<span id="L81"><a href="#L81">  81</a> private structure TodaSourceResults (η : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L82"><a href="#L82">  82</a>     (S : TodaSourceData (Syn := Syn)) : Prop where</span>
+<span id="L83"><a href="#L83">  83</a>   h0_label : sphereFirstQuotient D.nu D.quotients.functoriality D.firstQuotient</span>
+<span id="L84"><a href="#L84">  84</a>     1 1 (quotientClass 1 S.h0) = D.standardClasses.standardHi 0</span>
+<span id="L85"><a href="#L85">  85</a>   lambda_h0 : lambdaMultiply 1 S.h0 = syntheticTwo</span>
+<span id="L86"><a href="#L86">  86</a>   h0_eta : sphereProduct S.h0 η = 0</span>
+<span id="L87"><a href="#L87">  87</a>   low_indeterminacy : ∀ a : BiHom 2 3 (S_0_0 : Syn), sphereProduct S.h0 a = 0</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> /-- The separate comparison/construction obligations used by the secondary</span>
+<span id="L90"><a href="#L90">  90</a> route. These are explicit inputs, not consequences of the low-degree source</span>
+<span id="L91"><a href="#L91">  91</a> results and not an asserted construction of the Toda witnesses. -/</span>
+<span id="L92"><a href="#L92">  92</a> private structure TodaSecondaryComparison (η : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L93"><a href="#L93">  93</a>     (S : TodaSourceData (Syn := Syn)) where</span>
+<span id="L94"><a href="#L94">  94</a>   low_bracket : TripleToda S.h0 η S.h0 (by simpa using sphereProduct η η)</span>
+<span id="L95"><a href="#L95">  95</a>   twoStar : BiHom 1 0 (S_0_0 : Syn)</span>
+<span id="L96"><a href="#L96">  96</a>   symmetric : ∀ θ : BiHom 62 64 (S_0_0 : Syn), θ + θ = 0 →</span>
+<span id="L97"><a href="#L97">  97</a>     TripleToda syntheticTwo θ syntheticTwo (by simpa using sphereProduct twoStar θ)</span>
+<span id="L98"><a href="#L98">  98</a>   star_product : ∀ θ : BiHom 62 64 (S_0_0 : Syn),</span>
+<span id="L99"><a href="#L99">  99</a>     sphereProduct twoStar θ = lambdaMultiply 2 (sphereProduct η θ)</span>
+<span id="L100"><a href="#L100"> 100</a> </span>
+<span id="L101"><a href="#L101"> 101</a> end</span>
+<span id="L102"><a href="#L102"> 102</a> end KIP126.Literature.Route</span>
+<span id="L103"><a href="#L103"> 103</a> </span>
+<span id="L104"><a href="#L104"> 104</a> namespace KIP126.StableHomotopy.Toda</span>
+<span id="L105"><a href="#L105"> 105</a> </span>
+<span id="L106"><a href="#L106"> 106</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L107"><a href="#L107"> 107</a> </span>
+<span id="L108"><a href="#L108"> 108</a> universe u v</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L111"><a href="#L111"> 111</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L112"><a href="#L112"> 112</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L113"><a href="#L113"> 113</a> </span>
+<span id="L114"><a href="#L114"> 114</a> /-- A Toda relation requires the two adjacent composites to vanish. -/</span>
+<span id="L115"><a href="#L115"> 115</a> public theorem composable {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L116"><a href="#L116"> 116</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L117"><a href="#L117"> 117</a>     (hx : Relation x f g h) : f ≫ g = 0 ∧ g ≫ h = 0 := by</span>
+<span id="L118"><a href="#L118"> 118</a>   rcases hx with ⟨Q, i, p, hT, gbar, hg, hx⟩</span>
+<span id="L119"><a href="#L119"> 119</a>   let T := Triangle.mk f i p</span>
+<span id="L120"><a href="#L120"> 120</a>   have hfi : f ≫ i = 0 := by</span>
+<span id="L121"><a href="#L121"> 121</a>     have h := comp_distTriang_mor_zero₁₂ T hT</span>
+<span id="L122"><a href="#L122"> 122</a>     dsimp only [T, Triangle.mk] at h</span>
+<span id="L123"><a href="#L123"> 123</a>     exact h</span>
+<span id="L124"><a href="#L124"> 124</a>   have hip : i ≫ p = 0 := by</span>
+<span id="L125"><a href="#L125"> 125</a>     have h := comp_distTriang_mor_zero₂₃ T hT</span>
+<span id="L126"><a href="#L126"> 126</a>     dsimp only [T, Triangle.mk] at h</span>
+<span id="L127"><a href="#L127"> 127</a>     exact h</span>
+<span id="L128"><a href="#L128"> 128</a>   constructor</span>
+<span id="L129"><a href="#L129"> 129</a>   · calc</span>
+<span id="L130"><a href="#L130"> 130</a>       f ≫ g = (f ≫ i) ≫ gbar := by rw [← hg, Category.assoc]</span>
+<span id="L131"><a href="#L131"> 131</a>       _ = 0 := by rw [hfi, zero_comp]</span>
+<span id="L132"><a href="#L132"> 132</a>   · calc</span>
+<span id="L133"><a href="#L133"> 133</a>       g ≫ h = i ≫ (gbar ≫ h) := by rw [← hg, Category.assoc]</span>
+<span id="L134"><a href="#L134"> 134</a>       _ = (i ≫ p) ≫ x := by rw [← hx, Category.assoc]</span>
+<span id="L135"><a href="#L135"> 135</a>       _ = 0 := by rw [hip, zero_comp]</span>
+<span id="L136"><a href="#L136"> 136</a> </span>
+<span id="L137"><a href="#L137"> 137</a> /-- Every pair of vanishing adjacent composites admits a Toda representative. -/</span>
+<span id="L138"><a href="#L138"> 138</a> public theorem exists_relation {X Y Z W : C} (f : X ⟶ Y) (g : Y ⟶ Z)</span>
+<span id="L139"><a href="#L139"> 139</a>     (h : Z ⟶ W) (hfg : f ≫ g = 0) (hgh : g ≫ h = 0) :</span>
+<span id="L140"><a href="#L140"> 140</a>     ∃ x : X⟦(1 : ℤ)⟧ ⟶ W, Relation x f g h := by</span>
+<span id="L141"><a href="#L141"> 141</a>   obtain ⟨Q, i, p, hT⟩ := distinguished_cocone_triangle f</span>
+<span id="L142"><a href="#L142"> 142</a>   let T := Triangle.mk f i p</span>
+<span id="L143"><a href="#L143"> 143</a>   obtain ⟨gbar, hgbar⟩ := T.yoneda_exact₂ hT g hfg</span>
+<span id="L144"><a href="#L144"> 144</a>   dsimp only [T, Triangle.mk] at hgbar</span>
+<span id="L145"><a href="#L145"> 145</a>   have hzero : i ≫ (gbar ≫ h) = 0 := by</span>
+<span id="L146"><a href="#L146"> 146</a>     calc</span>
+<span id="L147"><a href="#L147"> 147</a>       i ≫ (gbar ≫ h) = (i ≫ gbar) ≫ h := by simp only [Category.assoc]</span>
+<span id="L148"><a href="#L148"> 148</a>       _ = g ≫ h := by rw [hgbar]</span>
+<span id="L149"><a href="#L149"> 149</a>       _ = 0 := hgh</span>
+<span id="L150"><a href="#L150"> 150</a>   obtain ⟨x, hx⟩ := T.yoneda_exact₃ hT (gbar ≫ h) hzero</span>
+<span id="L151"><a href="#L151"> 151</a>   exact ⟨x, Q, i, p, hT, gbar, hgbar.symm, hx.symm⟩</span>
+<span id="L152"><a href="#L152"> 152</a> </span>
+<span id="L153"><a href="#L153"> 153</a> /-- Adding a left-indeterminacy term preserves the Toda relation. -/</span>
+<span id="L154"><a href="#L154"> 154</a> private theorem indeterminacy_left {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L155"><a href="#L155"> 155</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L156"><a href="#L156"> 156</a>     (hx : Relation x f g h) (y : Y⟦(1 : ℤ)⟧ ⟶ W) :</span>
+<span id="L157"><a href="#L157"> 157</a>     Relation (x + f⟦(1 : ℤ)⟧&#x27; ≫ y) f g h := by</span>
+<span id="L158"><a href="#L158"> 158</a>   rcases hx with ⟨Q, i, p, hT, gbar, hg, hx⟩</span>
+<span id="L159"><a href="#L159"> 159</a>   refine ⟨Q, i, p, hT, gbar, hg, ?_⟩</span>
+<span id="L160"><a href="#L160"> 160</a>   have hpf : p ≫ f⟦(1 : ℤ)⟧&#x27; = 0 :=</span>
+<span id="L161"><a href="#L161"> 161</a>     comp_distTriang_mor_zero₃₁ (Triangle.mk f i p) hT</span>
+<span id="L162"><a href="#L162"> 162</a>   calc</span>
+<span id="L163"><a href="#L163"> 163</a>     p ≫ (x + f⟦(1 : ℤ)⟧&#x27; ≫ y) = p ≫ x + p ≫ (f⟦(1 : ℤ)⟧&#x27; ≫ y) := by</span>
+<span id="L164"><a href="#L164"> 164</a>       simp only [Preadditive.comp_add]</span>
+<span id="L165"><a href="#L165"> 165</a>     _ = p ≫ x + (p ≫ f⟦(1 : ℤ)⟧&#x27;) ≫ y := by rw [Category.assoc]</span>
+<span id="L166"><a href="#L166"> 166</a>     _ = p ≫ x := by rw [hpf, zero_comp, add_zero]</span>
+<span id="L167"><a href="#L167"> 167</a>     _ = gbar ≫ h := hx</span>
+<span id="L168"><a href="#L168"> 168</a> </span>
+<span id="L169"><a href="#L169"> 169</a> /-- Adding a right-indeterminacy term preserves the Toda relation. -/</span>
+<span id="L170"><a href="#L170"> 170</a> private theorem indeterminacy_right {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L171"><a href="#L171"> 171</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L172"><a href="#L172"> 172</a>     (hx : Relation x f g h) (z : X⟦(1 : ℤ)⟧ ⟶ Z) :</span>
+<span id="L173"><a href="#L173"> 173</a>     Relation (x + z ≫ h) f g h := by</span>
+<span id="L174"><a href="#L174"> 174</a>   rcases hx with ⟨Q, i, p, hT, gbar, hg, hx⟩</span>
+<span id="L175"><a href="#L175"> 175</a>   refine ⟨Q, i, p, hT, gbar + p ≫ z, ?_, ?_⟩</span>
+<span id="L176"><a href="#L176"> 176</a>   · have hip : i ≫ p = 0 :=</span>
+<span id="L177"><a href="#L177"> 177</a>       comp_distTriang_mor_zero₂₃ (Triangle.mk f i p) hT</span>
+<span id="L178"><a href="#L178"> 178</a>     calc</span>
+<span id="L179"><a href="#L179"> 179</a>       i ≫ (gbar + p ≫ z) = i ≫ gbar + i ≫ (p ≫ z) := by</span>
+<span id="L180"><a href="#L180"> 180</a>         simp only [Preadditive.comp_add]</span>
+<span id="L181"><a href="#L181"> 181</a>       _ = g + (i ≫ p) ≫ z := by rw [hg, Category.assoc]</span>
+<span id="L182"><a href="#L182"> 182</a>       _ = g := by rw [hip, zero_comp, add_zero]</span>
+<span id="L183"><a href="#L183"> 183</a>   · calc</span>
+<span id="L184"><a href="#L184"> 184</a>       p ≫ (x + z ≫ h) = p ≫ x + p ≫ (z ≫ h) := by</span>
+<span id="L185"><a href="#L185"> 185</a>         simp only [Preadditive.comp_add]</span>
+<span id="L186"><a href="#L186"> 186</a>       _ = gbar ≫ h + (p ≫ z) ≫ h := by rw [hx, Category.assoc]</span>
+<span id="L187"><a href="#L187"> 187</a>       _ = (gbar + p ≫ z) ≫ h := by simp only [Preadditive.add_comp]</span>
+<span id="L188"><a href="#L188"> 188</a> </span>
+<span id="L189"><a href="#L189"> 189</a> end KIP126.StableHomotopy.Toda</span>
+<span id="L190"><a href="#L190"> 190</a> </span>
+<span id="L191"><a href="#L191"> 191</a> namespace KIP126.StableHomotopy.Toda</span>
+<span id="L192"><a href="#L192"> 192</a> </span>
+<span id="L193"><a href="#L193"> 193</a> noncomputable section</span>
+<span id="L194"><a href="#L194"> 194</a> </span>
+<span id="L195"><a href="#L195"> 195</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L196"><a href="#L196"> 196</a> </span>
+<span id="L197"><a href="#L197"> 197</a> universe u v</span>
+<span id="L198"><a href="#L198"> 198</a> </span>
+<span id="L199"><a href="#L199"> 199</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L200"><a href="#L200"> 200</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L201"><a href="#L201"> 201</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L202"><a href="#L202"> 202</a> </span>
+<span id="L203"><a href="#L203"> 203</a> /-- Every difference of representatives is a sum of the two actual indeterminacy terms. -/</span>
+<span id="L204"><a href="#L204"> 204</a> private theorem indeterminacy_complete {X Y Z W : C}</span>
+<span id="L205"><a href="#L205"> 205</a>     {x₁ x₂ : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L206"><a href="#L206"> 206</a>     (hx₁ : Relation x₁ f g h) (hx₂ : Relation x₂ f g h) :</span>
+<span id="L207"><a href="#L207"> 207</a>     ∃ (y : Y⟦(1 : ℤ)⟧ ⟶ W) (z : X⟦(1 : ℤ)⟧ ⟶ Z),</span>
+<span id="L208"><a href="#L208"> 208</a>       x₁ - x₂ = f⟦(1 : ℤ)⟧&#x27; ≫ y + z ≫ h := by</span>
+<span id="L209"><a href="#L209"> 209</a>   rcases hx₁ with ⟨Q₁, i₁, p₁, hT₁, g₁, hg₁, hx₁⟩</span>
+<span id="L210"><a href="#L210"> 210</a>   rcases hx₂ with ⟨Q₂, i₂, p₂, hT₂, g₂, hg₂, hx₂⟩</span>
+<span id="L211"><a href="#L211"> 211</a>   obtain ⟨c, hc₁, hc₂⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L212"><a href="#L212"> 212</a>     (Triangle.mk f i₁ p₁) (Triangle.mk f i₂ p₂) hT₁ hT₂</span>
+<span id="L213"><a href="#L213"> 213</a>     (𝟙 X) (𝟙 Y) (by</span>
+<span id="L214"><a href="#L214"> 214</a>       change f ≫ 𝟙 Y = 𝟙 X ≫ f</span>
+<span id="L215"><a href="#L215"> 215</a>       simp only [Category.comp_id, Category.id_comp])</span>
+<span id="L216"><a href="#L216"> 216</a>   dsimp only [Triangle.mk] at c hc₁ hc₂</span>
+<span id="L217"><a href="#L217"> 217</a>   have hi : i₁ ≫ c = i₂ := by simpa using hc₁</span>
+<span id="L218"><a href="#L218"> 218</a>   have hp : p₁ = c ≫ p₂ := by simpa using hc₂</span>
+<span id="L219"><a href="#L219"> 219</a>   let δ : Q₁ ⟶ Z := g₁ - c ≫ g₂</span>
+<span id="L220"><a href="#L220"> 220</a>   have hδ : i₁ ≫ δ = 0 := by</span>
+<span id="L221"><a href="#L221"> 221</a>     dsimp [δ]</span>
+<span id="L222"><a href="#L222"> 222</a>     rw [Preadditive.comp_sub, hg₁, ← Category.assoc, hi, hg₂, sub_self]</span>
+<span id="L223"><a href="#L223"> 223</a>   obtain ⟨z, hz⟩ := (Triangle.mk f i₁ p₁).yoneda_exact₃ hT₁ δ hδ</span>
+<span id="L224"><a href="#L224"> 224</a>   dsimp only [Triangle.mk] at z hz</span>
+<span id="L225"><a href="#L225"> 225</a>   have hp₂x₂ : p₁ ≫ x₂ = (c ≫ g₂) ≫ h := by</span>
+<span id="L226"><a href="#L226"> 226</a>     rw [hp, Category.assoc, hx₂, ← Category.assoc]</span>
+<span id="L227"><a href="#L227"> 227</a>   have hpzh : p₁ ≫ (z ≫ h) = δ ≫ h := by</span>
+<span id="L228"><a href="#L228"> 228</a>     rw [← Category.assoc, ← hz]</span>
+<span id="L229"><a href="#L229"> 229</a>   let e : X⟦(1 : ℤ)⟧ ⟶ W := x₁ - x₂ - z ≫ h</span>
+<span id="L230"><a href="#L230"> 230</a>   have he : p₁ ≫ e = 0 := by</span>
+<span id="L231"><a href="#L231"> 231</a>     dsimp [e]</span>
+<span id="L232"><a href="#L232"> 232</a>     rw [Preadditive.comp_sub, Preadditive.comp_sub, hx₁, hp₂x₂, hpzh]</span>
+<span id="L233"><a href="#L233"> 233</a>     dsimp [δ]</span>
+<span id="L234"><a href="#L234"> 234</a>     rw [Preadditive.sub_comp]</span>
+<span id="L235"><a href="#L235"> 235</a>     abel</span>
+<span id="L236"><a href="#L236"> 236</a>   have hrot : (Triangle.mk f i₁ p₁).rotate ∈ distTriang C :=</span>
+<span id="L237"><a href="#L237"> 237</a>     rot_of_distTriang (Triangle.mk f i₁ p₁) hT₁</span>
+<span id="L238"><a href="#L238"> 238</a>   obtain ⟨y₀, hy₀⟩ := (Triangle.mk f i₁ p₁).rotate.yoneda_exact₃ hrot e he</span>
+<span id="L239"><a href="#L239"> 239</a>   dsimp only [Triangle.mk, Triangle.rotate] at y₀ hy₀</span>
+<span id="L240"><a href="#L240"> 240</a>   refine ⟨-y₀, z, ?_⟩</span>
+<span id="L241"><a href="#L241"> 241</a>   have hy₀&#x27; : e = f⟦(1 : ℤ)⟧&#x27; ≫ (-y₀) := by</span>
+<span id="L242"><a href="#L242"> 242</a>     simpa [Triangle.rotate] using hy₀</span>
+<span id="L243"><a href="#L243"> 243</a>   calc</span>
+<span id="L244"><a href="#L244"> 244</a>     x₁ - x₂ = e + z ≫ h := by dsimp [e]; abel</span>
+<span id="L245"><a href="#L245"> 245</a>     _ = f⟦(1 : ℤ)⟧&#x27; ≫ (-y₀) + z ≫ h := by rw [hy₀&#x27;]</span>
+<span id="L246"><a href="#L246"> 246</a> </span>
+<span id="L247"><a href="#L247"> 247</a> /-- With any chosen representative as origin, the Toda bracket is exactly</span>
+<span id="L248"><a href="#L248"> 248</a> its coset by the full left and right indeterminacy. No uniqueness or vanishing</span>
+<span id="L249"><a href="#L249"> 249</a> of either indeterminacy term is assumed. -/</span>
+<span id="L250"><a href="#L250"> 250</a> public theorem relation_iff_indeterminacy {X Y Z W : C}</span>
+<span id="L251"><a href="#L251"> 251</a>     {x₀ x : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L252"><a href="#L252"> 252</a>     (hx₀ : Relation x₀ f g h) :</span>
+<span id="L253"><a href="#L253"> 253</a>     Relation x f g h ↔</span>
+<span id="L254"><a href="#L254"> 254</a>       ∃ (y : Y⟦(1 : ℤ)⟧ ⟶ W) (z : X⟦(1 : ℤ)⟧ ⟶ Z),</span>
+<span id="L255"><a href="#L255"> 255</a>         x - x₀ = f⟦(1 : ℤ)⟧&#x27; ≫ y + z ≫ h := by</span>
+<span id="L256"><a href="#L256"> 256</a>   constructor</span>
+<span id="L257"><a href="#L257"> 257</a>   · exact fun hx =&gt; indeterminacy_complete hx hx₀</span>
+<span id="L258"><a href="#L258"> 258</a>   · rintro ⟨y, z, hx⟩</span>
+<span id="L259"><a href="#L259"> 259</a>     have heq : x = (x₀ + f⟦(1 : ℤ)⟧&#x27; ≫ y) + z ≫ h := by</span>
+<span id="L260"><a href="#L260"> 260</a>       calc</span>
+<span id="L261"><a href="#L261"> 261</a>         x = (x - x₀) + x₀ := (sub_add_cancel x x₀).symm</span>
+<span id="L262"><a href="#L262"> 262</a>         _ = (f⟦(1 : ℤ)⟧&#x27; ≫ y + z ≫ h) + x₀ := by rw [hx]</span>
+<span id="L263"><a href="#L263"> 263</a>         _ = (x₀ + f⟦(1 : ℤ)⟧&#x27; ≫ y) + z ≫ h := by abel</span>
+<span id="L264"><a href="#L264"> 264</a>     rw [heq]</span>
+<span id="L265"><a href="#L265"> 265</a>     exact indeterminacy_right (indeterminacy_left hx₀ y) z</span>
+<span id="L266"><a href="#L266"> 266</a> </span>
+<span id="L267"><a href="#L267"> 267</a> end</span>
+<span id="L268"><a href="#L268"> 268</a> </span>
+<span id="L269"><a href="#L269"> 269</a> end KIP126.StableHomotopy.Toda</span>
+<span id="L270"><a href="#L270"> 270</a> </span>
+<span id="L271"><a href="#L271"> 271</a> namespace KIP126.StableHomotopy.Toda</span>
+<span id="L272"><a href="#L272"> 272</a> </span>
+<span id="L273"><a href="#L273"> 273</a> noncomputable section</span>
+<span id="L274"><a href="#L274"> 274</a> </span>
+<span id="L275"><a href="#L275"> 275</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L276"><a href="#L276"> 276</a> </span>
+<span id="L277"><a href="#L277"> 277</a> universe u v</span>
+<span id="L278"><a href="#L278"> 278</a> </span>
+<span id="L279"><a href="#L279"> 279</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L280"><a href="#L280"> 280</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L281"><a href="#L281"> 281</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L282"><a href="#L282"> 282</a> </span>
+<span id="L283"><a href="#L283"> 283</a> /-- Toda juggling with its shifted negative sign; this proof requires the octahedral axiom. -/</span>
+<span id="L284"><a href="#L284"> 284</a> public theorem juggling [IsTriangulated C]</span>
+<span id="L285"><a href="#L285"> 285</a>     {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L286"><a href="#L286"> 286</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V}</span>
+<span id="L287"><a href="#L287"> 287</a>     (hx : Relation x f g h) (hhd : h ≫ d = 0) :</span>
+<span id="L288"><a href="#L288"> 288</a>     ∃ y : Y⟦(1 : ℤ)⟧ ⟶ V,</span>
+<span id="L289"><a href="#L289"> 289</a>       Relation y g h d ∧ x ≫ d = (-f⟦(1 : ℤ)⟧&#x27;) ≫ y := by</span>
+<span id="L290"><a href="#L290"> 290</a>   rcases hx with ⟨Q, i, p, hTf, gbar, hg, hx⟩</span>
+<span id="L291"><a href="#L291"> 291</a>   let Tf := Triangle.mk f i p</span>
+<span id="L292"><a href="#L292"> 292</a>   have hTfi : Tf.rotate ∈ distTriang C := rot_of_distTriang Tf hTf</span>
+<span id="L293"><a href="#L293"> 293</a>   obtain ⟨K, v, w, hTbar⟩ := distinguished_cocone_triangle gbar</span>
+<span id="L294"><a href="#L294"> 294</a>   obtain ⟨Qg, j, q, hTg⟩ := distinguished_cocone_triangle g</span>
+<span id="L295"><a href="#L295"> 295</a>   let Tbar := Triangle.mk gbar v w</span>
+<span id="L296"><a href="#L296"> 296</a>   let Tg := Triangle.mk g j q</span>
+<span id="L297"><a href="#L297"> 297</a>   let O := CategoryTheory.Triangulated.someOctahedron hg hTfi hTbar hTg</span>
+<span id="L298"><a href="#L298"> 298</a>   dsimp only [Tf, Tbar, Tg, Triangle.mk, Triangle.rotate] at O</span>
+<span id="L299"><a href="#L299"> 299</a>   have hpm : p ≫ O.m₁ = gbar ≫ j := by</span>
+<span id="L300"><a href="#L300"> 300</a>     simpa [Tf, Tbar, Tg, O] using O.comm₁</span>
+<span id="L301"><a href="#L301"> 301</a>   have hmq : O.m₁ ≫ q = -f⟦(1 : ℤ)⟧&#x27; := by</span>
+<span id="L302"><a href="#L302"> 302</a>     exact O.comm₂</span>
+<span id="L303"><a href="#L303"> 303</a>   have hgh : g ≫ h = 0 := (composable ⟨Q, i, p, hTf, gbar, hg, hx⟩).2</span>
+<span id="L304"><a href="#L304"> 304</a>   obtain ⟨hbar₀, hhbar₀⟩ := Tg.yoneda_exact₂ hTg h hgh</span>
+<span id="L305"><a href="#L305"> 305</a>   dsimp only [Tg, Triangle.mk] at hbar₀ hhbar₀</span>
+<span id="L306"><a href="#L306"> 306</a>   let δ : X⟦(1 : ℤ)⟧ ⟶ W := x - O.m₁ ≫ hbar₀</span>
+<span id="L307"><a href="#L307"> 307</a>   have hpδ : p ≫ δ = 0 := by</span>
+<span id="L308"><a href="#L308"> 308</a>     dsimp [δ]</span>
+<span id="L309"><a href="#L309"> 309</a>     rw [Preadditive.comp_sub, hx, ← Category.assoc, hpm, Category.assoc,</span>
+<span id="L310"><a href="#L310"> 310</a>       ← hhbar₀, sub_self]</span>
+<span id="L311"><a href="#L311"> 311</a>   obtain ⟨a, ha⟩ := Tf.rotate.yoneda_exact₃ hTfi δ hpδ</span>
+<span id="L312"><a href="#L312"> 312</a>   dsimp only [Tf, Triangle.mk, Triangle.rotate] at a ha</span>
+<span id="L313"><a href="#L313"> 313</a>   let hbar : Qg ⟶ W := hbar₀ + q ≫ a</span>
+<span id="L314"><a href="#L314"> 314</a>   have hjhbar : j ≫ hbar = h := by</span>
+<span id="L315"><a href="#L315"> 315</a>     have hjq : j ≫ q = 0 := by</span>
+<span id="L316"><a href="#L316"> 316</a>       have hzero := comp_distTriang_mor_zero₂₃ Tg hTg</span>
+<span id="L317"><a href="#L317"> 317</a>       dsimp only [Tg, Triangle.mk] at hzero</span>
+<span id="L318"><a href="#L318"> 318</a>       exact hzero</span>
+<span id="L319"><a href="#L319"> 319</a>     dsimp [hbar]</span>
+<span id="L320"><a href="#L320"> 320</a>     rw [Preadditive.comp_add, ← hhbar₀, ← Category.assoc, hjq, zero_comp, add_zero]</span>
+<span id="L321"><a href="#L321"> 321</a>   have hmx : O.m₁ ≫ hbar = x := by</span>
+<span id="L322"><a href="#L322"> 322</a>     dsimp [hbar]</span>
+<span id="L323"><a href="#L323"> 323</a>     rw [Preadditive.comp_add, ← Category.assoc, hmq]</span>
+<span id="L324"><a href="#L324"> 324</a>     rw [← ha]</span>
+<span id="L325"><a href="#L325"> 325</a>     dsimp [δ]</span>
+<span id="L326"><a href="#L326"> 326</a>     abel</span>
+<span id="L327"><a href="#L327"> 327</a>   have hjhd : j ≫ (hbar ≫ d) = 0 := by</span>
+<span id="L328"><a href="#L328"> 328</a>     rw [← Category.assoc, hjhbar, hhd]</span>
+<span id="L329"><a href="#L329"> 329</a>   obtain ⟨y, hy⟩ := Tg.yoneda_exact₃ hTg (hbar ≫ d) hjhd</span>
+<span id="L330"><a href="#L330"> 330</a>   dsimp only [Tg, Triangle.mk] at y hy</span>
+<span id="L331"><a href="#L331"> 331</a>   refine ⟨y, ?_, ?_⟩</span>
+<span id="L332"><a href="#L332"> 332</a>   · exact ⟨Qg, j, q, hTg, hbar, hjhbar, hy.symm⟩</span>
+<span id="L333"><a href="#L333"> 333</a>   · calc</span>
+<span id="L334"><a href="#L334"> 334</a>       x ≫ d = (O.m₁ ≫ hbar) ≫ d := by rw [hmx]</span>
+<span id="L335"><a href="#L335"> 335</a>       _ = O.m₁ ≫ (hbar ≫ d) := Category.assoc _ _ _</span>
+<span id="L336"><a href="#L336"> 336</a>       _ = O.m₁ ≫ (q ≫ y) := by rw [← hy]</span>
+<span id="L337"><a href="#L337"> 337</a>       _ = (O.m₁ ≫ q) ≫ y := by rw [Category.assoc]</span>
+<span id="L338"><a href="#L338"> 338</a>       _ = (-f⟦(1 : ℤ)⟧&#x27;) ≫ y := by rw [hmq]</span>
+<span id="L339"><a href="#L339"> 339</a> </span>
+<span id="L340"><a href="#L340"> 340</a> </span>
+<span id="L341"><a href="#L341"> 341</a> end</span>
+<span id="L342"><a href="#L342"> 342</a> </span>
+<span id="L343"><a href="#L343"> 343</a> end KIP126.StableHomotopy.Toda</span>
+<span id="L344"><a href="#L344"> 344</a> </span>
+<span id="L345"><a href="#L345"> 345</a> namespace KIP126.StableHomotopy.Toda</span>
+<span id="L346"><a href="#L346"> 346</a> </span>
+<span id="L347"><a href="#L347"> 347</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L348"><a href="#L348"> 348</a> open CategoryTheory.MonoidalCategory</span>
+<span id="L349"><a href="#L349"> 349</a> </span>
+<span id="L350"><a href="#L350"> 350</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L351"><a href="#L351"> 351</a> universe u v u&#x27; v&#x27;</span>
+<span id="L352"><a href="#L352"> 352</a> </span>
+<span id="L353"><a href="#L353"> 353</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L354"><a href="#L354"> 354</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L355"><a href="#L355"> 355</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L356"><a href="#L356"> 356</a> </span>
+<span id="L357"><a href="#L357"> 357</a> /-- Precomposition gives a containment, with the actual suspended map</span>
+<span id="L358"><a href="#L358"> 358</a> on the Toda representative. -/</span>
+<span id="L359"><a href="#L359"> 359</a> public theorem precompose {A X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L360"><a href="#L360"> 360</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L361"><a href="#L361"> 361</a>     (hx : Relation x f g h) (a : A ⟶ X) :</span>
+<span id="L362"><a href="#L362"> 362</a>     Relation (a⟦(1 : ℤ)⟧&#x27; ≫ x) (a ≫ f) g h := by</span>
+<span id="L363"><a href="#L363"> 363</a>   obtain ⟨Q, i, p, hT, gbar, hg, hx⟩ := hx</span>
+<span id="L364"><a href="#L364"> 364</a>   obtain ⟨Q&#x27;, i&#x27;, p&#x27;, hT&#x27;⟩ := distinguished_cocone_triangle (a ≫ f)</span>
+<span id="L365"><a href="#L365"> 365</a>   obtain ⟨c, hi, hp⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L366"><a href="#L366"> 366</a>     (Triangle.mk (a ≫ f) i&#x27; p&#x27;) (Triangle.mk f i p) hT&#x27; hT a (𝟙 Y) (by</span>
+<span id="L367"><a href="#L367"> 367</a>       change (a ≫ f) ≫ 𝟙 Y = a ≫ f</span>
+<span id="L368"><a href="#L368"> 368</a>       exact Category.comp_id _)</span>
+<span id="L369"><a href="#L369"> 369</a>   dsimp only [Triangle.mk] at hi hp</span>
+<span id="L370"><a href="#L370"> 370</a>   refine ⟨Q&#x27;, i&#x27;, p&#x27;, hT&#x27;, c ≫ gbar, ?_, ?_⟩</span>
+<span id="L371"><a href="#L371"> 371</a>   · rw [← Category.assoc, hi]</span>
+<span id="L372"><a href="#L372"> 372</a>     simpa using hg</span>
+<span id="L373"><a href="#L373"> 373</a>   · rw [← Category.assoc, hp, Category.assoc, hx, Category.assoc]</span>
+<span id="L374"><a href="#L374"> 374</a> </span>
+<span id="L375"><a href="#L375"> 375</a> /-- Postcomposition gives a containment for the actual target map. -/</span>
+<span id="L376"><a href="#L376"> 376</a> public theorem postcompose {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L377"><a href="#L377"> 377</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L378"><a href="#L378"> 378</a>     (hx : Relation x f g h) (d : W ⟶ V) :</span>
+<span id="L379"><a href="#L379"> 379</a>     Relation (x ≫ d) f g (h ≫ d) := by</span>
+<span id="L380"><a href="#L380"> 380</a>   obtain ⟨Q, i, p, hT, gbar, hg, hx⟩ := hx</span>
+<span id="L381"><a href="#L381"> 381</a>   refine ⟨Q, i, p, hT, gbar, hg, ?_⟩</span>
+<span id="L382"><a href="#L382"> 382</a>   rw [← Category.assoc, hx, Category.assoc]</span>
+<span id="L383"><a href="#L383"> 383</a> </span>
+<span id="L384"><a href="#L384"> 384</a> /-- Moving a factor from the first input into the middle input gives</span>
+<span id="L385"><a href="#L385"> 385</a> this containment; its reverse is not asserted. -/</span>
+<span id="L386"><a href="#L386"> 386</a> public theorem absorb_first {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ V}</span>
+<span id="L387"><a href="#L387"> 387</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V}</span>
+<span id="L388"><a href="#L388"> 388</a>     (hx : Relation x (f ≫ g) h d) :</span>
+<span id="L389"><a href="#L389"> 389</a>     Relation x f (g ≫ h) d := by</span>
+<span id="L390"><a href="#L390"> 390</a>   obtain ⟨Q, i, p, hT, hbar, hh, hx⟩ := hx</span>
+<span id="L391"><a href="#L391"> 391</a>   obtain ⟨Q&#x27;, i&#x27;, p&#x27;, hT&#x27;⟩ := distinguished_cocone_triangle f</span>
+<span id="L392"><a href="#L392"> 392</a>   obtain ⟨c, hi, hp⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L393"><a href="#L393"> 393</a>     (Triangle.mk f i&#x27; p&#x27;) (Triangle.mk (f ≫ g) i p) hT&#x27; hT (𝟙 X) g (by</span>
+<span id="L394"><a href="#L394"> 394</a>       change f ≫ g = 𝟙 X ≫ (f ≫ g)</span>
+<span id="L395"><a href="#L395"> 395</a>       exact (Category.id_comp _).symm)</span>
+<span id="L396"><a href="#L396"> 396</a>   dsimp only [Triangle.mk] at hi hp</span>
+<span id="L397"><a href="#L397"> 397</a>   have hp&#x27; : p&#x27; = c ≫ p := by simpa using hp</span>
+<span id="L398"><a href="#L398"> 398</a>   refine ⟨Q&#x27;, i&#x27;, p&#x27;, hT&#x27;, c ≫ hbar, ?_, ?_⟩</span>
+<span id="L399"><a href="#L399"> 399</a>   · rw [← Category.assoc, hi, Category.assoc, hh]</span>
+<span id="L400"><a href="#L400"> 400</a>   · rw [hp&#x27;, Category.assoc, hx, Category.assoc]</span>
+<span id="L401"><a href="#L401"> 401</a> </span>
+<span id="L402"><a href="#L402"> 402</a> /-- Moving a factor from the last input into the middle input gives</span>
+<span id="L403"><a href="#L403"> 403</a> this containment; its reverse is not asserted. -/</span>
+<span id="L404"><a href="#L404"> 404</a> public theorem absorb_last {X Y Z W V : C} {x : X⟦(1 : ℤ)⟧ ⟶ V}</span>
+<span id="L405"><a href="#L405"> 405</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} {d : W ⟶ V}</span>
+<span id="L406"><a href="#L406"> 406</a>     (hx : Relation x f g (h ≫ d)) :</span>
+<span id="L407"><a href="#L407"> 407</a>     Relation x f (g ≫ h) d := by</span>
+<span id="L408"><a href="#L408"> 408</a>   obtain ⟨Q, i, p, hT, gbar, hg, hx⟩ := hx</span>
+<span id="L409"><a href="#L409"> 409</a>   refine ⟨Q, i, p, hT, gbar ≫ h, ?_, ?_⟩</span>
+<span id="L410"><a href="#L410"> 410</a>   · rw [← Category.assoc, hg]</span>
+<span id="L411"><a href="#L411"> 411</a>   · simpa only [Category.assoc] using hx</span>
+<span id="L412"><a href="#L412"> 412</a> </span>
+<span id="L413"><a href="#L413"> 413</a> /-- The four-map shuffle identifies the two sets of products, with the</span>
+<span id="L414"><a href="#L414"> 414</a> shifted negative sign. It does not equate arbitrary representatives of</span>
+<span id="L415"><a href="#L415"> 415</a> the two Toda brackets. The octahedral hypothesis is the one required</span>
+<span id="L416"><a href="#L416"> 416</a> by the underlying juggling law. -/</span>
+<span id="L417"><a href="#L417"> 417</a> public theorem shuffle_iff [IsTriangulated C] {X Y Z W V : C}</span>
+<span id="L418"><a href="#L418"> 418</a>     (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W) (d : W ⟶ V)</span>
+<span id="L419"><a href="#L419"> 419</a>     (hfg : f ≫ g = 0) (hgh : g ≫ h = 0) (hhd : h ≫ d = 0)</span>
+<span id="L420"><a href="#L420"> 420</a>     (z : X⟦(1 : ℤ)⟧ ⟶ V) :</span>
+<span id="L421"><a href="#L421"> 421</a>     (∃ x : X⟦(1 : ℤ)⟧ ⟶ W, Relation x f g h ∧ x ≫ d = z) ↔</span>
+<span id="L422"><a href="#L422"> 422</a>       ∃ y : Y⟦(1 : ℤ)⟧ ⟶ V,</span>
+<span id="L423"><a href="#L423"> 423</a>         Relation y g h d ∧ (-f⟦(1 : ℤ)⟧&#x27;) ≫ y = z := by</span>
+<span id="L424"><a href="#L424"> 424</a>   constructor</span>
+<span id="L425"><a href="#L425"> 425</a>   · rintro ⟨x, hx, rfl⟩</span>
+<span id="L426"><a href="#L426"> 426</a>     obtain ⟨y, hy, he⟩ := juggling hx hhd</span>
+<span id="L427"><a href="#L427"> 427</a>     exact ⟨y, hy, he.symm⟩</span>
+<span id="L428"><a href="#L428"> 428</a>   · rintro ⟨y, hy, rfl⟩</span>
+<span id="L429"><a href="#L429"> 429</a>     obtain ⟨x₀, hx₀⟩ := exists_relation f g h hfg hgh</span>
+<span id="L430"><a href="#L430"> 430</a>     obtain ⟨y₀, hy₀, hxy₀⟩ := juggling hx₀ hhd</span>
+<span id="L431"><a href="#L431"> 431</a>     obtain ⟨u, v, huv⟩ := indeterminacy_complete hy hy₀</span>
+<span id="L432"><a href="#L432"> 432</a>     refine ⟨x₀ + f⟦(1 : ℤ)⟧&#x27; ≫ (-v), indeterminacy_left hx₀ (-v), ?_⟩</span>
+<span id="L433"><a href="#L433"> 433</a>     have hzero : f⟦(1 : ℤ)⟧&#x27; ≫ g⟦(1 : ℤ)⟧&#x27; = 0 := by</span>
+<span id="L434"><a href="#L434"> 434</a>       rw [← Functor.map_comp, hfg, Functor.map_zero]</span>
+<span id="L435"><a href="#L435"> 435</a>     have he := congrArg (fun k =&gt; f⟦(1 : ℤ)⟧&#x27; ≫ k) huv</span>
+<span id="L436"><a href="#L436"> 436</a>     simp only [Preadditive.comp_sub, Preadditive.comp_add, ← Category.assoc,</span>
+<span id="L437"><a href="#L437"> 437</a>       hzero, zero_comp, zero_add] at he</span>
+<span id="L438"><a href="#L438"> 438</a>     simp only [Preadditive.add_comp, Preadditive.comp_neg, Preadditive.neg_comp]</span>
+<span id="L439"><a href="#L439"> 439</a>     rw [hxy₀]</span>
+<span id="L440"><a href="#L440"> 440</a>     simp only [Preadditive.neg_comp]</span>
+<span id="L441"><a href="#L441"> 441</a>     rw [← he]</span>
+<span id="L442"><a href="#L442"> 442</a>     abel</span>
+<span id="L443"><a href="#L443"> 443</a> </span>
+<span id="L444"><a href="#L444"> 444</a> private theorem shifted_triangle_distinguished (n : ℤ) {X Y Q : C}</span>
+<span id="L445"><a href="#L445"> 445</a>     (f : X ⟶ Y) (i : Y ⟶ Q) (p : Q ⟶ X⟦(1 : ℤ)⟧)</span>
+<span id="L446"><a href="#L446"> 446</a>     (hT : Triangle.mk f i p ∈ distTriang C) :</span>
+<span id="L447"><a href="#L447"> 447</a>     Triangle.mk (f⟦n⟧&#x27;) (i⟦n⟧&#x27;)</span>
+<span id="L448"><a href="#L448"> 448</a>       (n.negOnePow • p⟦n⟧&#x27; ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X) ∈ distTriang C := by</span>
+<span id="L449"><a href="#L449"> 449</a>   let e : Y⟦n⟧ ≅ Y⟦n⟧ :=</span>
+<span id="L450"><a href="#L450"> 450</a>     { hom := n.negOnePow • 𝟙 _</span>
+<span id="L451"><a href="#L451"> 451</a>       inv := n.negOnePow • 𝟙 _</span>
+<span id="L452"><a href="#L452"> 452</a>       hom_inv_id := by simp [Linear.comp_units_smul, smul_smul]</span>
+<span id="L453"><a href="#L453"> 453</a>       inv_hom_id := by simp [Linear.comp_units_smul, smul_smul] }</span>
+<span id="L454"><a href="#L454"> 454</a>   apply isomorphic_distinguished _ (Triangle.shift_distinguished _ hT n)</span>
+<span id="L455"><a href="#L455"> 455</a>   refine Triangle.isoMk _ _ (Iso.refl _) e (Iso.refl _) ?_ ?_ ?_</span>
+<span id="L456"><a href="#L456"> 456</a>   · simp [Triangle.shiftFunctor, Triangle.mk, Category.id_comp, Category.comp_id, e, Linear.comp_units_smul]</span>
+<span id="L457"><a href="#L457"> 457</a>   · simp [Triangle.shiftFunctor, Triangle.mk, Category.id_comp, Category.comp_id, e, Linear.units_smul_comp, Linear.comp_units_smul, smul_smul]</span>
+<span id="L458"><a href="#L458"> 458</a>   · simp [Triangle.shiftFunctor, Triangle.mk]</span>
+<span id="L459"><a href="#L459"> 459</a> </span>
+<span id="L460"><a href="#L460"> 460</a> omit [HasZeroObject C] [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C] in</span>
+<span id="L461"><a href="#L461"> 461</a> private theorem shifted_connecting_comp (n : ℤ) {X Q W : C}</span>
+<span id="L462"><a href="#L462"> 462</a>     (p : Q ⟶ X⟦(1 : ℤ)⟧) (x : X⟦(1 : ℤ)⟧ ⟶ W) :</span>
+<span id="L463"><a href="#L463"> 463</a>     (n.negOnePow • p⟦n⟧&#x27; ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X) ≫</span>
+<span id="L464"><a href="#L464"> 464</a>       (n.negOnePow • ((shiftFunctorComm C (1 : ℤ) n).inv.app X ≫ x⟦n⟧&#x27;)) =</span>
+<span id="L465"><a href="#L465"> 465</a>         (p ≫ x)⟦n⟧&#x27; := by</span>
+<span id="L466"><a href="#L466"> 466</a>   simp only [Linear.units_smul_comp, Linear.comp_units_smul, smul_smul,</span>
+<span id="L467"><a href="#L467"> 467</a>     Int.units_mul_self, one_smul, Category.assoc, Iso.hom_inv_id_app_assoc,</span>
+<span id="L468"><a href="#L468"> 468</a>     Functor.map_comp]</span>
+<span id="L469"><a href="#L469"> 469</a> </span>
+<span id="L470"><a href="#L470"> 470</a> /-- Suspension transports the entire Toda relation with its forced</span>
+<span id="L471"><a href="#L471"> 471</a> `(-1)^n` sign and the actual comparison of the two iterated shifts. -/</span>
+<span id="L472"><a href="#L472"> 472</a> public theorem suspension_iff (n : ℤ) {X Y Z W : C}</span>
+<span id="L473"><a href="#L473"> 473</a>     {x : X⟦(1 : ℤ)⟧ ⟶ W} {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W} :</span>
+<span id="L474"><a href="#L474"> 474</a>     Relation</span>
+<span id="L475"><a href="#L475"> 475</a>       (n.negOnePow • ((shiftFunctorComm C (1 : ℤ) n).inv.app X ≫ x⟦n⟧&#x27;))</span>
+<span id="L476"><a href="#L476"> 476</a>       (f⟦n⟧&#x27;) (g⟦n⟧&#x27;) (h⟦n⟧&#x27;) ↔ Relation x f g h := by</span>
+<span id="L477"><a href="#L477"> 477</a>   constructor</span>
+<span id="L478"><a href="#L478"> 478</a>   · rintro ⟨Q&#x27;, i&#x27;, p&#x27;, hT&#x27;, gbar&#x27;, hg&#x27;, hx&#x27;⟩</span>
+<span id="L479"><a href="#L479"> 479</a>     obtain ⟨Q, i, p, hT⟩ := distinguished_cocone_triangle f</span>
+<span id="L480"><a href="#L480"> 480</a>     let δ := n.negOnePow • p⟦n⟧&#x27; ≫ (shiftFunctorComm C (1 : ℤ) n).hom.app X</span>
+<span id="L481"><a href="#L481"> 481</a>     obtain ⟨c, hi, hp⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L482"><a href="#L482"> 482</a>       (Triangle.mk (f⟦n⟧&#x27;) (i⟦n⟧&#x27;) δ) (Triangle.mk (f⟦n⟧&#x27;) i&#x27; p&#x27;)</span>
+<span id="L483"><a href="#L483"> 483</a>       (shifted_triangle_distinguished n f i p hT) hT&#x27; (𝟙 _) (𝟙 _) (by</span>
+<span id="L484"><a href="#L484"> 484</a>         change f⟦n⟧&#x27; ≫ 𝟙 _ = 𝟙 _ ≫ f⟦n⟧&#x27;</span>
+<span id="L485"><a href="#L485"> 485</a>         simp only [Category.comp_id, Category.id_comp])</span>
+<span id="L486"><a href="#L486"> 486</a>     dsimp only [Triangle.mk] at hi hp</span>
+<span id="L487"><a href="#L487"> 487</a>     have hi&#x27; : i⟦n⟧&#x27; ≫ c = i&#x27; := by simpa only [Category.id_comp] using hi</span>
+<span id="L488"><a href="#L488"> 488</a>     have hp&#x27; : δ = c ≫ p&#x27; := by</span>
+<span id="L489"><a href="#L489"> 489</a>       erw [(shiftFunctor C (1 : ℤ)).map_id, Category.comp_id] at hp</span>
+<span id="L490"><a href="#L490"> 490</a>       exact hp</span>
+<span id="L491"><a href="#L491"> 491</a>     let gbar := (shiftFunctor C n).preimage (c ≫ gbar&#x27;)</span>
+<span id="L492"><a href="#L492"> 492</a>     have hgbar : gbar⟦n⟧&#x27; = c ≫ gbar&#x27; := Functor.map_preimage _ _</span>
+<span id="L493"><a href="#L493"> 493</a>     refine ⟨Q, i, p, hT, gbar, ?_, ?_⟩</span>
+<span id="L494"><a href="#L494"> 494</a>     · apply (shiftFunctor C n).map_injective</span>
+<span id="L495"><a href="#L495"> 495</a>       rw [Functor.map_comp, hgbar, ← Category.assoc, hi&#x27;, hg&#x27;]</span>
+<span id="L496"><a href="#L496"> 496</a>     · apply (shiftFunctor C n).map_injective</span>
+<span id="L497"><a href="#L497"> 497</a>       rw [← shifted_connecting_comp n p x]</span>
+<span id="L498"><a href="#L498"> 498</a>       change δ ≫ _ = _</span>
+<span id="L499"><a href="#L499"> 499</a>       rw [hp&#x27;, Category.assoc, hx&#x27;, Functor.map_comp, hgbar, Category.assoc]</span>
+<span id="L500"><a href="#L500"> 500</a>   · rintro ⟨Q, i, p, hT, gbar, hg, hx⟩</span>
+<span id="L501"><a href="#L501"> 501</a>     refine ⟨Q⟦n⟧, i⟦n⟧&#x27;, n.negOnePow • p⟦n⟧&#x27; ≫</span>
+<span id="L502"><a href="#L502"> 502</a>       (shiftFunctorComm C (1 : ℤ) n).hom.app X,</span>
+<span id="L503"><a href="#L503"> 503</a>       shifted_triangle_distinguished n f i p hT, gbar⟦n⟧&#x27;, ?_, ?_⟩</span>
+<span id="L504"><a href="#L504"> 504</a>     · rw [← Functor.map_comp, hg]</span>
+<span id="L505"><a href="#L505"> 505</a>     · rw [shifted_connecting_comp, hx, Functor.map_comp]</span>
+<span id="L506"><a href="#L506"> 506</a> </span>
+<span id="L507"><a href="#L507"> 507</a> variable {D : Type u&#x27;} [Category.{v&#x27;} D] [Preadditive D]</span>
+<span id="L508"><a href="#L508"> 508</a>   [HasZeroObject D] [HasShift D ℤ]</span>
+<span id="L509"><a href="#L509"> 509</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor D n)] [Pretriangulated D]</span>
+<span id="L510"><a href="#L510"> 510</a> </span>
+<span id="L511"><a href="#L511"> 511</a> /-- An exact functor transports Toda representatives. The shift</span>
+<span id="L512"><a href="#L512"> 512</a> comparison belongs to that same functor. General exact functors only</span>
+<span id="L513"><a href="#L513"> 513</a> give this containment, not equality of Toda brackets. -/</span>
+<span id="L514"><a href="#L514"> 514</a> public theorem map (F : C ⥤ D) [F.CommShift ℤ] [F.IsTriangulated]</span>
+<span id="L515"><a href="#L515"> 515</a>     {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L516"><a href="#L516"> 516</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L517"><a href="#L517"> 517</a>     (hx : Relation x f g h) :</span>
+<span id="L518"><a href="#L518"> 518</a>     Relation ((F.commShiftIso (1 : ℤ)).inv.app X ≫ F.map x)</span>
+<span id="L519"><a href="#L519"> 519</a>       (F.map f) (F.map g) (F.map h) := by</span>
+<span id="L520"><a href="#L520"> 520</a>   obtain ⟨Q, i, p, hT, gbar, hg, hx⟩ := hx</span>
+<span id="L521"><a href="#L521"> 521</a>   refine ⟨F.obj Q, F.map i, F.map p ≫ (F.commShiftIso (1 : ℤ)).hom.app X,</span>
+<span id="L522"><a href="#L522"> 522</a>     F.map_distinguished (Triangle.mk f i p) hT, F.map gbar, ?_, ?_⟩</span>
+<span id="L523"><a href="#L523"> 523</a>   · rw [← F.map_comp, hg]</span>
+<span id="L524"><a href="#L524"> 524</a>   · simp only [Category.assoc, Iso.hom_inv_id_app_assoc]</span>
+<span id="L525"><a href="#L525"> 525</a>     rw [← F.map_comp, hx, F.map_comp]</span>
+<span id="L526"><a href="#L526"> 526</a> </span>
+<span id="L527"><a href="#L527"> 527</a> variable [MonoidalCategory C]</span>
+<span id="L528"><a href="#L528"> 528</a> </span>
+<span id="L529"><a href="#L529"> 529</a> /-- Tensoring on the right is a product containment when the actual</span>
+<span id="L530"><a href="#L530"> 530</a> tensor functor, with its given shift comparison, is exact. -/</span>
+<span id="L531"><a href="#L531"> 531</a> public theorem tensor_right (V : C) [(tensorRight V).CommShift ℤ]</span>
+<span id="L532"><a href="#L532"> 532</a>     [(tensorRight V).IsTriangulated]</span>
+<span id="L533"><a href="#L533"> 533</a>     {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L534"><a href="#L534"> 534</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L535"><a href="#L535"> 535</a>     (hx : Relation x f g h) :</span>
+<span id="L536"><a href="#L536"> 536</a>     Relation (((tensorRight V).commShiftIso (1 : ℤ)).inv.app X ≫ (x ▷ V))</span>
+<span id="L537"><a href="#L537"> 537</a>       (f ▷ V) (g ▷ V) (h ▷ V) := by</span>
+<span id="L538"><a href="#L538"> 538</a>   exact map (tensorRight V) hx</span>
+<span id="L539"><a href="#L539"> 539</a> </span>
+<span id="L540"><a href="#L540"> 540</a> /-- Tensoring on the left is the corresponding product containment</span>
+<span id="L541"><a href="#L541"> 541</a> with the actual left-tensor shift comparison. -/</span>
+<span id="L542"><a href="#L542"> 542</a> public theorem tensor_left (V : C) [(tensorLeft V).CommShift ℤ]</span>
+<span id="L543"><a href="#L543"> 543</a>     [(tensorLeft V).IsTriangulated]</span>
+<span id="L544"><a href="#L544"> 544</a>     {X Y Z W : C} {x : X⟦(1 : ℤ)⟧ ⟶ W}</span>
+<span id="L545"><a href="#L545"> 545</a>     {f : X ⟶ Y} {g : Y ⟶ Z} {h : Z ⟶ W}</span>
+<span id="L546"><a href="#L546"> 546</a>     (hx : Relation x f g h) :</span>
+<span id="L547"><a href="#L547"> 547</a>     Relation (((tensorLeft V).commShiftIso (1 : ℤ)).inv.app X ≫ (V ◁ x))</span>
+<span id="L548"><a href="#L548"> 548</a>       (V ◁ f) (V ◁ g) (V ◁ h) := by</span>
+<span id="L549"><a href="#L549"> 549</a>   exact map (tensorLeft V) hx</span>
+<span id="L550"><a href="#L550"> 550</a> </span>
+<span id="L551"><a href="#L551"> 551</a> end KIP126.StableHomotopy.Toda</span></pre>

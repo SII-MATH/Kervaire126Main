@@ -1,0 +1,57 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/DifferentialCriterion.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/DifferentialCriterion.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.ClassicalReduction</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.Main.ChoiceIndependence</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.ProofTools</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.Selected.Assembly</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.High125.Injectivity</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> /-! Proposition 7.8 on the one fixed sphere. The proof decomposition follows</span>
+<span id="L10"><a href="#L10">  10</a> bbac1fc05843 Main/Solution/Route/Selected/Assembly (MIT; see the retained source LICENSE).</span>
+<span id="L11"><a href="#L11">  11</a> The finite-frame, detection, tmf and lambda arguments are retained as</span>
+<span id="L12"><a href="#L12">  12</a> private paper proofs and consume the fixed upstream objects directly.</span>
+<span id="L13"><a href="#L13">  13</a> -/</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> @[expose] section</span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Main</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> /-- The three theta-square branches and the F15 tmf detector argument.</span>
+<span id="L19"><a href="#L19">  19</a> Port of the `dichotomy` argument in Selected/Assembly. -/</span>
+<span id="L20"><a href="#L20">  20</a> private theorem permanence_or_d12 : H6SquarePermanent ∨ H6SquareSupportsD12 := by</span>
+<span id="L21"><a href="#L21">  21</a>   exact Internal.Selected.selected_dichotomy (fun hf =&gt;</span>
+<span id="L22"><a href="#L22">  22</a>     Internal.High125.detector_injective_filtration15 _ hf</span>
+<span id="L23"><a href="#L23">  23</a>       (Internal.High125.eta_product_order_two 124 128</span>
+<span id="L24"><a href="#L24">  24</a>         (KIP126.Synthetic.Context.sphereProduct</span>
+<span id="L25"><a href="#L25">  25</a>           KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))</span>
+<span id="L26"><a href="#L26">  26</a>       (Internal.High125.synthetic_eta_theta_square_detector_zero KIP126.Literature.Standard.bxTheta5))</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> /-- The square and eta-detection conclusions in the nonpermanent branch.</span>
+<span id="L29"><a href="#L29">  29</a> Port of the forward implication in Selected/Assembly. -/</span>
+<span id="L30"><a href="#L30">  30</a> private theorem d12_implies_square_and_eta (hd : H6SquareSupportsD12) : Theta5SquareNonzeroDetection ∧ EtaExtensionDetection := by</span>
+<span id="L31"><a href="#L31">  31</a>   exact Internal.Selected.selected_forward (fun hf =&gt;</span>
+<span id="L32"><a href="#L32">  32</a>     Internal.High125.detector_injective_filtration15 _ hf</span>
+<span id="L33"><a href="#L33">  33</a>       (Internal.High125.eta_product_order_two 124 128</span>
+<span id="L34"><a href="#L34">  34</a>         (KIP126.Synthetic.Context.sphereProduct</span>
+<span id="L35"><a href="#L35">  35</a>           KIP126.Literature.Standard.bxTheta5 KIP126.Literature.Standard.bxTheta5))</span>
+<span id="L36"><a href="#L36">  36</a>       (Internal.High125.synthetic_eta_theta_square_detector_zero KIP126.Literature.Standard.bxTheta5)) hd</span>
+<span id="L37"><a href="#L37">  37</a> </span>
+<span id="L38"><a href="#L38">  38</a> /-- The reverse implication uses choice invariance, the actual target</span>
+<span id="L39"><a href="#L39">  39</a> frame, and its nonzero leading class. Port of Selected/Assembly. -/</span>
+<span id="L40"><a href="#L40">  40</a> private theorem conditions_imply_d12 (hc3 : Stem126D6Vanishes) (hc4 : Theta5SquareNonzeroDetection) (hc5 : EtaExtensionDetection) : H6SquareSupportsD12 := by</span>
+<span id="L41"><a href="#L41">  41</a>   exact Internal.Selected.selected_reverse hc3 hc4 hc5</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> /-- LWX Proposition 7.8: both the exclusive dichotomy and the full criterion. -/</span>
+<span id="L44"><a href="#L44">  44</a> public theorem h6_square_differential_dichotomy_and_criterion :</span>
+<span id="L45"><a href="#L45">  45</a>     ((H6SquarePermanent ∧ ¬ H6SquareSupportsD12) ∨ (H6SquareSupportsD12 ∧ ¬ H6SquarePermanent)) ∧</span>
+<span id="L46"><a href="#L46">  46</a>       (H6SquareSupportsD12 ↔ Stem126D6Vanishes ∧ Theta5SquareNonzeroDetection ∧ EtaExtensionDetection) := by</span>
+<span id="L47"><a href="#L47">  47</a>   constructor</span>
+<span id="L48"><a href="#L48">  48</a>   · rcases permanence_or_d12 with hp | hd</span>
+<span id="L49"><a href="#L49">  49</a>     · exact Or.inl ⟨hp, fun hd =&gt; (d12_necessary hd).1 hp⟩</span>
+<span id="L50"><a href="#L50">  50</a>     · exact Or.inr ⟨hd, (d12_necessary hd).1⟩</span>
+<span id="L51"><a href="#L51">  51</a>   · constructor</span>
+<span id="L52"><a href="#L52">  52</a>     · intro hd</span>
+<span id="L53"><a href="#L53">  53</a>       exact ⟨(d12_necessary hd).2, d12_implies_square_and_eta hd⟩</span>
+<span id="L54"><a href="#L54">  54</a>     · rintro ⟨h3, h4, h5⟩</span>
+<span id="L55"><a href="#L55">  55</a>       exact conditions_imply_d12 h3 h4 h5</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> end KIP126.Main</span></pre>

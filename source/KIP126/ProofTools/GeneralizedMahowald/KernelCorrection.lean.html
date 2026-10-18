@@ -1,0 +1,116 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/KernelCorrection.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/KernelCorrection.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.KernelTriangles</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.BoundaryLambda</span>
+<span id="L4"><a href="#L4">   4</a> /-! Original actual rho-kernel correction, bbac1fc05843 Mahowald 655–1477 (MIT).</span>
+<span id="L5"><a href="#L5">   5</a> All constituent calculations are proved; no geometric obligation occurs here. -/</span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L8"><a href="#L8">   8</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L12"><a href="#L12">  12</a> noncomputable section</span>
+<span id="L13"><a href="#L13">  13</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L14"><a href="#L14">  14</a> set_option maxHeartbeats 2000000</span>
+<span id="L15"><a href="#L15">  15</a> theorem finite_target_boundary_lambda_zero_reindex </span>
+<span id="L16"><a href="#L16">  16</a>     (X : ClassicalObject)</span>
+<span id="L17"><a href="#L17">  17</a>     (r i q : ℕ) (hi : 0 &lt; i) (hir : i &lt; r) (hqi : r-i=q) (s t : ℤ)</span>
+<span id="L18"><a href="#L18">  18</a>     (y : KIP126.Literature.cycles model X ((q:ℤ)-t+(t-(q-1:ℕ))) (s,t))</span>
+<span id="L19"><a href="#L19">  19</a>     (hy : y.val ∈ KIP126.Literature.boundaries model X r (s,t))</span>
+<span id="L20"><a href="#L20">  20</a>     (b : BiHom (t-s) (t-(q-1:ℕ))</span>
+<span id="L21"><a href="#L21">  21</a>       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L22"><a href="#L22">  22</a>     (hb : Detects (model.convergence (.quotient q (.nu X)))</span>
+<span id="L23"><a href="#L23">  23</a>       (s,t,t-(q-1:ℕ)) (finiteTargetLabel model X q s t (q-1) y.val) b) :</span>
+<span id="L24"><a href="#L24">  24</a>     (SyntheticCategory.biShift (0,-(i:ℤ))).map b ≫</span>
+<span id="L25"><a href="#L25">  25</a>       Eq.mp (congrArg (fun j =&gt; (SyntheticCategory.biShift (0,-(i:ℤ))).obj</span>
+<span id="L26"><a href="#L26">  26</a>         (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) j) ⟶</span>
+<span id="L27"><a href="#L27">  27</a>           XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) r) hqi)</span>
+<span id="L28"><a href="#L28">  28</a>         ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).triangle hi hir).lambdaMap = 0 := by</span>
+<span id="L29"><a href="#L29">  29</a>   subst q</span>
+<span id="L30"><a href="#L30">  30</a>   exact finite_target_boundary_lambda_zero X r i hi hir s t y hy b hb</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> theorem actual_rho_kernel_correction</span>
+<span id="L33"><a href="#L33">  33</a>     (X : ClassicalObject)</span>
+<span id="L34"><a href="#L34">  34</a>     (d q : ℕ) (hd : 0 &lt; d) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L35"><a href="#L35">  35</a>     (y : KIP126.Literature.cycles model X ((q:ℤ)-t+(t-(q-1:ℕ))) (s,t))</span>
+<span id="L36"><a href="#L36">  36</a>     (hy : y.val ∈ KIP126.Literature.boundaries model X (d+q:ℕ) (s,t))</span>
+<span id="L37"><a href="#L37">  37</a>     (c : BiHom (t-s) (t-(q-1:ℕ))</span>
+<span id="L38"><a href="#L38">  38</a>       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L39"><a href="#L39">  39</a>     (hc : Detects (model.convergence (.quotient q (.nu X)))</span>
+<span id="L40"><a href="#L40">  40</a>       (s,t,t-(q-1:ℕ)) (finiteTargetLabel model X q s t (q-1) y.val) c) :</span>
+<span id="L41"><a href="#L41">  41</a>     let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L42"><a href="#L42">  42</a>     let δ1 : XModLambdaN A (d+1) ⟶</span>
+<span id="L43"><a href="#L43">  43</a>         ((SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L44"><a href="#L44">  44</a>       simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L45"><a href="#L45">  45</a>         ((model.quotients.tower A).triangle (by omega : 0&lt;d+1)</span>
+<span id="L46"><a href="#L46">  46</a>           (show d+1&lt;d+1+q by omega)).delta</span>
+<span id="L47"><a href="#L47">  47</a>     ∃ a : BiHom ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ)) (XModLambdaN A (d+1)),</span>
+<span id="L48"><a href="#L48">  48</a>       a ≫ (model.quotients.tower A).rho 1 (d+1) (by omega) = 0 ∧</span>
+<span id="L49"><a href="#L49">  49</a>       homotopyRegrade (by omega) (by omega)</span>
+<span id="L50"><a href="#L50">  50</a>         (biSuspensionHomEquiv ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ)) ((d+1:ℕ):ℤ)</span>
+<span id="L51"><a href="#L51">  51</a>           (XModLambdaN A q) (a≫δ1)) = c := by</span>
+<span id="L52"><a href="#L52">  52</a>   dsimp only</span>
+<span id="L53"><a href="#L53">  53</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L54"><a href="#L54">  54</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L55"><a href="#L55">  55</a>   letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L56"><a href="#L56">  56</a>   letI := model.exactness.shiftExact (0,-1)</span>
+<span id="L57"><a href="#L57">  57</a>   let T0 := (model.quotients.tower A).triangle hd (show d&lt;d+q by omega)</span>
+<span id="L58"><a href="#L58">  58</a>   let l : F.obj (XModLambdaN A d) ⟶ XModLambdaN A (d+1) := by</span>
+<span id="L59"><a href="#L59">  59</a>     simpa only [F,Nat.add_sub_cancel,Nat.cast_one] using</span>
+<span id="L60"><a href="#L60">  60</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).lambdaMap</span>
+<span id="L61"><a href="#L61">  61</a>   let δ0 : XModLambdaN A d ⟶</span>
+<span id="L62"><a href="#L62">  62</a>       ((SyntheticCategory.biShift (0,-(d:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L63"><a href="#L63">  63</a>     simpa only [Nat.add_sub_cancel_left] using T0.delta</span>
+<span id="L64"><a href="#L64">  64</a>   let δ1 : XModLambdaN A (d+1) ⟶</span>
+<span id="L65"><a href="#L65">  65</a>       ((SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L66"><a href="#L66">  66</a>     simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L67"><a href="#L67">  67</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;d+1)</span>
+<span id="L68"><a href="#L68">  68</a>         (show d+1&lt;d+1+q by omega)).delta</span>
+<span id="L69"><a href="#L69">  69</a>   let L0 : (SyntheticCategory.biShift (0,-(d:ℤ))).obj (XModLambdaN A q) ⟶</span>
+<span id="L70"><a href="#L70">  70</a>       XModLambdaN A (d+q) := by</span>
+<span id="L71"><a href="#L71">  71</a>     simpa only [Nat.add_sub_cancel_left] using T0.lambdaMap</span>
+<span id="L72"><a href="#L72">  72</a>   have hz : (SyntheticCategory.biShift (0,-(d:ℤ))).map c≫L0=0 :=</span>
+<span id="L73"><a href="#L73">  73</a>     finite_target_boundary_lambda_zero_reindex X (d+q) d q hd (by omega)</span>
+<span id="L74"><a href="#L74">  74</a>       (Nat.add_sub_cancel_left d q) s t y hy c hc</span>
+<span id="L75"><a href="#L75">  75</a>   have regrade_zero {m m&#x27; v v&#x27; : ℤ} (hm:m=m&#x27;) (hv:v=v&#x27;)</span>
+<span id="L76"><a href="#L76">  76</a>       (b : BiHom m v (XModLambdaN A q)) :</span>
+<span id="L77"><a href="#L77">  77</a>       (SyntheticCategory.biShift (0,-(d:ℤ))).map (homotopyRegrade hm hv b)≫L0=0 ↔</span>
+<span id="L78"><a href="#L78">  78</a>         (SyntheticCategory.biShift (0,-(d:ℤ))).map b≫L0=0 := by</span>
+<span id="L79"><a href="#L79">  79</a>     subst m&#x27;; subst v&#x27;; rfl</span>
+<span id="L80"><a href="#L80">  80</a>   let c&#x27; : BiHom (((t-s)+1)-1) (((t-(q-1:ℕ))-((d+1:ℕ):ℤ))+((d+1:ℕ):ℤ))</span>
+<span id="L81"><a href="#L81">  81</a>       (XModLambdaN A q) := homotopyRegrade (by omega) (by omega) c</span>
+<span id="L82"><a href="#L82">  82</a>   have pre := successor_shifted_delta_preimage_reindex d (d+q) q (Nat.add_sub_cancel_left d q)</span>
+<span id="L83"><a href="#L83">  83</a>     T0 ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ))</span>
+<span id="L84"><a href="#L84">  84</a>   obtain ⟨β,hβ⟩ := pre c&#x27; ((regrade_zero (by omega) (by omega) c).mpr hz)</span>
+<span id="L85"><a href="#L85">  85</a>   have heval := successor_delta_lambda_evaluation X d q hd hq</span>
+<span id="L86"><a href="#L86">  86</a>     ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ)) β</span>
+<span id="L87"><a href="#L87">  87</a>   have hδ : (β≫l)≫δ1 =</span>
+<span id="L88"><a href="#L88">  88</a>       (biSuspensionHomEquiv ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ)) ((d+1:ℕ):ℤ)</span>
+<span id="L89"><a href="#L89">  89</a>         (XModLambdaN A q)).symm c&#x27; := by</span>
+<span id="L90"><a href="#L90">  90</a>     simpa only [Category.assoc] using heval.trans hβ</span>
+<span id="L91"><a href="#L91">  91</a>   refine ⟨β≫l,?_,?_⟩</span>
+<span id="L92"><a href="#L92">  92</a>   · rw [Category.assoc]</span>
+<span id="L93"><a href="#L93">  93</a>     have hl0 : ((model.quotients.tower A).triangle (by omega : 0&lt;1)</span>
+<span id="L94"><a href="#L94">  94</a>         (by omega : 1&lt;d+1)).lambdaMap ≫</span>
+<span id="L95"><a href="#L95">  95</a>         (model.quotients.tower A).rho 1 (d+1) (by omega) = 0 := by</span>
+<span id="L96"><a href="#L96">  96</a>       rw [← (model.quotients.tower A).triangle_rho (by omega : 0&lt;1) (by omega : 1&lt;d+1)]</span>
+<span id="L97"><a href="#L97">  97</a>       exact comp_distTriang_mor_zero₁₂ _</span>
+<span id="L98"><a href="#L98">  98</a>         ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).distinguished</span>
+<span id="L99"><a href="#L99">  99</a>     have source_transport (Q : ℕ → SyntheticSpectrum) {B C : SyntheticSpectrum} {j j&#x27; : ℕ}</span>
+<span id="L100"><a href="#L100"> 100</a>         (hj : j=j&#x27;) (g : Q j ⟶ B) (f : B ⟶ C) (hz : g≫f=0) :</span>
+<span id="L101"><a href="#L101"> 101</a>         Eq.mp (congrArg (fun k =&gt; Q k ⟶ B) hj) g ≫ f = 0 := by</span>
+<span id="L102"><a href="#L102"> 102</a>       subst j&#x27;; exact hz</span>
+<span id="L103"><a href="#L103"> 103</a>     have hl : l ≫ (model.quotients.tower A).rho 1 (d+1) (by omega) = 0 :=</span>
+<span id="L104"><a href="#L104"> 104</a>       source_transport (fun j =&gt; F.obj (XModLambdaN A j)) (Nat.add_sub_cancel d 1) _ _ hl0</span>
+<span id="L105"><a href="#L105"> 105</a>     rw [hl,comp_zero]</span>
+<span id="L106"><a href="#L106"> 106</a>   · change homotopyRegrade _ _</span>
+<span id="L107"><a href="#L107"> 107</a>       (biSuspensionHomEquiv ((t-s)+1) ((t-(q-1:ℕ))-((d+1:ℕ):ℤ)) ((d+1:ℕ):ℤ)</span>
+<span id="L108"><a href="#L108"> 108</a>         (XModLambdaN A q) ((β≫l)≫δ1)) = c</span>
+<span id="L109"><a href="#L109"> 109</a>     rw [hδ,AddEquiv.apply_symm_apply]</span>
+<span id="L110"><a href="#L110"> 110</a>     have regrade_inverse {m m&#x27; v v&#x27; : ℤ} (hm:m=m&#x27;) (hv:v=v&#x27;)</span>
+<span id="L111"><a href="#L111"> 111</a>         (b : BiHom m v (XModLambdaN A q)) :</span>
+<span id="L112"><a href="#L112"> 112</a>         homotopyRegrade hm.symm hv.symm (homotopyRegrade hm hv b)=b := by</span>
+<span id="L113"><a href="#L113"> 113</a>       subst m&#x27;; subst v&#x27;; rfl</span>
+<span id="L114"><a href="#L114"> 114</a>     exact regrade_inverse (by omega) (by omega) c</span>
+<span id="L115"><a href="#L115"> 115</a> end</span>
+<span id="L116"><a href="#L116"> 116</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

@@ -1,0 +1,220 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Quotients.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Quotients.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Coherence</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> /-! Maps and finite triangles on the actual chosen λ-power cofibers.</span>
+<span id="L10"><a href="#L10">  10</a> Functoriality of the chosen cofiber maps is explicit input. Restriction and</span>
+<span id="L11"><a href="#L11">  11</a> triangle data do not assert completeness, boundedness, or convergence. -/</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> namespace KIP126.Synthetic.Context</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> universe u v</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L20"><a href="#L20">  20</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> public noncomputable def XModLambdaN.incl (X : Syn) (n : ℕ) : X ⟶ XModLambdaN X n :=</span>
+<span id="L23"><a href="#L23">  23</a>   HasFunctorialCofiber.cofibι (lambdaPow n X)</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> public noncomputable def XModLambdaN.proj (X : Syn) (n : ℕ) :</span>
+<span id="L26"><a href="#L26">  26</a>     XModLambdaN X n ⟶ ((SyntheticCategory.biShift (0, -(n : ℤ))).obj X)⟦(1 : ℤ)⟧ :=</span>
+<span id="L27"><a href="#L27">  27</a>   HasFunctorialCofiber.cofibδ (lambdaPow n X)</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> /-- The map supplied by the same chosen cofiber construction. No identity</span>
+<span id="L30"><a href="#L30">  30</a> or composition law for this choice is asserted by the minimal cofiber class. -/</span>
+<span id="L31"><a href="#L31">  31</a> public noncomputable def XModLambdaN.map {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :</span>
+<span id="L32"><a href="#L32">  32</a>     XModLambdaN X n ⟶ XModLambdaN Y n :=</span>
+<span id="L33"><a href="#L33">  33</a>   HasFunctorialCofiber.cofibMap (lambdaPow n X) (lambdaPow n Y)</span>
+<span id="L34"><a href="#L34">  34</a>     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> /-- This is the actual λⁿ cofiber triangle. The definition makes no</span>
+<span id="L37"><a href="#L37">  37</a> inverse-limit or completeness assertion. -/</span>
+<span id="L38"><a href="#L38">  38</a> public noncomputable def XModLambdaN.cofiberTriangle (X : Syn) (n : ℕ) : Triangle Syn :=</span>
+<span id="L39"><a href="#L39">  39</a>   Triangle.mk (lambdaPow n X) (XModLambdaN.incl X n) (XModLambdaN.proj X n)</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> end KIP126.Synthetic.Context</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> namespace KIP126.Synthetic.Context</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> universe u v</span>
+<span id="L48"><a href="#L48">  48</a> </span>
+<span id="L49"><a href="#L49">  49</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L50"><a href="#L50">  50</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L51"><a href="#L51">  51</a> </span>
+<span id="L52"><a href="#L52">  52</a> public theorem XModLambdaN.incl_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :</span>
+<span id="L53"><a href="#L53">  53</a>     f ≫ XModLambdaN.incl Y n = XModLambdaN.incl X n ≫ XModLambdaN.map f n :=</span>
+<span id="L54"><a href="#L54">  54</a>   HasFunctorialCofiber.cofibMap_ι (lambdaPow n X) (lambdaPow n Y)</span>
+<span id="L55"><a href="#L55">  55</a>     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> public theorem XModLambdaN.proj_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :</span>
+<span id="L58"><a href="#L58">  58</a>     XModLambdaN.map f n ≫ XModLambdaN.proj Y n =</span>
+<span id="L59"><a href="#L59">  59</a>       XModLambdaN.proj X n ≫</span>
+<span id="L60"><a href="#L60">  60</a>         (shiftFunctor Syn (1 : ℤ)).map</span>
+<span id="L61"><a href="#L61">  61</a>           ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) :=</span>
+<span id="L62"><a href="#L62">  62</a>   HasFunctorialCofiber.cofibMap_δ (lambdaPow n X) (lambdaPow n Y)</span>
+<span id="L63"><a href="#L63">  63</a>     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> public theorem XModLambdaN.cofiberTriangle_distinguished (X : Syn) (n : ℕ) :</span>
+<span id="L66"><a href="#L66">  66</a>     XModLambdaN.cofiberTriangle X n ∈ distTriang Syn :=</span>
+<span id="L67"><a href="#L67">  67</a>   HasFunctorialCofiber.cofib_distinguished (lambdaPow n X)</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> public theorem XModLambdaN.lambdaPow_comp_incl (X : Syn) (n : ℕ) :</span>
+<span id="L70"><a href="#L70">  70</a>     lambdaPow n X ≫ XModLambdaN.incl X n = 0 :=</span>
+<span id="L71"><a href="#L71">  71</a>   comp_distTriang_mor_zero₁₂ _ (XModLambdaN.cofiberTriangle_distinguished X n)</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> public theorem XModLambdaN.incl_comp_proj (X : Syn) (n : ℕ) :</span>
+<span id="L74"><a href="#L74">  74</a>     XModLambdaN.incl X n ≫ XModLambdaN.proj X n = 0 :=</span>
+<span id="L75"><a href="#L75">  75</a>   comp_distTriang_mor_zero₂₃ _ (XModLambdaN.cofiberTriangle_distinguished X n)</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> end KIP126.Synthetic.Context</span>
+<span id="L78"><a href="#L78">  78</a> </span>
+<span id="L79"><a href="#L79">  79</a> namespace KIP126.Synthetic.Context</span>
+<span id="L80"><a href="#L80">  80</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L81"><a href="#L81">  81</a> universe u v</span>
+<span id="L82"><a href="#L82">  82</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L83"><a href="#L83">  83</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L84"><a href="#L84">  84</a> public structure LambdaQuotientFunctoriality : Prop where</span>
+<span id="L85"><a href="#L85">  85</a>   map_id : ∀ (X : Syn) (n : ℕ), XModLambdaN.map (𝟙 X) n = 𝟙 _</span>
+<span id="L86"><a href="#L86">  86</a>   map_comp : ∀ {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z) (n : ℕ),</span>
+<span id="L87"><a href="#L87">  87</a>     XModLambdaN.map (f ≫ g) n = XModLambdaN.map f n ≫ XModLambdaN.map g n</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> end KIP126.Synthetic.Context</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> namespace KIP126.Synthetic.Context</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L94"><a href="#L94">  94</a> </span>
+<span id="L95"><a href="#L95">  95</a> universe u v</span>
+<span id="L96"><a href="#L96">  96</a> </span>
+<span id="L97"><a href="#L97">  97</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L98"><a href="#L98">  98</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L99"><a href="#L99">  99</a> </span>
+<span id="L100"><a href="#L100"> 100</a> /-- The chosen cofiber map of the proved λ-power factorization square.</span>
+<span id="L101"><a href="#L101"> 101</a> Both its source and target are the existing `XModLambdaN` objects. This</span>
+<span id="L102"><a href="#L102"> 102</a> construction alone does not assert identity or composition laws for the</span>
+<span id="L103"><a href="#L103"> 103</a> choice of `HasFunctorialCofiber.cofibMap`. -/</span>
+<span id="L104"><a href="#L104"> 104</a> public noncomputable def XModLambdaN.restriction (coh : BiShiftCoherence Syn)</span>
+<span id="L105"><a href="#L105"> 105</a>     (X : Syn) (i j : ℕ) (hij : i ≤ j) : XModLambdaN X j ⟶ XModLambdaN X i :=</span>
+<span id="L106"><a href="#L106"> 106</a>   HasFunctorialCofiber.cofibMap (lambdaPow j X) (lambdaPow i X)</span>
+<span id="L107"><a href="#L107"> 107</a>     (lambdaRestrictionSourceMap i j hij X) (𝟙 X)</span>
+<span id="L108"><a href="#L108"> 108</a>     (by simpa only [lambdaDegree, Category.comp_id] using</span>
+<span id="L109"><a href="#L109"> 109</a>       lambdaRestrictionSourceMap_commutes coh i j hij X)</span>
+<span id="L110"><a href="#L110"> 110</a> </span>
+<span id="L111"><a href="#L111"> 111</a> end KIP126.Synthetic.Context</span>
+<span id="L112"><a href="#L112"> 112</a> </span>
+<span id="L113"><a href="#L113"> 113</a> namespace KIP126.Synthetic.Context</span>
+<span id="L114"><a href="#L114"> 114</a> </span>
+<span id="L115"><a href="#L115"> 115</a> open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy</span>
+<span id="L116"><a href="#L116"> 116</a> </span>
+<span id="L117"><a href="#L117"> 117</a> universe u v</span>
+<span id="L118"><a href="#L118"> 118</a> </span>
+<span id="L119"><a href="#L119"> 119</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L120"><a href="#L120"> 120</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L121"><a href="#L121"> 121</a> </span>
+<span id="L122"><a href="#L122"> 122</a> /-- A finite λ–ρ–δ triangle on the actual quotients, including its</span>
+<span id="L123"><a href="#L123"> 123</a> compatibility with multiplication by the existing `lambdaPow i X`. -/</span>
+<span id="L124"><a href="#L124"> 124</a> public structure LambdaRhoDeltaTriangle (X : Syn) (i j : ℕ) where</span>
+<span id="L125"><a href="#L125"> 125</a>   i_pos : 0 &lt; i</span>
+<span id="L126"><a href="#L126"> 126</a>   i_lt_j : i &lt; j</span>
+<span id="L127"><a href="#L127"> 127</a>   lambdaMap :</span>
+<span id="L128"><a href="#L128"> 128</a>     (SyntheticCategory.biShift (0, -(i : ℤ))).obj (XModLambdaN X (j - i)) ⟶</span>
+<span id="L129"><a href="#L129"> 129</a>       XModLambdaN X j</span>
+<span id="L130"><a href="#L130"> 130</a>   rho : XModLambdaN X j ⟶ XModLambdaN X i</span>
+<span id="L131"><a href="#L131"> 131</a>   delta : XModLambdaN X i ⟶</span>
+<span id="L132"><a href="#L132"> 132</a>     ((SyntheticCategory.biShift (0, -(i : ℤ))).obj</span>
+<span id="L133"><a href="#L133"> 133</a>       (XModLambdaN X (j - i)))⟦(1 : ℤ)⟧</span>
+<span id="L134"><a href="#L134"> 134</a>   distinguished : Triangle.mk lambdaMap rho delta ∈ distTriang Syn</span>
+<span id="L135"><a href="#L135"> 135</a>   lambda_quotient :</span>
+<span id="L136"><a href="#L136"> 136</a>     (SyntheticCategory.biShift (0, -(i : ℤ))).map (XModLambdaN.incl X (j - i)) ≫</span>
+<span id="L137"><a href="#L137"> 137</a>         lambdaMap = lambdaPow i X ≫ XModLambdaN.incl X j</span>
+<span id="L138"><a href="#L138"> 138</a>   rho_quotient : XModLambdaN.incl X j ≫ rho = XModLambdaN.incl X i</span>
+<span id="L139"><a href="#L139"> 139</a> </span>
+<span id="L140"><a href="#L140"> 140</a> /-- Restriction maps between the existing finite λ quotients with exact</span>
+<span id="L141"><a href="#L141"> 141</a> identity, composition, quotient, and triangle compatibility laws. -/</span>
+<span id="L142"><a href="#L142"> 142</a> public structure FiniteLambdaQuotientTower (X : Syn) where</span>
+<span id="L143"><a href="#L143"> 143</a>   rho : ∀ (i j : ℕ), i ≤ j → (XModLambdaN X j ⟶ XModLambdaN X i)</span>
+<span id="L144"><a href="#L144"> 144</a>   rho_id : ∀ i, rho i i le_rfl = 𝟙 (XModLambdaN X i)</span>
+<span id="L145"><a href="#L145"> 145</a>   rho_comp : ∀ {k i j : ℕ} (hki : k ≤ i) (hij : i ≤ j),</span>
+<span id="L146"><a href="#L146"> 146</a>     rho i j hij ≫ rho k i hki = rho k j (hki.trans hij)</span>
+<span id="L147"><a href="#L147"> 147</a>   rho_quotient : ∀ {i j : ℕ} (hij : i ≤ j),</span>
+<span id="L148"><a href="#L148"> 148</a>     XModLambdaN.incl X j ≫ rho i j hij = XModLambdaN.incl X i</span>
+<span id="L149"><a href="#L149"> 149</a>   triangle : ∀ {i j : ℕ}, 0 &lt; i → i &lt; j → LambdaRhoDeltaTriangle X i j</span>
+<span id="L150"><a href="#L150"> 150</a>   triangle_rho : ∀ {i j : ℕ} (hi : 0 &lt; i) (hij : i &lt; j),</span>
+<span id="L151"><a href="#L151"> 151</a>     (triangle hi hij).rho = rho i j hij.le</span>
+<span id="L152"><a href="#L152"> 152</a> </span>
+<span id="L153"><a href="#L153"> 153</a> end KIP126.Synthetic.Context</span>
+<span id="L154"><a href="#L154"> 154</a> </span>
+<span id="L155"><a href="#L155"> 155</a> namespace KIP126.Synthetic.Context</span>
+<span id="L156"><a href="#L156"> 156</a> </span>
+<span id="L157"><a href="#L157"> 157</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L158"><a href="#L158"> 158</a> </span>
+<span id="L159"><a href="#L159"> 159</a> universe u v</span>
+<span id="L160"><a href="#L160"> 160</a> </span>
+<span id="L161"><a href="#L161"> 161</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L162"><a href="#L162"> 162</a>   [HasFunctorialCofiber (C := Syn)] {X Y : Syn}</span>
+<span id="L163"><a href="#L163"> 163</a> </span>
+<span id="L164"><a href="#L164"> 164</a> /-- All components are the actual `XModLambdaN.map f n`; this record supplies</span>
+<span id="L165"><a href="#L165"> 165</a> their compatibility with the specified restrictions and λ–ρ–δ triangles. -/</span>
+<span id="L166"><a href="#L166"> 166</a> public structure FiniteLambdaQuotientTower.Hom (TX : FiniteLambdaQuotientTower X)</span>
+<span id="L167"><a href="#L167"> 167</a>     (TY : FiniteLambdaQuotientTower Y) (f : X ⟶ Y) : Prop where</span>
+<span id="L168"><a href="#L168"> 168</a>   rho_naturality : ∀ {i j : ℕ} (hij : i ≤ j),</span>
+<span id="L169"><a href="#L169"> 169</a>     TX.rho i j hij ≫ XModLambdaN.map f i =</span>
+<span id="L170"><a href="#L170"> 170</a>       XModLambdaN.map f j ≫ TY.rho i j hij</span>
+<span id="L171"><a href="#L171"> 171</a>   lambda_naturality : ∀ {i j : ℕ} (hi : 0 &lt; i) (hij : i &lt; j),</span>
+<span id="L172"><a href="#L172"> 172</a>     (SyntheticCategory.biShift (0, -(i : ℤ))).map</span>
+<span id="L173"><a href="#L173"> 173</a>           (XModLambdaN.map f (j - i)) ≫</span>
+<span id="L174"><a href="#L174"> 174</a>         (TY.triangle hi hij).lambdaMap =</span>
+<span id="L175"><a href="#L175"> 175</a>       (TX.triangle hi hij).lambdaMap ≫ XModLambdaN.map f j</span>
+<span id="L176"><a href="#L176"> 176</a>   delta_naturality : ∀ {i j : ℕ} (hi : 0 &lt; i) (hij : i &lt; j),</span>
+<span id="L177"><a href="#L177"> 177</a>     XModLambdaN.map f i ≫ (TY.triangle hi hij).delta =</span>
+<span id="L178"><a href="#L178"> 178</a>       (TX.triangle hi hij).delta ≫</span>
+<span id="L179"><a href="#L179"> 179</a>         (shiftFunctor Syn (1 : ℤ)).map</span>
+<span id="L180"><a href="#L180"> 180</a>           ((SyntheticCategory.biShift (0, -(i : ℤ))).map</span>
+<span id="L181"><a href="#L181"> 181</a>             (XModLambdaN.map f (j - i)))</span>
+<span id="L182"><a href="#L182"> 182</a> </span>
+<span id="L183"><a href="#L183"> 183</a> end KIP126.Synthetic.Context</span>
+<span id="L184"><a href="#L184"> 184</a> </span>
+<span id="L185"><a href="#L185"> 185</a> namespace KIP126.Synthetic.Context</span>
+<span id="L186"><a href="#L186"> 186</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L187"><a href="#L187"> 187</a> universe u v</span>
+<span id="L188"><a href="#L188"> 188</a> variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L189"><a href="#L189"> 189</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L190"><a href="#L190"> 190</a> </span>
+<span id="L191"><a href="#L191"> 191</a> /-- The quotient functor uses exactly the selected cofiber maps. -/</span>
+<span id="L192"><a href="#L192"> 192</a> public noncomputable def LambdaQuotientFunctoriality.functor</span>
+<span id="L193"><a href="#L193"> 193</a>     (Q : LambdaQuotientFunctoriality (Syn := Syn)) (n : ℕ) : Syn ⥤ Syn where</span>
+<span id="L194"><a href="#L194"> 194</a>   obj X := XModLambdaN X n</span>
+<span id="L195"><a href="#L195"> 195</a>   map f := XModLambdaN.map f n</span>
+<span id="L196"><a href="#L196"> 196</a>   map_id X := Q.map_id X n</span>
+<span id="L197"><a href="#L197"> 197</a>   map_comp f g := Q.map_comp f g n</span>
+<span id="L198"><a href="#L198"> 198</a> </span>
+<span id="L199"><a href="#L199"> 199</a> /-- Restrictions commute with the actual inclusion, by the cofiber square. -/</span>
+<span id="L200"><a href="#L200"> 200</a> public theorem XModLambdaN.restriction_incl (coh : BiShiftCoherence Syn)</span>
+<span id="L201"><a href="#L201"> 201</a>     (X : Syn) (i j : ℕ) (hij : i ≤ j) :</span>
+<span id="L202"><a href="#L202"> 202</a>     XModLambdaN.incl X j ≫ XModLambdaN.restriction coh X i j hij =</span>
+<span id="L203"><a href="#L203"> 203</a>       XModLambdaN.incl X i := by</span>
+<span id="L204"><a href="#L204"> 204</a>   have h := HasFunctorialCofiber.cofibMap_ι (lambdaPow j X) (lambdaPow i X)</span>
+<span id="L205"><a href="#L205"> 205</a>     (lambdaRestrictionSourceMap i j hij X) (𝟙 X)</span>
+<span id="L206"><a href="#L206"> 206</a>     (by simpa only [lambdaDegree, Category.comp_id] using</span>
+<span id="L207"><a href="#L207"> 207</a>       lambdaRestrictionSourceMap_commutes coh i j hij X)</span>
+<span id="L208"><a href="#L208"> 208</a>   simpa only [Category.id_comp, XModLambdaN.incl, XModLambdaN.restriction, XModLambdaN] using h.symm</span>
+<span id="L209"><a href="#L209"> 209</a> </span>
+<span id="L210"><a href="#L210"> 210</a> /-- The selected finite quotient system and its structural coherences.</span>
+<span id="L211"><a href="#L211"> 211</a> The restriction agreement rules out an unrelated family of identically named maps. -/</span>
+<span id="L212"><a href="#L212"> 212</a> public structure LambdaQuotientSystem (Syn : Type u) [SyntheticCategory.{u,v} Syn]</span>
+<span id="L213"><a href="#L213"> 213</a>     [HasFunctorialCofiber (C := Syn)] where</span>
+<span id="L214"><a href="#L214"> 214</a>   coherence : BiShiftCoherence Syn</span>
+<span id="L215"><a href="#L215"> 215</a>   functoriality : LambdaQuotientFunctoriality (Syn := Syn)</span>
+<span id="L216"><a href="#L216"> 216</a>   tower : ∀ X : Syn, FiniteLambdaQuotientTower X</span>
+<span id="L217"><a href="#L217"> 217</a>   restriction : ∀ (X : Syn) (i j : ℕ) (hij : i ≤ j),</span>
+<span id="L218"><a href="#L218"> 218</a>     (tower X).rho i j hij = XModLambdaN.restriction coherence X i j hij</span>
+<span id="L219"><a href="#L219"> 219</a>   natural : ∀ {X Y : Syn} (f : X ⟶ Y), FiniteLambdaQuotientTower.Hom (tower X) (tower Y) f</span>
+<span id="L220"><a href="#L220"> 220</a> end KIP126.Synthetic.Context</span></pre>

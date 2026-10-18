@@ -1,0 +1,61 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/NuThree/ClassicalZero.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/NuThree/ClassicalZero.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.AdamsSynthetic.Standard</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Standard.Filtration</span>
+<span id="L4"><a href="#L4">   4</a> /-! The zero-object tower argument of the pinned NuFifth:971–1038,</span>
+<span id="L5"><a href="#L5">   5</a> adapted to the same abstract tower and its full ambient comparison. -/</span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> namespace KIP126.Main.Internal.NuThree</span>
+<span id="L8"><a href="#L8">   8</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.StableHomotopy KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.AdamsSynthetic.Standard (model Spectrum)</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory.Pretriangulated</span>
+<span id="L12"><a href="#L12">  12</a> open scoped ZeroObject</span>
+<span id="L13"><a href="#L13">  13</a> noncomputable section</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L15"><a href="#L15">  15</a> private theorem classical_zero_page (p : ℤ × ℤ) :</span>
+<span id="L16"><a href="#L16">  16</a>     Subsingleton ((model.classical.obj (0 : Spectrum)).Page 2 p) := by</span>
+<span id="L17"><a href="#L17">  17</a>   let B := KIP126.AdamsSynthetic.Standard.closedBackground</span>
+<span id="L18"><a href="#L18">  18</a>   letI := B.symmetric</span>
+<span id="L19"><a href="#L19">  19</a>   let H := model.coefficients.object</span>
+<span id="L20"><a href="#L20">  20</a>   letI := B.tensorShift H</span>
+<span id="L21"><a href="#L21">  21</a>   letI := B.tensorExact H</span>
+<span id="L22"><a href="#L22">  22</a>   let T := model.classicalTower.tower (0 : Spectrum)</span>
+<span id="L23"><a href="#L23">  23</a>   have hz (n : ℕ) : IsZero (T.stage n) := by</span>
+<span id="L24"><a href="#L24">  24</a>     induction n with</span>
+<span id="L25"><a href="#L25">  25</a>     | zero =&gt; exact (isZero_zero Spectrum).of_iso T.zeroIso</span>
+<span id="L26"><a href="#L26">  26</a>     | succ n ih =&gt;</span>
+<span id="L27"><a href="#L27">  27</a>       have hh : IsZero (H ⊗ T.stage n) :=</span>
+<span id="L28"><a href="#L28">  28</a>         ((tensorRight H).map_isZero ih).of_iso (β_ H (T.stage n))</span>
+<span id="L29"><a href="#L29">  29</a>       have hc : IsZero (HasFunctorialCofiber.cofib (T.map (Nat.le_succ n))) :=</span>
+<span id="L30"><a href="#L30">  30</a>         hh.of_iso (T.layerIso n)</span>
+<span id="L31"><a href="#L31">  31</a>       exact Triangle.isZero₁_of_isZero₂₃ _</span>
+<span id="L32"><a href="#L32">  32</a>         (HasFunctorialCofiber.cofib_distinguished (T.map (Nat.le_succ n))) ih hc</span>
+<span id="L33"><a href="#L33">  33</a>   have hl : IsZero (T.layer p.1) := by</span>
+<span id="L34"><a href="#L34">  34</a>     apply Triangle.isZero₃_of_isZero₁₂ _</span>
+<span id="L35"><a href="#L35">  35</a>       (HasFunctorialCofiber.cofib_distinguished (T.mapAt (show p.1 ≤ p.1+1 by omega)))</span>
+<span id="L36"><a href="#L36">  36</a>     · exact hz (p.1+1).toNat</span>
+<span id="L37"><a href="#L37">  37</a>     · exact hz p.1.toNat</span>
+<span id="L38"><a href="#L38">  38</a>   haveI : Subsingleton (T.FirstPage p) := ⟨fun a b =&gt; hl.eq_of_tgt a b⟩</span>
+<span id="L39"><a href="#L39">  39</a>   haveI : Subsingleton (T.cycles 2 (by decide) p) := inferInstance</span>
+<span id="L40"><a href="#L40">  40</a>   let D := (model.classical.obj (0 : Spectrum)).ssData p</span>
+<span id="L41"><a href="#L41">  41</a>   let e := (model.classicalTower.sequence (0 : Spectrum)).ambient p</span>
+<span id="L42"><a href="#L42">  42</a>   haveI : Subsingleton D.V := Function.Injective.subsingleton e.toLinearEquiv.injective</span>
+<span id="L43"><a href="#L43">  43</a>   haveI : Subsingleton (Subobject.underlying.obj (D.Z 0) : ModuleCat ℤ) :=</span>
+<span id="L44"><a href="#L44">  44</a>     Function.Injective.subsingleton ((ModuleCat.mono_iff_injective (D.Z 0).arrow).mp inferInstance)</span>
+<span id="L45"><a href="#L45">  45</a>   letI : Epi (D.pageπ 0) := coequalizer.π_epi</span>
+<span id="L46"><a href="#L46">  46</a>   haveI : Subsingleton (D.page 0) :=</span>
+<span id="L47"><a href="#L47">  47</a>     Function.Surjective.subsingleton ((ModuleCat.epi_iff_surjective (D.pageπ 0)).mp inferInstance)</span>
+<span id="L48"><a href="#L48">  48</a>   simpa only [KIP126.Core.SpectralSequence.Page,model.classical.firstPage,sub_self,</span>
+<span id="L49"><a href="#L49">  49</a>     Int.toNat_zero,Nat.cast_zero] using (inferInstance : Subsingleton (D.page 0))</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> private theorem classical_page_zero {X Y : Spectrum} (p : ℤ × ℤ)</span>
+<span id="L52"><a href="#L52">  52</a>     (x : (model.classical.obj X).Page 2 p) : model.classical.pageMap (0 : X ⟶ Y) 2 p x=0 := by</span>
+<span id="L53"><a href="#L53">  53</a>   have hf : (0 : X ⟶ Y) = (0 : X ⟶ (0 : Spectrum)) ≫ (0 : (0 : Spectrum) ⟶ Y) := by simp</span>
+<span id="L54"><a href="#L54">  54</a>   rw [hf]</span>
+<span id="L55"><a href="#L55">  55</a>   change ((model.classical.map ((0 : X ⟶ (0 : Spectrum)) ≫ (0 : (0 : Spectrum) ⟶ Y))).pageMap 2 p) x=0</span>
+<span id="L56"><a href="#L56">  56</a>   rw [model.classical.map_comp]</span>
+<span id="L57"><a href="#L57">  57</a>   rw [SpectralSequenceMorphism.pageMap_comp,ConcreteCategory.comp_apply]</span>
+<span id="L58"><a href="#L58">  58</a>   haveI := classical_zero_page p</span>
+<span id="L59"><a href="#L59">  59</a>   rw [Subsingleton.elim (((model.classical.map (0 : X ⟶ (0 : Spectrum))).pageMap 2 p) x) 0,map_zero]</span>
+<span id="L60"><a href="#L60">  60</a> end</span>
+<span id="L61"><a href="#L61">  61</a> end KIP126.Main.Internal.NuThree</span></pre>

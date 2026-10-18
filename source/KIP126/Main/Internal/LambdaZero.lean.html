@@ -1,0 +1,43 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/LambdaZero.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/LambdaZero.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> /-! Right unit calculations used in NuTargetHelpers.lean:1644–1671</span>
+<span id="L4"><a href="#L4">   4</a> (bbac1fc05843, MIT). -/</span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L7"><a href="#L7">   7</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.Internal</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic.Standard</span>
+<span id="L10"><a href="#L10">  10</a> noncomputable section</span>
+<span id="L11"><a href="#L11">  11</a> theorem lambda_zero_3_4 (a : BiHom 3 4 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L12"><a href="#L12">  12</a>     lambdaMultiply 0 a=a := by</span>
+<span id="L13"><a href="#L13">  13</a>   have hc := model.quotients.coherence.right_unit (3,4) (S_0_0 : SyntheticSpectrum)</span>
+<span id="L14"><a href="#L14">  14</a>   have he : (SyntheticCategory.biShift_comp (3,4) (0,0)).hom.app (S_0_0 : SyntheticSpectrum)=</span>
+<span id="L15"><a href="#L15">  15</a>       SyntheticCategory.biShift_zero.hom.app (Smn 3 4 : SyntheticSpectrum) := by</span>
+<span id="L16"><a href="#L16">  16</a>     change (biShiftAddIso (3,4) (0,0) (3,4) (by simp)).hom.app _=_ at hc</span>
+<span id="L17"><a href="#L17">  17</a>     simpa only [biShiftAddIso,Iso.trans_hom,NatTrans.comp_app,eqToIso.hom,</span>
+<span id="L18"><a href="#L18">  18</a>       eqToHom_app,eqToHom_refl,Category.comp_id,Smn] using hc</span>
+<span id="L19"><a href="#L19">  19</a>   dsimp only [lambdaMultiply,lambdaPow]</span>
+<span id="L20"><a href="#L20">  20</a>   simp only [eqToHom_refl,Category.id_comp]</span>
+<span id="L21"><a href="#L21">  21</a>   rw [←he]</span>
+<span id="L22"><a href="#L22">  22</a>   change (SyntheticCategory.biShift_comp (3,4) (0,0)).inv.app (S_0_0 : SyntheticSpectrum) ≫</span>
+<span id="L23"><a href="#L23">  23</a>     (SyntheticCategory.biShift_comp (3,4) (0,0)).hom.app (S_0_0 : SyntheticSpectrum) ≫ a=a</span>
+<span id="L24"><a href="#L24">  24</a>   rw [←Category.assoc,Iso.inv_hom_id_app,Category.id_comp]</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> theorem lambda_zero_125_139 (a : BiHom 125 139 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L28"><a href="#L28">  28</a>     lambdaMultiply 0 a=a := by</span>
+<span id="L29"><a href="#L29">  29</a>   have hc := model.quotients.coherence.right_unit (125,139) (S_0_0 : SyntheticSpectrum)</span>
+<span id="L30"><a href="#L30">  30</a>   have he : (SyntheticCategory.biShift_comp (125,139) (0,0)).hom.app (S_0_0 : SyntheticSpectrum)=</span>
+<span id="L31"><a href="#L31">  31</a>       SyntheticCategory.biShift_zero.hom.app (Smn 125 139 : SyntheticSpectrum) := by</span>
+<span id="L32"><a href="#L32">  32</a>     change (biShiftAddIso (125,139) (0,0) (125,139) (by simp)).hom.app _=_ at hc</span>
+<span id="L33"><a href="#L33">  33</a>     simpa only [biShiftAddIso,Iso.trans_hom,NatTrans.comp_app,eqToIso.hom,</span>
+<span id="L34"><a href="#L34">  34</a>       eqToHom_app,eqToHom_refl,Category.comp_id,Smn] using hc</span>
+<span id="L35"><a href="#L35">  35</a>   dsimp only [lambdaMultiply,lambdaPow]</span>
+<span id="L36"><a href="#L36">  36</a>   simp only [eqToHom_refl,Category.id_comp]</span>
+<span id="L37"><a href="#L37">  37</a>   rw [←he]</span>
+<span id="L38"><a href="#L38">  38</a>   change (SyntheticCategory.biShift_comp (125,139) (0,0)).inv.app (S_0_0 : SyntheticSpectrum) ≫</span>
+<span id="L39"><a href="#L39">  39</a>     (SyntheticCategory.biShift_comp (125,139) (0,0)).hom.app (S_0_0 : SyntheticSpectrum) ≫ a=a</span>
+<span id="L40"><a href="#L40">  40</a>   rw [←Category.assoc,Iso.inv_hom_id_app,Category.id_comp]</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> end</span>
+<span id="L43"><a href="#L43">  43</a> end KIP126.Main.Internal</span></pre>

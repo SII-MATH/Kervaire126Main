@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/E2Computation/AdamsTwoLine.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/E2Computation/AdamsTwoLine.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! The unbounded Ext² basis input, independently of any later Adams page.</span>
+<span id="L6"><a href="#L6">   6</a> This is not inferred by extrapolating the bounded computation archive. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.E2Computation</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory KIP126.Classical.Adams</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-- Every nonzero homogeneous second-line element is a standard product.</span>
+<span id="L13"><a href="#L13">  13</a> The degree equation and equality are in the actual fixed E₂ module. -/</span>
+<span id="L14"><a href="#L14">  14</a> public theorem two_line_exhaustive (t : ℤ) (x : model.classical.sphere.Page 2 (2,t))</span>
+<span id="L15"><a href="#L15">  15</a>     (hx : x ≠ 0) :</span>
+<span id="L16"><a href="#L16">  16</a>     ∃ i j : ℕ, i ≤ j ∧</span>
+<span id="L17"><a href="#L17">  17</a>       ∃ degree : hiDegree i + hiDegree j = (2,t),</span>
+<span id="L18"><a href="#L18">  18</a>         x = (eqToHom (congrArg (ActualE2At model.classical) degree))</span>
+<span id="L19"><a href="#L19">  19</a>           (KIP126.Literature.Standard.hiProduct i j) := by</span>
+<span id="L20"><a href="#L20">  20</a>   sorry</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> end KIP126.E2Computation</span></pre>

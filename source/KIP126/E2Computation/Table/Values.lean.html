@@ -1,0 +1,832 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/E2Computation/Table/Values.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/E2Computation/Table/Values.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.E2Computation.Table.Internal.ZeroDimension</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.E2Computation.Table</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> /-! The finite monomial-to-coordinate binding of the pinned sphere archive.</span>
+<span id="L7"><a href="#L7">   7</a> Expressions are evaluated using the existing actual sphere product and the</span>
+<span id="L8"><a href="#L8">   8</a> existing source generators/comparison, never an independent family of classes.</span>
+<span id="L9"><a href="#L9">   9</a> Rows are transcribed from LinProgram/Route/Selected.lean and the pinned</span>
+<span id="L10"><a href="#L10">  10</a> S0_AdamsE2_generators.csv (bbac1fc05843). -/</span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Computation.Table</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory KIP126.AdamsSynthetic.Standard</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> public inductive Expression where</span>
+<span id="L17"><a href="#L17">  17</a>   | one</span>
+<span id="L18"><a href="#L18">  18</a>   | named (a : Atom)</span>
+<span id="L19"><a href="#L19">  19</a>   | generator (id s t : ℕ)</span>
+<span id="L20"><a href="#L20">  20</a>   | mul (a b : Expression)</span>
+<span id="L21"><a href="#L21">  21</a>   deriving DecidableEq</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> public def Expression.degree : Expression → ℕ × ℕ</span>
+<span id="L24"><a href="#L24">  24</a>   | .one =&gt; (0,0)</span>
+<span id="L25"><a href="#L25">  25</a>   | .named a =&gt; a.degree</span>
+<span id="L26"><a href="#L26">  26</a>   | .generator _ s t =&gt; (s,t)</span>
+<span id="L27"><a href="#L27">  27</a>   | .mul a b =&gt; (a.degree.1+b.degree.1,a.degree.2+b.degree.2)</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> public def generatorImage (id s t : ℕ) : Page .sphere s t :=</span>
+<span id="L30"><a href="#L30">  30</a>   if ht : t ≤ 261 then</span>
+<span id="L31"><a href="#L31">  31</a>     if hi : id &lt; Standard.archive.generators.count then</span>
+<span id="L32"><a href="#L32">  32</a>       if hd : Standard.archive.generators.degree ⟨id,hi⟩ = (s,t) then</span>
+<span id="L33"><a href="#L33">  33</a>         Standard.comparison s t ht</span>
+<span id="L34"><a href="#L34">  34</a>           ((eqToHom (congrArg (fun p : ℕ × ℕ =&gt; Standard.sourceData.component p.1 p.2) hd))</span>
+<span id="L35"><a href="#L35">  35</a>             (Standard.sourceGenerator ⟨id,hi⟩))</span>
+<span id="L36"><a href="#L36">  36</a>       else 0</span>
+<span id="L37"><a href="#L37">  37</a>     else 0</span>
+<span id="L38"><a href="#L38">  38</a>   else 0</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> public def Expression.value : (e : Expression) → Page .sphere e.degree.1 e.degree.2</span>
+<span id="L41"><a href="#L41">  41</a>   | .one =&gt; model.sphereAlgebra.unit</span>
+<span id="L42"><a href="#L42">  42</a>   | .named a =&gt; Standard.atom a</span>
+<span id="L43"><a href="#L43">  43</a>   | .generator id s t =&gt; generatorImage id s t</span>
+<span id="L44"><a href="#L44">  44</a>   | .mul a b =&gt; Standard.product a.value b.value</span>
+<span id="L45"><a href="#L45">  45</a>       (by simp only [Expression.degree, Prod.mk_add_mk, Nat.cast_add])</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> public structure BasisValue where</span>
+<span id="L48"><a href="#L48">  48</a>   expression : Expression</span>
+<span id="L49"><a href="#L49">  49</a>   index : ℕ</span>
+<span id="L50"><a href="#L50">  50</a>   deriving DecidableEq</span>
+<span id="L51"><a href="#L51">  51</a> </span>
+<span id="L52"><a href="#L52">  52</a> public def basisValues : List BasisValue := [</span>
+<span id="L53"><a href="#L53">  53</a>   ⟨(.named .h0), 0⟩,</span>
+<span id="L54"><a href="#L54">  54</a>   ⟨(.named .h1), 0⟩,</span>
+<span id="L55"><a href="#L55">  55</a>   ⟨(.named .h2), 0⟩,</span>
+<span id="L56"><a href="#L56">  56</a>   ⟨(.named .h4), 0⟩,</span>
+<span id="L57"><a href="#L57">  57</a>   ⟨(.named .h5), 0⟩,</span>
+<span id="L58"><a href="#L58">  58</a>   ⟨(.named .h6), 0⟩,</span>
+<span id="L59"><a href="#L59">  59</a>   ⟨(.generator 324 1 128), 0⟩,</span>
+<span id="L60"><a href="#L60">  60</a>   ⟨(.mul (.named .h0) (.named .h0)), 0⟩,</span>
+<span id="L61"><a href="#L61">  61</a>   ⟨(.mul (.named .h1) (.named .h4)), 0⟩,</span>
+<span id="L62"><a href="#L62">  62</a>   ⟨(.mul (.named .h5) (.named .h5)), 0⟩,</span>
+<span id="L63"><a href="#L63">  63</a>   ⟨(.mul (.named .h0) (.named .h6)), 0⟩,</span>
+<span id="L64"><a href="#L64">  64</a>   ⟨(.mul (.named .h6) (.named .h6)), 0⟩,</span>
+<span id="L65"><a href="#L65">  65</a>   ⟨(.mul (.named .h0) (.generator 324 1 128)), 0⟩,</span>
+<span id="L66"><a href="#L66">  66</a>   ⟨(.mul (.named .h0) (.mul (.named .h5) (.named .h5))), 0⟩,</span>
+<span id="L67"><a href="#L67">  67</a>   ⟨(.mul (.named .h1) (.mul (.named .h5) (.named .h5))), 0⟩,</span>
+<span id="L68"><a href="#L68">  68</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .h6)), 1⟩,</span>
+<span id="L69"><a href="#L69">  69</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.named .h6))), 0⟩,</span>
+<span id="L70"><a href="#L70">  70</a>   ⟨(.mul (.named .h1) (.mul (.named .h6) (.named .h6))), 0⟩,</span>
+<span id="L71"><a href="#L71">  71</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L72"><a href="#L72">  72</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)), 0⟩,</span>
+<span id="L73"><a href="#L73">  73</a>   ⟨(.named .e0), 0⟩,</span>
+<span id="L74"><a href="#L74">  74</a>   ⟨(.named .g), 0⟩,</span>
+<span id="L75"><a href="#L75">  75</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h5) (.named .h5))), 0⟩,</span>
+<span id="L76"><a href="#L76">  76</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h6)), 0⟩,</span>
+<span id="L77"><a href="#L77">  77</a>   ⟨(.named .x_126_4), 0⟩,</span>
+<span id="L78"><a href="#L78">  78</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h6) (.named .h6))), 1⟩,</span>
+<span id="L79"><a href="#L79">  79</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L80"><a href="#L80">  80</a>   ⟨(.generator 76 5 67), 0⟩,</span>
+<span id="L81"><a href="#L81">  81</a>   ⟨(.mul (.named .h1) (.generator 70 4 65)), 1⟩,</span>
+<span id="L82"><a href="#L82">  82</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.named .h5) (.named .h5))), 2⟩,</span>
+<span id="L83"><a href="#L83">  83</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h6)), 0⟩,</span>
+<span id="L84"><a href="#L84">  84</a>   ⟨(.named .x_125_5), 0⟩,</span>
+<span id="L85"><a href="#L85">  85</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 0⟩,</span>
+<span id="L86"><a href="#L86">  86</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L87"><a href="#L87">  87</a>   ⟨(.generator 378 5 133), 0⟩,</span>
+<span id="L88"><a href="#L88">  88</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)), 0⟩,</span>
+<span id="L89"><a href="#L89">  89</a>   ⟨(.mul (.named .h5) (.generator 24 5 36)), 0⟩,</span>
+<span id="L90"><a href="#L90">  90</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h5) (.named .h5))), 1⟩,</span>
+<span id="L91"><a href="#L91">  91</a>   ⟨(.mul (.named .h1) (.generator 76 5 67)), 0⟩,</span>
+<span id="L92"><a href="#L92">  92</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h6)), 1⟩,</span>
+<span id="L93"><a href="#L93">  93</a>   ⟨(.generator 86 6 70), 0⟩,</span>
+<span id="L94"><a href="#L94">  94</a>   ⟨(.generator 339 6 130), 0⟩,</span>
+<span id="L95"><a href="#L95">  95</a>   ⟨(.mul (.named .h6) (.generator 76 5 67)), 0⟩,</span>
+<span id="L96"><a href="#L96">  96</a>   ⟨(.mul (.named .h0) (.named .x_125_5)), 1⟩,</span>
+<span id="L97"><a href="#L97">  97</a>   ⟨(.named .x_126_6), 0⟩,</span>
+<span id="L98"><a href="#L98">  98</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 1⟩,</span>
+<span id="L99"><a href="#L99">  99</a>   ⟨(.generator 377 6 133), 0⟩,</span>
+<span id="L100"><a href="#L100"> 100</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L101"><a href="#L101"> 101</a>   ⟨(.generator 399 6 134), 0⟩,</span>
+<span id="L102"><a href="#L102"> 102</a>   ⟨(.generator 398 6 134), 1⟩,</span>
+<span id="L103"><a href="#L103"> 103</a>   ⟨(.mul (.named .h2) (.named .x_125_5)), 2⟩,</span>
+<span id="L104"><a href="#L104"> 104</a>   ⟨(.mul (.named .h0) (.generator 378 5 133)), 3⟩,</span>
+<span id="L105"><a href="#L105"> 105</a>   ⟨(.mul (.named .h0) (.generator 75 6 67)), 0⟩,</span>
+<span id="L106"><a href="#L106"> 106</a>   ⟨(.mul (.named .h0) (.generator 74 6 67)), 1⟩,</span>
+<span id="L107"><a href="#L107"> 107</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h5) (.named .h5))), 0⟩,</span>
+<span id="L108"><a href="#L108"> 108</a>   ⟨(.generator 85 7 70), 0⟩,</span>
+<span id="L109"><a href="#L109"> 109</a>   ⟨(.generator 84 7 70), 1⟩,</span>
+<span id="L110"><a href="#L110"> 110</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h6)), 2⟩,</span>
+<span id="L111"><a href="#L111"> 111</a>   ⟨(.mul (.named .h2) (.generator 75 6 67)), 0⟩,</span>
+<span id="L112"><a href="#L112"> 112</a>   ⟨(.mul (.named .h0) (.generator 86 6 70)), 1⟩,</span>
+<span id="L113"><a href="#L113"> 113</a>   ⟨(.named .x_121_7), 0⟩,</span>
+<span id="L114"><a href="#L114"> 114</a>   ⟨(.mul (.generator 68 6 64) (.named .h6)), 1⟩,</span>
+<span id="L115"><a href="#L115"> 115</a>   ⟨(.generator 353 7 131), 0⟩,</span>
+<span id="L116"><a href="#L116"> 116</a>   ⟨(.mul (.named .h6) (.generator 75 6 67)), 1⟩,</span>
+<span id="L117"><a href="#L117"> 117</a>   ⟨(.mul (.named .h0) (.generator 339 6 130)), 2⟩,</span>
+<span id="L118"><a href="#L118"> 118</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_125_5)), 0⟩,</span>
+<span id="L119"><a href="#L119"> 119</a>   ⟨(.mul (.named .h1) (.mul (.named .h6) (.generator 76 5 67))), 0⟩,</span>
+<span id="L120"><a href="#L120"> 120</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 1⟩,</span>
+<span id="L121"><a href="#L121"> 121</a>   ⟨(.generator 397 7 134), 0⟩,</span>
+<span id="L122"><a href="#L122"> 122</a>   ⟨(.generator 396 7 134), 1⟩,</span>
+<span id="L123"><a href="#L123"> 123</a>   ⟨(.mul (.named .h1) (.named .x_126_6)), 2⟩,</span>
+<span id="L124"><a href="#L124"> 124</a>   ⟨(.mul (.named .h0) (.generator 377 6 133)), 3⟩,</span>
+<span id="L125"><a href="#L125"> 125</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L126"><a href="#L126"> 126</a>   ⟨(.mul (.named .h2) (.mul (.named .h6) (.generator 76 5 67))), 0⟩,</span>
+<span id="L127"><a href="#L127"> 127</a>   ⟨(.mul (.named .h0) (.generator 398 6 134)), 1⟩,</span>
+<span id="L128"><a href="#L128"> 128</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 378 5 133)), 2⟩,</span>
+<span id="L129"><a href="#L129"> 129</a>   ⟨(.mul (.named .g) (.named .g)), 0⟩,</span>
+<span id="L130"><a href="#L130"> 130</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 74 6 67)), 0⟩,</span>
+<span id="L131"><a href="#L131"> 131</a>   ⟨(.generator 83 8 70), 0⟩,</span>
+<span id="L132"><a href="#L132"> 132</a>   ⟨(.named .b), 1⟩,</span>
+<span id="L133"><a href="#L133"> 133</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h5) (.named .h5))), 2⟩,</span>
+<span id="L134"><a href="#L134"> 134</a>   ⟨(.mul (.named .h0) (.generator 84 7 70)), 0⟩,</span>
+<span id="L135"><a href="#L135"> 135</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h6)), 1⟩,</span>
+<span id="L136"><a href="#L136"> 136</a>   ⟨(.named .x_94_8), 0⟩,</span>
+<span id="L137"><a href="#L137"> 137</a>   ⟨(.mul (.named .h1) (.named .x_121_7)), 0⟩,</span>
+<span id="L138"><a href="#L138"> 138</a>   ⟨(.named .x_123_8), 0⟩,</span>
+<span id="L139"><a href="#L139"> 139</a>   ⟨(.named .x_124_8), 0⟩,</span>
+<span id="L140"><a href="#L140"> 140</a>   ⟨(.generator 376 8 133), 0⟩,</span>
+<span id="L141"><a href="#L141"> 141</a>   ⟨(.named .x_125_8), 1⟩,</span>
+<span id="L142"><a href="#L142"> 142</a>   ⟨(.named .x_126_8_4), 0⟩,</span>
+<span id="L143"><a href="#L143"> 143</a>   ⟨(.generator 394 8 134), 1⟩,</span>
+<span id="L144"><a href="#L144"> 144</a>   ⟨(.named .x_126_8_2), 2⟩,</span>
+<span id="L145"><a href="#L145"> 145</a>   ⟨(.named .x_126_8), 3⟩,</span>
+<span id="L146"><a href="#L146"> 146</a>   ⟨(.mul (.named .h6) (.generator 85 7 70)), 4⟩,</span>
+<span id="L147"><a href="#L147"> 147</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 5⟩,</span>
+<span id="L148"><a href="#L148"> 148</a>   ⟨(.generator 415 8 135), 0⟩,</span>
+<span id="L149"><a href="#L149"> 149</a>   ⟨(.mul (.named .h2) (.generator 353 7 131)), 1⟩,</span>
+<span id="L150"><a href="#L150"> 150</a>   ⟨(.mul (.named .h2) (.mul (.named .h6) (.generator 75 6 67))), 2⟩,</span>
+<span id="L151"><a href="#L151"> 151</a>   ⟨(.mul (.named .h0) (.generator 397 7 134)), 3⟩,</span>
+<span id="L152"><a href="#L152"> 152</a>   ⟨(.mul (.named .h0) (.generator 396 7 134)), 4⟩,</span>
+<span id="L153"><a href="#L153"> 153</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 377 6 133)), 5⟩,</span>
+<span id="L154"><a href="#L154"> 154</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 6⟩,</span>
+<span id="L155"><a href="#L155"> 155</a>   ⟨(.mul (.generator 3 1 8) (.mul (.generator 68 6 64) (.named .h6))), 0⟩,</span>
+<span id="L156"><a href="#L156"> 156</a>   ⟨(.named .delta_h_1_mul_g), 0⟩,</span>
+<span id="L157"><a href="#L157"> 157</a>   ⟨(.named .b4), 0⟩,</span>
+<span id="L158"><a href="#L158"> 158</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 73 7 67)), 1⟩,</span>
+<span id="L159"><a href="#L159"> 159</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h5) (.named .h5))), 0⟩,</span>
+<span id="L160"><a href="#L160"> 160</a>   ⟨(.mul (.named .h1) (.named .b)), 0⟩,</span>
+<span id="L161"><a href="#L161"> 161</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 84 7 70)), 1⟩,</span>
+<span id="L162"><a href="#L162"> 162</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h6)), 2⟩,</span>
+<span id="L163"><a href="#L163"> 163</a>   ⟨(.named .delta_h_6_mul_g), 0⟩,</span>
+<span id="L164"><a href="#L164"> 164</a>   ⟨(.named .x_123_9), 0⟩,</span>
+<span id="L165"><a href="#L165"> 165</a>   ⟨(.mul (.named .h0) (.named .x_123_8)), 1⟩,</span>
+<span id="L166"><a href="#L166"> 166</a>   ⟨(.generator 374 9 133), 0⟩,</span>
+<span id="L167"><a href="#L167"> 167</a>   ⟨(.generator 373 9 133), 1⟩,</span>
+<span id="L168"><a href="#L168"> 168</a>   ⟨(.mul (.named .h0) (.named .x_124_8)), 2⟩,</span>
+<span id="L169"><a href="#L169"> 169</a>   ⟨(.named .x_125_9_2), 0⟩,</span>
+<span id="L170"><a href="#L170"> 170</a>   ⟨(.generator 390 9 134), 1⟩,</span>
+<span id="L171"><a href="#L171"> 171</a>   ⟨(.mul (.named .h6) (.named .b)), 2⟩,</span>
+<span id="L172"><a href="#L172"> 172</a>   ⟨(.mul (.named .h5) (.named .x_94_8)), 3⟩,</span>
+<span id="L173"><a href="#L173"> 173</a>   ⟨(.mul (.named .h0) (.named .x_125_8)), 4⟩,</span>
+<span id="L174"><a href="#L174"> 174</a>   ⟨(.generator 414 9 135), 0⟩,</span>
+<span id="L175"><a href="#L175"> 175</a>   ⟨(.mul (.named .h1) (.generator 376 8 133)), 1⟩,</span>
+<span id="L176"><a href="#L176"> 176</a>   ⟨(.mul (.named .h1) (.named .x_125_8)), 2⟩,</span>
+<span id="L177"><a href="#L177"> 177</a>   ⟨(.mul (.named .h0) (.generator 394 8 134)), 3⟩,</span>
+<span id="L178"><a href="#L178"> 178</a>   ⟨(.mul (.named .h0) (.named .x_126_8)), 4⟩,</span>
+<span id="L179"><a href="#L179"> 179</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 5⟩,</span>
+<span id="L180"><a href="#L180"> 180</a>   ⟨(.mul (.named .h1) (.named .x_126_8_2)), 0⟩,</span>
+<span id="L181"><a href="#L181"> 181</a>   ⟨(.mul (.named .h1) (.named .x_126_8)), 1⟩,</span>
+<span id="L182"><a href="#L182"> 182</a>   ⟨(.mul (.named .h0) (.generator 415 8 135)), 2⟩,</span>
+<span id="L183"><a href="#L183"> 183</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 396 7 134)), 3⟩,</span>
+<span id="L184"><a href="#L184"> 184</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L185"><a href="#L185"> 185</a>   ⟨(.mul (.named .h2) (.generator 376 8 133)), 0⟩,</span>
+<span id="L186"><a href="#L186"> 186</a>   ⟨(.mul (.named .h1) (.generator 415 8 135)), 1⟩,</span>
+<span id="L187"><a href="#L187"> 187</a>   ⟨(.mul (.named .h0) (.mul (.generator 3 1 8) (.mul (.generator 68 6 64) (.named .h6)))), 2⟩,</span>
+<span id="L188"><a href="#L188"> 188</a>   ⟨(.named .M_mul_d_0), 0⟩,</span>
+<span id="L189"><a href="#L189"> 189</a>   ⟨(.generator 90 10 72), 0⟩,</span>
+<span id="L190"><a href="#L190"> 190</a>   ⟨(.generator 89 10 72), 1⟩,</span>
+<span id="L191"><a href="#L191"> 191</a>   ⟨(.mul (.named .h1) (.generator 81 9 70)), 2⟩,</span>
+<span id="L192"><a href="#L192"> 192</a>   ⟨(.generator 372 10 133), 0⟩,</span>
+<span id="L193"><a href="#L193"> 193</a>   ⟨(.mul (.named .h6) (.named .b4)), 1⟩,</span>
+<span id="L194"><a href="#L194"> 194</a>   ⟨(.mul (.named .h0) (.named .x_123_9)), 2⟩,</span>
+<span id="L195"><a href="#L195"> 195</a>   ⟨(.generator 389 10 134), 0⟩,</span>
+<span id="L196"><a href="#L196"> 196</a>   ⟨(.generator 388 10 134), 1⟩,</span>
+<span id="L197"><a href="#L197"> 197</a>   ⟨(.mul (.named .h1) (.named .x_123_9)), 2⟩,</span>
+<span id="L198"><a href="#L198"> 198</a>   ⟨(.mul (.named .h0) (.generator 373 9 133)), 3⟩,</span>
+<span id="L199"><a href="#L199"> 199</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_124_8)), 4⟩,</span>
+<span id="L200"><a href="#L200"> 200</a>   ⟨(.generator 413 10 135), 0⟩,</span>
+<span id="L201"><a href="#L201"> 201</a>   ⟨(.generator 412 10 135), 1⟩,</span>
+<span id="L202"><a href="#L202"> 202</a>   ⟨(.mul (.named .h0) (.named .x_125_9_2)), 2⟩,</span>
+<span id="L203"><a href="#L203"> 203</a>   ⟨(.mul (.named .h0) (.generator 390 9 134)), 3⟩,</span>
+<span id="L204"><a href="#L204"> 204</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_125_8)), 4⟩,</span>
+<span id="L205"><a href="#L205"> 205</a>   ⟨(.generator 419 10 136), 0⟩,</span>
+<span id="L206"><a href="#L206"> 206</a>   ⟨(.mul (.named .h0) (.generator 414 9 135)), 1⟩,</span>
+<span id="L207"><a href="#L207"> 207</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 394 8 134)), 2⟩,</span>
+<span id="L208"><a href="#L208"> 208</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_126_8)), 3⟩,</span>
+<span id="L209"><a href="#L209"> 209</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 4⟩,</span>
+<span id="L210"><a href="#L210"> 210</a>   ⟨(.generator 428 10 137), 0⟩,</span>
+<span id="L211"><a href="#L211"> 211</a>   ⟨(.mul (.generator 3 1 8) (.generator 333 9 129)), 1⟩,</span>
+<span id="L212"><a href="#L212"> 212</a>   ⟨(.mul (.named .h2) (.generator 373 9 133)), 2⟩,</span>
+<span id="L213"><a href="#L213"> 213</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.named .x_125_8)), 3⟩,</span>
+<span id="L214"><a href="#L214"> 214</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 415 8 135)), 4⟩,</span>
+<span id="L215"><a href="#L215"> 215</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 5⟩,</span>
+<span id="L216"><a href="#L216"> 216</a>   ⟨(.generator 442 10 138), 0⟩,</span>
+<span id="L217"><a href="#L217"> 217</a>   ⟨(.generator 441 10 138), 1⟩,</span>
+<span id="L218"><a href="#L218"> 218</a>   ⟨(.mul (.named .h2) (.mul (.named .h6) (.named .b))), 2⟩,</span>
+<span id="L219"><a href="#L219"> 219</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 3 1 8) (.mul (.generator 68 6 64) (.named .h6)))), 3⟩,</span>
+<span id="L220"><a href="#L220"> 220</a>   ⟨(.mul (.generator 23 6 36) (.generator 24 5 36)), 0⟩,</span>
+<span id="L221"><a href="#L221"> 221</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 81 9 70)), 1⟩,</span>
+<span id="L222"><a href="#L222"> 222</a>   ⟨(.mul (.named .h0) (.generator 90 10 72)), 0⟩,</span>
+<span id="L223"><a href="#L223"> 223</a>   ⟨(.mul (.named .h0) (.generator 89 10 72)), 1⟩,</span>
+<span id="L224"><a href="#L224"> 224</a>   ⟨(.named .x_91_11), 0⟩,</span>
+<span id="L225"><a href="#L225"> 225</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.named .h6))), 1⟩,</span>
+<span id="L226"><a href="#L226"> 226</a>   ⟨(.generator 371 11 133), 0⟩,</span>
+<span id="L227"><a href="#L227"> 227</a>   ⟨(.mul (.named .h6) (.named .M_mul_d_0)), 1⟩,</span>
+<span id="L228"><a href="#L228"> 228</a>   ⟨(.named .x_123_11_2), 0⟩,</span>
+<span id="L229"><a href="#L229"> 229</a>   ⟨(.named .x_123_11), 1⟩,</span>
+<span id="L230"><a href="#L230"> 230</a>   ⟨(.mul (.named .h5) (.generator 189 10 102)), 2⟩,</span>
+<span id="L231"><a href="#L231"> 231</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.named .b4))), 3⟩,</span>
+<span id="L232"><a href="#L232"> 232</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_123_9)), 4⟩,</span>
+<span id="L233"><a href="#L233"> 233</a>   ⟨(.generator 411 11 135), 0⟩,</span>
+<span id="L234"><a href="#L234"> 234</a>   ⟨(.generator 410 11 135), 1⟩,</span>
+<span id="L235"><a href="#L235"> 235</a>   ⟨(.generator 409 11 135), 2⟩,</span>
+<span id="L236"><a href="#L236"> 236</a>   ⟨(.mul (.named .h0) (.generator 389 10 134)), 3⟩,</span>
+<span id="L237"><a href="#L237"> 237</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_124_8)), 4⟩,</span>
+<span id="L238"><a href="#L238"> 238</a>   ⟨(.mul (.named .h6) (.generator 89 10 72)), 0⟩,</span>
+<span id="L239"><a href="#L239"> 239</a>   ⟨(.mul (.named .h1) (.generator 389 10 134)), 1⟩,</span>
+<span id="L240"><a href="#L240"> 240</a>   ⟨(.mul (.named .h1) (.generator 388 10 134)), 2⟩,</span>
+<span id="L241"><a href="#L241"> 241</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_125_9_2)), 3⟩,</span>
+<span id="L242"><a href="#L242"> 242</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_125_8)), 4⟩,</span>
+<span id="L243"><a href="#L243"> 243</a>   ⟨(.generator 427 11 137), 0⟩,</span>
+<span id="L244"><a href="#L244"> 244</a>   ⟨(.mul (.named .h1) (.generator 413 10 135)), 1⟩,</span>
+<span id="L245"><a href="#L245"> 245</a>   ⟨(.mul (.named .h1) (.generator 412 10 135)), 2⟩,</span>
+<span id="L246"><a href="#L246"> 246</a>   ⟨(.mul (.named .h0) (.generator 419 10 136)), 3⟩,</span>
+<span id="L247"><a href="#L247"> 247</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 414 9 135)), 4⟩,</span>
+<span id="L248"><a href="#L248"> 248</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 5⟩,</span>
+<span id="L249"><a href="#L249"> 249</a>   ⟨(.mul (.named .h0) (.generator 428 10 137)), 0⟩,</span>
+<span id="L250"><a href="#L250"> 250</a>   ⟨(.mul (.named .h0) (.mul (.generator 3 1 8) (.generator 333 9 129))), 1⟩,</span>
+<span id="L251"><a href="#L251"> 251</a>   ⟨(.mul (.named .h0) (.mul (.named .h2) (.generator 373 9 133))), 2⟩,</span>
+<span id="L252"><a href="#L252"> 252</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 3⟩,</span>
+<span id="L253"><a href="#L253"> 253</a>   ⟨(.mul (.named .h5) (.generator 209 10 107)), 0⟩,</span>
+<span id="L254"><a href="#L254"> 254</a>   ⟨(.mul (.named .h0) (.generator 442 10 138)), 1⟩,</span>
+<span id="L255"><a href="#L255"> 255</a>   ⟨(.mul (.named .h0) (.generator 441 10 138)), 2⟩,</span>
+<span id="L256"><a href="#L256"> 256</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 90 10 72)), 0⟩,</span>
+<span id="L257"><a href="#L257"> 257</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 89 10 72)), 1⟩,</span>
+<span id="L258"><a href="#L258"> 258</a>   ⟨(.named .x_109_12), 0⟩,</span>
+<span id="L259"><a href="#L259"> 259</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 29 7 39) (.named .h6))), 1⟩,</span>
+<span id="L260"><a href="#L260"> 260</a>   ⟨(.mul (.named .h5) (.named .x_91_11)), 0⟩,</span>
+<span id="L261"><a href="#L261"> 261</a>   ⟨(.mul (.named .h0) (.generator 371 11 133)), 1⟩,</span>
+<span id="L262"><a href="#L262"> 262</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.named .M_mul_d_0))), 2⟩,</span>
+<span id="L263"><a href="#L263"> 263</a>   ⟨(.generator 408 12 135), 0⟩,</span>
+<span id="L264"><a href="#L264"> 264</a>   ⟨(.mul (.named .h0) (.named .x_123_11)), 1⟩,</span>
+<span id="L265"><a href="#L265"> 265</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h6) (.named .b4))), 2⟩,</span>
+<span id="L266"><a href="#L266"> 266</a>   ⟨(.mul (.named .h1) (.named .x_123_11_2)), 0⟩,</span>
+<span id="L267"><a href="#L267"> 267</a>   ⟨(.mul (.named .h0) (.generator 410 11 135)), 1⟩,</span>
+<span id="L268"><a href="#L268"> 268</a>   ⟨(.mul (.named .h0) (.generator 409 11 135)), 2⟩,</span>
+<span id="L269"><a href="#L269"> 269</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 389 10 134)), 3⟩,</span>
+<span id="L270"><a href="#L270"> 270</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_124_8)), 4⟩,</span>
+<span id="L271"><a href="#L271"> 271</a>   ⟨(.generator 426 12 137), 0⟩,</span>
+<span id="L272"><a href="#L272"> 272</a>   ⟨(.generator 425 12 137), 1⟩,</span>
+<span id="L273"><a href="#L273"> 273</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.generator 89 10 72))), 2⟩,</span>
+<span id="L274"><a href="#L274"> 274</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_125_9_2)), 3⟩,</span>
+<span id="L275"><a href="#L275"> 275</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_125_8)), 4⟩,</span>
+<span id="L276"><a href="#L276"> 276</a>   ⟨(.mul (.generator 25 4 36) (.named .x_94_8)), 0⟩,</span>
+<span id="L277"><a href="#L277"> 277</a>   ⟨(.mul (.generator 3 1 8) (.generator 336 11 130)), 1⟩,</span>
+<span id="L278"><a href="#L278"> 278</a>   ⟨(.mul (.named .h0) (.generator 427 11 137)), 2⟩,</span>
+<span id="L279"><a href="#L279"> 279</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 419 10 136)), 3⟩,</span>
+<span id="L280"><a href="#L280"> 280</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 4⟩,</span>
+<span id="L281"><a href="#L281"> 281</a>   ⟨(.mul (.named .h1) (.generator 427 11 137)), 0⟩,</span>
+<span id="L282"><a href="#L282"> 282</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 428 10 137)), 1⟩,</span>
+<span id="L283"><a href="#L283"> 283</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L284"><a href="#L284"> 284</a>   ⟨(.generator 460 12 140), 0⟩,</span>
+<span id="L285"><a href="#L285"> 285</a>   ⟨(.generator 459 12 140), 1⟩,</span>
+<span id="L286"><a href="#L286"> 286</a>   ⟨(.mul (.generator 76 5 67) (.generator 95 7 73)), 2⟩,</span>
+<span id="L287"><a href="#L287"> 287</a>   ⟨(.mul (.generator 3 1 8) (.generator 365 11 132)), 3⟩,</span>
+<span id="L288"><a href="#L288"> 288</a>   ⟨(.mul (.named .h0) (.mul (.named .h5) (.generator 209 10 107))), 4⟩,</span>
+<span id="L289"><a href="#L289"> 289</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 81 9 70)), 0⟩,</span>
+<span id="L290"><a href="#L290"> 290</a>   ⟨(.generator 407 13 135), 0⟩,</span>
+<span id="L291"><a href="#L291"> 291</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.generator 351 11 131)), 1⟩,</span>
+<span id="L292"><a href="#L292"> 292</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h6) (.named .M_mul_d_0))), 2⟩,</span>
+<span id="L293"><a href="#L293"> 293</a>   ⟨(.named .x_123_13_2), 0⟩,</span>
+<span id="L294"><a href="#L294"> 294</a>   ⟨(.generator 417 13 136), 1⟩,</span>
+<span id="L295"><a href="#L295"> 295</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_123_11)), 2⟩,</span>
+<span id="L296"><a href="#L296"> 296</a>   ⟨(.mul (.generator 76 5 67) (.named .b)), 0⟩,</span>
+<span id="L297"><a href="#L297"> 297</a>   ⟨(.mul (.named .e0) (.named .delta_h_6_mul_g)), 1⟩,</span>
+<span id="L298"><a href="#L298"> 298</a>   ⟨(.mul (.named .h4) (.named .x_109_12)), 2⟩,</span>
+<span id="L299"><a href="#L299"> 299</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_124_8)), 3⟩,</span>
+<span id="L300"><a href="#L300"> 300</a>   ⟨(.mul (.generator 24 5 36) (.named .x_94_8)), 0⟩,</span>
+<span id="L301"><a href="#L301"> 301</a>   ⟨(.mul (.generator 3 1 8) (.generator 335 12 130)), 1⟩,</span>
+<span id="L302"><a href="#L302"> 302</a>   ⟨(.mul (.named .h0) (.generator 425 12 137)), 2⟩,</span>
+<span id="L303"><a href="#L303"> 303</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_125_9_2)), 3⟩,</span>
+<span id="L304"><a href="#L304"> 304</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_125_8)), 4⟩,</span>
+<span id="L305"><a href="#L305"> 305</a>   ⟨(.mul (.named .h1) (.generator 426 12 137)), 0⟩,</span>
+<span id="L306"><a href="#L306"> 306</a>   ⟨(.mul (.named .h0) (.mul (.generator 3 1 8) (.generator 336 11 130))), 1⟩,</span>
+<span id="L307"><a href="#L307"> 307</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 2⟩,</span>
+<span id="L308"><a href="#L308"> 308</a>   ⟨(.generator 458 13 140), 0⟩,</span>
+<span id="L309"><a href="#L309"> 309</a>   ⟨(.mul (.named .g) (.named .delta_h_6_mul_g)), 1⟩,</span>
+<span id="L310"><a href="#L310"> 310</a>   ⟨(.mul (.generator 3 1 8) (.generator 363 12 132)), 2⟩,</span>
+<span id="L311"><a href="#L311"> 311</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 428 10 137)), 3⟩,</span>
+<span id="L312"><a href="#L312"> 312</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L313"><a href="#L313"> 313</a>   ⟨(.generator 475 13 141), 0⟩,</span>
+<span id="L314"><a href="#L314"> 314</a>   ⟨(.generator 474 13 141), 1⟩,</span>
+<span id="L315"><a href="#L315"> 315</a>   ⟨(.mul (.named .h0) (.generator 460 12 140)), 2⟩,</span>
+<span id="L316"><a href="#L316"> 316</a>   ⟨(.mul (.named .h0) (.mul (.generator 3 1 8) (.generator 365 11 132))), 3⟩,</span>
+<span id="L317"><a href="#L317"> 317</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.generator 23 6 36))), 0⟩,</span>
+<span id="L318"><a href="#L318"> 318</a>   ⟨(.mul (.named .h0) (.generator 407 13 135)), 0⟩,</span>
+<span id="L319"><a href="#L319"> 319</a>   ⟨(.mul (.generator 23 6 36) (.generator 181 8 101)), 0⟩,</span>
+<span id="L320"><a href="#L320"> 320</a>   ⟨(.mul (.named .h0) (.named .x_123_13_2)), 1⟩,</span>
+<span id="L321"><a href="#L321"> 321</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_123_11)), 2⟩,</span>
+<span id="L322"><a href="#L322"> 322</a>   ⟨(.generator 440 14 138), 0⟩,</span>
+<span id="L323"><a href="#L323"> 323</a>   ⟨(.generator 439 14 138), 1⟩,</span>
+<span id="L324"><a href="#L324"> 324</a>   ⟨(.mul (.generator 23 6 36) (.named .x_94_8)), 2⟩,</span>
+<span id="L325"><a href="#L325"> 325</a>   ⟨(.mul (.named .h1) (.named .x_123_13_2)), 3⟩,</span>
+<span id="L326"><a href="#L326"> 326</a>   ⟨(.mul (.named .h1) (.generator 417 13 136)), 4⟩,</span>
+<span id="L327"><a href="#L327"> 327</a>   ⟨(.generator 449 14 139), 0⟩,</span>
+<span id="L328"><a href="#L328"> 328</a>   ⟨(.mul (.named .h1) (.mul (.named .h4) (.named .x_109_12))), 1⟩,</span>
+<span id="L329"><a href="#L329"> 329</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 425 12 137)), 2⟩,</span>
+<span id="L330"><a href="#L330"> 330</a>   ⟨(.generator 457 14 140), 0⟩,</span>
+<span id="L331"><a href="#L331"> 331</a>   ⟨(.mul (.generator 68 6 64) (.generator 107 8 76)), 1⟩,</span>
+<span id="L332"><a href="#L332"> 332</a>   ⟨(.mul (.named .h1) (.mul (.generator 3 1 8) (.generator 335 12 130))), 2⟩,</span>
+<span id="L333"><a href="#L333"> 333</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 3⟩,</span>
+<span id="L334"><a href="#L334"> 334</a>   ⟨(.mul (.named .h0) (.mul (.named .g) (.named .delta_h_6_mul_g))), 0⟩,</span>
+<span id="L335"><a href="#L335"> 335</a>   ⟨(.mul (.named .h0) (.mul (.generator 3 1 8) (.generator 363 12 132))), 1⟩,</span>
+<span id="L336"><a href="#L336"> 336</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L337"><a href="#L337"> 337</a>   ⟨(.generator 482 14 142), 0⟩,</span>
+<span id="L338"><a href="#L338"> 338</a>   ⟨(.mul (.named .h6) (.generator 113 13 78)), 1⟩,</span>
+<span id="L339"><a href="#L339"> 339</a>   ⟨(.mul (.named .h0) (.generator 475 13 141)), 2⟩,</span>
+<span id="L340"><a href="#L340"> 340</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 460 12 140)), 3⟩,</span>
+<span id="L341"><a href="#L341"> 341</a>   ⟨(.named .x_122_15_2), 0⟩,</span>
+<span id="L342"><a href="#L342"> 342</a>   ⟨(.generator 423 15 137), 1⟩,</span>
+<span id="L343"><a href="#L343"> 343</a>   ⟨(.generator 438 15 138), 0⟩,</span>
+<span id="L344"><a href="#L344"> 344</a>   ⟨(.mul (.named .h4) (.generator 279 14 122)), 1⟩,</span>
+<span id="L345"><a href="#L345"> 345</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_123_13_2)), 2⟩,</span>
+<span id="L346"><a href="#L346"> 346</a>   ⟨(.generator 448 15 139), 0⟩,</span>
+<span id="L347"><a href="#L347"> 347</a>   ⟨(.mul (.mul (.generator 3 1 8) (.generator 3 1 8)) (.generator 287 13 123)), 1⟩,</span>
+<span id="L348"><a href="#L348"> 348</a>   ⟨(.mul (.named .h0) (.generator 440 14 138)), 2⟩,</span>
+<span id="L349"><a href="#L349"> 349</a>   ⟨(.mul (.named .h0) (.generator 439 14 138)), 3⟩,</span>
+<span id="L350"><a href="#L350"> 350</a>   ⟨(.generator 456 15 140), 0⟩,</span>
+<span id="L351"><a href="#L351"> 351</a>   ⟨(.mul (.generator 67 7 64) (.generator 107 8 76)), 1⟩,</span>
+<span id="L352"><a href="#L352"> 352</a>   ⟨(.mul (.named .h1) (.generator 439 14 138)), 2⟩,</span>
+<span id="L353"><a href="#L353"> 353</a>   ⟨(.mul (.named .h0) (.generator 449 14 139)), 3⟩,</span>
+<span id="L354"><a href="#L354"> 354</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 425 12 137)), 4⟩,</span>
+<span id="L355"><a href="#L355"> 355</a>   ⟨(.mul (.named .h0) (.mul (.generator 68 6 64) (.generator 107 8 76))), 0⟩,</span>
+<span id="L356"><a href="#L356"> 356</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 1⟩,</span>
+<span id="L357"><a href="#L357"> 357</a>   ⟨(.generator 481 15 142), 0⟩,</span>
+<span id="L358"><a href="#L358"> 358</a>   ⟨(.mul (.named .h6) (.generator 112 14 78)), 1⟩,</span>
+<span id="L359"><a href="#L359"> 359</a>   ⟨(.mul (.named .h2) (.generator 439 14 138)), 2⟩,</span>
+<span id="L360"><a href="#L360"> 360</a>   ⟨(.mul (.named .h1) (.generator 457 14 140)), 3⟩,</span>
+<span id="L361"><a href="#L361"> 361</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L362"><a href="#L362"> 362</a>   ⟨(.generator 495 15 143), 0⟩,</span>
+<span id="L363"><a href="#L363"> 363</a>   ⟨(.mul (.named .g) (.generator 262 11 119)), 1⟩,</span>
+<span id="L364"><a href="#L364"> 364</a>   ⟨(.mul (.named .h0) (.generator 482 14 142)), 2⟩,</span>
+<span id="L365"><a href="#L365"> 365</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.generator 113 13 78))), 3⟩,</span>
+<span id="L366"><a href="#L366"> 366</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 475 13 141)), 4⟩,</span>
+<span id="L367"><a href="#L367"> 367</a>   ⟨(.generator 162 16 96), 0⟩,</span>
+<span id="L368"><a href="#L368"> 368</a>   ⟨(.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)), 1⟩,</span>
+<span id="L369"><a href="#L369"> 369</a>   ⟨(.named .x_122_16), 0⟩,</span>
+<span id="L370"><a href="#L370"> 370</a>   ⟨(.mul (.generator 23 6 36) (.generator 189 10 102)), 1⟩,</span>
+<span id="L371"><a href="#L371"> 371</a>   ⟨(.mul (.named .h0) (.named .x_122_15_2)), 2⟩,</span>
+<span id="L372"><a href="#L372"> 372</a>   ⟨(.mul (.named .h1) (.named .x_122_15_2)), 0⟩,</span>
+<span id="L373"><a href="#L373"> 373</a>   ⟨(.mul (.named .h0) (.generator 438 15 138)), 1⟩,</span>
+<span id="L374"><a href="#L374"> 374</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_123_13_2)), 2⟩,</span>
+<span id="L375"><a href="#L375"> 375</a>   ⟨(.mul (.named .e0) (.generator 261 12 119)), 0⟩,</span>
+<span id="L376"><a href="#L376"> 376</a>   ⟨(.mul (.named .h1) (.generator 438 15 138)), 1⟩,</span>
+<span id="L377"><a href="#L377"> 377</a>   ⟨(.mul (.named .h0) (.generator 448 15 139)), 2⟩,</span>
+<span id="L378"><a href="#L378"> 378</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 440 14 138)), 3⟩,</span>
+<span id="L379"><a href="#L379"> 379</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 439 14 138)), 4⟩,</span>
+<span id="L380"><a href="#L380"> 380</a>   ⟨(.generator 473 16 141), 0⟩,</span>
+<span id="L381"><a href="#L381"> 381</a>   ⟨(.mul (.named .h1) (.generator 448 15 139)), 1⟩,</span>
+<span id="L382"><a href="#L382"> 382</a>   ⟨(.mul (.named .h0) (.mul (.generator 67 7 64) (.generator 107 8 76))), 2⟩,</span>
+<span id="L383"><a href="#L383"> 383</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 449 14 139)), 3⟩,</span>
+<span id="L384"><a href="#L384"> 384</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.generator 439 14 138)), 0⟩,</span>
+<span id="L385"><a href="#L385"> 385</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 68 6 64) (.generator 107 8 76))), 1⟩,</span>
+<span id="L386"><a href="#L386"> 386</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 2⟩,</span>
+<span id="L387"><a href="#L387"> 387</a>   ⟨(.generator 494 16 143), 0⟩,</span>
+<span id="L388"><a href="#L388"> 388</a>   ⟨(.mul (.named .g) (.generator 261 12 119)), 1⟩,</span>
+<span id="L389"><a href="#L389"> 389</a>   ⟨(.mul (.named .h0) (.generator 481 15 142)), 2⟩,</span>
+<span id="L390"><a href="#L390"> 390</a>   ⟨(.mul (.named .h0) (.mul (.named .h6) (.generator 112 14 78))), 3⟩,</span>
+<span id="L391"><a href="#L391"> 391</a>   ⟨(.mul (.named .h0) (.mul (.named .h2) (.generator 439 14 138))), 4⟩,</span>
+<span id="L392"><a href="#L392"> 392</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 5⟩,</span>
+<span id="L393"><a href="#L393"> 393</a>   ⟨(.mul (.named .h0) (.generator 495 15 143)), 0⟩,</span>
+<span id="L394"><a href="#L394"> 394</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 482 14 142)), 1⟩,</span>
+<span id="L395"><a href="#L395"> 395</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h6) (.generator 113 13 78))), 2⟩,</span>
+<span id="L396"><a href="#L396"> 396</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 475 13 141)), 3⟩,</span>
+<span id="L397"><a href="#L397"> 397</a>   ⟨(.named .x_121_17), 0⟩,</span>
+<span id="L398"><a href="#L398"> 398</a>   ⟨(.mul (.generator 23 6 36) (.named .x_91_11)), 1⟩,</span>
+<span id="L399"><a href="#L399"> 399</a>   ⟨(.mul (.named .h0) (.generator 422 16 137)), 2⟩,</span>
+<span id="L400"><a href="#L400"> 400</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h4) (.generator 267 14 120))), 3⟩,</span>
+<span id="L401"><a href="#L401"> 401</a>   ⟨(.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.generator 76 5 67)), 0⟩,</span>
+<span id="L402"><a href="#L402"> 402</a>   ⟨(.mul (.named .h0) (.named .x_122_16)), 1⟩,</span>
+<span id="L403"><a href="#L403"> 403</a>   ⟨(.mul (.generator 8 4 18) (.generator 280 13 122)), 0⟩,</span>
+<span id="L404"><a href="#L404"> 404</a>   ⟨(.mul (.generator 3 1 8) (.generator 359 16 132)), 1⟩,</span>
+<span id="L405"><a href="#L405"> 405</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 438 15 138)), 2⟩,</span>
+<span id="L406"><a href="#L406"> 406</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .x_123_13_2)), 3⟩,</span>
+<span id="L407"><a href="#L407"> 407</a>   ⟨(.generator 472 17 141), 0⟩,</span>
+<span id="L408"><a href="#L408"> 408</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 448 15 139)), 1⟩,</span>
+<span id="L409"><a href="#L409"> 409</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 2⟩,</span>
+<span id="L410"><a href="#L410"> 410</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 439 14 138)), 3⟩,</span>
+<span id="L411"><a href="#L411"> 411</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 67 7 64) (.generator 107 8 76))), 0⟩,</span>
+<span id="L412"><a href="#L412"> 412</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 1⟩,</span>
+<span id="L413"><a href="#L413"> 413</a>   ⟨(.generator 493 17 143), 0⟩,</span>
+<span id="L414"><a href="#L414"> 414</a>   ⟨(.mul (.generator 8 4 18) (.generator 294 13 125)), 1⟩,</span>
+<span id="L415"><a href="#L415"> 415</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.generator 448 15 139)), 2⟩,</span>
+<span id="L416"><a href="#L416"> 416</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.named .h6))), 3⟩,</span>
+<span id="L417"><a href="#L417"> 417</a>   ⟨(.mul (.named .g) (.generator 268 13 120)), 0⟩,</span>
+<span id="L418"><a href="#L418"> 418</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 481 15 142)), 1⟩,</span>
+<span id="L419"><a href="#L419"> 419</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h6) (.generator 112 14 78))), 2⟩,</span>
+<span id="L420"><a href="#L420"> 420</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .h2) (.generator 439 14 138))), 3⟩,</span>
+<span id="L421"><a href="#L421"> 421</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L422"><a href="#L422"> 422</a>   ⟨(.mul (.named .h2) (.generator 473 16 141)), 0⟩,</span>
+<span id="L423"><a href="#L423"> 423</a>   ⟨(.mul (.named .h1) (.generator 494 16 143)), 1⟩,</span>
+<span id="L424"><a href="#L424"> 424</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 482 14 142)), 2⟩,</span>
+<span id="L425"><a href="#L425"> 425</a>   ⟨(.mul (.generator 8 4 18) (.generator 279 14 122)), 0⟩,</span>
+<span id="L426"><a href="#L426"> 426</a>   ⟨(.mul (.named .h1) (.named .x_121_17)), 1⟩,</span>
+<span id="L427"><a href="#L427"> 427</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.named .x_122_16)), 2⟩,</span>
+<span id="L428"><a href="#L428"> 428</a>   ⟨(.mul (.named .h0) (.generator 472 17 141)), 0⟩,</span>
+<span id="L429"><a href="#L429"> 429</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 1⟩,</span>
+<span id="L430"><a href="#L430"> 430</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 209 10 107)), 0⟩,</span>
+<span id="L431"><a href="#L431"> 431</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 1⟩,</span>
+<span id="L432"><a href="#L432"> 432</a>   ⟨(.generator 501 18 144), 0⟩,</span>
+<span id="L433"><a href="#L433"> 433</a>   ⟨(.generator 500 18 144), 1⟩,</span>
+<span id="L434"><a href="#L434"> 434</a>   ⟨(.mul (.named .g) (.generator 267 14 120)), 2⟩,</span>
+<span id="L435"><a href="#L435"> 435</a>   ⟨(.mul (.named .e0) (.generator 286 14 123)), 3⟩,</span>
+<span id="L436"><a href="#L436"> 436</a>   ⟨(.mul (.mul (.named .g) (.named .g)) (.generator 164 10 97)), 0⟩,</span>
+<span id="L437"><a href="#L437"> 437</a>   ⟨(.mul (.named .h1) (.generator 493 17 143)), 1⟩,</span>
+<span id="L438"><a href="#L438"> 438</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 481 15 142)), 2⟩,</span>
+<span id="L439"><a href="#L439"> 439</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.named .h6) (.generator 112 14 78))), 3⟩,</span>
+<span id="L440"><a href="#L440"> 440</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L441"><a href="#L441"> 441</a>   ⟨(.generator 519 18 146), 0⟩,</span>
+<span id="L442"><a href="#L442"> 442</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.generator 209 10 107))), 1⟩,</span>
+<span id="L443"><a href="#L443"> 443</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 482 14 142)), 2⟩,</span>
+<span id="L444"><a href="#L444"> 444</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.named .x_91_11))), 0⟩,</span>
+<span id="L445"><a href="#L445"> 445</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .x_122_16)), 1⟩,</span>
+<span id="L446"><a href="#L446"> 446</a>   ⟨(.mul (.generator 8 4 18) (.generator 293 15 125)), 0⟩,</span>
+<span id="L447"><a href="#L447"> 447</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 1⟩,</span>
+<span id="L448"><a href="#L448"> 448</a>   ⟨(.mul (.named .g) (.generator 266 15 120)), 0⟩,</span>
+<span id="L449"><a href="#L449"> 449</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .g) (.named .x_91_11))), 1⟩,</span>
+<span id="L450"><a href="#L450"> 450</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 2⟩,</span>
+<span id="L451"><a href="#L451"> 451</a>   ⟨(.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.generator 95 7 73)), 0⟩,</span>
+<span id="L452"><a href="#L452"> 452</a>   ⟨(.mul (.named .h0) (.generator 500 18 144)), 1⟩,</span>
+<span id="L453"><a href="#L453"> 453</a>   ⟨(.mul (.named .e0) (.generator 293 15 125)), 0⟩,</span>
+<span id="L454"><a href="#L454"> 454</a>   ⟨(.mul (.named .h1) (.generator 501 18 144)), 1⟩,</span>
+<span id="L455"><a href="#L455"> 455</a>   ⟨(.mul (.named .h1) (.generator 500 18 144)), 2⟩,</span>
+<span id="L456"><a href="#L456"> 456</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 481 15 142)), 3⟩,</span>
+<span id="L457"><a href="#L457"> 457</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L458"><a href="#L458"> 458</a>   ⟨(.mul (.named .e0) (.mul (.named .g) (.named .x_91_11))), 0⟩,</span>
+<span id="L459"><a href="#L459"> 459</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 482 14 142)), 1⟩,</span>
+<span id="L460"><a href="#L460"> 460</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 212 12 108)), 0⟩,</span>
+<span id="L461"><a href="#L461"> 461</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 1⟩,</span>
+<span id="L462"><a href="#L462"> 462</a>   ⟨(.generator 510 20 145), 0⟩,</span>
+<span id="L463"><a href="#L463"> 463</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.mul (.named .g) (.named .x_91_11)))), 1⟩,</span>
+<span id="L464"><a href="#L464"> 464</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 2⟩,</span>
+<span id="L465"><a href="#L465"> 465</a>   ⟨(.mul (.generator 8 4 18) (.generator 318 16 128)), 0⟩,</span>
+<span id="L466"><a href="#L466"> 466</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L467"><a href="#L467"> 467</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.generator 212 12 108))), 0⟩,</span>
+<span id="L468"><a href="#L468"> 468</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 481 15 142)), 1⟩,</span>
+<span id="L469"><a href="#L469"> 469</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L470"><a href="#L470"> 470</a>   ⟨(.mul (.named .h0) (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 212 12 108))), 0⟩,</span>
+<span id="L471"><a href="#L471"> 471</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 1⟩,</span>
+<span id="L472"><a href="#L472"> 472</a>   ⟨(.generator 518 21 146), 0⟩,</span>
+<span id="L473"><a href="#L473"> 473</a>   ⟨(.mul (.named .e0) (.generator 292 17 125)), 1⟩,</span>
+<span id="L474"><a href="#L474"> 474</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 2⟩,</span>
+<span id="L475"><a href="#L475"> 475</a>   ⟨(.generator 530 21 147), 0⟩,</span>
+<span id="L476"><a href="#L476"> 476</a>   ⟨(.mul (.named .h1) (.generator 510 20 145)), 1⟩,</span>
+<span id="L477"><a href="#L477"> 477</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L478"><a href="#L478"> 478</a>   ⟨(.generator 537 21 148), 0⟩,</span>
+<span id="L479"><a href="#L479"> 479</a>   ⟨(.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.generator 105 9 76)), 1⟩,</span>
+<span id="L480"><a href="#L480"> 480</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 481 15 142)), 2⟩,</span>
+<span id="L481"><a href="#L481"> 481</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 3⟩,</span>
+<span id="L482"><a href="#L482"> 482</a>   ⟨(.generator 550 21 149), 0⟩,</span>
+<span id="L483"><a href="#L483"> 483</a>   ⟨(.mul (.named .g) (.generator 292 17 125)), 1⟩,</span>
+<span id="L484"><a href="#L484"> 484</a>   ⟨(.generator 517 22 146), 0⟩,</span>
+<span id="L485"><a href="#L485"> 485</a>   ⟨(.mul (.mul (.named .g) (.named .g)) (.generator 168 14 98)), 1⟩,</span>
+<span id="L486"><a href="#L486"> 486</a>   ⟨(.mul (.generator 8 4 18) (.generator 316 18 128)), 2⟩,</span>
+<span id="L487"><a href="#L487"> 487</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 3⟩,</span>
+<span id="L488"><a href="#L488"> 488</a>   ⟨(.mul (.generator 17 7 30) (.generator 255 15 117)), 0⟩,</span>
+<span id="L489"><a href="#L489"> 489</a>   ⟨(.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.generator 101 10 75)), 1⟩,</span>
+<span id="L490"><a href="#L490"> 490</a>   ⟨(.mul (.named .h0) (.mul (.named .e0) (.generator 292 17 125))), 2⟩,</span>
+<span id="L491"><a href="#L491"> 491</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 3⟩,</span>
+<span id="L492"><a href="#L492"> 492</a>   ⟨(.mul (.named .h0) (.generator 530 21 147)), 0⟩,</span>
+<span id="L493"><a href="#L493"> 493</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L494"><a href="#L494"> 494</a>   ⟨(.mul (.generator 8 4 18) (.generator 347 18 131)), 0⟩,</span>
+<span id="L495"><a href="#L495"> 495</a>   ⟨(.mul (.generator 8 4 18) (.generator 346 18 131)), 1⟩,</span>
+<span id="L496"><a href="#L496"> 496</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L497"><a href="#L497"> 497</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 17 7 30) (.named .x_91_11))), 0⟩,</span>
+<span id="L498"><a href="#L498"> 498</a>   ⟨(.mul (.named .h0) (.mul (.named .g) (.generator 292 17 125))), 1⟩,</span>
+<span id="L499"><a href="#L499"> 499</a>   ⟨(.mul (.generator 8 4 18) (.generator 327 19 129)), 0⟩,</span>
+<span id="L500"><a href="#L500"> 500</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .g) (.mul (.generator 23 6 36) (.named .b4)))), 1⟩,</span>
+<span id="L501"><a href="#L501"> 501</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 316 18 128))), 2⟩,</span>
+<span id="L502"><a href="#L502"> 502</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 3⟩,</span>
+<span id="L503"><a href="#L503"> 503</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .e0) (.generator 292 17 125))), 0⟩,</span>
+<span id="L504"><a href="#L504"> 504</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 449 14 139)), 1⟩,</span>
+<span id="L505"><a href="#L505"> 505</a>   ⟨(.generator 549 23 149), 0⟩,</span>
+<span id="L506"><a href="#L506"> 506</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L507"><a href="#L507"> 507</a>   ⟨(.mul (.named .e0) (.mul (.named .g) (.mul (.generator 23 6 36) (.named .b4)))), 0⟩,</span>
+<span id="L508"><a href="#L508"> 508</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 16 8 30) (.named .x_91_11))), 1⟩,</span>
+<span id="L509"><a href="#L509"> 509</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 346 18 131))), 2⟩,</span>
+<span id="L510"><a href="#L510"> 510</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 3⟩,</span>
+<span id="L511"><a href="#L511"> 511</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.mul (.generator 17 7 30) (.named .x_91_11)))), 0⟩,</span>
+<span id="L512"><a href="#L512"> 512</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.named .g) (.generator 292 17 125))), 1⟩,</span>
+<span id="L513"><a href="#L513"> 513</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 316 18 128))), 0⟩,</span>
+<span id="L514"><a href="#L514"> 514</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 1⟩,</span>
+<span id="L515"><a href="#L515"> 515</a>   ⟨(.mul (.named .e0) (.mul (.named .g) (.generator 194 16 104))), 0⟩,</span>
+<span id="L516"><a href="#L516"> 516</a>   ⟨(.mul (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)) (.generator 52 8 54)), 0⟩,</span>
+<span id="L517"><a href="#L517"> 517</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 16 8 30) (.generator 187 12 102))), 1⟩,</span>
+<span id="L518"><a href="#L518"> 518</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.mul (.generator 23 6 36) (.generator 101 10 75)))), 2⟩,</span>
+<span id="L519"><a href="#L519"> 519</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 3⟩,</span>
+<span id="L520"><a href="#L520"> 520</a>   ⟨(.mul (.named .h1) (.generator 549 23 149)), 0⟩,</span>
+<span id="L521"><a href="#L521"> 521</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 346 18 131))), 1⟩,</span>
+<span id="L522"><a href="#L522"> 522</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L523"><a href="#L523"> 523</a>   ⟨(.generator 573 24 152), 0⟩,</span>
+<span id="L524"><a href="#L524"> 524</a>   ⟨(.mul (.mul (.named .g) (.named .g)) (.generator 194 16 104)), 1⟩,</span>
+<span id="L525"><a href="#L525"> 525</a>   ⟨(.mul (.generator 17 7 30) (.generator 260 18 119)), 0⟩,</span>
+<span id="L526"><a href="#L526"> 526</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.generator 219 17 110))), 1⟩,</span>
+<span id="L527"><a href="#L527"> 527</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 440 14 138)), 2⟩,</span>
+<span id="L528"><a href="#L528"> 528</a>   ⟨(.generator 559 25 150), 0⟩,</span>
+<span id="L529"><a href="#L529"> 529</a>   ⟨(.generator 558 25 150), 1⟩,</span>
+<span id="L530"><a href="#L530"> 530</a>   ⟨(.mul (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)) (.named .delta_h_1_mul_g)), 2⟩,</span>
+<span id="L531"><a href="#L531"> 531</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.named .e0) (.mul (.named .g) (.named .b4)))), 3⟩,</span>
+<span id="L532"><a href="#L532"> 532</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 0⟩,</span>
+<span id="L533"><a href="#L533"> 533</a>   ⟨(.mul (.generator 17 7 30) (.generator 278 18 122)), 0⟩,</span>
+<span id="L534"><a href="#L534"> 534</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .g) (.generator 219 17 110))), 1⟩,</span>
+<span id="L535"><a href="#L535"> 535</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L536"><a href="#L536"> 536</a>   ⟨(.generator 580 25 153), 0⟩,</span>
+<span id="L537"><a href="#L537"> 537</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.mul (.named .g) (.named .g)) (.named .b4))), 1⟩,</span>
+<span id="L538"><a href="#L538"> 538</a>   ⟨(.mul (.named .h0) (.generator 573 24 152)), 2⟩,</span>
+<span id="L539"><a href="#L539"> 539</a>   ⟨(.generator 557 26 150), 0⟩,</span>
+<span id="L540"><a href="#L540"> 540</a>   ⟨(.mul (.generator 8 4 18) (.mul (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)) (.generator 23 6 36))), 1⟩,</span>
+<span id="L541"><a href="#L541"> 541</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .e0) (.generator 101 10 75))), 2⟩,</span>
+<span id="L542"><a href="#L542"> 542</a>   ⟨(.mul (.named .h0) (.mul (.generator 17 7 30) (.generator 260 18 119))), 3⟩,</span>
+<span id="L543"><a href="#L543"> 543</a>   ⟨(.mul (.named .h0) (.generator 558 25 150)), 0⟩,</span>
+<span id="L544"><a href="#L544"> 544</a>   ⟨(.mul (.generator 8 4 18) (.generator 380 22 134)), 0⟩,</span>
+<span id="L545"><a href="#L545"> 545</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 248 18 116)), 1⟩,</span>
+<span id="L546"><a href="#L546"> 546</a>   ⟨(.mul (.named .h1) (.generator 558 25 150)), 2⟩,</span>
+<span id="L547"><a href="#L547"> 547</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 3⟩,</span>
+<span id="L548"><a href="#L548"> 548</a>   ⟨(.mul (.named .e0) (.mul (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)) (.generator 23 6 36))), 0⟩,</span>
+<span id="L549"><a href="#L549"> 549</a>   ⟨(.mul (.generator 8 4 18) (.generator 404 22 135)), 1⟩,</span>
+<span id="L550"><a href="#L550"> 550</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .g) (.generator 101 10 75))), 2⟩,</span>
+<span id="L551"><a href="#L551"> 551</a>   ⟨(.mul (.named .h0) (.mul (.generator 17 7 30) (.generator 278 18 122))), 3⟩,</span>
+<span id="L552"><a href="#L552"> 552</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 4⟩,</span>
+<span id="L553"><a href="#L553"> 553</a>   ⟨(.mul (.named .h0) (.generator 557 26 150)), 0⟩,</span>
+<span id="L554"><a href="#L554"> 554</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 17 7 30) (.generator 260 18 119))), 1⟩,</span>
+<span id="L555"><a href="#L555"> 555</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 167 15 98)), 0⟩,</span>
+<span id="L556"><a href="#L556"> 556</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 558 25 150)), 1⟩,</span>
+<span id="L557"><a href="#L557"> 557</a>   ⟨(.mul (.generator 64 10 63) (.generator 147 17 90)), 0⟩,</span>
+<span id="L558"><a href="#L558"> 558</a>   ⟨(.mul (.generator 8 4 18) (.mul (.named .e0) (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.generator 32 7 42)))), 1⟩,</span>
+<span id="L559"><a href="#L559"> 559</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 173 15 99)), 2⟩,</span>
+<span id="L560"><a href="#L560"> 560</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 380 22 134))), 3⟩,</span>
+<span id="L561"><a href="#L561"> 561</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 4⟩,</span>
+<span id="L562"><a href="#L562"> 562</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 404 22 135))), 0⟩,</span>
+<span id="L563"><a href="#L563"> 563</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 17 7 30) (.generator 278 18 122))), 1⟩,</span>
+<span id="L564"><a href="#L564"> 564</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L565"><a href="#L565"> 565</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.named .e0) (.generator 167 15 98))), 0⟩,</span>
+<span id="L566"><a href="#L566"> 566</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 166 16 98)), 0⟩,</span>
+<span id="L567"><a href="#L567"> 567</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 260 18 119))), 1⟩,</span>
+<span id="L568"><a href="#L568"> 568</a>   ⟨(.mul (.generator 64 10 63) (.generator 146 18 90)), 0⟩,</span>
+<span id="L569"><a href="#L569"> 569</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.named .e0) (.mul (.mul (.mul (.named .g) (.named .g)) (.named .g)) (.named .g)))), 1⟩,</span>
+<span id="L570"><a href="#L570"> 570</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.generator 17 7 30) (.named .b4))), 2⟩,</span>
+<span id="L571"><a href="#L571"> 571</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 558 25 150)), 3⟩,</span>
+<span id="L572"><a href="#L572"> 572</a>   ⟨(.mul (.named .h0) (.mul (.generator 64 10 63) (.generator 147 17 90))), 0⟩,</span>
+<span id="L573"><a href="#L573"> 573</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 380 22 134))), 1⟩,</span>
+<span id="L574"><a href="#L574"> 574</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L575"><a href="#L575"> 575</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 180 16 101)), 0⟩,</span>
+<span id="L576"><a href="#L576"> 576</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L577"><a href="#L577"> 577</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .e0) (.mul (.named .g) (.named .delta_h_1_mul_g)))), 0⟩,</span>
+<span id="L578"><a href="#L578"> 578</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 118 13 81)), 1⟩,</span>
+<span id="L579"><a href="#L579"> 579</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 260 18 119))), 2⟩,</span>
+<span id="L580"><a href="#L580"> 580</a>   ⟨(.mul (.named .h0) (.mul (.generator 64 10 63) (.generator 146 18 90))), 0⟩,</span>
+<span id="L581"><a href="#L581"> 581</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 558 25 150)), 1⟩,</span>
+<span id="L582"><a href="#L582"> 582</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 259 21 119)), 0⟩,</span>
+<span id="L583"><a href="#L583"> 583</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 64 10 63) (.generator 147 17 90))), 1⟩,</span>
+<span id="L584"><a href="#L584"> 584</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L585"><a href="#L585"> 585</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.mul (.named .g) (.named .g)) (.named .delta_h_1_mul_g))), 0⟩,</span>
+<span id="L586"><a href="#L586"> 586</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 127 13 84)), 1⟩,</span>
+<span id="L587"><a href="#L587"> 587</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L588"><a href="#L588"> 588</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.mul (.generator 64 10 63) (.generator 137 18 87))), 0⟩,</span>
+<span id="L589"><a href="#L589"> 589</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 260 18 119))), 1⟩,</span>
+<span id="L590"><a href="#L590"> 590</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 258 22 119)), 0⟩,</span>
+<span id="L591"><a href="#L591"> 591</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 558 25 150)), 1⟩,</span>
+<span id="L592"><a href="#L592"> 592</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.mul (.named .g) (.named .g)) (.generator 23 6 36))), 0⟩,</span>
+<span id="L593"><a href="#L593"> 593</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 72 10 66)), 1⟩,</span>
+<span id="L594"><a href="#L594"> 594</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L595"><a href="#L595"> 595</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L596"><a href="#L596"> 596</a>   ⟨(.generator 623 30 158), 0⟩,</span>
+<span id="L597"><a href="#L597"> 597</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 277 22 122)), 1⟩,</span>
+<span id="L598"><a href="#L598"> 598</a>   ⟨(.mul (.generator 8 4 18) (.mul (.mul (.generator 17 7 30) (.generator 17 7 30)) (.generator 113 13 78))), 0⟩,</span>
+<span id="L599"><a href="#L599"> 599</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .g) (.generator 32 7 42))), 1⟩,</span>
+<span id="L600"><a href="#L600"> 600</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 558 25 150)), 2⟩,</span>
+<span id="L601"><a href="#L601"> 601</a>   ⟨(.mul (.generator 5 5 14) (.generator 491 26 143)), 0⟩,</span>
+<span id="L602"><a href="#L602"> 602</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L603"><a href="#L603"> 603</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 17 7 30) (.generator 149 16 92))), 0⟩,</span>
+<span id="L604"><a href="#L604"> 604</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L605"><a href="#L605"> 605</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 17 7 30) (.generator 147 17 90))), 0⟩,</span>
+<span id="L606"><a href="#L606"> 606</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .g) (.named .g))), 1⟩,</span>
+<span id="L607"><a href="#L607"> 607</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 16 8 30) (.generator 149 16 92))), 0⟩,</span>
+<span id="L608"><a href="#L608"> 608</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L609"><a href="#L609"> 609</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 16 8 30) (.generator 154 16 93))), 0⟩,</span>
+<span id="L610"><a href="#L610"> 610</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.named .e0) (.mul (.named .g) (.named .g)))), 1⟩,</span>
+<span id="L611"><a href="#L611"> 611</a>   ⟨(.mul (.named .h1) (.mul (.generator 5 5 14) (.generator 491 26 143))), 2⟩,</span>
+<span id="L612"><a href="#L612"> 612</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 3⟩,</span>
+<span id="L613"><a href="#L613"> 613</a>   ⟨(.mul (.generator 8 4 18) (.generator 453 29 140)), 0⟩,</span>
+<span id="L614"><a href="#L614"> 614</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 138 17 87)), 0⟩,</span>
+<span id="L615"><a href="#L615"> 615</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 46 9 51)), 1⟩,</span>
+<span id="L616"><a href="#L616"> 616</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L617"><a href="#L617"> 617</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L618"><a href="#L618"> 618</a>   ⟨(.mul (.generator 8 4 18) (.generator 490 29 143)), 0⟩,</span>
+<span id="L619"><a href="#L619"> 619</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 623 30 158)), 1⟩,</span>
+<span id="L620"><a href="#L620"> 620</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 137 18 87)), 0⟩,</span>
+<span id="L621"><a href="#L621"> 621</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 45 10 51)), 1⟩,</span>
+<span id="L622"><a href="#L622"> 622</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 0⟩,</span>
+<span id="L623"><a href="#L623"> 623</a>   ⟨(.mul (.generator 8 4 18) (.generator 489 30 143)), 0⟩,</span>
+<span id="L624"><a href="#L624"> 624</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L625"><a href="#L625"> 625</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 146 18 90)), 0⟩,</span>
+<span id="L626"><a href="#L626"> 626</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 23 6 36)), 1⟩,</span>
+<span id="L627"><a href="#L627"> 627</a>   ⟨(.mul (.generator 42 9 48) (.generator 224 26 111)), 0⟩,</span>
+<span id="L628"><a href="#L628"> 628</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 20 7 33)), 1⟩,</span>
+<span id="L629"><a href="#L629"> 629</a>   ⟨(.mul (.generator 17 7 30) (.generator 343 28 131)), 0⟩,</span>
+<span id="L630"><a href="#L630"> 630</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L631"><a href="#L631"> 631</a>   ⟨(.mul (.mul (.generator 17 7 30) (.generator 17 7 30)) (.generator 185 21 102)), 0⟩,</span>
+<span id="L632"><a href="#L632"> 632</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 22 7 36)), 1⟩,</span>
+<span id="L633"><a href="#L633"> 633</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L634"><a href="#L634"> 634</a>   ⟨(.mul (.generator 8 4 18) (.generator 488 32 143)), 0⟩,</span>
+<span id="L635"><a href="#L635"> 635</a>   ⟨(.mul (.named .h1) (.mul (.generator 42 9 48) (.generator 224 26 111))), 1⟩,</span>
+<span id="L636"><a href="#L636"> 636</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 17 7 30) (.generator 238 25 114))), 0⟩,</span>
+<span id="L637"><a href="#L637"> 637</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)), 1⟩,</span>
+<span id="L638"><a href="#L638"> 638</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 2⟩,</span>
+<span id="L639"><a href="#L639"> 639</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L640"><a href="#L640"> 640</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 16 8 30) (.generator 244 24 116))), 0⟩,</span>
+<span id="L641"><a href="#L641"> 641</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 298 29 126)), 0⟩,</span>
+<span id="L642"><a href="#L642"> 642</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 88 17 72)), 1⟩,</span>
+<span id="L643"><a href="#L643"> 643</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.mul (.generator 17 7 30) (.generator 238 25 114)))), 0⟩,</span>
+<span id="L644"><a href="#L644"> 644</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 500 18 144)), 1⟩,</span>
+<span id="L645"><a href="#L645"> 645</a>   ⟨(.generator 687 37 164), 0⟩,</span>
+<span id="L646"><a href="#L646"> 646</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L647"><a href="#L647"> 647</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 225 25 111)), 0⟩,</span>
+<span id="L648"><a href="#L648"> 648</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 100 17 75)), 1⟩,</span>
+<span id="L649"><a href="#L649"> 649</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 297 30 126)), 0⟩,</span>
+<span id="L650"><a href="#L650"> 650</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.generator 16 8 30) (.mul (.generator 17 7 30) (.generator 17 7 30)))), 1⟩,</span>
+<span id="L651"><a href="#L651"> 651</a>   ⟨(.mul (.named .h0) (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 298 29 126))), 0⟩,</span>
+<span id="L652"><a href="#L652"> 652</a>   ⟨(.generator 686 38 164), 0⟩,</span>
+<span id="L653"><a href="#L653"> 653</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 224 26 111)), 0⟩,</span>
+<span id="L654"><a href="#L654"> 654</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.generator 17 7 30) (.generator 40 11 45))), 1⟩,</span>
+<span id="L655"><a href="#L655"> 655</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L656"><a href="#L656"> 656</a>   ⟨(.mul (.named .h1) (.generator 687 37 164)), 0⟩,</span>
+<span id="L657"><a href="#L657"> 657</a>   ⟨(.mul (.named .h0) (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 225 25 111))), 1⟩,</span>
+<span id="L658"><a href="#L658"> 658</a>   ⟨(.mul (.named .h0) (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 297 30 126))), 0⟩,</span>
+<span id="L659"><a href="#L659"> 659</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 298 29 126))), 0⟩,</span>
+<span id="L660"><a href="#L660"> 660</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 56 15 57)), 0⟩,</span>
+<span id="L661"><a href="#L661"> 661</a>   ⟨(.mul (.named .h0) (.generator 686 38 164)), 1⟩,</span>
+<span id="L662"><a href="#L662"> 662</a>   ⟨(.mul (.named .h0) (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 224 26 111))), 0⟩,</span>
+<span id="L663"><a href="#L663"> 663</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L664"><a href="#L664"> 664</a>   ⟨(.mul (.generator 17 7 30) (.generator 403 33 135)), 0⟩,</span>
+<span id="L665"><a href="#L665"> 665</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 55 16 57)), 1⟩,</span>
+<span id="L666"><a href="#L666"> 666</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L667"><a href="#L667"> 667</a>   ⟨(.generator 722 40 167), 0⟩,</span>
+<span id="L668"><a href="#L668"> 668</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L669"><a href="#L669"> 669</a>   ⟨(.mul (.generator 17 7 30) (.generator 433 33 138)), 0⟩,</span>
+<span id="L670"><a href="#L670"> 670</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 31 12 42)), 1⟩,</span>
+<span id="L671"><a href="#L671"> 671</a>   ⟨(.mul (.generator 16 8 30) (.generator 403 33 135)), 0⟩,</span>
+<span id="L672"><a href="#L672"> 672</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 223 29 111)), 1⟩,</span>
+<span id="L673"><a href="#L673"> 673</a>   ⟨(.mul (.named .h0) (.generator 685 40 164)), 2⟩,</span>
+<span id="L674"><a href="#L674"> 674</a>   ⟨(.mul (.named .h1) (.generator 685 40 164)), 0⟩,</span>
+<span id="L675"><a href="#L675"> 675</a>   ⟨(.mul (.named .h0) (.mul (.generator 17 7 30) (.generator 403 33 135))), 1⟩,</span>
+<span id="L676"><a href="#L676"> 676</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L677"><a href="#L677"> 677</a>   ⟨(.mul (.generator 8 4 18) (.generator 556 37 150)), 0⟩,</span>
+<span id="L678"><a href="#L678"> 678</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 161 25 96)), 1⟩,</span>
+<span id="L679"><a href="#L679"> 679</a>   ⟨(.mul (.named .h0) (.generator 722 40 167)), 2⟩,</span>
+<span id="L680"><a href="#L680"> 680</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 3⟩,</span>
+<span id="L681"><a href="#L681"> 681</a>   ⟨(.mul (.named .h0) (.mul (.generator 17 7 30) (.generator 433 33 138))), 0⟩,</span>
+<span id="L682"><a href="#L682"> 682</a>   ⟨(.mul (.named .h0) (.mul (.generator 16 8 30) (.generator 403 33 135))), 0⟩,</span>
+<span id="L683"><a href="#L683"> 683</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 685 40 164)), 1⟩,</span>
+<span id="L684"><a href="#L684"> 684</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 17 7 30) (.generator 403 33 135))), 0⟩,</span>
+<span id="L685"><a href="#L685"> 685</a>   ⟨(.mul (.generator 8 4 18) (.generator 555 38 150)), 0⟩,</span>
+<span id="L686"><a href="#L686"> 686</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.mul (.generator 16 8 30) (.mul (.generator 17 7 30) (.generator 50 15 54)))), 1⟩,</span>
+<span id="L687"><a href="#L687"> 687</a>   ⟨(.mul (.mul (.named .h1) (.named .h1)) (.generator 685 40 164)), 2⟩,</span>
+<span id="L688"><a href="#L688"> 688</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 3⟩,</span>
+<span id="L689"><a href="#L689"> 689</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 556 37 150))), 0⟩,</span>
+<span id="L690"><a href="#L690"> 690</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 722 40 167)), 1⟩,</span>
+<span id="L691"><a href="#L691"> 691</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L692"><a href="#L692"> 692</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 16 8 30) (.generator 403 33 135))), 0⟩,</span>
+<span id="L693"><a href="#L693"> 693</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 685 40 164)), 1⟩,</span>
+<span id="L694"><a href="#L694"> 694</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 111 23 78)), 0⟩,</span>
+<span id="L695"><a href="#L695"> 695</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 403 33 135))), 1⟩,</span>
+<span id="L696"><a href="#L696"> 696</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 555 38 150))), 0⟩,</span>
+<span id="L697"><a href="#L697"> 697</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L698"><a href="#L698"> 698</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 556 37 150))), 0⟩,</span>
+<span id="L699"><a href="#L699"> 699</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 722 40 167)), 1⟩,</span>
+<span id="L700"><a href="#L700"> 700</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 2⟩,</span>
+<span id="L701"><a href="#L701"> 701</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 110 24 78)), 0⟩,</span>
+<span id="L702"><a href="#L702"> 702</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 685 40 164)), 1⟩,</span>
+<span id="L703"><a href="#L703"> 703</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 403 33 135))), 0⟩,</span>
+<span id="L704"><a href="#L704"> 704</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 555 38 150))), 0⟩,</span>
+<span id="L705"><a href="#L705"> 705</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L706"><a href="#L706"> 706</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 116 24 81)), 0⟩,</span>
+<span id="L707"><a href="#L707"> 707</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L708"><a href="#L708"> 708</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 685 40 164)), 0⟩,</span>
+<span id="L709"><a href="#L709"> 709</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 403 33 135))), 0⟩,</span>
+<span id="L710"><a href="#L710"> 710</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 401 37 135)), 0⟩,</span>
+<span id="L711"><a href="#L711"> 711</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L712"><a href="#L712"> 712</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L713"><a href="#L713"> 713</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 685 40 164)), 0⟩,</span>
+<span id="L714"><a href="#L714"> 714</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 17 7 30) (.generator 200 31 105))), 0⟩,</span>
+<span id="L715"><a href="#L715"> 715</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L716"><a href="#L716"> 716</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L717"><a href="#L717"> 717</a>   ⟨(.generator 805 46 174), 0⟩,</span>
+<span id="L718"><a href="#L718"> 718</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.mul (.generator 16 8 30) (.mul (.generator 17 7 30) (.generator 111 23 78)))), 1⟩,</span>
+<span id="L719"><a href="#L719"> 719</a>   ⟨(.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 253 35 117)), 0⟩,</span>
+<span id="L720"><a href="#L720"> 720</a>   ⟨(.mul (.generator 5 5 14) (.generator 635 42 159)), 0⟩,</span>
+<span id="L721"><a href="#L721"> 721</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L722"><a href="#L722"> 722</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 183 31 102)), 0⟩,</span>
+<span id="L723"><a href="#L723"> 723</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L724"><a href="#L724"> 724</a>   ⟨(.mul (.mul (.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 8 4 18)) (.generator 182 32 102)), 0⟩,</span>
+<span id="L725"><a href="#L725"> 725</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L726"><a href="#L726"> 726</a>   ⟨(.mul (.named .h1) (.mul (.generator 5 5 14) (.generator 635 42 159))), 0⟩,</span>
+<span id="L727"><a href="#L727"> 727</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L728"><a href="#L728"> 728</a>   ⟨(.mul (.generator 8 4 18) (.generator 607 45 156)), 0⟩,</span>
+<span id="L729"><a href="#L729"> 729</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L730"><a href="#L730"> 730</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L731"><a href="#L731"> 731</a>   ⟨(.mul (.generator 8 4 18) (.generator 634 45 159)), 0⟩,</span>
+<span id="L732"><a href="#L732"> 732</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 805 46 174)), 1⟩,</span>
+<span id="L733"><a href="#L733"> 733</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L734"><a href="#L734"> 734</a>   ⟨(.mul (.generator 8 4 18) (.mul (.generator 17 7 30) (.generator 326 39 129))), 0⟩,</span>
+<span id="L735"><a href="#L735"> 735</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L736"><a href="#L736"> 736</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 470 43 141)), 0⟩,</span>
+<span id="L737"><a href="#L737"> 737</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 1⟩,</span>
+<span id="L738"><a href="#L738"> 738</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L739"><a href="#L739"> 739</a>   ⟨(.mul (.mul (.generator 8 4 18) (.generator 8 4 18)) (.generator 469 44 141)), 0⟩,</span>
+<span id="L740"><a href="#L740"> 740</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L741"><a href="#L741"> 741</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L742"><a href="#L742"> 742</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 686 38 164)), 0⟩,</span>
+<span id="L743"><a href="#L743"> 743</a>   ⟨(.generator 886 53 180), 0⟩,</span>
+<span id="L744"><a href="#L744"> 744</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L745"><a href="#L745"> 745</a>   ⟨(.mul (.generator 17 7 30) (.generator 554 47 150)), 0⟩,</span>
+<span id="L746"><a href="#L746"> 746</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L747"><a href="#L747"> 747</a>   ⟨(.mul (.generator 16 8 30) (.generator 554 47 150)), 0⟩,</span>
+<span id="L748"><a href="#L748"> 748</a>   ⟨(.mul (.named .h0) (.mul (.generator 17 7 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L749"><a href="#L749"> 749</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L750"><a href="#L750"> 750</a>   ⟨(.mul (.generator 8 4 18) (.generator 701 51 165)), 0⟩,</span>
+<span id="L751"><a href="#L751"> 751</a>   ⟨(.mul (.generator 8 4 18) (.generator 661 52 162)), 0⟩,</span>
+<span id="L752"><a href="#L752"> 752</a>   ⟨(.mul (.named .h0) (.mul (.generator 16 8 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L753"><a href="#L753"> 753</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 17 7 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L754"><a href="#L754"> 754</a>   ⟨(.mul (.generator 8 4 18) (.generator 700 52 165)), 0⟩,</span>
+<span id="L755"><a href="#L755"> 755</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L756"><a href="#L756"> 756</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 701 51 165))), 0⟩,</span>
+<span id="L757"><a href="#L757"> 757</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 661 52 162))), 0⟩,</span>
+<span id="L758"><a href="#L758"> 758</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 16 8 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L759"><a href="#L759"> 759</a>   ⟨(.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L760"><a href="#L760"> 760</a>   ⟨(.mul (.named .h0) (.mul (.generator 8 4 18) (.generator 700 52 165))), 0⟩,</span>
+<span id="L761"><a href="#L761"> 761</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L762"><a href="#L762"> 762</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 701 51 165))), 0⟩,</span>
+<span id="L763"><a href="#L763"> 763</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 661 52 162))), 0⟩,</span>
+<span id="L764"><a href="#L764"> 764</a>   ⟨(.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L765"><a href="#L765"> 765</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.mul (.generator 8 4 18) (.generator 700 52 165))), 0⟩,</span>
+<span id="L766"><a href="#L766"> 766</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L767"><a href="#L767"> 767</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.mul (.generator 17 7 30) (.generator 554 47 150))), 0⟩,</span>
+<span id="L768"><a href="#L768"> 768</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L769"><a href="#L769"> 769</a>   ⟨(.generator 951 60 186), 0⟩,</span>
+<span id="L770"><a href="#L770"> 770</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L771"><a href="#L771"> 771</a>   ⟨(.mul (.named .h0) (.generator 951 60 186)), 0⟩,</span>
+<span id="L772"><a href="#L772"> 772</a>   ⟨(.mul (.named .h1) (.generator 951 60 186)), 0⟩,</span>
+<span id="L773"><a href="#L773"> 773</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 1⟩,</span>
+<span id="L774"><a href="#L774"> 774</a>   ⟨(.mul (.mul (.named .h0) (.named .h0)) (.generator 951 60 186)), 0⟩,</span>
+<span id="L775"><a href="#L775"> 775</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L776"><a href="#L776"> 776</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩,</span>
+<span id="L777"><a href="#L777"> 777</a>   ⟨(.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.named .h0)) (.generator 324 1 128)), 0⟩</span>
+<span id="L778"><a href="#L778"> 778</a> ]</span>
+<span id="L779"><a href="#L779"> 779</a> </span>
+<span id="L780"><a href="#L780"> 780</a> /-- The original finite CSV monomials are the corresponding coordinate vectors</span>
+<span id="L781"><a href="#L781"> 781</a> in the same archive and actual E₂ comparison. This is a source binding obligation. -/</span>
+<span id="L782"><a href="#L782"> 782</a> public theorem basis_value (v : BasisValue) (hv : v ∈ basisValues) :</span>
+<span id="L783"><a href="#L783"> 783</a>     basis .sphere v.expression.degree.1 v.expression.degree.2 v.index =</span>
+<span id="L784"><a href="#L784"> 784</a>       v.expression.value := by</span>
+<span id="L785"><a href="#L785"> 785</a>   sorry</span>
+<span id="L786"><a href="#L786"> 786</a> </span>
+<span id="L787"><a href="#L787"> 787</a> public theorem basis_P : basis .sphere 11 133 1 = Standard.P := by</span>
+<span id="L788"><a href="#L788"> 788</a>   have h := basis_value ⟨.mul (.named .h6) (.named .M_mul_d_0),1⟩ (by decide)</span>
+<span id="L789"><a href="#L789"> 789</a>   simpa only [Expression.value, Expression.degree, Standard.P, Standard.atom_h6] using h</span>
+<span id="L790"><a href="#L790"> 790</a> </span>
+<span id="L791"><a href="#L791"> 791</a> public theorem basis_Q : basis .sphere 12 134 0 = Standard.Q := by</span>
+<span id="L792"><a href="#L792"> 792</a>   have h := basis_value ⟨.mul (.named .h5) (.named .x_91_11),0⟩ (by decide)</span>
+<span id="L793"><a href="#L793"> 793</a>   simpa only [Expression.value, Expression.degree, Standard.Q, Standard.atom_h5] using h</span>
+<span id="L794"><a href="#L794"> 794</a> </span>
+<span id="L795"><a href="#L795"> 795</a> public theorem basis_T : basis .sphere 14 139 1 = Standard.T := by</span>
+<span id="L796"><a href="#L796"> 796</a>   have h := basis_value ⟨.mul (.named .h1) (.mul (.named .h4) (.named .x_109_12)),1⟩ (by decide)</span>
+<span id="L797"><a href="#L797"> 797</a>   simpa only [Expression.value, Expression.degree, Standard.T, Standard.atom_h1,</span>
+<span id="L798"><a href="#L798"> 798</a>     Standard.atom_h4] using h</span>
+<span id="L799"><a href="#L799"> 799</a> </span>
+<span id="L800"><a href="#L800"> 800</a> /-- The first archived sphere relation, `0,1,1,1`, transported to the</span>
+<span id="L801"><a href="#L801"> 801</a> same actual E₂. Original LinProgram/Model/Classes/Proofs.lean:92–105. -/</span>
+<span id="L802"><a href="#L802"> 802</a> public theorem h0_h1_zero :</span>
+<span id="L803"><a href="#L803"> 803</a>     Standard.product (r := (2,3)) Standard.h0 Standard.h1 = 0 := by</span>
+<span id="L804"><a href="#L804"> 804</a>   exact Internal.actual_page_zero 2 3 (by decide) (by decide) _</span>
+<span id="L805"><a href="#L805"> 805</a> </span>
+<span id="L806"><a href="#L806"> 806</a> public theorem basis_correction : basis .sphere 13 137 1 = Standard.correction := by</span>
+<span id="L807"><a href="#L807"> 807</a>   have h := basis_value ⟨.mul (.named .e0) (.named .delta_h_6_mul_g),1⟩ (by decide)</span>
+<span id="L808"><a href="#L808"> 808</a>   exact h</span>
+<span id="L809"><a href="#L809"> 809</a> </span>
+<span id="L810"><a href="#L810"> 810</a> public theorem basis_h4_x109 : basis .sphere 13 137 2 =</span>
+<span id="L811"><a href="#L811"> 811</a>     Standard.product (r := (13,137)) Standard.h4 (Standard.atom .x_109_12) := by</span>
+<span id="L812"><a href="#L812"> 812</a>   have h := basis_value ⟨.mul (.named .h4) (.named .x_109_12),2⟩ (by decide)</span>
+<span id="L813"><a href="#L813"> 813</a>   simpa only [Expression.value, Expression.degree, Standard.atom_h4] using h</span>
+<span id="L814"><a href="#L814"> 814</a> </span>
+<span id="L815"><a href="#L815"> 815</a> public theorem basis_U : basis .sphere 10 134 4 = Standard.U := by</span>
+<span id="L816"><a href="#L816"> 816</a>   have h := basis_value ⟨.mul (.mul (.named .h0) (.named .h0)) (.named .x_124_8),4⟩ (by decide)</span>
+<span id="L817"><a href="#L817"> 817</a>   simpa only [Expression.value, Expression.degree, Standard.U, Standard.h0Square,</span>
+<span id="L818"><a href="#L818"> 818</a>     Standard.atom_h0] using h</span>
+<span id="L819"><a href="#L819"> 819</a> </span>
+<span id="L820"><a href="#L820"> 820</a> /-- The original commutative source algebra, transported by the same bounded</span>
+<span id="L821"><a href="#L821"> 821</a> comparison. This retains the total-degree bound of comparison_product. -/</span>
+<span id="L822"><a href="#L822"> 822</a> public theorem product_comm (s t s&#x27; t&#x27; : ℕ) (ht : t+t&#x27; ≤ 261)</span>
+<span id="L823"><a href="#L823"> 823</a>     (x : model.classical.sphere.Page 2 (s,t))</span>
+<span id="L824"><a href="#L824"> 824</a>     (y : model.classical.sphere.Page 2 (s&#x27;,t&#x27;)) :</span>
+<span id="L825"><a href="#L825"> 825</a>     Standard.product (r := ((s+s&#x27; : ℕ),(t+t&#x27; : ℕ))) x y</span>
+<span id="L826"><a href="#L826"> 826</a>         (by simp only [Prod.mk_add_mk,Nat.cast_add]) =</span>
+<span id="L827"><a href="#L827"> 827</a>       Standard.product (r := ((s+s&#x27; : ℕ),(t+t&#x27; : ℕ))) y x</span>
+<span id="L828"><a href="#L828"> 828</a>         (by simp only [Prod.mk_add_mk,Nat.cast_add]; ext &lt;;&gt; omega) := by</span>
+<span id="L829"><a href="#L829"> 829</a>   sorry</span>
+<span id="L830"><a href="#L830"> 830</a> </span>
+<span id="L831"><a href="#L831"> 831</a> end</span>
+<span id="L832"><a href="#L832"> 832</a> end KIP126.Computation.Table</span></pre>

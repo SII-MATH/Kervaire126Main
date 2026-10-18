@@ -1,0 +1,443 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Selected/NuErrorData.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Selected/NuErrorData.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Operations</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.Selected.NormalizedFacts</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! The complete finite error calculation from Section7/NuNinth:268–928,</span>
+<span id="L9"><a href="#L9">   9</a> bbac1fc05843 (MIT). Shared representative lemmas replace identical local</span>
+<span id="L10"><a href="#L10">  10</a> copies; every finite basis and differential row is retained. -/</span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Main.Internal.Selected.NuError</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.Literature KIP126.Kervaire.Route</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.ProofTools.Operations</span>
+<span id="L18"><a href="#L18">  18</a> noncomputable section</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L20"><a href="#L20">  20</a> set_option maxHeartbeats 1600000</span>
+<span id="L21"><a href="#L21">  21</a> set_option maxRecDepth 10000</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> private def denormalize (p : ℤ×ℤ) : Normalized.sphere.Page 2 p ⟶ model.classical.sphere.Page 2 p :=</span>
+<span id="L24"><a href="#L24">  24</a>   eqToHom (congrArg (fun E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ) =&gt; E.Page 2 p) Normalized.sphere_eq)</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> private theorem denormalize_basis (s t i : ℕ) : denormalize (s,t) (Normalized.basis .sphere s t i)=</span>
+<span id="L27"><a href="#L27">  27</a>     KIP126.Computation.Table.basis .sphere s t i := by</span>
+<span id="L28"><a href="#L28">  28</a>   dsimp only [denormalize,Normalized.basis]</span>
+<span id="L29"><a href="#L29">  29</a>   rw [←ModuleCat.comp_apply,eqToHom_trans,eqToHom_refl]</span>
+<span id="L30"><a href="#L30">  30</a>   rfl</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> private theorem denormalize_label (p : ℤ×ℤ) (x : model.classical.sphere.Page 2 p) :</span>
+<span id="L33"><a href="#L33">  33</a>     denormalize p (Normalized.label p x)=x := by</span>
+<span id="L34"><a href="#L34">  34</a>   dsimp only [denormalize,Normalized.label]</span>
+<span id="L35"><a href="#L35">  35</a>   rw [←ModuleCat.comp_apply,eqToHom_trans,eqToHom_refl]</span>
+<span id="L36"><a href="#L36">  36</a>   rfl</span>
+<span id="L37"><a href="#L37">  37</a> </span>
+<span id="L38"><a href="#L38">  38</a> private theorem normalized_reaches (r : ℤ) (p : ℤ×ℤ) (x : model.classical.sphere.Page 2 p)</span>
+<span id="L39"><a href="#L39">  39</a>     (hx : ReachesPage model.classical.sphere r p x) :</span>
+<span id="L40"><a href="#L40">  40</a>     ReachesPage Normalized.sphere r p (Normalized.label p x) := by</span>
+<span id="L41"><a href="#L41">  41</a>   have tr (E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ)) (h : E=E&#x27;)</span>
+<span id="L42"><a href="#L42">  42</a>       (x : E.Page 2 p) (hx : ReachesPage E r p x) :</span>
+<span id="L43"><a href="#L43">  43</a>       ReachesPage E&#x27; r p ((eqToHom (congrArg (fun A =&gt; A.Page 2 p) h)) x) := by</span>
+<span id="L44"><a href="#L44">  44</a>     subst E&#x27;</span>
+<span id="L45"><a href="#L45">  45</a>     simpa only [eqToHom_refl,ModuleCat.id_apply] using hx</span>
+<span id="L46"><a href="#L46">  46</a>   exact tr _ _ Normalized.sphere_eq.symm x hx</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> private theorem actual_reaches (r : ℤ) (p : ℤ×ℤ) (x : Normalized.sphere.Page 2 p)</span>
+<span id="L49"><a href="#L49">  49</a>     (hx : ReachesPage Normalized.sphere r p x) :</span>
+<span id="L50"><a href="#L50">  50</a>     ReachesPage model.classical.sphere r p (denormalize p x) := by</span>
+<span id="L51"><a href="#L51">  51</a>   have tr (E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ)) (h : E=E&#x27;)</span>
+<span id="L52"><a href="#L52">  52</a>       (x : E.Page 2 p) (hx : ReachesPage E r p x) :</span>
+<span id="L53"><a href="#L53">  53</a>       ReachesPage E&#x27; r p ((eqToHom (congrArg (fun A =&gt; A.Page 2 p) h)) x) := by</span>
+<span id="L54"><a href="#L54">  54</a>     subst E&#x27;</span>
+<span id="L55"><a href="#L55">  55</a>     simpa only [eqToHom_refl,ModuleCat.id_apply] using hx</span>
+<span id="L56"><a href="#L56">  56</a>   exact tr _ _ Normalized.sphere_eq x hx</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> private theorem actual_zero_representative (r : ℤ) (p : ℤ×ℤ) (x : Normalized.sphere.Page 2 p)</span>
+<span id="L59"><a href="#L59">  59</a>     (hx : RepresentsOnPage Normalized.sphere r p x 0) :</span>
+<span id="L60"><a href="#L60">  60</a>     RepresentsOnPage model.classical.sphere r p (denormalize p x) 0 := by</span>
+<span id="L61"><a href="#L61">  61</a>   have tr (E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ)) (h : E=E&#x27;)</span>
+<span id="L62"><a href="#L62">  62</a>       (x : E.Page 2 p) (hx : RepresentsOnPage E r p x 0) :</span>
+<span id="L63"><a href="#L63">  63</a>       RepresentsOnPage E&#x27; r p ((eqToHom (congrArg (fun A =&gt; A.Page 2 p) h)) x) 0 := by</span>
+<span id="L64"><a href="#L64">  64</a>     subst E&#x27;</span>
+<span id="L65"><a href="#L65">  65</a>     simpa only [eqToHom_refl,ModuleCat.id_apply] using hx</span>
+<span id="L66"><a href="#L66">  66</a>   exact tr _ _ Normalized.sphere_eq x hx</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> private def nCycles (c : ℤ) (p : ℤ×ℤ) : Submodule ℤ (Normalized.sphere.Page 2 p) :=</span>
+<span id="L69"><a href="#L69">  69</a>   (cycles model .sphere c p).comap (denormalize p).hom</span>
+<span id="L70"><a href="#L70">  70</a> private def nBoundaries (b : ℤ) (p : ℤ×ℤ) : Submodule ℤ (Normalized.sphere.Page 2 p) :=</span>
+<span id="L71"><a href="#L71">  71</a>   (boundaries model .sphere b p).comap (denormalize p).hom</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> private theorem nCycle_of_reaches (r : ℤ) (hr : 2≤r) (p : ℤ×ℤ)</span>
+<span id="L74"><a href="#L74">  74</a>     (x : Normalized.sphere.Page 2 p) (hx : ReachesPage Normalized.sphere r p x) :</span>
+<span id="L75"><a href="#L75">  75</a>     x∈nCycles (r-1) p :=</span>
+<span id="L76"><a href="#L76">  76</a>   ((KIP126.ProofTools.isCycle_iff_reaches model .sphere r hr p _).mpr (actual_reaches r p x hx)).2</span>
+<span id="L77"><a href="#L77">  77</a> </span>
+<span id="L78"><a href="#L78">  78</a> private theorem boundary_of_zero_representative {r : ℤ} {p : ℤ×ℤ} {x : Normalized.sphere.Page 2 p}</span>
+<span id="L79"><a href="#L79">  79</a>     (hx : RepresentsOnPage Normalized.sphere r p x 0) : x∈nBoundaries (r-1) p :=</span>
+<span id="L80"><a href="#L80">  80</a>   represents_zero_mem_boundary model .sphere r p _ (actual_zero_representative r p x hx)</span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> private theorem middle_add {E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}</span>
+<span id="L83"><a href="#L83">  83</a>     (hx : KIP126.Core.SpectralSequence.RepresentsOnPage E r p x a) (hy : KIP126.Core.SpectralSequence.RepresentsOnPage E r p y b) :</span>
+<span id="L84"><a href="#L84">  84</a>     KIP126.Core.SpectralSequence.RepresentsOnPage E r p (x+y) (a+b) := by</span>
+<span id="L85"><a href="#L85">  85</a>   obtain ⟨hr,z,hz,ha⟩ := hx</span>
+<span id="L86"><a href="#L86">  86</a>   obtain ⟨_,w,hw,hb⟩ := hy</span>
+<span id="L87"><a href="#L87">  87</a>   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩</span>
+<span id="L88"><a href="#L88">  88</a> private theorem middle_if {E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a : E.Page r p}</span>
+<span id="L89"><a href="#L89">  89</a>     (c : F2) (h : KIP126.Core.SpectralSequence.RepresentsOnPage E r p x a) :</span>
+<span id="L90"><a href="#L90">  90</a>     KIP126.Core.SpectralSequence.RepresentsOnPage E r p (if c=0 then 0 else x) (if c=0 then 0 else a) := by</span>
+<span id="L91"><a href="#L91">  91</a>   split</span>
+<span id="L92"><a href="#L92">  92</a>   · exact KIP126.Core.SpectralSequence.RepresentsOnPage.zero h.1</span>
+<span id="L93"><a href="#L93">  93</a>   · exact h</span>
+<span id="L94"><a href="#L94">  94</a> private theorem middle_expand {N : ℕ} (f : Fin N →₀ F2) :</span>
+<span id="L95"><a href="#L95">  95</a>     f = ∑ i : Fin N, if f i=0 then 0 else Finsupp.single i 1 := by</span>
+<span id="L96"><a href="#L96">  96</a>   ext i</span>
+<span id="L97"><a href="#L97">  97</a>   simp only [Finsupp.finsetSum_apply]</span>
+<span id="L98"><a href="#L98">  98</a>   rw [Finset.sum_eq_single i]</span>
+<span id="L99"><a href="#L99">  99</a>   · generalize f i=b</span>
+<span id="L100"><a href="#L100"> 100</a>     fin_cases b &lt;;&gt; simp</span>
+<span id="L101"><a href="#L101"> 101</a>   · intro j hj hji</span>
+<span id="L102"><a href="#L102"> 102</a>     by_cases hf : f j=0</span>
+<span id="L103"><a href="#L103"> 103</a>     · simp [hf]</span>
+<span id="L104"><a href="#L104"> 104</a>     · simp [hf,hji]</span>
+<span id="L105"><a href="#L105"> 105</a>   · simp</span>
+<span id="L106"><a href="#L106"> 106</a> private theorem middle_rep2 {E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ × ℤ)}</span>
+<span id="L107"><a href="#L107"> 107</a>     {p : ℤ × ℤ} {r : ℤ} {x : E.Page 2 p} {a : E.Page r p} (hr : 2≤r)</span>
+<span id="L108"><a href="#L108"> 108</a>     (ha : KIP126.Core.SpectralSequence.RepresentsOnPage E r p x a) : KIP126.Core.SpectralSequence.RepresentsOnPage E 2 p x x := by</span>
+<span id="L109"><a href="#L109"> 109</a>   obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) hr ha</span>
+<span id="L110"><a href="#L110"> 110</a>   rw [←hb.eq_on_page_two] at hb</span>
+<span id="L111"><a href="#L111"> 111</a>   exact hb</span>
+<span id="L112"><a href="#L112"> 112</a> private theorem nu9_af12_kernel</span>
+<span id="L113"><a href="#L113"> 113</a>     (x : Normalized.Page .sphere 12 137)</span>
+<span id="L114"><a href="#L114"> 114</a>     (dx : (Normalized.sphere).d 2 (12,137) x = 0) :</span>
+<span id="L115"><a href="#L115"> 115</a>     KIP126.Core.SpectralSequence.RepresentsOnPage (Normalized.sphere) 4 (12,137) x 0 := by</span>
+<span id="L116"><a href="#L116"> 116</a>   let E := Normalized.sphere</span>
+<span id="L117"><a href="#L117"> 117</a>   have h260 : KIP126.Core.SpectralSequence.HasDifferential E 2 (10,136) (12,137)</span>
+<span id="L118"><a href="#L118"> 118</a>       ((Normalized.basis .sphere 10 136 0)) ((Normalized.basis .sphere 12 137 2)) := by</span>
+<span id="L119"><a href="#L119"> 119</a>     have hrow := Normalized.result ⟨.sphere,.equation,2,10,136,[0],12,137,[2],&quot;S0_AdamsE2_ss&quot;,2859⟩ (by</span>
+<span id="L120"><a href="#L120"> 120</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L121"><a href="#L121"> 121</a>       iterate 260 apply List.mem_cons_of_mem</span>
+<span id="L122"><a href="#L122"> 122</a>       exact List.mem_cons_self)</span>
+<span id="L123"><a href="#L123"> 123</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L124"><a href="#L124"> 124</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L125"><a href="#L125"> 125</a>     change KIP126.Core.SpectralSequence.HasDifferential E 2 (10,136) (12,137) x y at hd</span>
+<span id="L126"><a href="#L126"> 126</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 136 [0] = true := rfl</span>
+<span id="L127"><a href="#L127"> 127</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 137 [2] = true := rfl</span>
+<span id="L128"><a href="#L128"> 128</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L129"><a href="#L129"> 129</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L130"><a href="#L130"> 130</a>     rw [←hx,←hy] at hd</span>
+<span id="L131"><a href="#L131"> 131</a>     exact hd</span>
+<span id="L132"><a href="#L132"> 132</a>   have h234 : KIP126.Core.SpectralSequence.HasDifferential E 3 (9,135) (12,137)</span>
+<span id="L133"><a href="#L133"> 133</a>       ((Normalized.basis .sphere 9 135 3)) ((Normalized.basis .sphere 12 137 3)) := by</span>
+<span id="L134"><a href="#L134"> 134</a>     have hrow := Normalized.result ⟨.sphere,.equation,3,9,135,[3],12,137,[3],&quot;S0_AdamsE2_ss&quot;,2793⟩ (by</span>
+<span id="L135"><a href="#L135"> 135</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L136"><a href="#L136"> 136</a>       iterate 234 apply List.mem_cons_of_mem</span>
+<span id="L137"><a href="#L137"> 137</a>       exact List.mem_cons_self)</span>
+<span id="L138"><a href="#L138"> 138</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L139"><a href="#L139"> 139</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L140"><a href="#L140"> 140</a>     change KIP126.Core.SpectralSequence.HasDifferential E 3 (9,135) (12,137) x y at hd</span>
+<span id="L141"><a href="#L141"> 141</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 135 [3] = true := rfl</span>
+<span id="L142"><a href="#L142"> 142</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 137 [3] = true := rfl</span>
+<span id="L143"><a href="#L143"> 143</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L144"><a href="#L144"> 144</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L145"><a href="#L145"> 145</a>     rw [←hx,←hy] at hd</span>
+<span id="L146"><a href="#L146"> 146</a>     exact hd</span>
+<span id="L147"><a href="#L147"> 147</a>   have h307 : KIP126.Core.SpectralSequence.HasDifferential E 3 (9,135) (12,137)</span>
+<span id="L148"><a href="#L148"> 148</a>       ((Normalized.basis .sphere 9 135 0) + (Normalized.basis .sphere 9 135 3)) ((Normalized.basis .sphere 12 137 4)) := by</span>
+<span id="L149"><a href="#L149"> 149</a>     have hrow := Normalized.result ⟨.sphere,.equation,3,9,135,[0, 3],12,137,[4],&quot;S0_AdamsE2_ss&quot;,2920⟩ (by</span>
+<span id="L150"><a href="#L150"> 150</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L151"><a href="#L151"> 151</a>       iterate 307 apply List.mem_cons_of_mem</span>
+<span id="L152"><a href="#L152"> 152</a>       exact List.mem_cons_self)</span>
+<span id="L153"><a href="#L153"> 153</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L154"><a href="#L154"> 154</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L155"><a href="#L155"> 155</a>     change KIP126.Core.SpectralSequence.HasDifferential E 3 (9,135) (12,137) x y at hd</span>
+<span id="L156"><a href="#L156"> 156</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 135 [0, 3] = true := rfl</span>
+<span id="L157"><a href="#L157"> 157</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 137 [4] = true := rfl</span>
+<span id="L158"><a href="#L158"> 158</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L159"><a href="#L159"> 159</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L160"><a href="#L160"> 160</a>     rw [←hx,←hy] at hd</span>
+<span id="L161"><a href="#L161"> 161</a>     exact hd</span>
+<span id="L162"><a href="#L162"> 162</a>   have h308 : KIP126.Core.SpectralSequence.HasDifferential E 2 (12,137) (14,138)</span>
+<span id="L163"><a href="#L163"> 163</a>       ((Normalized.basis .sphere 12 137 1)) ((Normalized.basis .sphere 14 138 4)) := by</span>
+<span id="L164"><a href="#L164"> 164</a>     have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[1],14,138,[4],&quot;S0_AdamsE2_ss&quot;,2921⟩ (by</span>
+<span id="L165"><a href="#L165"> 165</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L166"><a href="#L166"> 166</a>       iterate 308 apply List.mem_cons_of_mem</span>
+<span id="L167"><a href="#L167"> 167</a>       exact List.mem_cons_self)</span>
+<span id="L168"><a href="#L168"> 168</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L169"><a href="#L169"> 169</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L170"><a href="#L170"> 170</a>     change KIP126.Core.SpectralSequence.HasDifferential E 2 (12,137) (14,138) x y at hd</span>
+<span id="L171"><a href="#L171"> 171</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 137 [1] = true := rfl</span>
+<span id="L172"><a href="#L172"> 172</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 14 138 [4] = true := rfl</span>
+<span id="L173"><a href="#L173"> 173</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L174"><a href="#L174"> 174</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L175"><a href="#L175"> 175</a>     rw [←hx,←hy] at hd</span>
+<span id="L176"><a href="#L176"> 176</a>     exact hd</span>
+<span id="L177"><a href="#L177"> 177</a>   have h309 : KIP126.Core.SpectralSequence.HasDifferential E 2 (12,137) (14,138)</span>
+<span id="L178"><a href="#L178"> 178</a>       ((Normalized.basis .sphere 12 137 0)) ((Normalized.basis .sphere 14 138 3)) := by</span>
+<span id="L179"><a href="#L179"> 179</a>     have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[0],14,138,[3],&quot;S0_AdamsE2_ss&quot;,2922⟩ (by</span>
+<span id="L180"><a href="#L180"> 180</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L181"><a href="#L181"> 181</a>       iterate 309 apply List.mem_cons_of_mem</span>
+<span id="L182"><a href="#L182"> 182</a>       exact List.mem_cons_self)</span>
+<span id="L183"><a href="#L183"> 183</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L184"><a href="#L184"> 184</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L185"><a href="#L185"> 185</a>     change KIP126.Core.SpectralSequence.HasDifferential E 2 (12,137) (14,138) x y at hd</span>
+<span id="L186"><a href="#L186"> 186</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 137 [0] = true := rfl</span>
+<span id="L187"><a href="#L187"> 187</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 14 138 [3] = true := rfl</span>
+<span id="L188"><a href="#L188"> 188</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L189"><a href="#L189"> 189</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L190"><a href="#L190"> 190</a>     rw [←hx,←hy] at hd</span>
+<span id="L191"><a href="#L191"> 191</a>     exact hd</span>
+<span id="L192"><a href="#L192"> 192</a>   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,12,137,[&quot;426,1&quot;, &quot;425,1&quot;, &quot;0,1,69,1,89,1&quot;, &quot;0,3,391,1&quot;, &quot;0,4,375,1&quot;]⟩ (by</span>
+<span id="L193"><a href="#L193"> 193</a>     unfold KIP126.Computation.Table.Raw.degrees</span>
+<span id="L194"><a href="#L194"> 194</a>     iterate 201 apply List.mem_cons_of_mem</span>
+<span id="L195"><a href="#L195"> 195</a>     exact List.mem_cons_self)</span>
+<span id="L196"><a href="#L196"> 196</a>   change E.Page 2 (12,137) ≃ₗ[ℤ] (Fin 5 →₀ F2) at e</span>
+<span id="L197"><a href="#L197"> 197</a>   change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = Normalized.basis .sphere 12 137 i.val at he</span>
+<span id="L198"><a href="#L198"> 198</a>   obtain ⟨f,hf⟩ := Normalized.basis_correct ⟨.sphere,14,138,[&quot;440,1&quot;, &quot;439,1&quot;, &quot;23,1,190,1&quot;, &quot;1,1,418,1&quot;, &quot;1,1,417,1&quot;]⟩ (by</span>
+<span id="L199"><a href="#L199"> 199</a>     unfold KIP126.Computation.Table.Raw.degrees</span>
+<span id="L200"><a href="#L200"> 200</a>     iterate 216 apply List.mem_cons_of_mem</span>
+<span id="L201"><a href="#L201"> 201</a>     exact List.mem_cons_self)</span>
+<span id="L202"><a href="#L202"> 202</a>   change E.Page 2 (14,138) ≃ₗ[ℤ] (Fin 5 →₀ F2) at f</span>
+<span id="L203"><a href="#L203"> 203</a>   change ∀ i : Fin 5, f.symm (Finsupp.single i 1) = Normalized.basis .sphere 14 138 i.val at hf</span>
+<span id="L204"><a href="#L204"> 204</a>   have he0 : e.symm (Finsupp.single (0:Fin 5) 1) = Normalized.basis .sphere 12 137 0 := he 0</span>
+<span id="L205"><a href="#L205"> 205</a>   have he1 : e.symm (Finsupp.single (1:Fin 5) 1) = Normalized.basis .sphere 12 137 1 := he 1</span>
+<span id="L206"><a href="#L206"> 206</a>   have he2 : e.symm (Finsupp.single (2:Fin 5) 1) = Normalized.basis .sphere 12 137 2 := he 2</span>
+<span id="L207"><a href="#L207"> 207</a>   have he3 : e.symm (Finsupp.single (3:Fin 5) 1) = Normalized.basis .sphere 12 137 3 := he 3</span>
+<span id="L208"><a href="#L208"> 208</a>   have he4 : e.symm (Finsupp.single (4:Fin 5) 1) = Normalized.basis .sphere 12 137 4 := he 4</span>
+<span id="L209"><a href="#L209"> 209</a>   have hf0 : f.symm (Finsupp.single (0:Fin 5) 1) = Normalized.basis .sphere 14 138 0 := hf 0</span>
+<span id="L210"><a href="#L210"> 210</a>   have hf1 : f.symm (Finsupp.single (1:Fin 5) 1) = Normalized.basis .sphere 14 138 1 := hf 1</span>
+<span id="L211"><a href="#L211"> 211</a>   have hf2 : f.symm (Finsupp.single (2:Fin 5) 1) = Normalized.basis .sphere 14 138 2 := hf 2</span>
+<span id="L212"><a href="#L212"> 212</a>   have hf3 : f.symm (Finsupp.single (3:Fin 5) 1) = Normalized.basis .sphere 14 138 3 := hf 3</span>
+<span id="L213"><a href="#L213"> 213</a>   have hf4 : f.symm (Finsupp.single (4:Fin 5) 1) = Normalized.basis .sphere 14 138 4 := hf 4</span>
+<span id="L214"><a href="#L214"> 214</a>   have hz2 : KIP126.Core.SpectralSequence.RepresentsOnPage E 4 (12,137) (Normalized.basis .sphere 12 137 2) 0 :=</span>
+<span id="L215"><a href="#L215"> 215</a>     differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4) h260</span>
+<span id="L216"><a href="#L216"> 216</a>   have d2 : E.d 2 (12,137) (Normalized.basis .sphere 12 137 2)=0 :=</span>
+<span id="L217"><a href="#L217"> 217</a>     represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4)</span>
+<span id="L218"><a href="#L218"> 218</a>       (middle_rep2 (by decide) hz2) ⟨0,hz2⟩</span>
+<span id="L219"><a href="#L219"> 219</a>   have hz3 : KIP126.Core.SpectralSequence.RepresentsOnPage E 4 (12,137) (Normalized.basis .sphere 12 137 3) 0 :=</span>
+<span id="L220"><a href="#L220"> 220</a>     differential_target_later_zero (by change (2:ℤ)≤3; omega) (by decide : (3:ℤ)&lt;4) h234</span>
+<span id="L221"><a href="#L221"> 221</a>   have d3 : E.d 2 (12,137) (Normalized.basis .sphere 12 137 3)=0 :=</span>
+<span id="L222"><a href="#L222"> 222</a>     represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4)</span>
+<span id="L223"><a href="#L223"> 223</a>       (middle_rep2 (by decide) hz3) ⟨0,hz3⟩</span>
+<span id="L224"><a href="#L224"> 224</a>   have hz4 : KIP126.Core.SpectralSequence.RepresentsOnPage E 4 (12,137) (Normalized.basis .sphere 12 137 4) 0 :=</span>
+<span id="L225"><a href="#L225"> 225</a>     differential_target_later_zero (by change (2:ℤ)≤3; omega) (by decide : (3:ℤ)&lt;4) h307</span>
+<span id="L226"><a href="#L226"> 226</a>   have d4 : E.d 2 (12,137) (Normalized.basis .sphere 12 137 4)=0 :=</span>
+<span id="L227"><a href="#L227"> 227</a>     represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4)</span>
+<span id="L228"><a href="#L228"> 228</a>       (middle_rep2 (by decide) hz4) ⟨0,hz4⟩</span>
+<span id="L229"><a href="#L229"> 229</a>   have d0 : E.d 2 (12,137) (Normalized.basis .sphere 12 137 0)=Normalized.basis .sphere 14 138 3 := h309.eq_on_page_two.2</span>
+<span id="L230"><a href="#L230"> 230</a>   have d1 : E.d 2 (12,137) (Normalized.basis .sphere 12 137 1)=Normalized.basis .sphere 14 138 4 := h308.eq_on_page_two.2</span>
+<span id="L231"><a href="#L231"> 231</a>   let c : Fin 5 → F2 := e x</span>
+<span id="L232"><a href="#L232"> 232</a>   have hcoef := congrArg e.symm (middle_expand (e x))</span>
+<span id="L233"><a href="#L233"> 233</a>   simp only [LinearEquiv.symm_apply_apply,map_sum,map_add,Fin.sum_univ_succ,apply_ite,map_zero] at hcoef</span>
+<span id="L234"><a href="#L234"> 234</a>   change x=(if c 0=0 then 0 else e.symm (Finsupp.single 0 1)) + ((if c 1=0 then 0 else e.symm (Finsupp.single 1 1)) + ((if c 2=0 then 0 else e.symm (Finsupp.single 2 1)) + ((if c 3=0 then 0 else e.symm (Finsupp.single 3 1)) + ((if c 4=0 then 0 else e.symm (Finsupp.single 4 1)) + 0)))) at hcoef</span>
+<span id="L235"><a href="#L235"> 235</a>   simp only [he0,he1,he2,he3,he4,add_zero] at hcoef</span>
+<span id="L236"><a href="#L236"> 236</a>   have hd := congrArg (E.d 2 (12,137)) hcoef</span>
+<span id="L237"><a href="#L237"> 237</a>   rw [dx] at hd</span>
+<span id="L238"><a href="#L238"> 238</a>   simp only [map_add,apply_ite,map_zero] at hd</span>
+<span id="L239"><a href="#L239"> 239</a>   simp only [d0,d1,d2,d3,d4,ite_self,add_zero] at hd</span>
+<span id="L240"><a href="#L240"> 240</a>   have c0 : c 0=0 := by</span>
+<span id="L241"><a href="#L241"> 241</a>     by_contra h0</span>
+<span id="L242"><a href="#L242"> 242</a>     simp only [h0,ite_false] at hd</span>
+<span id="L243"><a href="#L243"> 243</a>     by_cases h1 : c 1=0</span>
+<span id="L244"><a href="#L244"> 244</a>     all_goals simp only [h1,ite_true,ite_false] at hd</span>
+<span id="L245"><a href="#L245"> 245</a>     all_goals have hh := congrArg (fun z =&gt; f z 3) hd</span>
+<span id="L246"><a href="#L246"> 246</a>     all_goals simp only [map_add,map_zero,Finsupp.add_apply,Finsupp.zero_apply,←hf3,←hf4,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L247"><a href="#L247"> 247</a>     all_goals norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L248"><a href="#L248"> 248</a>   have c1 : c 1=0 := by</span>
+<span id="L249"><a href="#L249"> 249</a>     by_contra h1</span>
+<span id="L250"><a href="#L250"> 250</a>     simp only [c0,h1,ite_true,ite_false,zero_add] at hd</span>
+<span id="L251"><a href="#L251"> 251</a>     have hh := congrArg (fun z =&gt; f z 4) hd</span>
+<span id="L252"><a href="#L252"> 252</a>     simp only [map_zero,Finsupp.zero_apply,←hf4,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L253"><a href="#L253"> 253</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L254"><a href="#L254"> 254</a>   rw [hcoef]</span>
+<span id="L255"><a href="#L255"> 255</a>   simp only [c0,c1,ite_true,zero_add]</span>
+<span id="L256"><a href="#L256"> 256</a>   have hh := middle_add (middle_if (c 2) hz2) (middle_add (middle_if (c 3) hz3) (middle_if (c 4) hz4))</span>
+<span id="L257"><a href="#L257"> 257</a>   simpa only [ite_self,zero_add] using hh</span>
+<span id="L258"><a href="#L258"> 258</a> private theorem nu9_af13_cosets  :</span>
+<span id="L259"><a href="#L259"> 259</a>     Normalized.basis .sphere 13 138 1 ∈ nCycles 2 (13,138) ∧</span>
+<span id="L260"><a href="#L260"> 260</a>     ∀ x : Normalized.Page .sphere 13 138,</span>
+<span id="L261"><a href="#L261"> 261</a>       x ∈ nBoundaries 4 (13,138) ∨</span>
+<span id="L262"><a href="#L262"> 262</a>       x - Normalized.basis .sphere 13 138 1 ∈ nBoundaries 4 (13,138) := by</span>
+<span id="L263"><a href="#L263"> 263</a>   let E := Normalized.sphere</span>
+<span id="L264"><a href="#L264"> 264</a>   have h231 : KIP126.Core.SpectralSequence.HasDifferential E 4 (9,135) (13,138)</span>
+<span id="L265"><a href="#L265"> 265</a>       ((Normalized.basis .sphere 9 135 2)) ((Normalized.basis .sphere 13 138 0)) := by</span>
+<span id="L266"><a href="#L266"> 266</a>     have hrow := Normalized.result ⟨.sphere,.equation,4,9,135,[2],13,138,[0],&quot;S0_AdamsE2_ss&quot;,2790⟩ (by</span>
+<span id="L267"><a href="#L267"> 267</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L268"><a href="#L268"> 268</a>       iterate 231 apply List.mem_cons_of_mem</span>
+<span id="L269"><a href="#L269"> 269</a>       exact List.mem_cons_self)</span>
+<span id="L270"><a href="#L270"> 270</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L271"><a href="#L271"> 271</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L272"><a href="#L272"> 272</a>     change KIP126.Core.SpectralSequence.HasDifferential E 4 (9,135) (13,138) x y at hd</span>
+<span id="L273"><a href="#L273"> 273</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 135 [2] = true := rfl</span>
+<span id="L274"><a href="#L274"> 274</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 13 138 [0] = true := rfl</span>
+<span id="L275"><a href="#L275"> 275</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L276"><a href="#L276"> 276</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L277"><a href="#L277"> 277</a>     rw [←hx,←hy] at hd</span>
+<span id="L278"><a href="#L278"> 278</a>     exact hd</span>
+<span id="L279"><a href="#L279"> 279</a>   have h232 : KIP126.Core.SpectralSequence.HasDifferential E 4 (9,135) (13,138)</span>
+<span id="L280"><a href="#L280"> 280</a>       ((Normalized.basis .sphere 9 135 1)) ((Normalized.basis .sphere 13 138 2)) := by</span>
+<span id="L281"><a href="#L281"> 281</a>     have hrow := Normalized.result ⟨.sphere,.equation,4,9,135,[1],13,138,[2],&quot;S0_AdamsE2_ss&quot;,2791⟩ (by</span>
+<span id="L282"><a href="#L282"> 282</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L283"><a href="#L283"> 283</a>       iterate 232 apply List.mem_cons_of_mem</span>
+<span id="L284"><a href="#L284"> 284</a>       exact List.mem_cons_self)</span>
+<span id="L285"><a href="#L285"> 285</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L286"><a href="#L286"> 286</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L287"><a href="#L287"> 287</a>     change KIP126.Core.SpectralSequence.HasDifferential E 4 (9,135) (13,138) x y at hd</span>
+<span id="L288"><a href="#L288"> 288</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 135 [1] = true := rfl</span>
+<span id="L289"><a href="#L289"> 289</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 13 138 [2] = true := rfl</span>
+<span id="L290"><a href="#L290"> 290</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L291"><a href="#L291"> 291</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L292"><a href="#L292"> 292</a>     rw [←hx,←hy] at hd</span>
+<span id="L293"><a href="#L293"> 293</a>     exact hd</span>
+<span id="L294"><a href="#L294"> 294</a>   have h288 : KIP126.Core.SpectralSequence.HasDifferential E 2 (11,137) (13,138)</span>
+<span id="L295"><a href="#L295"> 295</a>       ((Normalized.basis .sphere 11 137 0)) ((Normalized.basis .sphere 13 138 3)) := by</span>
+<span id="L296"><a href="#L296"> 296</a>     have hrow := Normalized.result ⟨.sphere,.equation,2,11,137,[0],13,138,[3],&quot;S0_AdamsE2_ss&quot;,2927⟩ (by</span>
+<span id="L297"><a href="#L297"> 297</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L298"><a href="#L298"> 298</a>       iterate 288 apply List.mem_cons_of_mem</span>
+<span id="L299"><a href="#L299"> 299</a>       exact List.mem_cons_self)</span>
+<span id="L300"><a href="#L300"> 300</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L301"><a href="#L301"> 301</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L302"><a href="#L302"> 302</a>     change KIP126.Core.SpectralSequence.HasDifferential E 2 (11,137) (13,138) x y at hd</span>
+<span id="L303"><a href="#L303"> 303</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 11 137 [0] = true := rfl</span>
+<span id="L304"><a href="#L304"> 304</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 13 138 [3] = true := rfl</span>
+<span id="L305"><a href="#L305"> 305</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L306"><a href="#L306"> 306</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L307"><a href="#L307"> 307</a>     rw [←hx,←hy] at hd</span>
+<span id="L308"><a href="#L308"> 308</a>     exact hd</span>
+<span id="L309"><a href="#L309"> 309</a>   have h289 : KIP126.Core.SpectralSequence.HasDifferential E 2 (11,137) (13,138)</span>
+<span id="L310"><a href="#L310"> 310</a>       ((Normalized.basis .sphere 11 137 3)) ((Normalized.basis .sphere 13 138 4)) := by</span>
+<span id="L311"><a href="#L311"> 311</a>     have hrow := Normalized.result ⟨.sphere,.equation,2,11,137,[3],13,138,[4],&quot;S0_AdamsE2_ss&quot;,2928⟩ (by</span>
+<span id="L312"><a href="#L312"> 312</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L313"><a href="#L313"> 313</a>       iterate 289 apply List.mem_cons_of_mem</span>
+<span id="L314"><a href="#L314"> 314</a>       exact List.mem_cons_self)</span>
+<span id="L315"><a href="#L315"> 315</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L316"><a href="#L316"> 316</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L317"><a href="#L317"> 317</a>     change KIP126.Core.SpectralSequence.HasDifferential E 2 (11,137) (13,138) x y at hd</span>
+<span id="L318"><a href="#L318"> 318</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 11 137 [3] = true := rfl</span>
+<span id="L319"><a href="#L319"> 319</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 13 138 [4] = true := rfl</span>
+<span id="L320"><a href="#L320"> 320</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L321"><a href="#L321"> 321</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L322"><a href="#L322"> 322</a>     rw [←hx,←hy] at hd</span>
+<span id="L323"><a href="#L323"> 323</a>     exact hd</span>
+<span id="L324"><a href="#L324"> 324</a>   have h329 : KIP126.Core.SpectralSequence.HasDifferential E 3 (13,138) (16,140)</span>
+<span id="L325"><a href="#L325"> 325</a>       ((Normalized.basis .sphere 13 138 1)) ((Normalized.basis .sphere 16 140 1)) := by</span>
+<span id="L326"><a href="#L326"> 326</a>     have hrow := Normalized.result ⟨.sphere,.equation,3,13,138,[1],16,140,[1],&quot;S0_AdamsE2_ss&quot;,3012⟩ (by</span>
+<span id="L327"><a href="#L327"> 327</a>       unfold KIP126.Computation.Table.Raw.claims</span>
+<span id="L328"><a href="#L328"> 328</a>       iterate 329 apply List.mem_cons_of_mem</span>
+<span id="L329"><a href="#L329"> 329</a>       exact List.mem_cons_self)</span>
+<span id="L330"><a href="#L330"> 330</a>     dsimp only [Normalized.Statement] at hrow</span>
+<span id="L331"><a href="#L331"> 331</a>     obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L332"><a href="#L332"> 332</a>     change KIP126.Core.SpectralSequence.HasDifferential E 3 (13,138) (16,140) x y at hd</span>
+<span id="L333"><a href="#L333"> 333</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 13 138 [1] = true := rfl</span>
+<span id="L334"><a href="#L334"> 334</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 16 140 [1] = true := rfl</span>
+<span id="L335"><a href="#L335"> 335</a>     simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L336"><a href="#L336"> 336</a>       List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L337"><a href="#L337"> 337</a>     rw [←hx,←hy] at hd</span>
+<span id="L338"><a href="#L338"> 338</a>     exact hd</span>
+<span id="L339"><a href="#L339"> 339</a> </span>
+<span id="L340"><a href="#L340"> 340</a>   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,13,138,[&quot;24,1,190,1&quot;, &quot;3,1,335,1&quot;, &quot;0,1,425,1&quot;, &quot;0,4,391,1&quot;, &quot;0,5,375,1&quot;]⟩ (by</span>
+<span id="L341"><a href="#L341"> 341</a>     unfold KIP126.Computation.Table.Raw.degrees</span>
+<span id="L342"><a href="#L342"> 342</a>     iterate 209 apply List.mem_cons_of_mem</span>
+<span id="L343"><a href="#L343"> 343</a>     exact List.mem_cons_self)</span>
+<span id="L344"><a href="#L344"> 344</a>   change E.Page 2 (13,138) ≃ₗ[ℤ] (Fin 5 →₀ F2) at e</span>
+<span id="L345"><a href="#L345"> 345</a>   change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = Normalized.basis .sphere 13 138 i.val at he</span>
+<span id="L346"><a href="#L346"> 346</a> </span>
+<span id="L347"><a href="#L347"> 347</a>   have he0 : e.symm (Finsupp.single (0:Fin 5) 1) = Normalized.basis .sphere 13 138 0 := he 0</span>
+<span id="L348"><a href="#L348"> 348</a>   have he1 : e.symm (Finsupp.single (1:Fin 5) 1) = Normalized.basis .sphere 13 138 1 := he 1</span>
+<span id="L349"><a href="#L349"> 349</a>   have he2 : e.symm (Finsupp.single (2:Fin 5) 1) = Normalized.basis .sphere 13 138 2 := he 2</span>
+<span id="L350"><a href="#L350"> 350</a>   have he3 : e.symm (Finsupp.single (3:Fin 5) 1) = Normalized.basis .sphere 13 138 3 := he 3</span>
+<span id="L351"><a href="#L351"> 351</a>   have he4 : e.symm (Finsupp.single (4:Fin 5) 1) = Normalized.basis .sphere 13 138 4 := he 4</span>
+<span id="L352"><a href="#L352"> 352</a> </span>
+<span id="L353"><a href="#L353"> 353</a>   constructor</span>
+<span id="L354"><a href="#L354"> 354</a>   · obtain ⟨_, a, b, ha, hb, hd⟩ := h329</span>
+<span id="L355"><a href="#L355"> 355</a>     exact nCycle_of_reaches 3 (by decide) (13,138) _ ⟨a,ha⟩</span>
+<span id="L356"><a href="#L356"> 356</a>   · intro x</span>
+<span id="L357"><a href="#L357"> 357</a>     let P := nBoundaries 4 (13,138)</span>
+<span id="L358"><a href="#L358"> 358</a>     have hb0 : Normalized.basis .sphere 13 138 0 ∈ P :=</span>
+<span id="L359"><a href="#L359"> 359</a>       boundary_of_zero_representative (r:=5) (p:=(13,138))</span>
+<span id="L360"><a href="#L360"> 360</a>         (differential_target_later_zero (by change (2:ℤ)≤4; omega)</span>
+<span id="L361"><a href="#L361"> 361</a>           (by decide : (4:ℤ)&lt;5) h231)</span>
+<span id="L362"><a href="#L362"> 362</a>     have hb2 : Normalized.basis .sphere 13 138 2 ∈ P :=</span>
+<span id="L363"><a href="#L363"> 363</a>       boundary_of_zero_representative (r:=5) (p:=(13,138))</span>
+<span id="L364"><a href="#L364"> 364</a>         (differential_target_later_zero (by change (2:ℤ)≤4; omega)</span>
+<span id="L365"><a href="#L365"> 365</a>           (by decide : (4:ℤ)&lt;5) h232)</span>
+<span id="L366"><a href="#L366"> 366</a>     have hb3 : Normalized.basis .sphere 13 138 3 ∈ P :=</span>
+<span id="L367"><a href="#L367"> 367</a>       boundary_of_zero_representative (r:=5) (p:=(13,138))</span>
+<span id="L368"><a href="#L368"> 368</a>         (differential_target_later_zero (by change (2:ℤ)≤2; omega)</span>
+<span id="L369"><a href="#L369"> 369</a>           (by decide : (2:ℤ)&lt;5) h288)</span>
+<span id="L370"><a href="#L370"> 370</a>     have hb4 : Normalized.basis .sphere 13 138 4 ∈ P :=</span>
+<span id="L371"><a href="#L371"> 371</a>       boundary_of_zero_representative (r:=5) (p:=(13,138))</span>
+<span id="L372"><a href="#L372"> 372</a>         (differential_target_later_zero (by change (2:ℤ)≤2; omega)</span>
+<span id="L373"><a href="#L373"> 373</a>           (by decide : (2:ℤ)&lt;5) h289)</span>
+<span id="L374"><a href="#L374"> 374</a>     have hif (c : F2) {a : Normalized.Page .sphere 13 138} (h : a ∈ P) :</span>
+<span id="L375"><a href="#L375"> 375</a>         (if c=0 then 0 else a) ∈ P := by</span>
+<span id="L376"><a href="#L376"> 376</a>       split</span>
+<span id="L377"><a href="#L377"> 377</a>       · exact P.zero_mem</span>
+<span id="L378"><a href="#L378"> 378</a>       · exact h</span>
+<span id="L379"><a href="#L379"> 379</a>     let c : Fin 5 → F2 := e x</span>
+<span id="L380"><a href="#L380"> 380</a>     have hcoef := congrArg e.symm (middle_expand (e x))</span>
+<span id="L381"><a href="#L381"> 381</a>     simp only [LinearEquiv.symm_apply_apply,map_sum,map_add,Fin.sum_univ_succ,apply_ite,map_zero] at hcoef</span>
+<span id="L382"><a href="#L382"> 382</a>     change x=(if c 0=0 then 0 else e.symm (Finsupp.single 0 1)) + ((if c 1=0 then 0 else e.symm (Finsupp.single 1 1)) + ((if c 2=0 then 0 else e.symm (Finsupp.single 2 1)) + ((if c 3=0 then 0 else e.symm (Finsupp.single 3 1)) + ((if c 4=0 then 0 else e.symm (Finsupp.single 4 1)) + 0)))) at hcoef</span>
+<span id="L383"><a href="#L383"> 383</a>     simp only [he0,he1,he2,he3,he4,add_zero] at hcoef</span>
+<span id="L384"><a href="#L384"> 384</a>     have hm := P.add_mem (hif (c 0) hb0)</span>
+<span id="L385"><a href="#L385"> 385</a>       (P.add_mem (hif (c 2) hb2) (P.add_mem (hif (c 3) hb3) (hif (c 4) hb4)))</span>
+<span id="L386"><a href="#L386"> 386</a>     by_cases hc : c 1=0</span>
+<span id="L387"><a href="#L387"> 387</a>     · left</span>
+<span id="L388"><a href="#L388"> 388</a>       change x ∈ P</span>
+<span id="L389"><a href="#L389"> 389</a>       rw [hcoef]</span>
+<span id="L390"><a href="#L390"> 390</a>       simpa only [hc,ite_true,zero_add] using hm</span>
+<span id="L391"><a href="#L391"> 391</a>     · right</span>
+<span id="L392"><a href="#L392"> 392</a>       change x - Normalized.basis .sphere 13 138 1 ∈ P</span>
+<span id="L393"><a href="#L393"> 393</a>       rw [hcoef]</span>
+<span id="L394"><a href="#L394"> 394</a>       simp only [hc,ite_false]</span>
+<span id="L395"><a href="#L395"> 395</a>       convert hm using 1 &lt;;&gt; first | rfl | abel</span>
+<span id="L396"><a href="#L396"> 396</a> </span>
+<span id="L397"><a href="#L397"> 397</a> </span>
+<span id="L398"><a href="#L398"> 398</a> private theorem nu9_af12_cycles_boundary :</span>
+<span id="L399"><a href="#L399"> 399</a>     cycles model .sphere 2 (12,137) ≤ boundaries model .sphere 3 (12,137) := by</span>
+<span id="L400"><a href="#L400"> 400</a>   intro x hx</span>
+<span id="L401"><a href="#L401"> 401</a>   have hr : ReachesPage model.classical.sphere 3 (12,137) x :=</span>
+<span id="L402"><a href="#L402"> 402</a>     (KIP126.ProofTools.isCycle_iff_reaches model .sphere 3 (by decide) (12,137) x).mp ⟨by decide,hx⟩</span>
+<span id="L403"><a href="#L403"> 403</a>   obtain ⟨a,ha⟩ := normalized_reaches 3 (12,137) x hr</span>
+<span id="L404"><a href="#L404"> 404</a>   have hd : Normalized.sphere.d 2 (12,137) (Normalized.label (12,137) x)=0 :=</span>
+<span id="L405"><a href="#L405"> 405</a>     represents_d_zero_of_later (by decide : Normalized.sphere.r₀≤2) (by decide : (2:ℤ)&lt;3)</span>
+<span id="L406"><a href="#L406"> 406</a>       (middle_rep2 (by decide) ha) ⟨a,ha⟩</span>
+<span id="L407"><a href="#L407"> 407</a>   have h := boundary_of_zero_representative (nu9_af12_kernel _ hd)</span>
+<span id="L408"><a href="#L408"> 408</a>   change denormalize (12,137) (Normalized.label (12,137) x)∈boundaries model .sphere 3 (12,137) at h</span>
+<span id="L409"><a href="#L409"> 409</a>   rwa [denormalize_label] at h</span>
+<span id="L410"><a href="#L410"> 410</a> </span>
+<span id="L411"><a href="#L411"> 411</a> private theorem nu9_error_data :</span>
+<span id="L412"><a href="#L412"> 412</a>     Subsingleton (CycleQuotient model .sphere 2 8 (12,137)) ∧</span>
+<span id="L413"><a href="#L413"> 413</a>     KIP126.Computation.Table.basis .sphere 13 138 1 ∈ cycles model .sphere 2 (13,138) ∧</span>
+<span id="L414"><a href="#L414"> 414</a>     ∀ x : model.classical.sphere.Page 2 (13,138),</span>
+<span id="L415"><a href="#L415"> 415</a>       x∈boundaries model .sphere 9 (13,138) ∨</span>
+<span id="L416"><a href="#L416"> 416</a>       x-(show model.classical.sphere.Page 2 (13,138) from KIP126.Computation.Table.basis .sphere 13 138 1)∈boundaries model .sphere 9 (13,138) := by</span>
+<span id="L417"><a href="#L417"> 417</a>   constructor</span>
+<span id="L418"><a href="#L418"> 418</a>   · have hz (x : CycleQuotient model .sphere 2 8 (12,137)) : x=0 := by</span>
+<span id="L419"><a href="#L419"> 419</a>       obtain ⟨x,rfl⟩ := Quotient.exists_rep x</span>
+<span id="L420"><a href="#L420"> 420</a>       exact (subquotientClass_eq_zero_iff _ _ _).mpr</span>
+<span id="L421"><a href="#L421"> 421</a>         (boundaries_monotone model .sphere (12,137) (by decide : (3:ℤ)≤8)</span>
+<span id="L422"><a href="#L422"> 422</a>           (nu9_af12_cycles_boundary x.property))</span>
+<span id="L423"><a href="#L423"> 423</a>     exact ⟨fun x y =&gt; (hz x).trans (hz y).symm⟩</span>
+<span id="L424"><a href="#L424"> 424</a>   obtain ⟨hc,hcosets⟩ := nu9_af13_cosets</span>
+<span id="L425"><a href="#L425"> 425</a>   constructor</span>
+<span id="L426"><a href="#L426"> 426</a>   · change denormalize (13,138) (Normalized.basis .sphere 13 138 1)∈cycles model .sphere 2 (13,138) at hc</span>
+<span id="L427"><a href="#L427"> 427</a>     exact (denormalize_basis 13 138 1) ▸ hc</span>
+<span id="L428"><a href="#L428"> 428</a>   · intro x</span>
+<span id="L429"><a href="#L429"> 429</a>     rcases hcosets (Normalized.label (13,138) x) with h0|h1</span>
+<span id="L430"><a href="#L430"> 430</a>     · left</span>
+<span id="L431"><a href="#L431"> 431</a>       change denormalize (13,138) (Normalized.label (13,138) x)∈boundaries model .sphere 4 (13,138) at h0</span>
+<span id="L432"><a href="#L432"> 432</a>       rw [denormalize_label] at h0</span>
+<span id="L433"><a href="#L433"> 433</a>       exact boundaries_monotone model .sphere (13,138) (by decide : (4:ℤ)≤9) h0</span>
+<span id="L434"><a href="#L434"> 434</a>     · right</span>
+<span id="L435"><a href="#L435"> 435</a>       change denormalize (13,138) (Normalized.label (13,138) x-Normalized.basis .sphere 13 138 1)∈</span>
+<span id="L436"><a href="#L436"> 436</a>         boundaries model .sphere 4 (13,138) at h1</span>
+<span id="L437"><a href="#L437"> 437</a>       rw [map_sub,denormalize_label] at h1</span>
+<span id="L438"><a href="#L438"> 438</a>       have hh : x-(show model.classical.sphere.Page 2 (13,138) from KIP126.Computation.Table.basis .sphere 13 138 1)∈</span>
+<span id="L439"><a href="#L439"> 439</a>           boundaries model .sphere 4 (13,138) := (denormalize_basis 13 138 1) ▸ h1</span>
+<span id="L440"><a href="#L440"> 440</a>       exact boundaries_monotone model .sphere (13,138) (by decide : (4:ℤ)≤9) hh</span>
+<span id="L441"><a href="#L441"> 441</a> </span>
+<span id="L442"><a href="#L442"> 442</a> end</span>
+<span id="L443"><a href="#L443"> 443</a> end KIP126.Main.Internal.Selected.NuError</span></pre>

@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Standard/AdamsTwoLine.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Standard/AdamsTwoLine.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Classical inputs for AimPaper Corollary 1.5, on the fixed sphere Adams</span>
+<span id="L6"><a href="#L6">   6</a> sequence. Original sources and adaptation limits are recorded in Blueprint.</span>
+<span id="L7"><a href="#L7">   7</a> Each source-to-model statement is a separate registered upstream obligation;</span>
+<span id="L8"><a href="#L8">   8</a> the exhaustive classification itself is proved in Main. -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Literature.Standard</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> /-- The actual product of the two specified standard one-line classes. -/</span>
+<span id="L16"><a href="#L16">  16</a> public noncomputable def hiProduct (i j : ℕ) :</span>
+<span id="L17"><a href="#L17">  17</a>     ActualE2At model.classical (hiDegree i + hiDegree j) :=</span>
+<span id="L18"><a href="#L18">  18</a>   model.sphereAlgebra.product (hiDegree i) (hiDegree j)</span>
+<span id="L19"><a href="#L19">  19</a>     (model.standardClasses.standardHi i) (model.standardClasses.standardHi j)</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> /-- May&#x27;s three exceptional low-dimensional mixed products. -/</span>
+<span id="L22"><a href="#L22">  22</a> public theorem may_two_line_products_permanent (i j : ℕ)</span>
+<span id="L23"><a href="#L23">  23</a>     (h : (i = 0 ∧ j = 2) ∨ (i = 0 ∧ j = 3) ∨ (i = 2 ∧ j = 4)) :</span>
+<span id="L24"><a href="#L24">  24</a>     NonzeroSurvival model.classical.sphere (hiDegree i + hiDegree j) (hiProduct i j) := by</span>
+<span id="L25"><a href="#L25">  25</a>   sorry</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> /-- The low Kervaire squares, including the degree-zero class h₀². -/</span>
+<span id="L28"><a href="#L28">  28</a> public theorem may_low_squares_permanent (j : ℕ) (hj : j ≤ 3) :</span>
+<span id="L29"><a href="#L29">  29</a>     NonzeroSurvival model.classical.sphere (2,((2^(j+1) : ℕ) : ℤ))</span>
+<span id="L30"><a href="#L30">  30</a>       (model.standardClasses.standardHiSquare j) := by</span>
+<span id="L31"><a href="#L31">  31</a>   sorry</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> /-- Mahowald--Tangora&#x27;s 30-stem Kervaire class. -/</span>
+<span id="L34"><a href="#L34">  34</a> public theorem mahowald_tangora_h4_square_permanent :</span>
+<span id="L35"><a href="#L35">  35</a>     NonzeroSurvival model.classical.sphere (2,32)</span>
+<span id="L36"><a href="#L36">  36</a>       (model.standardClasses.standardHiSquare 4) := by</span>
+<span id="L37"><a href="#L37">  37</a>   sorry</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> /-- Mahowald, Theorem 1&#x27;, restricted to the family needed by Corollary 1.5. -/</span>
+<span id="L40"><a href="#L40">  40</a> public theorem mahowald_eta_family_permanent (j : ℕ) (hj : 3 ≤ j) :</span>
+<span id="L41"><a href="#L41">  41</a>     NonzeroSurvival model.classical.sphere (hiDegree 1 + hiDegree j) (hiProduct 1 j) := by</span>
+<span id="L42"><a href="#L42">  42</a>   sorry</span>
+<span id="L43"><a href="#L43">  43</a> </span>
+<span id="L44"><a href="#L44">  44</a> /-- Only the nonzero differential and its actual target degree are chosen;</span>
+<span id="L45"><a href="#L45">  45</a> no arbitrary E₂ symbol is substituted for the target. -/</span>
+<span id="L46"><a href="#L46">  46</a> public theorem mahowald_tangora_h2_h5_d3 :</span>
+<span id="L47"><a href="#L47">  47</a>     ∃ y : model.classical.sphere.Page 2 (5,38),</span>
+<span id="L48"><a href="#L48">  48</a>       HasNonzeroDifferential model.classical.sphere 3 (2,36) (5,38) (hiProduct 2 5) y := by</span>
+<span id="L49"><a href="#L49">  49</a>   sorry</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> public theorem mahowald_tangora_h3_h5_d4 :</span>
+<span id="L52"><a href="#L52">  52</a>     ∃ y : model.classical.sphere.Page 2 (6,43),</span>
+<span id="L53"><a href="#L53">  53</a>       HasNonzeroDifferential model.classical.sphere 4 (2,40) (6,43) (hiProduct 3 5) y := by</span>
+<span id="L54"><a href="#L54">  54</a>   sorry</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> public theorem iwx_h3_h6_d3 :</span>
+<span id="L57"><a href="#L57">  57</a>     ∃ y : model.classical.sphere.Page 2 (5,74),</span>
+<span id="L58"><a href="#L58">  58</a>       HasNonzeroDifferential model.classical.sphere 3 (2,72) (5,74) (hiProduct 3 6) y := by</span>
+<span id="L59"><a href="#L59">  59</a>   sorry</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> /-- IWX&#x27;s nonzero classical d₃ on h₀h₄. This class reaches E₃ and must</span>
+<span id="L62"><a href="#L62">  62</a> therefore be retained by d₂-stage screening before this later exclusion. -/</span>
+<span id="L63"><a href="#L63">  63</a> public theorem iwx_h0_h4_d3 :</span>
+<span id="L64"><a href="#L64">  64</a>     ∃ y : model.classical.sphere.Page 2 (5,19),</span>
+<span id="L65"><a href="#L65">  65</a>       HasNonzeroDifferential model.classical.sphere 3 (2,17) (5,19) (hiProduct 0 4) y := by</span>
+<span id="L66"><a href="#L66">  66</a>   sorry</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> /-- HHR&#x27;s nonexistence theorem transported to the specified standard squares.</span>
+<span id="L69"><a href="#L69">  69</a> It neither selects a differential length nor asserts a known target. -/</span>
+<span id="L70"><a href="#L70">  70</a> public theorem hhr_high_squares_not_permanent (j : ℕ) (hj : 7 ≤ j) :</span>
+<span id="L71"><a href="#L71">  71</a>     ¬ NonzeroSurvival model.classical.sphere (2,((2^(j+1) : ℕ) : ℤ))</span>
+<span id="L72"><a href="#L72">  72</a>       (model.standardClasses.standardHiSquare j) := by</span>
+<span id="L73"><a href="#L73">  73</a>   sorry</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> end KIP126.Literature.Standard</span></pre>

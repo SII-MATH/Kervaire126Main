@@ -1,0 +1,76 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/High125/Detector.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/High125/Detector.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.Choice.LambdaInjectivity</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.Choice.OrderTwo</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.High125.Pages</span>
+<span id="L6"><a href="#L6">   6</a> /-! The tmf injectivity and Hurewicz argument from Main/Solution/Computation/</span>
+<span id="L7"><a href="#L7">   7</a> Lambda.lean:1478–1591, bbac1fc05843 (MIT). The fixed source pi62 vanishing</span>
+<span id="L8"><a href="#L8">   8</a> allows the original realization argument for every sphere representative. -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Main.Internal.High125</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.Main.Internal.Choice</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> private def detectorMap : (S_0_0 : SyntheticSpectrum) ⟶ model.nu.functor.obj model.auxiliary.detector :=</span>
+<span id="L21"><a href="#L21">  21</a>   model.nu.unitIso.inv ≫ model.nu.functor.map model.auxiliary.detectorUnit</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> private theorem detector_page_two_zero (s : ℤ) (hs : s ≤ 0) :</span>
+<span id="L24"><a href="#L24">  24</a>     Subsingleton ((model.classical.obj model.auxiliary.detector).Page 2 (s,63+s)) := by</span>
+<span id="L25"><a href="#L25">  25</a>   let f := (model.classical.map Standard.tmfIso.hom).pageMap 2 (s,63+s)</span>
+<span id="L26"><a href="#L26">  26</a>   let g := (model.classical.map Standard.tmfIso.inv).pageMap 2 (s,63+s)</span>
+<span id="L27"><a href="#L27">  27</a>   have hgf : g ≫ f = 𝟙 _ := by</span>
+<span id="L28"><a href="#L28">  28</a>     dsimp only [f,g]</span>
+<span id="L29"><a href="#L29">  29</a>     rw [←SpectralSequenceMorphism.pageMap_comp,←ClassicalAdamsFamily.map_comp,</span>
+<span id="L30"><a href="#L30">  30</a>       Iso.inv_hom_id,ClassicalAdamsFamily.map_id,SpectralSequenceMorphism.pageMap_id]</span>
+<span id="L31"><a href="#L31">  31</a>   have hf (a : (model.classical.obj model.auxiliary.detector).Page 2 (s,63+s)) : f (g a)=a :=</span>
+<span id="L32"><a href="#L32">  32</a>     ConcreteCategory.congr_hom hgf a</span>
+<span id="L33"><a href="#L33">  33</a>   letI := Standard.tmf_low_filtration63 s hs</span>
+<span id="L34"><a href="#L34">  34</a>   exact ⟨fun a b =&gt; (hf a).symm.trans ((congrArg f (Subsingleton.elim (g a) (g b))).trans (hf b))⟩</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> theorem detector_realization_injective_62_64 :</span>
+<span id="L37"><a href="#L37">  37</a>     Function.Injective (fun a : BiHom 62 64 (model.nu.functor.obj model.auxiliary.detector) =&gt;</span>
+<span id="L38"><a href="#L38">  38</a>       model.recovery.realization.map a) := by</span>
+<span id="L39"><a href="#L39">  39</a>   apply realization_injective_of_lambda_powers (.nu .detector) 62 64</span>
+<span id="L40"><a href="#L40">  40</a>   apply nu_lambda_powers_injective_of_source_halfplane .detector 62 64</span>
+<span id="L41"><a href="#L41">  41</a>   intro q hq r hr x</span>
+<span id="L42"><a href="#L42">  42</a>   have he := page_subsingleton_of_le (model.classical.obj model.auxiliary.detector)</span>
+<span id="L43"><a href="#L43">  43</a>     2 r q (63+q) (by decide) hr (detector_page_two_zero q (by omega))</span>
+<span id="L44"><a href="#L44">  44</a>   have hz : Subsingleton ((model.classical.obj model.auxiliary.detector).Page r (q,q+62+1)) := by</span>
+<span id="L45"><a href="#L45">  45</a>     simpa only [show q+62+1=63+q by omega] using he</span>
+<span id="L46"><a href="#L46">  46</a>   rw [hz.elim x 0,map_zero]</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> theorem synthetic_theta_detector_zero</span>
+<span id="L49"><a href="#L49">  49</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L50"><a href="#L50">  50</a>     theta ≫ detectorMap = 0 := by</span>
+<span id="L51"><a href="#L51">  51</a>   letI := realization_additive</span>
+<span id="L52"><a href="#L52">  52</a>   let a := theta ≫ detectorMap</span>
+<span id="L53"><a href="#L53">  53</a>   let alpha : HomotopyGroup (C := Spectrum) 62 Standard.tmf :=</span>
+<span id="L54"><a href="#L54">  54</a>     (Standard.realization_sphere 62 64).hom ≫ model.recovery.realization.map a ≫</span>
+<span id="L55"><a href="#L55">  55</a>       (model.recovery.nuRealizationIso.app model.auxiliary.detector).hom ≫ Standard.tmfIso.inv</span>
+<span id="L56"><a href="#L56">  56</a>   have hz := Standard.tmf_vanishing62 alpha</span>
+<span id="L57"><a href="#L57">  57</a>   apply detector_realization_injective_62_64</span>
+<span id="L58"><a href="#L58">  58</a>   dsimp only</span>
+<span id="L59"><a href="#L59">  59</a>   rw [Functor.map_zero]</span>
+<span id="L60"><a href="#L60">  60</a>   apply (cancel_epi (Standard.realization_sphere 62 64).hom).mp</span>
+<span id="L61"><a href="#L61">  61</a>   apply (cancel_mono ((model.recovery.nuRealizationIso.app model.auxiliary.detector).hom ≫</span>
+<span id="L62"><a href="#L62">  62</a>     Standard.tmfIso.inv)).mp</span>
+<span id="L63"><a href="#L63">  63</a>   simpa only [alpha,Category.assoc,comp_zero,zero_comp] using hz</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> theorem synthetic_eta_theta_square_detector_zero</span>
+<span id="L66"><a href="#L66">  66</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L67"><a href="#L67">  67</a>     sphereProduct Standard.eta (sphereProduct theta theta) ≫ detectorMap = 0 := by</span>
+<span id="L68"><a href="#L68">  68</a>   have h := synthetic_theta_detector_zero theta</span>
+<span id="L69"><a href="#L69">  69</a>   dsimp only [sphereProduct]</span>
+<span id="L70"><a href="#L70">  70</a>   simp only [Smn] at h</span>
+<span id="L71"><a href="#L71">  71</a>   simp only [Smn,Category.assoc]</span>
+<span id="L72"><a href="#L72">  72</a>   rw [h]</span>
+<span id="L73"><a href="#L73">  73</a>   erw [comp_zero,comp_zero,comp_zero,comp_zero]</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> end</span>
+<span id="L76"><a href="#L76">  76</a> end KIP126.Main.Internal.High125</span></pre>

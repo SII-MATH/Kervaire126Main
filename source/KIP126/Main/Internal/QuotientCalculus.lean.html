@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/QuotientCalculus.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/QuotientCalculus.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Literature.EInfinity</span>
+<span id="L3"><a href="#L3">   3</a> /-! Definitional quotient operations used in the migrated finite-coordinate proofs.</span>
+<span id="L4"><a href="#L4">   4</a> These expose no new mathematical input. -/</span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> namespace KIP126.Main.Internal</span>
+<span id="L7"><a href="#L7">   7</a> open KIP126.Literature</span>
+<span id="L8"><a href="#L8">   8</a> universe u v</span>
+<span id="L9"><a href="#L9">   9</a> variable {R : Type u} [Ring R] {A : Type v} [AddCommGroup A] [Module R A]</span>
+<span id="L10"><a href="#L10">  10</a> theorem subquotientClass_eq_zero_iff (Z B : Submodule R A) (z : Z) :</span>
+<span id="L11"><a href="#L11">  11</a>     subquotientClass Z B z = 0 ↔ z.val ∈ B := by</span>
+<span id="L12"><a href="#L12">  12</a>   exact Submodule.Quotient.mk_eq_zero (B.comap Z.subtype)</span>
+<span id="L13"><a href="#L13">  13</a> end KIP126.Main.Internal</span></pre>

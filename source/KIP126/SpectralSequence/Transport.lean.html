@@ -1,0 +1,199 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Transport.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Transport.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Consumer.BoundedExtension</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Transport for the actual filtered-map equation.  Associated graded maps,</span>
+<span id="L8"><a href="#L8">   8</a> complete target ambiguity, and essentiality are derived from levelwise</span>
+<span id="L9"><a href="#L9">   9</a> isomorphisms.  No boundedness is imposed on the representative equation. -/</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L12"><a href="#L12">  12</a> universe u v w w&#x27;</span>
+<span id="L13"><a href="#L13">  13</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L14"><a href="#L14">  14</a>   {ω : Type w} {ω&#x27; : Type w&#x27;}</span>
+<span id="L15"><a href="#L15">  15</a>   {A B : ω → C} {A&#x27; B&#x27; : ω&#x27; → C}</span>
+<span id="L16"><a href="#L16">  16</a>   {F : Filtration A} {G : Filtration B}</span>
+<span id="L17"><a href="#L17">  17</a>   {F&#x27; : Filtration A&#x27;} {G&#x27; : Filtration B&#x27;}</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> /-- An isomorphism of two specified filtered pieces, retaining actual</span>
+<span id="L20"><a href="#L20">  20</a> representatives in their ambient objects. -/</span>
+<span id="L21"><a href="#L21">  21</a> public structure FilteredPieceIso (F : Filtration A) (F&#x27; : Filtration A&#x27;)</span>
+<span id="L22"><a href="#L22">  22</a>     (k : ω) (k&#x27; : ω&#x27;) where</span>
+<span id="L23"><a href="#L23">  23</a>   ambient : A k ≅ A&#x27; k&#x27;</span>
+<span id="L24"><a href="#L24">  24</a>   level : ∀ s, Subobject.underlying.obj (F.F s k) ≅</span>
+<span id="L25"><a href="#L25">  25</a>     Subobject.underlying.obj (F&#x27;.F s k&#x27;)</span>
+<span id="L26"><a href="#L26">  26</a>   level_arrow : ∀ s, (level s).hom ≫ (F&#x27;.F s k&#x27;).arrow =</span>
+<span id="L27"><a href="#L27">  27</a>     (F.F s k).arrow ≫ ambient.hom</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> namespace FilteredPieceIso</span>
+<span id="L30"><a href="#L30">  30</a> variable {k : ω} {k&#x27; : ω&#x27;}</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> public noncomputable def symm (e : FilteredPieceIso F F&#x27; k k&#x27;) : FilteredPieceIso F&#x27; F k&#x27; k where</span>
+<span id="L33"><a href="#L33">  33</a>   ambient := e.ambient.symm</span>
+<span id="L34"><a href="#L34">  34</a>   level s := (e.level s).symm</span>
+<span id="L35"><a href="#L35">  35</a>   level_arrow s := by</span>
+<span id="L36"><a href="#L36">  36</a>     change (e.level s).inv ≫ (F.F s k).arrow =</span>
+<span id="L37"><a href="#L37">  37</a>       (F&#x27;.F s k&#x27;).arrow ≫ e.ambient.inv</span>
+<span id="L38"><a href="#L38">  38</a>     apply (cancel_epi (e.level s).hom).mp</span>
+<span id="L39"><a href="#L39">  39</a>     simp only [← Category.assoc, Iso.hom_inv_id, Category.id_comp]</span>
+<span id="L40"><a href="#L40">  40</a>     rw [e.level_arrow]</span>
+<span id="L41"><a href="#L41">  41</a>     simp</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> omit [Abelian C] in</span>
+<span id="L44"><a href="#L44">  44</a> /-- Inclusion maps commute because both composites are the same actual</span>
+<span id="L45"><a href="#L45">  45</a> subobject inclusion in the ambient object. -/</span>
+<span id="L46"><a href="#L46">  46</a> public theorem inclusion_comm (e : FilteredPieceIso F F&#x27; k k&#x27;) (s : ℤ) :</span>
+<span id="L47"><a href="#L47">  47</a>     Subobject.ofLE _ _ (F.mono s k) ≫ (e.level s).hom =</span>
+<span id="L48"><a href="#L48">  48</a>       (e.level (s+1)).hom ≫ Subobject.ofLE _ _ (F&#x27;.mono s k&#x27;) := by</span>
+<span id="L49"><a href="#L49">  49</a>   apply (cancel_mono (F&#x27;.F s k&#x27;).arrow).mp</span>
+<span id="L50"><a href="#L50">  50</a>   simp only [Category.assoc, e.level_arrow, Subobject.ofLE_arrow_assoc,</span>
+<span id="L51"><a href="#L51">  51</a>     Subobject.ofLE_arrow]</span>
+<span id="L52"><a href="#L52">  52</a> </span>
+<span id="L53"><a href="#L53">  53</a> public noncomputable def gradedIso (e : FilteredPieceIso F F&#x27; k k&#x27;) (s : ℤ) :</span>
+<span id="L54"><a href="#L54">  54</a>     F.associatedGraded s k ≅ F&#x27;.associatedGraded s k&#x27; :=</span>
+<span id="L55"><a href="#L55">  55</a>   cokernel.mapIso (Subobject.ofLE _ _ (F.mono s k))</span>
+<span id="L56"><a href="#L56">  56</a>     (Subobject.ofLE _ _ (F&#x27;.mono s k&#x27;)) (e.level (s+1)) (e.level s)</span>
+<span id="L57"><a href="#L57">  57</a>     (e.inclusion_comm s)</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> public theorem projection_comm (e : FilteredPieceIso F F&#x27; k k&#x27;) (s : ℤ) :</span>
+<span id="L60"><a href="#L60">  60</a>     F.toAssociatedGraded s k ≫ (e.gradedIso s).hom =</span>
+<span id="L61"><a href="#L61">  61</a>       (e.level s).hom ≫ F&#x27;.toAssociatedGraded s k&#x27; := by</span>
+<span id="L62"><a href="#L62">  62</a>   dsimp only [gradedIso, Filtration.toAssociatedGraded, cokernel.mapIso]</span>
+<span id="L63"><a href="#L63">  63</a>   exact cokernel.π_desc _ _ _</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> public theorem projection_inv_comm (e : FilteredPieceIso F F&#x27; k k&#x27;) (s : ℤ) :</span>
+<span id="L66"><a href="#L66">  66</a>     F&#x27;.toAssociatedGraded s k&#x27; ≫ (e.gradedIso s).inv =</span>
+<span id="L67"><a href="#L67">  67</a>       (e.level s).inv ≫ F.toAssociatedGraded s k := by</span>
+<span id="L68"><a href="#L68">  68</a>   apply (cancel_epi (e.level s).hom).mp</span>
+<span id="L69"><a href="#L69">  69</a>   rw [← Category.assoc, ← e.projection_comm]</span>
+<span id="L70"><a href="#L70">  70</a>   simp</span>
+<span id="L71"><a href="#L71">  71</a> end FilteredPieceIso</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> /-- A commuting square between the actual filtered maps, together with</span>
+<span id="L74"><a href="#L74">  74</a> isomorphisms on every source and target filtration level. -/</span>
+<span id="L75"><a href="#L75">  75</a> public structure FilteredMapTransport (f : FilteredMorphism F G)</span>
+<span id="L76"><a href="#L76">  76</a>     (f&#x27; : FilteredMorphism F&#x27; G&#x27;) (k : ω) (k&#x27; : ω&#x27;) where</span>
+<span id="L77"><a href="#L77">  77</a>   source : FilteredPieceIso F F&#x27; k k&#x27;</span>
+<span id="L78"><a href="#L78">  78</a>   target : FilteredPieceIso G G&#x27; k k&#x27;</span>
+<span id="L79"><a href="#L79">  79</a>   map_comm : source.ambient.hom ≫ f&#x27;.map k&#x27; = f.map k ≫ target.ambient.hom</span>
+<span id="L80"><a href="#L80">  80</a> </span>
+<span id="L81"><a href="#L81">  81</a> namespace FilteredMapTransport</span>
+<span id="L82"><a href="#L82">  82</a> variable {f : FilteredMorphism F G} {f&#x27; : FilteredMorphism F&#x27; G&#x27;}</span>
+<span id="L83"><a href="#L83">  83</a>   {k : ω} {k&#x27; : ω&#x27;} (e : FilteredMapTransport f f&#x27; k k&#x27;)</span>
+<span id="L84"><a href="#L84">  84</a>   {T : C} {s n : ℤ}</span>
+<span id="L85"><a href="#L85">  85</a> </span>
+<span id="L86"><a href="#L86">  86</a> omit [Abelian C] in</span>
+<span id="L87"><a href="#L87">  87</a> /-- The chosen representatives transport along the actual level isomorphisms. -/</span>
+<span id="L88"><a href="#L88">  88</a> public theorem representative_equation_iff</span>
+<span id="L89"><a href="#L89">  89</a>     (a : T ⟶ Subobject.underlying.obj (F.F s k))</span>
+<span id="L90"><a href="#L90">  90</a>     (b : T ⟶ Subobject.underlying.obj (G.F (s+n) k)) :</span>
+<span id="L91"><a href="#L91">  91</a>     a ≫ (F.F s k).arrow ≫ f.map k = b ≫ (G.F (s+n) k).arrow ↔</span>
+<span id="L92"><a href="#L92">  92</a>       (a ≫ (e.source.level s).hom) ≫ (F&#x27;.F s k&#x27;).arrow ≫ f&#x27;.map k&#x27; =</span>
+<span id="L93"><a href="#L93">  93</a>         (b ≫ (e.target.level (s+n)).hom) ≫ (G&#x27;.F (s+n) k&#x27;).arrow := by</span>
+<span id="L94"><a href="#L94">  94</a>   have hsource := e.source.level_arrow s</span>
+<span id="L95"><a href="#L95">  95</a>   have htarget := e.target.level_arrow (s+n)</span>
+<span id="L96"><a href="#L96">  96</a>   simp only [Category.assoc]</span>
+<span id="L97"><a href="#L97">  97</a>   rw [← Category.assoc (e.source.level s).hom, hsource, Category.assoc, e.map_comm]</span>
+<span id="L98"><a href="#L98">  98</a>   rw [htarget]</span>
+<span id="L99"><a href="#L99">  99</a>   constructor</span>
+<span id="L100"><a href="#L100"> 100</a>   · intro h</span>
+<span id="L101"><a href="#L101"> 101</a>     simpa only [Category.assoc] using congrArg (fun z =&gt; z ≫ e.target.ambient.hom) h</span>
+<span id="L102"><a href="#L102"> 102</a>   · intro h</span>
+<span id="L103"><a href="#L103"> 103</a>     apply (cancel_mono e.target.ambient.hom).mp</span>
+<span id="L104"><a href="#L104"> 104</a>     simpa only [Category.assoc] using h</span>
+<span id="L105"><a href="#L105"> 105</a> </span>
+<span id="L106"><a href="#L106"> 106</a> public theorem relation_iff</span>
+<span id="L107"><a href="#L107"> 107</a>     (x : T ⟶ F.associatedGraded s k)</span>
+<span id="L108"><a href="#L108"> 108</a>     (y : T ⟶ G.associatedGraded (s+n) k) :</span>
+<span id="L109"><a href="#L109"> 109</a>     FilteredMapExtension.Relation f k s n x y ↔</span>
+<span id="L110"><a href="#L110"> 110</a>       FilteredMapExtension.Relation f&#x27; k&#x27; s n</span>
+<span id="L111"><a href="#L111"> 111</a>         (x ≫ (e.source.gradedIso s).hom) (y ≫ (e.target.gradedIso (s+n)).hom) := by</span>
+<span id="L112"><a href="#L112"> 112</a>   constructor</span>
+<span id="L113"><a href="#L113"> 113</a>   · rintro ⟨hn, a, b, ha, hb, he⟩</span>
+<span id="L114"><a href="#L114"> 114</a>     refine ⟨hn, a ≫ (e.source.level s).hom,</span>
+<span id="L115"><a href="#L115"> 115</a>       b ≫ (e.target.level (s+n)).hom, ?_, ?_,</span>
+<span id="L116"><a href="#L116"> 116</a>       (e.representative_equation_iff a b).mp he⟩</span>
+<span id="L117"><a href="#L117"> 117</a>     · rw [Category.assoc, ← e.source.projection_comm, ← Category.assoc, ha]</span>
+<span id="L118"><a href="#L118"> 118</a>     · rw [Category.assoc, ← e.target.projection_comm, ← Category.assoc, hb]</span>
+<span id="L119"><a href="#L119"> 119</a>   · rintro ⟨hn, a, b, ha, hb, he⟩</span>
+<span id="L120"><a href="#L120"> 120</a>     refine ⟨hn, a ≫ (e.source.level s).inv,</span>
+<span id="L121"><a href="#L121"> 121</a>       b ≫ (e.target.level (s+n)).inv, ?_, ?_, ?_⟩</span>
+<span id="L122"><a href="#L122"> 122</a>     · rw [Category.assoc, ← e.source.projection_inv_comm, ← Category.assoc, ha]</span>
+<span id="L123"><a href="#L123"> 123</a>       simp</span>
+<span id="L124"><a href="#L124"> 124</a>     · rw [Category.assoc, ← e.target.projection_inv_comm, ← Category.assoc, hb]</span>
+<span id="L125"><a href="#L125"> 125</a>       simp</span>
+<span id="L126"><a href="#L126"> 126</a>     · apply (e.representative_equation_iff _ _).mpr</span>
+<span id="L127"><a href="#L127"> 127</a>       simpa using he</span>
+<span id="L128"><a href="#L128"> 128</a> </span>
+<span id="L129"><a href="#L129"> 129</a> /-- Complete homogeneous ambiguity, rather than a selected correction subgroup. -/</span>
+<span id="L130"><a href="#L130"> 130</a> public theorem indeterminacy_iff (z : T ⟶ G.associatedGraded (s+n) k) :</span>
+<span id="L131"><a href="#L131"> 131</a>     z ∈ FilteredMapExtension.TargetIndeterminacy f k s n T ↔</span>
+<span id="L132"><a href="#L132"> 132</a>       z ≫ (e.target.gradedIso (s+n)).hom ∈</span>
+<span id="L133"><a href="#L133"> 133</a>         FilteredMapExtension.TargetIndeterminacy f&#x27; k&#x27; s n T := by</span>
+<span id="L134"><a href="#L134"> 134</a>   simpa only [FilteredMapExtension.TargetIndeterminacy, Set.mem_setOf_eq,</span>
+<span id="L135"><a href="#L135"> 135</a>     zero_comp] using e.relation_iff (0 : T ⟶ F.associatedGraded s k) z</span>
+<span id="L136"><a href="#L136"> 136</a> </span>
+<span id="L137"><a href="#L137"> 137</a> public theorem targetCoset_iff (y z : T ⟶ G.associatedGraded (s+n) k) :</span>
+<span id="L138"><a href="#L138"> 138</a>     z ∈ FilteredMapExtension.TargetCoset f k s n y ↔</span>
+<span id="L139"><a href="#L139"> 139</a>       z ≫ (e.target.gradedIso (s+n)).hom ∈</span>
+<span id="L140"><a href="#L140"> 140</a>         FilteredMapExtension.TargetCoset f&#x27; k&#x27; s n</span>
+<span id="L141"><a href="#L141"> 141</a>           (y ≫ (e.target.gradedIso (s+n)).hom) := by</span>
+<span id="L142"><a href="#L142"> 142</a>   simpa only [FilteredMapExtension.TargetCoset, Set.mem_setOf_eq,</span>
+<span id="L143"><a href="#L143"> 143</a>     Preadditive.sub_comp] using e.indeterminacy_iff (z-y)</span>
+<span id="L144"><a href="#L144"> 144</a> </span>
+<span id="L145"><a href="#L145"> 145</a> public theorem essential_iff (x : T ⟶ F.associatedGraded s k)</span>
+<span id="L146"><a href="#L146"> 146</a>     (y : T ⟶ G.associatedGraded (s+n) k) :</span>
+<span id="L147"><a href="#L147"> 147</a>     FilteredMapExtension.Essential f k s n x y ↔</span>
+<span id="L148"><a href="#L148"> 148</a>       FilteredMapExtension.Essential f&#x27; k&#x27; s n</span>
+<span id="L149"><a href="#L149"> 149</a>         (x ≫ (e.source.gradedIso s).hom) (y ≫ (e.target.gradedIso (s+n)).hom) := by</span>
+<span id="L150"><a href="#L150"> 150</a>   unfold FilteredMapExtension.Essential</span>
+<span id="L151"><a href="#L151"> 151</a>   rw [e.relation_iff]</span>
+<span id="L152"><a href="#L152"> 152</a>   have h := e.targetCoset_iff y (0 : T ⟶ G.associatedGraded (s+n) k)</span>
+<span id="L153"><a href="#L153"> 153</a>   simpa only [zero_comp] using and_congr_right (fun _ =&gt; not_congr h)</span>
+<span id="L154"><a href="#L154"> 154</a> </span>
+<span id="L155"><a href="#L155"> 155</a> /-- An actual higher-source-filtration essential extension crossing the</span>
+<span id="L156"><a href="#L156"> 156</a> selected target level. Nonnegative lengths and the same test object remain explicit. -/</span>
+<span id="L157"><a href="#L157"> 157</a> public def NoCrossing (f : FilteredMorphism F G) (k : ω) (s n : ℤ) (T : C) : Prop :=</span>
+<span id="L158"><a href="#L158"> 158</a>   ¬ ∃ (a m : ℤ), 0 &lt; a ∧ 0 ≤ m ∧ a + m ≤ n ∧</span>
+<span id="L159"><a href="#L159"> 159</a>     ∃ (x : T ⟶ F.associatedGraded (s+a) k)</span>
+<span id="L160"><a href="#L160"> 160</a>       (y : T ⟶ G.associatedGraded ((s+a)+m) k),</span>
+<span id="L161"><a href="#L161"> 161</a>       FilteredMapExtension.Essential f k (s+a) m x y</span>
+<span id="L162"><a href="#L162"> 162</a> </span>
+<span id="L163"><a href="#L163"> 163</a> include e in</span>
+<span id="L164"><a href="#L164"> 164</a> public theorem noCrossing_iff (s n : ℤ) (T : C) :</span>
+<span id="L165"><a href="#L165"> 165</a>     NoCrossing f k s n T ↔ NoCrossing f&#x27; k&#x27; s n T := by</span>
+<span id="L166"><a href="#L166"> 166</a>   apply not_congr</span>
+<span id="L167"><a href="#L167"> 167</a>   constructor</span>
+<span id="L168"><a href="#L168"> 168</a>   · rintro ⟨a, m, ha, hm, hmn, x, y, he⟩</span>
+<span id="L169"><a href="#L169"> 169</a>     exact ⟨a, m, ha, hm, hmn, _, _, (e.essential_iff x y).mp he⟩</span>
+<span id="L170"><a href="#L170"> 170</a>   · rintro ⟨a, m, ha, hm, hmn, x, y, he⟩</span>
+<span id="L171"><a href="#L171"> 171</a>     refine ⟨a, m, ha, hm, hmn, x ≫ (e.source.gradedIso (s+a)).inv,</span>
+<span id="L172"><a href="#L172"> 172</a>       y ≫ (e.target.gradedIso ((s+a)+m)).inv, ?_⟩</span>
+<span id="L173"><a href="#L173"> 173</a>     apply (e.essential_iff _ _).mpr</span>
+<span id="L174"><a href="#L174"> 174</a>     simpa using he</span>
+<span id="L175"><a href="#L175"> 175</a> </span>
+<span id="L176"><a href="#L176"> 176</a> /-- ESS differential transport is available when both actual filtrations</span>
+<span id="L177"><a href="#L177"> 177</a> are bounded and the test object is projective. General representative</span>
+<span id="L178"><a href="#L178"> 178</a> transport above does not silently assert those hypotheses. -/</span>
+<span id="L179"><a href="#L179"> 179</a> public theorem differentialRelation_iff</span>
+<span id="L180"><a href="#L180"> 180</a>     (hF : F.IsBounded) (hG : G.IsBounded)</span>
+<span id="L181"><a href="#L181"> 181</a>     (hF&#x27; : F&#x27;.IsBounded) (hG&#x27; : G&#x27;.IsBounded)</span>
+<span id="L182"><a href="#L182"> 182</a>     (s : ℤ) (n : ℕ) [Projective T]</span>
+<span id="L183"><a href="#L183"> 183</a>     (x : T ⟶ F.associatedGraded s k)</span>
+<span id="L184"><a href="#L184"> 184</a>     (y : T ⟶ G.associatedGraded (s+(n:ℤ)) k) :</span>
+<span id="L185"><a href="#L185"> 185</a>     DifferentialRelation (FilteredMapExtension.sequence f hF hG k) n (s,1)</span>
+<span id="L186"><a href="#L186"> 186</a>       (x ≫ (FilteredMapExtension.sourceIso f hF hG k s).inv)</span>
+<span id="L187"><a href="#L187"> 187</a>       (y ≫ (FilteredMapExtension.targetIso f hF hG k s n).inv) ↔</span>
+<span id="L188"><a href="#L188"> 188</a>     DifferentialRelation (FilteredMapExtension.sequence f&#x27; hF&#x27; hG&#x27; k&#x27;) n (s,1)</span>
+<span id="L189"><a href="#L189"> 189</a>       (x ≫ (e.source.gradedIso s).hom ≫</span>
+<span id="L190"><a href="#L190"> 190</a>         (FilteredMapExtension.sourceIso f&#x27; hF&#x27; hG&#x27; k&#x27; s).inv)</span>
+<span id="L191"><a href="#L191"> 191</a>       (y ≫ (e.target.gradedIso (s+(n:ℤ))).hom ≫</span>
+<span id="L192"><a href="#L192"> 192</a>         (FilteredMapExtension.targetIso f&#x27; hF&#x27; hG&#x27; k&#x27; s n).inv) := by</span>
+<span id="L193"><a href="#L193"> 193</a>   rw [FilteredMapExtension.differentialRelation_iff]</span>
+<span id="L194"><a href="#L194"> 194</a>   rw [← Category.assoc x, ← Category.assoc y,</span>
+<span id="L195"><a href="#L195"> 195</a>     FilteredMapExtension.differentialRelation_iff]</span>
+<span id="L196"><a href="#L196"> 196</a>   exact e.relation_iff x y</span>
+<span id="L197"><a href="#L197"> 197</a> </span>
+<span id="L198"><a href="#L198"> 198</a> end FilteredMapTransport</span>
+<span id="L199"><a href="#L199"> 199</a> end KIP126.Core.SpectralSequence</span></pre>

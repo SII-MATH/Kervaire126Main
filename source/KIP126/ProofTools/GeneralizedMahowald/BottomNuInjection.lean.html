@@ -1,0 +1,247 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/BottomNuInjection.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/BottomNuInjection.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.SourceBoundaryReview</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.RotatedNuPremises</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.GeneralizedMahowald.RotatedNuTriangle</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.GeneralizedMahowald.NuCofiberMayCorrection</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.GeneralizedLeibniz.Reverse</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.GeneralizedMahowald.HMapCoherence</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature KIP126.Classical.Adams</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L19"><a href="#L19">  19</a> set_option maxHeartbeats 2000000</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> private theorem specific_top_lambda_injective</span>
+<span id="L22"><a href="#L22">  22</a>     (a : Smn 14 17 ⟶ (SyntheticCategory.biShift (0,-1)).obj (Smn 4 4 : SyntheticSpectrum))</span>
+<span id="L23"><a href="#L23">  23</a>     (ha : a≫SyntheticCategory.lam.app (Smn 4 4)=0) : a=0 := by</span>
+<span id="L24"><a href="#L24">  24</a>   let F := shiftFunctor SyntheticSpectrum (1:ℤ)</span>
+<span id="L25"><a href="#L25">  25</a>   have hz : ∀ b : F.obj (Smn 14 17) ⟶ XModLambdaN (Smn 4 4) 1, b=0 := by</span>
+<span id="L26"><a href="#L26">  26</a>     intro b</span>
+<span id="L27"><a href="#L27">  27</a>     let e : F.obj (Smn 14 17) ≅ Smn 15 17 :=</span>
+<span id="L28"><a href="#L28">  28</a>       (SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1).symm.app _ ≪≫</span>
+<span id="L29"><a href="#L29">  29</a>       (SyntheticCategory.biShift_comp (14,17) (1,0)).app S_0_0</span>
+<span id="L30"><a href="#L30">  30</a>     apply (cancel_epi e.inv).mp</span>
+<span id="L31"><a href="#L31">  31</a>     simpa only [comp_zero] using balanced_four_first_quotient_15_17_zero (e.inv≫b)</span>
+<span id="L32"><a href="#L32">  32</a>   have hs : F.map a≫F.map (lambdaPow 1 (Smn 4 4))=0 := by</span>
+<span id="L33"><a href="#L33">  33</a>     rw [←Functor.map_comp,lambdaPow_one model.quotients.coherence,ha,Functor.map_zero]</span>
+<span id="L34"><a href="#L34">  34</a>   obtain ⟨b,hb⟩ := (XModLambdaN.cofiberTriangle (Smn 4 4) 1).coyoneda_exact₁</span>
+<span id="L35"><a href="#L35">  35</a>     (XModLambdaN.cofiberTriangle_distinguished (Smn 4 4) 1) (F.map a) hs</span>
+<span id="L36"><a href="#L36">  36</a>   have hf : F.map a=0 := by rw [hb,hz b,zero_comp]</span>
+<span id="L37"><a href="#L37">  37</a>   exact F.map_injective (by simpa only [Functor.map_zero] using hf)</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> private theorem sphere_ext_three_fourteen_zero (x : Ambient model .sphere (3,14)) : x=0 := by</span>
+<span id="L41"><a href="#L41">  41</a>   let e := KIP126.Computation.Standard.coordinates 3 14 (by decide)</span>
+<span id="L42"><a href="#L42">  42</a>   have hn : KIP126.Computation.Standard.archive.basisCount 3 14 = 0 :=</span>
+<span id="L43"><a href="#L43">  43</a>     (KIP126.Computation.Table.archive_dimension 3 14 (by decide)).trans (by decide)</span>
+<span id="L44"><a href="#L44">  44</a>   haveI : Subsingleton (Fin (KIP126.Computation.Standard.archive.basisCount 3 14) →₀ ZMod 2) := by</span>
+<span id="L45"><a href="#L45">  45</a>     rw [hn]</span>
+<span id="L46"><a href="#L46">  46</a>     infer_instance</span>
+<span id="L47"><a href="#L47">  47</a>   apply e.injective</span>
+<span id="L48"><a href="#L48">  48</a>   exact Subsingleton.elim _ _</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> private theorem sphere_nu_infinity_zero_of_ambient_zero (s t w : ℤ)</span>
+<span id="L51"><a href="#L51">  51</a>     (hz : ∀ x : Ambient model .sphere (s,t), x=0) :</span>
+<span id="L52"><a href="#L52">  52</a>     IsZero (((model.family.nu model.nu (ClassicalObject.sphere.obj model.auxiliary)).sequence.ssData</span>
+<span id="L53"><a href="#L53">  53</a>       (s,t,w)).eInfty) := by</span>
+<span id="L54"><a href="#L54">  54</a>   haveI : Subsingleton (Ambient model .sphere (s,t)) := ⟨fun x y =&gt; (hz x).trans (hz y).symm⟩</span>
+<span id="L55"><a href="#L55">  55</a>   haveI : Subsingleton (KIP126.Literature.nuEInftyModel model .sphere (s,t) w) := by</span>
+<span id="L56"><a href="#L56">  56</a>     unfold KIP126.Literature.nuEInftyModel</span>
+<span id="L57"><a href="#L57">  57</a>     split &lt;;&gt; infer_instance</span>
+<span id="L58"><a href="#L58">  58</a>   haveI : Subsingleton (((model.family.nu model.nu</span>
+<span id="L59"><a href="#L59">  59</a>       (ClassicalObject.sphere.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty) :=</span>
+<span id="L60"><a href="#L60">  60</a>     (KIP126.Literature.Standard.eInfinity_nu .sphere (s,t) w).injective.subsingleton</span>
+<span id="L61"><a href="#L61">  61</a>   exact ModuleCat.isZero_of_subsingleton _</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> private theorem nuSphere_pi_11_13_filtration_four</span>
+<span id="L64"><a href="#L64">  64</a>     (a : BiHom 11 13 (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary))) :</span>
+<span id="L65"><a href="#L65">  65</a>     FiltrationAtLeast model.syntheticTower 4 a := by</span>
+<span id="L66"><a href="#L66">  66</a>   have ha2 := nu_bottom_filtration .sphere 2 13 a</span>
+<span id="L67"><a href="#L67">  67</a>   apply (filtration_iff_of_infinity_zero (model.convergence (.nu .sphere)) 2 4 11 13</span>
+<span id="L68"><a href="#L68">  68</a>     (by decide) ?_ a).mp ha2</span>
+<span id="L69"><a href="#L69">  69</a>   intro j hj2 hj4</span>
+<span id="L70"><a href="#L70">  70</a>   have hj : j=2 ∨ j=3 := by omega</span>
+<span id="L71"><a href="#L71">  71</a>   rcases hj with rfl | rfl</span>
+<span id="L72"><a href="#L72">  72</a>   · exact sphere_nu_infinity_zero_of_ambient_zero 2 13 13 sphere_ext_two_thirteen_zero</span>
+<span id="L73"><a href="#L73">  73</a>   · exact sphere_nu_infinity_zero_of_ambient_zero 3 14 13 sphere_ext_three_fourteen_zero</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> private theorem specific_source_to_first_quotient_zero</span>
+<span id="L76"><a href="#L76">  76</a>     (z : BiHom 14 17 (Smn 3 4 : SyntheticSpectrum))</span>
+<span id="L77"><a href="#L77">  77</a>     (d : (Smn 3 4 : SyntheticSpectrum) ⟶</span>
+<span id="L78"><a href="#L78">  78</a>       XModLambdaN (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary)) 1) : z≫d=0 := by</span>
+<span id="L79"><a href="#L79">  79</a>   let e := suspInvarianceAddEquiv 11 13 3 4 (S_0_0 : SyntheticSpectrum)</span>
+<span id="L80"><a href="#L80">  80</a>   let z₀ : BiHom 11 13 (S_0_0 : SyntheticSpectrum) := e.symm z</span>
+<span id="L81"><a href="#L81">  81</a>   let a := z₀≫model.nu.unitIso.inv</span>
+<span id="L82"><a href="#L82">  82</a>   have ha4 := nuSphere_pi_11_13_filtration_four a</span>
+<span id="L83"><a href="#L83">  83</a>   have hz4 : FiltrationAtLeast model.syntheticTower 4 z₀ := by</span>
+<span id="L84"><a href="#L84">  84</a>     have h := map_preserves_filtration (model.convergentMap (.nu .sphere) .sphere model.nu.unitIso.hom)</span>
+<span id="L85"><a href="#L85">  85</a>       (11,13) 4 a ha4</span>
+<span id="L86"><a href="#L86">  86</a>     simpa only [a,Category.assoc,Iso.inv_hom_id,Category.comp_id,FiltrationAtLeast,SyntheticObject.obj] using h</span>
+<span id="L87"><a href="#L87">  87</a>   have hzshift : FiltrationAtLeast model.syntheticTower 4 (e z₀) := by</span>
+<span id="L88"><a href="#L88">  88</a>     have h := (shift_filtration_iff .sphere (3,4) (11,13) 4 z₀).mpr hz4</span>
+<span id="L89"><a href="#L89">  89</a>     simpa [e,suspInvarianceAddEquiv,shiftHomotopyClass,susp_invariance,Iso.homCongr] using h</span>
+<span id="L90"><a href="#L90">  90</a>   have hz : FiltrationAtLeast model.syntheticTower 4 z := by</span>
+<span id="L91"><a href="#L91">  91</a>     simpa only [z₀,AddEquiv.apply_symm_apply] using hzshift</span>
+<span id="L92"><a href="#L92">  92</a>   have hd := map_preserves_filtration (model.convergentMap (.shift (3,4) .sphere)</span>
+<span id="L93"><a href="#L93">  93</a>     (.quotient 1 (.nu .sphere)) d) (14,17) 4 z hz</span>
+<span id="L94"><a href="#L94">  94</a>   exact finite_high_filtration_zero .sphere 1 (by decide) 14 17 4 (by decide) (z≫d) hd</span>
+<span id="L95"><a href="#L95">  95</a> </span>
+<span id="L96"><a href="#L96">  96</a> </span>
+<span id="L97"><a href="#L97">  97</a> private theorem specific_two_cell_first_quotient_injective</span>
+<span id="L98"><a href="#L98">  98</a>     (T : Triangle SyntheticSpectrum) (hT : T∈distTriang SyntheticSpectrum)</span>
+<span id="L99"><a href="#L99">  99</a>     (eA : T.obj₁ ≅ (Smn 3 4 : SyntheticSpectrum))</span>
+<span id="L100"><a href="#L100"> 100</a>     (eB : T.obj₂ ≅ model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary))</span>
+<span id="L101"><a href="#L101"> 101</a>     (α : BiHom 14 17 T.obj₂)</span>
+<span id="L102"><a href="#L102"> 102</a>     (hα : α≫T.mor₂≫XModLambdaN.incl T.obj₃ 1=0) :</span>
+<span id="L103"><a href="#L103"> 103</a>     α≫XModLambdaN.incl T.obj₂ 1=0 := by</span>
+<span id="L104"><a href="#L104"> 104</a>   let L := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L105"><a href="#L105"> 105</a>   letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L106"><a href="#L106"> 106</a>   letI := model.exactness.shiftExact (0,-1)</span>
+<span id="L107"><a href="#L107"> 107</a>   let eTop : T.obj₁⟦(1:ℤ)⟧ ≅ (Smn 4 4 : SyntheticSpectrum) :=</span>
+<span id="L108"><a href="#L108"> 108</a>     (shiftFunctor SyntheticSpectrum (1:ℤ)).mapIso eA ≪≫</span>
+<span id="L109"><a href="#L109"> 109</a>       (SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1).symm.app _ ≪≫</span>
+<span id="L110"><a href="#L110"> 110</a>       (SyntheticCategory.biShift_comp (3,4) (1,0)).app S_0_0</span>
+<span id="L111"><a href="#L111"> 111</a>   obtain ⟨β,hβ⟩ := (XModLambdaN.cofiberTriangle T.obj₃ 1).coyoneda_exact₂</span>
+<span id="L112"><a href="#L112"> 112</a>     (XModLambdaN.cofiberTriangle_distinguished T.obj₃ 1) (α≫T.mor₂) (by</span>
+<span id="L113"><a href="#L113"> 113</a>       change (α≫T.mor₂)≫XModLambdaN.incl T.obj₃ 1=0</span>
+<span id="L114"><a href="#L114"> 114</a>       simpa only [Category.assoc] using hα)</span>
+<span id="L115"><a href="#L115"> 115</a>   change BiHom 14 17 (L.obj T.obj₃) at β</span>
+<span id="L116"><a href="#L116"> 116</a>   change α≫T.mor₂=β≫lambdaPow 1 T.obj₃ at hβ</span>
+<span id="L117"><a href="#L117"> 117</a>   let γ := β≫L.map T.mor₃</span>
+<span id="L118"><a href="#L118"> 118</a>   have hγ : γ≫lambdaPow 1 (T.obj₁⟦(1:ℤ)⟧)=0 := by</span>
+<span id="L119"><a href="#L119"> 119</a>     have hnat : L.map T.mor₃≫lambdaPow 1 (T.obj₁⟦(1:ℤ)⟧)=lambdaPow 1 T.obj₃≫T.mor₃ :=</span>
+<span id="L120"><a href="#L120"> 120</a>       lambdaPow_naturality 1 T.mor₃</span>
+<span id="L121"><a href="#L121"> 121</a>     dsimp only [γ]</span>
+<span id="L122"><a href="#L122"> 122</a>     rw [Category.assoc,hnat,←Category.assoc,←hβ,</span>
+<span id="L123"><a href="#L123"> 123</a>       Category.assoc,comp_distTriang_mor_zero₂₃ T hT,comp_zero]</span>
+<span id="L124"><a href="#L124"> 124</a>   have hγtop : (γ≫L.map eTop.hom)≫SyntheticCategory.lam.app (Smn 4 4)=0 := by</span>
+<span id="L125"><a href="#L125"> 125</a>     have hnat : L.map eTop.hom≫lambdaPow 1 (Smn 4 4)=</span>
+<span id="L126"><a href="#L126"> 126</a>         lambdaPow 1 (T.obj₁⟦(1:ℤ)⟧)≫eTop.hom := lambdaPow_naturality 1 eTop.hom</span>
+<span id="L127"><a href="#L127"> 127</a>     rw [←lambdaPow_one model.quotients.coherence,Category.assoc,hnat,←Category.assoc,hγ,zero_comp]</span>
+<span id="L128"><a href="#L128"> 128</a>   have hγ0 : γ=0 := by</span>
+<span id="L129"><a href="#L129"> 129</a>     have hz := specific_top_lambda_injective (γ≫L.map eTop.hom) hγtop</span>
+<span id="L130"><a href="#L130"> 130</a>     apply (cancel_mono (L.map eTop.hom)).mp</span>
+<span id="L131"><a href="#L131"> 131</a>     simpa only [zero_comp] using hz</span>
+<span id="L132"><a href="#L132"> 132</a>   let U := L.mapTriangle.obj T</span>
+<span id="L133"><a href="#L133"> 133</a>   have hU : U∈distTriang SyntheticSpectrum := L.map_distinguished T hT</span>
+<span id="L134"><a href="#L134"> 134</a>   have hβδ : β≫U.mor₃=0 := by</span>
+<span id="L135"><a href="#L135"> 135</a>     change β≫(L.map T.mor₃≫(L.commShiftIso (1:ℤ)).hom.app _)=0</span>
+<span id="L136"><a href="#L136"> 136</a>     rw [←Category.assoc]</span>
+<span id="L137"><a href="#L137"> 137</a>     change γ≫_=0</span>
+<span id="L138"><a href="#L138"> 138</a>     rw [hγ0,zero_comp]</span>
+<span id="L139"><a href="#L139"> 139</a>   obtain ⟨η,hη⟩ := U.coyoneda_exact₃ hU β hβδ</span>
+<span id="L140"><a href="#L140"> 140</a>   change BiHom 14 17 (L.obj T.obj₂) at η</span>
+<span id="L141"><a href="#L141"> 141</a>   change β=η≫L.map T.mor₂ at hη</span>
+<span id="L142"><a href="#L142"> 142</a>   have hdiff : (α-η≫lambdaPow 1 T.obj₂)≫T.mor₂=0 := by</span>
+<span id="L143"><a href="#L143"> 143</a>     have hnat : lambdaPow 1 T.obj₂≫T.mor₂=L.map T.mor₂≫lambdaPow 1 T.obj₃ :=</span>
+<span id="L144"><a href="#L144"> 144</a>       (lambdaPow_naturality 1 T.mor₂).symm</span>
+<span id="L145"><a href="#L145"> 145</a>     rw [Preadditive.sub_comp,Category.assoc,hnat,</span>
+<span id="L146"><a href="#L146"> 146</a>       ←Category.assoc]</span>
+<span id="L147"><a href="#L147"> 147</a>     change α≫T.mor₂-(η≫L.map T.mor₂)≫lambdaPow 1 T.obj₃=0</span>
+<span id="L148"><a href="#L148"> 148</a>     rw [←hη,←hβ,sub_self]</span>
+<span id="L149"><a href="#L149"> 149</a>   obtain ⟨ζ,hζ⟩ := T.coyoneda_exact₂ hT (α-η≫lambdaPow 1 T.obj₂) hdiff</span>
+<span id="L150"><a href="#L150"> 150</a>   have hzsource : ζ≫T.mor₁≫XModLambdaN.incl T.obj₂ 1≫XModLambdaN.map eB.hom 1=0 := by</span>
+<span id="L151"><a href="#L151"> 151</a>     have hz := specific_source_to_first_quotient_zero (ζ≫eA.hom)</span>
+<span id="L152"><a href="#L152"> 152</a>       (eA.inv≫T.mor₁≫XModLambdaN.incl T.obj₂ 1≫XModLambdaN.map eB.hom 1)</span>
+<span id="L153"><a href="#L153"> 153</a>     simpa only [Category.assoc,Iso.hom_inv_id_assoc] using hz</span>
+<span id="L154"><a href="#L154"> 154</a>   have hh := congrArg (fun f =&gt; f≫XModLambdaN.incl T.obj₂ 1≫XModLambdaN.map eB.hom 1) hζ</span>
+<span id="L155"><a href="#L155"> 155</a>   have hηzero : η≫lambdaPow 1 T.obj₂≫XModLambdaN.incl T.obj₂ 1≫XModLambdaN.map eB.hom 1=0 := by</span>
+<span id="L156"><a href="#L156"> 156</a>     simpa only [Category.assoc,comp_zero,zero_comp] using</span>
+<span id="L157"><a href="#L157"> 157</a>       congrArg (fun f =&gt; η≫f≫XModLambdaN.map eB.hom 1)</span>
+<span id="L158"><a href="#L158"> 158</a>         (XModLambdaN.lambdaPow_comp_incl T.obj₂ 1)</span>
+<span id="L159"><a href="#L159"> 159</a>   have hmap : α≫XModLambdaN.incl T.obj₂ 1≫XModLambdaN.map eB.hom 1=0 := by</span>
+<span id="L160"><a href="#L160"> 160</a>     simpa only [Preadditive.sub_comp,Category.assoc,hηzero,sub_zero,hzsource] using hh</span>
+<span id="L161"><a href="#L161"> 161</a>   have hh&#x27; := congrArg (fun f =&gt; f≫XModLambdaN.map eB.inv 1) hmap</span>
+<span id="L162"><a href="#L162"> 162</a>   simpa only [Category.assoc,←model.quotients.functoriality.map_comp,</span>
+<span id="L163"><a href="#L163"> 163</a>     Iso.hom_inv_id,model.quotients.functoriality.map_id,Category.comp_id,zero_comp] using hh&#x27;</span>
+<span id="L164"><a href="#L164"> 164</a> </span>
+<span id="L165"><a href="#L165"> 165</a> </span>
+<span id="L166"><a href="#L166"> 166</a> private theorem nu_triangle_bottom_boundary_image_nonzero</span>
+<span id="L167"><a href="#L167"> 167</a>     (α : BiHom 14 17 (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary)))</span>
+<span id="L168"><a href="#L168"> 168</a>     (hα : α≫XModLambdaN.incl _ 1=firstLabel model .sphere 3 17 mh2BoundaryClass≫</span>
+<span id="L169"><a href="#L169"> 169</a>       XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1) :</span>
+<span id="L170"><a href="#L170"> 170</a>     let T := normalizedTriangle model model.auxiliary.nuRouteTriangle</span>
+<span id="L171"><a href="#L171"> 171</a>       KIP126.Literature.Standard.nuCofiber_exponent_sum</span>
+<span id="L172"><a href="#L172"> 172</a>     α≫T.mor₂≫XModLambdaN.incl T.obj₃ 1≠0 := by</span>
+<span id="L173"><a href="#L173"> 173</a>   dsimp only</span>
+<span id="L174"><a href="#L174"> 174</a>   let T := normalizedTriangle model model.auxiliary.nuRouteTriangle</span>
+<span id="L175"><a href="#L175"> 175</a>     KIP126.Literature.Standard.nuCofiber_exponent_sum</span>
+<span id="L176"><a href="#L176"> 176</a>   have hT : T∈distTriang SyntheticSpectrum := KIP126.Literature.Standard.nuCofiber_distinguished</span>
+<span id="L177"><a href="#L177"> 177</a>   let eA : T.obj₁ ≅ (Smn 3 4 : SyntheticSpectrum) := by</span>
+<span id="L178"><a href="#L178"> 178</a>     change (SyntheticCategory.biShift</span>
+<span id="L179"><a href="#L179"> 179</a>       (0,(normalizedExponent model.classicalTower model.auxiliary.nuMap:ℤ))).obj</span>
+<span id="L180"><a href="#L180"> 180</a>       (model.nu.functor.obj ((ClassicalObject.shift 3 .sphere).obj model.auxiliary)) ≅ _</span>
+<span id="L181"><a href="#L181"> 181</a>     rw [KIP126.Literature.Standard.nuCofiber_nu_exponent]</span>
+<span id="L182"><a href="#L182"> 182</a>     exact (SyntheticCategory.biShift (0,1)).mapIso (nuSphereThree model) ≪≫</span>
+<span id="L183"><a href="#L183"> 183</a>       (SyntheticCategory.biShift_comp (3,3) (0,1)).app S_0_0</span>
+<span id="L184"><a href="#L184"> 184</a>   intro hzero</span>
+<span id="L185"><a href="#L185"> 185</a>   have hz := specific_two_cell_first_quotient_injective T hT eA (Iso.refl _) α hzero</span>
+<span id="L186"><a href="#L186"> 186</a>   apply mh2BoundaryClass_nonzero</span>
+<span id="L187"><a href="#L187"> 187</a>   apply first_label_zero .sphere 3 17 mh2BoundaryClass</span>
+<span id="L188"><a href="#L188"> 188</a>   rw [←hα]</span>
+<span id="L189"><a href="#L189"> 189</a>   exact hz</span>
+<span id="L190"><a href="#L190"> 190</a> </span>
+<span id="L191"><a href="#L191"> 191</a> private theorem nu_bottom_boundary_first_quotient_nonzero</span>
+<span id="L192"><a href="#L192"> 192</a>     (α : BiHom 14 17 (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary)))</span>
+<span id="L193"><a href="#L193"> 193</a>     (hα : α≫XModLambdaN.incl _ 1=firstLabel model .sphere 3 17 mh2BoundaryClass≫</span>
+<span id="L194"><a href="#L194"> 194</a>       XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1) :</span>
+<span id="L195"><a href="#L195"> 195</a>     α≫model.nu.functor.map model.auxiliary.nuRouteTriangle.g≫XModLambdaN.incl _ 1≠0 := by</span>
+<span id="L196"><a href="#L196"> 196</a>   have hnonzero := nu_triangle_bottom_boundary_image_nonzero α hα</span>
+<span id="L197"><a href="#L197"> 197</a>   let B := model.nu.functor.obj (ClassicalObject.nuCofiber.obj model.auxiliary)</span>
+<span id="L198"><a href="#L198"> 198</a>   let e := zero_negative_iso B</span>
+<span id="L199"><a href="#L199"> 199</a>     (normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L200"><a href="#L200"> 200</a>     KIP126.Literature.Standard.nuCofiber_bottom_exponent</span>
+<span id="L201"><a href="#L201"> 201</a>   have he := negative_lift_zero_map_form</span>
+<span id="L202"><a href="#L202"> 202</a>     (normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L203"><a href="#L203"> 203</a>     KIP126.Literature.Standard.nuCofiber_bottom_exponent</span>
+<span id="L204"><a href="#L204"> 204</a>     (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).map</span>
+<span id="L205"><a href="#L205"> 205</a>     (model.nu.functor.map model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L206"><a href="#L206"> 206</a>     (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).factorization</span>
+<span id="L207"><a href="#L207"> 207</a>   intro hz</span>
+<span id="L208"><a href="#L208"> 208</a>   apply hnonzero</span>
+<span id="L209"><a href="#L209"> 209</a>   let j := negativeLift</span>
+<span id="L210"><a href="#L210"> 210</a>     (normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L211"><a href="#L211"> 211</a>     (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).map</span>
+<span id="L212"><a href="#L212"> 212</a>   change α≫j≫XModLambdaN.incl _ 1=0</span>
+<span id="L213"><a href="#L213"> 213</a>   have hm : α≫j≫XModLambdaN.incl _ 1≫XModLambdaN.map e.hom 1=0 := by</span>
+<span id="L214"><a href="#L214"> 214</a>     rw [←XModLambdaN.incl_naturality]</span>
+<span id="L215"><a href="#L215"> 215</a>     have hj : j≫e.hom=model.nu.functor.map model.auxiliary.nuRouteTriangle.g := he</span>
+<span id="L216"><a href="#L216"> 216</a>     rw [←Category.assoc j e.hom,hj]</span>
+<span id="L217"><a href="#L217"> 217</a>     convert hz using 1 &lt;;&gt; rfl</span>
+<span id="L218"><a href="#L218"> 218</a>   have h := congrArg (fun z =&gt; z≫XModLambdaN.map e.inv 1) hm</span>
+<span id="L219"><a href="#L219"> 219</a>   simpa only [B,Category.assoc,←model.quotients.functoriality.map_comp,</span>
+<span id="L220"><a href="#L220"> 220</a>     Iso.hom_inv_id,model.quotients.functoriality.map_id,Category.comp_id,zero_comp] using h</span>
+<span id="L221"><a href="#L221"> 221</a> </span>
+<span id="L222"><a href="#L222"> 222</a> private theorem nu_bottom_boundary_leading_nonzero :</span>
+<span id="L223"><a href="#L223"> 223</a>     familyPageMap model.family (model.nu.functor.map model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L224"><a href="#L224"> 224</a>       2 (3,17,17) (nuWeightLabel model .sphere 3 17 17 (by omega) mh2BoundaryClass)≠0 := by</span>
+<span id="L225"><a href="#L225"> 225</a>   obtain ⟨α,hα,_⟩ := cumulative_boundary_torsion_lift_unshifted .sphere 1 3 17</span>
+<span id="L226"><a href="#L226"> 226</a>     mh2BoundaryClass mh2BoundaryClass_boundary</span>
+<span id="L227"><a href="#L227"> 227</a>   have hp := first_label_lift_permanent .sphere 3 17 mh2BoundaryClass α hα</span>
+<span id="L228"><a href="#L228"> 228</a>   have hd := nu_first_label_detects .sphere 3 17 mh2BoundaryClass hp α hα</span>
+<span id="L229"><a href="#L229"> 229</a>   have hm := detects_map (.nu .sphere) (.nu .nuCofiber)</span>
+<span id="L230"><a href="#L230"> 230</a>     (model.nu.functor.map model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L231"><a href="#L231"> 231</a>     (3,17,17) _ α hd</span>
+<span id="L232"><a href="#L232"> 232</a>   intro hz</span>
+<span id="L233"><a href="#L233"> 233</a>   have hm0 : Detects (model.convergence (.nu .nuCofiber)) (3,17,17) 0</span>
+<span id="L234"><a href="#L234"> 234</a>       (α≫model.nu.functor.map model.auxiliary.nuRouteTriangle.g) := by</span>
+<span id="L235"><a href="#L235"> 235</a>     convert hm using 1</span>
+<span id="L236"><a href="#L236"> 236</a>     exact hz.symm</span>
+<span id="L237"><a href="#L237"> 237</a>   have hf := detects_zero_filtration (model.convergence (.nu .nuCofiber)) (3,17,17) hm0</span>
+<span id="L238"><a href="#L238"> 238</a>   have hq := map_preserves_filtration (model.convergentMap (.nu .nuCofiber)</span>
+<span id="L239"><a href="#L239"> 239</a>     (.quotient 1 (.nu .nuCofiber)) (XModLambdaN.incl _ 1)) (14,17) 4 _ hf</span>
+<span id="L240"><a href="#L240"> 240</a>   apply nu_bottom_boundary_first_quotient_nonzero α hα</span>
+<span id="L241"><a href="#L241"> 241</a>   apply finite_high_filtration_zero .nuCofiber 1 (by decide) 14 17 4 (by decide)</span>
+<span id="L242"><a href="#L242"> 242</a>   convert hq using 1</span>
+<span id="L243"><a href="#L243"> 243</a>   simp only [Category.assoc,FiltrationAtLeast,SyntheticObject.obj]</span>
+<span id="L244"><a href="#L244"> 244</a>   rfl</span>
+<span id="L245"><a href="#L245"> 245</a> </span>
+<span id="L246"><a href="#L246"> 246</a> end</span>
+<span id="L247"><a href="#L247"> 247</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

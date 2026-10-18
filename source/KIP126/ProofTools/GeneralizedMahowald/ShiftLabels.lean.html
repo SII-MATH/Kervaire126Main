@@ -1,0 +1,61 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/ShiftLabels.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/ShiftLabels.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.Detection</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> /-! Removal of the specified zero vertical shift preserves the prescribed</span>
+<span id="L5"><a href="#L5">   5</a> classical label. The page comparison follows from the actual quotient</span>
+<span id="L6"><a href="#L6">   6</a> inclusion square and the definition of the unshifted target label. -/</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> set_option maxHeartbeats 1600000</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> private theorem finite_zero_shift_label (X : ClassicalObject) (q : ℕ)</span>
+<span id="L19"><a href="#L19">  19</a>     (s t : ℤ) (k : ℕ) (x : Ambient model X (s,t)) :</span>
+<span id="L20"><a href="#L20">  20</a>     familyPageMap model.family</span>
+<span id="L21"><a href="#L21">  21</a>       (XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app</span>
+<span id="L22"><a href="#L22">  22</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q) 2 (s,t,t-k)</span>
+<span id="L23"><a href="#L23">  23</a>       (regradeE2 (by simp) (finiteNuLabel model X q 0 s t k x)) =</span>
+<span id="L24"><a href="#L24">  24</a>         finiteTargetLabel model X q s t k x := by</span>
+<span id="L25"><a href="#L25">  25</a>   unfold finiteNuLabel finiteTargetLabel targetNuLabel</span>
+<span id="L26"><a href="#L26">  26</a>   rw [page_regrade]</span>
+<span id="L27"><a href="#L27">  27</a>   have regrade_cast {B : SyntheticAdamsSS.{0}} {i j : Tridegree} (h : i=j) (z : B.E₂ i) :</span>
+<span id="L28"><a href="#L28">  28</a>       regradeE2 h z = (congrArg (fun k =&gt; (B.E₂ k : Type)) h).mp z := by</span>
+<span id="L29"><a href="#L29">  29</a>     subst j</span>
+<span id="L30"><a href="#L30">  30</a>     rfl</span>
+<span id="L31"><a href="#L31">  31</a>   rw [regrade_cast]</span>
+<span id="L32"><a href="#L32">  32</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L33"><a href="#L33">  33</a>   let z : (model.family.obj ((SyntheticCategory.biShift (0,0)).obj A)).E₂ (s,t,t-k) :=</span>
+<span id="L34"><a href="#L34">  34</a>     (congrArg (fun i =&gt; ((model.family.obj ((SyntheticCategory.biShift (0,0)).obj A)).E₂ i : Type))</span>
+<span id="L35"><a href="#L35">  35</a>       (show (s,t,t+0-k)=(s,t,t-k) by simp)).mp (model.comparison.nuE2 X 0 s t k x)</span>
+<span id="L36"><a href="#L36">  36</a>   change familyPageMap model.family (XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app A) q) 2 (s,t,t-k)</span>
+<span id="L37"><a href="#L37">  37</a>       (familyPageMap model.family (XModLambdaN.incl _ q) 2 (s,t,t-k) z) =</span>
+<span id="L38"><a href="#L38">  38</a>     familyPageMap model.family (XModLambdaN.incl A q) 2 (s,t,t-k)</span>
+<span id="L39"><a href="#L39">  39</a>       (familyPageMap model.family (SyntheticCategory.biShift_zero.hom.app A) 2 (s,t,t-k) z)</span>
+<span id="L40"><a href="#L40">  40</a>   rw [← ModuleCat.comp_apply, family_page_comp, ← XModLambdaN.incl_naturality]</span>
+<span id="L41"><a href="#L41">  41</a>   rw [← family_page_comp, ModuleCat.comp_apply]</span>
+<span id="L42"><a href="#L42">  42</a>   rfl</span>
+<span id="L43"><a href="#L43">  43</a> </span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> private theorem finite_zero_shift_detects (X : ClassicalObject) (q : ℕ)</span>
+<span id="L46"><a href="#L46">  46</a>     (s t : ℤ) (k : ℕ) (x : Ambient model X (s,t))</span>
+<span id="L47"><a href="#L47">  47</a>     (a : BiHom (t-s) (t-k) (XModLambdaN</span>
+<span id="L48"><a href="#L48">  48</a>       ((SyntheticCategory.biShift (0,0)).obj (model.nu.functor.obj (X.obj model.auxiliary))) q))</span>
+<span id="L49"><a href="#L49">  49</a>     (ha : Detects (model.convergence (.quotient q (.shift (0,0) (.nu X)))) (s,t,t-k)</span>
+<span id="L50"><a href="#L50">  50</a>       (regradeE2 (by simp) (finiteNuLabel model X q 0 s t k x)) a) :</span>
+<span id="L51"><a href="#L51">  51</a>     Detects (model.convergence (.quotient q (.nu X))) (s,t,t-k)</span>
+<span id="L52"><a href="#L52">  52</a>       (finiteTargetLabel model X q s t k x)</span>
+<span id="L53"><a href="#L53">  53</a>       (a ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) q) := by</span>
+<span id="L54"><a href="#L54">  54</a>   have h := detects_map (.quotient q (.shift (0,0) (.nu X))) (.quotient q (.nu X))</span>
+<span id="L55"><a href="#L55">  55</a>     (XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) q) (s,t,t-k) _ a ha</span>
+<span id="L56"><a href="#L56">  56</a>   exact (congrArg (fun z =&gt; Detects (model.convergence (.quotient q (.nu X)))</span>
+<span id="L57"><a href="#L57">  57</a>     (s,t,t-k) z (a ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) q))</span>
+<span id="L58"><a href="#L58">  58</a>       (finite_zero_shift_label X q s t k x)).mp h</span>
+<span id="L59"><a href="#L59">  59</a> </span>
+<span id="L60"><a href="#L60">  60</a> end</span>
+<span id="L61"><a href="#L61">  61</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

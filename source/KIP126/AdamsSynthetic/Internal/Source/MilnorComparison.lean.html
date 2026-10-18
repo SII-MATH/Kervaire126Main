@@ -1,0 +1,177 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Internal/Source/MilnorComparison.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Internal/Source/MilnorComparison.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-</span>
+<span id="L4"><a href="#L4">   4</a> Copyright (c) 2026 Jiashuo Zhang and KIP126 contributors.</span>
+<span id="L5"><a href="#L5">   5</a> Released under the MIT license; see LICENSE.</span>
+<span id="L6"><a href="#L6">   6</a> -/</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> import KIP126.AdamsSynthetic.Tower</span>
+<span id="L9"><a href="#L9">   9</a> import KIP126.SpectralSequence</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.AdamsSynthetic.Internal.Source.AdamsTower</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.AdamsSynthetic.Internal.Source.AdamsSequence</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> /-! Actual first-page differential and the canonical quotient passage from</span>
+<span id="L14"><a href="#L14">  14</a> coefficient-tower cycles to its E₂ page. No comparison map is supplied here. -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> @[expose] section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 2000000</span>
+<span id="L19"><a href="#L19">  19</a> namespace KIP126.AdamsSynthetic.Internal.Source</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.StableHomotopy KIP126.Core.SpectralSequence</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> universe u v</span>
+<span id="L25"><a href="#L25">  25</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L26"><a href="#L26">  26</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H} {X : C}</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> private def homotopyDegreeEquiv (Y : C) {m n : ℤ} (h : m = n) :</span>
+<span id="L29"><a href="#L29">  29</a>     HomotopyGroup m Y ≃ₗ[ℤ] HomotopyGroup n Y := by</span>
+<span id="L30"><a href="#L30">  30</a>   subst n</span>
+<span id="L31"><a href="#L31">  31</a>   exact LinearEquiv.refl ℤ _</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> private theorem homotopyDegreeEquiv_postcomp {Y Z : C} {m n : ℤ} (h : m = n)</span>
+<span id="L34"><a href="#L34">  34</a>     (a : HomotopyGroup m Y) (f : Y ⟶ Z) :</span>
+<span id="L35"><a href="#L35">  35</a>     homotopyDegreeEquiv Z h (a ≫ f) = homotopyDegreeEquiv Y h a ≫ f := by</span>
+<span id="L36"><a href="#L36">  36</a>   subst n</span>
+<span id="L37"><a href="#L37">  37</a>   rfl</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> /-- The actual exact-couple first differential, including the ordinary</span>
+<span id="L40"><a href="#L40">  40</a> homotopy-degree identification at its target. -/</span>
+<span id="L41"><a href="#L41">  41</a> private noncomputable def towerFirstDifferential (T : AbstractAdamsTower unit X)</span>
+<span id="L42"><a href="#L42">  42</a>     (p : ℤ × ℤ) : T.FirstPage p →ₗ[ℤ] T.FirstPage (p.1+1,p.2) :=</span>
+<span id="L43"><a href="#L43">  43</a>   (T.layerMap (p.1+1,p.2)).comp</span>
+<span id="L44"><a href="#L44">  44</a>     ((homotopyDegreeEquiv (T.stageAt (p.1+1))</span>
+<span id="L45"><a href="#L45">  45</a>       (by dsimp; omega : p.2-p.1-1 = (p.1+1,p.2).2-(p.1+1,p.2).1)).toLinearMap.comp</span>
+<span id="L46"><a href="#L46">  46</a>         (T.connecting p))</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> private theorem towerFirstDifferential_eq_zero_iff (T : AbstractAdamsTower unit X)</span>
+<span id="L49"><a href="#L49">  49</a>     (p : ℤ × ℤ) (x : T.FirstPage p) :</span>
+<span id="L50"><a href="#L50">  50</a>     towerFirstDifferential T p x = 0 ↔ x ∈ T.cycles 2 (by decide) p := by</span>
+<span id="L51"><a href="#L51">  51</a>   let hdegree : p.2-p.1-1 = p.2-(p.1+1) := by omega</span>
+<span id="L52"><a href="#L52">  52</a>   let f := T.mapAt (show p.1+1 ≤ (p.1+1)+1 by omega)</span>
+<span id="L53"><a href="#L53">  53</a>   let e := homotopyDegreeEquiv (T.stageAt (p.1+1)) hdegree</span>
+<span id="L54"><a href="#L54">  54</a>   let e&#x27; := homotopyDegreeEquiv (T.stageAt ((p.1+1)+1)) hdegree</span>
+<span id="L55"><a href="#L55">  55</a>   change e (T.connecting p x) ≫ HasFunctorialCofiber.cofibι f = 0 ↔</span>
+<span id="L56"><a href="#L56">  56</a>     ∃ a, a ≫ T.mapAt (show p.1+1 ≤ p.1+2 by omega) = T.connecting p x</span>
+<span id="L57"><a href="#L57">  57</a>   have hrange (q : ℤ) (hq : q = (p.1+1)+1) :</span>
+<span id="L58"><a href="#L58">  58</a>       (∃ a : HomotopyGroup (p.2-p.1-1) (T.stageAt q),</span>
+<span id="L59"><a href="#L59">  59</a>         a ≫ T.mapAt (show p.1+1 ≤ q by omega) = T.connecting p x) ↔</span>
+<span id="L60"><a href="#L60">  60</a>       ∃ a : HomotopyGroup (p.2-p.1-1) (T.stageAt ((p.1+1)+1)),</span>
+<span id="L61"><a href="#L61">  61</a>         a ≫ f = T.connecting p x := by</span>
+<span id="L62"><a href="#L62">  62</a>     subst q</span>
+<span id="L63"><a href="#L63">  63</a>     rfl</span>
+<span id="L64"><a href="#L64">  64</a>   rw [hrange (p.1+2) (by omega)]</span>
+<span id="L65"><a href="#L65">  65</a>   constructor</span>
+<span id="L66"><a href="#L66">  66</a>   · intro h</span>
+<span id="L67"><a href="#L67">  67</a>     obtain ⟨a,ha⟩ := Triangle.coyoneda_exact₂ _</span>
+<span id="L68"><a href="#L68">  68</a>       (HasFunctorialCofiber.cofib_distinguished f) (e (T.connecting p x)) h</span>
+<span id="L69"><a href="#L69">  69</a>     refine ⟨e&#x27;.symm a, ?_⟩</span>
+<span id="L70"><a href="#L70">  70</a>     apply e.injective</span>
+<span id="L71"><a href="#L71">  71</a>     change homotopyDegreeEquiv _ hdegree (e&#x27;.symm a ≫ f) = _</span>
+<span id="L72"><a href="#L72">  72</a>     rw [homotopyDegreeEquiv_postcomp]</span>
+<span id="L73"><a href="#L73">  73</a>     change e&#x27; (e&#x27;.symm a) ≫ f = _</span>
+<span id="L74"><a href="#L74">  74</a>     rw [LinearEquiv.apply_symm_apply]</span>
+<span id="L75"><a href="#L75">  75</a>     exact ha.symm</span>
+<span id="L76"><a href="#L76">  76</a>   · rintro ⟨a,ha⟩</span>
+<span id="L77"><a href="#L77">  77</a>     rw [← ha]</span>
+<span id="L78"><a href="#L78">  78</a>     change homotopyDegreeEquiv _ hdegree (a ≫ f) ≫ _ = 0</span>
+<span id="L79"><a href="#L79">  79</a>     rw [homotopyDegreeEquiv_postcomp, Category.assoc]</span>
+<span id="L80"><a href="#L80">  80</a>     have hzero : f ≫ HasFunctorialCofiber.cofibι f = 0 :=</span>
+<span id="L81"><a href="#L81">  81</a>       comp_distTriang_mor_zero₁₂ _ (HasFunctorialCofiber.cofib_distinguished f)</span>
+<span id="L82"><a href="#L82">  82</a>     rw [hzero, comp_zero]</span>
+<span id="L83"><a href="#L83">  83</a> </span>
+<span id="L84"><a href="#L84">  84</a> private def firstPageDegreeEquiv (T : AbstractAdamsTower unit X)</span>
+<span id="L85"><a href="#L85">  85</a>     {p q : ℤ × ℤ} (h : p = q) : T.FirstPage p ≃ₗ[ℤ] T.FirstPage q := by</span>
+<span id="L86"><a href="#L86">  86</a>   subst q</span>
+<span id="L87"><a href="#L87">  87</a>   exact LinearEquiv.refl ℤ _</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> private noncomputable def towerFirstDifferentialNat (T : AbstractAdamsTower unit X)</span>
+<span id="L90"><a href="#L90">  90</a>     (s t : ℕ) : T.FirstPage ((s:ℤ),(t:ℤ)) →ₗ[ℤ]</span>
+<span id="L91"><a href="#L91">  91</a>       T.FirstPage (((s+1:ℕ):ℤ),(t:ℤ)) :=</span>
+<span id="L92"><a href="#L92">  92</a>   (firstPageDegreeEquiv T</span>
+<span id="L93"><a href="#L93">  93</a>     (show ((s:ℤ)+1,(t:ℤ)) = (((s+1:ℕ):ℤ),(t:ℤ)) by simp)).toLinearMap.comp</span>
+<span id="L94"><a href="#L94">  94</a>       (towerFirstDifferential T ((s:ℤ),(t:ℤ)))</span>
+<span id="L95"><a href="#L95">  95</a> </span>
+<span id="L96"><a href="#L96">  96</a> private theorem towerFirstDifferentialNat_eq_zero_iff (T : AbstractAdamsTower unit X)</span>
+<span id="L97"><a href="#L97">  97</a>     (s t : ℕ) (x : T.FirstPage ((s:ℤ),(t:ℤ))) :</span>
+<span id="L98"><a href="#L98">  98</a>     towerFirstDifferentialNat T s t x = 0 ↔</span>
+<span id="L99"><a href="#L99">  99</a>       x ∈ T.cycles 2 (by decide) ((s:ℤ),(t:ℤ)) := by</span>
+<span id="L100"><a href="#L100"> 100</a>   let e := firstPageDegreeEquiv T</span>
+<span id="L101"><a href="#L101"> 101</a>     (show ((s:ℤ)+1,(t:ℤ)) = (((s+1:ℕ):ℤ),(t:ℤ)) by simp)</span>
+<span id="L102"><a href="#L102"> 102</a>   change e (towerFirstDifferential T ((s:ℤ),(t:ℤ)) x) = 0 ↔ _</span>
+<span id="L103"><a href="#L103"> 103</a>   rw [LinearEquiv.map_eq_zero_iff, towerFirstDifferential_eq_zero_iff]</span>
+<span id="L104"><a href="#L104"> 104</a> </span>
+<span id="L105"><a href="#L105"> 105</a> private instance zeroCycleArrow_isIso (D : SSData (ModuleCat.{v} ℤ)) :</span>
+<span id="L106"><a href="#L106"> 106</a>     IsIso (D.Z 0).arrow :=</span>
+<span id="L107"><a href="#L107"> 107</a>   (Subobject.isIso_arrow_iff_eq_top _).mpr D.Z_zero</span>
+<span id="L108"><a href="#L108"> 108</a> </span>
+<span id="L109"><a href="#L109"> 109</a> private noncomputable def ambientToZeroPage (D : SSData (ModuleCat.{v} ℤ)) :</span>
+<span id="L110"><a href="#L110"> 110</a>     D.V →ₗ[ℤ] D.page 0 :=</span>
+<span id="L111"><a href="#L111"> 111</a>   (inv (D.Z 0).arrow ≫ D.pageπ 0).hom</span>
+<span id="L112"><a href="#L112"> 112</a> </span>
+<span id="L113"><a href="#L113"> 113</a> private theorem ambientToZeroPage_eq_zero_iff (D : SSData (ModuleCat.{v} ℤ))</span>
+<span id="L114"><a href="#L114"> 114</a>     (a : D.V) : ambientToZeroPage D a = 0 ↔ a ∈ ModuleCat.subobjectModule _ (D.B 0) := by</span>
+<span id="L115"><a href="#L115"> 115</a>   change D.pageπ 0 (inv (D.Z 0).arrow a) = 0 ↔ _</span>
+<span id="L116"><a href="#L116"> 116</a>   have hz := subobject_cokernel_π_eq_zero_iff (D.B 0) (D.Z 0) (D.B_le_Z 0)</span>
+<span id="L117"><a href="#L117"> 117</a>     (inv (D.Z 0).arrow a)</span>
+<span id="L118"><a href="#L118"> 118</a>   change D.pageπ 0 (inv (D.Z 0).arrow a) = 0 ↔ _ at hz</span>
+<span id="L119"><a href="#L119"> 119</a>   have h := congrArg (fun f =&gt; f a) (IsIso.inv_hom_id (D.Z 0).arrow)</span>
+<span id="L120"><a href="#L120"> 120</a>   simp only [ModuleCat.comp_apply, ModuleCat.id_apply] at h</span>
+<span id="L121"><a href="#L121"> 121</a>   exact hz.trans (by rw [h])</span>
+<span id="L122"><a href="#L122"> 122</a> </span>
+<span id="L123"><a href="#L123"> 123</a> private theorem ambientToZeroPage_surjective (D : SSData (ModuleCat.{v} ℤ)) :</span>
+<span id="L124"><a href="#L124"> 124</a>     Function.Surjective (ambientToZeroPage D) := by</span>
+<span id="L125"><a href="#L125"> 125</a>   letI : Epi (D.pageπ 0) := by dsimp only [SSData.pageπ]; infer_instance</span>
+<span id="L126"><a href="#L126"> 126</a>   exact (ModuleCat.epi_iff_surjective (inv (D.Z 0).arrow ≫ D.pageπ 0)).mp inferInstance</span>
+<span id="L127"><a href="#L127"> 127</a> </span>
+<span id="L128"><a href="#L128"> 128</a> /-- The actual E₂ quotient map on the ambient module of second-page cycles. -/</span>
+<span id="L129"><a href="#L129"> 129</a> private noncomputable def towerE2ClassMap (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L130"><a href="#L130"> 130</a>     T.cycles 2 (by decide) p →ₗ[ℤ] (towerSequence T).Page 2 p :=</span>
+<span id="L131"><a href="#L131"> 131</a>   ambientToZeroPage (towerSSData T p)</span>
+<span id="L132"><a href="#L132"> 132</a> </span>
+<span id="L133"><a href="#L133"> 133</a> private noncomputable def towerE2ClassOfCycle (T : AbstractAdamsTower unit X)</span>
+<span id="L134"><a href="#L134"> 134</a>     (p : ℤ × ℤ) (x : T.FirstPage p) (hx : x ∈ T.cycles 2 (by decide) p) :</span>
+<span id="L135"><a href="#L135"> 135</a>     (towerSequence T).Page 2 p :=</span>
+<span id="L136"><a href="#L136"> 136</a>   towerE2ClassMap T p ⟨x,hx⟩</span>
+<span id="L137"><a href="#L137"> 137</a> </span>
+<span id="L138"><a href="#L138"> 138</a> private theorem towerE2ClassOfCycle_eq_zero_iff (T : AbstractAdamsTower unit X)</span>
+<span id="L139"><a href="#L139"> 139</a>     (p : ℤ × ℤ) (x : T.FirstPage p) (hx : x ∈ T.cycles 2 (by decide) p) :</span>
+<span id="L140"><a href="#L140"> 140</a>     towerE2ClassOfCycle T p x hx = 0 ↔ x ∈ T.boundaries 2 (by decide) p := by</span>
+<span id="L141"><a href="#L141"> 141</a>   exact (ambientToZeroPage_eq_zero_iff (towerSSData T p) ⟨x,hx⟩).trans</span>
+<span id="L142"><a href="#L142"> 142</a>     (towerSSData_boundaries T p 0 ⟨x,hx⟩)</span>
+<span id="L143"><a href="#L143"> 143</a> </span>
+<span id="L144"><a href="#L144"> 144</a> private theorem towerE2ClassOfCycle_surjective (T : AbstractAdamsTower unit X)</span>
+<span id="L145"><a href="#L145"> 145</a>     (p : ℤ × ℤ) (y : (towerSequence T).Page 2 p) :</span>
+<span id="L146"><a href="#L146"> 146</a>     ∃ (x : T.FirstPage p) (hx : x ∈ T.cycles 2 (by decide) p),</span>
+<span id="L147"><a href="#L147"> 147</a>       towerE2ClassOfCycle T p x hx = y := by</span>
+<span id="L148"><a href="#L148"> 148</a>   obtain ⟨a,ha⟩ := ambientToZeroPage_surjective (towerSSData T p) y</span>
+<span id="L149"><a href="#L149"> 149</a>   exact ⟨a.val,a.property,ha⟩</span>
+<span id="L150"><a href="#L150"> 150</a> </span>
+<span id="L151"><a href="#L151"> 151</a> private theorem towerE2ClassMap_eq_iff (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L152"><a href="#L152"> 152</a>     (x y : T.cycles 2 (by decide) p) :</span>
+<span id="L153"><a href="#L153"> 153</a>     towerE2ClassMap T p x = towerE2ClassMap T p y ↔</span>
+<span id="L154"><a href="#L154"> 154</a>       x.val-y.val ∈ T.boundaries 2 (by decide) p := by</span>
+<span id="L155"><a href="#L155"> 155</a>   rw [← sub_eq_zero, ← map_sub]</span>
+<span id="L156"><a href="#L156"> 156</a>   exact towerE2ClassOfCycle_eq_zero_iff T p (x-y).val (x-y).property</span>
+<span id="L157"><a href="#L157"> 157</a> </span>
+<span id="L158"><a href="#L158"> 158</a> private noncomputable def canonicalFirstDifferential (unit : SphereSpectrum ⟶ H)</span>
+<span id="L159"><a href="#L159"> 159</a>     (X : C) (p : ℤ × ℤ) :</span>
+<span id="L160"><a href="#L160"> 160</a>     (canonicalTower unit X).FirstPage p →ₗ[ℤ]</span>
+<span id="L161"><a href="#L161"> 161</a>       (canonicalTower unit X).FirstPage (p.1+1,p.2) :=</span>
+<span id="L162"><a href="#L162"> 162</a>   towerFirstDifferential (canonicalTower unit X) p</span>
+<span id="L163"><a href="#L163"> 163</a> </span>
+<span id="L164"><a href="#L164"> 164</a> private noncomputable def canonicalE2ClassOfCycle (unit : SphereSpectrum ⟶ H)</span>
+<span id="L165"><a href="#L165"> 165</a>     (X : C) (p : ℤ × ℤ) (x : (canonicalTower unit X).FirstPage p)</span>
+<span id="L166"><a href="#L166"> 166</a>     (hx : x ∈ (canonicalTower unit X).cycles 2 (by decide) p) :</span>
+<span id="L167"><a href="#L167"> 167</a>     (canonicalSequence unit X).Page 2 p :=</span>
+<span id="L168"><a href="#L168"> 168</a>   towerE2ClassOfCycle (canonicalTower unit X) p x hx</span>
+<span id="L169"><a href="#L169"> 169</a> </span>
+<span id="L170"><a href="#L170"> 170</a> private noncomputable def canonicalE2ClassOfFirstCocycle (unit : SphereSpectrum ⟶ H)</span>
+<span id="L171"><a href="#L171"> 171</a>     (X : C) (p : ℤ × ℤ) (x : (canonicalTower unit X).FirstPage p)</span>
+<span id="L172"><a href="#L172"> 172</a>     (hx : canonicalFirstDifferential unit X p x = 0) :</span>
+<span id="L173"><a href="#L173"> 173</a>     (canonicalSequence unit X).Page 2 p :=</span>
+<span id="L174"><a href="#L174"> 174</a>   canonicalE2ClassOfCycle unit X p x</span>
+<span id="L175"><a href="#L175"> 175</a>     ((towerFirstDifferential_eq_zero_iff (canonicalTower unit X) p x).mp hx)</span>
+<span id="L176"><a href="#L176"> 176</a> </span>
+<span id="L177"><a href="#L177"> 177</a> end KIP126.AdamsSynthetic.Internal.Source</span></pre>

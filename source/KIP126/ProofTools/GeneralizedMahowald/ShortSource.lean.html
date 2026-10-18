@@ -1,0 +1,710 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/ShortSource.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/ShortSource.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLabels</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.GeneralizedLeibniz.DivisionLabels</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.GeneralizedLeibniz.RightEdge</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.GeneralizedMahowald.MinimalSource</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.GeneralizedMahowald.SuspensionDetection</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L19"><a href="#L19">  19</a> set_option maxHeartbeats 200000</span>
+<span id="L20"><a href="#L20">  20</a> set_option Elab.async false</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> section General</span>
+<span id="L23"><a href="#L23">  23</a> universe u v</span>
+<span id="L24"><a href="#L24">  24</a> variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L25"><a href="#L25">  25</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L26"><a href="#L26">  26</a>   {H : Syn} {unit : S_0_0 ⟶ H} {E : SyntheticAdamsFamily Syn}</span>
+<span id="L27"><a href="#L27">  27</a>   {P : SyntheticTowerPresentation unit E} {X Y : Syn} {g : X ⟶ Y}</span>
+<span id="L28"><a href="#L28">  28</a>   {cx : SyntheticTowerConvergence P X} {cy : SyntheticTowerConvergence P Y}</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> /-- Once higher-source crossings are excluded, a fixed nonzero target grade</span>
+<span id="L31"><a href="#L31">  31</a> makes every actual extension to that grade essential. -/</span>
+<span id="L32"><a href="#L32">  32</a> private theorem tower_essential_iff_target_nonzero_of_no_crossing</span>
+<span id="L33"><a href="#L33">  33</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L34"><a href="#L34">  34</a>     (p : ℤ × ℤ) (s n : ℤ)</span>
+<span id="L35"><a href="#L35">  35</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L36"><a href="#L36">  36</a>     (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)</span>
+<span id="L37"><a href="#L37">  37</a>     (he : TowerExtensionEquation M p s n x y)</span>
+<span id="L38"><a href="#L38">  38</a>     (hnc : TowerNoCrossing M p s n) :</span>
+<span id="L39"><a href="#L39">  39</a>     TowerEssentialExtension M p s n x y ↔ y ≠ 0 := by</span>
+<span id="L40"><a href="#L40">  40</a>   constructor</span>
+<span id="L41"><a href="#L41">  41</a>   · intro hess hy</span>
+<span id="L42"><a href="#L42">  42</a>     exact ((tower_essential_iff_no_zero M p s n x y he).mp hess) (by rwa [←hy])</span>
+<span id="L43"><a href="#L43">  43</a>   · intro hy</span>
+<span id="L44"><a href="#L44">  44</a>     apply (tower_essential_iff_no_zero M p s n x y he).mpr</span>
+<span id="L45"><a href="#L45">  45</a>     intro he0</span>
+<span id="L46"><a href="#L46">  46</a>     obtain ⟨hn,ar,br,hab,hax,hby⟩ := (tower_extension_iff M p s n x y).mp he</span>
+<span id="L47"><a href="#L47">  47</a>     obtain ⟨br0,hab0,hb0⟩ := tower_target_of_any_source_frame M p s n x 0 he0 hnc ar hax</span>
+<span id="L48"><a href="#L48">  48</a>     have hbr : br = br0 :=</span>
+<span id="L49"><a href="#L49">  49</a>       (ModuleCat.mono_iff_injective ((P.filtration Y).F (s+n) p).arrow).mp inferInstance</span>
+<span id="L50"><a href="#L50">  50</a>         (hab.symm.trans hab0)</span>
+<span id="L51"><a href="#L51">  51</a>     apply hy</span>
+<span id="L52"><a href="#L52">  52</a>     apply (infinityGradedIso cy p (s+n)).toLinearEquiv.injective</span>
+<span id="L53"><a href="#L53">  53</a>     change (infinityGradedIso cy p (s+n)).hom y =</span>
+<span id="L54"><a href="#L54">  54</a>       (infinityGradedIso cy p (s+n)).hom 0</span>
+<span id="L55"><a href="#L55">  55</a>     rw [←hby,←hb0,hbr]</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> end General</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> /-- At the normalization length, the finite ESS has no higher-source</span>
+<span id="L60"><a href="#L60">  60</a> indeterminacy, so essentiality is precisely a nonzero target grade. -/</span>
+<span id="L61"><a href="#L61">  61</a> private theorem minimal_length_finite_essential_iff_target_nonzero</span>
+<span id="L62"><a href="#L62">  62</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L63"><a href="#L63">  63</a>     (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L64"><a href="#L64">  64</a>     (x : ((model.family.obj ((SyntheticObject.quotient q</span>
+<span id="L65"><a href="#L65">  65</a>       (extensionSourceObject model X Y f)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L66"><a href="#L66">  66</a>       (s,(t-s)+s,t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L67"><a href="#L67">  67</a>     (y : ((model.family.obj ((SyntheticObject.quotient q (.nu Y)).obj</span>
+<span id="L68"><a href="#L68">  68</a>       model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L69"><a href="#L69">  69</a>       (s+normalizedExponent model.classicalTower f,</span>
+<span id="L70"><a href="#L70">  70</a>         (t-s)+(s+normalizedExponent model.classicalTower f),</span>
+<span id="L71"><a href="#L71">  71</a>         t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L72"><a href="#L72">  72</a>     (he : TowerExtensionEquation (model.convergentMap</span>
+<span id="L73"><a href="#L73">  73</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L74"><a href="#L74">  74</a>       (finiteExtensionMap model X Y f q))</span>
+<span id="L75"><a href="#L75">  75</a>       (t-s,t+normalizedExponent model.classicalTower f)</span>
+<span id="L76"><a href="#L76">  76</a>       s (normalizedExponent model.classicalTower f) x y) :</span>
+<span id="L77"><a href="#L77">  77</a>     TowerEssentialExtension (model.convergentMap</span>
+<span id="L78"><a href="#L78">  78</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L79"><a href="#L79">  79</a>       (finiteExtensionMap model X Y f q))</span>
+<span id="L80"><a href="#L80">  80</a>       (t-s,t+normalizedExponent model.classicalTower f)</span>
+<span id="L81"><a href="#L81">  81</a>       s (normalizedExponent model.classicalTower f) x y ↔ y ≠ 0 := by</span>
+<span id="L82"><a href="#L82">  82</a>   exact tower_essential_iff_target_nonzero_of_no_crossing _ _ _ _ _ _ he</span>
+<span id="L83"><a href="#L83">  83</a>     (minimal_length_finite_tower_no_crossing X Y f q hq s t _ le_rfl)</span>
+<span id="L84"><a href="#L84">  84</a> </span>
+<span id="L85"><a href="#L85">  85</a> /-- In the first nontrivial short position, the definition of a paper crossing</span>
+<span id="L86"><a href="#L86">  86</a> has exactly displacement one and no target setback. In particular its required</span>
+<span id="L87"><a href="#L87">  87</a> boundary exclusion is B₂, independently of the normalization exponent. -/</span>
+<span id="L88"><a href="#L88">  88</a> private theorem short_finite_has_crossing_iff</span>
+<span id="L89"><a href="#L89">  89</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L90"><a href="#L90">  90</a>     (r : ℕ) (s t : ℤ) :</span>
+<span id="L91"><a href="#L91">  91</a>     FiniteHasCrossing model X Y f r</span>
+<span id="L92"><a href="#L92">  92</a>       ((normalizedExponent model.classicalTower f:ℤ)+1) s t ↔</span>
+<span id="L93"><a href="#L93">  93</a>     3 ≤ r ∧ ∃ (x : Ambient model X (s+1,t+1))</span>
+<span id="L94"><a href="#L94">  94</a>       (y : Ambient model Y</span>
+<span id="L95"><a href="#L95">  95</a>         (s+1+normalizedExponent model.classicalTower f,</span>
+<span id="L96"><a href="#L96">  96</a>           t+1+normalizedExponent model.classicalTower f)),</span>
+<span id="L97"><a href="#L97">  97</a>       ∃ W : FiniteExtensionWitness model X Y f (r-1)</span>
+<span id="L98"><a href="#L98">  98</a>         (normalizedExponent model.classicalTower f) (s+1) (t+1) x y,</span>
+<span id="L99"><a href="#L99">  99</a>         W.Essential ∧ y ∉ boundaries model Y 2</span>
+<span id="L100"><a href="#L100"> 100</a>           (s+1+normalizedExponent model.classicalTower f,</span>
+<span id="L101"><a href="#L101"> 101</a>             t+1+normalizedExponent model.classicalTower f) := by</span>
+<span id="L102"><a href="#L102"> 102</a>   constructor</span>
+<span id="L103"><a href="#L103"> 103</a>   · rintro ⟨a,b,ha,har,hb,H⟩</span>
+<span id="L104"><a href="#L104"> 104</a>     have hlen : (normalizedExponent model.classicalTower f:ℤ) ≤</span>
+<span id="L105"><a href="#L105"> 105</a>         (normalizedExponent model.classicalTower f:ℤ)+1-a-b := by</span>
+<span id="L106"><a href="#L106"> 106</a>       obtain ⟨x,y,W,_,_⟩ := H</span>
+<span id="L107"><a href="#L107"> 107</a>       exact W.length_lower</span>
+<span id="L108"><a href="#L108"> 108</a>     have ha1 : a=1 := by omega</span>
+<span id="L109"><a href="#L109"> 109</a>     have hb0 : b=0 := by omega</span>
+<span id="L110"><a href="#L110"> 110</a>     subst a; subst b</span>
+<span id="L111"><a href="#L111"> 111</a>     refine ⟨by omega,?_⟩</span>
+<span id="L112"><a href="#L112"> 112</a>     have he : (normalizedExponent model.classicalTower f:ℤ)+1-(1:ℕ)-(0:ℕ) =</span>
+<span id="L113"><a href="#L113"> 113</a>         normalizedExponent model.classicalTower f := by omega</span>
+<span id="L114"><a href="#L114"> 114</a>     have hB : 1+((normalizedExponent model.classicalTower f:ℤ)+1)-(0:ℕ)-</span>
+<span id="L115"><a href="#L115"> 115</a>         normalizedExponent model.classicalTower f=2 := by omega</span>
+<span id="L116"><a href="#L116"> 116</a>     rw [he,hB] at H</span>
+<span id="L117"><a href="#L117"> 117</a>     exact H</span>
+<span id="L118"><a href="#L118"> 118</a>   · rintro ⟨hr,x,y,W,hess,hy⟩</span>
+<span id="L119"><a href="#L119"> 119</a>     refine ⟨1,0,by omega,by omega,by omega,?_⟩</span>
+<span id="L120"><a href="#L120"> 120</a>     have he : (normalizedExponent model.classicalTower f:ℤ)+1-(1:ℕ)-(0:ℕ) =</span>
+<span id="L121"><a href="#L121"> 121</a>         normalizedExponent model.classicalTower f := by omega</span>
+<span id="L122"><a href="#L122"> 122</a>     have hB : 1+((normalizedExponent model.classicalTower f:ℤ)+1)-(0:ℕ)-</span>
+<span id="L123"><a href="#L123"> 123</a>         normalizedExponent model.classicalTower f=2 := by omega</span>
+<span id="L124"><a href="#L124"> 124</a>     rw [he,hB]</span>
+<span id="L125"><a href="#L125"> 125</a>     exact ⟨x,y,W,hess,hy⟩</span>
+<span id="L126"><a href="#L126"> 126</a> </span>
+<span id="L127"><a href="#L127"> 127</a> /-- The kernel of restriction to the first quotient lies one source</span>
+<span id="L128"><a href="#L128"> 128</a> filtration higher, including arbitrary vertical normalization shifts. -/</span>
+<span id="L129"><a href="#L129"> 129</a> private theorem shifted_finite_first_kernel_filtration (X : ClassicalObject)</span>
+<span id="L130"><a href="#L130"> 130</a>     (q : ℕ) (hq : 0 &lt; q) (e s t : ℤ)</span>
+<span id="L131"><a href="#L131"> 131</a>     (a : BiHom (t-s) (t+e)</span>
+<span id="L132"><a href="#L132"> 132</a>       (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L133"><a href="#L133"> 133</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q))</span>
+<span id="L134"><a href="#L134"> 134</a>     (ha : a ≫ (model.quotients.tower _).rho 1 q hq = 0) :</span>
+<span id="L135"><a href="#L135"> 135</a>     FiltrationAtLeast model.syntheticTower (s+1) a := by</span>
+<span id="L136"><a href="#L136"> 136</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L137"><a href="#L137"> 137</a>   by_cases hq1 : q=1</span>
+<span id="L138"><a href="#L138"> 138</a>   · subst q</span>
+<span id="L139"><a href="#L139"> 139</a>     have hz : a=0 := by</span>
+<span id="L140"><a href="#L140"> 140</a>       simpa only [(model.quotients.tower _).rho_id,Category.comp_id] using ha</span>
+<span id="L141"><a href="#L141"> 141</a>     rw [hz]</span>
+<span id="L142"><a href="#L142"> 142</a>     exact Submodule.zero_mem _</span>
+<span id="L143"><a href="#L143"> 143</a>   have h1q : 1&lt;q := by omega</span>
+<span id="L144"><a href="#L144"> 144</a>   let T := (model.quotients.tower ((SyntheticCategory.biShift (0,e)).obj A)).triangle</span>
+<span id="L145"><a href="#L145"> 145</a>     (show 0&lt;1 by decide) h1q</span>
+<span id="L146"><a href="#L146"> 146</a>   have haz : a≫T.rho=0 := by</span>
+<span id="L147"><a href="#L147"> 147</a>     simpa only [T,(model.quotients.tower _).triangle_rho] using ha</span>
+<span id="L148"><a href="#L148"> 148</a>   obtain ⟨b,hb⟩ := (Triangle.mk T.lambdaMap T.rho T.delta).coyoneda_exact₂</span>
+<span id="L149"><a href="#L149"> 149</a>     T.distinguished a haz</span>
+<span id="L150"><a href="#L150"> 150</a>   change BiHom (t-s) (t+e) ((SyntheticCategory.biShift (0,-(1:ℤ))).obj</span>
+<span id="L151"><a href="#L151"> 151</a>     (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj A) (q-1))) at b</span>
+<span id="L152"><a href="#L152"> 152</a>   change a = b≫T.lambdaMap at hb</span>
+<span id="L153"><a href="#L153"> 153</a>   letI := model.exactness.shiftCommShift (0,e)</span>
+<span id="L154"><a href="#L154"> 154</a>   letI := model.exactness.shiftExact (0,e)</span>
+<span id="L155"><a href="#L155"> 155</a>   obtain ⟨ε,_,_⟩ := quotient_shift_exists model.quotients.coherence (0,e) (q-1) A</span>
+<span id="L156"><a href="#L156"> 156</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-(1:ℤ))</span>
+<span id="L157"><a href="#L157"> 157</a>   let I : F.obj (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj A) (q-1)) ≅</span>
+<span id="L158"><a href="#L158"> 158</a>       (SyntheticCategory.biShift (0,e-1)).obj (XModLambdaN A (q-1)) :=</span>
+<span id="L159"><a href="#L159"> 159</a>     F.mapIso ε ≪≫</span>
+<span id="L160"><a href="#L160"> 160</a>       (SyntheticCategory.biShift_comp (0,e) (0,-(1:ℤ))).app _ ≪≫</span>
+<span id="L161"><a href="#L161"> 161</a>       eqToIso (congrArg (fun p =&gt; (SyntheticCategory.biShift p).obj (XModLambdaN A (q-1)))</span>
+<span id="L162"><a href="#L162"> 162</a>         (by ext &lt;;&gt; simp [sub_eq_add_neg]))</span>
+<span id="L163"><a href="#L163"> 163</a>   have hbottom := shifted_quotient_bottom_filtration X (q-1) (by omega) (e-1)</span>
+<span id="L164"><a href="#L164"> 164</a>     (t-s) (t+e) (b≫I.hom)</span>
+<span id="L165"><a href="#L165"> 165</a>   have hbottom&#x27; : FiltrationAtLeast model.syntheticTower (s+1) (b≫I.hom) := by</span>
+<span id="L166"><a href="#L166"> 166</a>     convert hbottom using 1; omega</span>
+<span id="L167"><a href="#L167"> 167</a>   have hbf := map_preserves_filtration (model.convergentMap</span>
+<span id="L168"><a href="#L168"> 168</a>     (.shift (0,e-1) (.quotient (q-1) (.nu X)))</span>
+<span id="L169"><a href="#L169"> 169</a>     (.shift (0,-(1:ℤ)) (.quotient (q-1) (.shift (0,e) (.nu X)))) I.inv)</span>
+<span id="L170"><a href="#L170"> 170</a>     (t-s,t+e) (s+1) (b≫I.hom) hbottom&#x27;</span>
+<span id="L171"><a href="#L171"> 171</a>   have hbfil : FiltrationAtLeast model.syntheticTower (s+1) b := by</span>
+<span id="L172"><a href="#L172"> 172</a>     change FiltrationAtLeast model.syntheticTower (s+1) ((b≫I.hom)≫I.inv) at hbf</span>
+<span id="L173"><a href="#L173"> 173</a>     simpa only [FiltrationAtLeast,Category.assoc,Iso.hom_inv_id,Category.comp_id] using hbf</span>
+<span id="L174"><a href="#L174"> 174</a>   have hmap := map_preserves_filtration (model.convergentMap</span>
+<span id="L175"><a href="#L175"> 175</a>     (.shift (0,-(1:ℤ)) (.quotient (q-1) (.shift (0,e) (.nu X))))</span>
+<span id="L176"><a href="#L176"> 176</a>     (.quotient q (.shift (0,e) (.nu X))) T.lambdaMap)</span>
+<span id="L177"><a href="#L177"> 177</a>     (t-s,t+e) (s+1) b hbfil</span>
+<span id="L178"><a href="#L178"> 178</a>   rwa [←hb] at hmap</span>
+<span id="L179"><a href="#L179"> 179</a> </span>
+<span id="L180"><a href="#L180"> 180</a> /-- Conversely, the actual first-quotient equation and the original cycle</span>
+<span id="L181"><a href="#L181"> 181</a> condition determine detection of the normalized finite source. -/</span>
+<span id="L182"><a href="#L182"> 182</a> private theorem shifted_finite_source_detects_of_first</span>
+<span id="L183"><a href="#L183"> 183</a>     (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q) (e s t : ℤ)</span>
+<span id="L184"><a href="#L184"> 184</a>     (x : Ambient model X (s,t)) (hx : x ∈ cycles model X q (s,t))</span>
+<span id="L185"><a href="#L185"> 185</a>     (a : BiHom (t-s) (t+e)</span>
+<span id="L186"><a href="#L186"> 186</a>       (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L187"><a href="#L187"> 187</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q))</span>
+<span id="L188"><a href="#L188"> 188</a>     (ha : a≫(model.quotients.tower _).rho 1 q hq =</span>
+<span id="L189"><a href="#L189"> 189</a>       (model.firstQuotient X e s t).symm x) :</span>
+<span id="L190"><a href="#L190"> 190</a>     Detects (model.convergence (.quotient q (.shift (0,e) (.nu X))))</span>
+<span id="L191"><a href="#L191"> 191</a>       (s,t,t+e) (regradeE2 (by simp) (finiteNuLabel model X q e s t 0 x)) a := by</span>
+<span id="L192"><a href="#L192"> 192</a>   obtain ⟨v,hv⟩ := shifted_finite_source_exists X q hq e s t x hx</span>
+<span id="L193"><a href="#L193"> 193</a>   have hv := representative_transport (show (s,t,t+e-(0:ℕ))=(s,t,t+e) by simp) _ _ hv</span>
+<span id="L194"><a href="#L194"> 194</a>   let A := (SyntheticObject.quotient q (.shift (0,e) (.nu X))).obj model.nu model.auxiliary</span>
+<span id="L195"><a href="#L195"> 195</a>   let F := model.syntheticTower.filtration A</span>
+<span id="L196"><a href="#L196"> 196</a>   haveI : Epi (F.toAssociatedGraded s (t-s,t+e)) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L197"><a href="#L197"> 197</a>   obtain ⟨ar,har⟩ := (ModuleCat.epi_iff_surjective (F.toAssociatedGraded s (t-s,t+e))).mp</span>
+<span id="L198"><a href="#L198"> 198</a>     inferInstance (((model.convergence (.quotient q (.shift (0,e) (.nu X)))).identification</span>
+<span id="L199"><a href="#L199"> 199</a>       (s,t,t+e)).hom _)</span>
+<span id="L200"><a href="#L200"> 200</a>   let a0 : BiHom (t-s) (t+e) (XModLambdaN</span>
+<span id="L201"><a href="#L201"> 201</a>       ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L202"><a href="#L202"> 202</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q) :=</span>
+<span id="L203"><a href="#L203"> 203</a>     (F.F s (t-s,t+e)).arrow ar</span>
+<span id="L204"><a href="#L204"> 204</a>   have ha0 : Detects (model.convergence (.quotient q (.shift (0,e) (.nu X))))</span>
+<span id="L205"><a href="#L205"> 205</a>       (s,t,t+e) (regradeE2 (by simp) (finiteNuLabel model X q e s t 0 x)) a0 := by</span>
+<span id="L206"><a href="#L206"> 206</a>     exact ⟨_,hv,ar,rfl,har.symm⟩</span>
+<span id="L207"><a href="#L207"> 207</a>   have hfirst := shifted_finite_source_first X q hq e s t x a0 ha0</span>
+<span id="L208"><a href="#L208"> 208</a>   have hd := shifted_finite_first_kernel_filtration X q hq e s t (a-a0) (by</span>
+<span id="L209"><a href="#L209"> 209</a>     rw [Preadditive.sub_comp,ha,hfirst,sub_self])</span>
+<span id="L210"><a href="#L210"> 210</a>   exact detects_of_high_difference (.quotient q (.shift (0,e) (.nu X)))</span>
+<span id="L211"><a href="#L211"> 211</a>     (s,t,t+e) _ a0 a ha0 hd</span>
+<span id="L212"><a href="#L212"> 212</a> </span>
+<span id="L213"><a href="#L213"> 213</a> /-- Every bottom-weight representative in a positively normalized finite</span>
+<span id="L214"><a href="#L214"> 214</a> source has an actual classical cycle label, with no representative assumption. -/</span>
+<span id="L215"><a href="#L215"> 215</a> private theorem positive_finite_source_label_exists</span>
+<span id="L216"><a href="#L216"> 216</a>     (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L217"><a href="#L217"> 217</a>     (a : BiHom (t-s) (t+1)</span>
+<span id="L218"><a href="#L218"> 218</a>       (XModLambdaN ((SyntheticCategory.biShift (0,1)).obj</span>
+<span id="L219"><a href="#L219"> 219</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q)) :</span>
+<span id="L220"><a href="#L220"> 220</a>     ∃ x : Ambient model X (s,t), x ∈ cycles model X q (s,t) ∧</span>
+<span id="L221"><a href="#L221"> 221</a>       Detects (model.convergence (.quotient q (.shift (0,1) (.nu X))))</span>
+<span id="L222"><a href="#L222"> 222</a>         (s,t,t+1) (regradeE2 (by simp) (finiteNuLabel model X q 1 s t 0 x)) a := by</span>
+<span id="L223"><a href="#L223"> 223</a>   letI := model.exactness.shiftCommShift (0,1)</span>
+<span id="L224"><a href="#L224"> 224</a>   letI := model.exactness.shiftExact (0,1)</span>
+<span id="L225"><a href="#L225"> 225</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L226"><a href="#L226"> 226</a>   obtain ⟨ε₁,hε₁,_⟩ := quotient_shift_exists model.quotients.coherence (0,1) 1 A</span>
+<span id="L227"><a href="#L227"> 227</a>   obtain ⟨εq,hεq,_⟩ := quotient_shift_exists model.quotients.coherence (0,1) q A</span>
+<span id="L228"><a href="#L228"> 228</a>   let a0 := quotientUnshift X (0,1) (t-s,t) q εq (homotopyRegrade (by simp) rfl a)</span>
+<span id="L229"><a href="#L229"> 229</a>   obtain ⟨x,hx⟩ := quotient_first_label_exists X q hq s t a0</span>
+<span id="L230"><a href="#L230"> 230</a>   have hcycles := first_label_lift_cycles X q hq s t x a0 hx</span>
+<span id="L231"><a href="#L231"> 231</a>   refine ⟨x,hcycles,shifted_finite_source_detects_of_first X q hq 1 s t x hcycles a ?_⟩</span>
+<span id="L232"><a href="#L232"> 232</a>   have hunshift : quotientUnshift X (0,1) (t-s,t) 1 ε₁</span>
+<span id="L233"><a href="#L233"> 233</a>       (homotopyRegrade (by simp) rfl (a≫(model.quotients.tower _).rho 1 q hq)) =</span>
+<span id="L234"><a href="#L234"> 234</a>       quotientUnshift X (0,1) (t-s,t) 1 ε₁</span>
+<span id="L235"><a href="#L235"> 235</a>         (homotopyRegrade (by simp) rfl ((model.firstQuotient X 1 s t).symm x)) := by</span>
+<span id="L236"><a href="#L236"> 236</a>     rw [positive_first_desuspend X s t x ε₁ hε₁]</span>
+<span id="L237"><a href="#L237"> 237</a>     rw [regrade_comp,←quotient_unshift_restriction X (0,1) (t-s,t) 1 q</span>
+<span id="L238"><a href="#L238"> 238</a>       (by decide) hq ε₁ εq hε₁ hεq]</span>
+<span id="L239"><a href="#L239"> 239</a>     exact hx</span>
+<span id="L240"><a href="#L240"> 240</a>   have hh := congrArg (fun z =&gt; shiftHomotopyClass (0,1) (t-s,t) z≫ε₁.inv) hunshift</span>
+<span id="L241"><a href="#L241"> 241</a>   simp only [shift_quotient_unshift] at hh</span>
+<span id="L242"><a href="#L242"> 242</a>   have hinj : Function.Injective (homotopyRegrade</span>
+<span id="L243"><a href="#L243"> 243</a>       (show t-s=((t-s,t)+(0,1)).1 by simp) (rfl : t+1=t+1)</span>
+<span id="L244"><a href="#L244"> 244</a>       (X:=XModLambdaN ((SyntheticCategory.biShift (0,1)).obj A) 1)) := by</span>
+<span id="L245"><a href="#L245"> 245</a>     intro a b hab</span>
+<span id="L246"><a href="#L246"> 246</a>     have h := congrArg (homotopyRegrade (show ((t-s,t)+(0,1)).1=t-s by simp)</span>
+<span id="L247"><a href="#L247"> 247</a>       (rfl : t+1=t+1)) hab</span>
+<span id="L248"><a href="#L248"> 248</a>     simpa only [homotopy_regrade_inverse] using h</span>
+<span id="L249"><a href="#L249"> 249</a>   exact hinj hh</span>
+<span id="L250"><a href="#L250"> 250</a> </span>
+<span id="L251"><a href="#L251"> 251</a> private theorem zero_finite_source_label_exists</span>
+<span id="L252"><a href="#L252"> 252</a>     (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L253"><a href="#L253"> 253</a>     (a : BiHom (t-s) (t+0)</span>
+<span id="L254"><a href="#L254"> 254</a>       (XModLambdaN ((SyntheticCategory.biShift (0,0)).obj</span>
+<span id="L255"><a href="#L255"> 255</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q)) :</span>
+<span id="L256"><a href="#L256"> 256</a>     ∃ x : Ambient model X (s,t), x ∈ cycles model X q (s,t) ∧</span>
+<span id="L257"><a href="#L257"> 257</a>       Detects (model.convergence (.quotient q (.shift (0,0) (.nu X))))</span>
+<span id="L258"><a href="#L258"> 258</a>         (s,t,t+0) (regradeE2 (by simp) (finiteNuLabel model X q 0 s t 0 x)) a := by</span>
+<span id="L259"><a href="#L259"> 259</a>   let x := (model.firstQuotient X 0 s t)</span>
+<span id="L260"><a href="#L260"> 260</a>     (a≫(model.quotients.tower _).rho 1 q hq)</span>
+<span id="L261"><a href="#L261"> 261</a>   have hfirst : a≫(model.quotients.tower _).rho 1 q hq =</span>
+<span id="L262"><a href="#L262"> 262</a>       (model.firstQuotient X 0 s t).symm x :=</span>
+<span id="L263"><a href="#L263"> 263</a>     ((model.firstQuotient X 0 s t).symm_apply_apply _).symm</span>
+<span id="L264"><a href="#L264"> 264</a>   have hfirst0 : homotopyRegrade rfl (show t+0=t by simp) a≫</span>
+<span id="L265"><a href="#L265"> 265</a>       (model.quotients.tower _).rho 1 q hq=firstLabel model X s t x := by</span>
+<span id="L266"><a href="#L266"> 266</a>     have hh := congrArg (homotopyRegrade rfl (show t+0=t by simp)) hfirst</span>
+<span id="L267"><a href="#L267"> 267</a>     rw [regrade_comp] at hh</span>
+<span id="L268"><a href="#L268"> 268</a>     have hl : homotopyRegrade rfl (show t+0=t by simp)</span>
+<span id="L269"><a href="#L269"> 269</a>         ((model.firstQuotient X 0 s t).symm x)=firstLabel model X s t x := by</span>
+<span id="L270"><a href="#L270"> 270</a>       have cast (m w w&#x27; : ℤ) (h : w=w&#x27;) (A : SyntheticSpectrum) (z : BiHom m w A) :</span>
+<span id="L271"><a href="#L271"> 271</a>           homotopyRegrade rfl h z=(congrArg (fun v =&gt; BiHom m v A) h).mp z := by</span>
+<span id="L272"><a href="#L272"> 272</a>         subst w&#x27;; rfl</span>
+<span id="L273"><a href="#L273"> 273</a>       unfold firstLabel</span>
+<span id="L274"><a href="#L274"> 274</a>       exact cast _ _ _ _ _ _</span>
+<span id="L275"><a href="#L275"> 275</a>     exact hh.trans hl</span>
+<span id="L276"><a href="#L276"> 276</a>   have hreach := (KIP126.Literature.Standard.bhs_finite_lift X q hq s t x).mpr</span>
+<span id="L277"><a href="#L277"> 277</a>     ⟨homotopyRegrade rfl (by simp) a,hfirst0⟩</span>
+<span id="L278"><a href="#L278"> 278</a>   have hcycle : x ∈ cycles model X q (s,t) := by</span>
+<span id="L279"><a href="#L279"> 279</a>     have hh := ((isCycle_iff_reaches model X (q+1) (by omega) (s,t) x).mpr hreach).2</span>
+<span id="L280"><a href="#L280"> 280</a>     simpa only [add_sub_cancel_right] using hh</span>
+<span id="L281"><a href="#L281"> 281</a>   exact ⟨x,hcycle,shifted_finite_source_detects_of_first X q hq 0 s t x hcycle a hfirst⟩</span>
+<span id="L282"><a href="#L282"> 282</a> </span>
+<span id="L283"><a href="#L283"> 283</a> /-- A normalized finite source has a classical bottom label. This consumes</span>
+<span id="L284"><a href="#L284"> 284</a> only the existing normalization bound e≤1 and the fixed first-quotient</span>
+<span id="L285"><a href="#L285"> 285</a> comparison; no no-crossing or survival assumption is added. -/</span>
+<span id="L286"><a href="#L286"> 286</a> private theorem normalized_finite_source_label_exists</span>
+<span id="L287"><a href="#L287"> 287</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L288"><a href="#L288"> 288</a>     (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L289"><a href="#L289"> 289</a>     (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)</span>
+<span id="L290"><a href="#L290"> 290</a>       (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q)) :</span>
+<span id="L291"><a href="#L291"> 291</a>     ∃ x : Ambient model X (s,t), x ∈ cycles model X q (s,t) ∧</span>
+<span id="L292"><a href="#L292"> 292</a>       Detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L293"><a href="#L293"> 293</a>         (s,t,t+normalizedExponent model.classicalTower f)</span>
+<span id="L294"><a href="#L294"> 294</a>         (regradeE2 (by simp) (finiteNuLabel model X q</span>
+<span id="L295"><a href="#L295"> 295</a>           (normalizedExponent model.classicalTower f) s t 0 x)) a := by</span>
+<span id="L296"><a href="#L296"> 296</a>   have core (e : ℤ) (he : e=0 ∨ e=1)</span>
+<span id="L297"><a href="#L297"> 297</a>       (a : BiHom (t-s) (t+e) (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L298"><a href="#L298"> 298</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q)) :</span>
+<span id="L299"><a href="#L299"> 299</a>       ∃ x : Ambient model X (s,t), x ∈ cycles model X q (s,t) ∧</span>
+<span id="L300"><a href="#L300"> 300</a>         Detects (model.convergence (.quotient q (.shift (0,e) (.nu X))))</span>
+<span id="L301"><a href="#L301"> 301</a>           (s,t,t+e) (regradeE2 (by simp) (finiteNuLabel model X q e s t 0 x)) a := by</span>
+<span id="L302"><a href="#L302"> 302</a>     rcases he with rfl | rfl</span>
+<span id="L303"><a href="#L303"> 303</a>     · exact zero_finite_source_label_exists X q hq s t a</span>
+<span id="L304"><a href="#L304"> 304</a>     · exact positive_finite_source_label_exists X q hq s t a</span>
+<span id="L305"><a href="#L305"> 305</a>   exact core (normalizedExponent model.classicalTower f)</span>
+<span id="L306"><a href="#L306"> 306</a>     (by have := normalizedExponent_le_one model.classicalTower f; omega) a</span>
+<span id="L307"><a href="#L307"> 307</a> </span>
+<span id="L308"><a href="#L308"> 308</a> private theorem e2_regrade_trans {A : SyntheticAdamsSS} {i j k : Tridegree}</span>
+<span id="L309"><a href="#L309"> 309</a>     (hij : i=j) (hjk : j=k) (z : A.E₂ i) :</span>
+<span id="L310"><a href="#L310"> 310</a>     regradeE2 hjk (regradeE2 hij z)=regradeE2 (hij.trans hjk) z := by</span>
+<span id="L311"><a href="#L311"> 311</a>   subst j; subst k; rfl</span>
+<span id="L312"><a href="#L312"> 312</a> </span>
+<span id="L313"><a href="#L313"> 313</a> private theorem minimal_finite_witness_of_detected_source</span>
+<span id="L314"><a href="#L314"> 314</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L315"><a href="#L315"> 315</a>     (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L316"><a href="#L316"> 316</a>     (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)</span>
+<span id="L317"><a href="#L317"> 317</a>       (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q))</span>
+<span id="L318"><a href="#L318"> 318</a>     (x : Ambient model X (s,t)) (hx : x∈cycles model X q (s,t))</span>
+<span id="L319"><a href="#L319"> 319</a>     (hax : Detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L320"><a href="#L320"> 320</a>       (s,t,t+normalizedExponent model.classicalTower f)</span>
+<span id="L321"><a href="#L321"> 321</a>       (regradeE2 (by simp) (finiteNuLabel model X q</span>
+<span id="L322"><a href="#L322"> 322</a>         (normalizedExponent model.classicalTower f) s t 0 x)) a) :</span>
+<span id="L323"><a href="#L323"> 323</a>     ∃ (y : Ambient model Y (s+normalizedExponent model.classicalTower f,</span>
+<span id="L324"><a href="#L324"> 324</a>         t+normalizedExponent model.classicalTower f)),</span>
+<span id="L325"><a href="#L325"> 325</a>       ∃ _W : FiniteExtensionWitness model X Y f (q+1)</span>
+<span id="L326"><a href="#L326"> 326</a>         (normalizedExponent model.classicalTower f) s t x y,</span>
+<span id="L327"><a href="#L327"> 327</a>         Detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L328"><a href="#L328"> 328</a>           (s,t,t+normalizedExponent model.classicalTower f)</span>
+<span id="L329"><a href="#L329"> 329</a>           (regradeE2 (by simp) (finiteNuLabel model X q</span>
+<span id="L330"><a href="#L330"> 330</a>             (normalizedExponent model.classicalTower f) s t 0 x)) a ∧</span>
+<span id="L331"><a href="#L331"> 331</a>         (homotopyRegrade</span>
+<span id="L332"><a href="#L332"> 332</a>           (m&#x27; := (t+normalizedExponent model.classicalTower f)-(s+normalizedExponent model.classicalTower f))</span>
+<span id="L333"><a href="#L333"> 333</a>           (w&#x27; := t+normalizedExponent model.classicalTower f)</span>
+<span id="L334"><a href="#L334"> 334</a>           (by omega) rfl (a≫finiteExtensionMap model X Y f q))≫</span>
+<span id="L335"><a href="#L335"> 335</a>             (model.quotients.tower _).rho 1 q hq =</span>
+<span id="L336"><a href="#L336"> 336</a>           firstLabel model Y (s+normalizedExponent model.classicalTower f)</span>
+<span id="L337"><a href="#L337"> 337</a>             (t+normalizedExponent model.classicalTower f) y≫</span>
+<span id="L338"><a href="#L338"> 338</a>             XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 := by</span>
+<span id="L339"><a href="#L339"> 339</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L340"><a href="#L340"> 340</a>   let b : BiHom ((t+e)-(s+e)) (t+e)</span>
+<span id="L341"><a href="#L341"> 341</a>       (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) q) :=</span>
+<span id="L342"><a href="#L342"> 342</a>     homotopyRegrade (by omega) rfl (a≫finiteExtensionMap model X Y f q)</span>
+<span id="L343"><a href="#L343"> 343</a>   obtain ⟨y,hy⟩ := quotient_first_label_exists Y q hq (s+e) (t+e) b</span>
+<span id="L344"><a href="#L344"> 344</a>   have hycycle := first_label_lift_cycles Y q hq (s+e) (t+e) y b hy</span>
+<span id="L345"><a href="#L345"> 345</a>   have hby := first_label_detects_unshifted Y q hq (s+e) (t+e) y b hy</span>
+<span id="L346"><a href="#L346"> 346</a>   have hsource&#x27; : Detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L347"><a href="#L347"> 347</a>       (s,(t-s)+s,t+e) (finiteSourceForExtension model X Y f q s t x)</span>
+<span id="L348"><a href="#L348"> 348</a>       (homotopyRegrade (by dsimp; omega) rfl a) :=</span>
+<span id="L349"><a href="#L349"> 349</a>     source_detects_reindex X q e s t x a hax</span>
+<span id="L350"><a href="#L350"> 350</a>   have htarget := detects_transport</span>
+<span id="L351"><a href="#L351"> 351</a>     (show (s+e,t+e,t+e)=(s+e,(t-s)+(s+e),t+e) by ext &lt;;&gt; (dsimp; all_goals omega)) _ _ hby</span>
+<span id="L352"><a href="#L352"> 352</a>   have label_eq : finiteTargetForExtension model X Y f q e s t le_rfl y =</span>
+<span id="L353"><a href="#L353"> 353</a>       regradeE2 (show (s+e,t+e,t+e)=(s+e,(t-s)+(s+e),t+e) by ext &lt;;&gt; (dsimp; all_goals omega))</span>
+<span id="L354"><a href="#L354"> 354</a>         (regradeE2 (by simp) (finiteTargetLabel model Y q (s+e) (t+e) 0 y)) := by</span>
+<span id="L355"><a href="#L355"> 355</a>     unfold finiteTargetForExtension</span>
+<span id="L356"><a href="#L356"> 356</a>     rw [e2_regrade_trans]</span>
+<span id="L357"><a href="#L357"> 357</a>     have labels (k k&#x27; : ℕ) (hk : k=k&#x27;) (p : Tridegree)</span>
+<span id="L358"><a href="#L358"> 358</a>         (h₁ : (s+e,t+e,t+e-k)=p) (h₂ : (s+e,t+e,t+e-k&#x27;)=p) :</span>
+<span id="L359"><a href="#L359"> 359</a>         regradeE2 h₁ (finiteTargetLabel model Y q (s+e) (t+e) k y)=</span>
+<span id="L360"><a href="#L360"> 360</a>           regradeE2 h₂ (finiteTargetLabel model Y q (s+e) (t+e) k&#x27; y) := by</span>
+<span id="L361"><a href="#L361"> 361</a>       subst k&#x27;; rfl</span>
+<span id="L362"><a href="#L362"> 362</a>     exact labels _ _ (by dsimp [e]; omega) _ _ _</span>
+<span id="L363"><a href="#L363"> 363</a>   have htarget&#x27; : Detects (model.convergence (.quotient q (.nu Y)))</span>
+<span id="L364"><a href="#L364"> 364</a>       (s+e,(t-s)+(s+e),t+e)</span>
+<span id="L365"><a href="#L365"> 365</a>       (finiteTargetForExtension model X Y f q e s t le_rfl y)</span>
+<span id="L366"><a href="#L366"> 366</a>       (homotopyRegrade (by dsimp; omega) rfl (a≫finiteExtensionMap model X Y f q)) := by</span>
+<span id="L367"><a href="#L367"> 367</a>     rw [label_eq]</span>
+<span id="L368"><a href="#L368"> 368</a>     dsimp only [b] at htarget</span>
+<span id="L369"><a href="#L369"> 369</a>     have comp {U : SyntheticSpectrum} {u v z w : ℤ}</span>
+<span id="L370"><a href="#L370"> 370</a>         (huv : u=v) (hvz : v=z) (a : BiHom u w U) :</span>
+<span id="L371"><a href="#L371"> 371</a>         homotopyRegrade hvz rfl (homotopyRegrade huv rfl a)=</span>
+<span id="L372"><a href="#L372"> 372</a>           homotopyRegrade (huv.trans hvz) rfl a := by</span>
+<span id="L373"><a href="#L373"> 373</a>       subst v; subst z; rfl</span>
+<span id="L374"><a href="#L374"> 374</a>     rw [comp] at htarget</span>
+<span id="L375"><a href="#L375"> 375</a>     exact htarget</span>
+<span id="L376"><a href="#L376"> 376</a>   obtain ⟨xx,yy,hxx,hyy,heq⟩ := extension_equation_of_detected_pair</span>
+<span id="L377"><a href="#L377"> 377</a>     (model.convergentMap (.quotient q (extensionSourceObject model X Y f))</span>
+<span id="L378"><a href="#L378"> 378</a>       (.quotient q (.nu Y)) (finiteExtensionMap model X Y f q))</span>
+<span id="L379"><a href="#L379"> 379</a>       (t-s,t+e) s e (by dsimp [e]; omega) _ _ a</span>
+<span id="L380"><a href="#L380"> 380</a>       (a≫finiteExtensionMap model X Y f q) hsource&#x27; htarget&#x27; rfl</span>
+<span id="L381"><a href="#L381"> 381</a>   have hxreach : ReachesPage (model.classical.obj (X.obj model.auxiliary)) (q+1:ℕ) (s,t) x :=</span>
+<span id="L382"><a href="#L382"> 382</a>     (isCycle_iff_reaches model X (q+1:ℕ) (by omega) (s,t) x).mp</span>
+<span id="L383"><a href="#L383"> 383</a>       ⟨by omega,by simpa only [Nat.cast_add,Nat.cast_one,add_sub_cancel_right] using hx⟩</span>
+<span id="L384"><a href="#L384"> 384</a>   have hyreach : ReachesPage (model.classical.obj (Y.obj model.auxiliary)) (q+1:ℕ) (s+e,t+e) y :=</span>
+<span id="L385"><a href="#L385"> 385</a>     (isCycle_iff_reaches model Y (q+1:ℕ) (by omega) (s+e,t+e) y).mp</span>
+<span id="L386"><a href="#L386"> 386</a>       ⟨by omega,by simpa only [Nat.cast_add,Nat.cast_one,add_sub_cancel_right] using hycycle⟩</span>
+<span id="L387"><a href="#L387"> 387</a>   have hyreach&#x27; : ReachesPage (model.classical.obj (Y.obj model.auxiliary))</span>
+<span id="L388"><a href="#L388"> 388</a>       ((q+1:ℕ)-e+normalizedExponent model.classicalTower f) (s+e,t+e) y := by</span>
+<span id="L389"><a href="#L389"> 389</a>     have hpage : (q+1:ℕ)=((q+1:ℕ)-e+normalizedExponent model.classicalTower f : ℤ) := by</span>
+<span id="L390"><a href="#L390"> 390</a>       dsimp [e]; omega</span>
+<span id="L391"><a href="#L391"> 391</a>     exact hpage ▸ hyreach</span>
+<span id="L392"><a href="#L392"> 392</a>   refine ⟨y,?_,hax,hy⟩</span>
+<span id="L393"><a href="#L393"> 393</a>   exact {</span>
+<span id="L394"><a href="#L394"> 394</a>     page_ge_two := by omega</span>
+<span id="L395"><a href="#L395"> 395</a>     length_lower := le_rfl</span>
+<span id="L396"><a href="#L396"> 396</a>     length_upper := by omega</span>
+<span id="L397"><a href="#L397"> 397</a>     source_cycle := hxreach</span>
+<span id="L398"><a href="#L398"> 398</a>     target_cycle := hyreach&#x27;</span>
+<span id="L399"><a href="#L399"> 399</a>     source := xx</span>
+<span id="L400"><a href="#L400"> 400</a>     target := yy</span>
+<span id="L401"><a href="#L401"> 401</a>     source_rep := hxx</span>
+<span id="L402"><a href="#L402"> 402</a>     target_rep := hyy</span>
+<span id="L403"><a href="#L403"> 403</a>     equation := heq }</span>
+<span id="L404"><a href="#L404"> 404</a> </span>
+<span id="L405"><a href="#L405"> 405</a> private theorem minimal_finite_witness_of_source</span>
+<span id="L406"><a href="#L406"> 406</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L407"><a href="#L407"> 407</a>     (q : ℕ) (hq : 0 &lt; q) (s t : ℤ)</span>
+<span id="L408"><a href="#L408"> 408</a>     (a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)</span>
+<span id="L409"><a href="#L409"> 409</a>       (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) q)) :</span>
+<span id="L410"><a href="#L410"> 410</a>     ∃ (x : Ambient model X (s,t))</span>
+<span id="L411"><a href="#L411"> 411</a>       (y : Ambient model Y (s+normalizedExponent model.classicalTower f,</span>
+<span id="L412"><a href="#L412"> 412</a>         t+normalizedExponent model.classicalTower f)),</span>
+<span id="L413"><a href="#L413"> 413</a>       ∃ _W : FiniteExtensionWitness model X Y f (q+1)</span>
+<span id="L414"><a href="#L414"> 414</a>         (normalizedExponent model.classicalTower f) s t x y,</span>
+<span id="L415"><a href="#L415"> 415</a>         Detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L416"><a href="#L416"> 416</a>           (s,t,t+normalizedExponent model.classicalTower f)</span>
+<span id="L417"><a href="#L417"> 417</a>           (regradeE2 (by simp) (finiteNuLabel model X q</span>
+<span id="L418"><a href="#L418"> 418</a>             (normalizedExponent model.classicalTower f) s t 0 x)) a ∧</span>
+<span id="L419"><a href="#L419"> 419</a>         (homotopyRegrade</span>
+<span id="L420"><a href="#L420"> 420</a>           (m&#x27; := (t+normalizedExponent model.classicalTower f)-(s+normalizedExponent model.classicalTower f))</span>
+<span id="L421"><a href="#L421"> 421</a>           (w&#x27; := t+normalizedExponent model.classicalTower f)</span>
+<span id="L422"><a href="#L422"> 422</a>           (by omega) rfl (a≫finiteExtensionMap model X Y f q))≫</span>
+<span id="L423"><a href="#L423"> 423</a>             (model.quotients.tower _).rho 1 q hq =</span>
+<span id="L424"><a href="#L424"> 424</a>           firstLabel model Y (s+normalizedExponent model.classicalTower f)</span>
+<span id="L425"><a href="#L425"> 425</a>             (t+normalizedExponent model.classicalTower f) y≫</span>
+<span id="L426"><a href="#L426"> 426</a>             XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 := by</span>
+<span id="L427"><a href="#L427"> 427</a>   obtain ⟨x,hx,hax⟩ := normalized_finite_source_label_exists X Y f q hq s t a</span>
+<span id="L428"><a href="#L428"> 428</a>   obtain ⟨y,W,hs,hfirst⟩ := minimal_finite_witness_of_detected_source X Y f q hq s t a x hx hax</span>
+<span id="L429"><a href="#L429"> 429</a>   exact ⟨x,y,W,hs,hfirst⟩</span>
+<span id="L430"><a href="#L430"> 430</a> </span>
+<span id="L431"><a href="#L431"> 431</a> private theorem finite_lambda_target_not_boundary</span>
+<span id="L432"><a href="#L432"> 432</a>     (X : ClassicalObject) (q : ℕ) (hq : 1&lt;q) (s t : ℤ)</span>
+<span id="L433"><a href="#L433"> 433</a>     (x : Ambient model X (s,t))</span>
+<span id="L434"><a href="#L434"> 434</a>     (b : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (q-1)))</span>
+<span id="L435"><a href="#L435"> 435</a>     (hb : b≫(model.quotients.tower _).rho 1 (q-1) (by omega)=</span>
+<span id="L436"><a href="#L436"> 436</a>       firstLabel model X s t x≫XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1)</span>
+<span id="L437"><a href="#L437"> 437</a>     (hnot : ¬FiltrationAtLeast model.syntheticTower (s+1)</span>
+<span id="L438"><a href="#L438"> 438</a>       (finiteLambdaClass X q 1 (by decide) hq s t b)) :</span>
+<span id="L439"><a href="#L439"> 439</a>     x ∉ boundaries model X 2 (s,t) := by</span>
+<span id="L440"><a href="#L440"> 440</a>   intro hxB</span>
+<span id="L441"><a href="#L441"> 441</a>   have hx := first_label_lift_cycles X (q-1) (by omega) s t x b hb</span>
+<span id="L442"><a href="#L442"> 442</a>   have hx&#x27; : x∈cycles model X ((q:ℤ)-t+(t-(1:ℕ))) (s,t) := by</span>
+<span id="L443"><a href="#L443"> 443</a>     convert hx using 1; congr 1; omega</span>
+<span id="L444"><a href="#L444"> 444</a>   have h0 : HasInfinityRepresentative _ 2 (s,t,t-(1:ℕ))</span>
+<span id="L445"><a href="#L445"> 445</a>       (finiteTargetLabel model X q s t 1 x) 0 := by</span>
+<span id="L446"><a href="#L446"> 446</a>     apply (finite_target_label_iff X q (by omega) s t 1 hq ⟨x,hx&#x27;⟩ 0).mpr</span>
+<span id="L447"><a href="#L447"> 447</a>     rw [map_zero]</span>
+<span id="L448"><a href="#L448"> 448</a>     symm</span>
+<span id="L449"><a href="#L449"> 449</a>     apply (CrossingLabels.subquotient_zero_iff _ _ _).mpr</span>
+<span id="L450"><a href="#L450"> 450</a>     convert hxB using 1; congr 1; omega</span>
+<span id="L451"><a href="#L451"> 451</a>   exact hnot (detects_zero_infinity_filtration (model.convergence (.quotient q (.nu X)))</span>
+<span id="L452"><a href="#L452"> 452</a>     (s,t,t-(1:ℕ)) (finite_quotient_lambda_detects X q 1 (by decide) hq s t x b hb) h0)</span>
+<span id="L453"><a href="#L453"> 453</a> </span>
+<span id="L454"><a href="#L454"> 454</a> private theorem minimal_finite_witness_essential_of_target_not_boundary</span>
+<span id="L455"><a href="#L455"> 455</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L456"><a href="#L456"> 456</a>     (r : ℕ) (s t : ℤ) (x : Ambient model X (s,t))</span>
+<span id="L457"><a href="#L457"> 457</a>     (y : Ambient model Y (s+normalizedExponent model.classicalTower f,</span>
+<span id="L458"><a href="#L458"> 458</a>       t+normalizedExponent model.classicalTower f))</span>
+<span id="L459"><a href="#L459"> 459</a>     (W : FiniteExtensionWitness model X Y f r</span>
+<span id="L460"><a href="#L460"> 460</a>       (normalizedExponent model.classicalTower f) s t x y)</span>
+<span id="L461"><a href="#L461"> 461</a>     (hy : y∉boundaries model Y 2</span>
+<span id="L462"><a href="#L462"> 462</a>       (s+normalizedExponent model.classicalTower f,t+normalizedExponent model.classicalTower f)) :</span>
+<span id="L463"><a href="#L463"> 463</a>     W.Essential := by</span>
+<span id="L464"><a href="#L464"> 464</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L465"><a href="#L465"> 465</a>   have hq : 0&lt;r-1 := by have := W.page_ge_two; omega</span>
+<span id="L466"><a href="#L466"> 466</a>   apply (minimal_length_finite_essential_iff_target_nonzero X Y f (r-1) hq</span>
+<span id="L467"><a href="#L467"> 467</a>     s t W.source W.target W.equation).mpr</span>
+<span id="L468"><a href="#L468"> 468</a>   intro hz</span>
+<span id="L469"><a href="#L469"> 469</a>   have hrep := representative_transport</span>
+<span id="L470"><a href="#L470"> 470</a>     (show (s+e,(t-s)+(s+e),t+e)=(s+e,t+e,t+e) by ext &lt;;&gt; (dsimp; all_goals omega))</span>
+<span id="L471"><a href="#L471"> 471</a>     _ _ W.target_rep</span>
+<span id="L472"><a href="#L472"> 472</a>   rw [finite_extension_target_weight_label] at hrep</span>
+<span id="L473"><a href="#L473"> 473</a>   have hlabel := (KIP126.Literature.Standard.eInfinity_finite_labels Y (r-1) hq</span>
+<span id="L474"><a href="#L474"> 474</a>     (s+e) (t+e) (t+e) (by omega) y _).mp hrep</span>
+<span id="L475"><a href="#L475"> 475</a>   have hB1 : y∈boundaries model Y 1 (s+e,t+e) := by</span>
+<span id="L476"><a href="#L476"> 476</a>     have heq := hlabel.2</span>
+<span id="L477"><a href="#L477"> 477</a>     simp only [hz,map_zero] at heq</span>
+<span id="L478"><a href="#L478"> 478</a>     have hB := (CrossingLabels.subquotient_zero_iff _ _ ⟨y,hlabel.1⟩).mp heq.symm</span>
+<span id="L479"><a href="#L479"> 479</a>     convert hB using 1; congr 1; omega</span>
+<span id="L480"><a href="#L480"> 480</a>   exact hy (boundaries_monotone model Y (s+e,t+e) (by omega : (1:ℤ)≤2) hB1)</span>
+<span id="L481"><a href="#L481"> 481</a> </span>
+<span id="L482"><a href="#L482"> 482</a> /-- An actual divided source whose one-lambda image has a nonzero target</span>
+<span id="L483"><a href="#L483"> 483</a> grade produces the precise paper crossing, including essentiality and B₂. -/</span>
+<span id="L484"><a href="#L484"> 484</a> private theorem short_crossing_of_lambda_target_not_high</span>
+<span id="L485"><a href="#L485"> 485</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L486"><a href="#L486"> 486</a>     (q : ℕ) (hq : 1&lt;q) (s t : ℤ)</span>
+<span id="L487"><a href="#L487"> 487</a>     (b : BiHom ((t+1)-(s+1)) ((t+1)+normalizedExponent model.classicalTower f)</span>
+<span id="L488"><a href="#L488"> 488</a>       (XModLambdaN ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) (q-1)))</span>
+<span id="L489"><a href="#L489"> 489</a>     (hnot : ¬FiltrationAtLeast model.syntheticTower</span>
+<span id="L490"><a href="#L490"> 490</a>       (s+1+normalizedExponent model.classicalTower f+1)</span>
+<span id="L491"><a href="#L491"> 491</a>       (finiteLambdaClass Y q 1 (by decide) hq</span>
+<span id="L492"><a href="#L492"> 492</a>         (s+1+normalizedExponent model.classicalTower f)</span>
+<span id="L493"><a href="#L493"> 493</a>         (t+1+normalizedExponent model.classicalTower f)</span>
+<span id="L494"><a href="#L494"> 494</a>         (homotopyRegrade</span>
+<span id="L495"><a href="#L495"> 495</a>           (m&#x27; := (t+1+normalizedExponent model.classicalTower f)-</span>
+<span id="L496"><a href="#L496"> 496</a>             (s+1+normalizedExponent model.classicalTower f))</span>
+<span id="L497"><a href="#L497"> 497</a>           (w&#x27; := t+1+normalizedExponent model.classicalTower f)</span>
+<span id="L498"><a href="#L498"> 498</a>           (by omega) rfl (b≫finiteExtensionMap model X Y f (q-1))))) :</span>
+<span id="L499"><a href="#L499"> 499</a>     FiniteHasCrossing model X Y f (q+1)</span>
+<span id="L500"><a href="#L500"> 500</a>       ((normalizedExponent model.classicalTower f:ℤ)+1) s t := by</span>
+<span id="L501"><a href="#L501"> 501</a>   obtain ⟨x,y,W,_,hfirst⟩ := minimal_finite_witness_of_source X Y f (q-1) (by omega)</span>
+<span id="L502"><a href="#L502"> 502</a>     (s+1) (t+1) b</span>
+<span id="L503"><a href="#L503"> 503</a>   have hy := finite_lambda_target_not_boundary Y q hq</span>
+<span id="L504"><a href="#L504"> 504</a>     (s+1+normalizedExponent model.classicalTower f)</span>
+<span id="L505"><a href="#L505"> 505</a>     (t+1+normalizedExponent model.classicalTower f) y _ hfirst hnot</span>
+<span id="L506"><a href="#L506"> 506</a>   have hess := minimal_finite_witness_essential_of_target_not_boundary X Y f</span>
+<span id="L507"><a href="#L507"> 507</a>     (q-1+1) (s+1) (t+1) x y W hy</span>
+<span id="L508"><a href="#L508"> 508</a>   apply (short_finite_has_crossing_iff X Y f (q+1) s t).mpr</span>
+<span id="L509"><a href="#L509"> 509</a>   refine ⟨by omega,x,y,?_⟩</span>
+<span id="L510"><a href="#L510"> 510</a>   have H : ∃ W : FiniteExtensionWitness model X Y f (q-1+1)</span>
+<span id="L511"><a href="#L511"> 511</a>       (normalizedExponent model.classicalTower f) (s+1) (t+1) x y,</span>
+<span id="L512"><a href="#L512"> 512</a>       W.Essential ∧ y∉boundaries model Y 2</span>
+<span id="L513"><a href="#L513"> 513</a>         (s+1+normalizedExponent model.classicalTower f,t+1+normalizedExponent model.classicalTower f) :=</span>
+<span id="L514"><a href="#L514"> 514</a>     ⟨W,hess,hy⟩</span>
+<span id="L515"><a href="#L515"> 515</a>   have heq : q-1+1=q := by omega</span>
+<span id="L516"><a href="#L516"> 516</a>   rw [heq] at H</span>
+<span id="L517"><a href="#L517"> 517</a>   rw [show q+1-1=q by omega]</span>
+<span id="L518"><a href="#L518"> 518</a>   exact H</span>
+<span id="L519"><a href="#L519"> 519</a> </span>
+<span id="L520"><a href="#L520"> 520</a> private theorem homotopy_regrade_comp {A : SyntheticSpectrum} {m m&#x27; m&#x27;&#x27; w w&#x27; w&#x27;&#x27; : ℤ}</span>
+<span id="L521"><a href="#L521"> 521</a>     (hm : m=m&#x27;) (hw : w=w&#x27;) (hm&#x27; : m&#x27;=m&#x27;&#x27;) (hw&#x27; : w&#x27;=w&#x27;&#x27;) (a : BiHom m w A) :</span>
+<span id="L522"><a href="#L522"> 522</a>     homotopyRegrade hm&#x27; hw&#x27; (homotopyRegrade hm hw a)=</span>
+<span id="L523"><a href="#L523"> 523</a>       homotopyRegrade (hm.trans hm&#x27;) (hw.trans hw&#x27;) a := by</span>
+<span id="L524"><a href="#L524"> 524</a>   subst m&#x27;; subst m&#x27;&#x27;; subst w&#x27;; subst w&#x27;&#x27;; rfl</span>
+<span id="L525"><a href="#L525"> 525</a> </span>
+<span id="L526"><a href="#L526"> 526</a> private theorem vertical_shift_regrade (A : SyntheticSpectrum) (i : ℕ)</span>
+<span id="L527"><a href="#L527"> 527</a>     (m m&#x27; w w&#x27; : ℤ) (hm : m=m&#x27;) (hw : w=w&#x27;) (a : BiHom m (w+i) A) :</span>
+<span id="L528"><a href="#L528"> 528</a>     verticalShiftEquiv A i m&#x27; w&#x27;</span>
+<span id="L529"><a href="#L529"> 529</a>         (homotopyRegrade hm (congrArg (fun z : ℤ =&gt; z+i) hw) a)=</span>
+<span id="L530"><a href="#L530"> 530</a>       homotopyRegrade hm hw (verticalShiftEquiv A i m w a) := by</span>
+<span id="L531"><a href="#L531"> 531</a>   subst m&#x27;; subst w&#x27;; rfl</span>
+<span id="L532"><a href="#L532"> 532</a> </span>
+<span id="L533"><a href="#L533"> 533</a> /-- In the first short length, every essential actual-tower crossing gives</span>
+<span id="L534"><a href="#L534"> 534</a> the paper&#x27;s shorter finite crossing. Lambda is not cancelled through a</span>
+<span id="L535"><a href="#L535"> 535</a> filtration: its nonzero target grade supplies the exact B₂ exclusion. -/</span>
+<span id="L536"><a href="#L536"> 536</a> private theorem short_finite_noCrossing_tower</span>
+<span id="L537"><a href="#L537"> 537</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L538"><a href="#L538"> 538</a>     (q : ℕ) (hq : 0&lt;q) (s t n : ℤ)</span>
+<span id="L539"><a href="#L539"> 539</a>     (hn : n ≤ (normalizedExponent model.classicalTower f:ℤ)+1)</span>
+<span id="L540"><a href="#L540"> 540</a>     (hnc : FiniteNoCrossing model X Y f (q+1) n s t) :</span>
+<span id="L541"><a href="#L541"> 541</a>     TowerNoCrossing (model.convergentMap</span>
+<span id="L542"><a href="#L542"> 542</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L543"><a href="#L543"> 543</a>       (finiteExtensionMap model X Y f q))</span>
+<span id="L544"><a href="#L544"> 544</a>       (t-s,t+normalizedExponent model.classicalTower f) s n := by</span>
+<span id="L545"><a href="#L545"> 545</a>   intro u v hsu huv hvs x y hess</span>
+<span id="L546"><a href="#L546"> 546</a>   have hposition := short_finite_crossing_position X Y f q hq s t n u v hn hsu huv hvs x y hess</span>
+<span id="L547"><a href="#L547"> 547</a>   rcases hposition with ⟨hu,hv,hnEq⟩</span>
+<span id="L548"><a href="#L548"> 548</a>   subst u; subst v; subst n</span>
+<span id="L549"><a href="#L549"> 549</a>   have h1q : 1&lt;q := by</span>
+<span id="L550"><a href="#L550"> 550</a>     have H := finite_crossing_source_bound X Y f q hq s t (s+1)</span>
+<span id="L551"><a href="#L551"> 551</a>       (s+normalizedExponent model.classicalTower f+1) huv x y hess</span>
+<span id="L552"><a href="#L552"> 552</a>     omega</span>
+<span id="L553"><a href="#L553"> 553</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L554"><a href="#L554"> 554</a>   let A := (extensionSourceObject model X Y f).obj model.nu model.auxiliary</span>
+<span id="L555"><a href="#L555"> 555</a>   let B := model.nu.functor.obj (Y.obj model.auxiliary)</span>
+<span id="L556"><a href="#L556"> 556</a>   let p := (t-s,t+e)</span>
+<span id="L557"><a href="#L557"> 557</a>   let M := model.convergentMap (.quotient q (extensionSourceObject model X Y f))</span>
+<span id="L558"><a href="#L558"> 558</a>     (.quotient q (.nu Y)) (finiteExtensionMap model X Y f q)</span>
+<span id="L559"><a href="#L559"> 559</a>   have hrel : TowerExtensionEquation M p (s+1)</span>
+<span id="L560"><a href="#L560"> 560</a>       ((s+e+1)-(s+1)) x y := hess.1</span>
+<span id="L561"><a href="#L561"> 561</a>   obtain ⟨_,ar,br,hab,hax,hby⟩ := (tower_extension_iff M p (s+1)</span>
+<span id="L562"><a href="#L562"> 562</a>     ((s+e+1)-(s+1)) x y).mp hrel</span>
+<span id="L563"><a href="#L563"> 563</a>   let a : BiHom (t-s) (t+e) (XModLambdaN A q) :=</span>
+<span id="L564"><a href="#L564"> 564</a>     ((model.syntheticTower.filtration (XModLambdaN A q)).F (s+1) p).arrow ar</span>
+<span id="L565"><a href="#L565"> 565</a>   have ha : FiltrationAtLeast model.syntheticTower (s+1) a := by</span>
+<span id="L566"><a href="#L566"> 566</a>     have H : a∈ModuleCat.subobjectModule _</span>
+<span id="L567"><a href="#L567"> 567</a>       ((model.syntheticTower.filtration (XModLambdaN A q)).F (s+1) p) := ⟨ar,rfl⟩</span>
+<span id="L568"><a href="#L568"> 568</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,FiltrationAtLeast] using H</span>
+<span id="L569"><a href="#L569"> 569</a>   have hnot : ¬FiltrationAtLeast model.syntheticTower (s+e+1+1)</span>
+<span id="L570"><a href="#L570"> 570</a>       (a≫finiteExtensionMap model X Y f q) := by</span>
+<span id="L571"><a href="#L571"> 571</a>     intro hhigh</span>
+<span id="L572"><a href="#L572"> 572</a>     have hzero : y=0 := by</span>
+<span id="L573"><a href="#L573"> 573</a>       apply (infinityGradedIso (model.convergence (.quotient q (.nu Y)))</span>
+<span id="L574"><a href="#L574"> 574</a>         p ((s+1)+((s+e+1)-(s+1)))).toLinearEquiv.injective</span>
+<span id="L575"><a href="#L575"> 575</a>       change (infinityGradedIso (model.convergence (.quotient q (.nu Y)))</span>
+<span id="L576"><a href="#L576"> 576</a>           p ((s+1)+((s+e+1)-(s+1)))).hom y =</span>
+<span id="L577"><a href="#L577"> 577</a>         (infinityGradedIso (model.convergence (.quotient q (.nu Y)))</span>
+<span id="L578"><a href="#L578"> 578</a>           p ((s+1)+((s+e+1)-(s+1)))).hom 0</span>
+<span id="L579"><a href="#L579"> 579</a>       rw [←hby,map_zero]</span>
+<span id="L580"><a href="#L580"> 580</a>       apply ((model.syntheticTower.filtration</span>
+<span id="L581"><a href="#L581"> 581</a>         ((SyntheticObject.quotient q (.nu Y)).obj model.nu model.auxiliary)).toAssociatedGraded_eq_zero_iff</span>
+<span id="L582"><a href="#L582"> 582</a>         ((s+1)+((s+e+1)-(s+1))) p br).mpr</span>
+<span id="L583"><a href="#L583"> 583</a>       rw [←hab]</span>
+<span id="L584"><a href="#L584"> 584</a>       have hhigh&#x27; : FiltrationAtLeast model.syntheticTower</span>
+<span id="L585"><a href="#L585"> 585</a>           ((s+1)+((s+e+1)-(s+1))+1) (a≫finiteExtensionMap model X Y f q) := by</span>
+<span id="L586"><a href="#L586"> 586</a>         convert hhigh using 1; omega</span>
+<span id="L587"><a href="#L587"> 587</a>       simpa only [a,p,A,B,extensionSourceObject,SyntheticObject.obj,</span>
+<span id="L588"><a href="#L588"> 588</a>         SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,FiltrationAtLeast]</span>
+<span id="L589"><a href="#L589"> 589</a>         using hhigh&#x27;</span>
+<span id="L590"><a href="#L590"> 590</a>     exact ((tower_essential_iff_no_zero M p (s+1) ((s+e+1)-(s+1)) x y hrel).mp hess)</span>
+<span id="L591"><a href="#L591"> 591</a>       (by rwa [←hzero])</span>
+<span id="L592"><a href="#L592"> 592</a>   obtain ⟨bS,hbS⟩ := normalized_finite_source_division X e 1 q (by decide) h1q</span>
+<span id="L593"><a href="#L593"> 593</a>     (t-s) (t+e) (s+1) (by omega) a ha</span>
+<span id="L594"><a href="#L594"> 594</a>   let E := verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e)</span>
+<span id="L595"><a href="#L595"> 595</a>   let b0 := E.symm bS</span>
+<span id="L596"><a href="#L596"> 596</a>   let b : BiHom ((t+1)-(s+1)) ((t+1)+e) (XModLambdaN A (q-1)) :=</span>
+<span id="L597"><a href="#L597"> 597</a>     homotopyRegrade (by omega) (by omega) b0</span>
+<span id="L598"><a href="#L598"> 598</a>   let c0 := b0≫finiteExtensionMap model X Y f (q-1)</span>
+<span id="L599"><a href="#L599"> 599</a>   let c : BiHom ((t+1+e)-(s+1+e)) (t+1+e) (XModLambdaN B (q-1)) :=</span>
+<span id="L600"><a href="#L600"> 600</a>     homotopyRegrade (by omega) rfl (b≫finiteExtensionMap model X Y f (q-1))</span>
+<span id="L601"><a href="#L601"> 601</a>   have hcomm := (model.quotients.natural (model.normalizedMap X Y f).map).lambda_naturality</span>
+<span id="L602"><a href="#L602"> 602</a>     (show 0&lt;1 by decide) h1q</span>
+<span id="L603"><a href="#L603"> 603</a>   change (SyntheticCategory.biShift (0,-(1:ℤ))).map (finiteExtensionMap model X Y f (q-1))≫</span>
+<span id="L604"><a href="#L604"> 604</a>       ((model.quotients.tower B).triangle (show 0&lt;1 by decide) h1q).lambdaMap =</span>
+<span id="L605"><a href="#L605"> 605</a>     ((model.quotients.tower A).triangle (show 0&lt;1 by decide) h1q).lambdaMap≫</span>
+<span id="L606"><a href="#L606"> 606</a>       finiteExtensionMap model X Y f q at hcomm</span>
+<span id="L607"><a href="#L607"> 607</a>   have hactual : verticalShiftEquiv (XModLambdaN B (q-1)) 1 (t-s) (t+e) c0≫</span>
+<span id="L608"><a href="#L608"> 608</a>       ((model.quotients.tower B).triangle (show 0&lt;1 by decide) h1q).lambdaMap =</span>
+<span id="L609"><a href="#L609"> 609</a>       a≫finiteExtensionMap model X Y f q := by</span>
+<span id="L610"><a href="#L610"> 610</a>     let LA := ((model.quotients.tower A).triangle (show 0&lt;1 by decide) h1q).lambdaMap</span>
+<span id="L611"><a href="#L611"> 611</a>     let LB := ((model.quotients.tower B).triangle (show 0&lt;1 by decide) h1q).lambdaMap</span>
+<span id="L612"><a href="#L612"> 612</a>     let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-(1:ℤ))</span>
+<span id="L613"><a href="#L613"> 613</a>     have hcomm&#x27; : F.map (finiteExtensionMap model X Y f (q-1))≫LB =</span>
+<span id="L614"><a href="#L614"> 614</a>         LA≫finiteExtensionMap model X Y f q := hcomm</span>
+<span id="L615"><a href="#L615"> 615</a>     have hm := congrArg (fun z =&gt;</span>
+<span id="L616"><a href="#L616"> 616</a>       verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e) b0≫z) hcomm&#x27;</span>
+<span id="L617"><a href="#L617"> 617</a>     have hm&#x27; : (verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e) b0≫</span>
+<span id="L618"><a href="#L618"> 618</a>         F.map (finiteExtensionMap model X Y f (q-1)))≫LB =</span>
+<span id="L619"><a href="#L619"> 619</a>       (verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e) b0≫LA)≫</span>
+<span id="L620"><a href="#L620"> 620</a>         finiteExtensionMap model X Y f q := by</span>
+<span id="L621"><a href="#L621"> 621</a>       simpa only [Category.assoc] using hm</span>
+<span id="L622"><a href="#L622"> 622</a>     have hbSame : bS≫LA=a := hbS</span>
+<span id="L623"><a href="#L623"> 623</a>     calc</span>
+<span id="L624"><a href="#L624"> 624</a>       _ = (verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e) b0≫</span>
+<span id="L625"><a href="#L625"> 625</a>           F.map (finiteExtensionMap model X Y f (q-1)))≫LB :=</span>
+<span id="L626"><a href="#L626"> 626</a>         congrArg (fun z =&gt; z≫LB) (vertical_shift_comp (XModLambdaN A (q-1))</span>
+<span id="L627"><a href="#L627"> 627</a>           (XModLambdaN B (q-1)) (finiteExtensionMap model X Y f (q-1))</span>
+<span id="L628"><a href="#L628"> 628</a>           1 (t-s) (t+e) b0).symm</span>
+<span id="L629"><a href="#L629"> 629</a>       _ = (verticalShiftEquiv (XModLambdaN A (q-1)) 1 (t-s) (t+e) b0≫LA)≫</span>
+<span id="L630"><a href="#L630"> 630</a>           finiteExtensionMap model X Y f q := hm&#x27;</span>
+<span id="L631"><a href="#L631"> 631</a>       _ = a≫finiteExtensionMap model X Y f q :=</span>
+<span id="L632"><a href="#L632"> 632</a>         (congrArg (fun z =&gt; (z≫LA)≫finiteExtensionMap model X Y f q)</span>
+<span id="L633"><a href="#L633"> 633</a>           (E.apply_symm_apply bS)).trans</span>
+<span id="L634"><a href="#L634"> 634</a>           (congrArg (fun z =&gt; z≫finiteExtensionMap model X Y f q) hbSame)</span>
+<span id="L635"><a href="#L635"> 635</a>   have hclass : finiteLambdaClass Y q 1 (by decide) h1q (s+1+e) (t+1+e) c =</span>
+<span id="L636"><a href="#L636"> 636</a>       homotopyRegrade (m&#x27; := (t+1+e)-(s+1+e)) (w&#x27; := (t+1+e)-(1:ℕ))</span>
+<span id="L637"><a href="#L637"> 637</a>         (by omega) (by omega) (a≫finiteExtensionMap model X Y f q) := by</span>
+<span id="L638"><a href="#L638"> 638</a>     rw [finiteLambdaClass_vertical]</span>
+<span id="L639"><a href="#L639"> 639</a>     dsimp only [c,b,A,B]</span>
+<span id="L640"><a href="#L640"> 640</a>     rw [regrade_comp,homotopy_regrade_comp,←regrade_comp,homotopy_regrade_comp]</span>
+<span id="L641"><a href="#L641"> 641</a>     change verticalShiftEquiv (XModLambdaN B (q-1)) 1</span>
+<span id="L642"><a href="#L642"> 642</a>         ((t+1+e)-(s+1+e)) ((t+1+e)-(1:ℕ))</span>
+<span id="L643"><a href="#L643"> 643</a>         (homotopyRegrade (show t-s=(t+1+e)-(s+1+e) by omega)</span>
+<span id="L644"><a href="#L644"> 644</a>           (congrArg (fun z : ℤ =&gt; z+(1:ℕ)) (show t+e=(t+1+e)-(1:ℕ) by omega)) c0)≫</span>
+<span id="L645"><a href="#L645"> 645</a>         ((model.quotients.tower B).triangle (show 0&lt;1 by decide) h1q).lambdaMap = _</span>
+<span id="L646"><a href="#L646"> 646</a>     rw [vertical_shift_regrade,←regrade_comp,hactual]</span>
+<span id="L647"><a href="#L647"> 647</a>   apply hnc</span>
+<span id="L648"><a href="#L648"> 648</a>   apply short_crossing_of_lambda_target_not_high X Y f q h1q s t b</span>
+<span id="L649"><a href="#L649"> 649</a>   intro hhigh</span>
+<span id="L650"><a href="#L650"> 650</a>   change FiltrationAtLeast model.syntheticTower (s+1+e+1)</span>
+<span id="L651"><a href="#L651"> 651</a>     (finiteLambdaClass Y q 1 (by decide) h1q (s+1+e) (t+1+e) c) at hhigh</span>
+<span id="L652"><a href="#L652"> 652</a>   rw [hclass] at hhigh</span>
+<span id="L653"><a href="#L653"> 653</a>   apply hnot</span>
+<span id="L654"><a href="#L654"> 654</a>   have H := (regrade_filtration_iff _ _ (s+1+e+1) (a≫finiteExtensionMap model X Y f q)).mp hhigh</span>
+<span id="L655"><a href="#L655"> 655</a>   convert H using 1; omega</span>
+<span id="L656"><a href="#L656"> 656</a> </span>
+<span id="L657"><a href="#L657"> 657</a> private theorem source_detects_native (X : ClassicalObject) (q : ℕ) (e s t : ℤ)</span>
+<span id="L658"><a href="#L658"> 658</a>     (x : Ambient model X (s,t))</span>
+<span id="L659"><a href="#L659"> 659</a>     (a : BiHom (t-s) (t+e) (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L660"><a href="#L660"> 660</a>       (model.nu.functor.obj (X.obj model.auxiliary))) q))</span>
+<span id="L661"><a href="#L661"> 661</a>     (ha : Detects (model.convergence (.quotient q (.shift (0,e) (.nu X))))</span>
+<span id="L662"><a href="#L662"> 662</a>       (s,(t-s)+s,t+e) (regradeE2 (by simp) (finiteNuLabel model X q e s t 0 x))</span>
+<span id="L663"><a href="#L663"> 663</a>       (homotopyRegrade (by dsimp; omega) rfl a)) :</span>
+<span id="L664"><a href="#L664"> 664</a>     Detects (model.convergence (.quotient q (.shift (0,e) (.nu X))))</span>
+<span id="L665"><a href="#L665"> 665</a>       (s,t,t+e) (regradeE2 (by simp) (finiteNuLabel model X q e s t 0 x)) a := by</span>
+<span id="L666"><a href="#L666"> 666</a>   have H := detects_transport (show (s,(t-s)+s,t+e)=(s,t,t+e) by simp) _ _ ha</span>
+<span id="L667"><a href="#L667"> 667</a>   rw [e2_regrade_trans,homotopy_regrade_comp] at H</span>
+<span id="L668"><a href="#L668"> 668</a>   exact H</span>
+<span id="L669"><a href="#L669"> 669</a> </span>
+<span id="L670"><a href="#L670"> 670</a> /-- The complete first-short-length synchronization needed by MH2. The</span>
+<span id="L671"><a href="#L671"> 671</a> specified target belongs to the original W, and the actual source remains aZ. -/</span>
+<span id="L672"><a href="#L672"> 672</a> private theorem finite_extension_at_source_short</span>
+<span id="L673"><a href="#L673"> 673</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L674"><a href="#L674"> 674</a>     (r : ℕ) (n s t : ℤ) (x : Ambient model X (s,t)) (y : Ambient model Y (s+n,t+n))</span>
+<span id="L675"><a href="#L675"> 675</a>     (W : FiniteExtensionWitness model X Y f r n s t x y)</span>
+<span id="L676"><a href="#L676"> 676</a>     (hn : n≤(normalizedExponent model.classicalTower f:ℤ)+1)</span>
+<span id="L677"><a href="#L677"> 677</a>     (hnc : FiniteNoCrossing model X Y f r n s t)</span>
+<span id="L678"><a href="#L678"> 678</a>     (aZ : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (r-1)))</span>
+<span id="L679"><a href="#L679"> 679</a>     (haZ : Detects (model.convergence (.quotient (r-1) (.nu X))) (s,t,t)</span>
+<span id="L680"><a href="#L680"> 680</a>       (regradeE2 (by simp) (finiteTargetLabel model X (r-1) s t 0 x)) aZ) :</span>
+<span id="L681"><a href="#L681"> 681</a>     FiniteExtensionAtSource X Y f r n s t x y W aZ := by</span>
+<span id="L682"><a href="#L682"> 682</a>   let q : ℕ := r-1</span>
+<span id="L683"><a href="#L683"> 683</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L684"><a href="#L684"> 684</a>   have hq : 0&lt;q := by dsimp [q]; have := W.page_ge_two; omega</span>
+<span id="L685"><a href="#L685"> 685</a>   have hpage : q+1=r := by dsimp [q]; have := W.page_ge_two; omega</span>
+<span id="L686"><a href="#L686"> 686</a>   have hFinite : FiniteNoCrossing model X Y f (q+1) n s t := by</span>
+<span id="L687"><a href="#L687"> 687</a>     simpa only [hpage] using hnc</span>
+<span id="L688"><a href="#L688"> 688</a>   have hTower := short_finite_noCrossing_tower X Y f q hq s t n hn hFinite</span>
+<span id="L689"><a href="#L689"> 689</a>   let p := (t-s,t+e)</span>
+<span id="L690"><a href="#L690"> 690</a>   obtain ⟨_,ar,br,hab,hax,hby⟩ := (tower_extension_iff _ p s n W.source W.target).mp W.equation</span>
+<span id="L691"><a href="#L691"> 691</a>   let ah : BiHom (t-s) (t+e)</span>
+<span id="L692"><a href="#L692"> 692</a>       ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj model.nu model.auxiliary) :=</span>
+<span id="L693"><a href="#L693"> 693</a>     ((model.syntheticTower.filtration</span>
+<span id="L694"><a href="#L694"> 694</a>       ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj model.nu model.auxiliary)).F s p).arrow ar</span>
+<span id="L695"><a href="#L695"> 695</a>   have hs := source_frame_detects (model.convergence (.quotient q (extensionSourceObject model X Y f)))</span>
+<span id="L696"><a href="#L696"> 696</a>     p s W.source _ W.source_rep ar hax</span>
+<span id="L697"><a href="#L697"> 697</a>   have hsNative := source_detects_native X q e s t x ah hs</span>
+<span id="L698"><a href="#L698"> 698</a>   have hx : x∈cycles model X q (s,t) := by</span>
+<span id="L699"><a href="#L699"> 699</a>     have H := ((isCycle_iff_reaches model X r (by have := W.page_ge_two; omega) (s,t) x).mpr</span>
+<span id="L700"><a href="#L700"> 700</a>       W.source_cycle).2</span>
+<span id="L701"><a href="#L701"> 701</a>     have hlevel : (q:ℤ)=(r:ℤ)-1 := by dsimp [q]; have := W.page_ge_two; omega</span>
+<span id="L702"><a href="#L702"> 702</a>     rw [hlevel]</span>
+<span id="L703"><a href="#L703"> 703</a>     exact H</span>
+<span id="L704"><a href="#L704"> 704</a>   obtain ⟨y0,Wmin,_,_⟩ := minimal_finite_witness_of_detected_source X Y f q hq s t ah x hx hsNative</span>
+<span id="L705"><a href="#L705"> 705</a>   obtain ⟨ahNew,hsNew,_,huNew⟩ := finite_extension_at_source_minimal X Y f (q+1)</span>
+<span id="L706"><a href="#L706"> 706</a>     e s t x y0 Wmin le_rfl aZ haZ</span>
+<span id="L707"><a href="#L707"> 707</a>   exact extension_at_source_of_normalized_source X Y f r n s t x y W aZ ahNew hsNew huNew hTower</span>
+<span id="L708"><a href="#L708"> 708</a> </span>
+<span id="L709"><a href="#L709"> 709</a> end</span>
+<span id="L710"><a href="#L710"> 710</a> end KIP126.ProofTools.Internal.Leibniz</span></pre>

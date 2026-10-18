@@ -1,0 +1,173 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Classical.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Classical.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Literature contracts on the supplied background. Source:</span>
+<span id="L6"><a href="#L6">   6</a> `KIP126/Interface/Challenge/Literature/Source.lean` and</span>
+<span id="L7"><a href="#L7">   7</a> `Def/Kervaire/Route/SourceLanguage.lean`, review commit bbac1fc05843.</span>
+<span id="L8"><a href="#L8">   8</a> The former KIPBase connectivity and universal-coefficient obligations are</span>
+<span id="L9"><a href="#L9">   9</a> kept as source results, not inferred from the abstract category axioms. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> set_option autoImplicit false</span>
+<span id="L13"><a href="#L13">  13</a> namespace KIP126.Literature</span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.AdamsSynthetic KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.Kervaire.Route</span>
+<span id="L18"><a href="#L18">  18</a> universe u v w</span>
+<span id="L19"><a href="#L19">  19</a> noncomputable section</span>
+<span id="L20"><a href="#L20">  20</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L21"><a href="#L21">  21</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L22"><a href="#L22">  22</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L23"><a href="#L23">  23</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> /-- Connectivity uses the actual sphere shifts of this category. -/</span>
+<span id="L26"><a href="#L26">  26</a> public def IsConnected (X : C) (n : ℤ) : Prop :=</span>
+<span id="L27"><a href="#L27">  27</a>   ∀ i : ℤ, i ≤ n → Subsingleton (HomotopyGroup i X)</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> /-- Cohomology has the legacy sign convention: maps from `ΣⁿX` to HF₂. -/</span>
+<span id="L30"><a href="#L30">  30</a> public abbrev ModTwoCohomology (n : ℤ) (X : C) :=</span>
+<span id="L31"><a href="#L31">  31</a>   (shiftFunctor C n).obj X ⟶ D.coefficients.object</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> /-- The ordinary stable-connectivity and HF₂ universal-coefficient results.</span>
+<span id="L34"><a href="#L34">  34</a> Their applicability to this chosen background is a producer obligation. -/</span>
+<span id="L35"><a href="#L35">  35</a> private structure ClassicalFoundationResults where</span>
+<span id="L36"><a href="#L36">  36</a>   sphere_connected : IsConnected (SphereSpectrum (C := C)) (-1)</span>
+<span id="L37"><a href="#L37">  37</a>   connected_homology_vanishing : ∀ (X : C) (n : ℤ), IsConnected X n →</span>
+<span id="L38"><a href="#L38">  38</a>     ∀ i : ℤ, i ≤ n → Subsingleton (ModTwoHomology D.coefficients i X)</span>
+<span id="L39"><a href="#L39">  39</a>   universal_coefficient : ∀ (n : ℤ) (X : C),</span>
+<span id="L40"><a href="#L40">  40</a>     ModTwoCohomology D n X ≃+ (ModTwoHomology D.coefficients (-n) X →+ ZMod 2)</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> /-- The first λ-quotient coordinate is derived from the model&#x27;s comparison. -/</span>
+<span id="L43"><a href="#L43">  43</a> public def sphereFirstQuotient (s t : ℤ) :=</span>
+<span id="L44"><a href="#L44">  44</a>   KIP126.AdamsSynthetic.sphereFirstQuotient D.nu D.quotients.functoriality</span>
+<span id="L45"><a href="#L45">  45</a>     D.firstQuotient s t</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> /-- Actual h₆ in the first quotient, with no lift to the synthetic sphere.</span>
+<span id="L48"><a href="#L48">  48</a> This repairs the unbound old `syntheticH6` constant and does not assume the</span>
+<span id="L49"><a href="#L49">  49</a> permanence of either h₆ or h₆². -/</span>
+<span id="L50"><a href="#L50">  50</a> public def h6FirstQuotient : BiHom 63 64 (XModLambdaN (S_0_0 : Syn) 1) :=</span>
+<span id="L51"><a href="#L51">  51</a>   (sphereFirstQuotient D 1 64).symm D.standardClasses.standardH6</span>
+<span id="L52"><a href="#L52">  52</a> </span>
+<span id="L53"><a href="#L53">  53</a> public theorem h6FirstQuotient_label :</span>
+<span id="L54"><a href="#L54">  54</a>     sphereFirstQuotient D 1 64 (h6FirstQuotient D) = D.standardClasses.standardH6 :=</span>
+<span id="L55"><a href="#L55">  55</a>   (sphereFirstQuotient D 1 64).apply_symm_apply _</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> public def Theta5Detected (a : BiHom 62 64 (S_0_0 : Syn)) : Prop :=</span>
+<span id="L58"><a href="#L58">  58</a>   sphereFirstQuotient D 2 64 (quotientClass 1 a) = D.standardClasses.standardHiSquare 5</span>
+<span id="L59"><a href="#L59">  59</a> </span>
+<span id="L60"><a href="#L60">  60</a> public def ClassicalTheta5Detected (a : HomotopyGroup (C := C) 62 SphereSpectrum) : Prop :=</span>
+<span id="L61"><a href="#L61">  61</a>   ClassicalDetects (D.classicalConvergence .sphere) (2,64)</span>
+<span id="L62"><a href="#L62">  62</a>     (D.standardClasses.standardHiSquare 5) a</span>
+<span id="L63"><a href="#L63">  63</a> </span>
+<span id="L64"><a href="#L64">  64</a> /-- Realization coordinates use the existing λ-localization, unit and λ powers. -/</span>
+<span id="L65"><a href="#L65">  65</a> public structure RealizationCoordinates where</span>
+<span id="L66"><a href="#L66">  66</a>   additive : D.recovery.realization.Additive</span>
+<span id="L67"><a href="#L67">  67</a>   sphere : ∀ m w : ℤ, Sphere (C := C) m ≅ D.recovery.realization.obj (Smn (Syn := Syn) m w)</span>
+<span id="L68"><a href="#L68">  68</a>   unit : (sphere 0 0).hom ≫ D.recovery.realization.map</span>
+<span id="L69"><a href="#L69">  69</a>       (SyntheticCategory.biShift_zero.hom.app (S_0_0 : Syn)) =</span>
+<span id="L70"><a href="#L70">  70</a>     (shiftFunctorZero C ℤ).hom.app SphereSpectrum ≫</span>
+<span id="L71"><a href="#L71">  71</a>       D.recovery.nuRealizationIso.inv.app SphereSpectrum ≫</span>
+<span id="L72"><a href="#L72">  72</a>       D.recovery.realization.map D.nu.unitIso.hom</span>
+<span id="L73"><a href="#L73">  73</a>   lambda : ∀ (m w : ℤ) (k : ℕ),</span>
+<span id="L74"><a href="#L74">  74</a>     (sphere m (w-k)).hom ≫</span>
+<span id="L75"><a href="#L75">  75</a>       D.recovery.realization.map (lambdaMultiply k (𝟙 (Smn (Syn := Syn) m w))) =</span>
+<span id="L76"><a href="#L76">  76</a>         (sphere m w).hom</span>
+<span id="L77"><a href="#L77">  77</a> </span>
+<span id="L78"><a href="#L78">  78</a> public def RealizationCoordinates.sphereMap (R : RealizationCoordinates D) (m w : ℤ) :</span>
+<span id="L79"><a href="#L79">  79</a>     BiHom m w (S_0_0 : Syn) →+ HomotopyGroup (C := C) m SphereSpectrum := by</span>
+<span id="L80"><a href="#L80">  80</a>   letI := R.additive</span>
+<span id="L81"><a href="#L81">  81</a>   exact</span>
+<span id="L82"><a href="#L82">  82</a>     { toFun := fun a =&gt; (R.sphere m w).hom ≫ D.recovery.realization.map a ≫</span>
+<span id="L83"><a href="#L83">  83</a>         D.recovery.realization.map D.nu.unitIso.inv ≫</span>
+<span id="L84"><a href="#L84">  84</a>         D.recovery.nuRealizationIso.hom.app SphereSpectrum</span>
+<span id="L85"><a href="#L85">  85</a>       map_zero&#x27; := by simp</span>
+<span id="L86"><a href="#L86">  86</a>       map_add&#x27; := by intros; simp [Preadditive.comp_add, Preadditive.add_comp] }</span>
+<span id="L87"><a href="#L87">  87</a> </span>
+<span id="L88"><a href="#L88">  88</a> /-- Normalized η is the normalized map of the model&#x27;s actual classical η. -/</span>
+<span id="L89"><a href="#L89">  89</a> public def etaSourceIso (he : normalizedExponent D.classicalTower D.auxiliary.etaMap = 1) :</span>
+<span id="L90"><a href="#L90">  90</a>     Smn (Syn := Syn) 1 2 ≅</span>
+<span id="L91"><a href="#L91">  91</a>       (SyntheticCategory.biShift (0,(normalizedExponent D.classicalTower D.auxiliary.etaMap : ℤ))).obj</span>
+<span id="L92"><a href="#L92">  92</a>         (D.nu.functor.obj (Sphere (C := C) 1)) := by</span>
+<span id="L93"><a href="#L93">  93</a>   rw [he]</span>
+<span id="L94"><a href="#L94">  94</a>   exact ((SyntheticCategory.biShift (0,1)).mapIso</span>
+<span id="L95"><a href="#L95">  95</a>       (D.nu.suspensionIso SphereSpectrum ≪≫</span>
+<span id="L96"><a href="#L96">  96</a>         (SyntheticCategory.biShift (1,1)).mapIso D.nu.unitIso) ≪≫</span>
+<span id="L97"><a href="#L97">  97</a>       (SyntheticCategory.biShift_comp (1,1) (0,1)).app S_0_0).symm</span>
+<span id="L98"><a href="#L98">  98</a> </span>
+<span id="L99"><a href="#L99">  99</a> /-- One tmf source, compared with the chosen detector and its actual unit. -/</span>
+<span id="L100"><a href="#L100"> 100</a> private structure TmfBindings where</span>
+<span id="L101"><a href="#L101"> 101</a>   source : C</span>
+<span id="L102"><a href="#L102"> 102</a>   sourceIso : source ≅ D.auxiliary.detector</span>
+<span id="L103"><a href="#L103"> 103</a>   sourceUnit : SphereSpectrum ⟶ source</span>
+<span id="L104"><a href="#L104"> 104</a>   unit_agrees : sourceUnit ≫ sourceIso.hom = D.auxiliary.detectorUnit</span>
+<span id="L105"><a href="#L105"> 105</a>   g : D.classical.sphere.Page 2 (4,24)</span>
+<span id="L106"><a href="#L106"> 106</a>   deltaH1g : D.classical.sphere.Page 2 (9,54)</span>
+<span id="L107"><a href="#L107"> 107</a> </span>
+<span id="L108"><a href="#L108"> 108</a> /-- All source choices are correlated with one actual model. -/</span>
+<span id="L109"><a href="#L109"> 109</a> private structure ClassicalBindings where</span>
+<span id="L110"><a href="#L110"> 110</a>   realization : RealizationCoordinates D</span>
+<span id="L111"><a href="#L111"> 111</a>   eta : BiHom 1 2 (S_0_0 : Syn)</span>
+<span id="L112"><a href="#L112"> 112</a>   eta_exponent : normalizedExponent D.classicalTower D.auxiliary.etaMap = 1</span>
+<span id="L113"><a href="#L113"> 113</a>   eta_normalized : eta = (etaSourceIso D eta_exponent).hom ≫</span>
+<span id="L114"><a href="#L114"> 114</a>     (D.normalizedMap (.shift 1 .sphere) .sphere D.auxiliary.etaMap).map ≫ D.nu.unitIso.hom</span>
+<span id="L115"><a href="#L115"> 115</a>   theta5 : HomotopyGroup (C := C) 62 SphereSpectrum</span>
+<span id="L116"><a href="#L116"> 116</a>   tmf : TmfBindings D</span>
+<span id="L117"><a href="#L117"> 117</a> </span>
+<span id="L118"><a href="#L118"> 118</a> /-- Xu Corollary 1.3, IWX&#x27;s 62-stem, and standard Hopf detections.</span>
+<span id="L119"><a href="#L119"> 119</a> The stronger arbitrary-choice synthetic consequences are derived separately. -/</span>
+<span id="L120"><a href="#L120"> 120</a> private structure ClassicalResults (B : ClassicalBindings D) : Prop where</span>
+<span id="L121"><a href="#L121"> 121</a>   h5Square_permanent : NonzeroSurvival D.classical.sphere (2,64)</span>
+<span id="L122"><a href="#L122"> 122</a>     (D.standardClasses.standardHiSquare 5)</span>
+<span id="L123"><a href="#L123"> 123</a>   theta5_detection : ClassicalTheta5Detected D B.theta5</span>
+<span id="L124"><a href="#L124"> 124</a>   stem62_exponent_two : ∀ a : HomotopyGroup (C := C) 62 SphereSpectrum, a+a=0</span>
+<span id="L125"><a href="#L125"> 125</a>   theta5_filtration_gap : ∀ a b, ClassicalTheta5Detected D a → ClassicalTheta5Detected D b →</span>
+<span id="L126"><a href="#L126"> 126</a>     a-b ∈ (D.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62</span>
+<span id="L127"><a href="#L127"> 127</a>   eta_detection : ClassicalDetects (D.classicalConvergence .sphere) (1,2)</span>
+<span id="L128"><a href="#L128"> 128</a>     (D.standardClasses.standardHi 1) D.auxiliary.etaMap</span>
+<span id="L129"><a href="#L129"> 129</a>   nu_detection : ClassicalDetects (D.classicalConvergence .sphere) (1,4)</span>
+<span id="L130"><a href="#L130"> 130</a>     (D.standardClasses.standardHi 2) D.auxiliary.nuMap</span>
+<span id="L131"><a href="#L131"> 131</a>   eta_permanent : NonzeroSurvival D.classical.sphere (1,2) (D.standardClasses.standardHi 1)</span>
+<span id="L132"><a href="#L132"> 132</a>   nu_permanent : NonzeroSurvival D.classical.sphere (1,4) (D.standardClasses.standardHi 2)</span>
+<span id="L133"><a href="#L133"> 133</a>   eta_label : sphereFirstQuotient D 1 2 (quotientClass 1 B.eta) = D.standardClasses.standardHi 1</span>
+<span id="L134"><a href="#L134"> 134</a>   eta_realization : B.realization.sphereMap D 1 2 B.eta = D.auxiliary.etaMap</span>
+<span id="L135"><a href="#L135"> 135</a>   theta5_lift : ∃ a : BiHom 62 64 (S_0_0 : Syn),</span>
+<span id="L136"><a href="#L136"> 136</a>     Theta5Detected D a ∧ B.realization.sphereMap D 62 64 a = B.theta5</span>
+<span id="L137"><a href="#L137"> 137</a> </span>
+<span id="L138"><a href="#L138"> 138</a> /-- The chosen classical θ₅ has order dividing two by the 62-stem result. -/</span>
+<span id="L139"><a href="#L139"> 139</a> private theorem ClassicalResults.theta5_order_two {B : ClassicalBindings D}</span>
+<span id="L140"><a href="#L140"> 140</a>     (R : ClassicalResults D B) : B.theta5 + B.theta5 = 0 :=</span>
+<span id="L141"><a href="#L141"> 141</a>   R.stem62_exponent_two B.theta5</span>
+<span id="L142"><a href="#L142"> 142</a> </span>
+<span id="L143"><a href="#L143"> 143</a> /-- The precise additional comparison needed for arbitrary synthetic choices.</span>
+<span id="L144"><a href="#L144"> 144</a> These transport obligations are explicit parameters, not silently upgraded</span>
+<span id="L145"><a href="#L145"> 145</a> classical source facts or new unconditional Literature results. -/</span>
+<span id="L146"><a href="#L146"> 146</a> private structure Theta5Transport (B : ClassicalBindings D) : Prop where</span>
+<span id="L147"><a href="#L147"> 147</a>   detection : ∀ a, Theta5Detected D a →</span>
+<span id="L148"><a href="#L148"> 148</a>     ClassicalTheta5Detected D (B.realization.sphereMap D 62 64 a)</span>
+<span id="L149"><a href="#L149"> 149</a>   doubling_kernel : ∀ a, Theta5Detected D a →</span>
+<span id="L150"><a href="#L150"> 150</a>     B.realization.sphereMap D 62 64 (a+a) = 0 → a+a=0</span>
+<span id="L151"><a href="#L151"> 151</a>   filtration_reflection : ∀ a b, Theta5Detected D a → Theta5Detected D b →</span>
+<span id="L152"><a href="#L152"> 152</a>     B.realization.sphereMap D 62 64 (a-b) ∈</span>
+<span id="L153"><a href="#L153"> 153</a>       (D.classicalTower.tower SphereSpectrum).filtrationSubmodule 6 62 →</span>
+<span id="L154"><a href="#L154"> 154</a>     FiltrationAtLeast D.syntheticTower 6 (a-b)</span>
+<span id="L155"><a href="#L155"> 155</a> </span>
+<span id="L156"><a href="#L156"> 156</a> private theorem theta5_order_two {B : ClassicalBindings D} (R : ClassicalResults D B)</span>
+<span id="L157"><a href="#L157"> 157</a>     (T : Theta5Transport D B) (a : BiHom 62 64 (S_0_0 : Syn)) (ha : Theta5Detected D a) : a+a=0 :=</span>
+<span id="L158"><a href="#L158"> 158</a>   T.doubling_kernel a ha (by rw [map_add]; exact R.stem62_exponent_two _)</span>
+<span id="L159"><a href="#L159"> 159</a> </span>
+<span id="L160"><a href="#L160"> 160</a> private theorem theta5_indeterminacy_AF_ge_6 {B : ClassicalBindings D} (R : ClassicalResults D B)</span>
+<span id="L161"><a href="#L161"> 161</a>     (T : Theta5Transport D B) (a b : BiHom 62 64 (S_0_0 : Syn))</span>
+<span id="L162"><a href="#L162"> 162</a>     (ha : Theta5Detected D a) (hb : Theta5Detected D b) : FiltrationAtLeast D.syntheticTower 6 (a-b) :=</span>
+<span id="L163"><a href="#L163"> 163</a>   T.filtration_reflection a b ha hb (by</span>
+<span id="L164"><a href="#L164"> 164</a>     rw [map_sub]</span>
+<span id="L165"><a href="#L165"> 165</a>     exact R.theta5_filtration_gap _ _ (T.detection a ha) (T.detection b hb))</span>
+<span id="L166"><a href="#L166"> 166</a> </span>
+<span id="L167"><a href="#L167"> 167</a> private theorem theta5_detected_exists {B : ClassicalBindings D} (R : ClassicalResults D B) :</span>
+<span id="L168"><a href="#L168"> 168</a>     ∃ a : BiHom 62 64 (S_0_0 : Syn), Theta5Detected D a := by</span>
+<span id="L169"><a href="#L169"> 169</a>   obtain ⟨a, ha, _⟩ := R.theta5_lift</span>
+<span id="L170"><a href="#L170"> 170</a>   exact ⟨a, ha⟩</span>
+<span id="L171"><a href="#L171"> 171</a> </span>
+<span id="L172"><a href="#L172"> 172</a> end</span>
+<span id="L173"><a href="#L173"> 173</a> end KIP126.Literature</span></pre>

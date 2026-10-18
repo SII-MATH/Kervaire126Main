@@ -1,0 +1,59 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/BX.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/BX.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Classical</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Literature.Classical</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> /-! BX Proposition 7.19 at one distinguished source choice. Migrated from</span>
+<span id="L7"><a href="#L7">   7</a> Def/Kervaire/Theta5/Synthetic and Route/SourceLanguage at bbac1fc05843,</span>
+<span id="L8"><a href="#L8">   8</a> Apache-2.0. The normalized formula and arbitrary-choice statements of</span>
+<span id="L9"><a href="#L9">   9</a> the present paper are deliberately left as downstream proof obligations. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Literature</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L15"><a href="#L15">  15</a> universe u v w</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L18"><a href="#L18">  18</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L19"><a href="#L19">  19</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L20"><a href="#L20">  20</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> public def etaThetaSquare (η : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L23"><a href="#L23">  23</a>     (θ : BiHom 62 64 (S_0_0 : Syn)) : BiHom 125 130 (S_0_0 : Syn) :=</span>
+<span id="L24"><a href="#L24">  24</a>   sphereProduct η (sphereProduct θ θ)</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> public def lambdaEtaThetaSquare (η : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L27"><a href="#L27">  27</a>     (θ : BiHom 62 64 (S_0_0 : Syn)) : BiHom 125 129 (S_0_0 : Syn) :=</span>
+<span id="L28"><a href="#L28">  28</a>   lambdaMultiply 1 (etaThetaSquare η θ)</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> public def sphereTotalBoundary : XModLambdaN (S_0_0 : Syn) 1 ⟶ Smn 1 (-1) :=</span>
+<span id="L31"><a href="#L31">  31</a>   XModLambdaN.proj S_0_0 1 ≫</span>
+<span id="L32"><a href="#L32">  32</a>     (SyntheticCategory.biShift_compat (Syn := Syn) 1).inv.app</span>
+<span id="L33"><a href="#L33">  33</a>       ((SyntheticCategory.biShift (0,-1)).obj S_0_0) ≫</span>
+<span id="L34"><a href="#L34">  34</a>     (SyntheticCategory.biShift_comp (0,-1) (1,0)).hom.app S_0_0</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> public def deltaH6Square : BiHom 125 129 (S_0_0 : Syn) :=</span>
+<span id="L37"><a href="#L37">  37</a>   (susp_invariance 125 129 1 (-1) (S_0_0 : Syn)).symm</span>
+<span id="L38"><a href="#L38">  38</a>     ((sphereFirstQuotient D 2 128).symm D.standardClasses.standardH6Square ≫</span>
+<span id="L39"><a href="#L39">  39</a>       sphereTotalBoundary)</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> /-- All three statements use this same θ. The last clause is an equivalence,</span>
+<span id="L42"><a href="#L42">  42</a> not a proof of its zero right-hand side or of the final permanence target. -/</span>
+<span id="L43"><a href="#L43">  43</a> private structure BXSourceResults (η : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L44"><a href="#L44">  44</a>     (θ : BiHom 62 64 (S_0_0 : Syn)) : Prop where</span>
+<span id="L45"><a href="#L45">  45</a>   eta_label : sphereFirstQuotient D 1 2 (quotientClass 1 η) = D.standardClasses.standardHi 1</span>
+<span id="L46"><a href="#L46">  46</a>   theta_label : Theta5Detected D θ</span>
+<span id="L47"><a href="#L47">  47</a>   order_two : θ + θ = 0</span>
+<span id="L48"><a href="#L48">  48</a>   finite : ∀ r : ℕ, 1 ≤ r →</span>
+<span id="L49"><a href="#L49">  49</a>     (SurvivesTo D.classical.sphere ((r : ℤ)+3) (2,128)</span>
+<span id="L50"><a href="#L50">  50</a>       D.standardClasses.standardH6Square ↔ quotientClass r (etaThetaSquare η θ) = 0)</span>
+<span id="L51"><a href="#L51">  51</a>   total_boundary : deltaH6Square D = lambdaEtaThetaSquare η θ</span>
+<span id="L52"><a href="#L52">  52</a>   untruncated : D.H6SquarePermanent ↔ lambdaEtaThetaSquare η θ = 0</span>
+<span id="L53"><a href="#L53">  53</a> </span>
+<span id="L54"><a href="#L54">  54</a> /-- A single common source choice; no theorem for every detected θ is assumed. -/</span>
+<span id="L55"><a href="#L55">  55</a> private def BXDistinguishedInput (η : BiHom 1 2 (S_0_0 : Syn)) : Prop :=</span>
+<span id="L56"><a href="#L56">  56</a>   ∃ θ : BiHom 62 64 (S_0_0 : Syn), BXSourceResults D η θ</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> end</span>
+<span id="L59"><a href="#L59">  59</a> end KIP126.Literature</span></pre>

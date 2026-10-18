@@ -1,0 +1,112 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/Laws.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/Laws.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Language</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Actual page labels and crossing predicates for the paper&#x27;s reusable tools.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from PageRepresentatives/Predicates and Route/Extensions at</span>
+<span id="L7"><a href="#L7">   7</a> bbac1fc05843 (MIT; see the retained source LICENSE); all operations refer to the same given model. -/</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools</span>
+<span id="L11"><a href="#L11">  11</a> noncomputable section</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.SpectralSequence KIP126.Classical.Adams KIP126.AdamsSynthetic</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L15"><a href="#L15">  15</a> universe u v w</span>
+<span id="L16"><a href="#L16">  16</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L17"><a href="#L17">  17</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L18"><a href="#L18">  18</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L19"><a href="#L19">  19</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> /-- 本文待证工具（原 am7）：MainPaper Theorem 6.1 (`thm:e73f481e`) 的准确交付命题。</span>
+<span id="L22"><a href="#L22">  22</a> 所有页面、微分、有限／无限 extension 和 crossing 均来自同一 D。</span>
+<span id="L23"><a href="#L23">  23</a> 末端次数是 (s+r+l,t+r+l-1)，l-extension 不额外减一次 t。</span>
+<span id="L24"><a href="#L24">  24</a> 本定义只给出命题；证明使用同一 D 上的文献比较定理及</span>
+<span id="L25"><a href="#L25">  25</a> 论文中的 δ／λ／ρ 推理。不要求微分或 extension 非零。 -/</span>
+<span id="L26"><a href="#L26">  26</a> public def GeneralizedLeibnizLaw (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) : Prop :=</span>
+<span id="L27"><a href="#L27">  27</a>   ∀ (page : ℕ) (r m l s t : ℤ)</span>
+<span id="L28"><a href="#L28">  28</a>     (x : Ambient D X (s, t)) (y : Ambient D Y (s + m, t + m))</span>
+<span id="L29"><a href="#L29">  29</a>     (xInfinity : Ambient D X (s + r, t + r - 1))</span>
+<span id="L30"><a href="#L30">  30</a>     (yInfinity : Ambient D Y (s + r + l, t + r - 1 + l)),</span>
+<span id="L31"><a href="#L31">  31</a>     2 ≤ page → (page : ℤ) ≤ r →</span>
+<span id="L32"><a href="#L32">  32</a>     (normalizedExponent D.classicalTower f : ℤ) ≤ m →</span>
+<span id="L33"><a href="#L33">  33</a>     m ≤ (page : ℤ) - 2 + normalizedExponent D.classicalTower f →</span>
+<span id="L34"><a href="#L34">  34</a>     (normalizedExponent D.classicalTower f : ℤ) ≤ l →</span>
+<span id="L35"><a href="#L35">  35</a>     IsCycle D X (r - 1) (s, t) x →</span>
+<span id="L36"><a href="#L36">  36</a>     IsCycle D Y (r - 1 - m + normalizedExponent D.classicalTower f) (s + m, t + m) y →</span>
+<span id="L37"><a href="#L37">  37</a>     IsPermanent D X (s + r, t + r - 1) xInfinity →</span>
+<span id="L38"><a href="#L38">  38</a>     IsPermanent D Y (s + r + l, t + r - 1 + l) yInfinity →</span>
+<span id="L39"><a href="#L39">  39</a>     DifferentialAt D X r (s, t) (s + r, t + r - 1) x xInfinity →</span>
+<span id="L40"><a href="#L40">  40</a>     FiniteExtension D X Y f page m s t x y →</span>
+<span id="L41"><a href="#L41">  41</a>     InfiniteExtension D X Y f l (s + r) (t + r - 1) xInfinity yInfinity →</span>
+<span id="L42"><a href="#L42">  42</a>     (NoCrossingOn D X r page (s, t) ∨</span>
+<span id="L43"><a href="#L43">  43</a>       FiniteNoCrossing D X Y f page m s t) →</span>
+<span id="L44"><a href="#L44">  44</a>     InfiniteNoCrossing D X Y f l (s + r) (t + r - 1) →</span>
+<span id="L45"><a href="#L45">  45</a>     DifferentialAt D Y (r + l - m) (s + m, t + m)</span>
+<span id="L46"><a href="#L46">  46</a>       (s + r + l, t + r - 1 + l) y yInfinity</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> </span>
+<span id="L49"><a href="#L49">  49</a> /-- 本文待证工具（原 am7）：MainPaper Theorem 6.12 (`thm:158d451a`) 的实际三角版本。</span>
+<span id="L50"><a href="#L50">  50</a> 第二个 no-crossing 分支属于 Z 上的 d_r，在 E_r′ 页检查；不属于 g。</span>
+<span id="L51"><a href="#L51">  51</a> h 的 target 位于 ΣX，其标签通过 D.classicalSuspension 的实际 tower/layer 图和 raw-cycle</span>
+<span id="L52"><a href="#L52">  52</a> 商代表元与 x 关联。该比较的构造证明尚未交付，不能以任意 E₂ 等价代替。</span>
+<span id="L53"><a href="#L53">  53</a> 结论是存在同余于 y 的真实 f-extension target，模实际 B_r′；不是自由</span>
+<span id="L54"><a href="#L54">  54</a> 选取的 fTarget 操作。r′ 及结论页的正性由指数和与三个长度界保证。 -/</span>
+<span id="L55"><a href="#L55">  55</a> public def GeneralizedMahowaldLaw (T : TriangleData D.auxiliary) : Prop :=</span>
+<span id="L56"><a href="#L56">  56</a>   ∀ he : (normalizedExponent D.classicalTower T.f : ℤ) + normalizedExponent D.classicalTower T.g +</span>
+<span id="L57"><a href="#L57">  57</a>       normalizedExponent D.classicalTower T.h = 1,</span>
+<span id="L58"><a href="#L58">  58</a>   KIP126.Literature.NormalizedTriangleCompatible D T he →</span>
+<span id="L59"><a href="#L59">  59</a>   ∀ (n m l s t : ℤ),</span>
+<span id="L60"><a href="#L60">  60</a>     let r := n + m + l</span>
+<span id="L61"><a href="#L61">  61</a>     let n₁ := n - normalizedExponent D.classicalTower T.f</span>
+<span id="L62"><a href="#L62">  62</a>     let m₁ := m - normalizedExponent D.classicalTower T.g</span>
+<span id="L63"><a href="#L63">  63</a>     let l₁ := l - normalizedExponent D.classicalTower T.h</span>
+<span id="L64"><a href="#L64">  64</a>     let r&#x27; := r - m₁</span>
+<span id="L65"><a href="#L65">  65</a>     ∀ (x : Ambient D (T.X) (s + l, t + l - 1))</span>
+<span id="L66"><a href="#L66">  66</a>       (y : Ambient D (T.Y) (s + l + n, t + l - 1 + n))</span>
+<span id="L67"><a href="#L67">  67</a>       (xBar : Ambient D (T.Z) (s, t))</span>
+<span id="L68"><a href="#L68">  68</a>       (yBar : Ambient D (T.Z) (s + l + n + m, t + l - 1 + n + m))</span>
+<span id="L69"><a href="#L69">  69</a>       (suspendedX : Ambient D (.shift 1 T.X) (s + l, t + l)),</span>
+<span id="L70"><a href="#L70">  70</a>       1 ≤ n₁ → 0 ≤ m₁ → 0 ≤ l₁ →</span>
+<span id="L71"><a href="#L71">  71</a>       IsCycle D (T.X) n₁ (s + l, t + l - 1) x →</span>
+<span id="L72"><a href="#L72">  72</a>       IsCycle D (T.Y) (m₁ + 1) (s + l + n, t + l - 1 + n) y →</span>
+<span id="L73"><a href="#L73">  73</a>       IsCycle D (T.Z) (r - 1) (s, t) xBar →</span>
+<span id="L74"><a href="#L74">  74</a>       IsPermanent D (T.Z) (s + l + n + m, t + l - 1 + n + m) yBar →</span>
+<span id="L75"><a href="#L75">  75</a>       (D.classicalSuspension T.X).DesuspendsClass (s + l) (t + l) suspendedX x →</span>
+<span id="L76"><a href="#L76">  76</a>       FiniteExtension D T.Z (.shift 1 T.X) T.h r&#x27;.toNat l s t xBar suspendedX →</span>
+<span id="L77"><a href="#L77">  77</a>       DifferentialAt D (T.Z) r (s, t)</span>
+<span id="L78"><a href="#L78">  78</a>         (s + l + n + m, t + l - 1 + n + m) xBar yBar →</span>
+<span id="L79"><a href="#L79">  79</a>       (FiniteNoCrossing D T.Z (.shift 1 T.X) T.h r&#x27;.toNat l s t ∨</span>
+<span id="L80"><a href="#L80">  80</a>         NoCrossingOn D (T.Z) r r&#x27; (s, t)) →</span>
+<span id="L81"><a href="#L81">  81</a>       FiniteExtension D T.Y T.Z T.g (m₁ + 2).toNat m (s + l + n) (t + l - 1 + n) y yBar →</span>
+<span id="L82"><a href="#L82">  82</a>       IsCycle D (T.X) (n + m + normalizedExponent D.classicalTower T.h) (s + l, t + l - 1) x ∧</span>
+<span id="L83"><a href="#L83">  83</a>         ∃ y&#x27; : Ambient D (T.Y) (s + l + n, t + l - 1 + n),</span>
+<span id="L84"><a href="#L84">  84</a>           FiniteExtension D T.X T.Y T.f (n + m + 1 + normalizedExponent D.classicalTower T.h).toNat</span>
+<span id="L85"><a href="#L85">  85</a>             n (s + l) (t + l - 1) x y&#x27; ∧</span>
+<span id="L86"><a href="#L86">  86</a>           Congruent D (T.Y) r&#x27; (s + l + n, t + l - 1 + n) y&#x27; y</span>
+<span id="L87"><a href="#L87">  87</a> </span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> /-- 本文待证工具（原 am7）：保留 λ 层数的有限页 stretching 充分条件。</span>
+<span id="L90"><a href="#L90">  90</a> 参考 MainPaper Proposition `prop:dec738d3` 中同一有限商内的修正过程。</span>
+<span id="L91"><a href="#L91">  91</a> 源、靶须属于后页所需的 cycle 层；排除的障碍是在早页同一个有限商中，</span>
+<span id="L92"><a href="#L92">  92</a> 源不属于后页 ρ 的 E∞ 像、目标非零的实际较短扩张（包括非 essential 的扩张）。</span>
+<span id="L93"><a href="#L93">  93</a> 不能改为只排除较小商中的无层扩张：乘 λ 可能杀掉低滤过项。</span>
+<span id="L94"><a href="#L94">  94</a> 这比只排除 essential crossings 更强，不声称等价于原跨页候选或印出的推论。</span>
+<span id="L95"><a href="#L95">  95</a> 原仓库已证明有限滤过修正；当前迁移状态另行追踪，不将迁移缺口认定为新假设。</span>
+<span id="L96"><a href="#L96">  96</a> 结论只给出后页 extension 的存在，不声称任意指定的早期严格解可提升，</span>
+<span id="L97"><a href="#L97">  97</a> 也不蕴含相容解塔或未截断 extension 的存在。 -/</span>
+<span id="L98"><a href="#L98">  98</a> public def FinitePageExtensionStretchingLaw (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) : Prop :=</span>
+<span id="L99"><a href="#L99">  99</a>   ∀ (rEarlier rLater : ℕ) (n s t : ℤ)</span>
+<span id="L100"><a href="#L100"> 100</a>     (x : Ambient D X (s, t)) (y : Ambient D Y (s + n, t + n)),</span>
+<span id="L101"><a href="#L101"> 101</a>     2 ≤ rEarlier → rEarlier ≤ rLater →</span>
+<span id="L102"><a href="#L102"> 102</a>     (normalizedExponent D.classicalTower f : ℤ) ≤ n →</span>
+<span id="L103"><a href="#L103"> 103</a>     n ≤ (rEarlier : ℤ) - 2 + normalizedExponent D.classicalTower f →</span>
+<span id="L104"><a href="#L104"> 104</a>     IsCycle D X ((rLater : ℤ) - 1) (s, t) x →</span>
+<span id="L105"><a href="#L105"> 105</a>     IsCycle D Y ((rLater : ℤ) - 1 - n + normalizedExponent D.classicalTower f) (s + n, t + n) y →</span>
+<span id="L106"><a href="#L106"> 106</a>     FiniteExtension D X Y f rEarlier n s t x y →</span>
+<span id="L107"><a href="#L107"> 107</a>     ¬ FiniteExtensionNonliftableCrossing D X Y f rEarlier rLater n s t →</span>
+<span id="L108"><a href="#L108"> 108</a>     FiniteExtension D X Y f rLater n s t x y</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> </span>
+<span id="L111"><a href="#L111"> 111</a> end</span>
+<span id="L112"><a href="#L112"> 112</a> end KIP126.ProofTools</span></pre>

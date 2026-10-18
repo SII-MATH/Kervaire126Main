@@ -1,0 +1,376 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredDifferential/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredDifferential/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredPage.Data</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-!</span>
+<span id="L8"><a href="#L8">   8</a> # Differential on quotient pages</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> The differential is induced by the canonical filtered chain complex, by lifting</span>
+<span id="L11"><a href="#L11">  11</a> through the cycle kernel and descending through its image and the boundary</span>
+<span id="L12"><a href="#L12">  12</a> quotient. This adapts the completed construction in</span>
+<span id="L13"><a href="#L13">  13</a> `KIPBase/SpectralSequence/FilteredComplex.lean` at `dc4a7d1`.</span>
+<span id="L14"><a href="#L14">  14</a> Finite-page construction does not require boundedness of the filtration.</span>
+<span id="L15"><a href="#L15">  15</a> -/</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> namespace KIP126.Core.SpectralSequence.FilteredComplex</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> universe u v</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> theorem fil_arrow_eqToHom (FC : FilteredComplex C)</span>
+<span id="L26"><a href="#L26">  26</a>     (s : ℤ) (a b : ℤ) (h : a = b) :</span>
+<span id="L27"><a href="#L27">  27</a>     eqToHom (show Subobject.underlying.obj (FC.filtration.F s a) =</span>
+<span id="L28"><a href="#L28">  28</a>       Subobject.underlying.obj (FC.filtration.F s b) from by subst h; rfl) ≫</span>
+<span id="L29"><a href="#L29">  29</a>     (FC.filtration.F s b).arrow = (FC.filtration.F s a).arrow ≫</span>
+<span id="L30"><a href="#L30">  30</a>     eqToHom (show FC.complex.X a = FC.complex.X b from by subst h; rfl) := by</span>
+<span id="L31"><a href="#L31">  31</a>   subst h; simp</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> /-- Transport lemma for the differential along an integer equality:</span>
+<span id="L34"><a href="#L34">  34</a>     `eqToHom ≫ FC.complex.d b (b - 1) = FC.complex.d a (a - 1) ≫ eqToHom`. -/</span>
+<span id="L35"><a href="#L35">  35</a> theorem d_eqToHom&#x27; (FC : FilteredComplex C)</span>
+<span id="L36"><a href="#L36">  36</a>     (a b : ℤ) (h : a = b) :</span>
+<span id="L37"><a href="#L37">  37</a>     eqToHom (show FC.complex.X a = FC.complex.X b from by subst h; rfl) ≫</span>
+<span id="L38"><a href="#L38">  38</a>     FC.complex.d b (b - 1) = FC.complex.d a (a - 1) ≫</span>
+<span id="L39"><a href="#L39">  39</a>     eqToHom (show FC.complex.X (a - 1) = FC.complex.X (b - 1) from by subst h; rfl) := by</span>
+<span id="L40"><a href="#L40">  40</a>   subst h; simp</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> /-- `eqToHom ≫ dToK(k-1) = d(k)`: the transported differential composed with eqToHom</span>
+<span id="L43"><a href="#L43">  43</a>     gives the original differential. (Generalized version with free variables.) -/</span>
+<span id="L44"><a href="#L44">  44</a> theorem eqToHom_arrow_dToK_gen (FC : FilteredComplex C)</span>
+<span id="L45"><a href="#L45">  45</a>     (s : ℤ) (m k : ℤ) (hmk : m + 1 = k) :</span>
+<span id="L46"><a href="#L46">  46</a>     eqToHom (show Subobject.underlying.obj (FC.filtration.F s k) =</span>
+<span id="L47"><a href="#L47">  47</a>       Subobject.underlying.obj (FC.filtration.F s (m + 1)) by rw [hmk]) ≫</span>
+<span id="L48"><a href="#L48">  48</a>     ((FC.filtration.F s (m + 1)).arrow ≫ FC.dToK m) =</span>
+<span id="L49"><a href="#L49">  49</a>       (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫</span>
+<span id="L50"><a href="#L50">  50</a>       eqToHom (congr_arg FC.complex.X (show k - 1 = m by omega)) := by</span>
+<span id="L51"><a href="#L51">  51</a>   subst hmk</span>
+<span id="L52"><a href="#L52">  52</a>   simp [FilteredComplex.dToK]</span>
+<span id="L53"><a href="#L53">  53</a> </span>
+<span id="L54"><a href="#L54">  54</a> /-- Specialized transport: `eqToHom ≫ F^s((k-1)+1).arrow ≫ dToK(k-1) = F^s(k).arrow ≫ d(k)`. -/</span>
+<span id="L55"><a href="#L55">  55</a> theorem eqToHom_arrow_dToK (FC : FilteredComplex C)</span>
+<span id="L56"><a href="#L56">  56</a>     (s k : ℤ) :</span>
+<span id="L57"><a href="#L57">  57</a>     eqToHom (show Subobject.underlying.obj (FC.filtration.F s k) =</span>
+<span id="L58"><a href="#L58">  58</a>       Subobject.underlying.obj (FC.filtration.F s ((k - 1) + 1)) by</span>
+<span id="L59"><a href="#L59">  59</a>       rw [show (k - 1 : ℤ) + 1 = k from by omega]) ≫</span>
+<span id="L60"><a href="#L60">  60</a>     ((FC.filtration.F s ((k - 1) + 1)).arrow ≫ FC.dToK (k - 1)) =</span>
+<span id="L61"><a href="#L61">  61</a>       (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) := by</span>
+<span id="L62"><a href="#L62">  62</a>   rw [FC.eqToHom_arrow_dToK_gen s (k - 1) k (by omega)]</span>
+<span id="L63"><a href="#L63">  63</a>   simp</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L66"><a href="#L66">  66</a> /-- The induced differential on pages: `d_r : E_r^{s,k} → E_r^{s+r,k-1}`.</span>
+<span id="L67"><a href="#L67">  67</a>     This maps Z_r-cycles modulo B_r-boundaries at (s,k) to the same at (s+r,k-1),</span>
+<span id="L68"><a href="#L68">  68</a>     using the original differential d of the filtered complex.</span>
+<span id="L69"><a href="#L69">  69</a> </span>
+<span id="L70"><a href="#L70">  70</a>     For `r = n : ℕ`:</span>
+<span id="L71"><a href="#L71">  71</a>     - Source: `E_n^{s,k} = Z_n^{s,k} / B_n^{s,k}` where</span>
+<span id="L72"><a href="#L72">  72</a>       `Z_n = { x ∈ F^s | dx ∈ F^{s+n} }` and `B_n = { dz | z ∈ F^{s-n+1}, dz ∈ F^s }`</span>
+<span id="L73"><a href="#L73">  73</a>     - Target: `E_n^{s+n,k-1} = Z_n^{s+n,k-1} / B_n^{s+n,k-1}`</span>
+<span id="L74"><a href="#L74">  74</a>     - Map: send class of x to class of dx -/</span>
+<span id="L75"><a href="#L75">  75</a> @[no_expose] noncomputable def pageDifferential (FC : FilteredComplex C)</span>
+<span id="L76"><a href="#L76">  76</a>     (s k : ℤ) (n : ℕ) :</span>
+<span id="L77"><a href="#L77">  77</a>     FC.pageObj s k ↑n ⟶ FC.pageObj (s + ↑n) (k - 1) ↑n := by</span>
+<span id="L78"><a href="#L78">  78</a>   set ι_s := Subobject.ofLE (FC.filtration.F (s + 1) k) (FC.filtration.F s k) (FC.filtration.mono s k) with hι_s_def</span>
+<span id="L79"><a href="#L79">  79</a>   let πV := FC.filtration.toAssociatedGraded s k</span>
+<span id="L80"><a href="#L80">  80</a>   let f_n := (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫</span>
+<span id="L81"><a href="#L81">  81</a>     cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)</span>
+<span id="L82"><a href="#L82">  82</a>   let kerZ := kernelSubobject f_n</span>
+<span id="L83"><a href="#L83">  83</a>   set ι_t := Subobject.ofLE (FC.filtration.F (s + ↑n + 1) (k - 1)) (FC.filtration.F (s + ↑n) (k - 1))</span>
+<span id="L84"><a href="#L84">  84</a>     (FC.filtration.mono (s + ↑n) (k - 1)) with hι_t_def</span>
+<span id="L85"><a href="#L85">  85</a>   let πV&#x27; := FC.filtration.toAssociatedGraded (s + ↑n) (k - 1)</span>
+<span id="L86"><a href="#L86">  86</a>   let f_n&#x27; := (FC.filtration.F (s + ↑n) (k - 1)).arrow ≫ FC.complex.d (k - 1) (k - 1 - 1) ≫</span>
+<span id="L87"><a href="#L87">  87</a>     cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow)</span>
+<span id="L88"><a href="#L88">  88</a>   let kerZ&#x27; := kernelSubobject f_n&#x27;</span>
+<span id="L89"><a href="#L89">  89</a>   -- === Step 1: Lift d-image through F^{s+n}(k-1) ===</span>
+<span id="L90"><a href="#L90">  90</a>   have h_ker_fn : kerZ.arrow ≫ f_n = 0 := kernelSubobject_arrow_comp f_n</span>
+<span id="L91"><a href="#L91">  91</a>   have h_factor_zero : (kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1)) ≫</span>
+<span id="L92"><a href="#L92">  92</a>       cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow) = 0 := by</span>
+<span id="L93"><a href="#L93">  93</a>     simp only [Category.assoc] at h_ker_fn ⊢; exact h_ker_fn</span>
+<span id="L94"><a href="#L94">  94</a>   set lift_n := Abelian.monoLift (FC.filtration.F (s + ↑n) (k - 1)).arrow</span>
+<span id="L95"><a href="#L95">  95</a>     (kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1))</span>
+<span id="L96"><a href="#L96">  96</a>     h_factor_zero with hlift_n_def</span>
+<span id="L97"><a href="#L97">  97</a>   have h_lift_spec : lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow =</span>
+<span id="L98"><a href="#L98">  98</a>       kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) :=</span>
+<span id="L99"><a href="#L99">  99</a>     Abelian.monoLift_comp _ _ _</span>
+<span id="L100"><a href="#L100"> 100</a>   -- === Step 2: Show lift_n factors through kerZ&#x27; (using d²=0) ===</span>
+<span id="L101"><a href="#L101"> 101</a>   have h_lift_in_kerZ&#x27; : lift_n ≫ f_n&#x27; = 0 := by</span>
+<span id="L102"><a href="#L102"> 102</a>     calc lift_n ≫ f_n&#x27;</span>
+<span id="L103"><a href="#L103"> 103</a>         = lift_n ≫ ((FC.filtration.F (s + ↑n) (k - 1)).arrow ≫ FC.complex.d (k - 1) (k - 1 - 1) ≫</span>
+<span id="L104"><a href="#L104"> 104</a>             cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow)) := rfl</span>
+<span id="L105"><a href="#L105"> 105</a>       _ = ((lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow) ≫ FC.complex.d (k - 1) (k - 1 - 1)) ≫</span>
+<span id="L106"><a href="#L106"> 106</a>             cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow) := by</span>
+<span id="L107"><a href="#L107"> 107</a>           simp only [Category.assoc]</span>
+<span id="L108"><a href="#L108"> 108</a>       _ = ((kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1)) ≫ FC.complex.d (k - 1) (k - 1 - 1)) ≫</span>
+<span id="L109"><a href="#L109"> 109</a>             cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow) := by</span>
+<span id="L110"><a href="#L110"> 110</a>           rw [h_lift_spec]</span>
+<span id="L111"><a href="#L111"> 111</a>       _ = (kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ (FC.complex.d k (k - 1) ≫ FC.complex.d (k - 1) (k - 1 - 1))) ≫</span>
+<span id="L112"><a href="#L112"> 112</a>             cokernel.π ((FC.filtration.F (s + ↑n + ↑n) (k - 1 - 1)).arrow) := by</span>
+<span id="L113"><a href="#L113"> 113</a>           simp only [Category.assoc]</span>
+<span id="L114"><a href="#L114"> 114</a>       _ = 0 := by rw [FC.complex.d_comp_d k]; simp only [comp_zero, zero_comp]</span>
+<span id="L115"><a href="#L115"> 115</a>   set lift_to_kerZ&#x27; := factorThruKernelSubobject f_n&#x27; lift_n h_lift_in_kerZ&#x27;</span>
+<span id="L116"><a href="#L116"> 116</a>     with hlift_to_kerZ&#x27;_def</span>
+<span id="L117"><a href="#L117"> 117</a>   -- === Step 3: Build ψ : kerZ.underlying → target page ===</span>
+<span id="L118"><a href="#L118"> 118</a>   set to_Z_n_t := lift_to_kerZ&#x27; ≫ factorThruImageSubobject (kerZ&#x27;.arrow ≫ πV&#x27;)</span>
+<span id="L119"><a href="#L119"> 119</a>     with hto_Z_n_t_def</span>
+<span id="L120"><a href="#L120"> 120</a>   set pageπ&#x27; := FC.pageπ (s + ↑n) (k - 1) ↑n with hpageπ&#x27;_def</span>
+<span id="L121"><a href="#L121"> 121</a>   set ψ := to_Z_n_t ≫ pageπ&#x27; with hψ_def</span>
+<span id="L122"><a href="#L122"> 122</a>   -- === Step 4: Descend ψ through epi (kerZ → Z_n_s) using Abelian.epiDesc ===</span>
+<span id="L123"><a href="#L123"> 123</a>   set p := factorThruImageSubobject (kerZ.arrow ≫ πV) with hp_def</span>
+<span id="L124"><a href="#L124"> 124</a>   haveI : Epi p := inferInstance</span>
+<span id="L125"><a href="#L125"> 125</a>   have h_ker_p_ψ : kernel.ι p ≫ ψ = 0 := by</span>
+<span id="L126"><a href="#L126"> 126</a>     -- === Step B: lift_n spec ===</span>
+<span id="L127"><a href="#L127"> 127</a>     have h_comp_eq : kernel.ι p ≫ lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow =</span>
+<span id="L128"><a href="#L128"> 128</a>         kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) := by</span>
+<span id="L129"><a href="#L129"> 129</a>       simp only [h_lift_spec]</span>
+<span id="L130"><a href="#L130"> 130</a>     -- === Step C: Factor through imgD ⊓ F^{s+n}(k-1) ===</span>
+<span id="L131"><a href="#L131"> 131</a>     set imgD := imageSubobject ((FC.filtration.F (s + 1) ((k - 1) + 1)).arrow ≫ FC.dToK (k - 1))</span>
+<span id="L132"><a href="#L132"> 132</a>       with himgD_def</span>
+<span id="L133"><a href="#L133"> 133</a>     have h_fac_imgD : imgD.Factors</span>
+<span id="L134"><a href="#L134"> 134</a>         (kernel.ι p ≫ lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow) := by</span>
+<span id="L135"><a href="#L135"> 135</a>       rw [h_comp_eq]</span>
+<span id="L136"><a href="#L136"> 136</a>       have h1 : kernel.ι p ≫ (kerZ.arrow ≫ πV) = 0 := by</span>
+<span id="L137"><a href="#L137"> 137</a>         have h_p_Z : p ≫ (imageSubobject (kerZ.arrow ≫ πV)).arrow = kerZ.arrow ≫ πV :=</span>
+<span id="L138"><a href="#L138"> 138</a>           imageSubobject_arrow_comp (kerZ.arrow ≫ πV)</span>
+<span id="L139"><a href="#L139"> 139</a>         calc kernel.ι p ≫ (kerZ.arrow ≫ πV)</span>
+<span id="L140"><a href="#L140"> 140</a>             = kernel.ι p ≫ (p ≫ (imageSubobject (kerZ.arrow ≫ πV)).arrow) := by rw [h_p_Z]</span>
+<span id="L141"><a href="#L141"> 141</a>           _ = (kernel.ι p ≫ p) ≫ (imageSubobject (kerZ.arrow ≫ πV)).arrow := by</span>
+<span id="L142"><a href="#L142"> 142</a>               simp only [Category.assoc]</span>
+<span id="L143"><a href="#L143"> 143</a>           _ = 0 ≫ (imageSubobject (kerZ.arrow ≫ πV)).arrow := by rw [kernel.condition]</span>
+<span id="L144"><a href="#L144"> 144</a>           _ = 0 := zero_comp</span>
+<span id="L145"><a href="#L145"> 145</a>       have h1&#x27; : (kernel.ι p ≫ kerZ.arrow) ≫ cokernel.π ι_s = 0 := by</span>
+<span id="L146"><a href="#L146"> 146</a>         rw [Category.assoc]; exact h1</span>
+<span id="L147"><a href="#L147"> 147</a>       set α := Abelian.monoLift ι_s (kernel.ι p ≫ kerZ.arrow) h1&#x27; with hα_def</span>
+<span id="L148"><a href="#L148"> 148</a>       have hα_spec : α ≫ ι_s = kernel.ι p ≫ kerZ.arrow := Abelian.monoLift_comp _ _ _</span>
+<span id="L149"><a href="#L149"> 149</a>       have h_ι_arrow : ι_s ≫ (FC.filtration.F s k).arrow = (FC.filtration.F (s + 1) k).arrow := by</span>
+<span id="L150"><a href="#L150"> 150</a>         exact Subobject.ofLE_arrow (FC.filtration.mono s k)</span>
+<span id="L151"><a href="#L151"> 151</a>       have h_rewrite : kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =</span>
+<span id="L152"><a href="#L152"> 152</a>           α ≫ ((FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1)) := by</span>
+<span id="L153"><a href="#L153"> 153</a>         conv_lhs =&gt; rw [show kernel.ι p ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =</span>
+<span id="L154"><a href="#L154"> 154</a>           ((kernel.ι p ≫ kerZ.arrow) ≫ (FC.filtration.F s k).arrow) ≫ FC.complex.d k (k - 1) from by</span>
+<span id="L155"><a href="#L155"> 155</a>           simp only [Category.assoc]]</span>
+<span id="L156"><a href="#L156"> 156</a>         rw [← hα_spec, show (α ≫ ι_s) ≫ (FC.filtration.F s k).arrow = α ≫ (ι_s ≫ (FC.filtration.F s k).arrow) from</span>
+<span id="L157"><a href="#L157"> 157</a>           Category.assoc _ _ _, h_ι_arrow, Category.assoc]</span>
+<span id="L158"><a href="#L158"> 158</a>       rw [h_rewrite]</span>
+<span id="L159"><a href="#L159"> 159</a>       apply Subobject.factors_of_factors_right</span>
+<span id="L160"><a href="#L160"> 160</a>       have h_transport : eqToHom (show Subobject.underlying.obj (FC.filtration.F (s + 1) k) =</span>
+<span id="L161"><a href="#L161"> 161</a>           Subobject.underlying.obj (FC.filtration.F (s + 1) ((k - 1) + 1)) by</span>
+<span id="L162"><a href="#L162"> 162</a>           rw [show (k - 1 : ℤ) + 1 = k from by omega]) ≫</span>
+<span id="L163"><a href="#L163"> 163</a>           ((FC.filtration.F (s + 1) ((k - 1) + 1)).arrow ≫ FC.dToK (k - 1)) =</span>
+<span id="L164"><a href="#L164"> 164</a>           (FC.filtration.F (s + 1) k).arrow ≫ FC.complex.d k (k - 1) :=</span>
+<span id="L165"><a href="#L165"> 165</a>         FC.eqToHom_arrow_dToK (s + 1) k</span>
+<span id="L166"><a href="#L166"> 166</a>       rw [← h_transport, himgD_def, Subobject.mk_factors_iff]</span>
+<span id="L167"><a href="#L167"> 167</a>       exact ⟨eqToHom (by rw [show (k - 1 : ℤ) + 1 = k from by omega]) ≫</span>
+<span id="L168"><a href="#L168"> 168</a>         factorThruImage ((FC.filtration.F (s + 1) ((k - 1) + 1)).arrow ≫ FC.dToK (k - 1)), by simp⟩</span>
+<span id="L169"><a href="#L169"> 169</a>     have h_fac_fil : (FC.filtration.F (s + ↑n) (k - 1)).Factors</span>
+<span id="L170"><a href="#L170"> 170</a>         (kernel.ι p ≫ lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow) :=</span>
+<span id="L171"><a href="#L171"> 171</a>       Subobject.factors_of_factors_right _ (Subobject.factors_comp_arrow lift_n)</span>
+<span id="L172"><a href="#L172"> 172</a>     set I := imgD ⊓ FC.filtration.F (s + ↑n) (k - 1) with hI_def</span>
+<span id="L173"><a href="#L173"> 173</a>     have h_fac_I : I.Factors (kernel.ι p ≫ lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow) :=</span>
+<span id="L174"><a href="#L174"> 174</a>       (Subobject.inf_factors _).mpr ⟨h_fac_imgD, h_fac_fil⟩</span>
+<span id="L175"><a href="#L175"> 175</a>     set δ := I.factorThru _ h_fac_I with hδ_def</span>
+<span id="L176"><a href="#L176"> 176</a>     have hδ_spec : δ ≫ I.arrow = kernel.ι p ≫ lift_n ≫ (FC.filtration.F (s + ↑n) (k - 1)).arrow :=</span>
+<span id="L177"><a href="#L177"> 177</a>       Subobject.factorThru_arrow _ _ _</span>
+<span id="L178"><a href="#L178"> 178</a>     -- === Step D: δ ≫ ofLE(I, F^{s+n}) = kernel.ι p ≫ lift_n ===</span>
+<span id="L179"><a href="#L179"> 179</a>     have h_δ_ofLE : δ ≫ Subobject.ofLE I (FC.filtration.F (s + ↑n) (k - 1)) inf_le_right =</span>
+<span id="L180"><a href="#L180"> 180</a>         kernel.ι p ≫ lift_n := by</span>
+<span id="L181"><a href="#L181"> 181</a>       apply (inferInstance : Mono (FC.filtration.F (s + ↑n) (k - 1)).arrow).right_cancellation</span>
+<span id="L182"><a href="#L182"> 182</a>       rw [Category.assoc, Subobject.ofLE_arrow, hδ_spec]</span>
+<span id="L183"><a href="#L183"> 183</a>       simp only [Category.assoc]</span>
+<span id="L184"><a href="#L184"> 184</a>     -- === Step E: Match boundary definition with I ===</span>
+<span id="L185"><a href="#L185"> 185</a>     have h_imgD_bnd : imageSubobject ((FC.filtration.F (s + ↑n - ↑n + 1) ((k - 1) + 1)).arrow ≫</span>
+<span id="L186"><a href="#L186"> 186</a>         FC.dToK (k - 1)) = imgD := by</span>
+<span id="L187"><a href="#L187"> 187</a>       rw [show (s : ℤ) + (↑n : ℤ) - (↑n : ℤ) + 1 = s + 1 from by omega]</span>
+<span id="L188"><a href="#L188"> 188</a>     have h_I_bnd : imageSubobject ((FC.filtration.F (s + ↑n - ↑n + 1) ((k - 1) + 1)).arrow ≫</span>
+<span id="L189"><a href="#L189"> 189</a>         FC.dToK (k - 1)) ⊓ FC.filtration.F (s + ↑n) (k - 1) = I := by</span>
+<span id="L190"><a href="#L190"> 190</a>       rw [h_imgD_bnd]</span>
+<span id="L191"><a href="#L191"> 191</a> </span>
+<span id="L192"><a href="#L192"> 192</a> </span>
+<span id="L193"><a href="#L193"> 193</a>     -- === Step F: Show B_n_t.Factors (kernel.ι p ≫ lift_n ≫ πV&#x27;) ===</span>
+<span id="L194"><a href="#L194"> 194</a> </span>
+<span id="L195"><a href="#L195"> 195</a>     have h_bnd_fac : (FC.boundarySubobject (s + ↑n) (k - 1) ↑n).Factors</span>
+<span id="L196"><a href="#L196"> 196</a>         (kernel.ι p ≫ lift_n ≫ πV&#x27;) := by</span>
+<span id="L197"><a href="#L197"> 197</a>       rw [show kernel.ι p ≫ lift_n ≫ πV&#x27; = (kernel.ι p ≫ lift_n) ≫ πV&#x27;</span>
+<span id="L198"><a href="#L198"> 198</a>         from (Category.assoc _ _ _).symm,</span>
+<span id="L199"><a href="#L199"> 199</a>         ← h_δ_ofLE, Category.assoc]</span>
+<span id="L200"><a href="#L200"> 200</a>       apply Subobject.factors_of_factors_right</span>
+<span id="L201"><a href="#L201"> 201</a>       set I_bnd := imageSubobject ((FC.filtration.F (s + ↑n - ↑n + 1) ((k - 1) + 1)).arrow ≫</span>
+<span id="L202"><a href="#L202"> 202</a>         FC.dToK (k - 1)) ⊓ FC.filtration.F (s + ↑n) (k - 1) with hI_bnd_def</span>
+<span id="L203"><a href="#L203"> 203</a>       have h_I_le_Ibnd : I ≤ I_bnd := le_of_eq h_I_bnd.symm</span>
+<span id="L204"><a href="#L204"> 204</a>       have h_ofLE_factor : Subobject.ofLE I (FC.filtration.F (s + ↑n) (k - 1)) inf_le_right =</span>
+<span id="L205"><a href="#L205"> 205</a>           Subobject.ofLE I I_bnd h_I_le_Ibnd ≫</span>
+<span id="L206"><a href="#L206"> 206</a>           Subobject.ofLE I_bnd (FC.filtration.F (s + ↑n) (k - 1)) inf_le_right := by</span>
+<span id="L207"><a href="#L207"> 207</a>         apply (inferInstance : Mono (FC.filtration.F (s + ↑n) (k - 1)).arrow).right_cancellation</span>
+<span id="L208"><a href="#L208"> 208</a>         simp only [Category.assoc, Subobject.ofLE_arrow]</span>
+<span id="L209"><a href="#L209"> 209</a>       rw [h_ofLE_factor, Category.assoc]</span>
+<span id="L210"><a href="#L210"> 210</a>       apply Subobject.factors_of_factors_right</span>
+<span id="L211"><a href="#L211"> 211</a>       change (imageSubobject</span>
+<span id="L212"><a href="#L212"> 212</a>         (Subobject.ofLE I_bnd (FC.filtration.F (s + ↑n) (k - 1)) inf_le_right ≫ πV&#x27;)).Factors</span>
+<span id="L213"><a href="#L213"> 213</a>         (Subobject.ofLE I_bnd (FC.filtration.F (s + ↑n) (k - 1)) inf_le_right ≫ πV&#x27;)</span>
+<span id="L214"><a href="#L214"> 214</a>       rw [Subobject.mk_factors_iff]</span>
+<span id="L215"><a href="#L215"> 215</a>       exact ⟨factorThruImage _, by simp⟩</span>
+<span id="L216"><a href="#L216"> 216</a>     -- === Step G: Show kernel.ι p ≫ ψ = 0 ===</span>
+<span id="L217"><a href="#L217"> 217</a>     set B_n_t := FC.boundarySubobject (s + ↑n) (k - 1) ↑n with hB_n_t_def</span>
+<span id="L218"><a href="#L218"> 218</a>     let Z_n_t := FC.cycleSubobject (s + ↑n) (k - 1) ↑n</span>
+<span id="L219"><a href="#L219"> 219</a>     have hZ_n_t_def : Z_n_t = FC.cycleSubobject (s + ↑n) (k - 1) ↑n := rfl</span>
+<span id="L220"><a href="#L220"> 220</a>     have hB_le_Z := FC.B_le_Z_aux (s + ↑n) (k - 1) ↑n</span>
+<span id="L221"><a href="#L221"> 221</a>     have h_to_Z_comp : to_Z_n_t ≫ Z_n_t.arrow = lift_n ≫ πV&#x27; := by</span>
+<span id="L222"><a href="#L222"> 222</a>       change (lift_to_kerZ&#x27; ≫ factorThruImageSubobject (kerZ&#x27;.arrow ≫ πV&#x27;)) ≫</span>
+<span id="L223"><a href="#L223"> 223</a>         (imageSubobject (kerZ&#x27;.arrow ≫ πV&#x27;)).arrow = lift_n ≫ πV&#x27;</span>
+<span id="L224"><a href="#L224"> 224</a>       simp only [Category.assoc, imageSubobject_arrow_comp]</span>
+<span id="L225"><a href="#L225"> 225</a>       rw [show lift_to_kerZ&#x27; ≫ kerZ&#x27;.arrow ≫ πV&#x27; =</span>
+<span id="L226"><a href="#L226"> 226</a>         (lift_to_kerZ&#x27; ≫ kerZ&#x27;.arrow) ≫ πV&#x27; from (Category.assoc _ _ _).symm]</span>
+<span id="L227"><a href="#L227"> 227</a>       rw [show lift_to_kerZ&#x27; ≫ kerZ&#x27;.arrow = lift_n from by</span>
+<span id="L228"><a href="#L228"> 228</a>         rw [hlift_to_kerZ&#x27;_def]</span>
+<span id="L229"><a href="#L229"> 229</a>         exact factorThruKernelSubobject_comp_arrow f_n&#x27; lift_n h_lift_in_kerZ&#x27;]</span>
+<span id="L230"><a href="#L230"> 230</a>     have h_ker_to_Z_fac : B_n_t.Factors (kernel.ι p ≫ to_Z_n_t ≫ Z_n_t.arrow) := by</span>
+<span id="L231"><a href="#L231"> 231</a>       rw [h_to_Z_comp]</span>
+<span id="L232"><a href="#L232"> 232</a>       exact h_bnd_fac</span>
+<span id="L233"><a href="#L233"> 233</a>     set γ := B_n_t.factorThru _ h_ker_to_Z_fac with hγ_def</span>
+<span id="L234"><a href="#L234"> 234</a>     have hγ_spec : γ ≫ B_n_t.arrow = kernel.ι p ≫ to_Z_n_t ≫ Z_n_t.arrow :=</span>
+<span id="L235"><a href="#L235"> 235</a>       Subobject.factorThru_arrow _ _ _</span>
+<span id="L236"><a href="#L236"> 236</a>     have h_factor_B : kernel.ι p ≫ to_Z_n_t =</span>
+<span id="L237"><a href="#L237"> 237</a>         γ ≫ Subobject.ofLE B_n_t Z_n_t hB_le_Z := by</span>
+<span id="L238"><a href="#L238"> 238</a>       apply (inferInstance : Mono Z_n_t.arrow).right_cancellation</span>
+<span id="L239"><a href="#L239"> 239</a>       calc</span>
+<span id="L240"><a href="#L240"> 240</a>         (kernel.ι p ≫ to_Z_n_t) ≫ Z_n_t.arrow =</span>
+<span id="L241"><a href="#L241"> 241</a>             kernel.ι p ≫ to_Z_n_t ≫ Z_n_t.arrow := Category.assoc _ _ _</span>
+<span id="L242"><a href="#L242"> 242</a>         _ = γ ≫ B_n_t.arrow := hγ_spec.symm</span>
+<span id="L243"><a href="#L243"> 243</a>         _ = (γ ≫ Subobject.ofLE B_n_t Z_n_t hB_le_Z) ≫ Z_n_t.arrow := by</span>
+<span id="L244"><a href="#L244"> 244</a>           rw [Category.assoc, Subobject.ofLE_arrow]</span>
+<span id="L245"><a href="#L245"> 245</a>     have h_cok : Subobject.ofLE B_n_t Z_n_t hB_le_Z ≫ pageπ&#x27; = 0 := by</span>
+<span id="L246"><a href="#L246"> 246</a>       rw [show pageπ&#x27; = FC.pageπ (s + ↑n) (k - 1) ↑n from rfl]</span>
+<span id="L247"><a href="#L247"> 247</a>       change Subobject.ofLE B_n_t Z_n_t hB_le_Z ≫</span>
+<span id="L248"><a href="#L248"> 248</a>         cokernel.π (Subobject.ofLE (FC.boundarySubobject (s + ↑n) (k - 1) ↑n)</span>
+<span id="L249"><a href="#L249"> 249</a>           (FC.cycleSubobject (s + ↑n) (k - 1) ↑n)</span>
+<span id="L250"><a href="#L250"> 250</a>           (FC.B_le_Z_aux (s + ↑n) (k - 1) ↑n)) = 0</span>
+<span id="L251"><a href="#L251"> 251</a>       exact cokernel.condition _</span>
+<span id="L252"><a href="#L252"> 252</a>     rw [hψ_def]</span>
+<span id="L253"><a href="#L253"> 253</a>     calc kernel.ι p ≫ to_Z_n_t ≫ pageπ&#x27;</span>
+<span id="L254"><a href="#L254"> 254</a>         = (kernel.ι p ≫ to_Z_n_t) ≫ pageπ&#x27; := (Category.assoc _ _ _).symm</span>
+<span id="L255"><a href="#L255"> 255</a>       _ = (γ ≫ Subobject.ofLE B_n_t Z_n_t hB_le_Z) ≫ pageπ&#x27; := by</span>
+<span id="L256"><a href="#L256"> 256</a>         rw [← h_factor_B]</span>
+<span id="L257"><a href="#L257"> 257</a>       _ = γ ≫ (Subobject.ofLE B_n_t Z_n_t hB_le_Z ≫ pageπ&#x27;) := Category.assoc _ _ _</span>
+<span id="L258"><a href="#L258"> 258</a>       _ = γ ≫ 0 := by rw [h_cok]</span>
+<span id="L259"><a href="#L259"> 259</a>       _ = 0 := comp_zero</span>
+<span id="L260"><a href="#L260"> 260</a>   set h_on_Zn := Abelian.epiDesc p ψ h_ker_p_ψ with hh_on_Zn_def</span>
+<span id="L261"><a href="#L261"> 261</a>   -- === Step 5: Descend through source page cokernel ===</span>
+<span id="L262"><a href="#L262"> 262</a>   have h_B_zero : Subobject.ofLE (FC.boundarySubobject s k ↑n)</span>
+<span id="L263"><a href="#L263"> 263</a>       (FC.cycleSubobject s k ↑n)</span>
+<span id="L264"><a href="#L264"> 264</a>       (FC.B_le_Z_aux s k ↑n) ≫ h_on_Zn = 0 := by</span>
+<span id="L265"><a href="#L265"> 265</a>     let imgD_s := imageSubobject ((FC.filtration.F (s - ↑n + 1) (k + 1)).arrow ≫ FC.dToK k)</span>
+<span id="L266"><a href="#L266"> 266</a>     let I_s := imgD_s ⊓ FC.filtration.F s k</span>
+<span id="L267"><a href="#L267"> 267</a>     let oI_s := Subobject.ofLE I_s (FC.filtration.F s k) inf_le_right</span>
+<span id="L268"><a href="#L268"> 268</a>     have h_B_eq : FC.boundarySubobject s k ↑n = imageSubobject (oI_s ≫ πV) := by</span>
+<span id="L269"><a href="#L269"> 269</a>       simp [FilteredComplex.boundarySubobject, imgD_s, I_s, oI_s, πV]</span>
+<span id="L270"><a href="#L270"> 270</a>     have h_Z_eq : FC.cycleSubobject s k ↑n = imageSubobject (kerZ.arrow ≫ πV) := by</span>
+<span id="L271"><a href="#L271"> 271</a>       simp [FilteredComplex.cycleSubobject, kerZ, f_n, πV]</span>
+<span id="L272"><a href="#L272"> 272</a>     -- === Step 1: oI_s ≫ f_n = 0 (boundary elements satisfy the cycle condition) ===</span>
+<span id="L273"><a href="#L273"> 273</a>     have h_zero_s : oI_s ≫ f_n = 0 := by</span>
+<span id="L274"><a href="#L274"> 274</a>       change Subobject.ofLE I_s (FC.filtration.F s k) inf_le_right ≫</span>
+<span id="L275"><a href="#L275"> 275</a>         ((FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) ≫</span>
+<span id="L276"><a href="#L276"> 276</a>           cokernel.π ((FC.filtration.F (s + ↑n) (k - 1)).arrow)) = 0</span>
+<span id="L277"><a href="#L277"> 277</a>       simp only [← Category.assoc]</span>
+<span id="L278"><a href="#L278"> 278</a>       rw [Subobject.ofLE_arrow]</span>
+<span id="L279"><a href="#L279"> 279</a>       rw [show I_s.arrow =</span>
+<span id="L280"><a href="#L280"> 280</a>           Subobject.ofLE I_s imgD_s inf_le_left ≫ imgD_s.arrow</span>
+<span id="L281"><a href="#L281"> 281</a>         from (Subobject.ofLE_arrow inf_le_left).symm]</span>
+<span id="L282"><a href="#L282"> 282</a>       simp only [Category.assoc]</span>
+<span id="L283"><a href="#L283"> 283</a>       have hd : imgD_s.arrow ≫ FC.complex.d k (k - 1) = 0 := by</span>
+<span id="L284"><a href="#L284"> 284</a>         rw [← cancel_epi (factorThruImageSubobject</span>
+<span id="L285"><a href="#L285"> 285</a>           ((FC.filtration.F (s - ↑n + 1) (k + 1)).arrow ≫ FC.dToK k))]</span>
+<span id="L286"><a href="#L286"> 286</a>         rw [comp_zero, ← Category.assoc, imageSubobject_arrow_comp,</span>
+<span id="L287"><a href="#L287"> 287</a>           Category.assoc, FC.dToK_comp_d, comp_zero]</span>
+<span id="L288"><a href="#L288"> 288</a>       rw [show imgD_s.arrow ≫ FC.complex.d k (k - 1) ≫ cokernel.π _ =</span>
+<span id="L289"><a href="#L289"> 289</a>         (imgD_s.arrow ≫ FC.complex.d k (k - 1)) ≫ cokernel.π _</span>
+<span id="L290"><a href="#L290"> 290</a>         from (Category.assoc _ _ _).symm,</span>
+<span id="L291"><a href="#L291"> 291</a>         hd, zero_comp, comp_zero]</span>
+<span id="L292"><a href="#L292"> 292</a>     -- === Step 2: Lift oI_s to kerZ ===</span>
+<span id="L293"><a href="#L293"> 293</a>     set σ_s := factorThruKernelSubobject f_n oI_s h_zero_s with hσ_s_def</span>
+<span id="L294"><a href="#L294"> 294</a>     have hσ_s_spec : σ_s ≫ kerZ.arrow = oI_s :=</span>
+<span id="L295"><a href="#L295"> 295</a>       factorThruKernelSubobject_comp_arrow f_n oI_s h_zero_s</span>
+<span id="L296"><a href="#L296"> 296</a>     -- === Step 3: σ_s ≫ p ≫ Z_n.arrow = oI_s ≫ πV ===</span>
+<span id="L297"><a href="#L297"> 297</a>     have hp_spec : p ≫ (FC.cycleSubobject s k ↑n).arrow = kerZ.arrow ≫ πV := by</span>
+<span id="L298"><a href="#L298"> 298</a>       change factorThruImageSubobject (kerZ.arrow ≫ πV) ≫</span>
+<span id="L299"><a href="#L299"> 299</a>         (imageSubobject (kerZ.arrow ≫ πV)).arrow = kerZ.arrow ≫ πV</span>
+<span id="L300"><a href="#L300"> 300</a>       exact imageSubobject_arrow_comp (kerZ.arrow ≫ πV)</span>
+<span id="L301"><a href="#L301"> 301</a>     -- === Step 4: Cancel epi to reduce to σ_s ≫ ψ = 0 ===</span>
+<span id="L302"><a href="#L302"> 302</a>     set q := factorThruImageSubobject (oI_s ≫ πV) ≫</span>
+<span id="L303"><a href="#L303"> 303</a>       eqToHom (congrArg (fun X : Subobject (FC.filtration.associatedGraded s k) =&gt;</span>
+<span id="L304"><a href="#L304"> 304</a>         Subobject.underlying.obj X) h_B_eq.symm) with hq_def</span>
+<span id="L305"><a href="#L305"> 305</a>     haveI : Epi q := inferInstance</span>
+<span id="L306"><a href="#L306"> 306</a>     have hq_arrow : q ≫ (FC.boundarySubobject s k ↑n).arrow = oI_s ≫ πV := by</span>
+<span id="L307"><a href="#L307"> 307</a>       rw [hq_def, Category.assoc,</span>
+<span id="L308"><a href="#L308"> 308</a>         Subobject.arrow_congr (imageSubobject (oI_s ≫ πV))</span>
+<span id="L309"><a href="#L309"> 309</a>           (FC.boundarySubobject s k ↑n) h_B_eq.symm]</span>
+<span id="L310"><a href="#L310"> 310</a>       exact imageSubobject_arrow_comp (oI_s ≫ πV)</span>
+<span id="L311"><a href="#L311"> 311</a>     have hq_ofLE_spec : q ≫ Subobject.ofLE (FC.boundarySubobject s k ↑n)</span>
+<span id="L312"><a href="#L312"> 312</a>         (FC.cycleSubobject s k ↑n) (FC.B_le_Z_aux s k ↑n) ≫</span>
+<span id="L313"><a href="#L313"> 313</a>         (FC.cycleSubobject s k ↑n).arrow = oI_s ≫ πV := by</span>
+<span id="L314"><a href="#L314"> 314</a>       simp only [Subobject.ofLE_arrow]</span>
+<span id="L315"><a href="#L315"> 315</a>       exact hq_arrow</span>
+<span id="L316"><a href="#L316"> 316</a>     have hσ_p_spec : σ_s ≫ p ≫ (FC.cycleSubobject s k ↑n).arrow = oI_s ≫ πV := by</span>
+<span id="L317"><a href="#L317"> 317</a>       simp only [hp_spec]</span>
+<span id="L318"><a href="#L318"> 318</a>       rw [show σ_s ≫ kerZ.arrow ≫ πV = (σ_s ≫ kerZ.arrow) ≫ πV from by</span>
+<span id="L319"><a href="#L319"> 319</a>         simp only [Category.assoc]]</span>
+<span id="L320"><a href="#L320"> 320</a>       rw [hσ_s_spec]</span>
+<span id="L321"><a href="#L321"> 321</a>     have hσ_factor : q ≫ Subobject.ofLE (FC.boundarySubobject s k ↑n)</span>
+<span id="L322"><a href="#L322"> 322</a>         (FC.cycleSubobject s k ↑n) (FC.B_le_Z_aux s k ↑n) = σ_s ≫ p := by</span>
+<span id="L323"><a href="#L323"> 323</a>       apply (inferInstance : Mono (FC.cycleSubobject s k ↑n).arrow).right_cancellation</span>
+<span id="L324"><a href="#L324"> 324</a>       simp only [Category.assoc, Subobject.ofLE_arrow]</span>
+<span id="L325"><a href="#L325"> 325</a>       rw [Category.assoc, hσ_p_spec]</span>
+<span id="L326"><a href="#L326"> 326</a>       simpa only [hq_def, Category.assoc] using hq_arrow</span>
+<span id="L327"><a href="#L327"> 327</a>     -- === Step 5: σ_s ≫ lift_n = 0 (key: d² = 0) ===</span>
+<span id="L328"><a href="#L328"> 328</a>     have hσ_lift_zero : σ_s ≫ lift_n = 0 := by</span>
+<span id="L329"><a href="#L329"> 329</a>       apply (inferInstance : Mono (FC.filtration.F (s + ↑n) (k - 1)).arrow).right_cancellation</span>
+<span id="L330"><a href="#L330"> 330</a>       rw [zero_comp]</span>
+<span id="L331"><a href="#L331"> 331</a>       simp only [Category.assoc]</span>
+<span id="L332"><a href="#L332"> 332</a>       rw [h_lift_spec]</span>
+<span id="L333"><a href="#L333"> 333</a>       rw [show σ_s ≫ kerZ.arrow ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =</span>
+<span id="L334"><a href="#L334"> 334</a>         (σ_s ≫ kerZ.arrow) ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) from by</span>
+<span id="L335"><a href="#L335"> 335</a>         simp only [Category.assoc]]</span>
+<span id="L336"><a href="#L336"> 336</a>       rw [hσ_s_spec]</span>
+<span id="L337"><a href="#L337"> 337</a>       rw [show oI_s ≫ (FC.filtration.F s k).arrow ≫ FC.complex.d k (k - 1) =</span>
+<span id="L338"><a href="#L338"> 338</a>         (oI_s ≫ (FC.filtration.F s k).arrow) ≫ FC.complex.d k (k - 1) from by simp only [Category.assoc]]</span>
+<span id="L339"><a href="#L339"> 339</a>       rw [show oI_s ≫ (FC.filtration.F s k).arrow = I_s.arrow from Subobject.ofLE_arrow inf_le_right]</span>
+<span id="L340"><a href="#L340"> 340</a>       rw [show I_s.arrow =</span>
+<span id="L341"><a href="#L341"> 341</a>           Subobject.ofLE I_s imgD_s inf_le_left ≫ imgD_s.arrow</span>
+<span id="L342"><a href="#L342"> 342</a>         from (Subobject.ofLE_arrow inf_le_left).symm]</span>
+<span id="L343"><a href="#L343"> 343</a>       rw [Category.assoc]</span>
+<span id="L344"><a href="#L344"> 344</a>       have hd : imgD_s.arrow ≫ FC.complex.d k (k - 1) = 0 := by</span>
+<span id="L345"><a href="#L345"> 345</a>         rw [← cancel_epi (factorThruImageSubobject</span>
+<span id="L346"><a href="#L346"> 346</a>           ((FC.filtration.F (s - ↑n + 1) (k + 1)).arrow ≫ FC.dToK k))]</span>
+<span id="L347"><a href="#L347"> 347</a>         rw [comp_zero, ← Category.assoc, imageSubobject_arrow_comp,</span>
+<span id="L348"><a href="#L348"> 348</a>           Category.assoc, FC.dToK_comp_d, comp_zero]</span>
+<span id="L349"><a href="#L349"> 349</a>       rw [hd, comp_zero]</span>
+<span id="L350"><a href="#L350"> 350</a>     -- === Step 6: σ_s ≫ ψ = 0 ===</span>
+<span id="L351"><a href="#L351"> 351</a>     have hσ_ψ_zero : σ_s ≫ ψ = 0 := by</span>
+<span id="L352"><a href="#L352"> 352</a>       rw [hψ_def, hto_Z_n_t_def, show σ_s ≫ (lift_to_kerZ&#x27; ≫</span>
+<span id="L353"><a href="#L353"> 353</a>           factorThruImageSubobject (kerZ&#x27;.arrow ≫ πV&#x27;)) ≫ pageπ&#x27; =</span>
+<span id="L354"><a href="#L354"> 354</a>         ((σ_s ≫ lift_to_kerZ&#x27;) ≫</span>
+<span id="L355"><a href="#L355"> 355</a>           factorThruImageSubobject (kerZ&#x27;.arrow ≫ πV&#x27;)) ≫ pageπ&#x27;</span>
+<span id="L356"><a href="#L356"> 356</a>         from by simp only [Category.assoc]]</span>
+<span id="L357"><a href="#L357"> 357</a>       have h_σ_lift_kerZ&#x27; : σ_s ≫ lift_to_kerZ&#x27; = 0 := by</span>
+<span id="L358"><a href="#L358"> 358</a>         apply (inferInstance : Mono kerZ&#x27;.arrow).right_cancellation</span>
+<span id="L359"><a href="#L359"> 359</a>         rw [zero_comp]</span>
+<span id="L360"><a href="#L360"> 360</a>         simp only [Category.assoc]</span>
+<span id="L361"><a href="#L361"> 361</a>         rw [hlift_to_kerZ&#x27;_def, factorThruKernelSubobject_comp_arrow]</span>
+<span id="L362"><a href="#L362"> 362</a>         exact hσ_lift_zero</span>
+<span id="L363"><a href="#L363"> 363</a>       rw [h_σ_lift_kerZ&#x27;, zero_comp, zero_comp]</span>
+<span id="L364"><a href="#L364"> 364</a>     -- === Step 7: Cancel epi q to conclude ===</span>
+<span id="L365"><a href="#L365"> 365</a>     have h_comp_zero : q ≫ (Subobject.ofLE (FC.boundarySubobject s k ↑n)</span>
+<span id="L366"><a href="#L366"> 366</a>         (FC.cycleSubobject s k ↑n)</span>
+<span id="L367"><a href="#L367"> 367</a>         (FC.B_le_Z_aux s k ↑n) ≫ h_on_Zn) = 0 := by</span>
+<span id="L368"><a href="#L368"> 368</a>       rw [← Category.assoc, hσ_factor, Category.assoc, hh_on_Zn_def,</span>
+<span id="L369"><a href="#L369"> 369</a>         Abelian.comp_epiDesc]</span>
+<span id="L370"><a href="#L370"> 370</a>       exact hσ_ψ_zero</span>
+<span id="L371"><a href="#L371"> 371</a>     exact (cancel_epi q).mp (by rw [h_comp_zero, comp_zero])</span>
+<span id="L372"><a href="#L372"> 372</a>   exact cokernel.desc _ h_on_Zn h_B_zero</span>
+<span id="L373"><a href="#L373"> 373</a> </span>
+<span id="L374"><a href="#L374"> 374</a> </span>
+<span id="L375"><a href="#L375"> 375</a> </span>
+<span id="L376"><a href="#L376"> 376</a> end KIP126.Core.SpectralSequence.FilteredComplex</span></pre>

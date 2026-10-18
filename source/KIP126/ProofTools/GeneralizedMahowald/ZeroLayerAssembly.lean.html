@@ -1,0 +1,352 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/ZeroLayerAssembly.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/ZeroLayerAssembly.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonEdgeNativeTarget</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceTransport</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonTotalTarget</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.GeneralizedMahowald.CorrectedTotalTarget</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.GeneralizedMahowald.TotalFTransport</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceRegrade</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.ProofTools.GeneralizedMahowald.CorrectedCoordinates</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.ProofTools.GeneralizedMahowald.MinimalFinalAssembly</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated CategoryTheory.Functor</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L18"><a href="#L18">  18</a> noncomputable section</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L20"><a href="#L20">  20</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L21"><a href="#L21">  21</a> set_option maxHeartbeats 1000000</span>
+<span id="L22"><a href="#L22">  22</a> set_option Elab.async false</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> private theorem quotient_shift_desuspend_as_unshift</span>
+<span id="L25"><a href="#L25">  25</a>     (X : ClassicalObject) (δ p : ℤ×ℤ) (r : ℕ)</span>
+<span id="L26"><a href="#L26">  26</a>     (ε : XModLambdaN ((SyntheticCategory.biShift δ).obj</span>
+<span id="L27"><a href="#L27">  27</a>       (model.nu.functor.obj (X.obj model.auxiliary))) r ≅</span>
+<span id="L28"><a href="#L28">  28</a>       (SyntheticCategory.biShift δ).obj</span>
+<span id="L29"><a href="#L29">  29</a>         (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) r))</span>
+<span id="L30"><a href="#L30">  30</a>     (M W : ℤ) (hM : M=(p+δ).1) (hW : W=(p+δ).2)</span>
+<span id="L31"><a href="#L31">  31</a>     (a : BiHom M W (XModLambdaN ((SyntheticCategory.biShift δ).obj</span>
+<span id="L32"><a href="#L32">  32</a>       (model.nu.functor.obj (X.obj model.auxiliary))) r)) :</span>
+<span id="L33"><a href="#L33">  33</a>     quotientUnshift X δ p r ε (homotopyRegrade hM hW a) =</span>
+<span id="L34"><a href="#L34">  34</a>       homotopyRegrade (show M-δ.1=p.1 by dsimp at hM; omega)</span>
+<span id="L35"><a href="#L35">  35</a>         (show W-δ.2=p.2 by dsimp at hW; omega)</span>
+<span id="L36"><a href="#L36">  36</a>         (quotientShiftDesuspend X δ r ε M W a) := by</span>
+<span id="L37"><a href="#L37">  37</a>   exact (quotient_shift_desuspend_as_native_unshift X δ p r M W</span>
+<span id="L38"><a href="#L38">  38</a>     (by dsimp at hM; omega) (by dsimp at hW; omega) ε a).symm</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> private theorem native_bottom_detects_of_same_restriction</span>
+<span id="L41"><a href="#L41">  41</a>     (X : ClassicalObject) (i r : ℕ) (hi : 0 &lt; i) (hir : i≤r) (s t : ℤ)</span>
+<span id="L42"><a href="#L42">  42</a>     (x : Ambient model X (s,t))</span>
+<span id="L43"><a href="#L43">  43</a>     (a c : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) r))</span>
+<span id="L44"><a href="#L44">  44</a>     (ha : Detects (model.convergence (.quotient r (.nu X))) (s,t,t)</span>
+<span id="L45"><a href="#L45">  45</a>       (regradeE2 (by simp) (finiteTargetLabel model X r s t 0 x)) a)</span>
+<span id="L46"><a href="#L46">  46</a>     (hc : c≫(model.quotients.tower _).rho i r hir =</span>
+<span id="L47"><a href="#L47">  47</a>       a≫(model.quotients.tower _).rho i r hir) :</span>
+<span id="L48"><a href="#L48">  48</a>     Detects (model.convergence (.quotient r (.nu X))) (s,t,t)</span>
+<span id="L49"><a href="#L49">  49</a>       (regradeE2 (by simp) (finiteTargetLabel model X r s t 0 x)) c := by</span>
+<span id="L50"><a href="#L50">  50</a>   have ha1 := finite_detected_bottom_first X r (by omega) s t x a</span>
+<span id="L51"><a href="#L51">  51</a>     (by rw [zero_weight_label X r s t x]; exact ha)</span>
+<span id="L52"><a href="#L52">  52</a>   apply first_label_detects_unshifted X r (by omega) s t x c</span>
+<span id="L53"><a href="#L53">  53</a>   rw [←(model.quotients.tower _).rho_comp hi hir,←Category.assoc,hc,</span>
+<span id="L54"><a href="#L54">  54</a>     Category.assoc,(model.quotients.tower _).rho_comp hi hir,ha1]</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> private theorem corrected_native_bottom_detects</span>
+<span id="L57"><a href="#L57">  57</a>     (X : ClassicalObject) {C : SyntheticSpectrum} (e : ℤ)</span>
+<span id="L58"><a href="#L58">  58</a>     (e₀ : C ≅ (SyntheticCategory.biShift (1,e)).obj</span>
+<span id="L59"><a href="#L59">  59</a>       (model.nu.functor.obj (X.obj model.auxiliary)))</span>
+<span id="L60"><a href="#L60">  60</a>     (i r : ℕ) (hi : 0 &lt; i) (hir : i≤r)</span>
+<span id="L61"><a href="#L61">  61</a>     (eQ : XModLambdaN ((SyntheticCategory.biShift (1,e)).obj</span>
+<span id="L62"><a href="#L62">  62</a>       (model.nu.functor.obj (X.obj model.auxiliary))) r ≅</span>
+<span id="L63"><a href="#L63">  63</a>       (SyntheticCategory.biShift (1,e)).obj</span>
+<span id="L64"><a href="#L64">  64</a>         (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) r))</span>
+<span id="L65"><a href="#L65">  65</a>     (M W s t : ℤ) (hM : M-1=t-s) (hW : W-e=t)</span>
+<span id="L66"><a href="#L66">  66</a>     (x : Ambient model X (s,t)) (c : BiHom M W (XModLambdaN C r))</span>
+<span id="L67"><a href="#L67">  67</a>     (c&#x27; : BiHom (M-1) (W+i) ((SyntheticCategory.biShift (0,(i:ℤ)+e)).obj</span>
+<span id="L68"><a href="#L68">  68</a>       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) r)))</span>
+<span id="L69"><a href="#L69">  69</a>     (hρ : c&#x27;≫(SyntheticCategory.biShift (0,(i:ℤ)+e)).map</span>
+<span id="L70"><a href="#L70">  70</a>         ((model.quotients.tower _).rho i r hir) =</span>
+<span id="L71"><a href="#L71">  71</a>       (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))).preimage</span>
+<span id="L72"><a href="#L72">  72</a>         ((biShiftAddIso (M-1,W+i) (1,-(i:ℤ)) (M,W)</span>
+<span id="L73"><a href="#L73">  73</a>           (by ext &lt;;&gt; dsimp; all_goals omega)).hom.app S_0_0 ≫ c ≫</span>
+<span id="L74"><a href="#L74">  74</a>           (commonCofiberTargetIso e e₀ i r eQ).hom) ≫</span>
+<span id="L75"><a href="#L75">  75</a>         (SyntheticCategory.biShift (0,(i:ℤ)+e)).map ((model.quotients.tower _).rho i r hir))</span>
+<span id="L76"><a href="#L76">  76</a>     (hc : Detects (model.convergence (.quotient r (.nu X))) (s,t,t)</span>
+<span id="L77"><a href="#L77">  77</a>       (regradeE2 (by simp) (finiteTargetLabel model X r s t 0 x))</span>
+<span id="L78"><a href="#L78">  78</a>       (homotopyRegrade hM hW (quotientShiftDesuspend X (1,e) r eQ M W</span>
+<span id="L79"><a href="#L79">  79</a>         (c≫XModLambdaN.map e₀.hom r)))) :</span>
+<span id="L80"><a href="#L80">  80</a>     Detects (model.convergence (.quotient r (.nu X))) (s,t,t)</span>
+<span id="L81"><a href="#L81">  81</a>       (regradeE2 (by simp) (finiteTargetLabel model X r s t 0 x))</span>
+<span id="L82"><a href="#L82">  82</a>       (quotientUnshift X (1,e) (t-s,t) r eQ</span>
+<span id="L83"><a href="#L83">  83</a>         (homotopyRegrade (by dsimp; omega) (by dsimp; omega)</span>
+<span id="L84"><a href="#L84">  84</a>           (commonCorrectedGeometry i M W (commonCofiberTargetIso e e₀ i r eQ) c&#x27;≫</span>
+<span id="L85"><a href="#L85">  85</a>             XModLambdaN.map e₀.hom r))) := by</span>
+<span id="L86"><a href="#L86">  86</a>   let cnew := commonCorrectedGeometry i M W (commonCofiberTargetIso e e₀ i r eQ) c&#x27;</span>
+<span id="L87"><a href="#L87">  87</a>   have hsame := common_correction_preserves_native_rho X e e₀ i r hir eQ M W c c&#x27; hρ</span>
+<span id="L88"><a href="#L88">  88</a>   have hn := native_bottom_detects_of_same_restriction X i r hi hir s t x</span>
+<span id="L89"><a href="#L89">  89</a>     (homotopyRegrade hM hW (quotientShiftDesuspend X (1,e) r eQ M W</span>
+<span id="L90"><a href="#L90">  90</a>       (c≫XModLambdaN.map e₀.hom r)))</span>
+<span id="L91"><a href="#L91">  91</a>     (homotopyRegrade hM hW (quotientShiftDesuspend X (1,e) r eQ M W</span>
+<span id="L92"><a href="#L92">  92</a>       (cnew≫XModLambdaN.map e₀.hom r))) hc (by</span>
+<span id="L93"><a href="#L93">  93</a>     dsimp only [cnew]</span>
+<span id="L94"><a href="#L94">  94</a>     simpa only [regrade_comp] using congrArg (homotopyRegrade hM hW) hsame)</span>
+<span id="L95"><a href="#L95">  95</a>   rw [quotient_shift_desuspend_as_unshift]</span>
+<span id="L96"><a href="#L96">  96</a>   exact hn</span>
+<span id="L97"><a href="#L97">  97</a> </span>
+<span id="L98"><a href="#L98">  98</a> private theorem normalized_f_total_raw_boundary_detects_transport</span>
+<span id="L99"><a href="#L99">  99</a>     (T : TriangleData model.auxiliary)</span>
+<span id="L100"><a href="#L100"> 100</a>     (he : (normalizedExponent model.classicalTower T.f : ℤ) +</span>
+<span id="L101"><a href="#L101"> 101</a>       normalizedExponent model.classicalTower T.g + normalizedExponent model.classicalTower T.h=1)</span>
+<span id="L102"><a href="#L102"> 102</a>     (hT : NormalizedTriangleCompatible model T he)</span>
+<span id="L103"><a href="#L103"> 103</a>     (κ : SyntheticCategory.biShift (Syn:=SyntheticSpectrum)</span>
+<span id="L104"><a href="#L104"> 104</a>       (0,(normalizedExponent model.classicalTower T.g : ℤ))⋙shiftFunctor SyntheticSpectrum (1:ℤ) ≅</span>
+<span id="L105"><a href="#L105"> 105</a>         SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ)))</span>
+<span id="L106"><a href="#L106"> 106</a>     (q k : ℕ) (hkq : k&lt;q) (s t : ℤ) (y : Ambient model T.Y (s,t))</span>
+<span id="L107"><a href="#L107"> 107</a>     (εA : XModLambdaN ((SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).obj</span>
+<span id="L108"><a href="#L108"> 108</a>         ((extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary)) q ≅</span>
+<span id="L109"><a href="#L109"> 109</a>       (SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).obj (XModLambdaN</span>
+<span id="L110"><a href="#L110"> 110</a>         ((extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary) q))</span>
+<span id="L111"><a href="#L111"> 111</a>     (εB : XModLambdaN ((SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).obj</span>
+<span id="L112"><a href="#L112"> 112</a>         (model.nu.functor.obj (T.Y.obj model.auxiliary))) q ≅</span>
+<span id="L113"><a href="#L113"> 113</a>       (SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).obj</span>
+<span id="L114"><a href="#L114"> 114</a>         (XModLambdaN (model.nu.functor.obj (T.Y.obj model.auxiliary)) q))</span>
+<span id="L115"><a href="#L115"> 115</a>     (hεA : XModLambdaN.incl _ q≫εA.hom=</span>
+<span id="L116"><a href="#L116"> 116</a>       (SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).map (XModLambdaN.incl _ q))</span>
+<span id="L117"><a href="#L117"> 117</a>     (hεB : XModLambdaN.incl _ q≫εB.hom=</span>
+<span id="L118"><a href="#L118"> 118</a>       (SyntheticCategory.biShift (1,(normalizedExponent model.classicalTower T.g : ℤ))).map (XModLambdaN.incl _ q))</span>
+<span id="L119"><a href="#L119"> 119</a>     (a : BiHom ((t-s,t-k)+(1,(normalizedExponent model.classicalTower T.g : ℤ))).1 ((t-s,t-k)+(1,(normalizedExponent model.classicalTower T.g : ℤ))).2 (XModLambdaN</span>
+<span id="L120"><a href="#L120"> 120</a>       (HasFunctorialCofiber.cofib (model.normalizedMap T.Y T.Z T.g).map) q))</span>
+<span id="L121"><a href="#L121"> 121</a>     (ha : Detects (model.convergence (.quotient q (.nu T.Y))) (s,t,t-k)</span>
+<span id="L122"><a href="#L122"> 122</a>       (finiteTargetLabel model T.Y q s t k y)</span>
+<span id="L123"><a href="#L123"> 123</a>       (quotientUnshift T.Y (1,(normalizedExponent model.classicalTower T.g : ℤ)) (t-s,t-k) q εB</span>
+<span id="L124"><a href="#L124"> 124</a>         (a≫XModLambdaN.map</span>
+<span id="L125"><a href="#L125"> 125</a>           (HasFunctorialCofiber.cofibδ (model.normalizedMap T.Y T.Z T.g).map) q ≫</span>
+<span id="L126"><a href="#L126"> 126</a>           XModLambdaN.map</span>
+<span id="L127"><a href="#L127"> 127</a>             (κ.hom.app _) q))) :</span>
+<span id="L128"><a href="#L128"> 128</a>     Detects (model.convergence (.quotient q (.nu T.Y))) (s,t,t-k)</span>
+<span id="L129"><a href="#L129"> 129</a>       (finiteTargetLabel model T.Y q s t k y)</span>
+<span id="L130"><a href="#L130"> 130</a>       (quotientClassUnshift _ (1,(normalizedExponent model.classicalTower T.g : ℤ)) (t-s,t-k) q εA</span>
+<span id="L131"><a href="#L131"> 131</a>         (a≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) q) ≫</span>
+<span id="L132"><a href="#L132"> 132</a>           finiteExtensionMap model T.X T.Y T.f q) := by</span>
+<span id="L133"><a href="#L133"> 133</a>   rw [normalized_f_total_raw_boundary_equation T he hT q (by omega) (t-s,t-k) εA εB hεA hεB]</span>
+<span id="L134"><a href="#L134"> 134</a>   have h := quotient_unshift_two_natural_transports_detects T.Y</span>
+<span id="L135"><a href="#L135"> 135</a>     (SyntheticCategory.biShift (0,(normalizedExponent model.classicalTower T.g : ℤ))⋙</span>
+<span id="L136"><a href="#L136"> 136</a>       shiftFunctor SyntheticSpectrum (1:ℤ))</span>
+<span id="L137"><a href="#L137"> 137</a>     (1,(normalizedExponent model.classicalTower T.g : ℤ))</span>
+<span id="L138"><a href="#L138"> 138</a>     (exactTotalSuspensionTransport (normalizedExponent model.classicalTower T.g))</span>
+<span id="L139"><a href="#L139"> 139</a>     κ</span>
+<span id="L140"><a href="#L140"> 140</a>     q k hkq s t y εB hεB</span>
+<span id="L141"><a href="#L141"> 141</a>     (a≫XModLambdaN.map</span>
+<span id="L142"><a href="#L142"> 142</a>       (HasFunctorialCofiber.cofibδ (model.normalizedMap T.Y T.Z T.g).map) q)</span>
+<span id="L143"><a href="#L143"> 143</a>     (by simpa only [Category.assoc] using ha)</span>
+<span id="L144"><a href="#L144"> 144</a>   simpa only [Category.assoc] using h</span>
+<span id="L145"><a href="#L145"> 145</a> </span>
+<span id="L146"><a href="#L146"> 146</a> </span>
+<span id="L147"><a href="#L147"> 147</a> </span>
+<span id="L148"><a href="#L148"> 148</a> private theorem quotient_class_unshift_regrade_source</span>
+<span id="L149"><a href="#L149"> 149</a>     (A : SyntheticSpectrum) (δ p p&#x27; : ℤ×ℤ) (hp : p=p&#x27;) (r : ℕ)</span>
+<span id="L150"><a href="#L150"> 150</a>     (ε : XModLambdaN ((SyntheticCategory.biShift δ).obj A) r ≅</span>
+<span id="L151"><a href="#L151"> 151</a>       (SyntheticCategory.biShift δ).obj (XModLambdaN A r))</span>
+<span id="L152"><a href="#L152"> 152</a>     (M W : ℤ) (a : BiHom M W (XModLambdaN ((SyntheticCategory.biShift δ).obj A) r))</span>
+<span id="L153"><a href="#L153"> 153</a>     (hM : M=(p+δ).1) (hW : W=(p+δ).2)</span>
+<span id="L154"><a href="#L154"> 154</a>     (hM&#x27; : M=(p&#x27;+δ).1) (hW&#x27; : W=(p&#x27;+δ).2) :</span>
+<span id="L155"><a href="#L155"> 155</a>     homotopyRegrade (congrArg Prod.fst hp) (congrArg Prod.snd hp)</span>
+<span id="L156"><a href="#L156"> 156</a>       (quotientClassUnshift A δ p r ε (homotopyRegrade hM hW a)) =</span>
+<span id="L157"><a href="#L157"> 157</a>       quotientClassUnshift A δ p&#x27; r ε (homotopyRegrade hM&#x27; hW&#x27; a) := by</span>
+<span id="L158"><a href="#L158"> 158</a>   subst p&#x27;</span>
+<span id="L159"><a href="#L159"> 159</a>   rfl</span>
+<span id="L160"><a href="#L160"> 160</a> </span>
+<span id="L161"><a href="#L161"> 161</a> private theorem homotopy_regrade_self {m w : ℤ} {A : SyntheticSpectrum}</span>
+<span id="L162"><a href="#L162"> 162</a>     (hm : m=m) (hw : w=w) (a : BiHom m w A) : homotopyRegrade hm hw a=a := rfl</span>
+<span id="L163"><a href="#L163"> 163</a> </span>
+<span id="L164"><a href="#L164"> 164</a> private theorem finite_e2_regrade_roundtrip {E : SyntheticAdamsSS} {p q : Tridegree}</span>
+<span id="L165"><a href="#L165"> 165</a>     (h : p=q) (x : E.E₂ p) : regradeE2 h.symm (regradeE2 h x)=x := by</span>
+<span id="L166"><a href="#L166"> 166</a>   subst q</span>
+<span id="L167"><a href="#L167"> 167</a>   rfl</span>
+<span id="L168"><a href="#L168"> 168</a> </span>
+<span id="L169"><a href="#L169"> 169</a> private theorem minimal_corrected_total_extension</span>
+<span id="L170"><a href="#L170"> 170</a>     (T : TriangleData model.auxiliary)</span>
+<span id="L171"><a href="#L171"> 171</a>     (he : (normalizedExponent model.classicalTower T.f : ℤ)+</span>
+<span id="L172"><a href="#L172"> 172</a>       normalizedExponent model.classicalTower T.g+normalizedExponent model.classicalTower T.h=1)</span>
+<span id="L173"><a href="#L173"> 173</a>     (hT : NormalizedTriangleCompatible model T he)</span>
+<span id="L174"><a href="#L174"> 174</a>     (i q : ℕ) (hi : 0 &lt; i) (hq : 0 &lt; q) (s t n b : ℤ)</span>
+<span id="L175"><a href="#L175"> 175</a>     (hn : n=(i:ℤ)+normalizedExponent model.classicalTower T.f)</span>
+<span id="L176"><a href="#L176"> 176</a>     (M W : ℤ) (hM : M=(t-s)+1)</span>
+<span id="L177"><a href="#L177"> 177</a>     (hW : W=t+(normalizedExponent model.classicalTower T.f : ℤ)+normalizedExponent model.classicalTower T.g)</span>
+<span id="L178"><a href="#L178"> 178</a>     (x : Ambient model T.X (s,t)) (y : Ambient model T.Y (s+n,t+n)) :</span>
+<span id="L179"><a href="#L179"> 179</a>     let ef : ℤ := normalizedExponent model.classicalTower T.f</span>
+<span id="L180"><a href="#L180"> 180</a>     let eg : ℤ := normalizedExponent model.classicalTower T.g</span>
+<span id="L181"><a href="#L181"> 181</a>     let e : ℤ := ef+eg</span>
+<span id="L182"><a href="#L182"> 182</a>     let r := i+q</span>
+<span id="L183"><a href="#L183"> 183</a>     let Xν := model.nu.functor.obj (T.X.obj model.auxiliary)</span>
+<span id="L184"><a href="#L184"> 184</a>     let Yν := model.nu.functor.obj (T.Y.obj model.auxiliary)</span>
+<span id="L185"><a href="#L185"> 185</a>     let Af := (extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary</span>
+<span id="L186"><a href="#L186"> 186</a>     let Ag := (extensionSourceObject model T.Y T.Z T.g).obj model.nu model.auxiliary</span>
+<span id="L187"><a href="#L187"> 187</a>     let G := (model.normalizedMap T.Y T.Z T.g).map</span>
+<span id="L188"><a href="#L188"> 188</a>     let Cg := HasFunctorialCofiber.cofib G</span>
+<span id="L189"><a href="#L189"> 189</a>     let eCg := normalized_g_cofiber_iso T he hT</span>
+<span id="L190"><a href="#L190"> 190</a>     let C₀ := (SyntheticCategory.biShift (0,(i:ℤ)+e)).obj (XModLambdaN Xν r)</span>
+<span id="L191"><a href="#L191"> 191</a>     ∀ (eQ : XModLambdaN ((SyntheticCategory.biShift (1,e)).obj Xν) r ≅</span>
+<span id="L192"><a href="#L192"> 192</a>         (SyntheticCategory.biShift (1,e)).obj (XModLambdaN Xν r))</span>
+<span id="L193"><a href="#L193"> 193</a>       (εe : XModLambdaN Af r ≅ (SyntheticCategory.biShift (0,ef)).obj (XModLambdaN Xν r))</span>
+<span id="L194"><a href="#L194"> 194</a>       (εA : XModLambdaN ((SyntheticCategory.biShift (1,eg)).obj Af) r ≅</span>
+<span id="L195"><a href="#L195"> 195</a>         (SyntheticCategory.biShift (1,eg)).obj (XModLambdaN Af r))</span>
+<span id="L196"><a href="#L196"> 196</a>       (eAg : XModLambdaN Ag r ≅ (SyntheticCategory.biShift (0,eg)).obj (XModLambdaN Yν r))</span>
+<span id="L197"><a href="#L197"> 197</a>       (esusp : XModLambdaN (Ag⟦(1:ℤ)⟧) r ≅ (XModLambdaN Ag r)⟦(1:ℤ)⟧)</span>
+<span id="L198"><a href="#L198"> 198</a>       (_heQ : XModLambdaN.incl _ r≫eQ.hom=(SyntheticCategory.biShift (1,e)).map (XModLambdaN.incl Xν r))</span>
+<span id="L199"><a href="#L199"> 199</a>       (_hεe : XModLambdaN.incl _ r≫εe.hom=(SyntheticCategory.biShift (0,ef)).map (XModLambdaN.incl Xν r))</span>
+<span id="L200"><a href="#L200"> 200</a>       (_hεA : XModLambdaN.incl _ r≫εA.hom=(SyntheticCategory.biShift (1,eg)).map (XModLambdaN.incl Af r))</span>
+<span id="L201"><a href="#L201"> 201</a>       (_heAg : XModLambdaN.incl _ r≫eAg.hom=(SyntheticCategory.biShift (0,eg)).map (XModLambdaN.incl Yν r))</span>
+<span id="L202"><a href="#L202"> 202</a>       (_hesusp : XModLambdaN.incl _ r≫esusp.hom=(shiftFunctor SyntheticSpectrum (1:ℤ)).map (XModLambdaN.incl Ag r))</span>
+<span id="L203"><a href="#L203"> 203</a>       (cGeometry : BiHom M W (XModLambdaN Cg r)),</span>
+<span id="L204"><a href="#L204"> 204</a>       let eC := commonCofiberTargetIso e eCg i r eQ</span>
+<span id="L205"><a href="#L205"> 205</a>       let eD := commonEdgeTargetFlatIso Yν eg i q esusp eAg</span>
+<span id="L206"><a href="#L206"> 206</a>       let ff := SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))</span>
+<span id="L207"><a href="#L207"> 207</a>       let h₀ := ff.preimage (eC.inv≫XModLambdaN.map (HasFunctorialCofiber.cofibδ G) r≫eD.hom)</span>
+<span id="L208"><a href="#L208"> 208</a>       let Jq := ff.preimage ((biSuspensionIso (i:ℤ) (XModLambdaN Ag (r-i))).hom≫</span>
+<span id="L209"><a href="#L209"> 209</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L210"><a href="#L210"> 210</a>           ((model.quotients.tower Ag).triangle hi (show i &lt; r by omega)).lambdaMap≫esusp.inv≫eD.hom)</span>
+<span id="L211"><a href="#L211"> 211</a>       ∀ (c&#x27; : BiHom (M-1) (W+i) C₀)</span>
+<span id="L212"><a href="#L212"> 212</a>         (_hρ : c&#x27;≫(SyntheticCategory.biShift (0,(i:ℤ)+e)).map ((model.quotients.tower Xν).rho i r (by omega)) =</span>
+<span id="L213"><a href="#L213"> 213</a>           ff.preimage ((biShiftAddIso (M-1,W+i) (1,-(i:ℤ)) (M,W)</span>
+<span id="L214"><a href="#L214"> 214</a>             (by ext &lt;;&gt; dsimp; all_goals omega)).hom.app S_0_0≫cGeometry≫eC.hom)≫</span>
+<span id="L215"><a href="#L215"> 215</a>             (SyntheticCategory.biShift (0,(i:ℤ)+e)).map ((model.quotients.tower Xν).rho i r (by omega)))</span>
+<span id="L216"><a href="#L216"> 216</a>         (_hc : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)</span>
+<span id="L217"><a href="#L217"> 217</a>           (regradeE2 (by simp) (finiteTargetLabel model T.X r s t 0 x))</span>
+<span id="L218"><a href="#L218"> 218</a>           (homotopyRegrade (by simp only [Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L219"><a href="#L219"> 219</a>             (by simp only [Prod.fst,Prod.snd]; dsimp [e,ef,eg] at * &lt;;&gt; omega)</span>
+<span id="L220"><a href="#L220"> 220</a>             (quotientShiftDesuspend T.X (1,e) r eQ M W (cGeometry≫XModLambdaN.map eCg.hom r))))</span>
+<span id="L221"><a href="#L221"> 221</a>         (ag : BiHom ((t+n)-(s+n)) (t+n+eg) (XModLambdaN Ag (r-i)))</span>
+<span id="L222"><a href="#L222"> 222</a>         (_hag : Detects (model.convergence (.quotient (r-i) (.shift (0,eg) (.nu T.Y))))</span>
+<span id="L223"><a href="#L223"> 223</a>           (s+n,t+n,t+n+eg) (regradeE2 (by simp) (finiteNuLabel model T.Y (r-i) eg (s+n) (t+n) 0 y)) ag)</span>
+<span id="L224"><a href="#L224"> 224</a>         (_hu : Detects (model.convergence (.shift (0,(i:ℤ)+eg) (.quotient r (.nu T.Y))))</span>
+<span id="L225"><a href="#L225"> 225</a>           (s+n,t+n,t+n+eg)</span>
+<span id="L226"><a href="#L226"> 226</a>           (familyPageMap model.family Jq 2 (s+n,t+n,t+n+eg)</span>
+<span id="L227"><a href="#L227"> 227</a>             (regradeE2 (by simp) (finiteNuLabel model T.Y (r-i) eg (s+n) (t+n) 0 y)))</span>
+<span id="L228"><a href="#L228"> 228</a>           (homotopyRegrade (by simp only [Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L229"><a href="#L229"> 229</a>             (by simp only [Prod.fst,Prod.snd]; dsimp [e,ef,eg] at * &lt;;&gt; omega) (c&#x27;≫h₀))),</span>
+<span id="L230"><a href="#L230"> 230</a>       ∃ y&#x27; : Ambient model T.Y (s+n,t+n), y&#x27;-y∈boundaries model T.Y b (s+n,t+n) ∧</span>
+<span id="L231"><a href="#L231"> 231</a>         ∃ (af : BiHom (t-s) (t+ef) (XModLambdaN Af r))</span>
+<span id="L232"><a href="#L232"> 232</a>           (bf : BiHom (t-s) (t+ef) (XModLambdaN Yν r)),</span>
+<span id="L233"><a href="#L233"> 233</a>           Detects (model.convergence (.quotient r (extensionSourceObject model T.X T.Y T.f)))</span>
+<span id="L234"><a href="#L234"> 234</a>             (s,(t-s)+s,t+ef) (finiteSourceForExtension model T.X T.Y T.f r s t x)</span>
+<span id="L235"><a href="#L235"> 235</a>             (homotopyRegrade (by simp only [Prod.fst,Prod.snd] &lt;;&gt; omega) rfl af) ∧</span>
+<span id="L236"><a href="#L236"> 236</a>           Detects (model.convergence (.quotient r (.nu T.Y)))</span>
+<span id="L237"><a href="#L237"> 237</a>             (s+n,(t-s)+(s+n),t+ef)</span>
+<span id="L238"><a href="#L238"> 238</a>             (finiteTargetForExtension model T.X T.Y T.f r n s t (by omega) y&#x27;)</span>
+<span id="L239"><a href="#L239"> 239</a>             (homotopyRegrade (by simp only [Prod.fst,Prod.snd] &lt;;&gt; omega) rfl bf) ∧</span>
+<span id="L240"><a href="#L240"> 240</a>           af≫finiteExtensionMap model T.X T.Y T.f r=bf := by</span>
+<span id="L241"><a href="#L241"> 241</a>   dsimp only</span>
+<span id="L242"><a href="#L242"> 242</a>   intro eQ εe εA eAg esusp heQ hεe hεA heAg hesusp cGeometry c&#x27; hρ hc ag hag hu</span>
+<span id="L243"><a href="#L243"> 243</a>   let ef : ℤ := normalizedExponent model.classicalTower T.f</span>
+<span id="L244"><a href="#L244"> 244</a>   let eg : ℤ := normalizedExponent model.classicalTower T.g</span>
+<span id="L245"><a href="#L245"> 245</a>   let e : ℤ := ef+eg</span>
+<span id="L246"><a href="#L246"> 246</a>   let r := i+q</span>
+<span id="L247"><a href="#L247"> 247</a>   let Xν := model.nu.functor.obj (T.X.obj model.auxiliary)</span>
+<span id="L248"><a href="#L248"> 248</a>   let Yν := model.nu.functor.obj (T.Y.obj model.auxiliary)</span>
+<span id="L249"><a href="#L249"> 249</a>   let Af := (extensionSourceObject model T.X T.Y T.f).obj model.nu model.auxiliary</span>
+<span id="L250"><a href="#L250"> 250</a>   let Ag := (extensionSourceObject model T.Y T.Z T.g).obj model.nu model.auxiliary</span>
+<span id="L251"><a href="#L251"> 251</a>   let G := (model.normalizedMap T.Y T.Z T.g).map</span>
+<span id="L252"><a href="#L252"> 252</a>   let eCg := normalized_g_cofiber_iso T he hT</span>
+<span id="L253"><a href="#L253"> 253</a>   let eC := commonCofiberTargetIso e eCg i r eQ</span>
+<span id="L254"><a href="#L254"> 254</a>   let eD := commonEdgeTargetFlatIso Yν eg i q esusp eAg</span>
+<span id="L255"><a href="#L255"> 255</a>   let ff := SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))</span>
+<span id="L256"><a href="#L256"> 256</a>   let h₀ := ff.preimage (eC.inv≫XModLambdaN.map (HasFunctorialCofiber.cofibδ G) r≫eD.hom)</span>
+<span id="L257"><a href="#L257"> 257</a>   let cnew := commonCorrectedGeometry i M W eC c&#x27;</span>
+<span id="L258"><a href="#L258"> 258</a>   let εB := commonTotalQuotientIso Yν eg i q esusp eAg</span>
+<span id="L259"><a href="#L259"> 259</a>   have hεB := common_total_quotient_inclusion Yν eg i q esusp eAg hesusp heAg</span>
+<span id="L260"><a href="#L260"> 260</a>   have heg : eg=0 ∨ eg=1 := by</span>
+<span id="L261"><a href="#L261"> 261</a>     have hh := normalizedExponent_le_one model.classicalTower T.g</span>
+<span id="L262"><a href="#L262"> 262</a>     change (normalizedExponent model.classicalTower T.g : ℤ)=0 ∨</span>
+<span id="L263"><a href="#L263"> 263</a>       (normalizedExponent model.classicalTower T.g : ℤ)=1</span>
+<span id="L264"><a href="#L264"> 264</a>     omega</span>
+<span id="L265"><a href="#L265"> 265</a>   have hrawCommon := corrected_actual_common_edge_native_detects T.Y eg heg i q hi hq</span>
+<span id="L266"><a href="#L266"> 266</a>     (s+n) (t+n) y esusp eAg heAg ag hag</span>
+<span id="L267"><a href="#L267"> 267</a>     (homotopyRegrade (by omega) (by dsimp [e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * &lt;;&gt; omega) (c&#x27;≫h₀)) hu</span>
+<span id="L268"><a href="#L268"> 268</a>   have hrawNative := common_corrected_total_native_detection T.Y eg i q hq</span>
+<span id="L269"><a href="#L269"> 269</a>     (s+n) (t+n) M W (by omega) (by dsimp [e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * &lt;;&gt; omega) y</span>
+<span id="L270"><a href="#L270"> 270</a>     esusp eAg _ _ eC (XModLambdaN.map (HasFunctorialCofiber.cofibδ G) r) c&#x27; (by</span>
+<span id="L271"><a href="#L271"> 271</a>       simpa only [common_regrade_trans,h₀,ff,eD,SyntheticObject.obj] using hrawCommon)</span>
+<span id="L272"><a href="#L272"> 272</a>   let p : ℤ×ℤ := (t-s,t)</span>
+<span id="L273"><a href="#L273"> 273</a>   let py : ℤ×ℤ := ((t+n)-(s+n),t+n-i)</span>
+<span id="L274"><a href="#L274"> 274</a>   let aY := homotopyRegrade</span>
+<span id="L275"><a href="#L275"> 275</a>     (show M=(py+(1,eg)).1 by dsimp [py,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L276"><a href="#L276"> 276</a>     (show W=(py+(1,eg)).2 by dsimp [py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * &lt;;&gt; omega) cnew</span>
+<span id="L277"><a href="#L277"> 277</a>   have hMayY := normalized_f_total_raw_boundary_detects_transport T he hT</span>
+<span id="L278"><a href="#L278"> 278</a>     (commonTotalSuspensionTransport eg i) r i (by omega) (s+n) (t+n) y</span>
+<span id="L279"><a href="#L279"> 279</a>     εA εB hεA hεB aY (by</span>
+<span id="L280"><a href="#L280"> 280</a>       simpa only [aY,cnew,←regrade_comp] using hrawNative)</span>
+<span id="L281"><a href="#L281"> 281</a>   let p0 : ℤ×ℤ := (t-s,t-(0:ℕ))</span>
+<span id="L282"><a href="#L282"> 282</a>   have hp0 : p=p0 := by ext &lt;;&gt; dsimp [p,p0] &lt;;&gt; omega</span>
+<span id="L283"><a href="#L283"> 283</a>   have hgrade : (s,t,t-(0:ℕ))=(s,t,t) := by simp</span>
+<span id="L284"><a href="#L284"> 284</a>   let cSource := homotopyRegrade</span>
+<span id="L285"><a href="#L285"> 285</a>     (show M=(p0+(1,e)).1 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L286"><a href="#L286"> 286</a>     (show W=(p0+(1,e)).2 by dsimp [p0] &lt;;&gt; omega) cnew</span>
+<span id="L287"><a href="#L287"> 287</a>   have hsourceNative := corrected_native_bottom_detects T.X e eCg i r hi (by omega) eQ</span>
+<span id="L288"><a href="#L288"> 288</a>     M W s t (by omega) (by omega) x cGeometry c&#x27; hρ hc</span>
+<span id="L289"><a href="#L289"> 289</a>   have hsourceBack := detects_transport hgrade.symm _ _ hsourceNative</span>
+<span id="L290"><a href="#L290"> 290</a>   rw [finite_e2_regrade_roundtrip hgrade] at hsourceBack</span>
+<span id="L291"><a href="#L291"> 291</a>   have hnat0 : homotopyRegrade (congrArg Prod.fst hp0) (congrArg Prod.snd hp0)</span>
+<span id="L292"><a href="#L292"> 292</a>       (quotientUnshift T.X (1,e) p r eQ</span>
+<span id="L293"><a href="#L293"> 293</a>         (homotopyRegrade (show M=(p+(1,e)).1 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (show W=(p+(1,e)).2 by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L294"><a href="#L294"> 294</a>           (cnew≫XModLambdaN.map eCg.hom r))) =</span>
+<span id="L295"><a href="#L295"> 295</a>       quotientUnshift T.X (1,e) p0 r eQ (cSource≫XModLambdaN.map eCg.hom r) := by</span>
+<span id="L296"><a href="#L296"> 296</a>     have hh := quotient_class_unshift_regrade_source Xν (1,e) p p0 hp0 r eQ M W</span>
+<span id="L297"><a href="#L297"> 297</a>       (cnew≫XModLambdaN.map eCg.hom r)</span>
+<span id="L298"><a href="#L298"> 298</a>       (by dsimp [p] &lt;;&gt; omega) (by dsimp [p,e,ef,eg] at * &lt;;&gt; omega)</span>
+<span id="L299"><a href="#L299"> 299</a>       (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p0] &lt;;&gt; omega)</span>
+<span id="L300"><a href="#L300"> 300</a>     simpa only [quotientClassUnshift,quotientUnshift,cSource,regrade_comp] using hh</span>
+<span id="L301"><a href="#L301"> 301</a>   have hc0 : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t-(0:ℕ))</span>
+<span id="L302"><a href="#L302"> 302</a>       (finiteTargetLabel model T.X r s t 0 x)</span>
+<span id="L303"><a href="#L303"> 303</a>       (quotientUnshift T.X (1,e) p0 r eQ (cSource≫XModLambdaN.map eCg.hom r)) := by</span>
+<span id="L304"><a href="#L304"> 304</a>     rw [←hnat0]</span>
+<span id="L305"><a href="#L305"> 305</a>     exact hsourceBack</span>
+<span id="L306"><a href="#L306"> 306</a>   have hsource := normalized_f_total_actual_source_unshift_detects T he hT r 0 (by omega)</span>
+<span id="L307"><a href="#L307"> 307</a>     s t x eQ εe εA heQ hεe hεA cSource hc0</span>
+<span id="L308"><a href="#L308"> 308</a>   let a := homotopyRegrade</span>
+<span id="L309"><a href="#L309"> 309</a>     (show (p0+(1,e)).1=((p0+(0,ef))+(1,eg)).1 by dsimp [p0,e] &lt;;&gt; omega)</span>
+<span id="L310"><a href="#L310"> 310</a>     (show (p0+(1,e)).2=((p0+(0,ef))+(1,eg)).2 by dsimp [p0,e] &lt;;&gt; omega) cSource</span>
+<span id="L311"><a href="#L311"> 311</a>   let af := quotientClassUnshift Af (1,eg) (p0+(0,ef)) r εA</span>
+<span id="L312"><a href="#L312"> 312</a>     (a≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r)</span>
+<span id="L313"><a href="#L313"> 313</a>   have hsource0 : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t-(0:ℕ))</span>
+<span id="L314"><a href="#L314"> 314</a>       (finiteTargetLabel model T.X r s t 0 x)</span>
+<span id="L315"><a href="#L315"> 315</a>       (quotientUnshift T.X (0,ef) p0 r εe af) := hsource</span>
+<span id="L316"><a href="#L316"> 316</a>   have hsourceForward := detects_transport hgrade _ _ hsource0</span>
+<span id="L317"><a href="#L317"> 317</a>   have hnat1 := quotient_class_unshift_regrade_source Xν (0,ef) p0 p hp0.symm r εe</span>
+<span id="L318"><a href="#L318"> 318</a>     (p0+(0,ef)).1 (p0+(0,ef)).2 af rfl rfl</span>
+<span id="L319"><a href="#L319"> 319</a>     (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p0,p] &lt;;&gt; omega)</span>
+<span id="L320"><a href="#L320"> 320</a>   have hafNative : Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)</span>
+<span id="L321"><a href="#L321"> 321</a>       (regradeE2 (by simp) (finiteTargetLabel model T.X r s t 0 x))</span>
+<span id="L322"><a href="#L322"> 322</a>       (quotientUnshift T.X (0,ef) (t-s,t) r εe</span>
+<span id="L323"><a href="#L323"> 323</a>         (homotopyRegrade (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p,p0] &lt;;&gt; omega) af)) := by</span>
+<span id="L324"><a href="#L324"> 324</a>     have hh : homotopyRegrade (congrArg Prod.fst hp0.symm) (congrArg Prod.snd hp0.symm)</span>
+<span id="L325"><a href="#L325"> 325</a>         (quotientUnshift T.X (0,ef) p0 r εe af) =</span>
+<span id="L326"><a href="#L326"> 326</a>         quotientUnshift T.X (0,ef) p r εe</span>
+<span id="L327"><a href="#L327"> 327</a>           (homotopyRegrade (by dsimp [p,p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p0,p] &lt;;&gt; omega) af) := by</span>
+<span id="L328"><a href="#L328"> 328</a>       simpa only [quotientClassUnshift,quotientUnshift,homotopy_regrade_self,Xν] using hnat1</span>
+<span id="L329"><a href="#L329"> 329</a>     exact (congrArg (fun z =&gt; Detects (model.convergence (.quotient r (.nu T.X))) (s,t,t)</span>
+<span id="L330"><a href="#L330"> 330</a>       (regradeE2 hgrade (finiteTargetLabel model T.X r s t 0 x)) z) hh).mp hsourceForward</span>
+<span id="L331"><a href="#L331"> 331</a>   have hMay : Detects (model.convergence (.quotient r (.nu T.Y))) (s+n,t+n,t+n-i)</span>
+<span id="L332"><a href="#L332"> 332</a>       (finiteTargetLabel model T.Y r (s+n) (t+n) i y)</span>
+<span id="L333"><a href="#L333"> 333</a>       (homotopyRegrade (by dsimp [p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p0,ef,Prod.mk_add_mk,Prod.fst,Prod.snd] at * &lt;;&gt; omega)</span>
+<span id="L334"><a href="#L334"> 334</a>         (af≫finiteExtensionMap model T.X T.Y T.f r)) := by</span>
+<span id="L335"><a href="#L335"> 335</a>     have hpy : py=p0+(0,ef) := by ext &lt;;&gt; dsimp [py,p0,ef] at * &lt;;&gt; omega</span>
+<span id="L336"><a href="#L336"> 336</a>     have hα : homotopyRegrade (congrArg Prod.fst hpy.symm) (congrArg Prod.snd hpy.symm) af =</span>
+<span id="L337"><a href="#L337"> 337</a>         quotientClassUnshift Af (1,eg) py r εA</span>
+<span id="L338"><a href="#L338"> 338</a>           (aY≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r) := by</span>
+<span id="L339"><a href="#L339"> 339</a>       have hh := quotient_class_unshift_regrade_source Af (1,eg) (p0+(0,ef)) py hpy.symm r εA</span>
+<span id="L340"><a href="#L340"> 340</a>         M W (cnew≫XModLambdaN.map (-(normalized_f_total_source_iso T he hT).hom) r)</span>
+<span id="L341"><a href="#L341"> 341</a>         (by dsimp [p0,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [p0,e,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega)</span>
+<span id="L342"><a href="#L342"> 342</a>         (by dsimp [py,Prod.mk_add_mk,Prod.fst,Prod.snd] &lt;;&gt; omega) (by dsimp [py,e,ef,eg,Prod.mk_add_mk,Prod.fst,Prod.snd] at * &lt;;&gt; omega)</span>
+<span id="L343"><a href="#L343"> 343</a>       simpa only [af,a,cSource,aY,regrade_comp,common_regrade_trans] using hh</span>
+<span id="L344"><a href="#L344"> 344</a>     rw [regrade_comp,hα]</span>
+<span id="L345"><a href="#L345"> 345</a>     exact hMayY</span>
+<span id="L346"><a href="#L346"> 346</a>   apply minimal_final_extension_of_native_source T.X T.Y T.f r (by omega) i n s t b</span>
+<span id="L347"><a href="#L347"> 347</a>     (by omega) (by omega) x y (homotopyRegrade (by dsimp [p0] &lt;;&gt; omega) (by dsimp [p0] &lt;;&gt; omega) af) εe hεe</span>
+<span id="L348"><a href="#L348"> 348</a>   · simpa only [common_regrade_trans] using hafNative</span>
+<span id="L349"><a href="#L349"> 349</a>   · simpa only [←regrade_comp,common_regrade_trans] using hMay</span>
+<span id="L350"><a href="#L350"> 350</a> </span>
+<span id="L351"><a href="#L351"> 351</a> end</span>
+<span id="L352"><a href="#L352"> 352</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

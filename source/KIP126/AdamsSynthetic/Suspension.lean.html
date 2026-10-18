@@ -1,0 +1,79 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Suspension.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Suspension.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Tower</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Suspension comparisons of the same given Adams towers. The layer and</span>
+<span id="L8"><a href="#L8">   8</a> connecting equations preserve the original suspension sign; no unrelated</span>
+<span id="L9"><a href="#L9">   9</a> E₂ equivalence is selected. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.AdamsSynthetic</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.StableHomotopy KIP126.Classical.Adams</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Core.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> universe u v</span>
+<span id="L15"><a href="#L15">  15</a> noncomputable section</span>
+<span id="L16"><a href="#L16">  16</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L17"><a href="#L17">  17</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L18"><a href="#L18">  18</a>   {A : ClassicalAdamsFamily C}</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- Stage and cofiber comparisons for one object and its ordinary suspension. -/</span>
+<span id="L21"><a href="#L21">  21</a> public structure ClassicalTowerSuspension (P : ClassicalTowerPresentation unit A) (X : C) where</span>
+<span id="L22"><a href="#L22">  22</a>   tower : ∀ s : ℤ, (P.tower (X⟦(1 : ℤ)⟧)).stageAt s ≅</span>
+<span id="L23"><a href="#L23">  23</a>     ((P.tower X).stageAt s)⟦(1 : ℤ)⟧</span>
+<span id="L24"><a href="#L24">  24</a>   tower_zero : (tower 0).hom ≫ (P.tower X).zeroIso.hom⟦(1 : ℤ)⟧&#x27; =</span>
+<span id="L25"><a href="#L25">  25</a>     (P.tower (X⟦(1 : ℤ)⟧)).zeroIso.hom</span>
+<span id="L26"><a href="#L26">  26</a>   tower_comm : ∀ (s t : ℤ) (hst : s ≤ t),</span>
+<span id="L27"><a href="#L27">  27</a>     (tower t).hom ≫ ((P.tower X).mapAt hst)⟦(1 : ℤ)⟧&#x27; =</span>
+<span id="L28"><a href="#L28">  28</a>       (P.tower (X⟦(1 : ℤ)⟧)).mapAt hst ≫ (tower s).hom</span>
+<span id="L29"><a href="#L29">  29</a>   layer : ∀ s : ℤ, (P.tower (X⟦(1 : ℤ)⟧)).layer s ≅</span>
+<span id="L30"><a href="#L30">  30</a>     ((P.tower X).layer s)⟦(1 : ℤ)⟧</span>
+<span id="L31"><a href="#L31">  31</a>   layer_inclusion : ∀ s : ℤ,</span>
+<span id="L32"><a href="#L32">  32</a>     HasFunctorialCofiber.cofibι</span>
+<span id="L33"><a href="#L33">  33</a>         ((P.tower (X⟦(1 : ℤ)⟧)).mapAt (show s ≤ s+1 by omega)) ≫</span>
+<span id="L34"><a href="#L34">  34</a>         (layer s).hom =</span>
+<span id="L35"><a href="#L35">  35</a>       (tower s).hom ≫ (HasFunctorialCofiber.cofibι</span>
+<span id="L36"><a href="#L36">  36</a>         ((P.tower X).mapAt (show s ≤ s+1 by omega)))⟦(1 : ℤ)⟧&#x27;</span>
+<span id="L37"><a href="#L37">  37</a>   layer_connecting : ∀ s : ℤ,</span>
+<span id="L38"><a href="#L38">  38</a>     (layer s).hom ≫ (HasFunctorialCofiber.cofibδ</span>
+<span id="L39"><a href="#L39">  39</a>         ((P.tower X).mapAt (show s ≤ s+1 by omega)))⟦(1 : ℤ)⟧&#x27; ≫</span>
+<span id="L40"><a href="#L40">  40</a>         (shiftFunctorComm C (1 : ℤ) (1 : ℤ)).hom.app ((P.tower X).stageAt (s+1)) =</span>
+<span id="L41"><a href="#L41">  41</a>       -(HasFunctorialCofiber.cofibδ</span>
+<span id="L42"><a href="#L42">  42</a>         ((P.tower (X⟦(1 : ℤ)⟧)).mapAt (show s ≤ s+1 by omega)) ≫</span>
+<span id="L43"><a href="#L43">  43</a>           (tower (s+1)).hom⟦(1 : ℤ)⟧&#x27;)</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> namespace ClassicalTowerSuspension</span>
+<span id="L46"><a href="#L46">  46</a> variable {P : ClassicalTowerPresentation unit A} {X : C}</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> public def desuspendFirstPage (S : ClassicalTowerSuspension P X) (s t : ℤ) :</span>
+<span id="L49"><a href="#L49">  49</a>     (P.tower (X⟦(1 : ℤ)⟧)).FirstPage (s,t) →+</span>
+<span id="L50"><a href="#L50">  50</a>       (P.tower X).FirstPage (s,t-1) where</span>
+<span id="L51"><a href="#L51">  51</a>   toFun z :=</span>
+<span id="L52"><a href="#L52">  52</a>     eqToHom (congrArg (Sphere (C := C))</span>
+<span id="L53"><a href="#L53">  53</a>       (show (t-1)-s = (t-s)-1 by omega)) ≫</span>
+<span id="L54"><a href="#L54">  54</a>       AbstractAdamsTower.desuspend ((P.tower X).layer s) (t-s) (z ≫ (S.layer s).hom)</span>
+<span id="L55"><a href="#L55">  55</a>   map_zero&#x27; := by simp only [Limits.zero_comp, map_zero, Limits.comp_zero]</span>
+<span id="L56"><a href="#L56">  56</a>   map_add&#x27; a b := by simp only [Preadditive.add_comp, map_add, Preadditive.comp_add]</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> /-- Desuspension of the actual common page-two representatives. Both labels</span>
+<span id="L59"><a href="#L59">  59</a> come from the same supplied tower presentation and actual quotient projections. -/</span>
+<span id="L60"><a href="#L60">  60</a> public def DesuspendsClass (S : ClassicalTowerSuspension P X) (s t : ℤ)</span>
+<span id="L61"><a href="#L61">  61</a>     (sx : (A.obj (X⟦(1 : ℤ)⟧)).Page 2 (s,t))</span>
+<span id="L62"><a href="#L62">  62</a>     (x : (A.obj X).Page 2 (s,t-1)) : Prop :=</span>
+<span id="L63"><a href="#L63">  63</a>   ∃ (a : (Subobject.underlying.obj (((A.obj (X⟦(1 : ℤ)⟧)).ssData (s,t)).Z 0) : ModuleCat.{v} ℤ))</span>
+<span id="L64"><a href="#L64">  64</a>     (b : (Subobject.underlying.obj (((A.obj X).ssData (s,t-1)).Z 0) : ModuleCat.{v} ℤ)),</span>
+<span id="L65"><a href="#L65">  65</a>     ((((A.obj (X⟦(1 : ℤ)⟧)).ssData (s,t)).pageπ 0) ≫</span>
+<span id="L66"><a href="#L66">  66</a>       eqToHom (by simp only [KIP126.Core.SpectralSequence.Page, A.firstPage, sub_self, Int.toNat_zero,</span>
+<span id="L67"><a href="#L67">  67</a>         Nat.cast_zero])) a = sx ∧</span>
+<span id="L68"><a href="#L68">  68</a>     ((((A.obj X).ssData (s,t-1)).pageπ 0) ≫</span>
+<span id="L69"><a href="#L69">  69</a>       eqToHom (by simp only [KIP126.Core.SpectralSequence.Page, A.firstPage, sub_self, Int.toNat_zero,</span>
+<span id="L70"><a href="#L70">  70</a>         Nat.cast_zero])) b = x ∧</span>
+<span id="L71"><a href="#L71">  71</a>     S.desuspendFirstPage s t</span>
+<span id="L72"><a href="#L72">  72</a>       ((((P.sequence (X⟦(1 : ℤ)⟧)).ambient (s,t)).hom</span>
+<span id="L73"><a href="#L73">  73</a>         ((((A.obj (X⟦(1 : ℤ)⟧)).ssData (s,t)).Z 0).arrow a)).val) =</span>
+<span id="L74"><a href="#L74">  74</a>       ((((P.sequence X).ambient (s,t-1)).hom</span>
+<span id="L75"><a href="#L75">  75</a>         ((((A.obj X).ssData (s,t-1)).Z 0).arrow b)).val)</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> end ClassicalTowerSuspension</span>
+<span id="L78"><a href="#L78">  78</a> end</span>
+<span id="L79"><a href="#L79">  79</a> end KIP126.AdamsSynthetic</span></pre>

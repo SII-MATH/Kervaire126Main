@@ -1,0 +1,66 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz/CrossingRange.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz/CrossingRange.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedLeibniz.Filtration</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.StretchingRepresentatives</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Source-filtration bounds for the finite crossing comparison in AimPaper</span>
+<span id="L6"><a href="#L6">   6</a> Proposition `prop:cross-f-Er`. The finite E∞ window bounds the source displacement;</span>
+<span id="L7"><a href="#L7">   7</a> at page two it rules out all higher-source essential extensions. -/</span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Kervaire.Route KIP126.AdamsSynthetic.Standard</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> private theorem finite_extension_zero_source_not_essential (X Y : ClassicalObject)</span>
+<span id="L18"><a href="#L18">  18</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (q : ℕ)</span>
+<span id="L19"><a href="#L19">  19</a>     (p : ℤ × ℤ) (u d : ℤ) (hd : 0 ≤ d)</span>
+<span id="L20"><a href="#L20">  20</a>     (y : ((model.family.obj ((SyntheticObject.quotient q (.nu Y)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L21"><a href="#L21">  21</a>       (u+d,p.1+(u+d),p.2)).eInfty) :</span>
+<span id="L22"><a href="#L22">  22</a>     ¬ TowerEssentialExtension (model.convergentMap</span>
+<span id="L23"><a href="#L23">  23</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L24"><a href="#L24">  24</a>       (finiteExtensionMap model X Y f q)) p u d 0 y := by</span>
+<span id="L25"><a href="#L25">  25</a>   intro he</span>
+<span id="L26"><a href="#L26">  26</a>   have hrel : TowerExtensionEquation (model.convergentMap</span>
+<span id="L27"><a href="#L27">  27</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L28"><a href="#L28">  28</a>       (finiteExtensionMap model X Y f q)) p u d 0 y := he.1</span>
+<span id="L29"><a href="#L29">  29</a>   have hzero : TowerExtensionEquation (model.convergentMap</span>
+<span id="L30"><a href="#L30">  30</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L31"><a href="#L31">  31</a>       (finiteExtensionMap model X Y f q)) p u d 0 0 := by</span>
+<span id="L32"><a href="#L32">  32</a>     apply (tower_extension_iff _ _ _ _ _ _).mpr</span>
+<span id="L33"><a href="#L33">  33</a>     refine ⟨hd,0,0,?_,?_,?_⟩ &lt;;&gt; simp</span>
+<span id="L34"><a href="#L34">  34</a>   exact ((tower_essential_iff_no_zero _ _ _ _ _ _ hrel).mp he) hzero</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> private theorem finite_crossing_source_bound (X Y : ClassicalObject)</span>
+<span id="L37"><a href="#L37">  37</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (q : ℕ) (hq : 0 &lt; q)</span>
+<span id="L38"><a href="#L38">  38</a>     (s t u v : ℤ) (huv : u ≤ v)</span>
+<span id="L39"><a href="#L39">  39</a>     (x : ((model.family.obj ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L40"><a href="#L40">  40</a>       (u,(t-s)+u,t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L41"><a href="#L41">  41</a>     (y : ((model.family.obj ((SyntheticObject.quotient q (.nu Y)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L42"><a href="#L42">  42</a>       (u+(v-u),(t-s)+(u+(v-u)),t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L43"><a href="#L43">  43</a>     (he : TowerEssentialExtension (model.convergentMap</span>
+<span id="L44"><a href="#L44">  44</a>       (.quotient q (extensionSourceObject model X Y f)) (.quotient q (.nu Y))</span>
+<span id="L45"><a href="#L45">  45</a>       (finiteExtensionMap model X Y f q))</span>
+<span id="L46"><a href="#L46">  46</a>       (t-s,t+normalizedExponent model.classicalTower f) u (v-u) x y) : u-s &lt; q := by</span>
+<span id="L47"><a href="#L47">  47</a>   by_contra hqle</span>
+<span id="L48"><a href="#L48">  48</a>   have hz := shifted_quotient_eInfty_zero X q hq (normalizedExponent model.classicalTower f)</span>
+<span id="L49"><a href="#L49">  49</a>     u ((t-s)+u) (t+normalizedExponent model.classicalTower f) (by omega)</span>
+<span id="L50"><a href="#L50">  50</a>   have hsub := ModuleCat.isZero_iff_subsingleton.mp hz</span>
+<span id="L51"><a href="#L51">  51</a>   have hx : x = 0 := @Subsingleton.elim _ hsub _ _</span>
+<span id="L52"><a href="#L52">  52</a>   subst x</span>
+<span id="L53"><a href="#L53">  53</a>   exact finite_extension_zero_source_not_essential X Y f q</span>
+<span id="L54"><a href="#L54">  54</a>     (t-s,t+normalizedExponent model.classicalTower f) u (v-u) (by omega) y he</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> private theorem page_two_tower_no_crossing (X Y : ClassicalObject)</span>
+<span id="L57"><a href="#L57">  57</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (s t n : ℤ) :</span>
+<span id="L58"><a href="#L58">  58</a>     TowerNoCrossing (model.convergentMap</span>
+<span id="L59"><a href="#L59">  59</a>       (.quotient 1 (extensionSourceObject model X Y f)) (.quotient 1 (.nu Y))</span>
+<span id="L60"><a href="#L60">  60</a>       (finiteExtensionMap model X Y f 1))</span>
+<span id="L61"><a href="#L61">  61</a>       (t-s,t+normalizedExponent model.classicalTower f) s n := by</span>
+<span id="L62"><a href="#L62">  62</a>   intro u v hsu huv hvs x y he</span>
+<span id="L63"><a href="#L63">  63</a>   have hh := finite_crossing_source_bound X Y f 1 (by omega) s t u v huv x y he</span>
+<span id="L64"><a href="#L64">  64</a>   omega</span>
+<span id="L65"><a href="#L65">  65</a> end</span>
+<span id="L66"><a href="#L66">  66</a> end KIP126.ProofTools.Internal.Leibniz</span></pre>

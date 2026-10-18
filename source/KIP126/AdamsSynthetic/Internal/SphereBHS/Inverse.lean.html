@@ -1,0 +1,218 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Internal/SphereBHS/Inverse.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Internal/SphereBHS/Inverse.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-</span>
+<span id="L4"><a href="#L4">   4</a> Copyright (c) 2026 Jiashuo Zhang and KIP126 contributors.</span>
+<span id="L5"><a href="#L5">   5</a> Released under the MIT license; see LICENSE.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from SII-MATH/Kervaire126, commit</span>
+<span id="L7"><a href="#L7">   7</a> 8cb35dad5f75ecc095e474df6c765baec9b175bf.</span>
+<span id="L8"><a href="#L8">   8</a> -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> import Mathlib.Order.KonigLemma</span>
+<span id="L11"><a href="#L11">  11</a> import Mathlib.Algebra.Group.Subgroup.Ker</span>
+<span id="L12"><a href="#L12">  12</a> import Mathlib.Algebra.Group.Basic</span>
+<span id="L13"><a href="#L13">  13</a> import Mathlib.Data.Finite.Sigma</span>
+<span id="L14"><a href="#L14">  14</a> import Mathlib.Data.Finite.Prod</span>
+<span id="L15"><a href="#L15">  15</a> import Mathlib.Tactic.Abel</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> /-! Finite-kernel inverse-tower arguments used by the archived sphere BHS</span>
+<span id="L18"><a href="#L18">  18</a> proof. Every assertion is proved with its actual algebraic hypotheses.</span>
+<span id="L19"><a href="#L19">  19</a> These private lemmas assert no completeness of the selected ordinary sphere.</span>
+<span id="L20"><a href="#L20">  20</a> -/</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> @[expose] section</span>
+<span id="L23"><a href="#L23">  23</a> namespace KIP126.AdamsSynthetic.Internal.SphereBHS.Inverse</span>
+<span id="L24"><a href="#L24">  24</a> universe u v w</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- Nonempty finite terms with arbitrary adjacent restriction maps admit a</span>
+<span id="L27"><a href="#L27">  27</a> compatible dependent inverse sequence. The point at the initial index is</span>
+<span id="L28"><a href="#L28">  28</a> not prescribed, and the restriction maps need not be surjective. -/</span>
+<span id="L29"><a href="#L29">  29</a> private theorem exists_compatible_of_finite (m₀ : ℕ)</span>
+<span id="L30"><a href="#L30">  30</a>     (A : (m : ℕ) → m₀ ≤ m → Type u)</span>
+<span id="L31"><a href="#L31">  31</a>     (restrict : ∀ (m : ℕ) (hm : m₀ ≤ m),</span>
+<span id="L32"><a href="#L32">  32</a>       A (m + 1) (Nat.le_succ_of_le hm) → A m hm)</span>
+<span id="L33"><a href="#L33">  33</a>     (hfinite : ∀ (m : ℕ) (hm : m₀ ≤ m), Finite (A m hm))</span>
+<span id="L34"><a href="#L34">  34</a>     (hne : ∀ (m : ℕ) (hm : m₀ ≤ m), Nonempty (A m hm)) :</span>
+<span id="L35"><a href="#L35">  35</a>     ∃ a : ∀ (m : ℕ) (hm : m₀ ≤ m), A m hm,</span>
+<span id="L36"><a href="#L36">  36</a>       ∀ (m : ℕ) (hm : m₀ ≤ m),</span>
+<span id="L37"><a href="#L37">  37</a>         restrict m hm (a (m + 1) (Nat.le_succ_of_le hm)) = a m hm := by</span>
+<span id="L38"><a href="#L38">  38</a>   classical</span>
+<span id="L39"><a href="#L39">  39</a>   let B (m : ℕ) := ∀ hm : m₀ ≤ m, A m hm</span>
+<span id="L40"><a href="#L40">  40</a>   let step (m : ℕ) (b : B (m + 1)) : B m :=</span>
+<span id="L41"><a href="#L41">  41</a>     fun hm =&gt; restrict m hm (b (Nat.le_succ_of_le hm))</span>
+<span id="L42"><a href="#L42">  42</a>   letI : ∀ m, Finite (B m) := fun m =&gt; by</span>
+<span id="L43"><a href="#L43">  43</a>     letI : ∀ hm : m₀ ≤ m, Finite (A m hm) := hfinite m</span>
+<span id="L44"><a href="#L44">  44</a>     exact Pi.finite</span>
+<span id="L45"><a href="#L45">  45</a>   letI : ∀ m, Nonempty (B m) :=</span>
+<span id="L46"><a href="#L46">  46</a>     fun m =&gt; ⟨fun hm =&gt; Classical.choice (hne m hm)⟩</span>
+<span id="L47"><a href="#L47">  47</a>   let π : {i j : ℕ} → i ≤ j → B j → B i :=</span>
+<span id="L48"><a href="#L48">  48</a>     fun {_ _} hij b =&gt; Nat.decreasingInduction (fun k _ =&gt; step k) b hij</span>
+<span id="L49"><a href="#L49">  49</a>   obtain ⟨a, ha⟩ := exists_seq_forall_proj_of_forall_finite π</span>
+<span id="L50"><a href="#L50">  50</a>     (fun {_} _ =&gt; Nat.decreasingInduction_self _ _)</span>
+<span id="L51"><a href="#L51">  51</a>     (by</span>
+<span id="L52"><a href="#L52">  52</a>       intro i j k hij hjk b</span>
+<span id="L53"><a href="#L53">  53</a>       exact (Nat.decreasingInduction_trans (motive := fun m (_ : m ≤ k) =&gt; B m)</span>
+<span id="L54"><a href="#L54">  54</a>         hij hjk (fun m _ =&gt; step m) b).symm)</span>
+<span id="L55"><a href="#L55">  55</a>     (fun _ _ =&gt; Set.toFinite _)</span>
+<span id="L56"><a href="#L56">  56</a>   refine ⟨fun m hm =&gt; a m hm, ?_⟩</span>
+<span id="L57"><a href="#L57">  57</a>   intro m hm</span>
+<span id="L58"><a href="#L58">  58</a>   have h := congrFun (ha (Nat.le_succ m)) hm</span>
+<span id="L59"><a href="#L59">  59</a>   simpa only [π, Nat.decreasingInduction_succ&#x27;, step] using h</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> /-- The `1 - shift` map of an inverse sequence of finite abelian groups is</span>
+<span id="L62"><a href="#L62">  62</a> surjective, the algebraic vanishing criterion for its first derived limit.</span>
+<span id="L63"><a href="#L63">  63</a> For each target sequence, apply finite inverse-system compactness to the</span>
+<span id="L64"><a href="#L64">  64</a> affine restrictions; the original homomorphisms need not be surjective. -/</span>
+<span id="L65"><a href="#L65">  65</a> private theorem surjective_sub_shift_of_finite (A : ℕ → Type u)</span>
+<span id="L66"><a href="#L66">  66</a>     [∀ n, AddCommGroup (A n)] [∀ n, Finite (A n)]</span>
+<span id="L67"><a href="#L67">  67</a>     (f : ∀ n, A (n + 1) →+ A n) :</span>
+<span id="L68"><a href="#L68">  68</a>     Function.Surjective (fun x : ∀ n, A n =&gt; fun n =&gt; x n - f n (x (n + 1))) := by</span>
+<span id="L69"><a href="#L69">  69</a>   intro b</span>
+<span id="L70"><a href="#L70">  70</a>   obtain ⟨x, hx⟩ := exists_compatible_of_finite 0 (fun n _ =&gt; A n)</span>
+<span id="L71"><a href="#L71">  71</a>     (fun n _ a =&gt; b n + f n a) (fun n _ =&gt; inferInstance)</span>
+<span id="L72"><a href="#L72">  72</a>     (fun n _ =&gt; ⟨0⟩)</span>
+<span id="L73"><a href="#L73">  73</a>   refine ⟨fun n =&gt; x n (Nat.zero_le n), ?_⟩</span>
+<span id="L74"><a href="#L74">  74</a>   funext n</span>
+<span id="L75"><a href="#L75">  75</a>   have h := hx n (Nat.zero_le n)</span>
+<span id="L76"><a href="#L76">  76</a>   dsimp only at h ⊢</span>
+<span id="L77"><a href="#L77">  77</a>   rw [← h, add_sub_cancel_right]</span>
+<span id="L78"><a href="#L78">  78</a> </span>
+<span id="L79"><a href="#L79">  79</a> </span>
+<span id="L80"><a href="#L80">  80</a> private theorem finite_fiber_of_finite_ker</span>
+<span id="L81"><a href="#L81">  81</a>     {A : Type u} {B : Type v} [AddGroup A] [AddGroup B]</span>
+<span id="L82"><a href="#L82">  82</a>     (f : A →+ B) [Finite f.ker] (b : B) : Finite {a : A // f a = b} := by</span>
+<span id="L83"><a href="#L83">  83</a>   classical</span>
+<span id="L84"><a href="#L84">  84</a>   by_cases h : Nonempty {a : A // f a = b}</span>
+<span id="L85"><a href="#L85">  85</a>   · let a₀ := Classical.choice h</span>
+<span id="L86"><a href="#L86">  86</a>     let e : {a : A // f a = b} → f.ker := fun a =&gt;</span>
+<span id="L87"><a href="#L87">  87</a>       ⟨a.val - a₀.val, by simp only [AddMonoidHom.mem_ker, map_sub, a.property, a₀.property, sub_self]⟩</span>
+<span id="L88"><a href="#L88">  88</a>     exact Finite.of_injective e (fun a a&#x27; h =&gt; Subtype.ext (sub_left_inj.mp (congrArg Subtype.val h)))</span>
+<span id="L89"><a href="#L89">  89</a>   · letI : IsEmpty {a : A // f a = b} := not_nonempty_iff.mp h</span>
+<span id="L90"><a href="#L90">  90</a>     infer_instance</span>
+<span id="L91"><a href="#L91">  91</a> </span>
+<span id="L92"><a href="#L92">  92</a> private theorem finite_fiber_comp</span>
+<span id="L93"><a href="#L93">  93</a>     {A : Type u} {B : Type v} {C : Type w}</span>
+<span id="L94"><a href="#L94">  94</a>     (f : B → C) (g : A → B)</span>
+<span id="L95"><a href="#L95">  95</a>     (hf : ∀ c, Finite {b // f b = c}) (hg : ∀ b, Finite {a // g a = b})</span>
+<span id="L96"><a href="#L96">  96</a>     (c : C) : Finite {a // f (g a) = c} := by</span>
+<span id="L97"><a href="#L97">  97</a>   letI : Finite {b // f b = c} := hf c</span>
+<span id="L98"><a href="#L98">  98</a>   letI : ∀ b : {b // f b = c}, Finite {a // g a = b.val} := fun b =&gt; hg b.val</span>
+<span id="L99"><a href="#L99">  99</a>   let e : {a // f (g a) = c} → Σ b : {b // f b = c}, {a // g a = b.val} :=</span>
+<span id="L100"><a href="#L100"> 100</a>     fun a =&gt; ⟨⟨g a.val, a.property⟩, ⟨a.val, rfl⟩⟩</span>
+<span id="L101"><a href="#L101"> 101</a>   exact Finite.of_injective e (fun a a&#x27; h =&gt; Subtype.ext (congrArg (fun z =&gt; z.2.val) h))</span>
+<span id="L102"><a href="#L102"> 102</a> </span>
+<span id="L103"><a href="#L103"> 103</a> </span>
+<span id="L104"><a href="#L104"> 104</a> private theorem finite_fiber_tower</span>
+<span id="L105"><a href="#L105"> 105</a>     (G : ℕ → Type u) [∀ n, AddCommGroup (G n)]</span>
+<span id="L106"><a href="#L106"> 106</a>     (p : ∀ a b, a ≤ b → G b →+ G a)</span>
+<span id="L107"><a href="#L107"> 107</a>     (pid : ∀ a x, p a a (Nat.le_refl a) x = x)</span>
+<span id="L108"><a href="#L108"> 108</a>     (pcomp : ∀ a b c (hab : a ≤ b) (hbc : b ≤ c) x,</span>
+<span id="L109"><a href="#L109"> 109</a>       p a b hab (p b c hbc x) = p a c (hab.trans hbc) x)</span>
+<span id="L110"><a href="#L110"> 110</a>     (hfinite : ∀ n, Finite (p n (n+1) (Nat.le_succ n)).ker)</span>
+<span id="L111"><a href="#L111"> 111</a>     (a b : ℕ) (hab : a ≤ b) (x : G a) : Finite {y : G b // p a b hab y = x} := by</span>
+<span id="L112"><a href="#L112"> 112</a>   induction b, hab using Nat.le_induction generalizing x with</span>
+<span id="L113"><a href="#L113"> 113</a>   | base =&gt;</span>
+<span id="L114"><a href="#L114"> 114</a>     let he : {y : G a // p a a (Nat.le_refl a) y = x} → {y : G a // y = x} :=</span>
+<span id="L115"><a href="#L115"> 115</a>       fun y =&gt; ⟨y.val, (pid a y.val).symm.trans y.property⟩</span>
+<span id="L116"><a href="#L116"> 116</a>     exact Finite.of_injective he (by</span>
+<span id="L117"><a href="#L117"> 117</a>       intro y y&#x27; h</span>
+<span id="L118"><a href="#L118"> 118</a>       apply Subtype.ext</span>
+<span id="L119"><a href="#L119"> 119</a>       exact congrArg (fun z : {y : G a // y = x} =&gt; z.val) h)</span>
+<span id="L120"><a href="#L120"> 120</a>   | succ b hab ih =&gt;</span>
+<span id="L121"><a href="#L121"> 121</a>     letI := hfinite b</span>
+<span id="L122"><a href="#L122"> 122</a>     have hf : ∀ z, Finite {y : G b // p a b hab y = z} := by</span>
+<span id="L123"><a href="#L123"> 123</a>       intro z</span>
+<span id="L124"><a href="#L124"> 124</a>       exact ih z</span>
+<span id="L125"><a href="#L125"> 125</a>     have hg := finite_fiber_comp (p a b hab) (p b (b+1) (Nat.le_succ b)) hf</span>
+<span id="L126"><a href="#L126"> 126</a>       (finite_fiber_of_finite_ker (p b (b+1) (Nat.le_succ b))) x</span>
+<span id="L127"><a href="#L127"> 127</a>     exact Finite.of_injective</span>
+<span id="L128"><a href="#L128"> 128</a>       (fun y : {y : G (b+1) // p a (b+1) (hab.trans (Nat.le_succ b)) y = x} =&gt;</span>
+<span id="L129"><a href="#L129"> 129</a>         (⟨y.val, (pcomp a b (b+1) hab (Nat.le_succ b) y.val).trans y.property⟩ :</span>
+<span id="L130"><a href="#L130"> 130</a>           {y : G (b+1) // p a b hab (p b (b+1) (Nat.le_succ b) y) = x}))</span>
+<span id="L131"><a href="#L131"> 131</a>       (by</span>
+<span id="L132"><a href="#L132"> 132</a>         intro y y&#x27; h</span>
+<span id="L133"><a href="#L133"> 133</a>         apply Subtype.ext</span>
+<span id="L134"><a href="#L134"> 134</a>         exact congrArg (fun z : {y : G (b+1) // p a b hab (p b (b+1) (Nat.le_succ b) y) = x} =&gt; z.val) h)</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> </span>
+<span id="L137"><a href="#L137"> 137</a> /-- A zero inverse limit together with finite adjacent kernels separates all image filtrations. -/</span>
+<span id="L138"><a href="#L138"> 138</a> private theorem separated_of_finite_ker</span>
+<span id="L139"><a href="#L139"> 139</a>     (G : ℕ → Type u) [∀ n, AddCommGroup (G n)]</span>
+<span id="L140"><a href="#L140"> 140</a>     (p : ∀ a b, a ≤ b → G b →+ G a)</span>
+<span id="L141"><a href="#L141"> 141</a>     (pid : ∀ a x, p a a (Nat.le_refl a) x = x)</span>
+<span id="L142"><a href="#L142"> 142</a>     (pcomp : ∀ a b c (hab : a ≤ b) (hbc : b ≤ c) x,</span>
+<span id="L143"><a href="#L143"> 143</a>       p a b hab (p b c hbc x) = p a c (hab.trans hbc) x)</span>
+<span id="L144"><a href="#L144"> 144</a>     (hfinite : ∀ n, Finite (p n (n+1) (Nat.le_succ n)).ker)</span>
+<span id="L145"><a href="#L145"> 145</a>     (hzero : ∀ z : ∀ n, G n,</span>
+<span id="L146"><a href="#L146"> 146</a>       (∀ n, p n (n+1) (Nat.le_succ n) (z (n+1)) = z n) → ∀ n, z n = 0)</span>
+<span id="L147"><a href="#L147"> 147</a>     (a : ℕ) (x : G a)</span>
+<span id="L148"><a href="#L148"> 148</a>     (hx : ∀ b (hab : a ≤ b), ∃ y, p a b hab y = x) : x = 0 := by</span>
+<span id="L149"><a href="#L149"> 149</a>   classical</span>
+<span id="L150"><a href="#L150"> 150</a>   let A (b : ℕ) (hab : a ≤ b) := {y : G b // p a b hab y = x}</span>
+<span id="L151"><a href="#L151"> 151</a>   let step (b : ℕ) (hab : a ≤ b) : A (b+1) (Nat.le_succ_of_le hab) → A b hab :=</span>
+<span id="L152"><a href="#L152"> 152</a>     fun y =&gt; ⟨p b (b+1) (Nat.le_succ b) y.val,</span>
+<span id="L153"><a href="#L153"> 153</a>       (pcomp a b (b+1) hab (Nat.le_succ b) y.val).trans y.property⟩</span>
+<span id="L154"><a href="#L154"> 154</a>   obtain ⟨u, hu⟩ := exists_compatible_of_finite a A step</span>
+<span id="L155"><a href="#L155"> 155</a>     (fun b hab =&gt; finite_fiber_tower G p pid pcomp hfinite a b hab x)</span>
+<span id="L156"><a href="#L156"> 156</a>     (fun b hab =&gt; let ⟨y, hy⟩ := hx b hab; ⟨⟨y, hy⟩⟩)</span>
+<span id="L157"><a href="#L157"> 157</a>   have hua : (u a (Nat.le_refl a)).val = x :=</span>
+<span id="L158"><a href="#L158"> 158</a>     (pid a _).symm.trans (u a (Nat.le_refl a)).property</span>
+<span id="L159"><a href="#L159"> 159</a>   let z (b : ℕ) : G b := if hab : a ≤ b then (u b hab).val else p b a (by omega) x</span>
+<span id="L160"><a href="#L160"> 160</a>   have hcompat : ∀ b, p b (b+1) (Nat.le_succ b) (z (b+1)) = z b := by</span>
+<span id="L161"><a href="#L161"> 161</a>     intro b</span>
+<span id="L162"><a href="#L162"> 162</a>     by_cases hab : a ≤ b</span>
+<span id="L163"><a href="#L163"> 163</a>     · have hab&#x27; : a ≤ b+1 := Nat.le_succ_of_le hab</span>
+<span id="L164"><a href="#L164"> 164</a>       simp only [z, dif_pos hab, dif_pos hab&#x27;]</span>
+<span id="L165"><a href="#L165"> 165</a>       exact congrArg Subtype.val (hu b hab)</span>
+<span id="L166"><a href="#L166"> 166</a>     · by_cases hab&#x27; : a ≤ b+1</span>
+<span id="L167"><a href="#L167"> 167</a>       · have hba : b+1 = a := by omega</span>
+<span id="L168"><a href="#L168"> 168</a>         subst a</span>
+<span id="L169"><a href="#L169"> 169</a>         simp only [z, dif_pos hab&#x27;, dif_neg hab]</span>
+<span id="L170"><a href="#L170"> 170</a>         rw [hua]</span>
+<span id="L171"><a href="#L171"> 171</a>       · simp only [z, dif_neg hab, dif_neg hab&#x27;]</span>
+<span id="L172"><a href="#L172"> 172</a>         exact pcomp b (b+1) a (Nat.le_succ b) (by omega) x</span>
+<span id="L173"><a href="#L173"> 173</a>   have hza := hzero z hcompat a</span>
+<span id="L174"><a href="#L174"> 174</a>   simpa only [z, dif_pos (Nat.le_refl a), hua] using hza</span>
+<span id="L175"><a href="#L175"> 175</a> </span>
+<span id="L176"><a href="#L176"> 176</a> /-- Injectivity of the explicit difference operator kills compatible families. -/</span>
+<span id="L177"><a href="#L177"> 177</a> private theorem compatible_zero_of_difference_injective</span>
+<span id="L178"><a href="#L178"> 178</a>     (G : ℕ → Type u) [∀ n, AddCommGroup (G n)]</span>
+<span id="L179"><a href="#L179"> 179</a>     (step : ∀ n, G (n+1) →+ G n)</span>
+<span id="L180"><a href="#L180"> 180</a>     (hinj : Function.Injective (fun z : ∀ n, G n =&gt; fun n =&gt; z n - step n (z (n+1))))</span>
+<span id="L181"><a href="#L181"> 181</a>     (z : ∀ n, G n) (hz : ∀ n, step n (z (n+1)) = z n) : ∀ n, z n = 0 := by</span>
+<span id="L182"><a href="#L182"> 182</a>   have he : z = 0 := hinj (by funext n; simp only [hz, sub_self, Pi.zero_apply, map_zero])</span>
+<span id="L183"><a href="#L183"> 183</a>   intro n</span>
+<span id="L184"><a href="#L184"> 184</a>   exact congrFun he n</span>
+<span id="L185"><a href="#L185"> 185</a> </span>
+<span id="L186"><a href="#L186"> 186</a> </span>
+<span id="L187"><a href="#L187"> 187</a> </span>
+<span id="L188"><a href="#L188"> 188</a> /-- The correction step in §9.1: solving the difference equation changes</span>
+<span id="L189"><a href="#L189"> 189</a> compatible representatives into one representative of all quotient classes. -/</span>
+<span id="L190"><a href="#L190"> 190</a> private theorem common_representative</span>
+<span id="L191"><a href="#L191"> 191</a>     (G : ℕ → Type v) [∀ s, AddCommGroup (G s)]</span>
+<span id="L192"><a href="#L192"> 192</a>     {A : Type w} [AddCommGroup A]</span>
+<span id="L193"><a href="#L193"> 193</a>     (i : ∀ s, G (s+1) →+ G s) (p : ∀ s, G s →+ A)</span>
+<span id="L194"><a href="#L194"> 194</a>     (hp : ∀ s y, p s (i s y) = p (s+1) y)</span>
+<span id="L195"><a href="#L195"> 195</a>     (hdelta : Function.Surjective (fun z : ∀ s, G s =&gt; fun s =&gt; z s - i s (z (s+1))))</span>
+<span id="L196"><a href="#L196"> 196</a>     (x : ℕ → A) (hx : ∀ s, ∃ y, p s y = x s - x (s+1)) :</span>
+<span id="L197"><a href="#L197"> 197</a>     ∃ a : A, ∀ s, ∃ y, p s y = x s - a := by</span>
+<span id="L198"><a href="#L198"> 198</a>   classical</span>
+<span id="L199"><a href="#L199"> 199</a>   choose y hy using hx</span>
+<span id="L200"><a href="#L200"> 200</a>   obtain ⟨z, hz⟩ := hdelta y</span>
+<span id="L201"><a href="#L201"> 201</a>   have hz&#x27; (s : ℕ) : p s (z s) - p (s+1) (z (s+1)) = x s - x (s+1) := by</span>
+<span id="L202"><a href="#L202"> 202</a>     have h := congrArg (p s) (congrFun hz s)</span>
+<span id="L203"><a href="#L203"> 203</a>     simpa only [map_sub, hp, hy] using h</span>
+<span id="L204"><a href="#L204"> 204</a>   have hw (s : ℕ) : x s - p s (z s) = x 0 - p 0 (z 0) := by</span>
+<span id="L205"><a href="#L205"> 205</a>     induction s with</span>
+<span id="L206"><a href="#L206"> 206</a>     | zero =&gt; rfl</span>
+<span id="L207"><a href="#L207"> 207</a>     | succ s ih =&gt;</span>
+<span id="L208"><a href="#L208"> 208</a>       calc</span>
+<span id="L209"><a href="#L209"> 209</a>         x (s+1) - p (s+1) (z (s+1)) = x s - p s (z s) := by</span>
+<span id="L210"><a href="#L210"> 210</a>           rw [sub_eq_iff_eq_add.mp (hz&#x27; s)]</span>
+<span id="L211"><a href="#L211"> 211</a>           abel</span>
+<span id="L212"><a href="#L212"> 212</a>         _ = _ := ih</span>
+<span id="L213"><a href="#L213"> 213</a>   refine ⟨x 0 - p 0 (z 0), fun s =&gt; ⟨z s, ?_⟩⟩</span>
+<span id="L214"><a href="#L214"> 214</a>   rw [← hw s]</span>
+<span id="L215"><a href="#L215"> 215</a>   abel</span>
+<span id="L216"><a href="#L216"> 216</a> </span>
+<span id="L217"><a href="#L217"> 217</a> </span>
+<span id="L218"><a href="#L218"> 218</a> end KIP126.AdamsSynthetic.Internal.SphereBHS.Inverse</span></pre>

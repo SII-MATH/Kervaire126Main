@@ -1,0 +1,65 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/High125/Source.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/High125/Source.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Literature.Standard.Filtration</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.High125.Filtration</span>
+<span id="L4"><a href="#L4">   4</a> /-! The original Main proof combining the BMQ source product, actual</span>
+<span id="L5"><a href="#L5">   5</a> multiplicative detection and the proved higher-filtration tail. Source:</span>
+<span id="L6"><a href="#L6">   6</a> Main/Solution/Computation/Tmf:30–89 and Route/CofiberAndFiltration:914–942,</span>
+<span id="L7"><a href="#L7">   7</a> bbac1fc05843 (MIT). The specified tmf image uses the approved</span>
+<span id="L8"><a href="#L8">   8</a> non-odd-torsion source conclusion on the same actual unit map. -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Main.Internal.High125</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Classical.Adams KIP126.Core.SpectralSequence KIP126.Synthetic.Context</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic KIP126.Kervaire.Route</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Literature</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 800000</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> private theorem odd_postcompose {X Y Z : Spectrum} (a : X ⟶ Y) (f : Y ⟶ Z)</span>
+<span id="L21"><a href="#L21">  21</a>     (ha : IsOddTorsionMap a) : IsOddTorsionMap (a≫f) := by</span>
+<span id="L22"><a href="#L22">  22</a>   obtain ⟨n,hn,hp,hz⟩ := ha</span>
+<span id="L23"><a href="#L23">  23</a>   refine ⟨n,hn,hp,?_⟩</span>
+<span id="L24"><a href="#L24">  24</a>   rw [←Preadditive.nsmul_comp,hz,zero_comp]</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> private theorem odd_neg {X Y : Spectrum} (a : X ⟶ Y)</span>
+<span id="L27"><a href="#L27">  27</a>     (ha : IsOddTorsionMap (-a)) : IsOddTorsionMap a := by</span>
+<span id="L28"><a href="#L28">  28</a>   obtain ⟨n,hn,hp,hz⟩ := ha</span>
+<span id="L29"><a href="#L29">  29</a>   refine ⟨n,hn,hp,?_⟩</span>
+<span id="L30"><a href="#L30">  30</a>   simpa only [smul_neg,neg_eq_zero] using hz</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> theorem source_high_detected : ClassicalDetects (model.classicalConvergence .sphere) (25,150)</span>
+<span id="L33"><a href="#L33">  33</a>     KIP126.Computation.Standard.highClass Standard.high125 := by</span>
+<span id="L34"><a href="#L34">  34</a>   have hk := Standard.kappaBar_detection</span>
+<span id="L35"><a href="#L35">  35</a>   have hw := Standard.w_detection</span>
+<span id="L36"><a href="#L36">  36</a>   have hk2 := Standard.classical_product_detection 4 24 4 24 Standard.g Standard.g</span>
+<span id="L37"><a href="#L37">  37</a>     Standard.kappaBar Standard.kappaBar hk hk</span>
+<span id="L38"><a href="#L38">  38</a>   norm_num at hk2</span>
+<span id="L39"><a href="#L39">  39</a>   have hk4 := Standard.classical_product_detection 8 48 8 48 _ _ _ _ hk2 hk2</span>
+<span id="L40"><a href="#L40">  40</a>   norm_num at hk4</span>
+<span id="L41"><a href="#L41">  41</a>   have hprod := Standard.classical_product_detection 16 96 9 54 _ _ _ _ hk4 hw</span>
+<span id="L42"><a href="#L42">  42</a>   norm_num at hprod</span>
+<span id="L43"><a href="#L43">  43</a>   simpa [KIP126.Computation.Standard.highClass,KIP126.Computation.Standard.product,</span>
+<span id="L44"><a href="#L44">  44</a>     KIP126.Computation.Standard.g_agrees,KIP126.Computation.Standard.delta_agrees,</span>
+<span id="L45"><a href="#L45">  45</a>     eqToHom_refl,ModuleCat.id_apply,LinearMap.id_apply,Category.id_comp,Standard.high125,Standard.classicalSphereProduct] using hprod</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> theorem high_nonzero_survival : NonzeroSurvival model.classical.sphere (25,150)</span>
+<span id="L48"><a href="#L48">  48</a>     KIP126.Computation.Standard.highClass := by</span>
+<span id="L49"><a href="#L49">  49</a>   obtain ⟨z,hz,a,ha,hgrade⟩ := source_high_detected</span>
+<span id="L50"><a href="#L50">  50</a>   refine ⟨z,hz,?_⟩</span>
+<span id="L51"><a href="#L51">  51</a>   intro hzero</span>
+<span id="L52"><a href="#L52">  52</a>   let F := (model.classicalTower.tower SphereSpectrum).filtration</span>
+<span id="L53"><a href="#L53">  53</a>   have hg : F.toAssociatedGraded 25 (150-25) a=0 := by</span>
+<span id="L54"><a href="#L54">  54</a>     erw [←hgrade,hzero,map_zero]</span>
+<span id="L55"><a href="#L55">  55</a>   have hm := (F.toAssociatedGraded_eq_zero_iff 25 (150-25) a).mp hg</span>
+<span id="L56"><a href="#L56">  56</a>   erw [ha] at hm</span>
+<span id="L57"><a href="#L57">  57</a>   have hm&#x27; : Standard.high125 ∈</span>
+<span id="L58"><a href="#L58">  58</a>       (model.classicalTower.tower SphereSpectrum).filtrationSubmodule 26 125 := by</span>
+<span id="L59"><a href="#L59">  59</a>     simpa [F,AbstractAdamsTower.filtration,AbstractAdamsTower.homotopy,OrderIso.apply_symm_apply] using hm</span>
+<span id="L60"><a href="#L60">  60</a>   exact Standard.tmf_high125_nonzero (odd_postcompose Standard.high125 Standard.tmfUnit</span>
+<span id="L61"><a href="#L61">  61</a>     (classical_filtration26_odd_torsion Standard.high125 hm&#x27;))</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> </span>
+<span id="L64"><a href="#L64">  64</a> end</span>
+<span id="L65"><a href="#L65">  65</a> end KIP126.Main.Internal.High125</span></pre>

@@ -1,0 +1,73 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/CofiberRigidity.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/CofiberRigidity.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.SectionSeven.NormalizedNu</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.CofiberRigidity</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! The final Cν rigidity step in LWX Proposition 7.9.</span>
+<span id="L8"><a href="#L8">   8</a> Adapted from Kervaire126 bbac1fc05843,</span>
+<span id="L9"><a href="#L9">   9</a> Main/Solution/Route/Section7/CnuRigidity.lean (MIT; see the retained source LICENSE).</span>
+<span id="L10"><a href="#L10">  10</a> The representative comparison, actual λν zero composite and contradiction</span>
+<span id="L11"><a href="#L11">  11</a> are retained as proofs using the fixed upstream interfaces. -/</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> @[expose] section</span>
+<span id="L14"><a href="#L14">  14</a> namespace KIP126.Main.SectionSeven</span>
+<span id="L15"><a href="#L15">  15</a> open CategoryTheory</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.Standard</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Core.SpectralSequence</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Computation.Standard (T nuCofiberSequence bottom)</span>
+<span id="L20"><a href="#L20">  20</a> noncomputable section</span>
+<span id="L21"><a href="#L21">  21</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- Paper-local specialization of BHS: the actual bottom-cell image</span>
+<span id="L24"><a href="#L24">  24</a> survives to E₆, so λ⁴ times the image of this detected representative is</span>
+<span id="L25"><a href="#L25">  25</a> nonzero. The old proof compares actual quotient representatives with B₅.</span>
+<span id="L26"><a href="#L26">  26</a> The finite survival and BHS comparison are fixed upstream interfaces. -/</span>
+<span id="L27"><a href="#L27">  27</a> private theorem detected_target_bottom_lambda_four_nonzero</span>
+<span id="L28"><a href="#L28">  28</a>     (t : BiHom 125 139 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L29"><a href="#L29">  29</a>     (ht : SphereDetected 14 139 0 T t) :</span>
+<span id="L30"><a href="#L30">  30</a>     lambdaMultiply 4 t ≫ nuBottom ≠ 0 := by</span>
+<span id="L31"><a href="#L31">  31</a>   have hlabel := Internal.Rigidity.sphere_zero_weight_label_14_139 T t ht.1</span>
+<span id="L32"><a href="#L32">  32</a>   have hd := model.sphereDetectionCompatible.homotopy_lambda 14 139 4 t</span>
+<span id="L33"><a href="#L33">  33</a>   dsimp only [KIP126.Literature.sphereFirstQuotient] at hlabel</span>
+<span id="L34"><a href="#L34">  34</a>   rw [hlabel] at hd</span>
+<span id="L35"><a href="#L35">  35</a>   have hm := KIP126.ProofTools.Operations.detects_map .sphere (.nu .nuCofiber) nuBottom</span>
+<span id="L36"><a href="#L36">  36</a>     (14,139,135) (model.comparison.sphereE2 14 139 4 T) (lambdaMultiply 4 t) hd</span>
+<span id="L37"><a href="#L37">  37</a>   have hl := Internal.Rigidity.sphere_to_nu_label .nuCofiber</span>
+<span id="L38"><a href="#L38">  38</a>     (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) T</span>
+<span id="L39"><a href="#L39">  39</a>   change KIP126.Synthetic.SpectralSequence.familyPageMap model.family nuBottom 2 (14,139,135)</span>
+<span id="L40"><a href="#L40">  40</a>     (model.comparison.sphereE2 14 139 4 T) = _ at hl</span>
+<span id="L41"><a href="#L41">  41</a>   erw [hl] at hm</span>
+<span id="L42"><a href="#L42">  42</a>   intro hz</span>
+<span id="L43"><a href="#L43">  43</a>   rw [hz] at hm</span>
+<span id="L44"><a href="#L44">  44</a>   obtain ⟨e,he,a&#x27;,ha&#x27;,hgr⟩ := hm</span>
+<span id="L45"><a href="#L45">  45</a>   have hne := Internal.Rigidity.nu_lambda_four_infinity_nonzero .nuCofiber _</span>
+<span id="L46"><a href="#L46">  46</a>     KIP126.Computation.Standard.cofiber_target_to_e6 e he</span>
+<span id="L47"><a href="#L47">  47</a>   apply hne</span>
+<span id="L48"><a href="#L48">  48</a>   have ha0 : a&#x27;=0 := by</span>
+<span id="L49"><a href="#L49">  49</a>     apply (ModuleCat.mono_iff_injective</span>
+<span id="L50"><a href="#L50">  50</a>       ((model.syntheticTower.filtration ((KIP126.Kervaire.Route.SyntheticObject.nu .nuCofiber).obj</span>
+<span id="L51"><a href="#L51">  51</a>         model.nu model.auxiliary)).F 14 (139-14,135)).arrow).mp inferInstance</span>
+<span id="L52"><a href="#L52">  52</a>     simpa only [map_zero] using ha&#x27;</span>
+<span id="L53"><a href="#L53">  53</a>   apply (ModuleCat.mono_iff_injective ((model.convergence (.nu .nuCofiber)).identification</span>
+<span id="L54"><a href="#L54">  54</a>     (14,139,135)).hom).mp inferInstance</span>
+<span id="L55"><a href="#L55">  55</a>   rw [hgr,ha0,map_zero,map_zero]</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> /-- The exact λν equation contradicts that nonzero bottom-cell image. -/</span>
+<span id="L58"><a href="#L58">  58</a> private theorem target_divisibility_contradiction : ¬ TargetNuDivisible T hopfNu := by</span>
+<span id="L59"><a href="#L59">  59</a>   rintro ⟨t, a, ht, heq⟩</span>
+<span id="L60"><a href="#L60">  60</a>   apply detected_target_bottom_lambda_four_nonzero t ht</span>
+<span id="L61"><a href="#L61">  61</a>   rw [← heq]</span>
+<span id="L62"><a href="#L62">  62</a>   exact lambda_nu_multiple_bottom_zero a</span>
+<span id="L63"><a href="#L63">  63</a> </span>
+<span id="L64"><a href="#L64">  64</a> /-- The original last-step formulation exposes the finite incoming window</span>
+<span id="L65"><a href="#L65">  65</a> 2..5 on the same actual Cν class. It makes no permanence assertion about Cν. -/</span>
+<span id="L66"><a href="#L66">  66</a> private theorem target_divisibility_forces_cnu_incoming</span>
+<span id="L67"><a href="#L67">  67</a>     (hdiv : TargetNuDivisible T hopfNu) :</span>
+<span id="L68"><a href="#L68">  68</a>     ∃ r : ℤ, 2 ≤ r ∧ r ≤ 5 ∧</span>
+<span id="L69"><a href="#L69">  69</a>       HitOnPage nuCofiberSequence r (14,139) (bottom 14 139 T) := by</span>
+<span id="L70"><a href="#L70">  70</a>   exact False.elim (target_divisibility_contradiction hdiv)</span>
+<span id="L71"><a href="#L71">  71</a> </span>
+<span id="L72"><a href="#L72">  72</a> end</span>
+<span id="L73"><a href="#L73">  73</a> end KIP126.Main.SectionSeven</span></pre>

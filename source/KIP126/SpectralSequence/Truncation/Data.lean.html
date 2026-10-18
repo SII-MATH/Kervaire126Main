@@ -1,0 +1,63 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Truncation/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Truncation/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.Convergence.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Internal.Algebra.Truncation.Data</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Truncation data for nested-subobject filtrations</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> The historical API is retained, while the quotient objects and transition</span>
+<span id="L12"><a href="#L12">  12</a> maps are delegated to KIP126&#x27;s canonical algebra-filtration implementation.</span>
+<span id="L13"><a href="#L13">  13</a> -/</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> universe u v w</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- The truncated object `A(k) / F^(s₀+1)(A(k))`. -/</span>
+<span id="L24"><a href="#L24">  24</a> @[reducible] noncomputable def Filtration.truncatedObj</span>
+<span id="L25"><a href="#L25">  25</a>     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) (k : ω) : C :=</span>
+<span id="L26"><a href="#L26">  26</a>   fil.quotientAt (s₀ + 1) k</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> /-- The quotient projection to the historical truncation level. -/</span>
+<span id="L29"><a href="#L29">  29</a> @[reducible] noncomputable def Filtration.truncationProj</span>
+<span id="L30"><a href="#L30">  30</a>     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) (k : ω) :</span>
+<span id="L31"><a href="#L31">  31</a>     A k ⟶ fil.truncatedObj s₀ k :=</span>
+<span id="L32"><a href="#L32">  32</a>   fil.quotientProjection (s₀ + 1) k</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> /-- The image filtration induced on a truncated object. -/</span>
+<span id="L35"><a href="#L35">  35</a> @[reducible] noncomputable def Filtration.truncatedFiltration</span>
+<span id="L36"><a href="#L36">  36</a>     {ω : Type w} {A : ω → C} (fil : Filtration A) (s₀ : ℤ) :</span>
+<span id="L37"><a href="#L37">  37</a>     Filtration (fil.truncatedObj s₀) :=</span>
+<span id="L38"><a href="#L38">  38</a>   fil.quotientFiltration (s₀ + 1)</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- Transition `A/F^(s₁+1) ⟶ A/F^(s₀+1)` for `s₀ ≤ s₁`. -/</span>
+<span id="L41"><a href="#L41">  41</a> noncomputable def Filtration.truncationTransition</span>
+<span id="L42"><a href="#L42">  42</a>     {ω : Type w} {A : ω → C} (fil : Filtration A)</span>
+<span id="L43"><a href="#L43">  43</a>     {s₀ s₁ : ℤ} (h : s₀ ≤ s₁) (k : ω) :</span>
+<span id="L44"><a href="#L44">  44</a>     fil.truncatedObj s₁ k ⟶ fil.truncatedObj s₀ k :=</span>
+<span id="L45"><a href="#L45">  45</a>   fil.quotientTransition (show s₀ + 1 ≤ s₁ + 1 by omega) k</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> /-- Map on truncated target objects induced by a convergence morphism. -/</span>
+<span id="L48"><a href="#L48">  48</a> noncomputable def ConvergenceMorphism.truncatedAMap</span>
+<span id="L49"><a href="#L49">  49</a>     {ω : Type w} [AddCommGroup ω] [DecidableEq ω]</span>
+<span id="L50"><a href="#L50">  50</a>     {E₁ E₂ : SpectralSequence C ω} {ω&#x27; : Type w}</span>
+<span id="L51"><a href="#L51">  51</a>     {A₁ A₂ : ω&#x27; → C} {F₁ : Filtration A₁} {F₂ : Filtration A₂}</span>
+<span id="L52"><a href="#L52">  52</a>     {conv₁ : Convergence E₁ A₁ F₁} {conv₂ : Convergence E₂ A₂ F₂}</span>
+<span id="L53"><a href="#L53">  53</a>     (cm : ConvergenceMorphism conv₁ conv₂) (s₀ : ℤ) (k&#x27; : ω&#x27;) :</span>
+<span id="L54"><a href="#L54">  54</a>     F₁.truncatedObj s₀ k&#x27; ⟶ F₂.truncatedObj s₀ k&#x27; := by</span>
+<span id="L55"><a href="#L55">  55</a>   change cokernel ((F₁.F (s₀ + 1) k&#x27;).arrow) ⟶</span>
+<span id="L56"><a href="#L56">  56</a>     cokernel ((F₂.F (s₀ + 1) k&#x27;).arrow)</span>
+<span id="L57"><a href="#L57">  57</a>   exact cokernel.desc ((F₁.F (s₀ + 1) k&#x27;).arrow)</span>
+<span id="L58"><a href="#L58">  58</a>     (cm.aMap k&#x27; ≫ cokernel.π ((F₂.F (s₀ + 1) k&#x27;).arrow))</span>
+<span id="L59"><a href="#L59">  59</a>     (by</span>
+<span id="L60"><a href="#L60">  60</a>       obtain ⟨φ, hφ⟩ := cm.filtration_compat (s₀ + 1) k&#x27;</span>
+<span id="L61"><a href="#L61">  61</a>       rw [← Category.assoc, ← hφ, Category.assoc, cokernel.condition, comp_zero])</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> end KIP126.Core.SpectralSequence</span></pre>

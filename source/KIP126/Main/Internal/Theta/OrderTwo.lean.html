@@ -1,0 +1,218 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Theta/OrderTwo.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Theta/OrderTwo.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.Internal.Theta.RealizationKernel</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.Choice.OrderTwo</span>
+<span id="L4"><a href="#L4">   4</a> /-! Select an order-two representative in weight 70 by removing the odd-primary</span>
+<span id="L5"><a href="#L5">   5</a> part with an odd multiple. The final realization-kernel descent is adapted from</span>
+<span id="L6"><a href="#L6">   6</a> Lambda.lean:116–140 and 1426–1460, bbac1fc05843 (MIT). No exponent-two</span>
+<span id="L7"><a href="#L7">   7</a> assertion is made for arbitrary integral representatives. -/</span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.Main.Internal.Theta</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Core.SpectralSequence KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic KIP126.Literature KIP126.Kervaire.Route</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Classical.Adams</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)</span>
+<span id="L15"><a href="#L15">  15</a> noncomputable section</span>
+<span id="L16"><a href="#L16">  16</a> local instance shiftAdditive (p : ℤ × ℤ) :</span>
+<span id="L17"><a href="#L17">  17</a>     (SyntheticCategory.biShift (Syn := SyntheticSpectrum) p).Additive :=</span>
+<span id="L18"><a href="#L18">  18</a>   KIP126.AdamsSynthetic.Standard.graded_shiftAdditive p</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L20"><a href="#L20">  20</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> private theorem classical_infinity_double (p : ℤ × ℤ)</span>
+<span id="L23"><a href="#L23">  23</a>     (x : (model.classical.sphere.ssData p).eInfty) : x+x=0 := by</span>
+<span id="L24"><a href="#L24">  24</a>   let D := model.classical.sphere.ssData p</span>
+<span id="L25"><a href="#L25">  25</a>   let n : WithTop ℕ := ↑(2-model.classical.sphere.r₀).toNat</span>
+<span id="L26"><a href="#L26">  26</a>   have hpage (y : D.page n) : y+y=0 := by</span>
+<span id="L27"><a href="#L27">  27</a>     change model.classical.sphere.Page 2 p at y</span>
+<span id="L28"><a href="#L28">  28</a>     letI := model.sphereAlgebra.scalar p</span>
+<span id="L29"><a href="#L29">  29</a>     change y+y=0</span>
+<span id="L30"><a href="#L30">  30</a>     calc</span>
+<span id="L31"><a href="#L31">  31</a>       y+y = (1 : ZMod 2) • y + (1 : ZMod 2) • y := by simp only [one_smul]</span>
+<span id="L32"><a href="#L32">  32</a>       _ = ((1 : ZMod 2)+1) • y := (add_smul _ _ _).symm</span>
+<span id="L33"><a href="#L33">  33</a>       _ = 0 := by rw [show (1 : ZMod 2)+1=0 from rfl,zero_smul]</span>
+<span id="L34"><a href="#L34">  34</a>   haveI : Epi (D.pageπ ⊤) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L35"><a href="#L35">  35</a>   obtain ⟨z,rfl⟩ := (ModuleCat.epi_iff_surjective (D.pageπ ⊤)).mp inferInstance x</span>
+<span id="L36"><a href="#L36">  36</a>   have h := D.infinity_projection_eq_of_page_projection_eq n (z+z) 0 (by</span>
+<span id="L37"><a href="#L37">  37</a>     simp only [map_add, map_zero]</span>
+<span id="L38"><a href="#L38">  38</a>     exact hpage _)</span>
+<span id="L39"><a href="#L39">  39</a>   simpa only [map_add,map_zero] using h</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> private theorem classical_doubling_filtration (s : ℤ)</span>
+<span id="L42"><a href="#L42">  42</a>     (a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum)</span>
+<span id="L43"><a href="#L43">  43</a>     (ha : a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s 62) :</span>
+<span id="L44"><a href="#L44">  44</a>     a+a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule (s+1) 62 := by</span>
+<span id="L45"><a href="#L45">  45</a>   let F := (model.classicalTower.tower SphereSpectrum).filtration</span>
+<span id="L46"><a href="#L46">  46</a>   let e : (model.classical.sphere.ssData (s,62+s)).eInfty ≅ F.associatedGraded s 62 := by</span>
+<span id="L47"><a href="#L47">  47</a>     simpa only [add_sub_cancel_right,F,ClassicalObject.obj,ClassicalAdamsFamily.sphere]</span>
+<span id="L48"><a href="#L48">  48</a>       using (model.classicalConvergence .sphere).identification (s,62+s)</span>
+<span id="L49"><a href="#L49">  49</a>   have hdouble (x : F.associatedGraded s 62) : x+x=0 := by</span>
+<span id="L50"><a href="#L50">  50</a>     apply (ModuleCat.mono_iff_injective e.inv).mp inferInstance</span>
+<span id="L51"><a href="#L51">  51</a>     simpa only [map_add,map_zero] using classical_infinity_double (s,62+s) (e.inv x)</span>
+<span id="L52"><a href="#L52">  52</a>   have hm : a ∈ ModuleCat.subobjectModule _ (F.F s 62) := by</span>
+<span id="L53"><a href="#L53">  53</a>     simpa only [F,AbstractAdamsTower.filtration,OrderIso.apply_symm_apply] using ha</span>
+<span id="L54"><a href="#L54">  54</a>   obtain ⟨b,hb⟩ := hm</span>
+<span id="L55"><a href="#L55">  55</a>   have hg : F.toAssociatedGraded s 62 (b+b)=0 := by</span>
+<span id="L56"><a href="#L56">  56</a>     rw [map_add]</span>
+<span id="L57"><a href="#L57">  57</a>     exact hdouble _</span>
+<span id="L58"><a href="#L58">  58</a>   have hn := (F.toAssociatedGraded_eq_zero_iff s 62 (b+b)).mp hg</span>
+<span id="L59"><a href="#L59">  59</a>   rw [map_add,hb] at hn</span>
+<span id="L60"><a href="#L60">  60</a>   simpa only [F,AbstractAdamsTower.filtration,OrderIso.apply_symm_apply] using hn</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> private theorem classical_stem62_tail_step (s : ℤ) (hs : 34≤s)</span>
+<span id="L63"><a href="#L63">  63</a>     (a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum)</span>
+<span id="L64"><a href="#L64">  64</a>     (ha : a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s 62) :</span>
+<span id="L65"><a href="#L65">  65</a>     a ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule (s+1) 62 := by</span>
+<span id="L66"><a href="#L66">  66</a>   let D := model.classical.sphere.ssData (s,62+s)</span>
+<span id="L67"><a href="#L67">  67</a>   let n : WithTop ℕ := ↑(2-model.classical.sphere.r₀).toNat</span>
+<span id="L68"><a href="#L68">  68</a>   have hp : Subsingleton (D.page n) :=</span>
+<span id="L69"><a href="#L69">  69</a>     KIP126.Literature.Standard.sphereVanishing s (62+s) (by omega) (by omega)</span>
+<span id="L70"><a href="#L70">  70</a>   have hinf : Subsingleton D.eInfty := by</span>
+<span id="L71"><a href="#L71">  71</a>     have hall (e : D.eInfty) : e=0 := by</span>
+<span id="L72"><a href="#L72">  72</a>       haveI : Epi (D.pageπ ⊤) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L73"><a href="#L73">  73</a>       obtain ⟨z,rfl⟩ := (ModuleCat.epi_iff_surjective (D.pageπ ⊤)).mp inferInstance e</span>
+<span id="L74"><a href="#L74">  74</a>       have h := D.infinity_projection_eq_of_page_projection_eq n z 0 (hp.elim _ _)</span>
+<span id="L75"><a href="#L75">  75</a>       simpa only [map_zero] using h</span>
+<span id="L76"><a href="#L76">  76</a>     exact ⟨fun x y =&gt; (hall x).trans (hall y).symm⟩</span>
+<span id="L77"><a href="#L77">  77</a>   let F := (model.classicalTower.tower SphereSpectrum).filtration</span>
+<span id="L78"><a href="#L78">  78</a>   let e : D.eInfty ≅ F.associatedGraded s 62 := by</span>
+<span id="L79"><a href="#L79">  79</a>     simpa only [D,add_sub_cancel_right,F,ClassicalObject.obj,ClassicalAdamsFamily.sphere]</span>
+<span id="L80"><a href="#L80">  80</a>       using (model.classicalConvergence .sphere).identification (s,62+s)</span>
+<span id="L81"><a href="#L81">  81</a>   letI : Subsingleton (F.associatedGraded s 62) :=</span>
+<span id="L82"><a href="#L82">  82</a>     (ModuleCat.mono_iff_injective e.inv).mp inferInstance |&gt;.subsingleton</span>
+<span id="L83"><a href="#L83">  83</a>   have hm : a ∈ ModuleCat.subobjectModule _ (F.F s 62) := by</span>
+<span id="L84"><a href="#L84">  84</a>     simpa only [F,AbstractAdamsTower.filtration,OrderIso.apply_symm_apply] using ha</span>
+<span id="L85"><a href="#L85">  85</a>   obtain ⟨b,hb⟩ := hm</span>
+<span id="L86"><a href="#L86">  86</a>   have hg : F.toAssociatedGraded s 62 b=0 := Subsingleton.elim _ _</span>
+<span id="L87"><a href="#L87">  87</a>   have hn := (F.toAssociatedGraded_eq_zero_iff s 62 b).mp hg</span>
+<span id="L88"><a href="#L88">  88</a>   rw [hb] at hn</span>
+<span id="L89"><a href="#L89">  89</a>   simpa only [F,AbstractAdamsTower.filtration,OrderIso.apply_symm_apply] using hn</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> /-- Remove the odd-primary part by an odd multiple, preserving every mod-two</span>
+<span id="L92"><a href="#L92">  92</a> label. Only a finite filtration argument is used, not integral separation. -/</span>
+<span id="L93"><a href="#L93">  93</a> private theorem classical_stem62_odd_multiple_primary</span>
+<span id="L94"><a href="#L94">  94</a>     (a : HomotopyGroup (C := Spectrum) 62 SphereSpectrum) :</span>
+<span id="L95"><a href="#L95">  95</a>     ∃ n : ℕ, Odd n ∧ ∃ k : ℕ, (2^k : ℕ) • (n • a)=0 := by</span>
+<span id="L96"><a href="#L96">  96</a>   have hpower (k : ℕ) : (2^k : ℕ) • a ∈</span>
+<span id="L97"><a href="#L97">  97</a>       (model.classicalTower.tower SphereSpectrum).filtrationSubmodule k 62 := by</span>
+<span id="L98"><a href="#L98">  98</a>     induction k with</span>
+<span id="L99"><a href="#L99">  99</a>     | zero =&gt;</span>
+<span id="L100"><a href="#L100"> 100</a>       simp only [pow_zero,one_nsmul,Nat.cast_zero]</span>
+<span id="L101"><a href="#L101"> 101</a>       refine ⟨a ≫ (model.classicalTower.tower SphereSpectrum).zeroIso.inv,?_⟩</span>
+<span id="L102"><a href="#L102"> 102</a>       change (a ≫ (model.classicalTower.tower SphereSpectrum).zeroIso.inv) ≫</span>
+<span id="L103"><a href="#L103"> 103</a>         (model.classicalTower.tower SphereSpectrum).projection 0=a</span>
+<span id="L104"><a href="#L104"> 104</a>       simp only [AbstractAdamsTower.projection,Int.toNat_zero,</span>
+<span id="L105"><a href="#L105"> 105</a>         (model.classicalTower.tower SphereSpectrum).map_self]</span>
+<span id="L106"><a href="#L106"> 106</a>       erw [Category.assoc,Category.id_comp,Iso.inv_hom_id,Category.comp_id]</span>
+<span id="L107"><a href="#L107"> 107</a>     | succ k ih =&gt;</span>
+<span id="L108"><a href="#L108"> 108</a>       have h := classical_doubling_filtration k ((2^k : ℕ) • a) ih</span>
+<span id="L109"><a href="#L109"> 109</a>       simpa only [pow_succ,mul_nsmul,two_nsmul,Nat.cast_add,Nat.cast_one] using h</span>
+<span id="L110"><a href="#L110"> 110</a>   let b := (2^34 : ℕ) • a</span>
+<span id="L111"><a href="#L111"> 111</a>   have hall (s : ℕ) (hs : 34≤s) :</span>
+<span id="L112"><a href="#L112"> 112</a>       b ∈ (model.classicalTower.tower SphereSpectrum).filtrationSubmodule s 62 := by</span>
+<span id="L113"><a href="#L113"> 113</a>     induction s,hs using Nat.le_induction with</span>
+<span id="L114"><a href="#L114"> 114</a>     | base =&gt; exact hpower 34</span>
+<span id="L115"><a href="#L115"> 115</a>     | succ s hs ih =&gt;</span>
+<span id="L116"><a href="#L116"> 116</a>       simpa only [Nat.cast_add,Nat.cast_one] using classical_stem62_tail_step s (by omega) b ih</span>
+<span id="L117"><a href="#L117"> 117</a>   obtain ⟨n,hn,_,hz⟩ := KIP126.AdamsSynthetic.Standard.classical_sphere_separated 62 b (by</span>
+<span id="L118"><a href="#L118"> 118</a>     intro s</span>
+<span id="L119"><a href="#L119"> 119</a>     by_cases hs : 34≤s</span>
+<span id="L120"><a href="#L120"> 120</a>     · exact hall s hs</span>
+<span id="L121"><a href="#L121"> 121</a>     · exact (model.classicalTower.tower SphereSpectrum).filtrationSubmodule_antitone 62</span>
+<span id="L122"><a href="#L122"> 122</a>         (by omega : (s:ℤ)≤34) (hpower 34))</span>
+<span id="L123"><a href="#L123"> 123</a>   refine ⟨n,hn,34,?_⟩</span>
+<span id="L124"><a href="#L124"> 124</a>   simpa only [b,smul_comm n (2^34 : ℕ) a] using hz</span>
+<span id="L125"><a href="#L125"> 125</a> </span>
+<span id="L126"><a href="#L126"> 126</a> private theorem lambda_h0_map_zero_iff</span>
+<span id="L127"><a href="#L127"> 127</a>     {T : Type*} [Category T] [Preadditive T] (R : SyntheticSpectrum ⥤ T) [R.Additive]</span>
+<span id="L128"><a href="#L128"> 128</a>     (coh : BiShiftCoherence SyntheticSpectrum) (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L129"><a href="#L129"> 129</a>     (hlambda : lambdaMultiply 1 h0 = KIP126.Literature.Route.syntheticTwo)</span>
+<span id="L130"><a href="#L130"> 130</a>     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L131"><a href="#L131"> 131</a>     R.map (lambdaMultiply 1 (sphereProduct h0 b)) = 0 ↔ R.map (b+b) = 0 := by</span>
+<span id="L132"><a href="#L132"> 132</a>   set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L133"><a href="#L133"> 133</a>   set_option backward.defeqAttrib.useBackward true in</span>
+<span id="L134"><a href="#L134"> 134</a>     let F := SyntheticCategory.biShift (Syn := SyntheticSpectrum) (62,70)</span>
+<span id="L135"><a href="#L135"> 135</a>     have ht : R.map (F.map (lambdaMultiply 1 h0) ≫ b) = 0 ↔</span>
+<span id="L136"><a href="#L136"> 136</a>         R.map (F.map (SyntheticCategory.lam.app (Smn 0 1))) ≫ R.map (F.map h0) ≫ R.map b = 0 := by</span>
+<span id="L137"><a href="#L137"> 137</a>       simp only [lambdaMultiply, lambdaPow_one coh, F, eqToHom_refl,</span>
+<span id="L138"><a href="#L138"> 138</a>         Functor.map_comp, Category.id_comp, Category.assoc, Limits.comp_eq_zero_iff_of_epi]</span>
+<span id="L139"><a href="#L139"> 139</a>     simp only [lambdaMultiply, lambdaPow_one coh, eqToHom_refl,</span>
+<span id="L140"><a href="#L140"> 140</a>       Functor.map_comp, Category.id_comp, Limits.comp_eq_zero_iff_of_epi]</span>
+<span id="L141"><a href="#L141"> 141</a>     dsimp only [sphereProduct]</span>
+<span id="L142"><a href="#L142"> 142</a>     have hn := SyntheticCategory.lam.naturality</span>
+<span id="L143"><a href="#L143"> 143</a>       ((SyntheticCategory.biShift_comp (0,1) (62,70)).inv.app (S_0_0 : SyntheticSpectrum))</span>
+<span id="L144"><a href="#L144"> 144</a>     simp only [Prod.mk_add_mk, Functor.comp_obj, Functor.id_obj, Functor.id_map] at hn</span>
+<span id="L145"><a href="#L145"> 145</a>     rw [Functor.map_comp, Functor.map_comp, ← Category.assoc, ← Functor.map_comp]</span>
+<span id="L146"><a href="#L146"> 146</a>     erw [← hn]</span>
+<span id="L147"><a href="#L147"> 147</a>     simp only [Functor.map_comp, Category.assoc, Limits.comp_eq_zero_iff_of_epi]</span>
+<span id="L148"><a href="#L148"> 148</a>     erw [coh.lambda_comm (62,70) (Smn 0 1)]</span>
+<span id="L149"><a href="#L149"> 149</a>     simp only [Functor.map_comp, Category.assoc, Limits.comp_eq_zero_iff_of_epi]</span>
+<span id="L150"><a href="#L150"> 150</a>     change R.map (F.map (SyntheticCategory.lam.app (Smn 0 1))) ≫</span>
+<span id="L151"><a href="#L151"> 151</a>       R.map (F.map h0) ≫ R.map b = 0 ↔ _</span>
+<span id="L152"><a href="#L152"> 152</a>     rw [← ht, hlambda]</span>
+<span id="L153"><a href="#L153"> 153</a>     simp only [KIP126.Literature.Route.syntheticTwo, Functor.id_obj, Functor.map_comp, two_smul, Functor.map_add,</span>
+<span id="L154"><a href="#L154"> 154</a>       Category.assoc, Preadditive.add_comp,</span>
+<span id="L155"><a href="#L155"> 155</a>       ← Preadditive.comp_add, Limits.comp_eq_zero_iff_of_epi]</span>
+<span id="L156"><a href="#L156"> 156</a> </span>
+<span id="L157"><a href="#L157"> 157</a> private theorem two_torsion_62_70_of_realization_primary</span>
+<span id="L158"><a href="#L158"> 158</a>     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L159"><a href="#L159"> 159</a>     (hprimary : ∃ n : ℕ, (2^n : ℕ) •</span>
+<span id="L160"><a href="#L160"> 160</a>       KIP126.Literature.Standard.realizeSphere 62 70 b=0) : b + b = 0 := by</span>
+<span id="L161"><a href="#L161"> 161</a>   set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L162"><a href="#L162"> 162</a>   set_option backward.defeqAttrib.useBackward true in</span>
+<span id="L163"><a href="#L163"> 163</a>     letI := Choice.realization_additive</span>
+<span id="L164"><a href="#L164"> 164</a>     have hb : model.recovery.realization.map (b+b) = 0 := by</span>
+<span id="L165"><a href="#L165"> 165</a>       rw [Functor.map_add]</span>
+<span id="L166"><a href="#L166"> 166</a>       let α : HomotopyGroup (C := Spectrum) 62 SphereSpectrum :=</span>
+<span id="L167"><a href="#L167"> 167</a>         (KIP126.Literature.Standard.realization_sphere 62 70).hom ≫ model.recovery.realization.map b ≫</span>
+<span id="L168"><a href="#L168"> 168</a>           model.recovery.realization.map model.nu.unitIso.inv ≫ model.recovery.nuRealizationIso.hom.app SphereSpectrum</span>
+<span id="L169"><a href="#L169"> 169</a>       have h := KIP126.Literature.Standard.stem62_exponent_two α hprimary</span>
+<span id="L170"><a href="#L170"> 170</a>       apply (cancel_epi (KIP126.Literature.Standard.realization_sphere 62 70).hom).mp</span>
+<span id="L171"><a href="#L171"> 171</a>       apply (cancel_mono (model.recovery.realization.map model.nu.unitIso.inv)).mp</span>
+<span id="L172"><a href="#L172"> 172</a>       apply (cancel_mono ((model.recovery.nuRealizationIso.app SphereSpectrum).hom)).mp</span>
+<span id="L173"><a href="#L173"> 173</a>       erw [Preadditive.comp_add, Preadditive.add_comp, Preadditive.add_comp,</span>
+<span id="L174"><a href="#L174"> 174</a>         Limits.comp_zero, Limits.zero_comp, Limits.zero_comp]</span>
+<span id="L175"><a href="#L175"> 175</a>       repeat erw [Category.assoc]</span>
+<span id="L176"><a href="#L176"> 176</a>       exact h</span>
+<span id="L177"><a href="#L177"> 177</a>     have hl := (lambda_h0_map_zero_iff model.recovery.realization model.quotients.coherence</span>
+<span id="L178"><a href="#L178"> 178</a>       KIP126.Literature.Standard.syntheticH0 KIP126.Literature.Standard.toda_lambda_h0 b).mpr hb</span>
+<span id="L179"><a href="#L179"> 179</a>     have hp : model.recovery.realization.map (sphereProduct KIP126.Literature.Standard.syntheticH0 b) = 0 := by</span>
+<span id="L180"><a href="#L180"> 180</a>       have hm : lambdaMultiply 1 (sphereProduct KIP126.Literature.Standard.syntheticH0 b) =</span>
+<span id="L181"><a href="#L181"> 181</a>           lambdaMultiply 1 (𝟙 (Smn (Syn := SyntheticSpectrum) 62 71)) ≫ sphereProduct KIP126.Literature.Standard.syntheticH0 b := by</span>
+<span id="L182"><a href="#L182"> 182</a>         simp only [lambdaMultiply, Category.assoc, Category.id_comp]</span>
+<span id="L183"><a href="#L183"> 183</a>         rfl</span>
+<span id="L184"><a href="#L184"> 184</a>       have hc := congrArg (fun z =&gt; (KIP126.Literature.Standard.realization_sphere 62 70).hom ≫ z) hl</span>
+<span id="L185"><a href="#L185"> 185</a>       rw [hm, Functor.map_comp, ← Category.assoc] at hc</span>
+<span id="L186"><a href="#L186"> 186</a>       erw [KIP126.Literature.Standard.realization_lambda 62 71 1] at hc</span>
+<span id="L187"><a href="#L187"> 187</a>       exact (Limits.comp_eq_zero_iff_of_epi (KIP126.Literature.Standard.realization_sphere 62 71).hom).mp</span>
+<span id="L188"><a href="#L188"> 188</a>         (by simpa only [Limits.comp_zero] using hc)</span>
+<span id="L189"><a href="#L189"> 189</a>     have hk := lambda_kills_realization_kernel_62_71 (sphereProduct KIP126.Literature.Standard.syntheticH0 b) hp</span>
+<span id="L190"><a href="#L190"> 190</a>     exact (lambda_h0_map_zero_iff (𝟭 SyntheticSpectrum) model.quotients.coherence KIP126.Literature.Standard.syntheticH0 KIP126.Literature.Standard.toda_lambda_h0 b).mp hk</span>
+<span id="L191"><a href="#L191"> 191</a> </span>
+<span id="L192"><a href="#L192"> 192</a> /-- Select an order-two representative of the same first-quotient class.</span>
+<span id="L193"><a href="#L193"> 193</a> An odd multiple removes the integral odd-primary component. -/</span>
+<span id="L194"><a href="#L194"> 194</a> private theorem first_quotient_order_two_lift</span>
+<span id="L195"><a href="#L195"> 195</a>     (x : model.classical.sphere.Page 2 (8,70))</span>
+<span id="L196"><a href="#L196"> 196</a>     (b₀ : BiHom 62 70 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L197"><a href="#L197"> 197</a>     (hb₀ : KIP126.Literature.sphereFirstQuotient model 8 70 (quotientClass 1 b₀)=x) :</span>
+<span id="L198"><a href="#L198"> 198</a>     ∃ b : BiHom 62 70 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L199"><a href="#L199"> 199</a>       KIP126.Literature.sphereFirstQuotient model 8 70 (quotientClass 1 b)=x ∧ b+b=0 := by</span>
+<span id="L200"><a href="#L200"> 200</a>   obtain ⟨n,hn,hprimary⟩ := classical_stem62_odd_multiple_primary</span>
+<span id="L201"><a href="#L201"> 201</a>     (KIP126.Literature.Standard.realizeSphere 62 70 b₀)</span>
+<span id="L202"><a href="#L202"> 202</a>   refine ⟨n • b₀,?_,?_⟩</span>
+<span id="L203"><a href="#L203"> 203</a>   · have hx : x+x=0 := by</span>
+<span id="L204"><a href="#L204"> 204</a>       letI := model.sphereAlgebra.scalar (8,70)</span>
+<span id="L205"><a href="#L205"> 205</a>       calc</span>
+<span id="L206"><a href="#L206"> 206</a>         x+x = (1 : ZMod 2) • x + (1 : ZMod 2) • x := by simp only [one_smul]</span>
+<span id="L207"><a href="#L207"> 207</a>         _ = ((1 : ZMod 2)+1) • x := (add_smul _ _ _).symm</span>
+<span id="L208"><a href="#L208"> 208</a>         _ = 0 := by rw [show (1 : ZMod 2)+1=0 from rfl,zero_smul]</span>
+<span id="L209"><a href="#L209"> 209</a>     have hq : quotientClass 1 (n • b₀)=n • quotientClass 1 b₀ := by</span>
+<span id="L210"><a href="#L210"> 210</a>       simp only [quotientClass,Preadditive.nsmul_comp]</span>
+<span id="L211"><a href="#L211"> 211</a>     rw [hq,map_nsmul,hb₀]</span>
+<span id="L212"><a href="#L212"> 212</a>     obtain ⟨k,rfl⟩ := hn</span>
+<span id="L213"><a href="#L213"> 213</a>     rw [add_nsmul,one_nsmul,mul_nsmul,two_nsmul,hx,nsmul_zero,zero_add]</span>
+<span id="L214"><a href="#L214"> 214</a>   · apply two_torsion_62_70_of_realization_primary</span>
+<span id="L215"><a href="#L215"> 215</a>     simpa only [map_nsmul] using hprimary</span>
+<span id="L216"><a href="#L216"> 216</a> </span>
+<span id="L217"><a href="#L217"> 217</a> end</span>
+<span id="L218"><a href="#L218"> 218</a> end KIP126.Main.Internal.Theta</span></pre>

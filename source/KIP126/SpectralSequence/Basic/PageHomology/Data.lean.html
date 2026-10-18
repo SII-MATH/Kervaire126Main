@@ -1,0 +1,190 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Basic/PageHomology/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Basic/PageHomology/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Basic.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Basic.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Successor-page homology identification</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> This construction is separated from the foundational records because it uses</span>
+<span id="L12"><a href="#L12">  12</a> the quotient and image lemmas proved in `Basic.Proofs`.</span>
+<span id="L13"><a href="#L13">  13</a> -/</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L18"><a href="#L18">  18</a> open PageHomology</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> universe u v w</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L23"><a href="#L23">  23</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L24"><a href="#L24">  24</a> set_option maxSynthPendingDepth 3</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- The homology of page `r` at grading `k` is canonically isomorphic to page `r + 1`. -/</span>
+<span id="L27"><a href="#L27">  27</a> @[no_expose] public noncomputable def pageHomologyIso</span>
+<span id="L28"><a href="#L28">  28</a>     {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L29"><a href="#L29">  29</a>     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]</span>
+<span id="L30"><a href="#L30">  30</a>     (E : SpectralSequence C ι) (r : ℤ) (k : ι) (hr : E.r₀ ≤ r) :</span>
+<span id="L31"><a href="#L31">  31</a>     E.Page (r + 1) k ≅ (E.pageShortComplex r (k - E.diffDeg r)).homology := by</span>
+<span id="L32"><a href="#L32">  32</a>   set n := (r - E.r₀).toNat with hn_def</span>
+<span id="L33"><a href="#L33">  33</a>   have hn1 : (r + 1 - E.r₀).toNat = n + 1 := by omega</span>
+<span id="L34"><a href="#L34">  34</a>   set S := E.pageShortComplex r (k - E.diffDeg r) with hS_def</span>
+<span id="L35"><a href="#L35">  35</a>   set k&#x27; := k - E.diffDeg r + E.diffDeg r</span>
+<span id="L36"><a href="#L36">  36</a>   set D&#x27; := E.ssData k&#x27;</span>
+<span id="L37"><a href="#L37">  37</a>   have hk_eq : k&#x27; = k := sub_add_cancel k (E.diffDeg r)</span>
+<span id="L38"><a href="#L38">  38</a>   have hBn_le_Bn1 : D&#x27;.B ↑n ≤ D&#x27;.B ↑(n + 1) :=</span>
+<span id="L39"><a href="#L39">  39</a>     D&#x27;.B_mono (by exact_mod_cast Nat.le_succ n)</span>
+<span id="L40"><a href="#L40">  40</a>   have hBn1_le_Zn1 : D&#x27;.B ↑(n + 1) ≤ D&#x27;.Z ↑(n + 1) := D&#x27;.B_le_Z _</span>
+<span id="L41"><a href="#L41">  41</a>   have hZn1_le_Zn : D&#x27;.Z ↑(n + 1) ≤ D&#x27;.Z ↑n :=</span>
+<span id="L42"><a href="#L42">  42</a>     D&#x27;.Z_anti (by exact_mod_cast Nat.le_succ n)</span>
+<span id="L43"><a href="#L43">  43</a>   have hBn_le_Zn1 : D&#x27;.B ↑n ≤ D&#x27;.Z ↑(n + 1) :=</span>
+<span id="L44"><a href="#L44">  44</a>     le_trans hBn_le_Bn1 hBn1_le_Zn1</span>
+<span id="L45"><a href="#L45">  45</a>   set i := Subobject.cokernelMap_ofLE</span>
+<span id="L46"><a href="#L46">  46</a>     (D&#x27;.B ↑n) (D&#x27;.Z ↑(n + 1)) (D&#x27;.Z ↑n)</span>
+<span id="L47"><a href="#L47">  47</a>     hBn_le_Zn1 hZn1_le_Zn with hi_def</span>
+<span id="L48"><a href="#L48">  48</a>   set π_map := Subobject.cokernelDesc_ofLE</span>
+<span id="L49"><a href="#L49">  49</a>     (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1))</span>
+<span id="L50"><a href="#L50">  50</a>     hBn_le_Bn1 hBn1_le_Zn1 with hπ_def</span>
+<span id="L51"><a href="#L51">  51</a>   have wi : i ≫ S.g = 0 := by</span>
+<span id="L52"><a href="#L52">  52</a>     apply comp_eq_zero_of_image_le_kernel</span>
+<span id="L53"><a href="#L53">  53</a>     change imageSubobject i ≤ kernelSubobject (E.d r k&#x27;)</span>
+<span id="L54"><a href="#L54">  54</a>     rw [E.Z_succ r k&#x27; hr,</span>
+<span id="L55"><a href="#L55">  55</a>       show Subobject.ofLE (D&#x27;.Z ↑(n + 1)) (D&#x27;.Z ↑n)</span>
+<span id="L56"><a href="#L56">  56</a>           (D&#x27;.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫ D&#x27;.pageπ ↑n =</span>
+<span id="L57"><a href="#L57">  57</a>         cokernel.π (Subobject.ofLE (D&#x27;.B ↑n) (D&#x27;.Z ↑(n + 1)) hBn_le_Zn1) ≫ i</span>
+<span id="L58"><a href="#L58">  58</a>         from factor_cokernelMap _ _ _ _ _,</span>
+<span id="L59"><a href="#L59">  59</a>       imageSubobject_epi_comp]</span>
+<span id="L60"><a href="#L60">  60</a>   have heq_sub : Subobject.mk i = Subobject.mk (kernel.ι (E.d r k&#x27;)) := by</span>
+<span id="L61"><a href="#L61">  61</a>     change Subobject.mk i = kernelSubobject (E.d r k&#x27;)</span>
+<span id="L62"><a href="#L62">  62</a>     rw [E.Z_succ r k&#x27; hr,</span>
+<span id="L63"><a href="#L63">  63</a>       show Subobject.ofLE (D&#x27;.Z ↑(n + 1)) (D&#x27;.Z ↑n)</span>
+<span id="L64"><a href="#L64">  64</a>           (D&#x27;.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫ D&#x27;.pageπ ↑n =</span>
+<span id="L65"><a href="#L65">  65</a>         cokernel.π (Subobject.ofLE (D&#x27;.B ↑n) (D&#x27;.Z ↑(n + 1)) hBn_le_Zn1) ≫ i</span>
+<span id="L66"><a href="#L66">  66</a>         from factor_cokernelMap _ _ _ _ _,</span>
+<span id="L67"><a href="#L67">  67</a>       imageSubobject_epi_comp, imageSubobject_mono]</span>
+<span id="L68"><a href="#L68">  68</a>   have hi : IsLimit (KernelFork.ofι i wi) := by</span>
+<span id="L69"><a href="#L69">  69</a>     apply (kernelIsKernel (E.d r k&#x27;)).ofIsoLimit</span>
+<span id="L70"><a href="#L70">  70</a>     exact Fork.ext (Subobject.isoOfMkEqMk i (kernel.ι (E.d r k&#x27;)) heq_sub).symm</span>
+<span id="L71"><a href="#L71">  71</a>       (Subobject.ofMkLEMk_comp heq_sub.ge)</span>
+<span id="L72"><a href="#L72">  72</a>   set j := Subobject.cokernelMap_ofLE</span>
+<span id="L73"><a href="#L73">  73</a>     (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1))</span>
+<span id="L74"><a href="#L74">  74</a>     hBn_le_Bn1 hBn1_le_Zn1 with hj_def</span>
+<span id="L75"><a href="#L75">  75</a>   set f_lift := hi.lift (KernelFork.ofι S.f (by exact S.zero)) with hf_lift_def</span>
+<span id="L76"><a href="#L76">  76</a>   have hj_π : j ≫ π_map = 0 := by</span>
+<span id="L77"><a href="#L77">  77</a>     simp only [j, π_map, Subobject.cokernelMap_ofLE, Subobject.cokernelDesc_ofLE]</span>
+<span id="L78"><a href="#L78">  78</a>     ext</span>
+<span id="L79"><a href="#L79">  79</a>     simp only [cokernel.π_desc_assoc, cokernel.π_desc, comp_zero,</span>
+<span id="L80"><a href="#L80">  80</a>       Category.assoc, cokernel.condition]</span>
+<span id="L81"><a href="#L81">  81</a>   have hBn_le_Zn : D&#x27;.B ↑(n + 1) ≤ D&#x27;.Z ↑n :=</span>
+<span id="L82"><a href="#L82">  82</a>     le_trans hBn1_le_Zn1 hZn1_le_Zn</span>
+<span id="L83"><a href="#L83">  83</a>   have hfactor :</span>
+<span id="L84"><a href="#L84">  84</a>       Subobject.ofLE (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑n) hBn_le_Zn ≫ D&#x27;.pageπ ↑n =</span>
+<span id="L85"><a href="#L85">  85</a>         cokernel.π (Subobject.ofLE (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) hBn_le_Bn1) ≫</span>
+<span id="L86"><a href="#L86">  86</a>           j ≫ i := by</span>
+<span id="L87"><a href="#L87">  87</a>     change Subobject.ofLE (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑n) hBn_le_Zn ≫</span>
+<span id="L88"><a href="#L88">  88</a>       cokernel.π (Subobject.ofLE (D&#x27;.B ↑n) (D&#x27;.Z ↑n) (D&#x27;.B_le_Z ↑n)) = _</span>
+<span id="L89"><a href="#L89">  89</a>     rw [(Subobject.ofLE_comp_ofLE</span>
+<span id="L90"><a href="#L90">  90</a>       (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1)) (D&#x27;.Z ↑n)</span>
+<span id="L91"><a href="#L91">  91</a>       hBn1_le_Zn1 hZn1_le_Zn).symm,</span>
+<span id="L92"><a href="#L92">  92</a>       Category.assoc,</span>
+<span id="L93"><a href="#L93">  93</a>       factor_cokernelMap</span>
+<span id="L94"><a href="#L94">  94</a>         (D&#x27;.B ↑n) (D&#x27;.Z ↑(n + 1)) (D&#x27;.Z ↑n) hBn_le_Zn1 hZn1_le_Zn,</span>
+<span id="L95"><a href="#L95">  95</a>       ← Category.assoc</span>
+<span id="L96"><a href="#L96">  96</a>         (Subobject.ofLE (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1)) hBn1_le_Zn1),</span>
+<span id="L97"><a href="#L97">  97</a>       factor_cokernelMap</span>
+<span id="L98"><a href="#L98">  98</a>         (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1))</span>
+<span id="L99"><a href="#L99">  99</a>         hBn_le_Bn1 hBn1_le_Zn1,</span>
+<span id="L100"><a href="#L100"> 100</a>       Category.assoc]</span>
+<span id="L101"><a href="#L101"> 101</a>   have hfi : f_lift ≫ i = S.f :=</span>
+<span id="L102"><a href="#L102"> 102</a>     hi.fac (KernelFork.ofι S.f (by exact S.zero)) WalkingParallelPair.zero</span>
+<span id="L103"><a href="#L103"> 103</a>   have hB := E.B_succ r (k - E.diffDeg r) hr</span>
+<span id="L104"><a href="#L104"> 104</a>   have him : imageSubobject (f_lift ≫ i) = imageSubobject (j ≫ i) := by</span>
+<span id="L105"><a href="#L105"> 105</a>     rw [hfi]</span>
+<span id="L106"><a href="#L106"> 106</a>     change imageSubobject (E.d r (k - E.diffDeg r)) = _</span>
+<span id="L107"><a href="#L107"> 107</a>     rw [hB, hfactor, imageSubobject_epi_comp]</span>
+<span id="L108"><a href="#L108"> 108</a>   have hjim : imageSubobject (j ≫ i) = Subobject.mk (j ≫ i) :=</span>
+<span id="L109"><a href="#L109"> 109</a>     imageSubobject_mono _</span>
+<span id="L110"><a href="#L110"> 110</a>   have hle : imageSubobject (f_lift ≫ i) ≤ Subobject.mk (j ≫ i) :=</span>
+<span id="L111"><a href="#L111"> 111</a>     him ▸ hjim ▸ le_refl _</span>
+<span id="L112"><a href="#L112"> 112</a>   have hfact_ji : (Subobject.mk (j ≫ i)).Factors (f_lift ≫ i) := by</span>
+<span id="L113"><a href="#L113"> 113</a>     apply Subobject.factors_of_le _ hle</span>
+<span id="L114"><a href="#L114"> 114</a>     have hself := imageSubobject_factors_comp_self (f := f_lift ≫ i) (𝟙 _)</span>
+<span id="L115"><a href="#L115"> 115</a>     simpa using hself</span>
+<span id="L116"><a href="#L116"> 116</a>   set φ_ji := (Subobject.mk (j ≫ i)).factorThru (f_lift ≫ i) hfact_ji</span>
+<span id="L117"><a href="#L117"> 117</a>   have hφ_ji : φ_ji ≫ (Subobject.mk (j ≫ i)).arrow = f_lift ≫ i :=</span>
+<span id="L118"><a href="#L118"> 118</a>     Subobject.factorThru_arrow _ _ _</span>
+<span id="L119"><a href="#L119"> 119</a>   have harrow_ji : (Subobject.mk (j ≫ i)).arrow =</span>
+<span id="L120"><a href="#L120"> 120</a>       (Subobject.underlyingIso (j ≫ i)).hom ≫ (j ≫ i) :=</span>
+<span id="L121"><a href="#L121"> 121</a>     (Subobject.underlyingIso_hom_comp_eq_mk (j ≫ i)).symm</span>
+<span id="L122"><a href="#L122"> 122</a>   set ψ := φ_ji ≫ (Subobject.underlyingIso (j ≫ i)).hom with hψ_def</span>
+<span id="L123"><a href="#L123"> 123</a>   have hψ_j : ψ ≫ j = f_lift := by</span>
+<span id="L124"><a href="#L124"> 124</a>     apply (cancel_mono i).mp</span>
+<span id="L125"><a href="#L125"> 125</a>     rw [Category.assoc]</span>
+<span id="L126"><a href="#L126"> 126</a>     change ψ ≫ (j ≫ i) = f_lift ≫ i</span>
+<span id="L127"><a href="#L127"> 127</a>     change (φ_ji ≫ (Subobject.underlyingIso (j ≫ i)).hom) ≫ (j ≫ i) = f_lift ≫ i</span>
+<span id="L128"><a href="#L128"> 128</a>     rw [Category.assoc, ← harrow_ji, hφ_ji]</span>
+<span id="L129"><a href="#L129"> 129</a>   have wπ : f_lift ≫ π_map = 0 := by</span>
+<span id="L130"><a href="#L130"> 130</a>     calc</span>
+<span id="L131"><a href="#L131"> 131</a>       f_lift ≫ π_map = (ψ ≫ j) ≫ π_map := by rw [hψ_j]</span>
+<span id="L132"><a href="#L132"> 132</a>       _ = ψ ≫ (j ≫ π_map) := by rw [Category.assoc]</span>
+<span id="L133"><a href="#L133"> 133</a>       _ = ψ ≫ 0 := by rw [hj_π]</span>
+<span id="L134"><a href="#L134"> 134</a>       _ = 0 := comp_zero</span>
+<span id="L135"><a href="#L135"> 135</a>   have hπ : IsColimit (CokernelCofork.ofπ π_map wπ) := by</span>
+<span id="L136"><a href="#L136"> 136</a>     have hφ_eq : φ_ji = factorThruImageSubobject (f_lift ≫ i) ≫</span>
+<span id="L137"><a href="#L137"> 137</a>         (Subobject.isoOfEq _ _ (him.trans hjim)).hom := by</span>
+<span id="L138"><a href="#L138"> 138</a>       apply (cancel_mono (Subobject.mk (j ≫ i)).arrow).mp</span>
+<span id="L139"><a href="#L139"> 139</a>       rw [hφ_ji, Category.assoc, Subobject.isoOfEq_hom, Subobject.ofLE_arrow,</span>
+<span id="L140"><a href="#L140"> 140</a>         imageSubobject_arrow_comp]</span>
+<span id="L141"><a href="#L141"> 141</a>     have hψ_epi : Epi ψ := by</span>
+<span id="L142"><a href="#L142"> 142</a>       rw [hψ_def, hφ_eq, Category.assoc]</span>
+<span id="L143"><a href="#L143"> 143</a>       exact epi_comp _ _</span>
+<span id="L144"><a href="#L144"> 144</a>     have hπ_factor : cokernel.π j ≫</span>
+<span id="L145"><a href="#L145"> 145</a>         (Subobject.thirdIso</span>
+<span id="L146"><a href="#L146"> 146</a>           (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1))</span>
+<span id="L147"><a href="#L147"> 147</a>           hBn_le_Bn1 hBn1_le_Zn1).hom = π_map :=</span>
+<span id="L148"><a href="#L148"> 148</a>       cokernel.π_desc _ _ _</span>
+<span id="L149"><a href="#L149"> 149</a>     set thirdIso := Subobject.thirdIso</span>
+<span id="L150"><a href="#L150"> 150</a>       (D&#x27;.B ↑n) (D&#x27;.B ↑(n + 1)) (D&#x27;.Z ↑(n + 1))</span>
+<span id="L151"><a href="#L151"> 151</a>       hBn_le_Bn1 hBn1_le_Zn1 with hthirdIso_def</span>
+<span id="L152"><a href="#L152"> 152</a>     have hjs : ∀ (s : Cofork f_lift 0), j ≫ Cofork.π s = 0 := by</span>
+<span id="L153"><a href="#L153"> 153</a>       intro s</span>
+<span id="L154"><a href="#L154"> 154</a>       haveI := hψ_epi</span>
+<span id="L155"><a href="#L155"> 155</a>       apply zero_of_epi_comp ψ</span>
+<span id="L156"><a href="#L156"> 156</a>       rw [← Category.assoc, hψ_j]</span>
+<span id="L157"><a href="#L157"> 157</a>       have hs := s.condition</span>
+<span id="L158"><a href="#L158"> 158</a>       simp only [zero_comp] at hs</span>
+<span id="L159"><a href="#L159"> 159</a>       exact hs</span>
+<span id="L160"><a href="#L160"> 160</a>     exact Cofork.IsColimit.mk _</span>
+<span id="L161"><a href="#L161"> 161</a>       (fun s =&gt; thirdIso.inv ≫ cokernel.desc j (Cofork.π s) (hjs s))</span>
+<span id="L162"><a href="#L162"> 162</a>       (fun s =&gt; by</span>
+<span id="L163"><a href="#L163"> 163</a>         change π_map ≫ thirdIso.inv ≫ cokernel.desc j (Cofork.π s) (hjs s) =</span>
+<span id="L164"><a href="#L164"> 164</a>           Cofork.π s</span>
+<span id="L165"><a href="#L165"> 165</a>         rw [show π_map = cokernel.π j ≫ thirdIso.hom from hπ_factor.symm,</span>
+<span id="L166"><a href="#L166"> 166</a>           Category.assoc, thirdIso.hom_inv_id_assoc, cokernel.π_desc])</span>
+<span id="L167"><a href="#L167"> 167</a>       (fun s m hm =&gt; by</span>
+<span id="L168"><a href="#L168"> 168</a>         change m = thirdIso.inv ≫ cokernel.desc j (Cofork.π s) (hjs s)</span>
+<span id="L169"><a href="#L169"> 169</a>         rw [← cancel_epi thirdIso.hom, thirdIso.hom_inv_id_assoc]</span>
+<span id="L170"><a href="#L170"> 170</a>         apply (cancel_epi (cokernel.π j)).mp</span>
+<span id="L171"><a href="#L171"> 171</a>         rw [cokernel.π_desc, ← Category.assoc, hπ_factor]</span>
+<span id="L172"><a href="#L172"> 172</a>         exact hm)</span>
+<span id="L173"><a href="#L173"> 173</a>   set h : S.LeftHomologyData := {</span>
+<span id="L174"><a href="#L174"> 174</a>     K := cokernel (Subobject.ofLE (D&#x27;.B ↑n) (D&#x27;.Z ↑(n + 1)) hBn_le_Zn1)</span>
+<span id="L175"><a href="#L175"> 175</a>     H := D&#x27;.page ↑(n + 1)</span>
+<span id="L176"><a href="#L176"> 176</a>     i := i</span>
+<span id="L177"><a href="#L177"> 177</a>     π := π_map</span>
+<span id="L178"><a href="#L178"> 178</a>     wi := wi</span>
+<span id="L179"><a href="#L179"> 179</a>     hi := hi</span>
+<span id="L180"><a href="#L180"> 180</a>     wπ := wπ</span>
+<span id="L181"><a href="#L181"> 181</a>     hπ := hπ</span>
+<span id="L182"><a href="#L182"> 182</a>   }</span>
+<span id="L183"><a href="#L183"> 183</a>   have hPageH : E.Page (r + 1) k = h.H := by</span>
+<span id="L184"><a href="#L184"> 184</a>     change (E.ssData k).page ↑((r + 1 - E.r₀).toNat) = D&#x27;.page ↑(n + 1)</span>
+<span id="L185"><a href="#L185"> 185</a>     rw [hn1]</span>
+<span id="L186"><a href="#L186"> 186</a>     congr 1</span>
+<span id="L187"><a href="#L187"> 187</a>     exact hk_eq.symm ▸ rfl</span>
+<span id="L188"><a href="#L188"> 188</a>   exact eqToIso hPageH ≪≫ h.homologyIso.symm</span>
+<span id="L189"><a href="#L189"> 189</a> </span>
+<span id="L190"><a href="#L190"> 190</a> end KIP126.Core.SpectralSequence</span></pre>

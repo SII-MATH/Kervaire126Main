@@ -1,0 +1,120 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz/CrossingLabels.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import KIP126.ProofTools.Language</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> /-! Label and boundary comparisons for AimPaper Proposition `prop:cross-f-Er`.</span>
+<span id="L5"><a href="#L5">   5</a> These private lemmas identify actual E∞ representatives and the precise</span>
+<span id="L6"><a href="#L6">   6</a> boundary indeterminacy after multiplication by λ. They do not assert that</span>
+<span id="L7"><a href="#L7">   7</a> a strict extension equation lifts through a λ map. -/</span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.ProofTools.Internal.CrossingLabels</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Synthetic.SpectralSequence KIP126.Classical.Adams KIP126.AdamsSynthetic</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> private theorem subquotient_rep {R A : Type*} [Ring R] [AddCommGroup A] [Module R A]</span>
+<span id="L18"><a href="#L18">  18</a>     (Z B : Submodule R A) (e : E2Subquotient Z B) :</span>
+<span id="L19"><a href="#L19">  19</a>     ∃ y : Z, subquotientClass Z B y = e :=</span>
+<span id="L20"><a href="#L20">  20</a>   Submodule.Quotient.mk_surjective _ e</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> private theorem subquotient_zero_iff {R A : Type*} [Ring R] [AddCommGroup A] [Module R A]</span>
+<span id="L23"><a href="#L23">  23</a>     (Z B : Submodule R A) (y : Z) : subquotientClass Z B y = 0 ↔ y.val ∈ B :=</span>
+<span id="L24"><a href="#L24">  24</a>   Submodule.Quotient.mk_eq_zero _</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> private theorem nu_grade_label (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)</span>
+<span id="L27"><a href="#L27">  27</a>     (e : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty) :</span>
+<span id="L28"><a href="#L28">  28</a>     ∃ y : Ambient model X (s,t), y ∈ permanentCycles model X (s,t) ∧</span>
+<span id="L29"><a href="#L29">  29</a>       HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model X s t w hw y) e ∧</span>
+<span id="L30"><a href="#L30">  30</a>       (y ∈ boundaries model X (1+t-w) (s,t) ↔ e = 0) := by</span>
+<span id="L31"><a href="#L31">  31</a>   obtain ⟨y,hy⟩ := subquotient_rep (permanentCycles model X (s,t)) (boundaries model X (1+t-w) (s,t))</span>
+<span id="L32"><a href="#L32">  32</a>     (KIP126.Literature.Standard.infinityNuWindow X (s,t) w hw e)</span>
+<span id="L33"><a href="#L33">  33</a>   have hrep : HasInfinityRepresentative _ 2 (s,t,w)</span>
+<span id="L34"><a href="#L34">  34</a>       (nuWeightLabel model X s t w hw y.val) e := by</span>
+<span id="L35"><a href="#L35">  35</a>     apply (KIP126.Literature.Standard.eInfinity_nu_labels X s t w hw y.val e).mpr</span>
+<span id="L36"><a href="#L36">  36</a>     exact ⟨y.property,hy.symm⟩</span>
+<span id="L37"><a href="#L37">  37</a>   refine ⟨y.val,y.property,hrep,?_⟩</span>
+<span id="L38"><a href="#L38">  38</a>   have hz : y.val ∈ boundaries model X (1+t-w) (s,t) ↔</span>
+<span id="L39"><a href="#L39">  39</a>       KIP126.Literature.Standard.infinityNuWindow X (s,t) w hw e = 0 := by</span>
+<span id="L40"><a href="#L40">  40</a>     rw [←hy]</span>
+<span id="L41"><a href="#L41">  41</a>     exact (subquotient_zero_iff _ _ y).symm</span>
+<span id="L42"><a href="#L42">  42</a>   exact hz.trans (map_eq_zero_iff _ (KIP126.Literature.Standard.infinityNuWindow X (s,t) w hw).injective)</span>
+<span id="L43"><a href="#L43">  43</a> </span>
+<span id="L44"><a href="#L44">  44</a> private theorem finite_grade_label (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q)</span>
+<span id="L45"><a href="#L45">  45</a>     (s t w : ℤ) (hw : 0 ≤ t-w ∧ t-w &lt; q)</span>
+<span id="L46"><a href="#L46">  46</a>     (e : ((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData (s,t,w)).eInfty) :</span>
+<span id="L47"><a href="#L47">  47</a>     ∃ y : Ambient model X (s,t), y ∈ cycles model X (q-t+w) (s,t) ∧</span>
+<span id="L48"><a href="#L48">  48</a>       HasInfinityRepresentative _ 2 (s,t,w)</span>
+<span id="L49"><a href="#L49">  49</a>         ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) q).pageMap 2 (s,t,w)</span>
+<span id="L50"><a href="#L50">  50</a>           (nuWeightLabel model X s t w (by omega) y)) e ∧</span>
+<span id="L51"><a href="#L51">  51</a>       (y ∈ boundaries model X (1+t-w) (s,t) ↔ e = 0) := by</span>
+<span id="L52"><a href="#L52">  52</a>   obtain ⟨y,hy⟩ := subquotient_rep (cycles model X (q-t+w) (s,t)) (boundaries model X (1+t-w) (s,t))</span>
+<span id="L53"><a href="#L53">  53</a>     (KIP126.Literature.Standard.infinityFiniteWindow X q hq (s,t) w hw e)</span>
+<span id="L54"><a href="#L54">  54</a>   have hrep : HasInfinityRepresentative _ 2 (s,t,w)</span>
+<span id="L55"><a href="#L55">  55</a>       ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) q).pageMap 2 (s,t,w)</span>
+<span id="L56"><a href="#L56">  56</a>         (nuWeightLabel model X s t w (by omega) y.val)) e := by</span>
+<span id="L57"><a href="#L57">  57</a>     apply (KIP126.Literature.Standard.eInfinity_finite_labels X q hq s t w hw y.val e).mpr</span>
+<span id="L58"><a href="#L58">  58</a>     exact ⟨y.property,hy.symm⟩</span>
+<span id="L59"><a href="#L59">  59</a>   refine ⟨y.val,y.property,hrep,?_⟩</span>
+<span id="L60"><a href="#L60">  60</a>   have hz : y.val ∈ boundaries model X (1+t-w) (s,t) ↔</span>
+<span id="L61"><a href="#L61">  61</a>       KIP126.Literature.Standard.infinityFiniteWindow X q hq (s,t) w hw e = 0 := by</span>
+<span id="L62"><a href="#L62">  62</a>     rw [←hy]</span>
+<span id="L63"><a href="#L63">  63</a>     exact (subquotient_zero_iff _ _ y).symm</span>
+<span id="L64"><a href="#L64">  64</a>   exact hz.trans (map_eq_zero_iff _ (KIP126.Literature.Standard.infinityFiniteWindow X q hq (s,t) w hw).injective)</span>
+<span id="L65"><a href="#L65">  65</a> </span>
+<span id="L66"><a href="#L66">  66</a> private theorem lambda_nu_label_nonzero (X : ClassicalObject) (k : ℕ)</span>
+<span id="L67"><a href="#L67">  67</a>     (s t w : ℤ) (hw : w ≤ t) (y : Ambient model X (s,t))</span>
+<span id="L68"><a href="#L68">  68</a>     (e : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty)</span>
+<span id="L69"><a href="#L69">  69</a>     (he : HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model X s t w hw y) e) :</span>
+<span id="L70"><a href="#L70">  70</a>     KIP126.Literature.Standard.infinityLambda (.nu X) k (s,t) w e ≠ 0 ↔</span>
+<span id="L71"><a href="#L71">  71</a>       y ∉ boundaries model X (1+t-(w-k)) (s,t) := by</span>
+<span id="L72"><a href="#L72">  72</a>   obtain ⟨hy,hlabel⟩ := (KIP126.Literature.Standard.eInfinity_nu_labels X s t w hw y e).mp he</span>
+<span id="L73"><a href="#L73">  73</a>   have hlam := KIP126.Literature.Standard.eInfinity_lambda_nu X k (s,t) w hw e</span>
+<span id="L74"><a href="#L74">  74</a>   rw [hlabel] at hlam</span>
+<span id="L75"><a href="#L75">  75</a>   change KIP126.Literature.Standard.infinityNuWindow X (s,t) (w-k) (by omega)</span>
+<span id="L76"><a href="#L76">  76</a>       (KIP126.Literature.Standard.infinityLambda (.nu X) k (s,t) w e) =</span>
+<span id="L77"><a href="#L77">  77</a>     subquotientClass (permanentCycles model X (s,t))</span>
+<span id="L78"><a href="#L78">  78</a>       (boundaries model X (1+t-(w-k)) (s,t)) ⟨y,hy⟩ at hlam</span>
+<span id="L79"><a href="#L79">  79</a>   apply not_congr</span>
+<span id="L80"><a href="#L80">  80</a>   constructor</span>
+<span id="L81"><a href="#L81">  81</a>   · intro hzero</span>
+<span id="L82"><a href="#L82">  82</a>     rw [hzero,map_zero] at hlam</span>
+<span id="L83"><a href="#L83">  83</a>     exact (subquotient_zero_iff _ _ ⟨y,hy⟩).mp hlam.symm</span>
+<span id="L84"><a href="#L84">  84</a>   · intro hboundary</span>
+<span id="L85"><a href="#L85">  85</a>     apply (KIP126.Literature.Standard.infinityNuWindow X (s,t) (w-k) (by omega)).injective</span>
+<span id="L86"><a href="#L86">  86</a>     rw [map_zero,hlam]</span>
+<span id="L87"><a href="#L87">  87</a>     exact (subquotient_zero_iff _ _ ⟨y,hy⟩).mpr hboundary</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> private theorem subquotient_map_class_zero_iff {R A : Type*} [Ring R] [AddCommGroup A] [Module R A]</span>
+<span id="L90"><a href="#L90">  90</a>     {Z Z&#x27; B B&#x27; : Submodule R A} (hZ : Z ≤ Z&#x27;) (hB : B ≤ B&#x27;) (y : Z) :</span>
+<span id="L91"><a href="#L91">  91</a>     subquotientMap hZ hB (subquotientClass Z B y) = 0 ↔ y.val ∈ B&#x27; :=</span>
+<span id="L92"><a href="#L92">  92</a>   subquotient_zero_iff Z&#x27; B&#x27; (Submodule.inclusion hZ y)</span>
+<span id="L93"><a href="#L93">  93</a> </span>
+<span id="L94"><a href="#L94">  94</a> private theorem lambda_finite_label_nonzero (X : ClassicalObject) (q k : ℕ) (hkq : k &lt; q)</span>
+<span id="L95"><a href="#L95">  95</a>     (s t w : ℤ) (hw : 0 ≤ t-w ∧ t-w &lt; (q-k:ℕ)) (y : Ambient model X (s,t))</span>
+<span id="L96"><a href="#L96">  96</a>     (e : ((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) (q-k)).sequence.ssData (s,t,w)).eInfty)</span>
+<span id="L97"><a href="#L97">  97</a>     (he : HasInfinityRepresentative _ 2 (s,t,w)</span>
+<span id="L98"><a href="#L98">  98</a>       ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) (q-k)).pageMap 2 (s,t,w)</span>
+<span id="L99"><a href="#L99">  99</a>         (nuWeightLabel model X s t w (by omega) y)) e) :</span>
+<span id="L100"><a href="#L100"> 100</a>     KIP126.Literature.Standard.infinityFiniteLambda X q k hkq (s,t) w e ≠ 0 ↔</span>
+<span id="L101"><a href="#L101"> 101</a>       y ∉ boundaries model X (1+t-(w-k)) (s,t) := by</span>
+<span id="L102"><a href="#L102"> 102</a>   obtain ⟨hy,hlabel⟩ := (KIP126.Literature.Standard.eInfinity_finite_labels X (q-k) (by omega)</span>
+<span id="L103"><a href="#L103"> 103</a>     s t w hw y e).mp he</span>
+<span id="L104"><a href="#L104"> 104</a>   have hlam := KIP126.Literature.Standard.eInfinity_lambda_finite X q k hkq (s,t) w hw e</span>
+<span id="L105"><a href="#L105"> 105</a>   rw [hlabel] at hlam</span>
+<span id="L106"><a href="#L106"> 106</a>   have hz := subquotient_map_class_zero_iff</span>
+<span id="L107"><a href="#L107"> 107</a>     (cycles_antitone model X (s,t) (show (q:ℤ)-t+(w-k) ≤ (q-k:ℕ)-t+w by omega))</span>
+<span id="L108"><a href="#L108"> 108</a>     (boundaries_monotone model X (s,t) (show 1+t-w ≤ 1+t-(w-k) by omega)) ⟨y,hy⟩</span>
+<span id="L109"><a href="#L109"> 109</a>   apply not_congr</span>
+<span id="L110"><a href="#L110"> 110</a>   constructor</span>
+<span id="L111"><a href="#L111"> 111</a>   · intro hzero</span>
+<span id="L112"><a href="#L112"> 112</a>     rw [hzero,map_zero] at hlam</span>
+<span id="L113"><a href="#L113"> 113</a>     exact hz.mp hlam.symm</span>
+<span id="L114"><a href="#L114"> 114</a>   · intro hboundary</span>
+<span id="L115"><a href="#L115"> 115</a>     apply (KIP126.Literature.Standard.infinityFiniteWindow X q (by omega) (s,t) (w-k) (by omega)).injective</span>
+<span id="L116"><a href="#L116"> 116</a>     rw [map_zero,hlam]</span>
+<span id="L117"><a href="#L117"> 117</a>     exact hz.mpr hboundary</span>
+<span id="L118"><a href="#L118"> 118</a> </span>
+<span id="L119"><a href="#L119"> 119</a> end</span>
+<span id="L120"><a href="#L120"> 120</a> end KIP126.ProofTools.Internal.CrossingLabels</span></pre>

@@ -1,0 +1,45 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/BoundedExtension/BoundedComplex/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/BoundedExtension/BoundedComplex/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.BoundedExtension.Morphism.Construction.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.FilteredComplex.SSData.Predicates</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Bounded filtered complexes</span>
+<span id="L10"><a href="#L10">  10</a> -/</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> universe u v</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- A filtered complex packaged with the historical two-sided boundedness</span>
+<span id="L21"><a href="#L21">  21</a> witness. -/</span>
+<span id="L22"><a href="#L22">  22</a> structure BoundedFilteredComplex</span>
+<span id="L23"><a href="#L23">  23</a>     (C : Type u) [Category.{v} C] [Abelian C] where</span>
+<span id="L24"><a href="#L24">  24</a>   /-- The underlying filtered complex. -/</span>
+<span id="L25"><a href="#L25">  25</a>   FC : FilteredComplex C</span>
+<span id="L26"><a href="#L26">  26</a>   /-- Its filtration is bounded in every chain degree. -/</span>
+<span id="L27"><a href="#L27">  27</a>   bnd : FC.IsBounded</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> /-- Bounded filtered complexes form the full subcategory of filtered</span>
+<span id="L30"><a href="#L30">  30</a> complexes on bounded objects. -/</span>
+<span id="L31"><a href="#L31">  31</a> noncomputable instance : Category (BoundedFilteredComplex C) where</span>
+<span id="L32"><a href="#L32">  32</a>   Hom X Y := FilteredComplexMorphism X.FC Y.FC</span>
+<span id="L33"><a href="#L33">  33</a>   id X := FilteredComplex.Morphism.id X.FC</span>
+<span id="L34"><a href="#L34">  34</a>   comp f g := FilteredComplex.Morphism.comp f g</span>
+<span id="L35"><a href="#L35">  35</a>   id_comp f := by</span>
+<span id="L36"><a href="#L36">  36</a>     apply FilteredComplex.Morphism.ext</span>
+<span id="L37"><a href="#L37">  37</a>     simp [FilteredComplex.Morphism.comp, FilteredComplex.Morphism.id]</span>
+<span id="L38"><a href="#L38">  38</a>   comp_id f := by</span>
+<span id="L39"><a href="#L39">  39</a>     apply FilteredComplex.Morphism.ext</span>
+<span id="L40"><a href="#L40">  40</a>     simp [FilteredComplex.Morphism.comp, FilteredComplex.Morphism.id]</span>
+<span id="L41"><a href="#L41">  41</a>   assoc f g h := by</span>
+<span id="L42"><a href="#L42">  42</a>     apply FilteredComplex.Morphism.ext</span>
+<span id="L43"><a href="#L43">  43</a>     simp [FilteredComplex.Morphism.comp]</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> end KIP126.Core.SpectralSequence</span></pre>

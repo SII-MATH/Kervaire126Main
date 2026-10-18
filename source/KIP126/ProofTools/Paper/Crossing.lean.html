@@ -1,0 +1,231 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/Paper/Crossing.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/Paper/Crossing.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.ShortSource</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.MayCorrection</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.GeneralizedLeibniz.WeightedReverse</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.ProofTools.Operations</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.Operations</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Crossing comparison for the actual absolute boundary. All groups, maps,</span>
+<span id="L9"><a href="#L9">   9</a> and filtrations are those of the fixed synthetic Adams model. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.ProofTools.Paper</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L19"><a href="#L19">  19</a> noncomputable section</span>
+<span id="L20"><a href="#L20">  20</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L21"><a href="#L21">  21</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L22"><a href="#L22">  22</a> set_option maxHeartbeats 2400000</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> private theorem detected_grade_zero_of_higher_filtration</span>
+<span id="L25"><a href="#L25">  25</a>     (A : SyntheticObject) (s t w : ℤ)</span>
+<span id="L26"><a href="#L26">  26</a>     (x : (model.family.obj (A.obj model.nu model.auxiliary)).E₂ (s,t,w))</span>
+<span id="L27"><a href="#L27">  27</a>     (a : BiHom (t-s) w (A.obj model.nu model.auxiliary))</span>
+<span id="L28"><a href="#L28">  28</a>     (ha : Detects (model.convergence A) (s,t,w) x a)</span>
+<span id="L29"><a href="#L29">  29</a>     (hhigh : FiltrationAtLeast model.syntheticTower (s+1) a) :</span>
+<span id="L30"><a href="#L30">  30</a>     HasInfinityRepresentative _ 2 (s,t,w) x 0 := by</span>
+<span id="L31"><a href="#L31">  31</a>   obtain ⟨e,he,b,hb,hbe⟩ := ha</span>
+<span id="L32"><a href="#L32">  32</a>   have hzero : e=0 := by</span>
+<span id="L33"><a href="#L33">  33</a>     apply ((model.convergence A).identification (s,t,w)).toLinearEquiv.injective</span>
+<span id="L34"><a href="#L34">  34</a>     change ((model.convergence A).identification (s,t,w)).hom e =</span>
+<span id="L35"><a href="#L35">  35</a>       ((model.convergence A).identification (s,t,w)).hom 0</span>
+<span id="L36"><a href="#L36">  36</a>     rw [map_zero, hbe]</span>
+<span id="L37"><a href="#L37">  37</a>     apply ((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).toAssociatedGraded_eq_zero_iff</span>
+<span id="L38"><a href="#L38">  38</a>       s (t-s,w) b).mpr</span>
+<span id="L39"><a href="#L39">  39</a>     rw [hb]</span>
+<span id="L40"><a href="#L40">  40</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,</span>
+<span id="L41"><a href="#L41">  41</a>       FiltrationAtLeast] using hhigh</span>
+<span id="L42"><a href="#L42">  42</a>   rwa [hzero] at he</span>
+<span id="L43"><a href="#L43">  43</a> </span>
+<span id="L44"><a href="#L44">  44</a> private theorem differential_target_permanent</span>
+<span id="L45"><a href="#L45">  45</a>     (X : ClassicalObject) (k : ℕ) (hk : 0&lt;k) (s t : ℤ)</span>
+<span id="L46"><a href="#L46">  46</a>     (x : Ambient model X (s,t)) (y : Ambient model X (s+k+1,t+k))</span>
+<span id="L47"><a href="#L47">  47</a>     (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary))</span>
+<span id="L48"><a href="#L48">  48</a>       (k+1) (s,t) (s+k+1,t+k) x y) :</span>
+<span id="L49"><a href="#L49">  49</a>     y∈permanentCycles model X (s+k+1,t+k) := by</span>
+<span id="L50"><a href="#L50">  50</a>   have hy := differential_target_boundary X (k+1) (by omega) _ _ x y hd</span>
+<span id="L51"><a href="#L51">  51</a>   obtain ⟨b,rfl⟩ := hy</span>
+<span id="L52"><a href="#L52">  52</a>   let E := (model.classical.obj (X.obj model.auxiliary)).ssData (s+k+1,t+k)</span>
+<span id="L53"><a href="#L53">  53</a>   let h : E.B (↑(((k:ℤ)+1)-1).toNat) ≤ E.Z ⊤ :=</span>
+<span id="L54"><a href="#L54">  54</a>     (E.B_mono le_top).trans (E.B_le_Z ⊤)</span>
+<span id="L55"><a href="#L55">  55</a>   refine ⟨(Subobject.ofLE _ _ h) b,?_⟩</span>
+<span id="L56"><a href="#L56">  56</a>   change (Subobject.ofLE _ _ h ≫ cycleLabel model X ⊤ (s+k+1,t+k)) b = _</span>
+<span id="L57"><a href="#L57">  57</a>   simp only [cycleLabel,boundaryLabel,E,←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> private theorem nonzero_differential_target_not_boundary</span>
+<span id="L60"><a href="#L60">  60</a>     (X : ClassicalObject) (r b : ℤ) (p q : ℤ×ℤ)</span>
+<span id="L61"><a href="#L61">  61</a>     (hb : 1≤b) (hbr : b≤r-1)</span>
+<span id="L62"><a href="#L62">  62</a>     (x : Ambient model X p) (y : Ambient model X q)</span>
+<span id="L63"><a href="#L63">  63</a>     (hd : HasNonzeroDifferential (model.classical.obj (X.obj model.auxiliary)) r p q x y) :</span>
+<span id="L64"><a href="#L64">  64</a>     y∉boundaries model X b q := by</span>
+<span id="L65"><a href="#L65">  65</a>   intro hy</span>
+<span id="L66"><a href="#L66">  66</a>   obtain ⟨hdeg,xr,yr,hx,hyrep,heq,hnonzero⟩ := hd</span>
+<span id="L67"><a href="#L67">  67</a>   have hd0 := boundary_target_zero model X r b p q hx.1 hbr x y hy</span>
+<span id="L68"><a href="#L68">  68</a>     ⟨hdeg,xr,yr,hx,hyrep,heq⟩</span>
+<span id="L69"><a href="#L69">  69</a>   obtain ⟨_,xr0,yr0,hx0,hy0,heq0⟩ := hd0</span>
+<span id="L70"><a href="#L70">  70</a>   have hxx := hx.unique hx0</span>
+<span id="L71"><a href="#L71">  71</a>   have hyy : yr=yr0 := heq.symm.trans (by simpa only [hxx] using heq0)</span>
+<span id="L72"><a href="#L72">  72</a>   have hz : yr0=0 := hy0.unique (RepresentsOnPage.zero (by omega))</span>
+<span id="L73"><a href="#L73">  73</a>   exact hnonzero (hyy.trans hz)</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> private theorem delta_image_high_of_no_crossing</span>
+<span id="L76"><a href="#L76">  76</a>     (X : ClassicalObject) (q : ℕ) (r s t : ℤ) (hr : 0≤r)</span>
+<span id="L77"><a href="#L77">  77</a>     (hnc : TowerNoCrossing (model.convergentMap</span>
+<span id="L78"><a href="#L78">  78</a>       (.quotient q (.nu X)) (.shift (1,-(q:ℤ)) (.nu X))</span>
+<span id="L79"><a href="#L79">  79</a>       (absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L80"><a href="#L80">  80</a>       (t-s,t) s r)</span>
+<span id="L81"><a href="#L81">  81</a>     (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L82"><a href="#L82">  82</a>     (ha : FiltrationAtLeast model.syntheticTower (s+1) a) :</span>
+<span id="L83"><a href="#L83">  83</a>     FiltrationAtLeast model.syntheticTower (s+r+1)</span>
+<span id="L84"><a href="#L84">  84</a>       (a≫absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) q) := by</span>
+<span id="L85"><a href="#L85">  85</a>   have H := tower_image_same_target_of_no_crossing (model.convergentMap</span>
+<span id="L86"><a href="#L86">  86</a>     (.quotient q (.nu X)) (.shift (1,-(q:ℤ)) (.nu X))</span>
+<span id="L87"><a href="#L87">  87</a>     (absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L88"><a href="#L88">  88</a>     (t-s,t) s r hr hnc a 0 (by simpa only [sub_zero,FiltrationAtLeast,SyntheticObject.obj] using ha)</span>
+<span id="L89"><a href="#L89">  89</a>   simpa only [zero_comp,sub_zero,FiltrationAtLeast,SyntheticObject.obj] using H</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> private theorem crossing_differential_contradicts_delta_no_crossing</span>
+<span id="L92"><a href="#L92">  92</a>     (X : ClassicalObject) (q i k : ℕ) (hi : 0 &lt; i) (hiq : i &lt; q)</span>
+<span id="L93"><a href="#L93">  93</a>     (hik : q-i ≤ k) (r s t : ℤ) (hr : 0 ≤ r)</span>
+<span id="L94"><a href="#L94">  94</a>     (hv : s+(i:ℤ)+(k:ℤ)+1≤s+r)</span>
+<span id="L95"><a href="#L95">  95</a>     (hnc : TowerNoCrossing (model.convergentMap</span>
+<span id="L96"><a href="#L96">  96</a>       (.quotient q (.nu X)) (.shift (1,-(q:ℤ)) (.nu X))</span>
+<span id="L97"><a href="#L97">  97</a>       (absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) q))</span>
+<span id="L98"><a href="#L98">  98</a>       (t-s,t) s r)</span>
+<span id="L99"><a href="#L99">  99</a>     (x : Ambient model X (s+i,t+i))</span>
+<span id="L100"><a href="#L100"> 100</a>     (y : Ambient model X (s+i+k+1,t+i+k))</span>
+<span id="L101"><a href="#L101"> 101</a>     (hd : HasNonzeroDifferential (model.classical.obj (X.obj model.auxiliary))</span>
+<span id="L102"><a href="#L102"> 102</a>       (k+1) (s+i,t+i) (s+i+k+1,t+i+k) x y) : False := by</span>
+<span id="L103"><a href="#L103"> 103</a>   have hk : 0&lt;k := by omega</span>
+<span id="L104"><a href="#L104"> 104</a>   have hd&#x27; : HasDifferential (model.classical.obj (X.obj model.auxiliary))</span>
+<span id="L105"><a href="#L105"> 105</a>       (k+1) (s+i,t+i) (s+i+k+1,t+i+k) x y := by</span>
+<span id="L106"><a href="#L106"> 106</a>     obtain ⟨h,xr,yr,hx,hy,he,_⟩ := hd</span>
+<span id="L107"><a href="#L107"> 107</a>     exact ⟨h,xr,yr,hx,hy,he⟩</span>
+<span id="L108"><a href="#L108"> 108</a>   obtain ⟨a,ha,had⟩ := differential_absolute_boundary X (q-i) k (by omega) hik</span>
+<span id="L109"><a href="#L109"> 109</a>     (s+i) (t+i) x y hd&#x27; (differential_target_permanent X k hk _ _ x y hd&#x27;)</span>
+<span id="L110"><a href="#L110"> 110</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L111"><a href="#L111"> 111</a>   let a0 : BiHom (t-s) (t+i) (XModLambdaN A (q-i)) :=</span>
+<span id="L112"><a href="#L112"> 112</a>     homotopyRegrade (by omega) rfl a</span>
+<span id="L113"><a href="#L113"> 113</a>   let aS := verticalShiftEquiv (XModLambdaN A (q-i)) i (t-s) t a0</span>
+<span id="L114"><a href="#L114"> 114</a>   let aL := aS≫((model.quotients.tower A).triangle hi hiq).lambdaMap</span>
+<span id="L115"><a href="#L115"> 115</a>   have haf : FiltrationAtLeast model.syntheticTower (s+i) a0 := by</span>
+<span id="L116"><a href="#L116"> 116</a>     have H := finite_bottom_filtration X (q-i) (by omega) (s+i) (t+i) a</span>
+<span id="L117"><a href="#L117"> 117</a>     exact (regrade_filtration_iff _ _ _ _).mpr H</span>
+<span id="L118"><a href="#L118"> 118</a>   have haS : FiltrationAtLeast model.syntheticTower (s+i) aS :=</span>
+<span id="L119"><a href="#L119"> 119</a>     (vertical_shift_filtration_iff (.quotient (q-i) (.nu X)) i (t-s) t (s+i) a0).mpr haf</span>
+<span id="L120"><a href="#L120"> 120</a>   have haL : FiltrationAtLeast model.syntheticTower (s+1) aL := by</span>
+<span id="L121"><a href="#L121"> 121</a>     have H := map_preserves_filtration (model.convergentMap</span>
+<span id="L122"><a href="#L122"> 122</a>       (.shift (0,-(i:ℤ)) (.quotient (q-i) (.nu X))) (.quotient q (.nu X))</span>
+<span id="L123"><a href="#L123"> 123</a>       ((model.quotients.tower A).triangle hi hiq).lambdaMap)</span>
+<span id="L124"><a href="#L124"> 124</a>       (t-s,t) (s+i) aS haS</span>
+<span id="L125"><a href="#L125"> 125</a>     exact model.syntheticTower.filtrationSubmodule_antitone _ (t-s,t) (by omega) H</span>
+<span id="L126"><a href="#L126"> 126</a>   have hlarge := delta_image_high_of_no_crossing X q r s t hr hnc aL haL</span>
+<span id="L127"><a href="#L127"> 127</a>   have hsmall : FiltrationAtLeast model.syntheticTower (s+r+1)</span>
+<span id="L128"><a href="#L128"> 128</a>       (aS≫(SyntheticCategory.biShift (0,-(i:ℤ))).map (absoluteBoundary A (q-i))) :=</span>
+<span id="L129"><a href="#L129"> 129</a>     (divided_boundary_filtration_iff X i q hi hiq (t-s) t (s+r+1) aS).mp</span>
+<span id="L130"><a href="#L130"> 130</a>       (by simpa only [aL,Category.assoc,A] using hlarge)</span>
+<span id="L131"><a href="#L131"> 131</a>   rw [vertical_shift_comp] at hsmall</span>
+<span id="L132"><a href="#L132"> 132</a>   have hsmall := (vertical_shift_filtration_iff (.shift (1,-((q-i:ℕ):ℤ)) (.nu X))</span>
+<span id="L133"><a href="#L133"> 133</a>     i (t-s) t (s+r+1) (a0≫absoluteBoundary A (q-i))).mp hsmall</span>
+<span id="L134"><a href="#L134"> 134</a>   have hsmall := (absolute_boundary_filtration_iff X (q-i) (t-s) (t+i) (s+r+1) a0).mp hsmall</span>
+<span id="L135"><a href="#L135"> 135</a>   have transport_boundary (m m&#x27; w v : ℤ) (hm : m=m&#x27;)</span>
+<span id="L136"><a href="#L136"> 136</a>       (b : BiHom m w (XModLambdaN A (q-i))) :</span>
+<span id="L137"><a href="#L137"> 137</a>       FiltrationAtLeast model.syntheticTower v</span>
+<span id="L138"><a href="#L138"> 138</a>         (biSuspensionHomEquiv m&#x27; w (q-i:ℕ) A</span>
+<span id="L139"><a href="#L139"> 139</a>           (homotopyRegrade hm rfl b≫XModLambdaN.proj A (q-i))) ↔</span>
+<span id="L140"><a href="#L140"> 140</a>       FiltrationAtLeast model.syntheticTower v</span>
+<span id="L141"><a href="#L141"> 141</a>         (biSuspensionHomEquiv m w (q-i:ℕ) A (b≫XModLambdaN.proj A (q-i))) := by</span>
+<span id="L142"><a href="#L142"> 142</a>     subst m&#x27;; rfl</span>
+<span id="L143"><a href="#L143"> 143</a>   have hnative := (transport_boundary ((t+i)-(s+i)) (t-s) (t+i) (s+r+1) (by omega) a).mp hsmall</span>
+<span id="L144"><a href="#L144"> 144</a>   have hsmall : FiltrationAtLeast model.syntheticTower (s+i+k+1+1)</span>
+<span id="L145"><a href="#L145"> 145</a>       (homotopyRegrade (m&#x27; := (t+i+k)-(s+i+k+1)) (by omega) rfl</span>
+<span id="L146"><a href="#L146"> 146</a>         (biSuspensionHomEquiv ((t+i)-(s+i)) (t+i) (q-i:ℕ) A</span>
+<span id="L147"><a href="#L147"> 147</a>           (a≫XModLambdaN.proj A (q-i)))) := by</span>
+<span id="L148"><a href="#L148"> 148</a>     apply (regrade_filtration_iff _ _ _ _).mpr</span>
+<span id="L149"><a href="#L149"> 149</a>     exact model.syntheticTower.filtrationSubmodule_antitone _</span>
+<span id="L150"><a href="#L150"> 150</a>       (((t+i)-(s+i))-1,t+i+(q-i:ℕ))</span>
+<span id="L151"><a href="#L151"> 151</a>       (by omega : s+(i:ℤ)+(k:ℤ)+1+1≤s+r+1) hnative</span>
+<span id="L152"><a href="#L152"> 152</a>   have hzero := detected_grade_zero_of_higher_filtration (.nu X)</span>
+<span id="L153"><a href="#L153"> 153</a>     (s+i+k+1) (t+i+k) (t+i+(q-i:ℕ)) _ _ had (by simpa only [A] using hsmall)</span>
+<span id="L154"><a href="#L154"> 154</a>   have hyB : y∈boundaries model X (1+(t+i+k)-(t+i+(q-i:ℕ))) (s+i+k+1,t+i+k) := by</span>
+<span id="L155"><a href="#L155"> 155</a>     have H := (KIP126.Literature.Standard.eInfinity_nu_labels X</span>
+<span id="L156"><a href="#L156"> 156</a>       (s+i+k+1) (t+i+k) (t+i+(q-i:ℕ)) (by omega) y 0).mp hzero</span>
+<span id="L157"><a href="#L157"> 157</a>     apply (CrossingLabels.subquotient_zero_iff _ _ ⟨y,H.1⟩).mp</span>
+<span id="L158"><a href="#L158"> 158</a>     simpa only [map_zero] using H.2.symm</span>
+<span id="L159"><a href="#L159"> 159</a>   exact nonzero_differential_target_not_boundary X (k+1)</span>
+<span id="L160"><a href="#L160"> 160</a>     (1+(t+i+k)-(t+i+(q-i:ℕ))) _ _ (by omega) (by omega) x y hd hyB</span>
+<span id="L161"><a href="#L161"> 161</a> </span>
+<span id="L162"><a href="#L162"> 162</a> /-- Actual synthetic crossing of the absolute boundary for the quotient</span>
+<span id="L163"><a href="#L163"> 163</a> `νX/λ^(page-1)`, in the fixed stem and weight of a classical differential.</span>
+<span id="L164"><a href="#L164"> 164</a> The essentiality and all source and target grades are taken in that one ESS. -/</span>
+<span id="L165"><a href="#L165"> 165</a> @[expose] public def DeltaHasCrossing (X : ClassicalObject) (page : ℕ) (r s t : ℤ) : Prop :=</span>
+<span id="L166"><a href="#L166"> 166</a>   ∃ u v : ℤ, s &lt; u ∧ u ≤ v ∧ v ≤ s+r ∧ ∃ x y,</span>
+<span id="L167"><a href="#L167"> 167</a>     TowerEssentialExtension (model.convergentMap</span>
+<span id="L168"><a href="#L168"> 168</a>       (.quotient (page-1) (.nu X)) (.shift (1,-((page-1:ℕ):ℤ)) (.nu X))</span>
+<span id="L169"><a href="#L169"> 169</a>       (XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) (page-1) ≫</span>
+<span id="L170"><a href="#L170"> 170</a>         (Operations.biSuspensionIso (page-1:ℕ)</span>
+<span id="L171"><a href="#L171"> 171</a>           (model.nu.functor.obj (X.obj model.auxiliary))).inv))</span>
+<span id="L172"><a href="#L172"> 172</a>       (t-s,t) u (v-u) x y</span>
+<span id="L173"><a href="#L173"> 173</a> </span>
+<span id="L174"><a href="#L174"> 174</a> private theorem delta_no_crossing_implies_classical</span>
+<span id="L175"><a href="#L175"> 175</a>     (X : ClassicalObject) (page : ℕ) (r s t : ℤ)</span>
+<span id="L176"><a href="#L176"> 176</a>     (hpage : 2 ≤ page) (hpr : (page:ℤ) ≤ r)</span>
+<span id="L177"><a href="#L177"> 177</a>     (hnc : TowerNoCrossing (model.convergentMap</span>
+<span id="L178"><a href="#L178"> 178</a>       (.quotient (page-1) (.nu X)) (.shift (1,-((page-1:ℕ):ℤ)) (.nu X))</span>
+<span id="L179"><a href="#L179"> 179</a>       (absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) (page-1)))</span>
+<span id="L180"><a href="#L180"> 180</a>       (t-s,t) s r) :</span>
+<span id="L181"><a href="#L181"> 181</a>     NoCrossingOn model X r page (s,t) := by</span>
+<span id="L182"><a href="#L182"> 182</a>   refine ⟨by omega,hpr,?_⟩</span>
+<span id="L183"><a href="#L183"> 183</a>   rintro ⟨a,b,ha,har,hb,hbr,x,y,hd⟩</span>
+<span id="L184"><a href="#L184"> 184</a>   let q : ℕ := page-1</span>
+<span id="L185"><a href="#L185"> 185</a>   let i : ℕ := a.toNat</span>
+<span id="L186"><a href="#L186"> 186</a>   let k : ℕ := (r-a-b-1).toNat</span>
+<span id="L187"><a href="#L187"> 187</a>   have hqZ : (q:ℤ)=(page:ℤ)-1 := by dsimp [q]; omega</span>
+<span id="L188"><a href="#L188"> 188</a>   have hiZ : (i:ℤ)=a := by dsimp [i]; omega</span>
+<span id="L189"><a href="#L189"> 189</a>   have hkZ : (k:ℤ)=r-a-b-1 := by dsimp [k]; omega</span>
+<span id="L190"><a href="#L190"> 190</a>   have H := crossing_differential_contradicts_delta_no_crossing X q i k</span>
+<span id="L191"><a href="#L191"> 191</a>     (by omega) (by omega) (by omega) r s t (by omega) (by omega) hnc</span>
+<span id="L192"><a href="#L192"> 192</a>   have hs : s+a+(k:ℤ)+1=s+r-b := by omega</span>
+<span id="L193"><a href="#L193"> 193</a>   have ht : t+a+(k:ℤ)=t+r-b-1 := by omega</span>
+<span id="L194"><a href="#L194"> 194</a>   have hl : (k:ℤ)+1=r-a-b := by omega</span>
+<span id="L195"><a href="#L195"> 195</a>   rw [hiZ,hs,ht,hl] at H</span>
+<span id="L196"><a href="#L196"> 196</a>   exact H x y hd</span>
+<span id="L197"><a href="#L197"> 197</a> </span>
+<span id="L198"><a href="#L198"> 198</a> /-- AimPaper Proposition 4.16 (`prop:cross-dr-En`), with both directions</span>
+<span id="L199"><a href="#L199"> 199</a> and the full classical range `2 ≤ page ≤ r`. The quotient exponent is</span>
+<span id="L200"><a href="#L200"> 200</a> `page-1`, so `page=n+1` in the paper. -/</span>
+<span id="L201"><a href="#L201"> 201</a> public theorem classical_crossing_iff_delta_crossing</span>
+<span id="L202"><a href="#L202"> 202</a>     (X : ClassicalObject) (page : ℕ) (r s t : ℤ)</span>
+<span id="L203"><a href="#L203"> 203</a>     (hpage : 2 ≤ page) (hpr : (page:ℤ) ≤ r) :</span>
+<span id="L204"><a href="#L204"> 204</a>     HasCrossingOn model X r page (s,t) ↔ DeltaHasCrossing X page r s t := by</span>
+<span id="L205"><a href="#L205"> 205</a>   classical</span>
+<span id="L206"><a href="#L206"> 206</a>   have hdef : DeltaHasCrossing X page r s t ↔</span>
+<span id="L207"><a href="#L207"> 207</a>       ¬TowerNoCrossing (model.convergentMap</span>
+<span id="L208"><a href="#L208"> 208</a>         (.quotient (page-1) (.nu X)) (.shift (1,-((page-1:ℕ):ℤ)) (.nu X))</span>
+<span id="L209"><a href="#L209"> 209</a>         (absoluteBoundary (model.nu.functor.obj (X.obj model.auxiliary)) (page-1)))</span>
+<span id="L210"><a href="#L210"> 210</a>         (t-s,t) s r := by</span>
+<span id="L211"><a href="#L211"> 211</a>     constructor</span>
+<span id="L212"><a href="#L212"> 212</a>     · rintro ⟨u,v,hu,huv,hv,x,y,hess⟩ hn</span>
+<span id="L213"><a href="#L213"> 213</a>       exact hn u v hu huv hv x y</span>
+<span id="L214"><a href="#L214"> 214</a>         (by simpa only [Operations.biSuspensionIso,absoluteBoundary] using hess)</span>
+<span id="L215"><a href="#L215"> 215</a>     · intro hn</span>
+<span id="L216"><a href="#L216"> 216</a>       by_contra hnot</span>
+<span id="L217"><a href="#L217"> 217</a>       apply hn</span>
+<span id="L218"><a href="#L218"> 218</a>       intro u v hu huv hv x y hess</span>
+<span id="L219"><a href="#L219"> 219</a>       apply hnot</span>
+<span id="L220"><a href="#L220"> 220</a>       exact ⟨u,v,hu,huv,hv,x,y,</span>
+<span id="L221"><a href="#L221"> 221</a>         by simpa only [Operations.biSuspensionIso,absoluteBoundary] using hess⟩</span>
+<span id="L222"><a href="#L222"> 222</a>   rw [hdef]</span>
+<span id="L223"><a href="#L223"> 223</a>   constructor</span>
+<span id="L224"><a href="#L224"> 224</a>   · intro hcross hnc</span>
+<span id="L225"><a href="#L225"> 225</a>     exact (delta_no_crossing_implies_classical X page r s t hpage hpr hnc).2.2 hcross</span>
+<span id="L226"><a href="#L226"> 226</a>   · intro hcross</span>
+<span id="L227"><a href="#L227"> 227</a>     by_contra hnc</span>
+<span id="L228"><a href="#L228"> 228</a>     exact hcross (classical_noCrossing_absolute_boundary X page r s t ⟨by omega,hpr,hnc⟩)</span>
+<span id="L229"><a href="#L229"> 229</a> </span>
+<span id="L230"><a href="#L230"> 230</a> end</span>
+<span id="L231"><a href="#L231"> 231</a> end KIP126.ProofTools.Paper</span></pre>

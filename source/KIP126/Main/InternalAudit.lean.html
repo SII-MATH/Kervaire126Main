@@ -1,0 +1,423 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/InternalAudit.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/InternalAudit.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.PaperResults</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.PaperResults.TodaFiltration</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.AdamsTwoLine</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.BoundaryFormula</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.ChoiceIndependence</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.Choice.Completion</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.ClassicalReduction</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.Conditions</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.Main.DifferentialReduction</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.Main.H6SquarePermanent</span>
+<span id="L13"><a href="#L13">  13</a> import all KIP126.Main.Internal.AlphaOne.Classical</span>
+<span id="L14"><a href="#L14">  14</a> import all KIP126.Main.Internal.AlphaOne.Coherence</span>
+<span id="L15"><a href="#L15">  15</a> import all KIP126.Main.Internal.AlphaOne.Corrections</span>
+<span id="L16"><a href="#L16">  16</a> import all KIP126.Main.Internal.AlphaOne.Detection</span>
+<span id="L17"><a href="#L17">  17</a> import all KIP126.Main.Internal.AlphaOne.ErrorFiltration</span>
+<span id="L18"><a href="#L18">  18</a> import all KIP126.Main.Internal.AlphaOne.Existence</span>
+<span id="L19"><a href="#L19">  19</a> import all KIP126.Main.Internal.AlphaOne.Filtration</span>
+<span id="L20"><a href="#L20">  20</a> import all KIP126.Main.Internal.AlphaOne.FiniteFrames</span>
+<span id="L21"><a href="#L21">  21</a> import all KIP126.Main.Internal.AlphaOne.FiniteWindow</span>
+<span id="L22"><a href="#L22">  22</a> import all KIP126.Main.Internal.AlphaOne.LastDifferential</span>
+<span id="L23"><a href="#L23">  23</a> import all KIP126.Main.Internal.AlphaOne.Layers</span>
+<span id="L24"><a href="#L24">  24</a> import all KIP126.Main.Internal.AlphaOne.PageConsequences</span>
+<span id="L25"><a href="#L25">  25</a> import all KIP126.Main.Internal.AlphaOne.PageVanishing</span>
+<span id="L26"><a href="#L26">  26</a> import all KIP126.Main.Internal.AlphaOne.Quotients</span>
+<span id="L27"><a href="#L27">  27</a> import all KIP126.Main.Internal.AlphaOne.Staircase</span>
+<span id="L28"><a href="#L28">  28</a> import all KIP126.Main.Internal.Choice.Filtration</span>
+<span id="L29"><a href="#L29">  29</a> import all KIP126.Main.Internal.Choice.FinitePages</span>
+<span id="L30"><a href="#L30">  30</a> import all KIP126.Main.Internal.Choice.Gap</span>
+<span id="L31"><a href="#L31">  31</a> import all KIP126.Main.Internal.Choice.Invariance</span>
+<span id="L32"><a href="#L32">  32</a> import all KIP126.Main.Internal.Choice.LambdaInjectivity</span>
+<span id="L33"><a href="#L33">  33</a> import all KIP126.Main.Internal.Choice.OrderTwo</span>
+<span id="L34"><a href="#L34">  34</a> import all KIP126.Main.Internal.Choice.PageFrames</span>
+<span id="L35"><a href="#L35">  35</a> import all KIP126.Main.Internal.CofiberRigidity</span>
+<span id="L36"><a href="#L36">  36</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L37"><a href="#L37">  37</a> import all KIP126.Main.Internal.FiniteReflection</span>
+<span id="L38"><a href="#L38">  38</a> import all KIP126.Main.Internal.High125.Detector</span>
+<span id="L39"><a href="#L39">  39</a> import all KIP126.Main.Internal.High125.Differential</span>
+<span id="L40"><a href="#L40">  40</a> import all KIP126.Main.Internal.High125.Filtration</span>
+<span id="L41"><a href="#L41">  41</a> import all KIP126.Main.Internal.High125.Finite</span>
+<span id="L42"><a href="#L42">  42</a> import all KIP126.Main.Internal.High125.Injectivity</span>
+<span id="L43"><a href="#L43">  43</a> import all KIP126.Main.Internal.High125.Pages</span>
+<span id="L44"><a href="#L44">  44</a> import all KIP126.Main.Internal.High125.Source</span>
+<span id="L45"><a href="#L45">  45</a> import all KIP126.Main.Internal.High125.Tail</span>
+<span id="L46"><a href="#L46">  46</a> import all KIP126.Main.Internal.LambdaZero</span>
+<span id="L47"><a href="#L47">  47</a> import all KIP126.Main.Internal.LowEta</span>
+<span id="L48"><a href="#L48">  48</a> import all KIP126.Main.Internal.NuFifth.Frame</span>
+<span id="L49"><a href="#L49">  49</a> import all KIP126.Main.Internal.NuFifth.Lift</span>
+<span id="L50"><a href="#L50">  50</a> import all KIP126.Main.Internal.NuNinth.Assembly</span>
+<span id="L51"><a href="#L51">  51</a> import all KIP126.Main.Internal.NuNinth.Fourth</span>
+<span id="L52"><a href="#L52">  52</a> import all KIP126.Main.Internal.NuNinth.Frames</span>
+<span id="L53"><a href="#L53">  53</a> import all KIP126.Main.Internal.NuNinth.Incoming</span>
+<span id="L54"><a href="#L54">  54</a> import all KIP126.Main.Internal.NuNinth.Lift</span>
+<span id="L55"><a href="#L55">  55</a> import all KIP126.Main.Internal.NuNinth.Shift</span>
+<span id="L56"><a href="#L56">  56</a> import all KIP126.Main.Internal.NuNinth.Unit</span>
+<span id="L57"><a href="#L57">  57</a> import all KIP126.Main.Internal.NuThree.Actual</span>
+<span id="L58"><a href="#L58">  58</a> import all KIP126.Main.Internal.NuThree.ActualOperations</span>
+<span id="L59"><a href="#L59">  59</a> import all KIP126.Main.Internal.NuThree.Assembly</span>
+<span id="L60"><a href="#L60">  60</a> import all KIP126.Main.Internal.NuThree.ClassicalZero</span>
+<span id="L61"><a href="#L61">  61</a> import all KIP126.Main.Internal.NuThree.Finite</span>
+<span id="L62"><a href="#L62">  62</a> import all KIP126.Main.Internal.NuThree.Mahowald</span>
+<span id="L63"><a href="#L63">  63</a> import all KIP126.Main.Internal.NuThree.Shift</span>
+<span id="L64"><a href="#L64">  64</a> import all KIP126.Main.Internal.NuThree.Suspension</span>
+<span id="L65"><a href="#L65">  65</a> import all KIP126.Main.Internal.NuThree.ZeroExtensions</span>
+<span id="L66"><a href="#L66">  66</a> import all KIP126.Main.Internal.NuThree.ZeroLabels</span>
+<span id="L67"><a href="#L67">  67</a> import all KIP126.Main.Internal.PageCalculus</span>
+<span id="L68"><a href="#L68">  68</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L69"><a href="#L69">  69</a> import all KIP126.Main.Internal.Selected.Assembly</span>
+<span id="L70"><a href="#L70">  70</a> import all KIP126.Main.Internal.Selected.Classical</span>
+<span id="L71"><a href="#L71">  71</a> import all KIP126.Main.Internal.Selected.DetectionOperations</span>
+<span id="L72"><a href="#L72">  72</a> import all KIP126.Main.Internal.Selected.Exhaustion</span>
+<span id="L73"><a href="#L73">  73</a> import all KIP126.Main.Internal.Selected.FinitePages</span>
+<span id="L74"><a href="#L74">  74</a> import all KIP126.Main.Internal.Selected.InfinityFrames</span>
+<span id="L75"><a href="#L75">  75</a> import all KIP126.Main.Internal.Selected.LambdaOperations</span>
+<span id="L76"><a href="#L76">  76</a> import all KIP126.Main.Internal.Selected.NormalizedFacts</span>
+<span id="L77"><a href="#L77">  77</a> import all KIP126.Main.Internal.Selected.NormalizedTable</span>
+<span id="L78"><a href="#L78">  78</a> import all KIP126.Main.Internal.Selected.NuErrorData</span>
+<span id="L79"><a href="#L79">  79</a> import all KIP126.Main.Internal.Selected.ProductDetection</span>
+<span id="L80"><a href="#L80">  80</a> import all KIP126.Main.Internal.Selected.ProductZero</span>
+<span id="L81"><a href="#L81">  81</a> import all KIP126.Main.Internal.Selected.SphereDetection</span>
+<span id="L82"><a href="#L82">  82</a> import all KIP126.Main.Internal.Selected.TargetFrame</span>
+<span id="L83"><a href="#L83">  83</a> import all KIP126.Main.Internal.Selected.ThetaFrames</span>
+<span id="L84"><a href="#L84">  84</a> import all KIP126.Main.Internal.Theta.Detection</span>
+<span id="L85"><a href="#L85">  85</a> import all KIP126.Main.Internal.Theta.NoCrossing</span>
+<span id="L86"><a href="#L86">  86</a> import all KIP126.Main.Internal.Theta.OrderTwo</span>
+<span id="L87"><a href="#L87">  87</a> import all KIP126.Main.Internal.Theta.Products</span>
+<span id="L88"><a href="#L88">  88</a> import all KIP126.Main.Internal.Theta.RealizationKernel</span>
+<span id="L89"><a href="#L89">  89</a> import all KIP126.Main.Internal.Theta.Shuffle</span>
+<span id="L90"><a href="#L90">  90</a> import all KIP126.Main.Internal.Theta.TodaAlgebra</span>
+<span id="L91"><a href="#L91">  91</a> import all KIP126.Main.Internal.Theta.TodaCofiber</span>
+<span id="L92"><a href="#L92">  92</a> import all KIP126.Main.Internal.Theta.TodaExistence</span>
+<span id="L93"><a href="#L93">  93</a> import all KIP126.Main.Internal.Theta.TodaIndeterminacy</span>
+<span id="L94"><a href="#L94">  94</a> import all KIP126.Main.Internal.Theta.ZeroDegree</span>
+<span id="L95"><a href="#L95">  95</a> import all KIP126.Main.DifferentialCriterion</span>
+<span id="L96"><a href="#L96">  96</a> import all KIP126.Main.RepresentativeResults</span>
+<span id="L97"><a href="#L97">  97</a> import all KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L98"><a href="#L98">  98</a> import all KIP126.Main.SectionSeven.AnyYError</span>
+<span id="L99"><a href="#L99">  99</a> import all KIP126.Main.SectionSeven.AnyYFinite</span>
+<span id="L100"><a href="#L100"> 100</a> import all KIP126.Main.SectionSeven.AnyYPeeling</span>
+<span id="L101"><a href="#L101"> 101</a> import all KIP126.Main.SectionSeven.AnyYShuffle</span>
+<span id="L102"><a href="#L102"> 102</a> import all KIP126.Main.SectionSeven.AnyYSplit</span>
+<span id="L103"><a href="#L103"> 103</a> import all KIP126.Main.SectionSeven.AnyYTarget</span>
+<span id="L104"><a href="#L104"> 104</a> import all KIP126.Main.SectionSeven.CofiberRigidity</span>
+<span id="L105"><a href="#L105"> 105</a> import all KIP126.Main.SectionSeven.Final</span>
+<span id="L106"><a href="#L106"> 106</a> import all KIP126.Main.SectionSeven.Indeterminacy</span>
+<span id="L107"><a href="#L107"> 107</a> import all KIP126.Main.SectionSeven.NormalizedNu</span>
+<span id="L108"><a href="#L108"> 108</a> import all KIP126.Main.SectionSeven.NuFifthAction</span>
+<span id="L109"><a href="#L109"> 109</a> import all KIP126.Main.SectionSeven.NuTarget</span>
+<span id="L110"><a href="#L110"> 110</a> import all KIP126.Main.SectionSeven.NuTargetCommute</span>
+<span id="L111"><a href="#L111"> 111</a> import all KIP126.Main.SectionSeven.NuTargetCosets</span>
+<span id="L112"><a href="#L112"> 112</a> import all KIP126.Main.SectionSeven.NuTargetDetection</span>
+<span id="L113"><a href="#L113"> 113</a> import all KIP126.Main.SectionSeven.NuTargetE2Calculus</span>
+<span id="L114"><a href="#L114"> 114</a> import all KIP126.Main.SectionSeven.NuTargetFinite</span>
+<span id="L115"><a href="#L115"> 115</a> import all KIP126.Main.SectionSeven.NuTargetFiniteGap</span>
+<span id="L116"><a href="#L116"> 116</a> import all KIP126.Main.SectionSeven.NuTargetFrame</span>
+<span id="L117"><a href="#L117"> 117</a> import all KIP126.Main.SectionSeven.NuTargetFull</span>
+<span id="L118"><a href="#L118"> 118</a> import all KIP126.Main.SectionSeven.NuTargetH0Products</span>
+<span id="L119"><a href="#L119"> 119</a> import all KIP126.Main.SectionSeven.NuTargetLambda</span>
+<span id="L120"><a href="#L120"> 120</a> import all KIP126.Main.SectionSeven.NuTargetLinear</span>
+<span id="L121"><a href="#L121"> 121</a> import all KIP126.Main.SectionSeven.NuTargetPeeling</span>
+<span id="L122"><a href="#L122"> 122</a> import all KIP126.Main.SectionSeven.NuTargetProducts</span>
+<span id="L123"><a href="#L123"> 123</a> import all KIP126.Main.SectionSeven.NuTargetWindows</span>
+<span id="L124"><a href="#L124"> 124</a> import all KIP126.Main.SectionSeven.NuTargetYLambda</span>
+<span id="L125"><a href="#L125"> 125</a> import all KIP126.Main.SectionSeven.NuTargetYRelation</span>
+<span id="L126"><a href="#L126"> 126</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L127"><a href="#L127"> 127</a> import all KIP126.Main.SectionSeven.ThetaEta</span>
+<span id="L128"><a href="#L128"> 128</a> import all KIP126.Main.SectionSeven.ThetaToda</span>
+<span id="L129"><a href="#L129"> 129</a> import all KIP126.Main.SectionSeven.TodaNonempty</span>
+<span id="L130"><a href="#L130"> 130</a> import all KIP126.Main.SectionSeven.WeakInitialLambda</span>
+<span id="L131"><a href="#L131"> 131</a> import all KIP126.Main.SectionSeven.WeakInitialNonzero</span>
+<span id="L132"><a href="#L132"> 132</a> import all KIP126.Main.SectionSeven.WeakRepresentative</span>
+<span id="L133"><a href="#L133"> 133</a> import all KIP126.Main.SectionSeven.WeakStrip</span>
+<span id="L134"><a href="#L134"> 134</a> import all KIP126.Main.SectionSeven.WeakStripFinite</span>
+<span id="L135"><a href="#L135"> 135</a> import all KIP126.Main.SectionSeven.WeakStripTorsion</span>
+<span id="L136"><a href="#L136"> 136</a> import all KIP126.Main.SectionSeven.WeakYDetection</span>
+<span id="L137"><a href="#L137"> 137</a> import all KIP126.Main.SectionSeven.WeakYFinite</span>
+<span id="L138"><a href="#L138"> 138</a> import all KIP126.Main.SquareClassification</span>
+<span id="L139"><a href="#L139"> 139</a> import all KIP126.Main.TableOne</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> </span>
+<span id="L142"><a href="#L142"> 142</a> public meta import Checks.Registry</span>
+<span id="L143"><a href="#L143"> 143</a> import Lean</span>
+<span id="L144"><a href="#L144"> 144</a> </span>
+<span id="L145"><a href="#L145"> 145</a> /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually</span>
+<span id="L146"><a href="#L146"> 146</a> registered proof/construction holes are permitted; project axioms and synthetic</span>
+<span id="L147"><a href="#L147"> 147</a> (elaboration-error) holes are always rejected. SpectralSequence stays sorry-free. -/</span>
+<span id="L148"><a href="#L148"> 148</a> -- Former public-consumer examples remain checked inside Main after encapsulation.</span>
+<span id="L149"><a href="#L149"> 149</a> namespace KIP126.Main.InternalAudit</span>
+<span id="L150"><a href="#L150"> 150</a> open KIP126.Main KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L151"><a href="#L151"> 151</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L152"><a href="#L152"> 152</a> open KIP126.Literature.Standard (eta bxTheta5)</span>
+<span id="L153"><a href="#L153"> 153</a> </span>
+<span id="L154"><a href="#L154"> 154</a> example : ∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u :=</span>
+<span id="L155"><a href="#L155"> 155</a>   u_choice_exists</span>
+<span id="L156"><a href="#L156"> 156</a> </span>
+<span id="L157"><a href="#L157"> 157</a> example (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :</span>
+<span id="L158"><a href="#L158"> 158</a>     ∃ y : BiHom 125 139 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L159"><a href="#L159"> 159</a>       lambdaMultiply 3 (sphereProduct eta u) = lambdaMultiply 6 y :=</span>
+<span id="L160"><a href="#L160"> 160</a>   lambda_three_eta_u_eq_lambda_six u hu</span>
+<span id="L161"><a href="#L161"> 161</a> </span>
+<span id="L162"><a href="#L162"> 162</a> example (u v : BiHom 124 134 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L163"><a href="#L163"> 163</a>     (hu : UChoice u) (hv : UChoice v) :</span>
+<span id="L164"><a href="#L164"> 164</a>     FiltrationAtLeast model.syntheticTower 14</span>
+<span id="L165"><a href="#L165"> 165</a>       (lambdaMultiply 3 (sphereProduct eta u) -</span>
+<span id="L166"><a href="#L166"> 166</a>         lambdaMultiply 3 (sphereProduct eta v)) :=</span>
+<span id="L167"><a href="#L167"> 167</a>   lambda_three_eta_u_difference_filtration_fourteen u v hu hv</span>
+<span id="L168"><a href="#L168"> 168</a> </span>
+<span id="L169"><a href="#L169"> 169</a> example (hc3 : Stem126D6Vanishes) (h : ∀ u, UChoice u → EtaExtensionDetectionAt u) : False := table1 hc3 h</span>
+<span id="L170"><a href="#L170"> 170</a> </span>
+<span id="L171"><a href="#L171"> 171</a> -- Recover the former three-possibility shape with actual representatives.</span>
+<span id="L172"><a href="#L172"> 172</a> example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (_htheta : ThetaChoice theta) :</span>
+<span id="L173"><a href="#L173"> 173</a>     (∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u ∧</span>
+<span id="L174"><a href="#L174"> 174</a>       sphereProduct theta theta = lambdaMultiply 6 u) ∨</span>
+<span id="L175"><a href="#L175"> 175</a>     (∃ c : BiHom 124 137 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L176"><a href="#L176"> 176</a>       sphereProduct theta theta = lambdaMultiply 9 c) ∨</span>
+<span id="L177"><a href="#L177"> 177</a>     (∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L178"><a href="#L178"> 178</a>       sphereProduct theta theta = lambdaMultiply 10 a) := by</span>
+<span id="L179"><a href="#L179"> 179</a>   rcases theta_square_three_possibilities theta with h6 | h9 | h10</span>
+<span id="L180"><a href="#L180"> 180</a>   · exact Or.inl h6</span>
+<span id="L181"><a href="#L181"> 181</a>   · obtain ⟨c, _, hc⟩ := h9</span>
+<span id="L182"><a href="#L182"> 182</a>     exact Or.inr (Or.inl ⟨c, hc⟩)</span>
+<span id="L183"><a href="#L183"> 183</a>   · exact Or.inr (Or.inr h10)</span>
+<span id="L184"><a href="#L184"> 184</a> </span>
+<span id="L185"><a href="#L185"> 185</a> example : KIP126.Literature.deltaH6Square model =</span>
+<span id="L186"><a href="#L186"> 186</a>     KIP126.Literature.Standard.lambdaEtaThetaSquare bxTheta5 :=</span>
+<span id="L187"><a href="#L187"> 187</a>   delta_h6_square_bx</span>
+<span id="L188"><a href="#L188"> 188</a> </span>
+<span id="L189"><a href="#L189"> 189</a> example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :</span>
+<span id="L190"><a href="#L190"> 190</a>     KIP126.Literature.deltaH6Square model =</span>
+<span id="L191"><a href="#L191"> 191</a>       KIP126.Literature.Standard.lambdaEtaThetaSquare theta :=</span>
+<span id="L192"><a href="#L192"> 192</a>   delta_h6_square_eq_lambda_eta_theta_square theta htheta</span>
+<span id="L193"><a href="#L193"> 193</a> </span>
+<span id="L194"><a href="#L194"> 194</a> example : Stem126D6Vanishes ↔</span>
+<span id="L195"><a href="#L195"> 195</a>     KIP126.Core.SpectralSequence.SurvivesTo model.classical.sphere 12 (14,139)</span>
+<span id="L196"><a href="#L196"> 196</a>       KIP126.Computation.Standard.T := d6_vanishes_iff_target_survives_twelve</span>
+<span id="L197"><a href="#L197"> 197</a> </span>
+<span id="L198"><a href="#L198"> 198</a> end KIP126.Main.InternalAudit</span>
+<span id="L199"><a href="#L199"> 199</a> </span>
+<span id="L200"><a href="#L200"> 200</a> </span>
+<span id="L201"><a href="#L201"> 201</a> open Lean Elab Command</span>
+<span id="L202"><a href="#L202"> 202</a> set_option maxHeartbeats 0</span>
+<span id="L203"><a href="#L203"> 203</a> set_option maxRecDepth 8192</span>
+<span id="L204"><a href="#L204"> 204</a> run_cmd do</span>
+<span id="L205"><a href="#L205"> 205</a>   let ledger ← Lean.ofExcept &lt;| Json.parse proofObligationLedger</span>
+<span id="L206"><a href="#L206"> 206</a>   let entries ← Lean.ofExcept &lt;| ledger.getObjValAs? (Array Json) &quot;obligations&quot;</span>
+<span id="L207"><a href="#L207"> 207</a>   let expected : Array Json ← entries.filterM fun (row : Json) =&gt; do</span>
+<span id="L208"><a href="#L208"> 208</a>     let mod ← Lean.ofExcept &lt;| row.getObjValAs? String &quot;module&quot;</span>
+<span id="L209"><a href="#L209"> 209</a>     pure ((`KIP126.Main).isPrefixOf mod.toName)</span>
+<span id="L210"><a href="#L210"> 210</a>   let expectedNames : Array String ← expected.mapM fun (row : Json) =&gt; Lean.ofExcept &lt;| row.getObjValAs? String &quot;name&quot;</span>
+<span id="L211"><a href="#L211"> 211</a>   let env ← getEnv</span>
+<span id="L212"><a href="#L212"> 212</a>   let mut checked : Nat := 0</span>
+<span id="L213"><a href="#L213"> 213</a>   let mut holes : Array String := #[]</span>
+<span id="L214"><a href="#L214"> 214</a>   for (name, info) in env.constants.toList do</span>
+<span id="L215"><a href="#L215"> 215</a>     let some idx := env.getModuleIdxFor? name | continue</span>
+<span id="L216"><a href="#L216"> 216</a>     let mod := env.header.moduleNames[idx.toNat]!</span>
+<span id="L217"><a href="#L217"> 217</a>     unless (`KIP126.Main).isPrefixOf mod do continue</span>
+<span id="L218"><a href="#L218"> 218</a>     if info.isAxiom then throwError &quot;Project axiom declaration: {name}&quot;</span>
+<span id="L219"><a href="#L219"> 219</a>     let body := info.value? (allowOpaque := true)</span>
+<span id="L220"><a href="#L220"> 220</a>     if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then</span>
+<span id="L221"><a href="#L221"> 221</a>       throwError &quot;Synthetic sorry from failed elaboration: {name}&quot;</span>
+<span id="L222"><a href="#L222"> 222</a>     if info.type.hasSorry || body.any (·.hasSorry) then</span>
+<span id="L223"><a href="#L223"> 223</a>       holes := holes.push name.toString</span>
+<span id="L224"><a href="#L224"> 224</a>       let some entry := expected.find? (fun e =&gt; e.getObjValAs? String &quot;name&quot; == .ok name.toString)</span>
+<span id="L225"><a href="#L225"> 225</a>         | throwError &quot;Unregistered proof/construction obligation: {name}&quot;</span>
+<span id="L226"><a href="#L226"> 226</a>       let expectedType ← Lean.ofExcept &lt;| entry.getObjValAs? String &quot;type_fingerprint&quot;</span>
+<span id="L227"><a href="#L227"> 227</a>       let expectedBody ← Lean.ofExcept &lt;| entry.getObjValAs? String &quot;body_fingerprint&quot;</span>
+<span id="L228"><a href="#L228"> 228</a>       unless expectedType == toString (hash (toString info.type)) &amp;&amp;</span>
+<span id="L229"><a href="#L229"> 229</a>           expectedBody == toString (hash (toString body)) do</span>
+<span id="L230"><a href="#L230"> 230</a>         throwError &quot;Registered obligation changed; review its exact type/body: {name}&quot;</span>
+<span id="L231"><a href="#L231"> 231</a>     let axioms ← collectAxioms name</span>
+<span id="L232"><a href="#L232"> 232</a>     let unexpected := axioms.filter fun n =&gt;</span>
+<span id="L233"><a href="#L233"> 233</a>       n != `propext &amp;&amp; n != `Classical.choice &amp;&amp; n != `Quot.sound &amp;&amp; n != `sorryAx</span>
+<span id="L234"><a href="#L234"> 234</a>     unless unexpected.isEmpty do</span>
+<span id="L235"><a href="#L235"> 235</a>       throwError &quot;Unexpected axiom dependency in {name}: {unexpected}&quot;</span>
+<span id="L236"><a href="#L236"> 236</a>     checked := checked + 1</span>
+<span id="L237"><a href="#L237"> 237</a>   unless holes.qsort (· &lt; ·) == expectedNames.qsort (· &lt; ·) do</span>
+<span id="L238"><a href="#L238"> 238</a>     throwError &quot;Proof obligation registry has stale or missing declarations: {holes}&quot;</span>
+<span id="L239"><a href="#L239"> 239</a>   logInfo m!&quot;Main trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms&quot;</span>
+<span id="L240"><a href="#L240"> 240</a> </span>
+<span id="L241"><a href="#L241"> 241</a> -- Public results and internal replacements retain their reviewed local</span>
+<span id="L242"><a href="#L242"> 242</a> -- proof dependencies. Upstream obligations remain owned by upstream modules.</span>
+<span id="L243"><a href="#L243"> 243</a> run_cmd do</span>
+<span id="L244"><a href="#L244"> 244</a>   let env ← getEnv</span>
+<span id="L245"><a href="#L245"> 245</a>   let checks : Array (Name × Array Name) := #[</span>
+<span id="L246"><a href="#L246"> 246</a>     (`KIP126.Main.u_choice_exists, #[]),</span>
+<span id="L247"><a href="#L247"> 247</a>     (`KIP126.Main.lambda_three_eta_u_filtration_fourteen, #[]),</span>
+<span id="L248"><a href="#L248"> 248</a>     (`KIP126.Main.lambda_three_eta_u_eq_lambda_six, #[]),</span>
+<span id="L249"><a href="#L249"> 249</a>     (`KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen, #[]),</span>
+<span id="L250"><a href="#L250"> 250</a>     (`KIP126.Main.table1, #[]),</span>
+<span id="L251"><a href="#L251"> 251</a>     (`KIP126.Main.theta_square_detection_cases, #[]),</span>
+<span id="L252"><a href="#L252"> 252</a>     (`KIP126.Main.theta_square_three_possibilities, #[]),</span>
+<span id="L253"><a href="#L253"> 253</a>     (`KIP126.Main.delta_h6_square_bx, #[]),</span>
+<span id="L254"><a href="#L254"> 254</a>     (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square, #[]),</span>
+<span id="L255"><a href="#L255"> 255</a>     (`KIP126.Main.normalized_bx_finite, #[]),</span>
+<span id="L256"><a href="#L256"> 256</a>     (`KIP126.Main.normalized_quotient, #[]),</span>
+<span id="L257"><a href="#L257"> 257</a>     (`KIP126.Main.adams_two_line_known_squares, #[]),</span>
+<span id="L258"><a href="#L258"> 258</a>     (`KIP126.Main.adams_two_line_stem126, #[]),</span>
+<span id="L259"><a href="#L259"> 259</a>     (`KIP126.Main.adams_two_line_classification, #[]),</span>
+<span id="L260"><a href="#L260"> 260</a>     (`KIP126.Main.h6_square_basis, #[]),</span>
+<span id="L261"><a href="#L261"> 261</a>     (`KIP126.Main.h6_square_reaches_seven, #[]),</span>
+<span id="L262"><a href="#L262"> 262</a>     (`KIP126.Main.h6_square_survives_three, #[]),</span>
+<span id="L263"><a href="#L263"> 263</a>     (`KIP126.Main.lambda_eta_theta_square_mod_lambda_zero, #[]),</span>
+<span id="L264"><a href="#L264"> 264</a>     (`KIP126.Main.any_choice_criterion, #[]),</span>
+<span id="L265"><a href="#L265"> 265</a>     (`KIP126.Main.lambda_eta_theta_square_independent, #[]),</span>
+<span id="L266"><a href="#L266"> 266</a>     (`KIP126.Main.eta_extension_detection_choice_equivalence, #[])]</span>
+<span id="L267"><a href="#L267"> 267</a>   for (root, expected) in checks do</span>
+<span id="L268"><a href="#L268"> 268</a>     let roots := env.constants.toList.filter fun (name, _) =&gt;</span>
+<span id="L269"><a href="#L269"> 269</a>       ((privateToUserName? name).getD name) == root</span>
+<span id="L270"><a href="#L270"> 270</a>     unless roots.length == 1 do</span>
+<span id="L271"><a href="#L271"> 271</a>       throwError &quot;Missing unique Main declaration: {root}&quot;</span>
+<span id="L272"><a href="#L272"> 272</a>     let mut todo := #[roots.head!.1]</span>
+<span id="L273"><a href="#L273"> 273</a>     let mut visited : NameSet := {}</span>
+<span id="L274"><a href="#L274"> 274</a>     let mut actual : Array Name := #[]</span>
+<span id="L275"><a href="#L275"> 275</a>     while let some name := todo.back? do</span>
+<span id="L276"><a href="#L276"> 276</a>       todo := todo.pop</span>
+<span id="L277"><a href="#L277"> 277</a>       if visited.contains name then continue</span>
+<span id="L278"><a href="#L278"> 278</a>       visited := visited.insert name</span>
+<span id="L279"><a href="#L279"> 279</a>       let some info := env.find? name</span>
+<span id="L280"><a href="#L280"> 280</a>         | throwError &quot;Missing proof dependency while auditing {root}: {name}&quot;</span>
+<span id="L281"><a href="#L281"> 281</a>       let some idx := env.getModuleIdxFor? name | continue</span>
+<span id="L282"><a href="#L282"> 282</a>       unless (`KIP126.Main).isPrefixOf env.header.moduleNames[idx.toNat]! do continue</span>
+<span id="L283"><a href="#L283"> 283</a>       let body := info.value? (allowOpaque := true)</span>
+<span id="L284"><a href="#L284"> 284</a>       if info.type.hasSorry || body.any (·.hasSorry) then</span>
+<span id="L285"><a href="#L285"> 285</a>         actual := actual.push name</span>
+<span id="L286"><a href="#L286"> 286</a>       todo := todo ++ info.type.getUsedConstants</span>
+<span id="L287"><a href="#L287"> 287</a>       if let some value := body then todo := todo ++ value.getUsedConstants</span>
+<span id="L288"><a href="#L288"> 288</a>     unless (actual.map Name.toString).qsort (· &lt; ·) ==</span>
+<span id="L289"><a href="#L289"> 289</a>         (expected.map Name.toString).qsort (· &lt; ·) do</span>
+<span id="L290"><a href="#L290"> 290</a>       throwError &quot;Main proof dependencies changed for {root}: {actual}; expected {expected}&quot;</span>
+<span id="L291"><a href="#L291"> 291</a>   logInfo m!&quot;Main legacy-result audit: {checks.size} public/internal results have the exact reviewed local proof dependencies&quot;</span>
+<span id="L292"><a href="#L292"> 292</a> </span>
+<span id="L293"><a href="#L293"> 293</a> -- The updated Nu9 proof uses only the finite Y incoming window.</span>
+<span id="L294"><a href="#L294"> 294</a> run_cmd do</span>
+<span id="L295"><a href="#L295"> 295</a>   let env ← getEnv</span>
+<span id="L296"><a href="#L296"> 296</a>   let roots := env.constants.toList.filter fun (name, _) =&gt;</span>
+<span id="L297"><a href="#L297"> 297</a>     ((privateToUserName? name).getD name) ==</span>
+<span id="L298"><a href="#L298"> 298</a>       `KIP126.Main.Internal.NuNinth.nu_ninth_of_fifth_complete</span>
+<span id="L299"><a href="#L299"> 299</a>   unless roots.length == 1 do</span>
+<span id="L300"><a href="#L300"> 300</a>     throwError &quot;Missing unique Nu9 finite-window proof&quot;</span>
+<span id="L301"><a href="#L301"> 301</a>   let mut todo := roots.toArray.map (·.1)</span>
+<span id="L302"><a href="#L302"> 302</a>   let mut visited : NameSet := {}</span>
+<span id="L303"><a href="#L303"> 303</a>   while let some name := todo.back? do</span>
+<span id="L304"><a href="#L304"> 304</a>     todo := todo.pop</span>
+<span id="L305"><a href="#L305"> 305</a>     if name == `KIP126.Computation.Standard.y_not_hit then</span>
+<span id="L306"><a href="#L306"> 306</a>       throwError &quot;Nu9 regained the unrestricted Y incoming assumption&quot;</span>
+<span id="L307"><a href="#L307"> 307</a>     if visited.contains name then continue</span>
+<span id="L308"><a href="#L308"> 308</a>     visited := visited.insert name</span>
+<span id="L309"><a href="#L309"> 309</a>     let some info := env.find? name | continue</span>
+<span id="L310"><a href="#L310"> 310</a>     let some idx := env.getModuleIdxFor? name | continue</span>
+<span id="L311"><a href="#L311"> 311</a>     unless (`KIP126.Main).isPrefixOf env.header.moduleNames[idx.toNat]! do continue</span>
+<span id="L312"><a href="#L312"> 312</a>     todo := todo ++ info.type.getUsedConstants</span>
+<span id="L313"><a href="#L313"> 313</a>     if let some value := info.value? (allowOpaque := true) then</span>
+<span id="L314"><a href="#L314"> 314</a>       todo := todo ++ value.getUsedConstants</span>
+<span id="L315"><a href="#L315"> 315</a>   logInfo &quot;Nu9 finite-window dependency audit: no unrestricted Y incoming assumption&quot;</span>
+<span id="L316"><a href="#L316"> 316</a> </span>
+<span id="L317"><a href="#L317"> 317</a> </span>
+<span id="L318"><a href="#L318"> 318</a> run_cmd do</span>
+<span id="L319"><a href="#L319"> 319</a>   let env ← getEnv</span>
+<span id="L320"><a href="#L320"> 320</a>   for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion, `KIP126.Main.eta_extension_excluded_of_d6_vanishes,</span>
+<span id="L321"><a href="#L321"> 321</a>       `KIP126.Main.h6_sq_permanent, `KIP126.Main.SectionSeven.eta_extension_excluded_of_d6_vanishes,</span>
+<span id="L322"><a href="#L322"> 322</a>       `KIP126.Main.theta5_square_nonzero_detection_choice_invariant,</span>
+<span id="L323"><a href="#L323"> 323</a>       `KIP126.Main.permanence_or_d12,</span>
+<span id="L324"><a href="#L324"> 324</a>       `KIP126.Main.d12_implies_square_and_eta,</span>
+<span id="L325"><a href="#L325"> 325</a>       `KIP126.Main.conditions_imply_d12,</span>
+<span id="L326"><a href="#L326"> 326</a>       `KIP126.Main.SectionSeven.detected_target_bottom_lambda_four_nonzero,</span>
+<span id="L327"><a href="#L327"> 327</a>       `KIP126.Main.SectionSeven.target_nu_divisible,</span>
+<span id="L328"><a href="#L328"> 328</a>       `KIP126.Main.u_choice_exists,</span>
+<span id="L329"><a href="#L329"> 329</a>       `KIP126.Main.lambda_three_eta_u_filtration_fourteen,</span>
+<span id="L330"><a href="#L330"> 330</a>       `KIP126.Main.lambda_three_eta_u_eq_lambda_six,</span>
+<span id="L331"><a href="#L331"> 331</a>       `KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen,</span>
+<span id="L332"><a href="#L332"> 332</a>       `KIP126.Main.theta_square_detection_cases,</span>
+<span id="L333"><a href="#L333"> 333</a>       `KIP126.Main.theta_square_three_possibilities,</span>
+<span id="L334"><a href="#L334"> 334</a>       `KIP126.Main.table1,</span>
+<span id="L335"><a href="#L335"> 335</a>       `KIP126.Main.delta_h6_square_bx,</span>
+<span id="L336"><a href="#L336"> 336</a>       `KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square] do</span>
+<span id="L337"><a href="#L337"> 337</a>     let candidates := env.constants.toList.filter fun (n, _) =&gt;</span>
+<span id="L338"><a href="#L338"> 338</a>       ((privateToUserName? n).getD n) == name</span>
+<span id="L339"><a href="#L339"> 339</a>     unless candidates.length == 1 do</span>
+<span id="L340"><a href="#L340"> 340</a>       throwError &quot;Missing unique paper proof assembly: {name}&quot;</span>
+<span id="L341"><a href="#L341"> 341</a>     let info := candidates.head!.2</span>
+<span id="L342"><a href="#L342"> 342</a>     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then</span>
+<span id="L343"><a href="#L343"> 343</a>       throwError &quot;Paper proof assembly was replaced by a direct placeholder: {name}&quot;</span>
+<span id="L344"><a href="#L344"> 344</a> </span>
+<span id="L345"><a href="#L345"> 345</a> </span>
+<span id="L346"><a href="#L346"> 346</a> -- Normal imports deliberately hide ProofTools proof bodies. Audit every Main</span>
+<span id="L347"><a href="#L347"> 347</a> -- body here and freeze the exact hand-off to the same-module ProofTools audit;</span>
+<span id="L348"><a href="#L348"> 348</a> -- that audit recursively checks these boundary declarations with full bodies.</span>
+<span id="L349"><a href="#L349"> 349</a> -- The independent full-body dependency observer checks the composed graph.</span>
+<span id="L350"><a href="#L350"> 350</a> run_cmd do</span>
+<span id="L351"><a href="#L351"> 351</a>   let contract ← Lean.ofExcept &lt;| Json.parse (include_str &quot;../../metadata/main-api.json&quot;)</span>
+<span id="L352"><a href="#L352"> 352</a>   let rows ← Lean.ofExcept &lt;| contract.getObjValAs? (Array Json) &quot;declarations&quot;</span>
+<span id="L353"><a href="#L353"> 353</a>   let roots ← rows.mapM fun row =&gt; do</span>
+<span id="L354"><a href="#L354"> 354</a>     let name ← Lean.ofExcept &lt;| row.getObjValAs? String &quot;name&quot;</span>
+<span id="L355"><a href="#L355"> 355</a>     pure name.toName</span>
+<span id="L356"><a href="#L356"> 356</a>   let ledger ← Lean.ofExcept &lt;| Json.parse proofObligationLedger</span>
+<span id="L357"><a href="#L357"> 357</a>   let route ← Lean.ofExcept &lt;| ledger.getObjVal? &quot;main_zero_layer_rewire_2026_10_16&quot;</span>
+<span id="L358"><a href="#L358"> 358</a>   let boundaryNames ← Lean.ofExcept &lt;| route.getObjValAs? (Array String)</span>
+<span id="L359"><a href="#L359"> 359</a>     &quot;proofTools_boundary_declarations&quot;</span>
+<span id="L360"><a href="#L360"> 360</a>   let reviewedProofToolsBoundary := boundaryNames.map String.toName</span>
+<span id="L361"><a href="#L361"> 361</a>   let reviewedRootNames ← Lean.ofExcept &lt;| route.getObjValAs? (Array String)</span>
+<span id="L362"><a href="#L362"> 362</a>     &quot;public_main_roots&quot;</span>
+<span id="L363"><a href="#L363"> 363</a>   -- The user authorized these four additional declarations in the paper</span>
+<span id="L364"><a href="#L364"> 364</a>   -- exposure task. Keep the historical roots and the same full-body audit;</span>
+<span id="L365"><a href="#L365"> 365</a>   -- the direct-obligation registry and exact ProofTools boundary are unchanged.</span>
+<span id="L366"><a href="#L366"> 366</a>   let paperRootNames := #[&quot;KIP126.Main.Paper.FiniteDetected&quot;,</span>
+<span id="L367"><a href="#L367"> 367</a>     &quot;KIP126.Main.Paper.SphereDetected&quot;, &quot;KIP126.Main.Paper.lemma_x1239&quot;,</span>
+<span id="L368"><a href="#L368"> 368</a>     &quot;KIP126.Main.Paper.lemma_nuext125&quot;]</span>
+<span id="L369"><a href="#L369"> 369</a>   let reviewedRootNames := reviewedRootNames ++ paperRootNames</span>
+<span id="L370"><a href="#L370"> 370</a>   unless (roots.map Name.toString).qsort (· &lt; ·) == reviewedRootNames.qsort (· &lt; ·) do</span>
+<span id="L371"><a href="#L371"> 371</a>     throwError &quot;Reviewed Main roots differ from the frozen public interface&quot;</span>
+<span id="L372"><a href="#L372"> 372</a>   let forbidden := #[`KIP126.ProofTools.Standard.generalizedMahowald,</span>
+<span id="L373"><a href="#L373"> 373</a>     `KIP126.ProofTools.Standard.generalizedLeibniz]</span>
+<span id="L374"><a href="#L374"> 374</a>   let env ← getEnv</span>
+<span id="L375"><a href="#L375"> 375</a>   let mut boundary : NameSet := {}</span>
+<span id="L376"><a href="#L376"> 376</a>   let mut checkedMain : NameSet := {}</span>
+<span id="L377"><a href="#L377"> 377</a>   for root in roots do</span>
+<span id="L378"><a href="#L378"> 378</a>     unless env.contains root do</span>
+<span id="L379"><a href="#L379"> 379</a>       throwError &quot;Missing locked Main public root: {root}&quot;</span>
+<span id="L380"><a href="#L380"> 380</a>     let mut pending := #[root]</span>
+<span id="L381"><a href="#L381"> 381</a>     let mut visited : NameSet := {}</span>
+<span id="L382"><a href="#L382"> 382</a>     while let some name := pending.back? do</span>
+<span id="L383"><a href="#L383"> 383</a>       pending := pending.pop</span>
+<span id="L384"><a href="#L384"> 384</a>       if visited.contains name then continue</span>
+<span id="L385"><a href="#L385"> 385</a>       visited := visited.insert name</span>
+<span id="L386"><a href="#L386"> 386</a>       if forbidden.contains name then</span>
+<span id="L387"><a href="#L387"> 387</a>         throwError &quot;Main public root {root} regained an unfinished MH2/GL dependency: {name}&quot;</span>
+<span id="L388"><a href="#L388"> 388</a>       let some info := env.find? name</span>
+<span id="L389"><a href="#L389"> 389</a>         | throwError &quot;Missing dependency while auditing Main public root {root}: {name}&quot;</span>
+<span id="L390"><a href="#L390"> 390</a>       let some idx := env.getModuleIdxFor? name</span>
+<span id="L391"><a href="#L391"> 391</a>         | if (`KIP126).isPrefixOf ((privateToUserName? name).getD name) then</span>
+<span id="L392"><a href="#L392"> 392</a>             throwError &quot;Missing project module provenance while auditing {root}: {name}&quot;</span>
+<span id="L393"><a href="#L393"> 393</a>           continue</span>
+<span id="L394"><a href="#L394"> 394</a>       let mod := env.header.moduleNames[idx.toNat]!</span>
+<span id="L395"><a href="#L395"> 395</a>       let isMain := (`KIP126.Main).isPrefixOf mod</span>
+<span id="L396"><a href="#L396"> 396</a>       let isProofTools := (`KIP126.ProofTools).isPrefixOf mod</span>
+<span id="L397"><a href="#L397"> 397</a>       unless isMain || isProofTools do continue</span>
+<span id="L398"><a href="#L398"> 398</a>       let body := info.value? (allowOpaque := true)</span>
+<span id="L399"><a href="#L399"> 399</a>       if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then</span>
+<span id="L400"><a href="#L400"> 400</a>         throwError &quot;Synthetic sorry reachable from Main public root {root}: {name}&quot;</span>
+<span id="L401"><a href="#L401"> 401</a>       if info.type.hasSorry || body.any (·.hasSorry) then</span>
+<span id="L402"><a href="#L402"> 402</a>         throwError &quot;Main/ProofTools placeholder reachable from Main public root {root}: {name}&quot;</span>
+<span id="L403"><a href="#L403"> 403</a>       if isProofTools then</span>
+<span id="L404"><a href="#L404"> 404</a>         -- An imported theorem can be represented as an axiom with no body.</span>
+<span id="L405"><a href="#L405"> 405</a>         -- Never interpret that absence as a completed cross-module audit.</span>
+<span id="L406"><a href="#L406"> 406</a>         unless reviewedProofToolsBoundary.contains name do</span>
+<span id="L407"><a href="#L407"> 407</a>           throwError &quot;Unreviewed ProofTools audit boundary from Main public root {root}: {name}&quot;</span>
+<span id="L408"><a href="#L408"> 408</a>         boundary := boundary.insert name</span>
+<span id="L409"><a href="#L409"> 409</a>         continue</span>
+<span id="L410"><a href="#L410"> 410</a>       if info.isAxiom then</span>
+<span id="L411"><a href="#L411"> 411</a>         throwError &quot;Main declaration has no auditable proof body: {name} (root {root})&quot;</span>
+<span id="L412"><a href="#L412"> 412</a>       match info with</span>
+<span id="L413"><a href="#L413"> 413</a>       | .defnInfo _ | .thmInfo _ | .opaqueInfo _ =&gt;</span>
+<span id="L414"><a href="#L414"> 414</a>         unless body.isSome do</span>
+<span id="L415"><a href="#L415"> 415</a>           throwError &quot;Missing Main definition/proof body while auditing {root}: {name}&quot;</span>
+<span id="L416"><a href="#L416"> 416</a>       | _ =&gt; pure ()</span>
+<span id="L417"><a href="#L417"> 417</a>       checkedMain := checkedMain.insert name</span>
+<span id="L418"><a href="#L418"> 418</a>       pending := pending ++ info.type.getUsedConstants</span>
+<span id="L419"><a href="#L419"> 419</a>       if let some value := body then pending := pending ++ value.getUsedConstants</span>
+<span id="L420"><a href="#L420"> 420</a>   -- Reject stale boundary entries as well as newly introduced dependencies.</span>
+<span id="L421"><a href="#L421"> 421</a>   unless boundary.toArray.qsort Name.quickLt == reviewedProofToolsBoundary.qsort Name.quickLt do</span>
+<span id="L422"><a href="#L422"> 422</a>     throwError &quot;Main/ProofTools reviewed audit boundary changed: {boundary.toArray}&quot;</span>
+<span id="L423"><a href="#L423"> 423</a>   logInfo m!&quot;Main public-root regression audit: {roots.size} roots, {checkedMain.size} Main declarations; no local placeholder or old MH2/GL; {boundary.size} exact ProofTools boundaries delegated to its full-body internal audit&quot;</span></pre>

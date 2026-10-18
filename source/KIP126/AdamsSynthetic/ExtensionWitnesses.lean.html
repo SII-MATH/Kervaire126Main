@@ -1,0 +1,62 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/ExtensionWitnesses.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/ExtensionWitnesses.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.ExtensionLabels</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Page extensions in the shared model, with no separate ESS, filtration,</span>
+<span id="L8"><a href="#L8">   8</a> source/target operators, or arbitrary quotient comparisons as parameters. -/</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.Kervaire.Route</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> universe u v w</span>
+<span id="L14"><a href="#L14">  14</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L15"><a href="#L15">  15</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L16"><a href="#L16">  16</a>   {Syn : Type w} [SyntheticCategory.{w, v} Syn]</span>
+<span id="L17"><a href="#L17">  17</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L18"><a href="#L18">  18</a>   (D : Model C Syn)</span>
+<span id="L19"><a href="#L19">  19</a>   (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> public structure FiniteExtensionWitness (r : ℕ) (n s t : ℤ)</span>
+<span id="L22"><a href="#L22">  22</a>     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))</span>
+<span id="L23"><a href="#L23">  23</a>     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) where</span>
+<span id="L24"><a href="#L24">  24</a>   page_ge_two : 2 ≤ r</span>
+<span id="L25"><a href="#L25">  25</a>   length_lower : (normalizedExponent D.classicalTower f : ℤ) ≤ n</span>
+<span id="L26"><a href="#L26">  26</a>   length_upper : n ≤ (r : ℤ) - 2 + normalizedExponent D.classicalTower f</span>
+<span id="L27"><a href="#L27">  27</a>   source_cycle : ReachesPage (D.classical.obj (X.obj D.auxiliary)) r (s, t) x</span>
+<span id="L28"><a href="#L28">  28</a>   target_cycle : ReachesPage (D.classical.obj (Y.obj D.auxiliary))</span>
+<span id="L29"><a href="#L29">  29</a>     ((r : ℤ) - n + normalizedExponent D.classicalTower f) (s + n, t + n) y</span>
+<span id="L30"><a href="#L30">  30</a>   source : ((D.family.obj ((SyntheticObject.quotient (r - 1)</span>
+<span id="L31"><a href="#L31">  31</a>     (extensionSourceObject D X Y f)).obj D.nu D.auxiliary)).sequence.ssData</span>
+<span id="L32"><a href="#L32">  32</a>       (s, (t - s) + s, t + normalizedExponent D.classicalTower f)).eInfty</span>
+<span id="L33"><a href="#L33">  33</a>   target : ((D.family.obj ((SyntheticObject.quotient (r - 1) (.nu Y)).obj</span>
+<span id="L34"><a href="#L34">  34</a>     D.nu D.auxiliary)).sequence.ssData</span>
+<span id="L35"><a href="#L35">  35</a>       (s + n, (t - s) + (s + n), t + normalizedExponent D.classicalTower f)).eInfty</span>
+<span id="L36"><a href="#L36">  36</a>   source_rep : HasInfinityRepresentative _ 2 _</span>
+<span id="L37"><a href="#L37">  37</a>     (finiteSourceForExtension D X Y f (r - 1) s t x) source</span>
+<span id="L38"><a href="#L38">  38</a>   target_rep : HasInfinityRepresentative _ 2 _</span>
+<span id="L39"><a href="#L39">  39</a>     (finiteTargetForExtension D X Y f (r - 1) n s t length_lower y) target</span>
+<span id="L40"><a href="#L40">  40</a>   equation : TowerExtensionEquation</span>
+<span id="L41"><a href="#L41">  41</a>     (D.convergentMap (.quotient (r - 1) (extensionSourceObject D X Y f))</span>
+<span id="L42"><a href="#L42">  42</a>       (.quotient (r - 1) (.nu Y)) (finiteExtensionMap D X Y f (r - 1)))</span>
+<span id="L43"><a href="#L43">  43</a>     (t - s, t + normalizedExponent D.classicalTower f) s n source target</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> public structure InfiniteExtensionWitness (n s t : ℤ)</span>
+<span id="L46"><a href="#L46">  46</a>     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))</span>
+<span id="L47"><a href="#L47">  47</a>     (y : (D.classical.obj (Y.obj D.auxiliary)).Page 2 (s+n,t+n)) where</span>
+<span id="L48"><a href="#L48">  48</a>   length_lower : (normalizedExponent D.classicalTower f : ℤ) ≤ n</span>
+<span id="L49"><a href="#L49">  49</a>   source_cycle : IsPermanentCycle (D.classical.obj (X.obj D.auxiliary)) (s, t) x</span>
+<span id="L50"><a href="#L50">  50</a>   target_cycle : IsPermanentCycle (D.classical.obj (Y.obj D.auxiliary)) (s + n, t + n) y</span>
+<span id="L51"><a href="#L51">  51</a>   source : ((D.family.obj ((extensionSourceObject D X Y f).obj D.nu D.auxiliary)).sequence.ssData</span>
+<span id="L52"><a href="#L52">  52</a>     (s, (t - s) + s, t + normalizedExponent D.classicalTower f)).eInfty</span>
+<span id="L53"><a href="#L53">  53</a>   target : ((D.family.obj (D.nu.functor.obj (Y.obj D.auxiliary))).sequence.ssData</span>
+<span id="L54"><a href="#L54">  54</a>     (s + n, (t - s) + (s + n), t + normalizedExponent D.classicalTower f)).eInfty</span>
+<span id="L55"><a href="#L55">  55</a>   source_rep : HasInfinityRepresentative _ 2 _ (infiniteSourceForExtension D X Y f s t x) source</span>
+<span id="L56"><a href="#L56">  56</a>   target_rep : HasInfinityRepresentative _ 2 _</span>
+<span id="L57"><a href="#L57">  57</a>     (infiniteTargetForExtension D X Y f n s t length_lower y) target</span>
+<span id="L58"><a href="#L58">  58</a>   equation : TowerExtensionEquation</span>
+<span id="L59"><a href="#L59">  59</a>     (D.convergentMap (extensionSourceObject D X Y f) (.nu Y) (D.normalizedMap X Y f).map)</span>
+<span id="L60"><a href="#L60">  60</a>     (t - s, t + normalizedExponent D.classicalTower f) s n source target</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> end KIP126.Kervaire.Route</span></pre>

@@ -1,0 +1,268 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Internal/Source/AdamsSequence.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Internal/Source/AdamsSequence.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-</span>
+<span id="L4"><a href="#L4">   4</a> Copyright (c) 2026 Jiashuo Zhang and KIP126 contributors.</span>
+<span id="L5"><a href="#L5">   5</a> Released under the MIT license; see LICENSE.</span>
+<span id="L6"><a href="#L6">   6</a> -/</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> import KIP126.AdamsSynthetic.Tower</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.AdamsSynthetic.Internal.Source.AdamsTower</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> /-! The nested-subobject sequence of the recursively constructed coefficient</span>
+<span id="L12"><a href="#L12">  12</a> tower. Its ambient representatives, finite cycles/boundaries and infinite</span>
+<span id="L13"><a href="#L13">  13</a> intersection/union are fixed definitions. The deferred differential-existence</span>
+<span id="L14"><a href="#L14">  14</a> proof retains the actual connecting/lift/cofiber equation. -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> @[expose] section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 2000000</span>
+<span id="L19"><a href="#L19">  19</a> namespace KIP126.AdamsSynthetic.Internal.Source</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory CategoryTheory.Pretriangulated</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.StableHomotopy KIP126.Core.SpectralSequence</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> universe u v</span>
+<span id="L25"><a href="#L25">  25</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L26"><a href="#L26">  26</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H} {X : C}</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> private noncomputable def towerI (T : AbstractAdamsTower unit X) (m s t : ℤ) (h : s ≤ t) :</span>
+<span id="L29"><a href="#L29">  29</a>     HomotopyGroup m (T.stageAt t) →ₗ[ℤ] HomotopyGroup m (T.stageAt s) :=</span>
+<span id="L30"><a href="#L30">  30</a>   (inducedMap (T.mapAt h) m).toIntLinearMap</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> private theorem towerI_comp (T : AbstractAdamsTower unit X) (m s t z : ℤ)</span>
+<span id="L33"><a href="#L33">  33</a>     (hst : s ≤ t) (htz : t ≤ z) (a : HomotopyGroup m (T.stageAt z)) :</span>
+<span id="L34"><a href="#L34">  34</a>     towerI T m s t hst (towerI T m t z htz a) = towerI T m s z (hst.trans htz) a := by</span>
+<span id="L35"><a href="#L35">  35</a>   change (a ≫ T.mapAt htz) ≫ T.mapAt hst = a ≫ T.mapAt (hst.trans htz)</span>
+<span id="L36"><a href="#L36">  36</a>   rw [Category.assoc]</span>
+<span id="L37"><a href="#L37">  37</a>   congr 1</span>
+<span id="L38"><a href="#L38">  38</a>   exact T.map_comp _ _</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> private abbrev cycleAmbient (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :=</span>
+<span id="L41"><a href="#L41">  41</a>   T.cycles 2 (by decide) p</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> private noncomputable def finiteCycles (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) (n : ℕ) :</span>
+<span id="L44"><a href="#L44">  44</a>     Submodule ℤ (cycleAmbient T p) :=</span>
+<span id="L45"><a href="#L45">  45</a>   (T.cycles (n + 2) (by omega) p).comap (T.cycles 2 (by decide) p).subtype</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> private noncomputable def finiteBoundaries (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L48"><a href="#L48">  48</a>     (n : ℕ) : Submodule ℤ (cycleAmbient T p) :=</span>
+<span id="L49"><a href="#L49">  49</a>   (T.boundaries (n + 2) (by omega) p).comap (T.cycles 2 (by decide) p).subtype</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> private noncomputable def allCycles (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L52"><a href="#L52">  52</a>     WithTop ℕ → Submodule ℤ (cycleAmbient T p)</span>
+<span id="L53"><a href="#L53">  53</a>   | ⊤ =&gt; ⨅ n : ℕ, finiteCycles T p n</span>
+<span id="L54"><a href="#L54">  54</a>   | (n : ℕ) =&gt; finiteCycles T p n</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> private noncomputable def allBoundaries (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L57"><a href="#L57">  57</a>     WithTop ℕ → Submodule ℤ (cycleAmbient T p)</span>
+<span id="L58"><a href="#L58">  58</a>   | ⊤ =&gt; ⨆ n : ℕ, finiteBoundaries T p n</span>
+<span id="L59"><a href="#L59">  59</a>   | (n : ℕ) =&gt; finiteBoundaries T p n</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> private theorem finiteCycles_antitone (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L62"><a href="#L62">  62</a>     Antitone (finiteCycles T p) := by</span>
+<span id="L63"><a href="#L63">  63</a>   intro i j hij x hx</span>
+<span id="L64"><a href="#L64">  64</a>   obtain ⟨y, hy⟩ := hx</span>
+<span id="L65"><a href="#L65">  65</a>   refine ⟨towerI T (p.2-p.1-1) (p.1+(i+2:ℕ)) (p.1+(j+2:ℕ)) (by omega) y, ?_⟩</span>
+<span id="L66"><a href="#L66">  66</a>   change towerI T (p.2-p.1-1) (p.1+1) (p.1+(i+2:ℕ)) _ _ = _</span>
+<span id="L67"><a href="#L67">  67</a>   rw [towerI_comp]</span>
+<span id="L68"><a href="#L68">  68</a>   exact hy</span>
+<span id="L69"><a href="#L69">  69</a> </span>
+<span id="L70"><a href="#L70">  70</a> private theorem finiteBoundaries_monotone (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L71"><a href="#L71">  71</a>     Monotone (finiteBoundaries T p) := by</span>
+<span id="L72"><a href="#L72">  72</a>   intro i j hij x hx</span>
+<span id="L73"><a href="#L73">  73</a>   obtain ⟨y, hy, hj⟩ := hx</span>
+<span id="L74"><a href="#L74">  74</a>   refine ⟨y, ?_, hj⟩</span>
+<span id="L75"><a href="#L75">  75</a>   change towerI T (p.2-p.1) (p.1-(i+2:ℕ)+1) p.1 _ y = 0 at hy</span>
+<span id="L76"><a href="#L76">  76</a>   change towerI T (p.2-p.1) (p.1-(j+2:ℕ)+1) p.1 _ y = 0</span>
+<span id="L77"><a href="#L77">  77</a>   rw [← towerI_comp T (p.2-p.1) (p.1-(j+2:ℕ)+1)</span>
+<span id="L78"><a href="#L78">  78</a>     (p.1-(i+2:ℕ)+1) p.1 (by omega) (by omega), hy, map_zero]</span>
+<span id="L79"><a href="#L79">  79</a> </span>
+<span id="L80"><a href="#L80">  80</a> private theorem connecting_layerMap (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L81"><a href="#L81">  81</a>     (a : HomotopyGroup (p.2-p.1) (T.stageAt p.1)) :</span>
+<span id="L82"><a href="#L82">  82</a>     T.connecting p (T.layerMap p a) = 0 := by</span>
+<span id="L83"><a href="#L83">  83</a>   let f := T.mapAt (show p.1 ≤ p.1+1 by omega)</span>
+<span id="L84"><a href="#L84">  84</a>   have hzero : HasFunctorialCofiber.cofibι f ≫ HasFunctorialCofiber.cofibδ f = 0 :=</span>
+<span id="L85"><a href="#L85">  85</a>     comp_distTriang_mor_zero₂₃ _ (HasFunctorialCofiber.cofib_distinguished f)</span>
+<span id="L86"><a href="#L86">  86</a>   change (AbstractAdamsTower.desuspend _ _)</span>
+<span id="L87"><a href="#L87">  87</a>     ((a ≫ HasFunctorialCofiber.cofibι f) ≫ HasFunctorialCofiber.cofibδ f) = 0</span>
+<span id="L88"><a href="#L88">  88</a>   rw [Category.assoc, hzero, comp_zero, map_zero]</span>
+<span id="L89"><a href="#L89">  89</a> </span>
+<span id="L90"><a href="#L90">  90</a> private theorem finiteBoundaries_le_cycles (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L91"><a href="#L91">  91</a>     (i j : ℕ) : finiteBoundaries T p i ≤ finiteCycles T p j := by</span>
+<span id="L92"><a href="#L92">  92</a>   intro x hx</span>
+<span id="L93"><a href="#L93">  93</a>   obtain ⟨y, _, hj⟩ := hx</span>
+<span id="L94"><a href="#L94">  94</a>   change T.layerMap p y = x.val at hj</span>
+<span id="L95"><a href="#L95">  95</a>   change T.connecting p x.val ∈ LinearMap.range _</span>
+<span id="L96"><a href="#L96">  96</a>   rw [← hj, connecting_layerMap]</span>
+<span id="L97"><a href="#L97">  97</a>   exact Submodule.zero_mem _</span>
+<span id="L98"><a href="#L98">  98</a> </span>
+<span id="L99"><a href="#L99">  99</a> private theorem allCycles_antitone (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L100"><a href="#L100"> 100</a>     Antitone (allCycles T p) := by</span>
+<span id="L101"><a href="#L101"> 101</a>   intro i j hij</span>
+<span id="L102"><a href="#L102"> 102</a>   cases i using WithTop.recTopCoe with</span>
+<span id="L103"><a href="#L103"> 103</a>   | top =&gt; have h : j = ⊤ := top_le_iff.mp hij; subst j; exact le_rfl</span>
+<span id="L104"><a href="#L104"> 104</a>   | coe i =&gt;</span>
+<span id="L105"><a href="#L105"> 105</a>     cases j using WithTop.recTopCoe with</span>
+<span id="L106"><a href="#L106"> 106</a>     | top =&gt; exact iInf_le _ i</span>
+<span id="L107"><a href="#L107"> 107</a>     | coe j =&gt; exact finiteCycles_antitone T p (WithTop.coe_le_coe.mp hij)</span>
+<span id="L108"><a href="#L108"> 108</a> </span>
+<span id="L109"><a href="#L109"> 109</a> private theorem allBoundaries_monotone (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L110"><a href="#L110"> 110</a>     Monotone (allBoundaries T p) := by</span>
+<span id="L111"><a href="#L111"> 111</a>   intro i j hij</span>
+<span id="L112"><a href="#L112"> 112</a>   cases i using WithTop.recTopCoe with</span>
+<span id="L113"><a href="#L113"> 113</a>   | top =&gt; have h : j = ⊤ := top_le_iff.mp hij; subst j; exact le_rfl</span>
+<span id="L114"><a href="#L114"> 114</a>   | coe i =&gt;</span>
+<span id="L115"><a href="#L115"> 115</a>     cases j using WithTop.recTopCoe with</span>
+<span id="L116"><a href="#L116"> 116</a>     | top =&gt; exact le_iSup (finiteBoundaries T p) i</span>
+<span id="L117"><a href="#L117"> 117</a>     | coe j =&gt; exact finiteBoundaries_monotone T p (WithTop.coe_le_coe.mp hij)</span>
+<span id="L118"><a href="#L118"> 118</a> </span>
+<span id="L119"><a href="#L119"> 119</a> private theorem allBoundaries_le_cycles (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L120"><a href="#L120"> 120</a>     (r : WithTop ℕ) : allBoundaries T p r ≤ allCycles T p r := by</span>
+<span id="L121"><a href="#L121"> 121</a>   cases r using WithTop.recTopCoe with</span>
+<span id="L122"><a href="#L122"> 122</a>   | top =&gt; exact iSup_le fun i =&gt; le_iInf fun j =&gt; finiteBoundaries_le_cycles T p i j</span>
+<span id="L123"><a href="#L123"> 123</a>   | coe n =&gt; exact finiteBoundaries_le_cycles T p n n</span>
+<span id="L124"><a href="#L124"> 124</a> </span>
+<span id="L125"><a href="#L125"> 125</a> private noncomputable def towerSSData (T : AbstractAdamsTower unit X) (p : ℤ × ℤ) :</span>
+<span id="L126"><a href="#L126"> 126</a>     SSData (ModuleCat.{v} ℤ) where</span>
+<span id="L127"><a href="#L127"> 127</a>   V := ModuleCat.of ℤ (cycleAmbient T p)</span>
+<span id="L128"><a href="#L128"> 128</a>   Z r := (ModuleCat.subobjectModule _).symm (allCycles T p r)</span>
+<span id="L129"><a href="#L129"> 129</a>   B r := (ModuleCat.subobjectModule _).symm (allBoundaries T p r)</span>
+<span id="L130"><a href="#L130"> 130</a>   Z_anti := (ModuleCat.subobjectModule _).symm.monotone.comp_antitone (allCycles_antitone T p)</span>
+<span id="L131"><a href="#L131"> 131</a>   B_mono := (ModuleCat.subobjectModule _).symm.monotone.comp (allBoundaries_monotone T p)</span>
+<span id="L132"><a href="#L132"> 132</a>   Z_zero := by</span>
+<span id="L133"><a href="#L133"> 133</a>     change (ModuleCat.subobjectModule (ModuleCat.of ℤ (cycleAmbient T p))).symm</span>
+<span id="L134"><a href="#L134"> 134</a>       ((T.cycles 2 (by decide) p).comap (T.cycles 2 (by decide) p).subtype) = ⊤</span>
+<span id="L135"><a href="#L135"> 135</a>     rw [Submodule.comap_subtype_self, OrderIso.map_top]</span>
+<span id="L136"><a href="#L136"> 136</a>   B_le_Z r := (ModuleCat.subobjectModule _).symm.monotone (allBoundaries_le_cycles T p r)</span>
+<span id="L137"><a href="#L137"> 137</a>   Z_top_greatest A h := by</span>
+<span id="L138"><a href="#L138"> 138</a>     apply (ModuleCat.subobjectModule _).le_iff_le.mp</span>
+<span id="L139"><a href="#L139"> 139</a>     change (ModuleCat.subobjectModule _) A ≤ (ModuleCat.subobjectModule _)</span>
+<span id="L140"><a href="#L140"> 140</a>       ((ModuleCat.subobjectModule _).symm _)</span>
+<span id="L141"><a href="#L141"> 141</a>     rw [OrderIso.apply_symm_apply]</span>
+<span id="L142"><a href="#L142"> 142</a>     refine le_iInf fun n =&gt; ?_</span>
+<span id="L143"><a href="#L143"> 143</a>     have hn := (ModuleCat.subobjectModule _).monotone (h n)</span>
+<span id="L144"><a href="#L144"> 144</a>     rw [OrderIso.apply_symm_apply] at hn</span>
+<span id="L145"><a href="#L145"> 145</a>     exact hn</span>
+<span id="L146"><a href="#L146"> 146</a>   B_top_least A h := by</span>
+<span id="L147"><a href="#L147"> 147</a>     apply (ModuleCat.subobjectModule _).le_iff_le.mp</span>
+<span id="L148"><a href="#L148"> 148</a>     change (ModuleCat.subobjectModule _) ((ModuleCat.subobjectModule _).symm _) ≤</span>
+<span id="L149"><a href="#L149"> 149</a>       (ModuleCat.subobjectModule _) A</span>
+<span id="L150"><a href="#L150"> 150</a>     rw [OrderIso.apply_symm_apply]</span>
+<span id="L151"><a href="#L151"> 151</a>     refine iSup_le fun n =&gt; ?_</span>
+<span id="L152"><a href="#L152"> 152</a>     have hn := (ModuleCat.subobjectModule _).monotone (h n)</span>
+<span id="L153"><a href="#L153"> 153</a>     rw [OrderIso.apply_symm_apply] at hn</span>
+<span id="L154"><a href="#L154"> 154</a>     exact hn</span>
+<span id="L155"><a href="#L155"> 155</a> </span>
+<span id="L156"><a href="#L156"> 156</a> private theorem towerSSData_cycles (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L157"><a href="#L157"> 157</a>     (n : ℕ) (a : (towerSSData T p).V) :</span>
+<span id="L158"><a href="#L158"> 158</a>     a ∈ (ModuleCat.subobjectModule _ ((towerSSData T p).Z n)) ↔</span>
+<span id="L159"><a href="#L159"> 159</a>       a.val ∈ T.cycles (n + 2) (by omega) p := by</span>
+<span id="L160"><a href="#L160"> 160</a>   change a ∈ (ModuleCat.subobjectModule (ModuleCat.of ℤ (cycleAmbient T p)))</span>
+<span id="L161"><a href="#L161"> 161</a>     ((ModuleCat.subobjectModule (ModuleCat.of ℤ (cycleAmbient T p))).symm</span>
+<span id="L162"><a href="#L162"> 162</a>       (finiteCycles T p n)) ↔ _</span>
+<span id="L163"><a href="#L163"> 163</a>   rw [OrderIso.apply_symm_apply]</span>
+<span id="L164"><a href="#L164"> 164</a>   rfl</span>
+<span id="L165"><a href="#L165"> 165</a> </span>
+<span id="L166"><a href="#L166"> 166</a> private theorem towerSSData_boundaries (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L167"><a href="#L167"> 167</a>     (n : ℕ) (a : (towerSSData T p).V) :</span>
+<span id="L168"><a href="#L168"> 168</a>     a ∈ (ModuleCat.subobjectModule _ ((towerSSData T p).B n)) ↔</span>
+<span id="L169"><a href="#L169"> 169</a>       a.val ∈ T.boundaries (n + 2) (by omega) p := by</span>
+<span id="L170"><a href="#L170"> 170</a>   change a ∈ (ModuleCat.subobjectModule (ModuleCat.of ℤ (cycleAmbient T p)))</span>
+<span id="L171"><a href="#L171"> 171</a>     ((ModuleCat.subobjectModule (ModuleCat.of ℤ (cycleAmbient T p))).symm</span>
+<span id="L172"><a href="#L172"> 172</a>       (finiteBoundaries T p n)) ↔ _</span>
+<span id="L173"><a href="#L173"> 173</a>   rw [OrderIso.apply_symm_apply]</span>
+<span id="L174"><a href="#L174"> 174</a>   rfl</span>
+<span id="L175"><a href="#L175"> 175</a> </span>
+<span id="L176"><a href="#L176"> 176</a> /-- Every representative is evaluated through the same connecting map,</span>
+<span id="L177"><a href="#L177"> 177</a> the same actual tower lift and the same cofiber projection. -/</span>
+<span id="L178"><a href="#L178"> 178</a> private def TowerDifferentialRule (T : AbstractAdamsTower unit X) (r : ℤ)</span>
+<span id="L179"><a href="#L179"> 179</a>     (hr : 2 ≤ r) (p : ℤ × ℤ)</span>
+<span id="L180"><a href="#L180"> 180</a>     (d : (towerSSData T p).page (↑(r - 2).toNat : WithTop ℕ) ⟶</span>
+<span id="L181"><a href="#L181"> 181</a>       (towerSSData T (p + (r,r-1))).page (↑(r - 2).toNat : WithTop ℕ)) : Prop :=</span>
+<span id="L182"><a href="#L182"> 182</a>   ∀ (z : (Subobject.underlying.obj ((towerSSData T p).Z (↑(r - 2).toNat : WithTop ℕ)) :</span>
+<span id="L183"><a href="#L183"> 183</a>         ModuleCat ℤ))</span>
+<span id="L184"><a href="#L184"> 184</a>     (a : HomotopyGroup (p.2 - p.1 - 1) (T.stageAt (p.1 + r)))</span>
+<span id="L185"><a href="#L185"> 185</a>     (z&#x27; : (Subobject.underlying.obj</span>
+<span id="L186"><a href="#L186"> 186</a>         ((towerSSData T (p + (r,r-1))).Z (↑(r - 2).toNat : WithTop ℕ)) : ModuleCat ℤ)),</span>
+<span id="L187"><a href="#L187"> 187</a>     T.connecting p ((((towerSSData T p).Z _).arrow z).val) =</span>
+<span id="L188"><a href="#L188"> 188</a>       a ≫ T.mapAt (show p.1 + 1 ≤ p.1 + r by omega) →</span>
+<span id="L189"><a href="#L189"> 189</a>     ((((towerSSData T (p + (r,r-1))).Z _).arrow z&#x27;).val) =</span>
+<span id="L190"><a href="#L190"> 190</a>       T.layerMap (p + (r,r-1))</span>
+<span id="L191"><a href="#L191"> 191</a>         (Eq.mp (congrArg (fun m =&gt; HomotopyGroup m (T.stageAt (p.1 + r)))</span>
+<span id="L192"><a href="#L192"> 192</a>           (by dsimp; omega : p.2 - p.1 - 1 = (p + (r,r-1)).2 - (p + (r,r-1)).1)) a) →</span>
+<span id="L193"><a href="#L193"> 193</a>     d ((towerSSData T p).pageπ _ z) = (towerSSData T (p + (r,r-1))).pageπ _ z&#x27;</span>
+<span id="L194"><a href="#L194"> 194</a> </span>
+<span id="L195"><a href="#L195"> 195</a> /-- Existence and well-definedness of the linear map of quotient pages,</span>
+<span id="L196"><a href="#L196"> 196</a> with its actual lift/cofiber formula. This does not choose an arbitrary d. -/</span>
+<span id="L197"><a href="#L197"> 197</a> private theorem towerDifferential_exists (T : AbstractAdamsTower unit X) (r : ℤ)</span>
+<span id="L198"><a href="#L198"> 198</a>     (hr : 2 ≤ r) (p : ℤ × ℤ) :</span>
+<span id="L199"><a href="#L199"> 199</a>     ∃ d : (towerSSData T p).page (↑(r - 2).toNat : WithTop ℕ) ⟶</span>
+<span id="L200"><a href="#L200"> 200</a>         (towerSSData T (p + (r,r-1))).page (↑(r - 2).toNat : WithTop ℕ),</span>
+<span id="L201"><a href="#L201"> 201</a>       TowerDifferentialRule T r hr p d := by</span>
+<span id="L202"><a href="#L202"> 202</a>   sorry</span>
+<span id="L203"><a href="#L203"> 203</a> </span>
+<span id="L204"><a href="#L204"> 204</a> private noncomputable def towerD (T : AbstractAdamsTower unit X) (r : ℤ) (p : ℤ × ℤ) :</span>
+<span id="L205"><a href="#L205"> 205</a>     (towerSSData T p).page (↑(r - 2).toNat : WithTop ℕ) ⟶</span>
+<span id="L206"><a href="#L206"> 206</a>       (towerSSData T (p + (r,r-1))).page (↑(r - 2).toNat : WithTop ℕ) :=</span>
+<span id="L207"><a href="#L207"> 207</a>   if hr : 2 ≤ r then (towerDifferential_exists T r hr p).choose else 0</span>
+<span id="L208"><a href="#L208"> 208</a> </span>
+<span id="L209"><a href="#L209"> 209</a> private theorem towerD_rule (T : AbstractAdamsTower unit X) (r : ℤ) (hr : 2 ≤ r)</span>
+<span id="L210"><a href="#L210"> 210</a>     (p : ℤ × ℤ) : TowerDifferentialRule T r hr p (towerD T r p) := by</span>
+<span id="L211"><a href="#L211"> 211</a>   simpa only [towerD, dif_pos hr] using (towerDifferential_exists T r hr p).choose_spec</span>
+<span id="L212"><a href="#L212"> 212</a> </span>
+<span id="L213"><a href="#L213"> 213</a> private noncomputable def towerPreSS (T : AbstractAdamsTower unit X) :</span>
+<span id="L214"><a href="#L214"> 214</a>     PreSS (ModuleCat.{v} ℤ) (ℤ × ℤ) where</span>
+<span id="L215"><a href="#L215"> 215</a>   r₀ := 2</span>
+<span id="L216"><a href="#L216"> 216</a>   ssData := towerSSData T</span>
+<span id="L217"><a href="#L217"> 217</a>   diffDeg r := (r,r-1)</span>
+<span id="L218"><a href="#L218"> 218</a>   d := towerD T</span>
+<span id="L219"><a href="#L219"> 219</a> </span>
+<span id="L220"><a href="#L220"> 220</a> private theorem towerD_comp (T : AbstractAdamsTower unit X) (r : ℤ) (p : ℤ × ℤ) :</span>
+<span id="L221"><a href="#L221"> 221</a>     towerD T r p ≫ towerD T r (p + (r,r-1)) = 0 := by</span>
+<span id="L222"><a href="#L222"> 222</a>   sorry</span>
+<span id="L223"><a href="#L223"> 223</a> </span>
+<span id="L224"><a href="#L224"> 224</a> private theorem towerD_kernel (T : AbstractAdamsTower unit X) (r : ℤ) (p : ℤ × ℤ)</span>
+<span id="L225"><a href="#L225"> 225</a>     (hr : 2 ≤ r) :</span>
+<span id="L226"><a href="#L226"> 226</a>     let n := (r - 2).toNat</span>
+<span id="L227"><a href="#L227"> 227</a>     kernelSubobject (towerD T r p) =</span>
+<span id="L228"><a href="#L228"> 228</a>       imageSubobject (Subobject.ofLE</span>
+<span id="L229"><a href="#L229"> 229</a>         ((towerSSData T p).Z ↑(n + 1)) ((towerSSData T p).Z ↑n)</span>
+<span id="L230"><a href="#L230"> 230</a>         ((towerSSData T p).Z_anti (by exact_mod_cast Nat.le_succ n)) ≫</span>
+<span id="L231"><a href="#L231"> 231</a>         (towerSSData T p).pageπ ↑n) := by</span>
+<span id="L232"><a href="#L232"> 232</a>   sorry</span>
+<span id="L233"><a href="#L233"> 233</a> </span>
+<span id="L234"><a href="#L234"> 234</a> private theorem towerD_image (T : AbstractAdamsTower unit X) (r : ℤ) (p : ℤ × ℤ)</span>
+<span id="L235"><a href="#L235"> 235</a>     (hr : 2 ≤ r) :</span>
+<span id="L236"><a href="#L236"> 236</a>     let n := (r - 2).toNat</span>
+<span id="L237"><a href="#L237"> 237</a>     let D := towerSSData T (p + (r,r-1))</span>
+<span id="L238"><a href="#L238"> 238</a>     imageSubobject (towerD T r p) =</span>
+<span id="L239"><a href="#L239"> 239</a>       imageSubobject (Subobject.ofLE (D.B ↑(n + 1)) (D.Z ↑n)</span>
+<span id="L240"><a href="#L240"> 240</a>         (le_trans (D.B_le_Z ↑(n + 1))</span>
+<span id="L241"><a href="#L241"> 241</a>           (D.Z_anti (by exact_mod_cast Nat.le_succ n))) ≫ D.pageπ ↑n) := by</span>
+<span id="L242"><a href="#L242"> 242</a>   sorry</span>
+<span id="L243"><a href="#L243"> 243</a> </span>
+<span id="L244"><a href="#L244"> 244</a> private noncomputable def towerSequence (T : AbstractAdamsTower unit X) :</span>
+<span id="L245"><a href="#L245"> 245</a>     KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ) where</span>
+<span id="L246"><a href="#L246"> 246</a>   toPreSS := towerPreSS T</span>
+<span id="L247"><a href="#L247"> 247</a>   d_comp_d := towerD_comp T</span>
+<span id="L248"><a href="#L248"> 248</a>   Z_succ := towerD_kernel T</span>
+<span id="L249"><a href="#L249"> 249</a>   B_succ := towerD_image T</span>
+<span id="L250"><a href="#L250"> 250</a> </span>
+<span id="L251"><a href="#L251"> 251</a> private noncomputable def towerSequencePresentation (T : AbstractAdamsTower unit X) :</span>
+<span id="L252"><a href="#L252"> 252</a>     TowerSequencePresentation unit T (towerSequence T).ssData</span>
+<span id="L253"><a href="#L253"> 253</a>       (normalizedDifferential (towerSequence T) rfl (fun _ =&gt; rfl)) where</span>
+<span id="L254"><a href="#L254"> 254</a>   ambient p := Iso.refl (ModuleCat.of ℤ (cycleAmbient T p))</span>
+<span id="L255"><a href="#L255"> 255</a>   cycles := towerSSData_cycles T</span>
+<span id="L256"><a href="#L256"> 256</a>   boundaries := towerSSData_boundaries T</span>
+<span id="L257"><a href="#L257"> 257</a>   differential r hr p := towerD_rule T r hr p</span>
+<span id="L258"><a href="#L258"> 258</a> </span>
+<span id="L259"><a href="#L259"> 259</a> private noncomputable def canonicalSequence (unit : SphereSpectrum ⟶ H) (X : C) :</span>
+<span id="L260"><a href="#L260"> 260</a>     KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ) :=</span>
+<span id="L261"><a href="#L261"> 261</a>   towerSequence (canonicalTower unit X)</span>
+<span id="L262"><a href="#L262"> 262</a> </span>
+<span id="L263"><a href="#L263"> 263</a> private noncomputable def canonicalSequencePresentation (unit : SphereSpectrum ⟶ H) (X : C) :</span>
+<span id="L264"><a href="#L264"> 264</a>     TowerSequencePresentation unit (canonicalTower unit X) (canonicalSequence unit X).ssData</span>
+<span id="L265"><a href="#L265"> 265</a>       (normalizedDifferential (canonicalSequence unit X) rfl (fun _ =&gt; rfl)) :=</span>
+<span id="L266"><a href="#L266"> 266</a>   towerSequencePresentation (canonicalTower unit X)</span>
+<span id="L267"><a href="#L267"> 267</a> </span>
+<span id="L268"><a href="#L268"> 268</a> end KIP126.AdamsSynthetic.Internal.Source</span></pre>

@@ -1,0 +1,97 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/NuNinth/Unit.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/NuNinth/Unit.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard.Filtration</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.LambdaZero</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.Selected.InfinityFrames</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.Selected.SphereDetection</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.SectionSeven.NuTargetWindows</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.Internal.Selected.LambdaOperations</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.Main.SectionSeven.NuTargetYLambda</span>
+<span id="L12"><a href="#L12">  12</a> /-! NuNinth:1459–1574, bbac1fc05843 (MIT): the λ-action on the Y</span>
+<span id="L13"><a href="#L13">  13</a> and AF13 correction representatives. Shared unit comparison uses NuTargetYLambda. -/</span>
+<span id="L14"><a href="#L14">  14</a> @[expose] section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L17"><a href="#L17">  17</a> set_option maxHeartbeats 1000000</span>
+<span id="L18"><a href="#L18">  18</a> namespace KIP126.Main.Internal.NuNinth</span>
+<span id="L19"><a href="#L19">  19</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.AdamsSynthetic.Standard KIP126.Main.Internal KIP126.Main.Internal.Selected</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.ProofTools.Operations</span>
+<span id="L24"><a href="#L24">  24</a> open KIP126.Main.SectionSeven.Internal (sphere_unit sphere_unit_label lambda_sphere_unit sphere_unit_label_product_136)</span>
+<span id="L25"><a href="#L25">  25</a> noncomputable section</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> theorem sphere_lambda_action {A : SyntheticSpectrum}</span>
+<span id="L28"><a href="#L28">  28</a>     (a : BiHom 125 131 A) :</span>
+<span id="L29"><a href="#L29">  29</a>     sphereAction (lambdaMultiply 1 (sphere_unit)) a = lambdaMultiply 1 a := by</span>
+<span id="L30"><a href="#L30">  30</a>   rw [lambda_sphere_unit]</span>
+<span id="L31"><a href="#L31">  31</a>   have hc := graded_coherence.lambda_comm (125,131) (S_0_0 : SyntheticSpectrum)</span>
+<span id="L32"><a href="#L32">  32</a>   simp only [biShiftAddIso,Iso.trans_hom,Iso.trans_inv,</span>
+<span id="L33"><a href="#L33">  33</a>     eqToIso.hom,eqToIso.inv,eqToHom_refl,Category.comp_id,Category.id_comp] at hc</span>
+<span id="L34"><a href="#L34">  34</a>   unfold sphereAction lambdaMultiply</span>
+<span id="L35"><a href="#L35">  35</a>   simp only [eqToHom_refl,Category.id_comp]</span>
+<span id="L36"><a href="#L36">  36</a>   erw [lambdaPow_one graded_coherence, hc]</span>
+<span id="L37"><a href="#L37">  37</a>   simp only [Category.assoc]</span>
+<span id="L38"><a href="#L38">  38</a>   erw [Iso.inv_hom_id_app_assoc]</span>
+<span id="L39"><a href="#L39">  39</a>   rfl</span>
+<span id="L40"><a href="#L40">  40</a> theorem lambda_one_finite_detected_136</span>
+<span id="L41"><a href="#L41">  41</a>     (y : model.classical.sphere.Page 2 (11,136))</span>
+<span id="L42"><a href="#L42">  42</a>     (a : BiHom 125 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L43"><a href="#L43">  43</a>     (ha : Detects (model.convergence (.quotient 9 .sphere)) (11,136,131)</span>
+<span id="L44"><a href="#L44">  44</a>       (quotientLabel 9 11 136 5 y) a) :</span>
+<span id="L45"><a href="#L45">  45</a>     Detects (model.convergence (.quotient 9 .sphere)) (11,136,130)</span>
+<span id="L46"><a href="#L46">  46</a>       (quotientLabel 9 11 136 6 y) (lambdaMultiply 1 a) := by</span>
+<span id="L47"><a href="#L47">  47</a>   have hu := model.sphereDetectionCompatible.homotopy_lambda 0 0 1 (sphere_unit)</span>
+<span id="L48"><a href="#L48">  48</a>   change Detects (model.convergence .sphere) (0,0,0-(1:ℕ))</span>
+<span id="L49"><a href="#L49">  49</a>     (sphereLabel 0 0 1 sphere_unit_label) (lambdaMultiply 1 sphere_unit) at hu</span>
+<span id="L50"><a href="#L50">  50</a>   have hh := KIP126.Literature.Standard.finite_action 9 (by decide) 0 0 11 136 1 5</span>
+<span id="L51"><a href="#L51">  51</a>     (sphere_unit_label) y (lambdaMultiply 1 (sphere_unit)) a hu ha</span>
+<span id="L52"><a href="#L52">  52</a>   change Detects (model.convergence (.quotient 9 .sphere)) (11,136,130)</span>
+<span id="L53"><a href="#L53">  53</a>     (quotientLabel 9 11 136 6</span>
+<span id="L54"><a href="#L54">  54</a>       (model.sphereAlgebra.product (0,0) (11,136) (sphere_unit_label) y))</span>
+<span id="L55"><a href="#L55">  55</a>     (sphereAction (lambdaMultiply 1 (sphere_unit)) a) at hh</span>
+<span id="L56"><a href="#L56">  56</a>   rw [sphere_unit_label_product_136 y,sphere_lambda_action] at hh</span>
+<span id="L57"><a href="#L57">  57</a>   exact hh</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> theorem sphere_unit_action_138 {A : SyntheticSpectrum}</span>
+<span id="L60"><a href="#L60">  60</a>     (a : BiHom 125 138 A) : sphereAction (sphere_unit) a = a := by</span>
+<span id="L61"><a href="#L61">  61</a>   have hu := graded_coherence.left_unit (125,138) (S_0_0 : SyntheticSpectrum)</span>
+<span id="L62"><a href="#L62">  62</a>   simp only [biShiftAddIso,Iso.trans_hom,eqToIso.hom,eqToHom_refl,Category.comp_id] at hu</span>
+<span id="L63"><a href="#L63">  63</a>   unfold sphereAction sphere_unit</span>
+<span id="L64"><a href="#L64">  64</a>   erw [←hu,Iso.inv_hom_id_app_assoc]</span>
+<span id="L65"><a href="#L65">  65</a> theorem sphere_unit_label_product_138</span>
+<span id="L66"><a href="#L66">  66</a>     (y : model.classical.sphere.Page 2 (13,138)) :</span>
+<span id="L67"><a href="#L67">  67</a>     model.sphereAlgebra.product (0,0) (13,138) sphere_unit_label y = y := by</span>
+<span id="L68"><a href="#L68">  68</a>   let b := ((KIP126.Literature.sphereFirstQuotient model) 13 138).symm y</span>
+<span id="L69"><a href="#L69">  69</a>   have hb : (KIP126.Literature.sphereFirstQuotient model) 13 138 b = y :=</span>
+<span id="L70"><a href="#L70">  70</a>     ((KIP126.Literature.sphereFirstQuotient model) 13 138).apply_symm_apply y</span>
+<span id="L71"><a href="#L71">  71</a>   have h := KIP126.Literature.Standard.first_quotient_action 0 0 13 138 sphere_unit b</span>
+<span id="L72"><a href="#L72">  72</a>   change (KIP126.Literature.sphereFirstQuotient model) 13 138 (sphereAction sphere_unit b) =</span>
+<span id="L73"><a href="#L73">  73</a>     model.sphereAlgebra.product (0,0) (13,138) sphere_unit_label</span>
+<span id="L74"><a href="#L74">  74</a>       ((KIP126.Literature.sphereFirstQuotient model) 13 138 b) at h</span>
+<span id="L75"><a href="#L75">  75</a>   rw [sphere_unit_action_138,hb] at h</span>
+<span id="L76"><a href="#L76">  76</a>   exact h.symm</span>
+<span id="L77"><a href="#L77">  77</a> </span>
+<span id="L78"><a href="#L78">  78</a> theorem lambda_one_finite_detected_138</span>
+<span id="L79"><a href="#L79">  79</a>     (y : model.classical.sphere.Page 2 (13,138))</span>
+<span id="L80"><a href="#L80">  80</a>     (a : BiHom 125 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L81"><a href="#L81">  81</a>     (ha : Detects (model.convergence (.quotient 9 .sphere)) (13,138,131)</span>
+<span id="L82"><a href="#L82">  82</a>       (quotientLabel 9 13 138 7 y) a) :</span>
+<span id="L83"><a href="#L83">  83</a>     Detects (model.convergence (.quotient 9 .sphere)) (13,138,130)</span>
+<span id="L84"><a href="#L84">  84</a>       (quotientLabel 9 13 138 8 y) (lambdaMultiply 1 a) := by</span>
+<span id="L85"><a href="#L85">  85</a>   have hu := model.sphereDetectionCompatible.homotopy_lambda 0 0 1 (sphere_unit)</span>
+<span id="L86"><a href="#L86">  86</a>   change Detects (model.convergence .sphere) (0,0,0-(1:ℕ))</span>
+<span id="L87"><a href="#L87">  87</a>     (sphereLabel 0 0 1 sphere_unit_label) (lambdaMultiply 1 sphere_unit) at hu</span>
+<span id="L88"><a href="#L88">  88</a>   have hh := KIP126.Literature.Standard.finite_action 9 (by decide) 0 0 13 138 1 7</span>
+<span id="L89"><a href="#L89">  89</a>     (sphere_unit_label) y (lambdaMultiply 1 (sphere_unit)) a hu ha</span>
+<span id="L90"><a href="#L90">  90</a>   change Detects (model.convergence (.quotient 9 .sphere)) (13,138,130)</span>
+<span id="L91"><a href="#L91">  91</a>     (quotientLabel 9 13 138 8</span>
+<span id="L92"><a href="#L92">  92</a>       (model.sphereAlgebra.product (0,0) (13,138) (sphere_unit_label) y))</span>
+<span id="L93"><a href="#L93">  93</a>     (sphereAction (lambdaMultiply 1 (sphere_unit)) a) at hh</span>
+<span id="L94"><a href="#L94">  94</a>   rw [sphere_unit_label_product_138 y,sphere_lambda_action] at hh</span>
+<span id="L95"><a href="#L95">  95</a>   exact hh</span>
+<span id="L96"><a href="#L96">  96</a> end</span>
+<span id="L97"><a href="#L97">  97</a> end KIP126.Main.Internal.NuNinth</span></pre>

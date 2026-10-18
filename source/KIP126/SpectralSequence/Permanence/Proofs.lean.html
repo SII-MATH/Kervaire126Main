@@ -1,0 +1,91 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Permanence/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Permanence/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Basic.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Basic.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.SpectralSequence.Computation.State.Predicates</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.SpectralSequence.Computation.State.Predicates</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.SpectralSequence.ModuleSubobject.Proofs</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> /-! Local stabilization and common representatives at infinity. Neither</span>
+<span id="L12"><a href="#L12">  12</a> permanent-cycle membership nor finite-page reachability asserts nonvanishing. -/</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> universe u v</span>
+<span id="L19"><a href="#L19">  19</a> variable {R : Type u} [Ring R]</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> /-- Two infinite-cycle representatives with the same class on one page</span>
+<span id="L22"><a href="#L22">  22</a> have the same class at infinity: their difference is already a boundary. -/</span>
+<span id="L23"><a href="#L23">  23</a> public theorem SSData.infinity_projection_eq_of_page_projection_eq</span>
+<span id="L24"><a href="#L24">  24</a>     (D : SSData (ModuleCat.{v} R)) (n : WithTop ℕ)</span>
+<span id="L25"><a href="#L25">  25</a>     (z z&#x27; : (Subobject.underlying.obj (D.Z ⊤) : ModuleCat R))</span>
+<span id="L26"><a href="#L26">  26</a>     (h : (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ n) z =</span>
+<span id="L27"><a href="#L27">  27</a>       (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ n) z&#x27;) :</span>
+<span id="L28"><a href="#L28">  28</a>     D.pageπ ⊤ z = D.pageπ ⊤ z&#x27; := by</span>
+<span id="L29"><a href="#L29">  29</a>   apply sub_eq_zero.mp</span>
+<span id="L30"><a href="#L30">  30</a>   rw [← map_sub]</span>
+<span id="L31"><a href="#L31">  31</a>   apply (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) _).mpr</span>
+<span id="L32"><a href="#L32">  32</a>   have hz : D.pageπ n ((Subobject.ofLE _ _ (D.Z_anti le_top)) (z - z&#x27;)) = 0 := by</span>
+<span id="L33"><a href="#L33">  33</a>     change (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ n) (z - z&#x27;) = 0</span>
+<span id="L34"><a href="#L34">  34</a>     rw [map_sub, h, sub_self]</span>
+<span id="L35"><a href="#L35">  35</a>   have hb := (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mp hz</span>
+<span id="L36"><a href="#L36">  36</a>   have heq : (D.Z n).arrow ((Subobject.ofLE _ _ (D.Z_anti le_top)) (z - z&#x27;)) =</span>
+<span id="L37"><a href="#L37">  37</a>       (D.Z ⊤).arrow (z - z&#x27;) :=</span>
+<span id="L38"><a href="#L38">  38</a>     ConcreteCategory.congr_hom (Subobject.ofLE_arrow (D.Z_anti le_top)) _</span>
+<span id="L39"><a href="#L39">  39</a>   rw [heq] at hb</span>
+<span id="L40"><a href="#L40">  40</a>   exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono le_top) hb</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> /-- A common representative on a finite page is permanent when the later</span>
+<span id="L43"><a href="#L43">  43</a> outgoing differentials vanish at its grading. It may still be a boundary. -/</span>
+<span id="L44"><a href="#L44">  44</a> public theorem isPermanentCycle_of_reachesPage</span>
+<span id="L45"><a href="#L45">  45</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L46"><a href="#L46">  46</a>     (N : ℤ) (hN : E.r₀ ≤ N) (p : ℤ × ℤ) (x : E.Page 2 p)</span>
+<span id="L47"><a href="#L47">  47</a>     (hx : ReachesPage E N p x)</span>
+<span id="L48"><a href="#L48">  48</a>     (hout : ∀ r : ℤ, N ≤ r → E.d r p = 0) :</span>
+<span id="L49"><a href="#L49">  49</a>     IsPermanentCycle E p x := by</span>
+<span id="L50"><a href="#L50">  50</a>   obtain ⟨xr, hN2, z, hz, _⟩ := hx</span>
+<span id="L51"><a href="#L51">  51</a>   let D := E.ssData p</span>
+<span id="L52"><a href="#L52">  52</a>   let n : WithTop ℕ := ↑(N - E.r₀).toNat</span>
+<span id="L53"><a href="#L53">  53</a>   have hZ : D.Z ⊤ = D.Z n := cycles_top_eq_of_d_eq_zero E N hN p hout</span>
+<span id="L54"><a href="#L54">  54</a>   let zInf := (Subobject.ofLE (D.Z n) (D.Z ⊤) hZ.ge) z</span>
+<span id="L55"><a href="#L55">  55</a>   refine ⟨zInf, ?_⟩</span>
+<span id="L56"><a href="#L56">  56</a>   change (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ _)</span>
+<span id="L57"><a href="#L57">  57</a>     ((Subobject.ofLE (D.Z n) (D.Z ⊤) hZ.ge) z) = x</span>
+<span id="L58"><a href="#L58">  58</a>   rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L59"><a href="#L59">  59</a>   exact hz</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> /-- Nonzero survival on a finite page persists at infinity when both later</span>
+<span id="L62"><a href="#L62">  62</a> outgoing and incoming differentials vanish at this grading. -/</span>
+<span id="L63"><a href="#L63">  63</a> public theorem nonzeroSurvival_of_survivesTo</span>
+<span id="L64"><a href="#L64">  64</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L65"><a href="#L65">  65</a>     (N : ℤ) (hN : E.r₀ ≤ N) (p : ℤ × ℤ) (x : E.Page 2 p)</span>
+<span id="L66"><a href="#L66">  66</a>     (hx : SurvivesTo E N p x)</span>
+<span id="L67"><a href="#L67">  67</a>     (hout : ∀ r : ℤ, N ≤ r → E.d r p = 0)</span>
+<span id="L68"><a href="#L68">  68</a>     (hin : ∀ r : ℤ, N ≤ r → E.d r (p - E.diffDeg r) = 0) :</span>
+<span id="L69"><a href="#L69">  69</a>     NonzeroSurvival E p x := by</span>
+<span id="L70"><a href="#L70">  70</a>   obtain ⟨xr, ⟨hN2, z, hz, hzr⟩, hne⟩ := hx</span>
+<span id="L71"><a href="#L71">  71</a>   let D := E.ssData p</span>
+<span id="L72"><a href="#L72">  72</a>   let n : WithTop ℕ := ↑(N - E.r₀).toNat</span>
+<span id="L73"><a href="#L73">  73</a>   have hZ : D.Z ⊤ = D.Z n := cycles_top_eq_of_d_eq_zero E N hN p hout</span>
+<span id="L74"><a href="#L74">  74</a>   have hB : D.B ⊤ = D.B n := boundaries_top_eq_of_d_eq_zero E N hN p hin</span>
+<span id="L75"><a href="#L75">  75</a>   let zInf := (Subobject.ofLE (D.Z n) (D.Z ⊤) hZ.ge) z</span>
+<span id="L76"><a href="#L76">  76</a>   refine ⟨zInf, ?_, ?_⟩</span>
+<span id="L77"><a href="#L77">  77</a>   · change (Subobject.ofLE _ _ (D.Z_anti le_top) ≫ D.pageπ _)</span>
+<span id="L78"><a href="#L78">  78</a>       ((Subobject.ofLE (D.Z n) (D.Z ⊤) hZ.ge) z) = x</span>
+<span id="L79"><a href="#L79">  79</a>     rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L80"><a href="#L80">  80</a>     exact hz</span>
+<span id="L81"><a href="#L81">  81</a>   · intro hzero</span>
+<span id="L82"><a href="#L82">  82</a>     apply hne</span>
+<span id="L83"><a href="#L83">  83</a>     rw [← hzr]</span>
+<span id="L84"><a href="#L84">  84</a>     apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) z).mpr</span>
+<span id="L85"><a href="#L85">  85</a>     have hb := (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤)</span>
+<span id="L86"><a href="#L86">  86</a>       (D.B_le_Z ⊤) zInf).mp hzero</span>
+<span id="L87"><a href="#L87">  87</a>     have heq : (D.Z ⊤).arrow zInf = (D.Z n).arrow z :=</span>
+<span id="L88"><a href="#L88">  88</a>       ConcreteCategory.congr_hom (Subobject.ofLE_arrow hZ.ge) z</span>
+<span id="L89"><a href="#L89">  89</a>     rwa [heq, hB] at hb</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> end KIP126.Core.SpectralSequence</span></pre>

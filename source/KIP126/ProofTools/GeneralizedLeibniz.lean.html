@@ -1,0 +1,323 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Laws</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.GeneralizedLeibniz.Boundary</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.GeneralizedLeibniz.Square</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.GeneralizedLeibniz.WeightedReverse</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.ProofTools.GeneralizedLeibniz.RightEdge</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.ProofTools.GeneralizedLeibniz.Propagation</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.ProofTools.GeneralizedLeibniz.WitnessSquare</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.ProofTools.GeneralizedLeibniz.BottomTarget</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingShift</span>
+<span id="L13"><a href="#L13">  13</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> /-! AimPaper Theorem 6.1. The original GL1 and GL2 geometric proof debts</span>
+<span id="L16"><a href="#L16">  16</a> are retained in place; the representative and Bockstein assembly is proved.</span>
+<span id="L17"><a href="#L17">  17</a> Upstream comparisons are used directly from the fixed Literature interface. -/</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> @[expose] section</span>
+<span id="L20"><a href="#L20">  20</a> namespace KIP126.ProofTools.Standard</span>
+<span id="L21"><a href="#L21">  21</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Synthetic.SpectralSequence KIP126.Classical.Adams KIP126.AdamsSynthetic</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L24"><a href="#L24">  24</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L25"><a href="#L25">  25</a> noncomputable section</span>
+<span id="L26"><a href="#L26">  26</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> private theorem lambda_target_class (Y : ClassicalObject) (s t : ℤ) (k j : ℕ)</span>
+<span id="L29"><a href="#L29">  29</a>     (x : Ambient model Y (s,t)) (hx : IsPermanent model Y (s,t) x)</span>
+<span id="L30"><a href="#L30">  30</a>     (e : ((model.family.nu model.nu (Y.obj model.auxiliary)).sequence.ssData (s,t,t-k)).eInfty)</span>
+<span id="L31"><a href="#L31">  31</a>     (he : HasInfinityRepresentative _ 2 (s,t,t-k) (targetNuLabel model Y s t k x) e) :</span>
+<span id="L32"><a href="#L32">  32</a>     KIP126.Literature.Standard.infinityNuWindow Y (s,t) (t-k-j) (by omega)</span>
+<span id="L33"><a href="#L33">  33</a>       (KIP126.Literature.Standard.infinityLambda (.nu Y) j (s,t) (t-k) e) =</span>
+<span id="L34"><a href="#L34">  34</a>       KIP126.Literature.subquotientClass (KIP126.Literature.permanentCycles model Y (s,t))</span>
+<span id="L35"><a href="#L35">  35</a>         (KIP126.Literature.boundaries model Y (1+t-(t-k-j)) (s,t)) ⟨x,hx⟩ := by</span>
+<span id="L36"><a href="#L36">  36</a>   have hlabel : nuWeightLabel model Y s t (t-k) (by omega) x =</span>
+<span id="L37"><a href="#L37">  37</a>       targetNuLabel model Y s t k x := by</span>
+<span id="L38"><a href="#L38">  38</a>     have hk : (t-(t-k)).toNat = k := by omega</span>
+<span id="L39"><a href="#L39">  39</a>     have transport (a b : ℕ) (hab : a = b)</span>
+<span id="L40"><a href="#L40">  40</a>         (h : (s,t,t-a) = (s,t,t-b)) :</span>
+<span id="L41"><a href="#L41">  41</a>         regradeE2 h (targetNuLabel model Y s t a x) = targetNuLabel model Y s t b x := by</span>
+<span id="L42"><a href="#L42">  42</a>       subst b</span>
+<span id="L43"><a href="#L43">  43</a>       rfl</span>
+<span id="L44"><a href="#L44">  44</a>     exact transport _ k hk _</span>
+<span id="L45"><a href="#L45">  45</a>   have heq := (KIP126.Literature.Standard.eInfinity_nu_labels Y s t (t-k)</span>
+<span id="L46"><a href="#L46">  46</a>     (by omega) x e).mp (by rwa [hlabel])</span>
+<span id="L47"><a href="#L47">  47</a>   have hm := KIP126.Literature.Standard.eInfinity_lambda_nu Y j (s,t) (t-k) (by omega) e</span>
+<span id="L48"><a href="#L48">  48</a>   rw [heq.2] at hm</span>
+<span id="L49"><a href="#L49">  49</a>   exact hm</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> /-- MainPaper Theorem 6.1. The applied comparison input supplies the synthetic</span>
+<span id="L52"><a href="#L52">  52</a> δ/λ/ρ comparisons; all differential, extension, and no-crossing premises</span>
+<span id="L53"><a href="#L53">  53</a> remain explicit in the conclusion&#x27;s predicate. -/</span>
+<span id="L54"><a href="#L54">  54</a> public theorem generalizedLeibniz</span>
+<span id="L55"><a href="#L55">  55</a>     (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) :</span>
+<span id="L56"><a href="#L56">  56</a>     GeneralizedLeibnizLaw model X Y f := by</span>
+<span id="L57"><a href="#L57">  57</a>   intro page r m l s t x y xInfinity yInfinity hpage hpr hm hmUpper hl</span>
+<span id="L58"><a href="#L58">  58</a>     hx hy hxInfinity hyInfinity hdx hf hfInfinity hsourceCrossing htargetCrossing</span>
+<span id="L59"><a href="#L59">  59</a>   let WFinite := Classical.choice hf</span>
+<span id="L60"><a href="#L60">  60</a>   let WInfinity := Classical.choice hfInfinity</span>
+<span id="L61"><a href="#L61">  61</a>   let LeftEdge : Prop := TowerExtensionEquation</span>
+<span id="L62"><a href="#L62">  62</a>     (model.convergentMap (.quotient (page-1) (extensionSourceObject model X Y f))</span>
+<span id="L63"><a href="#L63">  63</a>       (.shift (1,-((page-1:ℕ):ℤ)) (extensionSourceObject model X Y f))</span>
+<span id="L64"><a href="#L64">  64</a>       (Internal.Leibniz.absoluteBoundary</span>
+<span id="L65"><a href="#L65">  65</a>         ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) (page-1)))</span>
+<span id="L66"><a href="#L66">  66</a>     (t-s,t+normalizedExponent model.classicalTower f) s r WFinite.source</span>
+<span id="L67"><a href="#L67">  67</a>     (Internal.Leibniz.glBottomSource X Y f page r l s t hpage hpr WInfinity)</span>
+<span id="L68"><a href="#L68">  68</a>   let SourceNoCrossing : Prop :=</span>
+<span id="L69"><a href="#L69">  69</a>     Internal.Leibniz.TowerNoCrossing (model.convergentMap</span>
+<span id="L70"><a href="#L70">  70</a>       (.quotient (page-1) (extensionSourceObject model X Y f))</span>
+<span id="L71"><a href="#L71">  71</a>       (.shift (1,-((page-1:ℕ):ℤ)) (extensionSourceObject model X Y f))</span>
+<span id="L72"><a href="#L72">  72</a>       (Internal.Leibniz.absoluteBoundary</span>
+<span id="L73"><a href="#L73">  73</a>         ((extensionSourceObject model X Y f).obj model.nu model.auxiliary) (page-1)))</span>
+<span id="L74"><a href="#L74">  74</a>       (t-s,t+normalizedExponent model.classicalTower f) s r ∨</span>
+<span id="L75"><a href="#L75">  75</a>     Internal.Leibniz.TowerNoCrossing (model.convergentMap</span>
+<span id="L76"><a href="#L76">  76</a>       (.quotient (page-1) (extensionSourceObject model X Y f))</span>
+<span id="L77"><a href="#L77">  77</a>       (.quotient (page-1) (.nu Y)) (finiteExtensionMap model X Y f (page-1)))</span>
+<span id="L78"><a href="#L78">  78</a>       (t-s,t+normalizedExponent model.classicalTower f) s m</span>
+<span id="L79"><a href="#L79">  79</a>   let BottomNoCrossing : Prop := Internal.Leibniz.TowerNoCrossing</span>
+<span id="L80"><a href="#L80">  80</a>     (model.convergentMap</span>
+<span id="L81"><a href="#L81">  81</a>       (.shift (1,-((page-1:ℕ):ℤ)) (extensionSourceObject model X Y f))</span>
+<span id="L82"><a href="#L82">  82</a>       (.shift (1,-((page-1:ℕ):ℤ)) (.nu Y))</span>
+<span id="L83"><a href="#L83">  83</a>       ((SyntheticCategory.biShift (1,-((page-1:ℕ):ℤ))).map (model.normalizedMap X Y f).map))</span>
+<span id="L84"><a href="#L84">  84</a>     (t-s,t+normalizedExponent model.classicalTower f) (s+r) l</span>
+<span id="L85"><a href="#L85">  85</a>   have hsourceReady : SourceNoCrossing ∨ FiniteNoCrossing model X Y f page m s t := by</span>
+<span id="L86"><a href="#L86">  86</a>     rcases hsourceCrossing with hδcross | hfcross</span>
+<span id="L87"><a href="#L87">  87</a>     · exact Or.inl (Or.inl</span>
+<span id="L88"><a href="#L88">  88</a>         (Internal.Leibniz.classical_noCrossing_shifted_absolute_boundary X page</span>
+<span id="L89"><a href="#L89">  89</a>           (normalizedExponent model.classicalTower f) r s t hδcross))</span>
+<span id="L90"><a href="#L90">  90</a>     · by_cases hmmin : m ≤ normalizedExponent model.classicalTower f</span>
+<span id="L91"><a href="#L91">  91</a>       · exact Or.inl (Or.inr</span>
+<span id="L92"><a href="#L92">  92</a>           (Internal.Leibniz.minimal_length_finite_tower_no_crossing X Y f</span>
+<span id="L93"><a href="#L93">  93</a>             (page-1) (by omega) s t m hmmin))</span>
+<span id="L94"><a href="#L94">  94</a>       · exact Or.inr hfcross</span>
+<span id="L95"><a href="#L95">  95</a>   have boundary_regrade (m0 m1 w0 w1 : ℤ) (hm0 : m0=m1) (hw0 : w0=w1)</span>
+<span id="L96"><a href="#L96">  96</a>       (a0 : BiHom m0 w0 (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (page-1))) :</span>
+<span id="L97"><a href="#L97">  97</a>       Internal.Mahowald.biSuspensionHomEquiv m1 w1 (page-1:ℕ) _</span>
+<span id="L98"><a href="#L98">  98</a>         (homotopyRegrade hm0 hw0 a0 ≫ XModLambdaN.proj _ (page-1)) =</span>
+<span id="L99"><a href="#L99">  99</a>       homotopyRegrade (congrArg (fun z =&gt; z-1) hm0) (congrArg (fun z : ℤ =&gt; z+((page-1:ℕ):ℤ)) hw0)</span>
+<span id="L100"><a href="#L100"> 100</a>         (Internal.Mahowald.biSuspensionHomEquiv m0 w0 (page-1:ℕ) _</span>
+<span id="L101"><a href="#L101"> 101</a>           (a0 ≫ XModLambdaN.proj _ (page-1))) := by</span>
+<span id="L102"><a href="#L102"> 102</a>     subst m1; subst w1; rfl</span>
+<span id="L103"><a href="#L103"> 103</a>   obtain ⟨hbottom,hbottomSource,hbottomTarget⟩ :=</span>
+<span id="L104"><a href="#L104"> 104</a>     Internal.Leibniz.infinite_extension_lambda_boundary_shift X Y f</span>
+<span id="L105"><a href="#L105"> 105</a>       (r-page).toNat (page-1) l (s+r) (t+r-1) xInfinity yInfinity WInfinity</span>
+<span id="L106"><a href="#L106"> 106</a>   have hbottomPoint := Internal.Leibniz.gl_bottom_point page r s t</span>
+<span id="L107"><a href="#L107"> 107</a>     (normalizedExponent model.classicalTower f) hpage hpr</span>
+<span id="L108"><a href="#L108"> 108</a>   have hR : 2 ≤ r + l - m := by omega</span>
+<span id="L109"><a href="#L109"> 109</a>   have hy_later : IsCycle model Y (r + l - m - 1)</span>
+<span id="L110"><a href="#L110"> 110</a>       (s + m, t + m) y := by</span>
+<span id="L111"><a href="#L111"> 111</a>     by_cases hlmin : l = (normalizedExponent model.classicalTower f : ℤ)</span>
+<span id="L112"><a href="#L112"> 112</a>     · convert hy using 1</span>
+<span id="L113"><a href="#L113"> 113</a>       omega</span>
+<span id="L114"><a href="#L114"> 114</a>     have hlstrict : (normalizedExponent model.classicalTower f : ℤ) &lt; l := lt_of_le_of_ne hl (Ne.symm hlmin)</span>
+<span id="L115"><a href="#L115"> 115</a>     let k : ℕ := (r - 1).toNat</span>
+<span id="L116"><a href="#L116"> 116</a>     have hkZ : (k : ℤ) = r - 1 := Int.toNat_of_nonneg (by omega)</span>
+<span id="L117"><a href="#L117"> 117</a>     have hindex : (s + r, t + r - 1) = (s + k + 1, t + k) := by</span>
+<span id="L118"><a href="#L118"> 118</a>       ext &lt;;&gt; omega</span>
+<span id="L119"><a href="#L119"> 119</a>     let xInfinity&#x27; : Ambient model X (s + k + 1, t + k) :=</span>
+<span id="L120"><a href="#L120"> 120</a>       (eqToHom (congrArg (fun p =&gt; Ambient model X p) hindex)) xInfinity</span>
+<span id="L121"><a href="#L121"> 121</a>     have transport {p p&#x27; : ℤ × ℤ} (hp : p = p&#x27;) (z : Ambient model X p)</span>
+<span id="L122"><a href="#L122"> 122</a>         (hz : IsPermanent model X p z)</span>
+<span id="L123"><a href="#L123"> 123</a>         (hd : HasDifferential (model.classical.obj (X.obj model.auxiliary)) r (s,t) p x z) :</span>
+<span id="L124"><a href="#L124"> 124</a>         IsPermanent model X p&#x27; ((eqToHom (congrArg (fun q =&gt; Ambient model X q) hp)) z) ∧</span>
+<span id="L125"><a href="#L125"> 125</a>           HasDifferential (model.classical.obj (X.obj model.auxiliary)) r (s,t) p&#x27; x</span>
+<span id="L126"><a href="#L126"> 126</a>             ((eqToHom (congrArg (fun q =&gt; Ambient model X q) hp)) z) := by</span>
+<span id="L127"><a href="#L127"> 127</a>       subst p&#x27;</span>
+<span id="L128"><a href="#L128"> 128</a>       exact ⟨hz,hd⟩</span>
+<span id="L129"><a href="#L129"> 129</a>     obtain ⟨hInfinity&#x27;,hd&#x27;⟩ := transport hindex xInfinity hxInfinity hdx.2</span>
+<span id="L130"><a href="#L130"> 130</a>     have hdNat : HasDifferential (model.classical.obj (X.obj model.auxiliary))</span>
+<span id="L131"><a href="#L131"> 131</a>         (k+1) (s,t) (s+k+1,t+k) x xInfinity&#x27; := by</span>
+<span id="L132"><a href="#L132"> 132</a>       convert hd&#x27; using 1</span>
+<span id="L133"><a href="#L133"> 133</a>       omega</span>
+<span id="L134"><a href="#L134"> 134</a>     obtain ⟨aδ,haδ,hδ⟩ := Internal.Leibniz.differential_absolute_boundary X</span>
+<span id="L135"><a href="#L135"> 135</a>       (page-1) k (by omega) (by omega) s t x xInfinity&#x27; hdNat hInfinity&#x27;</span>
+<span id="L136"><a href="#L136"> 136</a>     have hδsquare := Internal.Leibniz.absoluteBoundary_natural</span>
+<span id="L137"><a href="#L137"> 137</a>       (model.normalizedMap X Y f).map (page-1)</span>
+<span id="L138"><a href="#L138"> 138</a>     suffices hright : ∃ a : BiHom ((t+m)-(s+m))</span>
+<span id="L139"><a href="#L139"> 139</a>         (t+normalizedExponent model.classicalTower f)</span>
+<span id="L140"><a href="#L140"> 140</a>         (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (page-1)),</span>
+<span id="L141"><a href="#L141"> 141</a>         Detects (model.convergence (.quotient (page-1) (.nu Y)))</span>
+<span id="L142"><a href="#L142"> 142</a>           (s+m,t+m,t+normalizedExponent model.classicalTower f)</span>
+<span id="L143"><a href="#L143"> 143</a>           (regradeE2 (by exact Prod.ext rfl (Prod.ext (by change (t-s)+(s+m)=t+m; omega) rfl))</span>
+<span id="L144"><a href="#L144"> 144</a>             (finiteTargetForExtension model X Y f (page-1) m s t hm y)) a ∧</span>
+<span id="L145"><a href="#L145"> 145</a>         FiltrationAtLeast model.syntheticTower (s+r+l)</span>
+<span id="L146"><a href="#L146"> 146</a>           (Internal.Mahowald.biSuspensionHomEquiv ((t+m)-(s+m))</span>
+<span id="L147"><a href="#L147"> 147</a>             (t+normalizedExponent model.classicalTower f) ((page-1:ℕ):ℤ)</span>
+<span id="L148"><a href="#L148"> 148</a>             (model.nu.functor.obj (Y.obj model.auxiliary))</span>
+<span id="L149"><a href="#L149"> 149</a>             (a ≫ XModLambdaN.proj _ (page-1))) by</span>
+<span id="L150"><a href="#L150"> 150</a>       obtain ⟨a,ha,hfil⟩ := hright</span>
+<span id="L151"><a href="#L151"> 151</a>       exact Internal.Leibniz.gl1_right_edge_survival X Y f page r m l s t</span>
+<span id="L152"><a href="#L152"> 152</a>         hpage hpr hm hmUpper hlstrict y a ha hfil</span>
+<span id="L153"><a href="#L153"> 153</a>     suffices hgeometry : LeftEdge ∧ SourceNoCrossing ∧ BottomNoCrossing by</span>
+<span id="L154"><a href="#L154"> 154</a>       obtain ⟨hleft,hsource,hbottomCrossing⟩ := hgeometry</span>
+<span id="L155"><a href="#L155"> 155</a>       obtain ⟨aRight,haRight,hboundary⟩ := Internal.Leibniz.gl_witness_square_high_filtration</span>
+<span id="L156"><a href="#L156"> 156</a>         X Y f page r m l s t hpage hpr WFinite WInfinity hleft hsource hbottomCrossing</span>
+<span id="L157"><a href="#L157"> 157</a>       let hmStem : t-s=(t+m)-(s+m) := by omega</span>
+<span id="L158"><a href="#L158"> 158</a>       refine ⟨homotopyRegrade hmStem rfl aRight,?_,?_⟩</span>
+<span id="L159"><a href="#L159"> 159</a>       · have hp : (s+m,(t-s)+(s+m),t+normalizedExponent model.classicalTower f) =</span>
+<span id="L160"><a href="#L160"> 160</a>             (s+m,t+m,t+normalizedExponent model.classicalTower f) := by exact Prod.ext rfl (Prod.ext (by change (t-s)+(s+m)=t+m; omega) rfl)</span>
+<span id="L161"><a href="#L161"> 161</a>         have hh := Internal.Mahowald.detects_transport hp _ _ haRight</span>
+<span id="L162"><a href="#L162"> 162</a>         convert hh using 1</span>
+<span id="L163"><a href="#L163"> 163</a>         simp only [Internal.Mahowald.regrade_precomp, ←Category.assoc, eqToHom_trans]</span>
+<span id="L164"><a href="#L164"> 164</a>       · rw [boundary_regrade]</span>
+<span id="L165"><a href="#L165"> 165</a>         exact (Internal.Leibniz.regrade_filtration_iff _ _ _ _).mpr hboundary</span>
+<span id="L166"><a href="#L166"> 166</a>     -- GL1: match the finite source to the propagated infinite source along</span>
+<span id="L167"><a href="#L167"> 167</a>     -- the actual left boundary, then finish the two no-crossing conversions.</span>
+<span id="L168"><a href="#L168"> 168</a>     -- hsourceReady already handles the classical-delta and minimal-f cases.</span>
+<span id="L169"><a href="#L169"> 169</a>     -- The witness square now constructs the common right representative;</span>
+<span id="L170"><a href="#L170"> 170</a>     -- its high boundary feeds the proved survival argument above.</span>
+<span id="L171"><a href="#L171"> 171</a>     sorry</span>
+<span id="L172"><a href="#L172"> 172</a>   let q : ℕ := (r + l - m - 1).toNat</span>
+<span id="L173"><a href="#L173"> 173</a>   have hq : 0 &lt; q := by dsimp only [q]; omega</span>
+<span id="L174"><a href="#L174"> 174</a>   have hqZ : (q : ℤ) = r + l - m - 1 := Int.toNat_of_nonneg (by omega)</span>
+<span id="L175"><a href="#L175"> 175</a>   have hyq : ReachesPage (model.classical.obj (Y.obj model.auxiliary)) (q+1) (s + m, t + m) y := by</span>
+<span id="L176"><a href="#L176"> 176</a>     apply (isCycle_iff_reaches model Y (q+1) (by omega) (s+m,t+m) y).mp</span>
+<span id="L177"><a href="#L177"> 177</a>     simpa only [add_sub_cancel_right, hqZ] using hy_later</span>
+<span id="L178"><a href="#L178"> 178</a>   obtain ⟨a, ha, hda⟩ := KIP126.Literature.Standard.bhs_bockstein Y q hq (s + m) (t + m) y hyq</span>
+<span id="L179"><a href="#L179"> 179</a>   have htarget : (s + r + l, t + r - 1 + l) =</span>
+<span id="L180"><a href="#L180"> 180</a>       (s + m + (q : ℤ) + 1, t + m + (q : ℤ)) := by</span>
+<span id="L181"><a href="#L181"> 181</a>     ext &lt;;&gt; omega</span>
+<span id="L182"><a href="#L182"> 182</a>   let yExpected : Ambient model Y</span>
+<span id="L183"><a href="#L183"> 183</a>       (s + m + (q : ℤ) + 1, t + m + (q : ℤ)) :=</span>
+<span id="L184"><a href="#L184"> 184</a>     (eqToHom (congrArg (fun p =&gt; Ambient model Y p) htarget)) yInfinity</span>
+<span id="L185"><a href="#L185"> 185</a>   have htarget_congruent : Congruent model Y q</span>
+<span id="L186"><a href="#L186"> 186</a>       (s + m + (q : ℤ) + 1, t + m + (q : ℤ))</span>
+<span id="L187"><a href="#L187"> 187</a>       yExpected (KIP126.Literature.bocksteinLabel model Y q hq (s + m) (t + m) a) := by</span>
+<span id="L188"><a href="#L188"> 188</a>     refine ⟨by omega, ?_⟩</span>
+<span id="L189"><a href="#L189"> 189</a>     let W := WInfinity</span>
+<span id="L190"><a href="#L190"> 190</a>     have undo_label {p₁ p₂ : ℤ × ℤ × ℤ} (hp : p₁ = p₂)</span>
+<span id="L191"><a href="#L191"> 191</a>         (z : (model.family.nu model.nu (Y.obj model.auxiliary)).E₂ p₁)</span>
+<span id="L192"><a href="#L192"> 192</a>         (e : ((model.family.nu model.nu (Y.obj model.auxiliary)).sequence.ssData p₂).eInfty)</span>
+<span id="L193"><a href="#L193"> 193</a>         (he : HasInfinityRepresentative _ 2 p₂ (regradeE2 hp z) e) :</span>
+<span id="L194"><a href="#L194"> 194</a>         HasInfinityRepresentative (model.family.nu model.nu (Y.obj model.auxiliary)) 2 p₁ z</span>
+<span id="L195"><a href="#L195"> 195</a>           ((eqToHom (congrArg (fun p =&gt; ((model.family.nu model.nu</span>
+<span id="L196"><a href="#L196"> 196</a>             (Y.obj model.auxiliary)).sequence.ssData p).eInfty) hp.symm)) e) := by</span>
+<span id="L197"><a href="#L197"> 197</a>       subst p₂</span>
+<span id="L198"><a href="#L198"> 198</a>       exact he</span>
+<span id="L199"><a href="#L199"> 199</a>     have ht := W.target_rep</span>
+<span id="L200"><a href="#L200"> 200</a>     dsimp only [infiniteTargetForExtension] at ht</span>
+<span id="L201"><a href="#L201"> 201</a>     have h_ungraded := undo_label _ _ _ ht</span>
+<span id="L202"><a href="#L202"> 202</a>     have h_propagated_target := lambda_target_class Y</span>
+<span id="L203"><a href="#L203"> 203</a>       (s + r + l) (t + r - 1 + l) (l - normalizedExponent model.classicalTower f).toNat (r - page).toNat</span>
+<span id="L204"><a href="#L204"> 204</a>       yInfinity hyInfinity _ h_ungraded</span>
+<span id="L205"><a href="#L205"> 205</a>     have h_boundary_le :</span>
+<span id="L206"><a href="#L206"> 206</a>         1 + (t + r - 1 + l) - ((t + r - 1 + l) -</span>
+<span id="L207"><a href="#L207"> 207</a>           (l - normalizedExponent model.classicalTower f).toNat - (r - page).toNat) ≤ (q : ℤ) := by</span>
+<span id="L208"><a href="#L208"> 208</a>       rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg (by omega)]</span>
+<span id="L209"><a href="#L209"> 209</a>       omega</span>
+<span id="L210"><a href="#L210"> 210</a>     have h_propagated_target_q := congrArg</span>
+<span id="L211"><a href="#L211"> 211</a>       (KIP126.Literature.permanentQuotientMap model Y h_boundary_le</span>
+<span id="L212"><a href="#L212"> 212</a>         (s + r + l, t + r - 1 + l)) h_propagated_target</span>
+<span id="L213"><a href="#L213"> 213</a>     let d : ℕ := (m - normalizedExponent model.classicalTower f).toNat</span>
+<span id="L214"><a href="#L214"> 214</a>     have hdpage : d &lt; page-1 := by dsimp only [d]; omega</span>
+<span id="L215"><a href="#L215"> 215</a>     have hiq : page-1-d ≤ q := by dsimp only [d]; omega</span>
+<span id="L216"><a href="#L216"> 216</a>     suffices hδ : ∃ aRight : BiHom ((t+m)-(s+m)) (t+m-d)</span>
+<span id="L217"><a href="#L217"> 217</a>         (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (page-1)),</span>
+<span id="L218"><a href="#L218"> 218</a>         Detects (model.convergence (.quotient (page-1) (.nu Y)))</span>
+<span id="L219"><a href="#L219"> 219</a>           (s+m,t+m,t+m-d)</span>
+<span id="L220"><a href="#L220"> 220</a>           ((model.family.quotientProjection (model.nu.functor.obj (Y.obj model.auxiliary))</span>
+<span id="L221"><a href="#L221"> 221</a>             (page-1)).pageMap 2 (s+m,t+m,t+m-d)</span>
+<span id="L222"><a href="#L222"> 222</a>             (nuWeightLabel model Y (s+m) (t+m) (t+m-d) (by omega) y)) aRight ∧</span>
+<span id="L223"><a href="#L223"> 223</a>         Detects (model.convergence (.nu Y))</span>
+<span id="L224"><a href="#L224"> 224</a>           (s+m+(q:ℤ)+1,t+m+(q:ℤ),t+m-d+((page-1:ℕ):ℤ))</span>
+<span id="L225"><a href="#L225"> 225</a>           (nuWeightLabel model Y (s+m+(q:ℤ)+1) (t+m+(q:ℤ))</span>
+<span id="L226"><a href="#L226"> 226</a>             (t+m-d+((page-1:ℕ):ℤ)) (by omega) yExpected)</span>
+<span id="L227"><a href="#L227"> 227</a>           (homotopyRegrade (by dsimp; omega) rfl</span>
+<span id="L228"><a href="#L228"> 228</a>             (Internal.Mahowald.biSuspensionHomEquiv ((t+m)-(s+m)) (t+m-d) (page-1:ℕ)</span>
+<span id="L229"><a href="#L229"> 229</a>               (model.nu.functor.obj (Y.obj model.auxiliary))</span>
+<span id="L230"><a href="#L230"> 230</a>               (aRight ≫ XModLambdaN.proj _ (page-1)))) by</span>
+<span id="L231"><a href="#L231"> 231</a>       obtain ⟨aRight,haRight,hδRight⟩ := hδ</span>
+<span id="L232"><a href="#L232"> 232</a>       have hdTarget := Internal.Leibniz.finite_detected_boundary_differential_weighted</span>
+<span id="L233"><a href="#L233"> 233</a>         Y (page-1) q d hdpage hiq (s+m) (t+m) y yExpected aRight haRight hδRight</span>
+<span id="L234"><a href="#L234"> 234</a>       have hc := Internal.Mahowald.differential_targets_sub_mem_boundary model Y</span>
+<span id="L235"><a href="#L235"> 235</a>         ((q:ℤ)+1) (s+m,t+m) (s+m+(q:ℤ)+1,t+m+(q:ℤ)) y yExpected</span>
+<span id="L236"><a href="#L236"> 236</a>         (KIP126.Literature.bocksteinLabel model Y q hq (s+m) (t+m) a) hdTarget hda</span>
+<span id="L237"><a href="#L237"> 237</a>       simpa only [add_sub_cancel_right] using hc</span>
+<span id="L238"><a href="#L238"> 238</a>     have hwSource : t+normalizedExponent model.classicalTower f = t+m-d := by</span>
+<span id="L239"><a href="#L239"> 239</a>       dsimp only [d]</span>
+<span id="L240"><a href="#L240"> 240</a>       omega</span>
+<span id="L241"><a href="#L241"> 241</a>     have hpTarget :</span>
+<span id="L242"><a href="#L242"> 242</a>         (s+m+(q:ℤ)+1,t+m+(q:ℤ),t+m-d+((page-1:ℕ):ℤ)) =</span>
+<span id="L243"><a href="#L243"> 243</a>         (s+r+l,(t-s)-1+(s+r+l),t+normalizedExponent model.classicalTower f+((page-1:ℕ):ℤ)) := by</span>
+<span id="L244"><a href="#L244"> 244</a>       ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L245"><a href="#L245"> 245</a>     let bottomLabel := regradeE2 hpTarget</span>
+<span id="L246"><a href="#L246"> 246</a>       (nuWeightLabel model Y (s+m+(q:ℤ)+1) (t+m+(q:ℤ))</span>
+<span id="L247"><a href="#L247"> 247</a>         (t+m-d+((page-1:ℕ):ℤ)) (by omega) yExpected)</span>
+<span id="L248"><a href="#L248"> 248</a>     let BottomLabel : Prop := HasInfinityRepresentative _ 2</span>
+<span id="L249"><a href="#L249"> 249</a>       (s+r+l,(t-s)+(s+r+l),t+normalizedExponent model.classicalTower f)</span>
+<span id="L250"><a href="#L250"> 250</a>       (regradeE2 (by ext &lt;;&gt; dsimp &lt;;&gt; omega)</span>
+<span id="L251"><a href="#L251"> 251</a>         (((essShift (1,-((page-1:ℕ):ℤ))).page (.nu Y) 2 (by decide)</span>
+<span id="L252"><a href="#L252"> 252</a>           ((t-s)-1,t+normalizedExponent model.classicalTower f+((page-1:ℕ):ℤ)) (s+r+l)).hom bottomLabel))</span>
+<span id="L253"><a href="#L253"> 253</a>       (Internal.Leibniz.glBottomTarget X Y f page r l s t hpage hpr WInfinity)</span>
+<span id="L254"><a href="#L254"> 254</a>     have hbottomLabel : BottomLabel := by</span>
+<span id="L255"><a href="#L255"> 255</a>       apply Internal.Leibniz.gl_bottom_target_representative</span>
+<span id="L256"><a href="#L256"> 256</a>         X Y f page r l s t hpage hpr WInfinity bottomLabel</span>
+<span id="L257"><a href="#L257"> 257</a>       apply (Internal.Leibniz.regradeE2_heq hpTarget _).trans</span>
+<span id="L258"><a href="#L258"> 258</a>       exact Internal.Leibniz.nuWeight_label_heq Y</span>
+<span id="L259"><a href="#L259"> 259</a>         (s+m+(q:ℤ)+1) (t+m+(q:ℤ)) (t+m-d+((page-1:ℕ):ℤ))</span>
+<span id="L260"><a href="#L260"> 260</a>         (s+r+l) (t+r-1+l)</span>
+<span id="L261"><a href="#L261"> 261</a>         (t+normalizedExponent model.classicalTower f+((page-1:ℕ):ℤ))</span>
+<span id="L262"><a href="#L262"> 262</a>         (by omega) (by omega) (by omega) (by omega) (by omega)</span>
+<span id="L263"><a href="#L263"> 263</a>         yExpected yInfinity (Internal.Leibniz.eqToHom_apply_heq _ yInfinity)</span>
+<span id="L264"><a href="#L264"> 264</a>     suffices hgeometry : LeftEdge ∧ SourceNoCrossing ∧ BottomNoCrossing by</span>
+<span id="L265"><a href="#L265"> 265</a>       obtain ⟨hleft,hsource,hbottomCrossing⟩ := hgeometry</span>
+<span id="L266"><a href="#L266"> 266</a>       obtain ⟨aRight,haRight,hboundary⟩ := Internal.Leibniz.gl_witness_square_detects</span>
+<span id="L267"><a href="#L267"> 267</a>         X Y f page r m l s t hpage hpr WFinite WInfinity hleft hsource hbottomCrossing</span>
+<span id="L268"><a href="#L268"> 268</a>         bottomLabel hbottomLabel</span>
+<span id="L269"><a href="#L269"> 269</a>       have hmStem : t-s=(t+m)-(s+m) := by omega</span>
+<span id="L270"><a href="#L270"> 270</a>       refine ⟨homotopyRegrade hmStem hwSource aRight,?_,?_⟩</span>
+<span id="L271"><a href="#L271"> 271</a>       · have hpSource : (s+m,(t-s)+(s+m),t+normalizedExponent model.classicalTower f) =</span>
+<span id="L272"><a href="#L272"> 272</a>             (s+m,t+m,t+normalizedExponent model.classicalTower f) := by exact Prod.ext rfl (Prod.ext (by change (t-s)+(s+m)=t+m; omega) rfl)</span>
+<span id="L273"><a href="#L273"> 273</a>         have hh := Internal.Mahowald.detects_transport hpSource _ _ haRight</span>
+<span id="L274"><a href="#L274"> 274</a>         rw [Internal.Leibniz.finite_extension_target_weight_label] at hh</span>
+<span id="L275"><a href="#L275"> 275</a>         have weight_transport (w w&#x27; : ℤ) (hw : w=w&#x27;) (hwt : w≤t+m) (hwt&#x27; : w&#x27;≤t+m)</span>
+<span id="L276"><a href="#L276"> 276</a>             (a0 : BiHom ((t+m)-(s+m)) w</span>
+<span id="L277"><a href="#L277"> 277</a>               (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (page-1)))</span>
+<span id="L278"><a href="#L278"> 278</a>             (ha0 : Detects (model.convergence (.quotient (page-1) (.nu Y))) (s+m,t+m,w)</span>
+<span id="L279"><a href="#L279"> 279</a>               ((model.family.quotientProjection (model.nu.functor.obj (Y.obj model.auxiliary))</span>
+<span id="L280"><a href="#L280"> 280</a>                 (page-1)).pageMap 2 (s+m,t+m,w)</span>
+<span id="L281"><a href="#L281"> 281</a>                 (nuWeightLabel model Y (s+m) (t+m) w hwt y)) a0) :</span>
+<span id="L282"><a href="#L282"> 282</a>             Detects (model.convergence (.quotient (page-1) (.nu Y))) (s+m,t+m,w&#x27;)</span>
+<span id="L283"><a href="#L283"> 283</a>               ((model.family.quotientProjection (model.nu.functor.obj (Y.obj model.auxiliary))</span>
+<span id="L284"><a href="#L284"> 284</a>                 (page-1)).pageMap 2 (s+m,t+m,w&#x27;)</span>
+<span id="L285"><a href="#L285"> 285</a>                 (nuWeightLabel model Y (s+m) (t+m) w&#x27; hwt&#x27; y))</span>
+<span id="L286"><a href="#L286"> 286</a>               (homotopyRegrade rfl hw a0) := by</span>
+<span id="L287"><a href="#L287"> 287</a>           subst w&#x27;</span>
+<span id="L288"><a href="#L288"> 288</a>           exact ha0</span>
+<span id="L289"><a href="#L289"> 289</a>         have hh&#x27; := weight_transport _ _ hwSource (by omega) (by omega) _ hh</span>
+<span id="L290"><a href="#L290"> 290</a>         convert hh&#x27; using 1</span>
+<span id="L291"><a href="#L291"> 291</a>         simp only [Internal.Mahowald.regrade_precomp, ←Category.assoc, eqToHom_trans]</span>
+<span id="L292"><a href="#L292"> 292</a>       · have hh := Internal.Mahowald.detects_transport hpTarget.symm _ _ hboundary</span>
+<span id="L293"><a href="#L293"> 293</a>         convert hh using 1</span>
+<span id="L294"><a href="#L294"> 294</a>         · have cancel {i j : Tridegree} (h : i=j)</span>
+<span id="L295"><a href="#L295"> 295</a>               (z : (model.family.nu model.nu (Y.obj model.auxiliary)).E₂ i) :</span>
+<span id="L296"><a href="#L296"> 296</a>               regradeE2 h.symm (regradeE2 h z)=z := by subst j; rfl</span>
+<span id="L297"><a href="#L297"> 297</a>           exact (cancel hpTarget _).symm</span>
+<span id="L298"><a href="#L298"> 298</a>         · rw [boundary_regrade]</span>
+<span id="L299"><a href="#L299"> 299</a>           simp only [Internal.Mahowald.regrade_precomp, ←Category.assoc, eqToHom_trans]</span>
+<span id="L300"><a href="#L300"> 300</a>     -- GL2: supply the same left-edge matching and crossing conversions.</span>
+<span id="L301"><a href="#L301"> 301</a>     -- The propagated bottom target already has the prescribed classical label.</span>
+<span id="L302"><a href="#L302"> 302</a>     -- The witness square now produces one aRight with both detections;</span>
+<span id="L303"><a href="#L303"> 303</a>     -- weighted reverse performs rho lifting, lambda division and B_q readout.</span>
+<span id="L304"><a href="#L304"> 304</a>     sorry</span>
+<span id="L305"><a href="#L305"> 305</a>   have hchosen : DifferentialAt model Y ((q : ℤ) + 1)</span>
+<span id="L306"><a href="#L306"> 306</a>       (s + m, t + m) (s + m + (q : ℤ) + 1, t + m + (q : ℤ))</span>
+<span id="L307"><a href="#L307"> 307</a>       y (KIP126.Literature.bocksteinLabel model Y q hq (s + m) (t + m) a) := ⟨by omega, hda⟩</span>
+<span id="L308"><a href="#L308"> 308</a>   have hfinal := differentialAt_of_congruent model Y hchosen</span>
+<span id="L309"><a href="#L309"> 309</a>     (by simpa only [add_sub_cancel_right] using htarget_congruent)</span>
+<span id="L310"><a href="#L310"> 310</a>   have hRq : (q : ℤ) + 1 = r + l - m := by omega</span>
+<span id="L311"><a href="#L311"> 311</a>   rw [hRq] at hfinal</span>
+<span id="L312"><a href="#L312"> 312</a>   have undo_transport {p₁ p₂ : ℤ × ℤ} (hp : p₁ = p₂)</span>
+<span id="L313"><a href="#L313"> 313</a>       (z : Ambient model Y p₁)</span>
+<span id="L314"><a href="#L314"> 314</a>       (h : DifferentialAt model Y (r + l - m) (s + m, t + m) p₂ y</span>
+<span id="L315"><a href="#L315"> 315</a>         ((eqToHom (congrArg (fun p =&gt; Ambient model Y p) hp)) z)) :</span>
+<span id="L316"><a href="#L316"> 316</a>       DifferentialAt model Y (r + l - m) (s + m, t + m) p₁ y z := by</span>
+<span id="L317"><a href="#L317"> 317</a>     subst p₂</span>
+<span id="L318"><a href="#L318"> 318</a>     exact h</span>
+<span id="L319"><a href="#L319"> 319</a>   exact undo_transport htarget yInfinity hfinal</span>
+<span id="L320"><a href="#L320"> 320</a> </span>
+<span id="L321"><a href="#L321"> 321</a> </span>
+<span id="L322"><a href="#L322"> 322</a> end</span>
+<span id="L323"><a href="#L323"> 323</a> end KIP126.ProofTools.Standard</span></pre>

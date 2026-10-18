@@ -1,0 +1,90 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/WeakStripTorsion.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/WeakStripTorsion.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.SectionSeven.NuTargetWindows</span>
+<span id="L4"><a href="#L4">   4</a> /-! The boundary-lift induction of WeakRepresentative.lean:78–222,</span>
+<span id="L5"><a href="#L5">   5</a> bbac1fc05843 (MIT). Incoming detection is obtained through the generic</span>
+<span id="L6"><a href="#L6">   6</a> finite-page theorem instead of opening the quotient implementation. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.SectionSeven.Internal</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature KIP126.Kervaire.Route</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Main.Internal KIP126.ProofTools.Operations</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> set_option maxHeartbeats 1000000</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> private theorem sphere_boundary_hit_or_previous (r : ℤ) (hr : 2≤r) (p : ℤ×ℤ)</span>
+<span id="L19"><a href="#L19">  19</a>     (x : model.classical.sphere.Page 2 p) (hx : x∈boundaries model .sphere r p) :</span>
+<span id="L20"><a href="#L20">  20</a>     x∈boundaries model .sphere (r-1) p ∨ HitOnPage model.classical.sphere r p x := by</span>
+<span id="L21"><a href="#L21">  21</a>   let E := model.classical.sphere</span>
+<span id="L22"><a href="#L22">  22</a>   have hrep : RepresentsOnPage E (r+1) p x 0 :=</span>
+<span id="L23"><a href="#L23">  23</a>     KIP126.ProofTools.representsOnPage_of_congruent model .sphere (by omega)</span>
+<span id="L24"><a href="#L24">  24</a>       (RepresentsOnPage.zero (by omega)) ⟨by omega,by simpa only [add_sub_cancel_right,sub_zero] using hx⟩</span>
+<span id="L25"><a href="#L25">  25</a>   obtain ⟨a,ha⟩ := represents_before hr (by omega : r≤r+1) hrep</span>
+<span id="L26"><a href="#L26">  26</a>   by_cases haz : a=0</span>
+<span id="L27"><a href="#L27">  27</a>   · left</span>
+<span id="L28"><a href="#L28">  28</a>     rw [haz] at ha</span>
+<span id="L29"><a href="#L29">  29</a>     exact represents_zero_mem_boundary model .sphere r p x ha</span>
+<span id="L30"><a href="#L30">  30</a>   · right</span>
+<span id="L31"><a href="#L31">  31</a>     let q := p-E.diffDeg r</span>
+<span id="L32"><a href="#L32">  32</a>     have hq : q+E.diffDeg r=p := sub_add_cancel _ _</span>
+<span id="L33"><a href="#L33">  33</a>     have incoming : ∃ u : E.Page r q,</span>
+<span id="L34"><a href="#L34">  34</a>         (E.d r q ≫ eqToHom (congrArg (E.Page r) hq)) u = a := by</span>
+<span id="L35"><a href="#L35">  35</a>       by_contra h</span>
+<span id="L36"><a href="#L36">  36</a>       have hn := represents_next_nonzero_of_not_incoming_at hq</span>
+<span id="L37"><a href="#L37">  37</a>         (by dsimp only [E]; rw [model.classical.firstPage]; exact hr) hr hrep ha</span>
+<span id="L38"><a href="#L38">  38</a>         (fun u hu =&gt; h ⟨u,hu⟩)</span>
+<span id="L39"><a href="#L39">  39</a>       exact hn rfl</span>
+<span id="L40"><a href="#L40">  40</a>     obtain ⟨u,hu⟩ := incoming</span>
+<span id="L41"><a href="#L41">  41</a>     exact ⟨q,hq,u,a,ha,haz,hu⟩</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> private theorem sphere_boundary_torsion_lift (s t : ℤ) (r : ℕ) (hr : 2≤r)</span>
+<span id="L44"><a href="#L44">  44</a>     (x : model.classical.sphere.Page 2 (s,t))</span>
+<span id="L45"><a href="#L45">  45</a>     (hp : x∈permanentCycles model .sphere (s,t))</span>
+<span id="L46"><a href="#L46">  46</a>     (hx : HitOnPage model.classical.sphere r (s,t) x) :</span>
+<span id="L47"><a href="#L47">  47</a>     ∃ a : BiHom (t-s) t (S_0_0 : SyntheticSpectrum),</span>
+<span id="L48"><a href="#L48">  48</a>       sphereFirstQuotient model s t (quotientClass 1 a)=x ∧ lambdaMultiply (r-1) a=0 := by</span>
+<span id="L49"><a href="#L49">  49</a>   have hc : ClassicalPermanentCycle model .sphere (s,t) x := by</span>
+<span id="L50"><a href="#L50">  50</a>     exact (permanent_cycle_iff_mem .sphere (s,t) x).mpr hp</span>
+<span id="L51"><a href="#L51">  51</a>   obtain ⟨a,ha,hat⟩ := KIP126.Literature.Standard.selected_realization_boundary_lift .sphere s t r hr x hc hx</span>
+<span id="L52"><a href="#L52">  52</a>   let e := SyntheticCategory.biShift_zero.hom.app (model.nu.functor.obj SphereSpectrum) ≫ model.nu.unitIso.hom</span>
+<span id="L53"><a href="#L53">  53</a>   refine ⟨a≫e,?_,?_⟩</span>
+<span id="L54"><a href="#L54">  54</a>   · have he : quotientClass 1 (a≫e)=quotientClass 1 a≫XModLambdaN.map e 1 := by</span>
+<span id="L55"><a href="#L55">  55</a>       unfold quotientClass</span>
+<span id="L56"><a href="#L56">  56</a>       simp only [Category.assoc]</span>
+<span id="L57"><a href="#L57">  57</a>       exact congrArg (fun h =&gt; a≫h) (XModLambdaN.incl_naturality e 1)</span>
+<span id="L58"><a href="#L58">  58</a>     rw [he,ha]</span>
+<span id="L59"><a href="#L59">  59</a>     exact sphere_first_quotient_label s t x</span>
+<span id="L60"><a href="#L60">  60</a>   · simpa only [lambdaMultiply,Category.assoc,zero_comp] using congrArg (fun f =&gt; f≫e) hat</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> private theorem lambda_multiply_zero_mono {A : SyntheticSpectrum} (a b : ℕ) (hab : a≤b)</span>
+<span id="L63"><a href="#L63">  63</a>     {m w : ℤ} (x : BiHom m w A) (hx : lambdaMultiply a x=0) : lambdaMultiply b x=0 := by</span>
+<span id="L64"><a href="#L64">  64</a>   simp only [lambdaMultiply,comp_eq_zero_iff_of_epi] at hx ⊢</span>
+<span id="L65"><a href="#L65">  65</a>   rw [lambdaPow_add graded_coherence (b-a) a b (Nat.sub_add_cancel hab)]</span>
+<span id="L66"><a href="#L66">  66</a>   simp only [Category.assoc,hx,comp_zero]</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> theorem sphere_boundary_submodule_torsion_lift (s t : ℤ) (r : ℕ) (hr : 1≤r)</span>
+<span id="L69"><a href="#L69">  69</a>     (x : model.classical.sphere.Page 2 (s,t))</span>
+<span id="L70"><a href="#L70">  70</a>     (hx : x∈boundaries model .sphere r (s,t)) :</span>
+<span id="L71"><a href="#L71">  71</a>     ∃ a : BiHom (t-s) t (S_0_0 : SyntheticSpectrum),</span>
+<span id="L72"><a href="#L72">  72</a>       sphereFirstQuotient model s t (quotientClass 1 a)=x ∧ lambdaMultiply (r-1) a=0 := by</span>
+<span id="L73"><a href="#L73">  73</a>   induction r using Nat.strong_induction_on with</span>
+<span id="L74"><a href="#L74">  74</a>   | h r ih =&gt;</span>
+<span id="L75"><a href="#L75">  75</a>     by_cases hr1 : r=1</span>
+<span id="L76"><a href="#L76">  76</a>     · subst r</span>
+<span id="L77"><a href="#L77">  77</a>       have hx0 : x=0 := by simpa only [Nat.cast_one,boundaries_one,Submodule.mem_bot] using hx</span>
+<span id="L78"><a href="#L78">  78</a>       subst x</span>
+<span id="L79"><a href="#L79">  79</a>       refine ⟨0,?_,?_⟩ &lt;;&gt; simp only [quotientClass,lambdaMultiply,zero_comp,comp_zero,map_zero]</span>
+<span id="L80"><a href="#L80">  80</a>     · have hr2 : 2≤r := by omega</span>
+<span id="L81"><a href="#L81">  81</a>       rcases sphere_boundary_hit_or_previous r (by omega) (s,t) x hx with hp|hh</span>
+<span id="L82"><a href="#L82">  82</a>       · have hprev : x∈boundaries model .sphere ((r-1:ℕ):ℤ) (s,t) := by</span>
+<span id="L83"><a href="#L83">  83</a>           simpa only [Nat.cast_sub hr,Nat.cast_one] using hp</span>
+<span id="L84"><a href="#L84">  84</a>         obtain ⟨a,ha,hat⟩ := ih (r-1) (by omega) (by omega) hprev</span>
+<span id="L85"><a href="#L85">  85</a>         exact ⟨a,ha,lambda_multiply_zero_mono (r-1-1) (r-1) (by omega) a hat⟩</span>
+<span id="L86"><a href="#L86">  86</a>       · exact sphere_boundary_torsion_lift s t r hr2 x</span>
+<span id="L87"><a href="#L87">  87</a>           (boundaries_le_permanent_cycles .sphere (s,t) r hx) hh</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> end</span>
+<span id="L90"><a href="#L90">  90</a> end KIP126.Main.SectionSeven.Internal</span></pre>

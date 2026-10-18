@@ -1,0 +1,93 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Consumer/BoundedExtension.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Consumer/BoundedExtension.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Consumer.Extension</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.SpectralSequence.Crossing.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.SpectralSequence.BoundedExtension.UnderlyingComplex.Proofs</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.SpectralSequence.FilteredComplex.Solutions.Page.Converse.Proofs</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L11"><a href="#L11">  11</a> set_option maxHeartbeats 300000</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> /-! The bounded extension sequence of a specified filtered map. The filtered</span>
+<span id="L14"><a href="#L14">  14</a> complex is an implementation detail; all public types use the original map,</span>
+<span id="L15"><a href="#L15">  15</a> filtrations, graded objects and the generic spectral-sequence language. -/</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> namespace KIP126.Core.SpectralSequence.FilteredMapExtension</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> universe u v w</span>
+<span id="L22"><a href="#L22">  22</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L23"><a href="#L23">  23</a>   {ω : Type w} {A B : ω → C} {F : Filtration A} {G : Filtration B}</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> /-- The canonical ESS; boundedness is explicit and applies to these filtrations. -/</span>
+<span id="L26"><a href="#L26">  26</a> @[no_expose] public noncomputable def sequence (f : FilteredMorphism F G)</span>
+<span id="L27"><a href="#L27">  27</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) :</span>
+<span id="L28"><a href="#L28">  28</a>     SpectralSequence C (ℤ × ℤ) :=</span>
+<span id="L29"><a href="#L29">  29</a>   (underlyingComplex f.map f.compat k).toSpectralSequence</span>
+<span id="L30"><a href="#L30">  30</a>     (underlyingComplexBounded f.map f.compat k hF hG)</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> public theorem sequence_firstPage (f : FilteredMorphism F G)</span>
+<span id="L33"><a href="#L33">  33</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) :</span>
+<span id="L34"><a href="#L34">  34</a>     (sequence f hF hG k).r₀ = 0 := by rfl</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> public theorem sequence_diffDeg (f : FilteredMorphism F G)</span>
+<span id="L37"><a href="#L37">  37</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) (n : ℤ) :</span>
+<span id="L38"><a href="#L38">  38</a>     (sequence f hF hG k).diffDeg n = (n, -1) := by rfl</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- Source ambient object is the associated grade of the same source filtration. -/</span>
+<span id="L41"><a href="#L41">  41</a> @[no_expose] public noncomputable def sourceIso (f : FilteredMorphism F G)</span>
+<span id="L42"><a href="#L42">  42</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) (s : ℤ) :</span>
+<span id="L43"><a href="#L43">  43</a>     ((sequence f hF hG k).ssData (s, 1)).V ≅ F.associatedGraded s k :=</span>
+<span id="L44"><a href="#L44">  44</a>   Iso.refl _</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> /-- Target ambient object is the associated grade at the actual differential target. -/</span>
+<span id="L47"><a href="#L47">  47</a> @[no_expose] public noncomputable def targetIso (f : FilteredMorphism F G)</span>
+<span id="L48"><a href="#L48">  48</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) (s n : ℤ) :</span>
+<span id="L49"><a href="#L49">  49</a>     ((sequence f hF hG k).ssData ((s, 1) + (sequence f hF hG k).diffDeg n)).V ≅</span>
+<span id="L50"><a href="#L50">  50</a>       G.associatedGraded (s + n) k :=</span>
+<span id="L51"><a href="#L51">  51</a>   Iso.refl _</span>
+<span id="L52"><a href="#L52">  52</a> </span>
+<span id="L53"><a href="#L53">  53</a> theorem relation_iff_fiber (f : FilteredMorphism F G) (k : ω) (s n : ℤ)</span>
+<span id="L54"><a href="#L54">  54</a>     {T : C} (x : T ⟶ F.associatedGraded s k)</span>
+<span id="L55"><a href="#L55">  55</a>     (y : T ⟶ G.associatedGraded (s + n) k) :</span>
+<span id="L56"><a href="#L56">  56</a>     Relation f k s n x y ↔</span>
+<span id="L57"><a href="#L57">  57</a>       0 ≤ n ∧ Nonempty (FilteredComplex.Solutions.Fiber</span>
+<span id="L58"><a href="#L58">  58</a>         (underlyingComplex f.map f.compat k) n s 1 x y) := by</span>
+<span id="L59"><a href="#L59">  59</a>   constructor</span>
+<span id="L60"><a href="#L60">  60</a>   · rintro ⟨hn, a, b, ha, hb, he⟩</span>
+<span id="L61"><a href="#L61">  61</a>     refine ⟨hn, ⟨⟨(a, b), (FilteredComplex.Solutions.mem_fiber_iff _).mpr ?_⟩⟩⟩</span>
+<span id="L62"><a href="#L62">  62</a>     refine ⟨ha, hb, ?_⟩</span>
+<span id="L63"><a href="#L63">  63</a>     rw [underlyingComplex_d_one]</span>
+<span id="L64"><a href="#L64">  64</a>     exact he</span>
+<span id="L65"><a href="#L65">  65</a>   · rintro ⟨hn, ⟨⟨z, hz⟩⟩⟩</span>
+<span id="L66"><a href="#L66">  66</a>     obtain ⟨ha, hb, he⟩ := (FilteredComplex.Solutions.mem_fiber_iff z).mp hz</span>
+<span id="L67"><a href="#L67">  67</a>     refine ⟨hn, z.1, z.2, ?_⟩</span>
+<span id="L68"><a href="#L68">  68</a>     refine ⟨ha, hb, ?_⟩</span>
+<span id="L69"><a href="#L69">  69</a>     rw [underlyingComplex_d_one] at he</span>
+<span id="L70"><a href="#L70">  70</a>     exact he</span>
+<span id="L71"><a href="#L71">  71</a> </span>
+<span id="L72"><a href="#L72">  72</a> set_option maxHeartbeats 2000000 in</span>
+<span id="L73"><a href="#L73">  73</a> /-- The actual ESS differential relation is precisely the original filtered-map</span>
+<span id="L74"><a href="#L74">  74</a> equation. Projectivity is retained when arbitrary morphism-valued labels are used. -/</span>
+<span id="L75"><a href="#L75">  75</a> public theorem differentialRelation_iff (f : FilteredMorphism F G)</span>
+<span id="L76"><a href="#L76">  76</a>     (hF : F.IsBounded) (hG : G.IsBounded) (k : ω) (s : ℤ) (n : ℕ)</span>
+<span id="L77"><a href="#L77">  77</a>     {T : C} [Projective T] (x : T ⟶ F.associatedGraded s k)</span>
+<span id="L78"><a href="#L78">  78</a>     (y : T ⟶ G.associatedGraded (s + (n : ℤ)) k) :</span>
+<span id="L79"><a href="#L79">  79</a>     DifferentialRelation (sequence f hF hG k) n (s, 1)</span>
+<span id="L80"><a href="#L80">  80</a>       (x ≫ (sourceIso f hF hG k s).inv)</span>
+<span id="L81"><a href="#L81">  81</a>       (y ≫ (targetIso f hF hG k s n).inv) ↔ Relation f k s n x y := by</span>
+<span id="L82"><a href="#L82">  82</a>   rw [relation_iff_fiber, and_iff_right (Int.natCast_nonneg n)]</span>
+<span id="L83"><a href="#L83">  83</a>   change DifferentialRelation</span>
+<span id="L84"><a href="#L84">  84</a>     ((underlyingComplex f.map f.compat k).toSpectralSequence</span>
+<span id="L85"><a href="#L85">  85</a>       (underlyingComplexBounded f.map f.compat k hF hG)) n (s, 1)</span>
+<span id="L86"><a href="#L86">  86</a>     (x ≫ 𝟙 (F.associatedGraded s k)) (y ≫ 𝟙 (G.associatedGraded (s + ↑n) k)) ↔ _</span>
+<span id="L87"><a href="#L87">  87</a>   rw [Category.comp_id, Category.comp_id]</span>
+<span id="L88"><a href="#L88">  88</a>   exact</span>
+<span id="L89"><a href="#L89">  89</a>     FilteredComplex.Solutions.differentialRelation_iff_nonempty_fiber</span>
+<span id="L90"><a href="#L90">  90</a>       (underlyingComplex f.map f.compat k)</span>
+<span id="L91"><a href="#L91">  91</a>       (underlyingComplexBounded f.map f.compat k hF hG) n s 1 x y</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> end KIP126.Core.SpectralSequence.FilteredMapExtension</span></pre>

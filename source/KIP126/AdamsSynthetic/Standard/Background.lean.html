@@ -1,0 +1,617 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Standard/Background.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Standard/Background.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.System</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.AdamsSynthetic.Context</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.AdamsSynthetic.Families</span>
+<span id="L6"><a href="#L6">   6</a> public import KIP126.AdamsSynthetic.Sphere</span>
+<span id="L7"><a href="#L7">   7</a> public import KIP126.AdamsSynthetic.Configuration</span>
+<span id="L8"><a href="#L8">   8</a> public import KIP126.SpectralSequence</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.AdamsSynthetic.Internal.Milnor.Cohomology</span>
+<span id="L10"><a href="#L10">  10</a> public import KIP126.AdamsSynthetic.Source</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-! The fixed classical and synthetic background used in this project.</span>
+<span id="L13"><a href="#L13">  13</a> Every unfinished construction is named at its mathematical boundary; the</span>
+<span id="L14"><a href="#L14">  14</a> assembled model below has no separate existence assumption. -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> @[expose] section</span>
+<span id="L17"><a href="#L17">  17</a> namespace KIP126.AdamsSynthetic.Standard</span>
+<span id="L18"><a href="#L18">  18</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.Kervaire.Route</span>
+<span id="L21"><a href="#L21">  21</a> noncomputable section</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- The category of spectra; its concrete model is a deferred construction. -/</span>
+<span id="L24"><a href="#L24">  24</a> public def Spectrum : Type 1 := by sorry</span>
+<span id="L25"><a href="#L25">  25</a> /-- The category of HF₂-synthetic spectra; its construction is deferred. -/</span>
+<span id="L26"><a href="#L26">  26</a> public def SyntheticSpectrum : Type 1 := by sorry</span>
+<span id="L27"><a href="#L27">  27</a> public instance spectrumCategory : StableHomotopyCategory.{1,0} Spectrum := by sorry</span>
+<span id="L28"><a href="#L28">  28</a> public instance syntheticCategory : SyntheticCategory.{1,0} SyntheticSpectrum := by sorry</span>
+<span id="L29"><a href="#L29">  29</a> public instance spectrumCofiber : HasFunctorialCofiber (C := Spectrum) := by sorry</span>
+<span id="L30"><a href="#L30">  30</a> public instance syntheticCofiber : HasFunctorialCofiber (C := SyntheticSpectrum) := by sorry</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> /-- HF₂ and its homotopy identification on the fixed category. -/</span>
+<span id="L33"><a href="#L33">  33</a> public def coefficients : ModTwoCoefficients Spectrum := by sorry</span>
+<span id="L34"><a href="#L34">  34</a> /-- The classical Adams functor, including its first page and differential degree. -/</span>
+<span id="L35"><a href="#L35">  35</a> public def classical : ClassicalAdamsFamily Spectrum := by sorry</span>
+<span id="L36"><a href="#L36">  36</a> /-- The fixed ν functor, including its sphere and suspension comparisons. -/</span>
+<span id="L37"><a href="#L37">  37</a> public def nu : NuFunctorData Spectrum SyntheticSpectrum := by sorry</span>
+<span id="L38"><a href="#L38">  38</a> /-- The synthetic Adams functor on the fixed synthetic category. -/</span>
+<span id="L39"><a href="#L39">  39</a> public def family : SyntheticAdamsFamily SyntheticSpectrum := by sorry</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> /-- ν preserves a distinguished triangle under the complete HF₂ short-exactness hypothesis. -/</span>
+<span id="L42"><a href="#L42">  42</a> public theorem nu_preserves_triangle (T : CategoryTheory.Pretriangulated.Triangle Spectrum)</span>
+<span id="L43"><a href="#L43">  43</a>     (hT : T ∈ distTriang Spectrum) (hH : HomologyShortExact coefficients T) :</span>
+<span id="L44"><a href="#L44">  44</a>     ∃ h : nu.functor.obj T.obj₃ ⟶</span>
+<span id="L45"><a href="#L45">  45</a>         (shiftFunctor SyntheticSpectrum (1 : ℤ)).obj (nu.functor.obj T.obj₁),</span>
+<span id="L46"><a href="#L46">  46</a>       CategoryTheory.Pretriangulated.Triangle.mk</span>
+<span id="L47"><a href="#L47">  47</a>         (nu.functor.map T.mor₁) (nu.functor.map T.mor₂) h ∈ distTriang SyntheticSpectrum := by</span>
+<span id="L48"><a href="#L48">  48</a>   sorry</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> /-- The λ-localization and its equivalence with this classical category. -/</span>
+<span id="L51"><a href="#L51">  51</a> public def recovery : LambdaRecovery nu := by sorry</span>
+<span id="L52"><a href="#L52">  52</a> /-- Exactness of the same suspension and realization functors. -/</span>
+<span id="L53"><a href="#L53">  53</a> public def exactness : StructuralExactness nu recovery := by sorry</span>
+<span id="L54"><a href="#L54">  54</a> /-- The fixed auxiliary spectra used in the selected object closure. -/</span>
+<span id="L55"><a href="#L55">  55</a> public def auxiliary : AuxiliaryData Spectrum := by sorry</span>
+<span id="L56"><a href="#L56">  56</a> /-- Multiplication on the actual sphere E₂, not an independent formal algebra. -/</span>
+<span id="L57"><a href="#L57">  57</a> public def sphereAlgebra : SphereE2Algebra classical := by sorry</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> /-- The fixed comparison with the independently defined normalized Milnor cobar</span>
+<span id="L60"><a href="#L60">  60</a> cohomology. Its construction and compatibility with the actual first tower</span>
+<span id="L61"><a href="#L61">  61</a> differential are separate registered obligations; an arbitrary linear</span>
+<span id="L62"><a href="#L62">  62</a> isomorphism is not a completed source identification. The public recognition</span>
+<span id="L63"><a href="#L63">  63</a> statements are in `Standard.Source`. -/</span>
+<span id="L64"><a href="#L64">  64</a> public def sphereE2_milnorEquiv (s t : ℕ) :</span>
+<span id="L65"><a href="#L65">  65</a>     classical.sphere.Page 2 ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]</span>
+<span id="L66"><a href="#L66">  66</a>       MilnorCohomology s t := by</span>
+<span id="L67"><a href="#L67">  67</a>   sorry</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> /-- The designated family retains its existing construction boundary.</span>
+<span id="L70"><a href="#L70">  70</a> `Standard.standardHi_milnor` fixes its identity by the actual E₁-to-E₂</span>
+<span id="L71"><a href="#L71">  71</a> comparison; both construction and source identification remain registered.</span>
+<span id="L72"><a href="#L72">  72</a> Keeping this boundary also preserves existing computational consumers. -/</span>
+<span id="L73"><a href="#L73">  73</a> public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := by sorry</span>
+<span id="L74"><a href="#L74">  74</a> public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩</span>
+<span id="L75"><a href="#L75">  75</a> public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry</span>
+<span id="L76"><a href="#L76">  76</a> public def classicalSuspension (X : ClassicalObject) :</span>
+<span id="L77"><a href="#L77">  77</a>     ClassicalTowerSuspension classicalTower (X.obj auxiliary) := by sorry</span>
+<span id="L78"><a href="#L78">  78</a> public def syntheticTower : SyntheticTowerPresentation (nuCoefficientUnit coefficients nu) family := by sorry</span>
+<span id="L79"><a href="#L79">  79</a> public def comparison : E2Comparison classical family nu auxiliary := by sorry</span>
+<span id="L80"><a href="#L80">  80</a> public def quotients : LambdaQuotientSystem SyntheticSpectrum := by sorry</span>
+<span id="L81"><a href="#L81">  81</a> public def normalizedMap (X Y : ClassicalObject) (f : X.obj auxiliary ⟶ Y.obj auxiliary) :</span>
+<span id="L82"><a href="#L82">  82</a>     NormalizedSyntheticMap classicalTower nu f := by sorry</span>
+<span id="L83"><a href="#L83">  83</a> public def classicalConvergence (X : ClassicalObject) :</span>
+<span id="L84"><a href="#L84">  84</a>     ClassicalTowerConvergence classicalTower (X.obj auxiliary) := by sorry</span>
+<span id="L85"><a href="#L85">  85</a> public def convergence (X : SyntheticObject) :</span>
+<span id="L86"><a href="#L86">  86</a>     SyntheticTowerConvergence syntheticTower (X.obj nu auxiliary) := by sorry</span>
+<span id="L87"><a href="#L87">  87</a> public def firstQuotient : FirstQuotientComparison classical nu auxiliary := by sorry</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> </span>
+<span id="L90"><a href="#L90">  90</a> open CategoryTheory.Limits CategoryTheory.Pretriangulated KIP126.Core.SpectralSequence</span>
+<span id="L91"><a href="#L91">  91</a> universe u v</span>
+<span id="L92"><a href="#L92">  92</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L93"><a href="#L93">  93</a> set_option maxHeartbeats 800000</span>
+<span id="L94"><a href="#L94">  94</a> </span>
+<span id="L95"><a href="#L95">  95</a> /-- An ambient element in every finite cycle module belongs to the specified limit subobject. -/</span>
+<span id="L96"><a href="#L96">  96</a> private theorem mem_top_cycles (D : SSData (ModuleCat.{v} ℤ)) (a : D.V)</span>
+<span id="L97"><a href="#L97">  97</a>     (ha : ∀ n : ℕ, a ∈ ModuleCat.subobjectModule _ (D.Z n)) :</span>
+<span id="L98"><a href="#L98">  98</a>     a ∈ ModuleCat.subobjectModule _ (D.Z ⊤) := by</span>
+<span id="L99"><a href="#L99">  99</a>   have hspan : (ModuleCat.subobjectModule _).symm (Submodule.span ℤ {a}) ≤ D.Z ⊤ := by</span>
+<span id="L100"><a href="#L100"> 100</a>     apply D.Z_top_greatest</span>
+<span id="L101"><a href="#L101"> 101</a>     intro n</span>
+<span id="L102"><a href="#L102"> 102</a>     apply (ModuleCat.subobjectModule _).le_iff_le.mp</span>
+<span id="L103"><a href="#L103"> 103</a>     simp only [OrderIso.apply_symm_apply, Submodule.span_le, Set.singleton_subset_iff]</span>
+<span id="L104"><a href="#L104"> 104</a>     exact ha n</span>
+<span id="L105"><a href="#L105"> 105</a>   have h := (ModuleCat.subobjectModule _).monotone hspan</span>
+<span id="L106"><a href="#L106"> 106</a>   apply h</span>
+<span id="L107"><a href="#L107"> 107</a>   rw [OrderIso.apply_symm_apply]</span>
+<span id="L108"><a href="#L108"> 108</a>   exact Submodule.subset_span (by simp)</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> private theorem layerMap_mem_cycles {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L111"><a href="#L111"> 111</a>     [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L112"><a href="#L112"> 112</a>     {X : C} (T : AbstractAdamsTower unit X) (p : ℤ × ℤ)</span>
+<span id="L113"><a href="#L113"> 113</a>     (a : HomotopyGroup (p.2-p.1) (T.stageAt p.1))</span>
+<span id="L114"><a href="#L114"> 114</a>     (r : ℕ) (hr : 1 ≤ r) : T.layerMap p a ∈ T.cycles r hr p := by</span>
+<span id="L115"><a href="#L115"> 115</a>   change T.connecting p (T.layerMap p a) ∈ LinearMap.range _</span>
+<span id="L116"><a href="#L116"> 116</a>   have hz : T.connecting p (T.layerMap p a) = 0 := by</span>
+<span id="L117"><a href="#L117"> 117</a>     change AbstractAdamsTower.desuspend _ _</span>
+<span id="L118"><a href="#L118"> 118</a>       ((a ≫ HasFunctorialCofiber.cofibι _) ≫ HasFunctorialCofiber.cofibδ _) = 0</span>
+<span id="L119"><a href="#L119"> 119</a>     have he : HasFunctorialCofiber.cofibι (T.mapAt (show p.1 ≤ p.1+1 by omega)) ≫</span>
+<span id="L120"><a href="#L120"> 120</a>         HasFunctorialCofiber.cofibδ (T.mapAt (show p.1 ≤ p.1+1 by omega)) = 0 :=</span>
+<span id="L121"><a href="#L121"> 121</a>       comp_distTriang_mor_zero₂₃ _ (HasFunctorialCofiber.cofib_distinguished _)</span>
+<span id="L122"><a href="#L122"> 122</a>     rw [Category.assoc, he, comp_zero, map_zero]</span>
+<span id="L123"><a href="#L123"> 123</a>   rw [hz]</span>
+<span id="L124"><a href="#L124"> 124</a>   exact Submodule.zero_mem _</span>
+<span id="L125"><a href="#L125"> 125</a> </span>
+<span id="L126"><a href="#L126"> 126</a> /-- Actual tower lifts supply common infinite representatives without a separation premise. -/</span>
+<span id="L127"><a href="#L127"> 127</a> private theorem representative_of_lift {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L128"><a href="#L128"> 128</a>     [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L129"><a href="#L129"> 129</a>     {X : C} {T : AbstractAdamsTower unit X}</span>
+<span id="L130"><a href="#L130"> 130</a>     {D : (ℤ × ℤ) → SSData (ModuleCat.{v} ℤ)}</span>
+<span id="L131"><a href="#L131"> 131</a>     {d : ∀ (r : ℤ) (p : ℤ × ℤ), (D p).page (↑(r - 2).toNat : WithTop ℕ) ⟶</span>
+<span id="L132"><a href="#L132"> 132</a>       (D (p + (r, r - 1))).page (↑(r - 2).toNat : WithTop ℕ)}</span>
+<span id="L133"><a href="#L133"> 133</a>     (P : TowerSequencePresentation unit T D d) (p : ℤ × ℤ)</span>
+<span id="L134"><a href="#L134"> 134</a>     (a : HomotopyGroup (p.2-p.1) (T.stageAt p.1)) :</span>
+<span id="L135"><a href="#L135"> 135</a>     ∃ z : (Subobject.underlying.obj ((D p).Z ⊤) : ModuleCat ℤ),</span>
+<span id="L136"><a href="#L136"> 136</a>       P.infiniteRepresentativeE1 p z = T.layerMap p a := by</span>
+<span id="L137"><a href="#L137"> 137</a>   let a₂ : T.cycles 2 (by decide) p := ⟨T.layerMap p a, layerMap_mem_cycles T p a 2 (by decide)⟩</span>
+<span id="L138"><a href="#L138"> 138</a>   let v : (D p).V := (P.ambient p).inv a₂</span>
+<span id="L139"><a href="#L139"> 139</a>   have hv : ∀ n : ℕ, v ∈ ModuleCat.subobjectModule _ ((D p).Z n) := by</span>
+<span id="L140"><a href="#L140"> 140</a>     intro n</span>
+<span id="L141"><a href="#L141"> 141</a>     apply (P.cycles p n v).mpr</span>
+<span id="L142"><a href="#L142"> 142</a>     have he : (P.ambient p).hom v = a₂ := by simp only [v, Iso.inv_hom_id_apply]</span>
+<span id="L143"><a href="#L143"> 143</a>     rw [he]</span>
+<span id="L144"><a href="#L144"> 144</a>     exact layerMap_mem_cycles T p a (n+2) (by omega)</span>
+<span id="L145"><a href="#L145"> 145</a>   obtain ⟨z, hz⟩ := mem_top_cycles (D p) v hv</span>
+<span id="L146"><a href="#L146"> 146</a>   refine ⟨z, ?_⟩</span>
+<span id="L147"><a href="#L147"> 147</a>   change ((P.ambient p).hom (((D p).Z ⊤).arrow z)).val = T.layerMap p a</span>
+<span id="L148"><a href="#L148"> 148</a>   rw [hz]</span>
+<span id="L149"><a href="#L149"> 149</a>   simp only [v, Iso.inv_hom_id_apply, a₂]</span>
+<span id="L150"><a href="#L150"> 150</a> </span>
+<span id="L151"><a href="#L151"> 151</a> private theorem filtration_maps {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L152"><a href="#L152"> 152</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L153"><a href="#L153"> 153</a>     {F : SyntheticAdamsFamily Syn} (P : SyntheticTowerPresentation unit F)</span>
+<span id="L154"><a href="#L154"> 154</a>     {X Y : Syn} (f : X ⟶ Y) (s : ℤ) (p : ℤ × ℤ)</span>
+<span id="L155"><a href="#L155"> 155</a>     (a : BiHom p.1 p.2 X) (ha : a ∈ P.filtrationSubmodule X s p) :</span>
+<span id="L156"><a href="#L156"> 156</a>     a ≫ f ∈ P.filtrationSubmodule Y s p := by</span>
+<span id="L157"><a href="#L157"> 157</a>   obtain ⟨b, hb⟩ := ha</span>
+<span id="L158"><a href="#L158"> 158</a>   refine ⟨b ≫ (P.map f).stage s.toNat, ?_⟩</span>
+<span id="L159"><a href="#L159"> 159</a>   change (b ≫ (P.map f).stage s.toNat) ≫ (P.tower Y).projection s = a ≫ f</span>
+<span id="L160"><a href="#L160"> 160</a>   rw [Category.assoc, (P.map f).projection, ← Category.assoc]</span>
+<span id="L161"><a href="#L161"> 161</a>   exact congrArg (fun q =&gt; q ≫ f) hb</span>
+<span id="L162"><a href="#L162"> 162</a> </span>
+<span id="L163"><a href="#L163"> 163</a> private theorem restrict_subobject_le {A B : ModuleCat.{v} ℤ} (S : Subobject A)</span>
+<span id="L164"><a href="#L164"> 164</a>     (T : Subobject B) (f : A ⟶ B)</span>
+<span id="L165"><a href="#L165"> 165</a>     (h : ∀ a : (S : ModuleCat ℤ), f (S.arrow a) ∈ ModuleCat.subobjectModule _ T) :</span>
+<span id="L166"><a href="#L166"> 166</a>     imageSubobject (S.arrow ≫ f) ≤ T := by</span>
+<span id="L167"><a href="#L167"> 167</a>   apply (ModuleCat.subobjectModule _).le_iff_le.mp</span>
+<span id="L168"><a href="#L168"> 168</a>   rw [subobjectModule_image]</span>
+<span id="L169"><a href="#L169"> 169</a>   rintro _ ⟨a, rfl⟩</span>
+<span id="L170"><a href="#L170"> 170</a>   exact h a</span>
+<span id="L171"><a href="#L171"> 171</a> </span>
+<span id="L172"><a href="#L172"> 172</a> private def restrict_subobject {A B : ModuleCat.{v} ℤ} (S : Subobject A)</span>
+<span id="L173"><a href="#L173"> 173</a>     (T : Subobject B) (f : A ⟶ B)</span>
+<span id="L174"><a href="#L174"> 174</a>     (h : ∀ a : (S : ModuleCat ℤ), f (S.arrow a) ∈ ModuleCat.subobjectModule _ T) :</span>
+<span id="L175"><a href="#L175"> 175</a>     (S : ModuleCat ℤ) ⟶ (T : ModuleCat ℤ) :=</span>
+<span id="L176"><a href="#L176"> 176</a>   factorThruImageSubobject (S.arrow ≫ f) ≫</span>
+<span id="L177"><a href="#L177"> 177</a>     Subobject.ofLE _ _ (restrict_subobject_le S T f h)</span>
+<span id="L178"><a href="#L178"> 178</a> </span>
+<span id="L179"><a href="#L179"> 179</a> private theorem restrict_subobject_arrow {A B : ModuleCat.{v} ℤ} (S : Subobject A)</span>
+<span id="L180"><a href="#L180"> 180</a>     (T : Subobject B) (f : A ⟶ B)</span>
+<span id="L181"><a href="#L181"> 181</a>     (h : ∀ a : (S : ModuleCat ℤ), f (S.arrow a) ∈ ModuleCat.subobjectModule _ T) :</span>
+<span id="L182"><a href="#L182"> 182</a>     restrict_subobject S T f h ≫ T.arrow = S.arrow ≫ f := by</span>
+<span id="L183"><a href="#L183"> 183</a>   simp only [restrict_subobject, Category.assoc, Subobject.ofLE_arrow,</span>
+<span id="L184"><a href="#L184"> 184</a>     imageSubobject_arrow_comp]</span>
+<span id="L185"><a href="#L185"> 185</a> </span>
+<span id="L186"><a href="#L186"> 186</a> private theorem filtration_arrow_mem {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L187"><a href="#L187"> 187</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L188"><a href="#L188"> 188</a>     {F : SyntheticAdamsFamily Syn} (P : SyntheticTowerPresentation unit F)</span>
+<span id="L189"><a href="#L189"> 189</a>     (X : Syn) (s : ℤ) (p : ℤ × ℤ)</span>
+<span id="L190"><a href="#L190"> 190</a>     (b : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat ℤ)) :</span>
+<span id="L191"><a href="#L191"> 191</a>     ((P.filtration X).F s p).arrow b ∈ P.filtrationSubmodule X s p := by</span>
+<span id="L192"><a href="#L192"> 192</a>   have h : ((P.filtration X).F s p).arrow b ∈</span>
+<span id="L193"><a href="#L193"> 193</a>       ModuleCat.subobjectModule _ ((P.filtration X).F s p) := ⟨b, rfl⟩</span>
+<span id="L194"><a href="#L194"> 194</a>   simpa only [SyntheticTowerPresentation.filtration, OrderIso.apply_symm_apply] using h</span>
+<span id="L195"><a href="#L195"> 195</a> </span>
+<span id="L196"><a href="#L196"> 196</a> private theorem infty_eq_of_ambient_boundary (D : SSData (ModuleCat.{v} ℤ))</span>
+<span id="L197"><a href="#L197"> 197</a>     (z z&#x27; : (Subobject.underlying.obj (D.Z ⊤) : ModuleCat ℤ))</span>
+<span id="L198"><a href="#L198"> 198</a>     (h : (D.Z ⊤).arrow z - (D.Z ⊤).arrow z&#x27; ∈</span>
+<span id="L199"><a href="#L199"> 199</a>       ModuleCat.subobjectModule _ (D.B 0)) : D.pageπ ⊤ z = D.pageπ ⊤ z&#x27; := by</span>
+<span id="L200"><a href="#L200"> 200</a>   apply sub_eq_zero.mp</span>
+<span id="L201"><a href="#L201"> 201</a>   rw [← map_sub]</span>
+<span id="L202"><a href="#L202"> 202</a>   apply (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) _).mpr</span>
+<span id="L203"><a href="#L203"> 203</a>   rw [map_sub]</span>
+<span id="L204"><a href="#L204"> 204</a>   exact (ModuleCat.subobjectModule _).monotone (D.B_mono le_top) h</span>
+<span id="L205"><a href="#L205"> 205</a> </span>
+<span id="L206"><a href="#L206"> 206</a> private theorem layerMap_natural {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L207"><a href="#L207"> 207</a>     [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L208"><a href="#L208"> 208</a>     {X Y : C} {T : AbstractAdamsTower unit X} {U : AbstractAdamsTower unit Y}</span>
+<span id="L209"><a href="#L209"> 209</a>     {f : X ⟶ Y} (φ : TowerMap unit T U f) (p : ℤ × ℤ)</span>
+<span id="L210"><a href="#L210"> 210</a>     (a : HomotopyGroup (p.2-p.1) (T.stageAt p.1)) :</span>
+<span id="L211"><a href="#L211"> 211</a>     T.layerMap p a ≫ φ.layer p.1 = U.layerMap p (a ≫ φ.stage p.1.toNat) := by</span>
+<span id="L212"><a href="#L212"> 212</a>   change (a ≫ HasFunctorialCofiber.cofibι _) ≫ φ.layer p.1 =</span>
+<span id="L213"><a href="#L213"> 213</a>     (a ≫ φ.stage p.1.toNat) ≫ HasFunctorialCofiber.cofibι _</span>
+<span id="L214"><a href="#L214"> 214</a>   rw [Category.assoc]</span>
+<span id="L215"><a href="#L215"> 215</a>   change a ≫ HasFunctorialCofiber.cofibι _ ≫</span>
+<span id="L216"><a href="#L216"> 216</a>     HasFunctorialCofiber.cofibMap _ _ _ _ _ = _</span>
+<span id="L217"><a href="#L217"> 217</a>   rw [← HasFunctorialCofiber.cofibMap_ι, ← Category.assoc]</span>
+<span id="L218"><a href="#L218"> 218</a> </span>
+<span id="L219"><a href="#L219"> 219</a> /-- The allowed initial-boundary error in tower naturality vanishes on E∞. -/</span>
+<span id="L220"><a href="#L220"> 220</a> private theorem mapped_representative_eq {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L221"><a href="#L221"> 221</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L222"><a href="#L222"> 222</a>     {F : SyntheticAdamsFamily Syn} (P : SyntheticTowerPresentation unit F)</span>
+<span id="L223"><a href="#L223"> 223</a>     {X Y : Syn} (f : X ⟶ Y) (i : Tridegree)</span>
+<span id="L224"><a href="#L224"> 224</a>     (a : HomotopyGroup (i.2.1-i.1)</span>
+<span id="L225"><a href="#L225"> 225</a>       ((P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).stageAt i.1))</span>
+<span id="L226"><a href="#L226"> 226</a>     (z : (Subobject.underlying.obj (((F.obj X).sequence.ssData i).Z ⊤) : ModuleCat ℤ))</span>
+<span id="L227"><a href="#L227"> 227</a>     (hz : (P.sequence X i.2.2).infiniteRepresentativeE1 (i.1,i.2.1) z =</span>
+<span id="L228"><a href="#L228"> 228</a>       (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).layerMap (i.1,i.2.1) a)</span>
+<span id="L229"><a href="#L229"> 229</a>     (z&#x27; : (Subobject.underlying.obj (((F.obj Y).sequence.ssData i).Z ⊤) : ModuleCat ℤ))</span>
+<span id="L230"><a href="#L230"> 230</a>     (hz&#x27; : (P.sequence Y i.2.2).infiniteRepresentativeE1 (i.1,i.2.1) z&#x27; =</span>
+<span id="L231"><a href="#L231"> 231</a>       (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).layerMap (i.1,i.2.1)</span>
+<span id="L232"><a href="#L232"> 232</a>         (a ≫ (P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).stage i.1.toNat)) :</span>
+<span id="L233"><a href="#L233"> 233</a>     (F.map f).eInftyMap i (((F.obj X).sequence.ssData i).pageπ ⊤ z) =</span>
+<span id="L234"><a href="#L234"> 234</a>       ((F.obj Y).sequence.ssData i).pageπ ⊤ z&#x27; := by</span>
+<span id="L235"><a href="#L235"> 235</a>   let zf := (F.map f).toSSDataMorphism.cycleMap i ⊤ z</span>
+<span id="L236"><a href="#L236"> 236</a>   have hzf : (((F.obj Y).sequence.ssData i).Z ⊤).arrow zf =</span>
+<span id="L237"><a href="#L237"> 237</a>       (F.map f).φ i ((((F.obj X).sequence.ssData i).Z ⊤).arrow z) := by</span>
+<span id="L238"><a href="#L238"> 238</a>     exact ConcreteCategory.congr_hom ((F.map f).preserves_Z i ⊤).choose_spec z</span>
+<span id="L239"><a href="#L239"> 239</a>   have hn := P.natural_e2 f i.2.2 (i.1,i.2.1)</span>
+<span id="L240"><a href="#L240"> 240</a>     ((((F.obj X).sequence.ssData i).Z ⊤).arrow z)</span>
+<span id="L241"><a href="#L241"> 241</a>   have he1 : (P.sequence Y i.2.2).infiniteRepresentativeE1 (i.1,i.2.1) zf -</span>
+<span id="L242"><a href="#L242"> 242</a>       (P.sequence Y i.2.2).infiniteRepresentativeE1 (i.1,i.2.1) z&#x27; ∈</span>
+<span id="L243"><a href="#L243"> 243</a>       (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).boundaries 2 (by decide)</span>
+<span id="L244"><a href="#L244"> 244</a>         (i.1,i.2.1) := by</span>
+<span id="L245"><a href="#L245"> 245</a>     rw [hz&#x27;, ← layerMap_natural, ← hz]</span>
+<span id="L246"><a href="#L246"> 246</a>     change (((P.sequence Y i.2.2).ambient (i.1,i.2.1)).hom</span>
+<span id="L247"><a href="#L247"> 247</a>         ((((F.obj Y).sequence.ssData i).Z ⊤).arrow zf)).val -</span>
+<span id="L248"><a href="#L248"> 248</a>       (((P.sequence X i.2.2).ambient (i.1,i.2.1)).hom</span>
+<span id="L249"><a href="#L249"> 249</a>         ((((F.obj X).sequence.ssData i).Z ⊤).arrow z)).val ≫</span>
+<span id="L250"><a href="#L250"> 250</a>           (P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).layer i.1 ∈ _</span>
+<span id="L251"><a href="#L251"> 251</a>     rw [hzf]</span>
+<span id="L252"><a href="#L252"> 252</a>     exact hn</span>
+<span id="L253"><a href="#L253"> 253</a>   have hb : (((F.obj Y).sequence.ssData i).Z ⊤).arrow zf -</span>
+<span id="L254"><a href="#L254"> 254</a>       (((F.obj Y).sequence.ssData i).Z ⊤).arrow z&#x27; ∈</span>
+<span id="L255"><a href="#L255"> 255</a>       ModuleCat.subobjectModule _ (((F.obj Y).sequence.ssData i).B 0) := by</span>
+<span id="L256"><a href="#L256"> 256</a>     apply ((P.sequence Y i.2.2).boundaries (i.1,i.2.1) 0 _).mpr</span>
+<span id="L257"><a href="#L257"> 257</a>     change (((P.sequence Y i.2.2).ambient (i.1,i.2.1)).hom</span>
+<span id="L258"><a href="#L258"> 258</a>       ((((F.obj Y).sequence.ssData i).Z ⊤).arrow zf -</span>
+<span id="L259"><a href="#L259"> 259</a>         (((F.obj Y).sequence.ssData i).Z ⊤).arrow z&#x27;)).val ∈</span>
+<span id="L260"><a href="#L260"> 260</a>       (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).boundaries 2 (by decide)</span>
+<span id="L261"><a href="#L261"> 261</a>         (i.1,i.2.1)</span>
+<span id="L262"><a href="#L262"> 262</a>     have hsub := congrArg Subtype.val (map_sub</span>
+<span id="L263"><a href="#L263"> 263</a>       (((P.sequence Y i.2.2).ambient (i.1,i.2.1)).hom.hom)</span>
+<span id="L264"><a href="#L264"> 264</a>       ((((F.obj Y).sequence.ssData i).Z ⊤).arrow zf)</span>
+<span id="L265"><a href="#L265"> 265</a>       ((((F.obj Y).sequence.ssData i).Z ⊤).arrow z&#x27;))</span>
+<span id="L266"><a href="#L266"> 266</a>     exact hsub.symm ▸ he1</span>
+<span id="L267"><a href="#L267"> 267</a>   have hinfty := infty_eq_of_ambient_boundary ((F.obj Y).sequence.ssData i) zf z&#x27; hb</span>
+<span id="L268"><a href="#L268"> 268</a>   have hmap := ConcreteCategory.congr_hom</span>
+<span id="L269"><a href="#L269"> 269</a>     ((F.map f).toSSDataMorphism.pageπ_pageMap i ⊤) z</span>
+<span id="L270"><a href="#L270"> 270</a>   exact hmap.trans hinfty</span>
+<span id="L271"><a href="#L271"> 271</a> </span>
+<span id="L272"><a href="#L272"> 272</a> private theorem weightMap_natural {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L273"><a href="#L273"> 273</a>     {X Y : Syn} (f : X ⟶ Y) (m w : ℤ) (a : BiHom m w X) :</span>
+<span id="L274"><a href="#L274"> 274</a>     weightHomotopyMap m w Y (a ≫ f) =</span>
+<span id="L275"><a href="#L275"> 275</a>       weightHomotopyMap m w X a ≫ (SyntheticCategory.biShift (0,-w)).map f := by</span>
+<span id="L276"><a href="#L276"> 276</a>   change (weightSourceIso m w).inv ≫ (SyntheticCategory.biShift (0,-w)).map (a ≫ f) =</span>
+<span id="L277"><a href="#L277"> 277</a>     ((weightSourceIso m w).inv ≫ (SyntheticCategory.biShift (0,-w)).map a) ≫</span>
+<span id="L278"><a href="#L278"> 278</a>       (SyntheticCategory.biShift (0,-w)).map f</span>
+<span id="L279"><a href="#L279"> 279</a>   rw [Functor.map_comp, Category.assoc]</span>
+<span id="L280"><a href="#L280"> 280</a> </span>
+<span id="L281"><a href="#L281"> 281</a> /-- Canonical identifications are natural on actual lifts; the graded quotient is epi. -/</span>
+<span id="L282"><a href="#L282"> 282</a> private theorem canonical_convergence_natural {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L283"><a href="#L283"> 283</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L284"><a href="#L284"> 284</a>     {F : SyntheticAdamsFamily Syn} (P : SyntheticTowerPresentation unit F)</span>
+<span id="L285"><a href="#L285"> 285</a>     {X Y : Syn} (f : X ⟶ Y)</span>
+<span id="L286"><a href="#L286"> 286</a>     (cx : SyntheticTowerConvergence P X) (cy : SyntheticTowerConvergence P Y) :</span>
+<span id="L287"><a href="#L287"> 287</a>     Nonempty (ConvergentMap F f cx.toConvergence cy.toConvergence) := by</span>
+<span id="L288"><a href="#L288"> 288</a>   let hpres : ∀ (s : ℤ) (p : ℤ × ℤ),</span>
+<span id="L289"><a href="#L289"> 289</a>       ∃ φ : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat ℤ) ⟶</span>
+<span id="L290"><a href="#L290"> 290</a>         (Subobject.underlying.obj ((P.filtration Y).F s p) : ModuleCat ℤ),</span>
+<span id="L291"><a href="#L291"> 291</a>         φ ≫ ((P.filtration Y).F s p).arrow =</span>
+<span id="L292"><a href="#L292"> 292</a>           ((P.filtration X).F s p).arrow ≫ syntheticHomotopyMap f p := by</span>
+<span id="L293"><a href="#L293"> 293</a>     intro s p</span>
+<span id="L294"><a href="#L294"> 294</a>     have h : ∀ b : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat ℤ),</span>
+<span id="L295"><a href="#L295"> 295</a>         syntheticHomotopyMap f p (((P.filtration X).F s p).arrow b) ∈</span>
+<span id="L296"><a href="#L296"> 296</a>           ModuleCat.subobjectModule _ ((P.filtration Y).F s p) := by</span>
+<span id="L297"><a href="#L297"> 297</a>       intro b</span>
+<span id="L298"><a href="#L298"> 298</a>       have hb := filtration_maps P f s p _ (filtration_arrow_mem P X s p b)</span>
+<span id="L299"><a href="#L299"> 299</a>       simp only [SyntheticTowerPresentation.filtration, OrderIso.apply_symm_apply]</span>
+<span id="L300"><a href="#L300"> 300</a>       change (((P.filtration X).F s p).arrow b ≫ f) ∈ P.filtrationSubmodule Y s p</span>
+<span id="L301"><a href="#L301"> 301</a>       exact hb</span>
+<span id="L302"><a href="#L302"> 302</a>     exact ⟨restrict_subobject _ _ _ h, restrict_subobject_arrow _ _ _ h⟩</span>
+<span id="L303"><a href="#L303"> 303</a>   refine ⟨{</span>
+<span id="L304"><a href="#L304"> 304</a>     comparison := {</span>
+<span id="L305"><a href="#L305"> 305</a>       eMap := (F.map f).eInftyMap</span>
+<span id="L306"><a href="#L306"> 306</a>       aMap := syntheticHomotopyMap f</span>
+<span id="L307"><a href="#L307"> 307</a>       filtration_compat := hpres</span>
+<span id="L308"><a href="#L308"> 308</a>       reindex_eq := rfl</span>
+<span id="L309"><a href="#L309"> 309</a>       iso_compat := ?_ }</span>
+<span id="L310"><a href="#L310"> 310</a>     abutment_eq := rfl</span>
+<span id="L311"><a href="#L311"> 311</a>     infinity_eq := rfl }⟩</span>
+<span id="L312"><a href="#L312"> 312</a>   intro i</span>
+<span id="L313"><a href="#L313"> 313</a>   dsimp only [SyntheticTowerConvergence.toConvergence]</span>
+<span id="L314"><a href="#L314"> 314</a>   simp only [Filtration.transportGraded_self, Category.comp_id]</span>
+<span id="L315"><a href="#L315"> 315</a>   apply (cancel_epi (cx.identification i).inv).mp</span>
+<span id="L316"><a href="#L316"> 316</a>   letI : Epi ((P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2)) := by</span>
+<span id="L317"><a href="#L317"> 317</a>     change Epi (cokernel.π _)</span>
+<span id="L318"><a href="#L318"> 318</a>     infer_instance</span>
+<span id="L319"><a href="#L319"> 319</a>   apply (cancel_epi ((P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2))).mp</span>
+<span id="L320"><a href="#L320"> 320</a>   ext b</span>
+<span id="L321"><a href="#L321"> 321</a>   obtain ⟨a, ha⟩ := (cx.canonical.1 i.1 (i.2.1-i.1) i.2.2</span>
+<span id="L322"><a href="#L322"> 322</a>     (((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b)).mp</span>
+<span id="L323"><a href="#L323"> 323</a>       (filtration_arrow_mem P X i.1 (i.2.1-i.1,i.2.2) b)</span>
+<span id="L324"><a href="#L324"> 324</a>   obtain ⟨z, hz⟩ := representative_of_lift (P.sequence X i.2.2) (i.1,i.2.1) a</span>
+<span id="L325"><a href="#L325"> 325</a>   have hx := cx.canonical.2 i a z hz b ha.symm</span>
+<span id="L326"><a href="#L326"> 326</a>   have hxi : (cx.identification i).inv</span>
+<span id="L327"><a href="#L327"> 327</a>       ((P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) b) =</span>
+<span id="L328"><a href="#L328"> 328</a>       ((F.obj X).sequence.ssData i).pageπ ⊤ z := by</span>
+<span id="L329"><a href="#L329"> 329</a>     rw [← hx, Iso.hom_inv_id_apply]</span>
+<span id="L330"><a href="#L330"> 330</a>   let a&#x27; := a ≫ (P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).stage i.1.toNat</span>
+<span id="L331"><a href="#L331"> 331</a>   obtain ⟨z&#x27;, hz&#x27;⟩ := representative_of_lift (P.sequence Y i.2.2) (i.1,i.2.1) a&#x27;</span>
+<span id="L332"><a href="#L332"> 332</a>   have hm := mapped_representative_eq P f i a z hz z&#x27; hz&#x27;</span>
+<span id="L333"><a href="#L333"> 333</a>   let b&#x27; := (hpres i.1 (i.2.1-i.1,i.2.2)).choose b</span>
+<span id="L334"><a href="#L334"> 334</a>   have hb&#x27; : ((P.filtration Y).F i.1 (i.2.1-i.1,i.2.2)).arrow b&#x27; =</span>
+<span id="L335"><a href="#L335"> 335</a>       ((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b ≫ f :=</span>
+<span id="L336"><a href="#L336"> 336</a>     ConcreteCategory.congr_hom (hpres i.1 (i.2.1-i.1,i.2.2)).choose_spec b</span>
+<span id="L337"><a href="#L337"> 337</a>   have ha&#x27; : weightHomotopyMap (i.2.1-i.1) i.2.2 Y</span>
+<span id="L338"><a href="#L338"> 338</a>       (((P.filtration Y).F i.1 (i.2.1-i.1,i.2.2)).arrow b&#x27;) =</span>
+<span id="L339"><a href="#L339"> 339</a>       a&#x27; ≫ (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).projection i.1 := by</span>
+<span id="L340"><a href="#L340"> 340</a>     rw [hb&#x27;, weightMap_natural, ← ha]</span>
+<span id="L341"><a href="#L341"> 341</a>     change (a ≫ (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).projection i.1) ≫</span>
+<span id="L342"><a href="#L342"> 342</a>       (SyntheticCategory.biShift (0,-i.2.2)).map f =</span>
+<span id="L343"><a href="#L343"> 343</a>       (a ≫ (P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).stage i.1.toNat) ≫</span>
+<span id="L344"><a href="#L344"> 344</a>         (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).projection i.1</span>
+<span id="L345"><a href="#L345"> 345</a>     calc</span>
+<span id="L346"><a href="#L346"> 346</a>       _ = a ≫ ((P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).projection i.1 ≫</span>
+<span id="L347"><a href="#L347"> 347</a>           (SyntheticCategory.biShift (0,-i.2.2)).map f) := Category.assoc _ _ _</span>
+<span id="L348"><a href="#L348"> 348</a>       _ = a ≫ ((P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).stage i.1.toNat ≫</span>
+<span id="L349"><a href="#L349"> 349</a>           (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj Y)).projection i.1) :=</span>
+<span id="L350"><a href="#L350"> 350</a>         congrArg (fun z =&gt; a ≫ z)</span>
+<span id="L351"><a href="#L351"> 351</a>           ((P.map ((SyntheticCategory.biShift (0,-i.2.2)).map f)).projection i.1).symm</span>
+<span id="L352"><a href="#L352"> 352</a>       _ = _ := (Category.assoc _ _ _).symm</span>
+<span id="L353"><a href="#L353"> 353</a> </span>
+<span id="L354"><a href="#L354"> 354</a>   have hy := cy.canonical.2 i a&#x27; z&#x27; hz&#x27; b&#x27; ha&#x27;</span>
+<span id="L355"><a href="#L355"> 355</a>   have hg : (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) ≫</span>
+<span id="L356"><a href="#L356"> 356</a>       Filtration.inducedAssocGradedMap (syntheticHomotopyMap f) hpres</span>
+<span id="L357"><a href="#L357"> 357</a>         i.1 (i.2.1-i.1,i.2.2) =</span>
+<span id="L358"><a href="#L358"> 358</a>       (hpres i.1 (i.2.1-i.1,i.2.2)).choose ≫</span>
+<span id="L359"><a href="#L359"> 359</a>         (P.filtration Y).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) := by</span>
+<span id="L360"><a href="#L360"> 360</a>     exact cokernel.π_desc _ _ _</span>
+<span id="L361"><a href="#L361"> 361</a>   change (cy.identification i).hom ((F.map f).eInftyMap i</span>
+<span id="L362"><a href="#L362"> 362</a>       ((cx.identification i).inv</span>
+<span id="L363"><a href="#L363"> 363</a>         ((P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) b))) = _</span>
+<span id="L364"><a href="#L364"> 364</a>   rw [hxi, hm, hy]</span>
+<span id="L365"><a href="#L365"> 365</a>   have hg&#x27; := ConcreteCategory.congr_hom hg b</span>
+<span id="L366"><a href="#L366"> 366</a>   simpa only [ModuleCat.comp_apply, b&#x27;, ← Category.assoc, Iso.inv_hom_id,</span>
+<span id="L367"><a href="#L367"> 367</a>     Category.comp_id, Category.id_comp] using hg&#x27;.symm</span>
+<span id="L368"><a href="#L368"> 368</a> </span>
+<span id="L369"><a href="#L369"> 369</a> </span>
+<span id="L370"><a href="#L370"> 370</a> public theorem convergence_natural : ∀ (X Y : SyntheticObject)</span>
+<span id="L371"><a href="#L371"> 371</a>       (f : X.obj nu auxiliary ⟶ Y.obj nu auxiliary),</span>
+<span id="L372"><a href="#L372"> 372</a>     Nonempty (ConvergentMap family f (convergence X).toConvergence</span>
+<span id="L373"><a href="#L373"> 373</a>       (convergence Y).toConvergence) := by</span>
+<span id="L374"><a href="#L374"> 374</a>   intro X Y f</span>
+<span id="L375"><a href="#L375"> 375</a>   exact canonical_convergence_natural syntheticTower f (convergence X) (convergence Y)</span>
+<span id="L376"><a href="#L376"> 376</a> </span>
+<span id="L377"><a href="#L377"> 377</a> public theorem first_quotient : ∀ (X : ClassicalObject) (a s t : ℤ)</span>
+<span id="L378"><a href="#L378"> 378</a>       (x : (classical.obj (X.obj auxiliary)).Page 2 (s,t)),</span>
+<span id="L379"><a href="#L379"> 379</a>     KIP126.AdamsSynthetic.Detects</span>
+<span id="L380"><a href="#L380"> 380</a>       (convergence (.quotient 1 (.shift (0,a) (.nu X)))) (s,t,t+a)</span>
+<span id="L381"><a href="#L381"> 381</a>       (family.pageMap</span>
+<span id="L382"><a href="#L382"> 382</a>         (HasFunctorialCofiber.cofibι (lambdaPow 1</span>
+<span id="L383"><a href="#L383"> 383</a>           ((SyntheticCategory.biShift (0,a)).obj (nu.functor.obj (X.obj auxiliary)))))</span>
+<span id="L384"><a href="#L384"> 384</a>         2 (s,t,t+a) (by simpa only [Nat.cast_zero, sub_zero] using comparison.nuE2 X a s t 0 x))</span>
+<span id="L385"><a href="#L385"> 385</a>       ((firstQuotient X a s t).symm x) := by sorry</span>
+<span id="L386"><a href="#L386"> 386</a> </span>
+<span id="L387"><a href="#L387"> 387</a> </span>
+<span id="L388"><a href="#L388"> 388</a> private theorem infinity_rep_morphism</span>
+<span id="L389"><a href="#L389"> 389</a>     {E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) Tridegree}</span>
+<span id="L390"><a href="#L390"> 390</a>     (f : E ⟶ E&#x27;) (i : Tridegree) {x : E.Page 2 i} {e : (E.ssData i).eInfty}</span>
+<span id="L391"><a href="#L391"> 391</a>     (h : ∃ z : (Subobject.underlying.obj ((E.ssData i).Z ⊤) : ModuleCat ℤ),</span>
+<span id="L392"><a href="#L392"> 392</a>       (Subobject.ofLE _ _ ((E.ssData i).Z_anti le_top) ≫</span>
+<span id="L393"><a href="#L393"> 393</a>         (E.ssData i).pageπ (↑(2-E.r₀).toNat : WithTop ℕ)) z = x ∧</span>
+<span id="L394"><a href="#L394"> 394</a>       (E.ssData i).pageπ ⊤ z = e) :</span>
+<span id="L395"><a href="#L395"> 395</a>     ∃ z : (Subobject.underlying.obj ((E&#x27;.ssData i).Z ⊤) : ModuleCat ℤ),</span>
+<span id="L396"><a href="#L396"> 396</a>       (Subobject.ofLE _ _ ((E&#x27;.ssData i).Z_anti le_top) ≫</span>
+<span id="L397"><a href="#L397"> 397</a>         (E&#x27;.ssData i).pageπ (↑(2-E&#x27;.r₀).toNat : WithTop ℕ)) z = f.pageMap 2 i x ∧</span>
+<span id="L398"><a href="#L398"> 398</a>       (E&#x27;.ssData i).pageπ ⊤ z = f.eInftyMap i e := by</span>
+<span id="L399"><a href="#L399"> 399</a>   have hstart := f.r₀_eq</span>
+<span id="L400"><a href="#L400"> 400</a>   rcases E with ⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩</span>
+<span id="L401"><a href="#L401"> 401</a>   rcases E&#x27; with ⟨⟨r₀&#x27;,D&#x27;,δ&#x27;,d&#x27;⟩,dd&#x27;,Zs&#x27;,Bs&#x27;⟩</span>
+<span id="L402"><a href="#L402"> 402</a>   dsimp at hstart</span>
+<span id="L403"><a href="#L403"> 403</a>   subst r₀&#x27;</span>
+<span id="L404"><a href="#L404"> 404</a>   obtain ⟨z,hz,he⟩ := h</span>
+<span id="L405"><a href="#L405"> 405</a>   let n : WithTop ℕ := ↑(2-r₀).toNat</span>
+<span id="L406"><a href="#L406"> 406</a>   refine ⟨f.toSSDataMorphism.cycleMap i ⊤ z, ?_, ?_⟩</span>
+<span id="L407"><a href="#L407"> 407</a>   · have hs := f.toSSDataMorphism.cycleMap_ofLE_assoc i</span>
+<span id="L408"><a href="#L408"> 408</a>       (r := n) (s := ⊤) le_top ((D&#x27; i).pageπ n)</span>
+<span id="L409"><a href="#L409"> 409</a>     have hp := f.toSSDataMorphism.pageπ_pageMap i n</span>
+<span id="L410"><a href="#L410"> 410</a>     have hq : (Subobject.ofLE ((D i).Z ⊤) ((D i).Z n) ((D i).Z_anti le_top) ≫</span>
+<span id="L411"><a href="#L411"> 411</a>         (D i).pageπ n) ≫ f.toSSDataMorphism.pageMap i n =</span>
+<span id="L412"><a href="#L412"> 412</a>         f.toSSDataMorphism.cycleMap i ⊤ ≫</span>
+<span id="L413"><a href="#L413"> 413</a>           Subobject.ofLE ((D&#x27; i).Z ⊤) ((D&#x27; i).Z n) ((D&#x27; i).Z_anti le_top) ≫ (D&#x27; i).pageπ n := by</span>
+<span id="L414"><a href="#L414"> 414</a>       rw [Category.assoc,hp]</span>
+<span id="L415"><a href="#L415"> 415</a>       exact hs</span>
+<span id="L416"><a href="#L416"> 416</a>     change ((Subobject.ofLE _ _ _ ≫ (D&#x27; i).pageπ n)</span>
+<span id="L417"><a href="#L417"> 417</a>       (f.toSSDataMorphism.cycleMap i ⊤ z)) =</span>
+<span id="L418"><a href="#L418"> 418</a>       ((f.toSSDataMorphism.pageMap i n ≫ eqToHom _) x)</span>
+<span id="L419"><a href="#L419"> 419</a>     simpa only [ModuleCat.comp_apply, hz, eqToHom_refl, Category.comp_id, n]</span>
+<span id="L420"><a href="#L420"> 420</a>       using (ConcreteCategory.congr_hom hq z).symm</span>
+<span id="L421"><a href="#L421"> 421</a>   · have hp := f.toSSDataMorphism.pageπ_pageMap i ⊤</span>
+<span id="L422"><a href="#L422"> 422</a>     change (D&#x27; i).pageπ ⊤ (f.toSSDataMorphism.cycleMap i ⊤ z) =</span>
+<span id="L423"><a href="#L423"> 423</a>       f.toSSDataMorphism.pageMap i ⊤ e</span>
+<span id="L424"><a href="#L424"> 424</a>     simpa only [ModuleCat.comp_apply, he] using</span>
+<span id="L425"><a href="#L425"> 425</a>       (ConcreteCategory.congr_hom hp z).symm</span>
+<span id="L426"><a href="#L426"> 426</a> </span>
+<span id="L427"><a href="#L427"> 427</a> private theorem infinity_rep_map {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L428"><a href="#L428"> 428</a>     {F : SyntheticAdamsFamily Syn} {X Y : Syn} (g : X ⟶ Y)</span>
+<span id="L429"><a href="#L429"> 429</a>     (i : Tridegree) {x : (F.obj X).Page 2 i}</span>
+<span id="L430"><a href="#L430"> 430</a>     {e : ((F.obj X).sequence.ssData i).eInfty}</span>
+<span id="L431"><a href="#L431"> 431</a>     (h : HasInfinityRepresentative (F.obj X) 2 i x e) :</span>
+<span id="L432"><a href="#L432"> 432</a>     HasInfinityRepresentative (F.obj Y) 2 i (F.pageMap g 2 i x)</span>
+<span id="L433"><a href="#L433"> 433</a>       ((F.map g).eInftyMap i e) := by</span>
+<span id="L434"><a href="#L434"> 434</a>   obtain ⟨hr,z,hz,he⟩ := h</span>
+<span id="L435"><a href="#L435"> 435</a>   obtain ⟨z&#x27;,hz&#x27;,he&#x27;⟩ := infinity_rep_morphism (F.map g) i ⟨z,hz,he⟩</span>
+<span id="L436"><a href="#L436"> 436</a>   exact ⟨hr,z&#x27;,hz&#x27;,he&#x27;⟩</span>
+<span id="L437"><a href="#L437"> 437</a> </span>
+<span id="L438"><a href="#L438"> 438</a> /-- Detection is natural for the prescribed homotopy and E∞ maps of one convergent map. -/</span>
+<span id="L439"><a href="#L439"> 439</a> private theorem detects_map {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L440"><a href="#L440"> 440</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L441"><a href="#L441"> 441</a>     {F : SyntheticAdamsFamily Syn} {P : SyntheticTowerPresentation unit F}</span>
+<span id="L442"><a href="#L442"> 442</a>     {X Y : Syn} {g : X ⟶ Y} {cx : SyntheticTowerConvergence P X}</span>
+<span id="L443"><a href="#L443"> 443</a>     {cy : SyntheticTowerConvergence P Y}</span>
+<span id="L444"><a href="#L444"> 444</a>     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)</span>
+<span id="L445"><a href="#L445"> 445</a>     (i : Tridegree) {x : (F.obj X).Page 2 i}</span>
+<span id="L446"><a href="#L446"> 446</a>     {a : BiHom (i.2.1-i.1) i.2.2 X}</span>
+<span id="L447"><a href="#L447"> 447</a>     (h : KIP126.AdamsSynthetic.Detects cx i x a) :</span>
+<span id="L448"><a href="#L448"> 448</a>     KIP126.AdamsSynthetic.Detects cy i (F.pageMap g 2 i x) (a ≫ g) := by</span>
+<span id="L449"><a href="#L449"> 449</a>   obtain ⟨e, he, b, hb, hgr⟩ := h</span>
+<span id="L450"><a href="#L450"> 450</a>   let hc := M.comparison.filtration_compat i.1 (i.2.1-i.1,i.2.2)</span>
+<span id="L451"><a href="#L451"> 451</a>   let b&#x27; := hc.choose b</span>
+<span id="L452"><a href="#L452"> 452</a>   refine ⟨(F.map g).eInftyMap i e, infinity_rep_map g i he, b&#x27;, ?_, ?_⟩</span>
+<span id="L453"><a href="#L453"> 453</a>   · have hmap := ConcreteCategory.congr_hom hc.choose_spec b</span>
+<span id="L454"><a href="#L454"> 454</a>     have heq := ConcreteCategory.congr_hom</span>
+<span id="L455"><a href="#L455"> 455</a>       (congrFun M.abutment_eq (i.2.1-i.1,i.2.2))</span>
+<span id="L456"><a href="#L456"> 456</a>       (((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b)</span>
+<span id="L457"><a href="#L457"> 457</a>     change ((P.filtration Y).F i.1 (i.2.1-i.1,i.2.2)).arrow b&#x27; = _</span>
+<span id="L458"><a href="#L458"> 458</a>     exact hmap.trans (heq.trans (congrArg (fun z =&gt; z ≫ g) hb))</span>
+<span id="L459"><a href="#L459"> 459</a>   · have hm := M.comparison.iso_compat i</span>
+<span id="L460"><a href="#L460"> 460</a>     simp only [SyntheticTowerConvergence.toConvergence, Filtration.transportGraded_self,</span>
+<span id="L461"><a href="#L461"> 461</a>       Category.comp_id] at hm</span>
+<span id="L462"><a href="#L462"> 462</a>     rw [M.infinity_eq] at hm</span>
+<span id="L463"><a href="#L463"> 463</a>     have hm&#x27; := ConcreteCategory.congr_hom hm e</span>
+<span id="L464"><a href="#L464"> 464</a>     change (cy.identification i).hom ((F.map g).eInftyMap i e) =</span>
+<span id="L465"><a href="#L465"> 465</a>       Filtration.inducedAssocGradedMap M.comparison.aMap M.comparison.filtration_compat</span>
+<span id="L466"><a href="#L466"> 466</a>         i.1 (i.2.1-i.1,i.2.2) ((cx.identification i).hom e) at hm&#x27;</span>
+<span id="L467"><a href="#L467"> 467</a>     rw [hgr] at hm&#x27;</span>
+<span id="L468"><a href="#L468"> 468</a>     have hg : (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) ≫</span>
+<span id="L469"><a href="#L469"> 469</a>         Filtration.inducedAssocGradedMap M.comparison.aMap M.comparison.filtration_compat</span>
+<span id="L470"><a href="#L470"> 470</a>           i.1 (i.2.1-i.1,i.2.2) =</span>
+<span id="L471"><a href="#L471"> 471</a>         hc.choose ≫ (P.filtration Y).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) := by</span>
+<span id="L472"><a href="#L472"> 472</a>       exact cokernel.π_desc _ _ _</span>
+<span id="L473"><a href="#L473"> 473</a>     exact hm&#x27;.trans (ConcreteCategory.congr_hom hg b)</span>
+<span id="L474"><a href="#L474"> 474</a> </span>
+<span id="L475"><a href="#L475"> 475</a> private theorem familyPageMap_comp {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L476"><a href="#L476"> 476</a>     (F : SyntheticAdamsFamily Syn) {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z)</span>
+<span id="L477"><a href="#L477"> 477</a>     (r : ℤ) (i : Tridegree) :</span>
+<span id="L478"><a href="#L478"> 478</a>     F.pageMap (f ≫ g) r i = F.pageMap f r i ≫ F.pageMap g r i := by</span>
+<span id="L479"><a href="#L479"> 479</a>   change (F.map (f ≫ g)).pageMap r i =</span>
+<span id="L480"><a href="#L480"> 480</a>     (F.map f).pageMap r i ≫ (F.map g).pageMap r i</span>
+<span id="L481"><a href="#L481"> 481</a>   rw [F.map_comp, SpectralSequenceMorphism.pageMap_comp]</span>
+<span id="L482"><a href="#L482"> 482</a> </span>
+<span id="L483"><a href="#L483"> 483</a> private def trPage {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L484"><a href="#L484"> 484</a>     {F : SyntheticAdamsFamily Syn} {X : Syn} {s t w w&#x27; : ℤ} (h : w = w&#x27;)</span>
+<span id="L485"><a href="#L485"> 485</a>     (x : (F.obj X).Page 2 (s,t,w)) : (F.obj X).Page 2 (s,t,w&#x27;) :=</span>
+<span id="L486"><a href="#L486"> 486</a>   cast (congrArg (fun q =&gt; ↥((F.obj X).Page 2 (s,t,q))) h) x</span>
+<span id="L487"><a href="#L487"> 487</a> </span>
+<span id="L488"><a href="#L488"> 488</a> private def trHom {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L489"><a href="#L489"> 489</a>     {X : Syn} {m w w&#x27; : ℤ} (h : w = w&#x27;) (x : BiHom m w X) : BiHom m w&#x27; X :=</span>
+<span id="L490"><a href="#L490"> 490</a>   cast (congrArg (fun q =&gt; BiHom m q X) h) x</span>
+<span id="L491"><a href="#L491"> 491</a> </span>
+<span id="L492"><a href="#L492"> 492</a> private theorem detects_tr {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L493"><a href="#L493"> 493</a>     [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L494"><a href="#L494"> 494</a>     {F : SyntheticAdamsFamily Syn} {P : SyntheticTowerPresentation unit F}</span>
+<span id="L495"><a href="#L495"> 495</a>     {X : Syn} (c : SyntheticTowerConvergence P X) {s t w w&#x27; : ℤ}</span>
+<span id="L496"><a href="#L496"> 496</a>     (h : w = w&#x27;) {x : (F.obj X).Page 2 (s,t,w)} {a : BiHom (t-s) w X}</span>
+<span id="L497"><a href="#L497"> 497</a>     (hd : KIP126.AdamsSynthetic.Detects c (s,t,w) x a) :</span>
+<span id="L498"><a href="#L498"> 498</a>     KIP126.AdamsSynthetic.Detects c (s,t,w&#x27;) (trPage h x) (trHom h a) := by</span>
+<span id="L499"><a href="#L499"> 499</a>   subst w&#x27;</span>
+<span id="L500"><a href="#L500"> 500</a>   exact hd</span>
+<span id="L501"><a href="#L501"> 501</a> </span>
+<span id="L502"><a href="#L502"> 502</a> private theorem pageMap_tr {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L503"><a href="#L503"> 503</a>     (F : SyntheticAdamsFamily Syn) {X Y : Syn} (f : X ⟶ Y) {s t w w&#x27; : ℤ}</span>
+<span id="L504"><a href="#L504"> 504</a>     (h : w = w&#x27;) (x : (F.obj X).Page 2 (s,t,w)) :</span>
+<span id="L505"><a href="#L505"> 505</a>     trPage h (F.pageMap f 2 (s,t,w) x) =</span>
+<span id="L506"><a href="#L506"> 506</a>       F.pageMap f 2 (s,t,w&#x27;) (trPage h x) := by</span>
+<span id="L507"><a href="#L507"> 507</a>   subst w&#x27;</span>
+<span id="L508"><a href="#L508"> 508</a>   rfl</span>
+<span id="L509"><a href="#L509"> 509</a> </span>
+<span id="L510"><a href="#L510"> 510</a> private theorem linearEquiv_cast_symm {A : ℤ → Type v}</span>
+<span id="L511"><a href="#L511"> 511</a>     [∀ w, AddCommGroup (A w)] [∀ w, Module ℤ (A w)]</span>
+<span id="L512"><a href="#L512"> 512</a>     {B : Type v} [AddCommGroup B] [Module ℤ B]</span>
+<span id="L513"><a href="#L513"> 513</a>     {w w&#x27; : ℤ} (h : w = w&#x27;) (e : A w ≃ₗ[ℤ] B) (x : B) :</span>
+<span id="L514"><a href="#L514"> 514</a>     (cast (congrArg (fun q =&gt; A q ≃ₗ[ℤ] B) h) e).symm x =</span>
+<span id="L515"><a href="#L515"> 515</a>       cast (congrArg A h) (e.symm x) := by</span>
+<span id="L516"><a href="#L516"> 516</a>   subst w&#x27;</span>
+<span id="L517"><a href="#L517"> 517</a>   rfl</span>
+<span id="L518"><a href="#L518"> 518</a> </span>
+<span id="L519"><a href="#L519"> 519</a> </span>
+<span id="L520"><a href="#L520"> 520</a> public theorem sphere_first_quotient : ∀ (s t : ℤ) (x : classical.sphere.Page 2 (s,t)),</span>
+<span id="L521"><a href="#L521"> 521</a>     Detects (convergence (.quotient 1 .sphere)) (s,t,t)</span>
+<span id="L522"><a href="#L522"> 522</a>       (family.pageMap (XModLambdaN.incl S_0_0 1) 2 (s,t,t)</span>
+<span id="L523"><a href="#L523"> 523</a>         (by simpa only [SyntheticAdamsFamily.sphere, SyntheticAdamsSS.Page,</span>
+<span id="L524"><a href="#L524"> 524</a>           Nat.cast_zero, sub_zero] using comparison.sphereE2 s t 0 x))</span>
+<span id="L525"><a href="#L525"> 525</a>       ((sphereFirstQuotient nu quotients.functoriality firstQuotient s t).symm x) := by</span>
+<span id="L526"><a href="#L526"> 526</a>   intro s t x</span>
+<span id="L527"><a href="#L527"> 527</a>   let Z := (SyntheticCategory.biShift (0,0)).obj (nu.functor.obj SphereSpectrum)</span>
+<span id="L528"><a href="#L528"> 528</a>   let e : Z ≅ (S_0_0 : SyntheticSpectrum) :=</span>
+<span id="L529"><a href="#L529"> 529</a>     SyntheticCategory.biShift_zero.app _ ≪≫ nu.unitIso</span>
+<span id="L530"><a href="#L530"> 530</a>   let q := (quotients.functoriality.functor 1).mapIso e</span>
+<span id="L531"><a href="#L531"> 531</a>   let u0 : (family.obj Z).Page 2 (s,t,t+0) := by</span>
+<span id="L532"><a href="#L532"> 532</a>     simpa only [Nat.cast_zero, sub_zero, ClassicalObject.obj] using</span>
+<span id="L533"><a href="#L533"> 533</a>       comparison.nuE2 .sphere 0 s t 0 x</span>
+<span id="L534"><a href="#L534"> 534</a>   let u := trPage (Int.add_zero t) u0</span>
+<span id="L535"><a href="#L535"> 535</a>   let b0 := (firstQuotient .sphere 0 s t).symm x</span>
+<span id="L536"><a href="#L536"> 536</a>   let b := trHom (Int.add_zero t) b0</span>
+<span id="L537"><a href="#L537"> 537</a>   have hd0 := first_quotient .sphere 0 s t x</span>
+<span id="L538"><a href="#L538"> 538</a>   have hd : KIP126.AdamsSynthetic.Detects</span>
+<span id="L539"><a href="#L539"> 539</a>       (convergence (.quotient 1 (.shift (0,0) (.nu .sphere)))) (s,t,t)</span>
+<span id="L540"><a href="#L540"> 540</a>       (family.pageMap (XModLambdaN.incl Z 1) 2 (s,t,t) u) b := by</span>
+<span id="L541"><a href="#L541"> 541</a>     have ht := detects_tr _ (Int.add_zero t) hd0</span>
+<span id="L542"><a href="#L542"> 542</a>     have htr := pageMap_tr family (XModLambdaN.incl Z 1) (Int.add_zero t) u0</span>
+<span id="L543"><a href="#L543"> 543</a>     exact htr ▸ ht</span>
+<span id="L544"><a href="#L544"> 544</a>   let M := Classical.choice (canonical_convergence_natural syntheticTower q.hom</span>
+<span id="L545"><a href="#L545"> 545</a>     (convergence (.quotient 1 (.shift (0,0) (.nu .sphere))))</span>
+<span id="L546"><a href="#L546"> 546</a>     (convergence (.quotient 1 .sphere)))</span>
+<span id="L547"><a href="#L547"> 547</a>   have hm := detects_map M (s,t,t) hd</span>
+<span id="L548"><a href="#L548"> 548</a>   have hn : family.pageMap e.hom 2 (s,t,t) u =</span>
+<span id="L549"><a href="#L549"> 549</a>       (by simpa only [SyntheticAdamsFamily.sphere, SyntheticAdamsSS.Page,</span>
+<span id="L550"><a href="#L550"> 550</a>         Nat.cast_zero, sub_zero] using comparison.sphereE2 s t 0 x) := by</span>
+<span id="L551"><a href="#L551"> 551</a>     let un0 : (family.obj Z).Page 2 (s,t,t-(0 : ℕ)) := by</span>
+<span id="L552"><a href="#L552"> 552</a>       simpa only [add_zero, ClassicalObject.obj] using comparison.nuE2 .sphere 0 s t 0 x</span>
+<span id="L553"><a href="#L553"> 553</a>     have h0 := comparison.sphere_nu s t 0 x</span>
+<span id="L554"><a href="#L554"> 554</a>     change family.pageMap e.hom 2 (s,t,t-(0 : ℕ)) un0 = comparison.sphereE2 s t 0 x at h0</span>
+<span id="L555"><a href="#L555"> 555</a>     have ht := congrArg (trPage (F := family) (X := (S_0_0 : SyntheticSpectrum))</span>
+<span id="L556"><a href="#L556"> 556</a>       (s := s) (t := t) (show t-(0 : ℕ) = t by simp)) h0</span>
+<span id="L557"><a href="#L557"> 557</a>     have htr := pageMap_tr family e.hom (show t-(0 : ℕ) = t by simp) un0</span>
+<span id="L558"><a href="#L558"> 558</a>     rw [htr] at ht</span>
+<span id="L559"><a href="#L559"> 559</a>     simpa only [u, u0, un0, trPage, eq_mp_eq_cast, cast_cast, id_eq] using ht</span>
+<span id="L560"><a href="#L560"> 560</a>   have hp : family.pageMap q.hom 2 (s,t,t)</span>
+<span id="L561"><a href="#L561"> 561</a>       (family.pageMap (XModLambdaN.incl Z 1) 2 (s,t,t) u) =</span>
+<span id="L562"><a href="#L562"> 562</a>       family.pageMap (XModLambdaN.incl S_0_0 1) 2 (s,t,t)</span>
+<span id="L563"><a href="#L563"> 563</a>         (by simpa only [SyntheticAdamsFamily.sphere, SyntheticAdamsSS.Page,</span>
+<span id="L564"><a href="#L564"> 564</a>           Nat.cast_zero, sub_zero] using comparison.sphereE2 s t 0 x) := by</span>
+<span id="L565"><a href="#L565"> 565</a>     change (family.pageMap (XModLambdaN.incl Z 1) 2 (s,t,t) ≫</span>
+<span id="L566"><a href="#L566"> 566</a>       family.pageMap q.hom 2 (s,t,t)) u = _</span>
+<span id="L567"><a href="#L567"> 567</a>     rw [← familyPageMap_comp]</span>
+<span id="L568"><a href="#L568"> 568</a>     change family.pageMap (XModLambdaN.incl Z 1 ≫ XModLambdaN.map e.hom 1) 2 (s,t,t) u = _</span>
+<span id="L569"><a href="#L569"> 569</a>     rw [← XModLambdaN.incl_naturality, familyPageMap_comp]</span>
+<span id="L570"><a href="#L570"> 570</a>     change family.pageMap (XModLambdaN.incl S_0_0 1) 2 (s,t,t)</span>
+<span id="L571"><a href="#L571"> 571</a>       (family.pageMap e.hom 2 (s,t,t) u) = _</span>
+<span id="L572"><a href="#L572"> 572</a>     rw [hn]</span>
+<span id="L573"><a href="#L573"> 573</a>   have hb : b ≫ q.hom = (sphereFirstQuotient nu quotients.functoriality firstQuotient s t).symm x := by</span>
+<span id="L574"><a href="#L574"> 574</a>     have hcast := linearEquiv_cast_symm</span>
+<span id="L575"><a href="#L575"> 575</a>       (A := fun w =&gt; BiHom (t-s) w (XModLambdaN Z 1))</span>
+<span id="L576"><a href="#L576"> 576</a>       (Int.add_zero t) (firstQuotient .sphere 0 s t) x</span>
+<span id="L577"><a href="#L577"> 577</a>     exact (congrArg (fun z : BiHom (t-s) t (XModLambdaN Z 1) =&gt; z ≫ q.hom) hcast).symm</span>
+<span id="L578"><a href="#L578"> 578</a>   exact hp ▸ hb ▸ hm</span>
+<span id="L579"><a href="#L579"> 579</a> </span>
+<span id="L580"><a href="#L580"> 580</a> public theorem sphere_homotopy_lambda : ∀ (s t : ℤ) (k : ℕ) (x : BiHom (t-s) t (S_0_0 : SyntheticSpectrum)),</span>
+<span id="L581"><a href="#L581"> 581</a>     Detects (convergence .sphere) (s,t,t-k)</span>
+<span id="L582"><a href="#L582"> 582</a>       (comparison.sphereE2 s t k (sphereFirstQuotient nu quotients.functoriality firstQuotient s t (quotientClass 1 x)))</span>
+<span id="L583"><a href="#L583"> 583</a>       (lambdaMultiply k x) := by sorry</span>
+<span id="L584"><a href="#L584"> 584</a> </span>
+<span id="L585"><a href="#L585"> 585</a> public theorem multiplicationCompatible :</span>
+<span id="L586"><a href="#L586"> 586</a>     MultiplicationCompatible comparison sphereAlgebra (convergence .sphere) := by sorry</span>
+<span id="L587"><a href="#L587"> 587</a> public theorem sphereProductCommutative : SphereProductCommutative (Syn := SyntheticSpectrum) := by sorry</span>
+<span id="L588"><a href="#L588"> 588</a> </span>
+<span id="L589"><a href="#L589"> 589</a> /-- Internal organization of the already selected objects and named theorems.</span>
+<span id="L590"><a href="#L590"> 590</a> Consumers never need to supply a model instance or prove this structure exists. -/</span>
+<span id="L591"><a href="#L591"> 591</a> public def model : Model Spectrum SyntheticSpectrum where</span>
+<span id="L592"><a href="#L592"> 592</a>   coefficients := coefficients</span>
+<span id="L593"><a href="#L593"> 593</a>   classical := classical</span>
+<span id="L594"><a href="#L594"> 594</a>   nu := nu</span>
+<span id="L595"><a href="#L595"> 595</a>   family := family</span>
+<span id="L596"><a href="#L596"> 596</a>   nuExactTriangle := ⟨nu_preserves_triangle⟩</span>
+<span id="L597"><a href="#L597"> 597</a>   recovery := recovery</span>
+<span id="L598"><a href="#L598"> 598</a>   exactness := exactness</span>
+<span id="L599"><a href="#L599"> 599</a>   auxiliary := auxiliary</span>
+<span id="L600"><a href="#L600"> 600</a>   sphereAlgebra := sphereAlgebra</span>
+<span id="L601"><a href="#L601"> 601</a>   standardClasses := standardClasses</span>
+<span id="L602"><a href="#L602"> 602</a>   classicalTower := classicalTower</span>
+<span id="L603"><a href="#L603"> 603</a>   classicalSuspension := classicalSuspension</span>
+<span id="L604"><a href="#L604"> 604</a>   syntheticTower := syntheticTower</span>
+<span id="L605"><a href="#L605"> 605</a>   comparison := comparison</span>
+<span id="L606"><a href="#L606"> 606</a>   quotients := quotients</span>
+<span id="L607"><a href="#L607"> 607</a>   normalizedMap := normalizedMap</span>
+<span id="L608"><a href="#L608"> 608</a>   classicalConvergence := classicalConvergence</span>
+<span id="L609"><a href="#L609"> 609</a>   convergence := convergence</span>
+<span id="L610"><a href="#L610"> 610</a>   firstQuotient := firstQuotient</span>
+<span id="L611"><a href="#L611"> 611</a>   comparisonCompatible := ⟨convergence_natural, first_quotient⟩</span>
+<span id="L612"><a href="#L612"> 612</a>   sphereDetectionCompatible := ⟨sphere_first_quotient, sphere_homotopy_lambda⟩</span>
+<span id="L613"><a href="#L613"> 613</a>   multiplicationCompatible := multiplicationCompatible</span>
+<span id="L614"><a href="#L614"> 614</a>   sphereProductCommutative := sphereProductCommutative</span>
+<span id="L615"><a href="#L615"> 615</a> </span>
+<span id="L616"><a href="#L616"> 616</a> end</span>
+<span id="L617"><a href="#L617"> 617</a> end KIP126.AdamsSynthetic.Standard</span></pre>

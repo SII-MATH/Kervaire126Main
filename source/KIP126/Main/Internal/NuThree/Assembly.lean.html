@@ -1,0 +1,64 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/NuThree/Assembly.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/NuThree/Assembly.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.SectionSeven.NormalizedNu</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.NuThree.Actual</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.NuThree.Shift</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.NuFifth.Lift</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.SectionSeven.NuFifthAction</span>
+<span id="L8"><a href="#L8">   8</a> /-! Original NuFifth:1916–1956,3509–3525 assembly, bbac1fc05843 (MIT). -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Main.Internal.NuThree</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Main.Internal KIP126.Main.SectionSeven KIP126.Main.SectionSeven.Internal</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 1600000</span>
+<span id="L19"><a href="#L19">  19</a> private theorem nu_three_actual_relation_and_unique :</span>
+<span id="L20"><a href="#L20">  20</a>     (∀u v:BiHom 122 130 (XModLambdaN (S_0_0:SyntheticSpectrum) 3),u≠0→v≠0→u=v) ∧</span>
+<span id="L21"><a href="#L21">  21</a>     ∃ κ : XModLambdaN (Smn (Syn:=SyntheticSpectrum) 3 4) 3 ≅</span>
+<span id="L22"><a href="#L22">  22</a>       (SyntheticCategory.biShift (3,4)).obj (XModLambdaN (S_0_0:SyntheticSpectrum) 3),</span>
+<span id="L23"><a href="#L23">  23</a>       XModLambdaN.incl (Smn (Syn:=SyntheticSpectrum) 3 4) 3≫κ.hom =</span>
+<span id="L24"><a href="#L24">  24</a>         (SyntheticCategory.biShift (3,4)).map (XModLambdaN.incl (S_0_0:SyntheticSpectrum) 3) ∧</span>
+<span id="L25"><a href="#L25">  25</a>     ∃ (x : BiHom 122 130 (XModLambdaN (S_0_0:SyntheticSpectrum) 3))</span>
+<span id="L26"><a href="#L26">  26</a>       (y : BiHom 125 134 (XModLambdaN (S_0_0:SyntheticSpectrum) 3)),</span>
+<span id="L27"><a href="#L27">  27</a>       x≠0 ∧ FiniteDetected 3 (by decide) 8 130 0 KIP126.Computation.Standard.X x ∧</span>
+<span id="L28"><a href="#L28">  28</a>       FiniteDetected 3 (by decide) 11 136 2 KIP126.Computation.Standard.Y y ∧</span>
+<span id="L29"><a href="#L29">  29</a>       (susp_invariance 122 130 3 4 (XModLambdaN (S_0_0:SyntheticSpectrum) 3) x)≫κ.inv≫</span>
+<span id="L30"><a href="#L30">  30</a>         XModLambdaN.map hopfNu 3=y := by</span>
+<span id="L31"><a href="#L31">  31</a>   obtain ⟨a,b,hab,hb⟩ := nu_three_actual_map_relation</span>
+<span id="L32"><a href="#L32">  32</a>   have hbn : b≠0 := nonzero_detection_ne_zero (.quotient 3 .sphere) (11,136,134) _ b hb</span>
+<span id="L33"><a href="#L33">  33</a>   have han : a≠0 := by</span>
+<span id="L34"><a href="#L34">  34</a>     intro hz</span>
+<span id="L35"><a href="#L35">  35</a>     exact hbn (hab.symm.trans (by rw [hz,zero_comp]))</span>
+<span id="L36"><a href="#L36">  36</a>   obtain ⟨κ,hκ,hκn⟩ := q3_sphere_shift_transport</span>
+<span id="L37"><a href="#L37">  37</a>   let x := (susp_invariance 122 130 3 4 (XModLambdaN (S_0_0:SyntheticSpectrum) 3)).symm (a≫κ.hom)</span>
+<span id="L38"><a href="#L38">  38</a>   have hxn : x≠0 := by</span>
+<span id="L39"><a href="#L39">  39</a>     intro hz</span>
+<span id="L40"><a href="#L40">  40</a>     exact han ((hκn a).mp hz)</span>
+<span id="L41"><a href="#L41">  41</a>   have hx := nu_three_nonzero_detects_x x hxn</span>
+<span id="L42"><a href="#L42">  42</a>   refine ⟨nu_three_nonzero_unique,κ,hκ,x,b,hxn,hx,hb,?_⟩</span>
+<span id="L43"><a href="#L43">  43</a>   have he : (susp_invariance 122 130 3 4 (XModLambdaN (S_0_0:SyntheticSpectrum) 3)) x=a≫κ.hom :=</span>
+<span id="L44"><a href="#L44">  44</a>     Equiv.apply_symm_apply _ _</span>
+<span id="L45"><a href="#L45">  45</a>   rw [he,Category.assoc,κ.hom_inv_id_assoc]</span>
+<span id="L46"><a href="#L46">  46</a>   exact hab</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> /-- The same actual Q3 relation, extracted as in Kervaire126 f2f790267. -/</span>
+<span id="L49"><a href="#L49">  49</a> private theorem nu_extension_in_third_quotient :</span>
+<span id="L50"><a href="#L50">  50</a>     ∃ (x : BiHom 122 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 3))</span>
+<span id="L51"><a href="#L51">  51</a>       (y : BiHom 125 134 (XModLambdaN (S_0_0 : SyntheticSpectrum) 3)),</span>
+<span id="L52"><a href="#L52">  52</a>       FiniteDetected 3 (by decide) 8 130 0 KIP126.Computation.Standard.X x ∧</span>
+<span id="L53"><a href="#L53">  53</a>       FiniteDetected 3 (by decide) 11 136 2 KIP126.Computation.Standard.Y y ∧</span>
+<span id="L54"><a href="#L54">  54</a>       sphereAction hopfNu x = y := by</span>
+<span id="L55"><a href="#L55">  55</a>   obtain ⟨hu,κ,hκ,x,y,hxn,hx,hy,hxy⟩ := nu_three_actual_relation_and_unique</span>
+<span id="L56"><a href="#L56">  56</a>   refine ⟨x,y,hx,hy,?_⟩</span>
+<span id="L57"><a href="#L57">  57</a>   exact (q3_sphere_action_actual_map hu κ hκ hopfNu x hxn).trans hxy</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> private theorem nu_extension_in_fifth_quotient :</span>
+<span id="L60"><a href="#L60">  60</a>     NuExtension5 KIP126.Computation.Standard.X KIP126.Computation.Standard.Y hopfNu := by</span>
+<span id="L61"><a href="#L61">  61</a>   exact NuFifth.nu_five_of_three hopfNu KIP126.Literature.Standard.nuCofiber_normalized_label</span>
+<span id="L62"><a href="#L62">  62</a>     nu_extension_in_third_quotient</span>
+<span id="L63"><a href="#L63">  63</a> end</span>
+<span id="L64"><a href="#L64">  64</a> end KIP126.Main.Internal.NuThree</span></pre>

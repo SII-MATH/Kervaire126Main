@@ -1,0 +1,244 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Moss.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Moss.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.MappingComposition</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.Literature.Toda</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Literature.Toda</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! The general mapping-spectrum Moss contract, with the preceding-page</span>
+<span id="L8"><a href="#L8">   8</a> defining systems used in MainPaper 2537–2545. Fixed source:</span>
+<span id="L9"><a href="#L9">   9</a> bbac1fc05843bdf2d56057e6114a38839e939378, `Def/ClassicalAdams/Moss`.</span>
+<span id="L10"><a href="#L10">  10</a> All pages, products, tower filtrations and represented stable maps below</span>
+<span id="L11"><a href="#L11">  11</a> belong to one supplied mapping system. This is an explicit theorem delivery</span>
+<span id="L12"><a href="#L12">  12</a> obligation; applicability to Moss (1970), Theorem 1.2 still requires the source</span>
+<span id="L13"><a href="#L13">  13</a> comparison. It is not inferred from arbitrary triangulated-category axioms. -/</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> @[expose] section</span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Literature.Moss</span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.StableHomotopy KIP126.AdamsSynthetic KIP126.Classical.Adams</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Core.SpectralSequence</span>
+<span id="L20"><a href="#L20">  20</a> universe u v</span>
+<span id="L21"><a href="#L21">  21</a> noncomputable section</span>
+<span id="L22"><a href="#L22">  22</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L23"><a href="#L23">  23</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L24"><a href="#L24">  24</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L25"><a href="#L25">  25</a>   {A : ClassicalAdamsFamily C} {B : ClosedSymmetricTensorTriangulated C}</span>
+<span id="L26"><a href="#L26">  26</a>   {P : ClassicalTowerPresentation unit A} {scope : C → Prop}</span>
+<span id="L27"><a href="#L27">  27</a>   (S : MappingSpectrumSystem B P scope)</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> public def stem (k : ℤ × ℤ) : ℤ := k.2-k.1</span>
+<span id="L30"><a href="#L30">  30</a> </span>
+<span id="L31"><a href="#L31">  31</a> public abbrev sequence (X Y : MappingObject scope) := S.sequence X.val Y.val</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> public abbrev abutment (X Y : MappingObject scope) (n : ℤ) :=</span>
+<span id="L34"><a href="#L34">  34</a>   HomotopyGroup n (mappingSpectrum B X.val Y.val)</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> /-- Reindexing by equality, with no independently chosen page map. -/</span>
+<span id="L37"><a href="#L37">  37</a> public def pageCast (X Y : MappingObject scope) {r r&#x27; : ℤ} {i i&#x27; : ℤ × ℤ}</span>
+<span id="L38"><a href="#L38">  38</a>     (hr : r = r&#x27;) (hi : i = i&#x27;) (x : (sequence S X Y).Page r i) :</span>
+<span id="L39"><a href="#L39">  39</a>     (sequence S X Y).Page r&#x27; i&#x27; := by</span>
+<span id="L40"><a href="#L40">  40</a>   subst r&#x27;; subst i&#x27;; exact x</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> namespace PageMassey</span>
+<span id="L43"><a href="#L43">  43</a> public def degree (r : ℤ) (i j k : ℤ × ℤ) : ℤ × ℤ :=</span>
+<span id="L44"><a href="#L44">  44</a>   i+j+k-(r-1,r-2)</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> public def definingDifferential (X Y : MappingObject scope) (r : ℤ) (i j : ℤ × ℤ)</span>
+<span id="L47"><a href="#L47">  47</a>     (y : (sequence S X Y).Page r (i+j-(r,r-1))) :</span>
+<span id="L48"><a href="#L48">  48</a>     (sequence S X Y).Page r (i+j) :=</span>
+<span id="L49"><a href="#L49">  49</a>   pageCast S X Y rfl (by</span>
+<span id="L50"><a href="#L50">  50</a>     change i+j-(r,r-1)+(A.obj (mappingSpectrum B X.val Y.val)).diffDeg r = i+j</span>
+<span id="L51"><a href="#L51">  51</a>     rw [A.differentialDegree]</span>
+<span id="L52"><a href="#L52">  52</a>     abel) ((sequence S X Y).d r _ y)</span>
+<span id="L53"><a href="#L53">  53</a> </span>
+<span id="L54"><a href="#L54">  54</a> public def precedingDifferential (X Y : MappingObject scope) (r : ℤ) (i j : ℤ × ℤ)</span>
+<span id="L55"><a href="#L55">  55</a>     (y : (sequence S X Y).Page (r-1) (i+j-(r-1,r-2))) :</span>
+<span id="L56"><a href="#L56">  56</a>     (sequence S X Y).Page (r-1) (i+j) :=</span>
+<span id="L57"><a href="#L57">  57</a>   definingDifferential S X Y (r-1) i j</span>
+<span id="L58"><a href="#L58">  58</a>     (pageCast S X Y rfl (by congr 2; omega) y)</span>
+<span id="L59"><a href="#L59">  59</a> </span>
+<span id="L60"><a href="#L60">  60</a> /-- One common next-cycle representative, in the actual successor quotient. -/</span>
+<span id="L61"><a href="#L61">  61</a> public def Passage (X Y : MappingObject scope) (r : ℤ) (k : ℤ × ℤ)</span>
+<span id="L62"><a href="#L62">  62</a>     (a : (sequence S X Y).Page (r-1) k) (b : (sequence S X Y).Page r k) : Prop :=</span>
+<span id="L63"><a href="#L63">  63</a>   NextPageRelation (sequence S X Y) (r-1) k a</span>
+<span id="L64"><a href="#L64">  64</a>     (pageCast S X Y (by omega) rfl b)</span>
+<span id="L65"><a href="#L65">  65</a> </span>
+<span id="L66"><a href="#L66">  66</a> variable (M : MappingComposition S)</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> /-- The signed defining value `yc - (-1)^(stem a) az` on E_(r-1). -/</span>
+<span id="L69"><a href="#L69">  69</a> public def definingValue (W X Y Z : MappingObject scope) (r : ℤ) (i j k : ℤ × ℤ)</span>
+<span id="L70"><a href="#L70">  70</a>     (a : (sequence S W X).Page (r-1) i) (c : (sequence S Y Z).Page (r-1) k)</span>
+<span id="L71"><a href="#L71">  71</a>     (y : (sequence S W Y).Page (r-1) (i+j-(r-1,r-2)))</span>
+<span id="L72"><a href="#L72">  72</a>     (z : (sequence S X Z).Page (r-1) (j+k-(r-1,r-2))) :</span>
+<span id="L73"><a href="#L73">  73</a>     (sequence S W Z).Page (r-1) (degree r i j k) :=</span>
+<span id="L74"><a href="#L74">  74</a>   let left := pageCast S W Z rfl (by unfold degree; abel)</span>
+<span id="L75"><a href="#L75">  75</a>     ((M.pairing W Y Z).ssPairing.pair (r-1) (i+j-(r-1,r-2)) k y c)</span>
+<span id="L76"><a href="#L76">  76</a>   let right := pageCast S W Z rfl (by unfold degree; abel)</span>
+<span id="L77"><a href="#L77">  77</a>     ((M.pairing W X Z).ssPairing.pair (r-1) i (j+k-(r-1,r-2)) a z)</span>
+<span id="L78"><a href="#L78">  78</a>   if Even (stem i) then left-right else left+right</span>
+<span id="L79"><a href="#L79">  79</a> </span>
+<span id="L80"><a href="#L80">  80</a> /-- A complete preceding-page defining system. This does not substitute an</span>
+<span id="L81"><a href="#L81">  81</a> arbitrary ternary relation, or define the separate E₂ cobar Massey product. -/</span>
+<span id="L82"><a href="#L82">  82</a> public def Relation (r : ℤ) (_hr : 3 ≤ r) {W X Y Z : MappingObject scope}</span>
+<span id="L83"><a href="#L83">  83</a>     {i j k : ℤ × ℤ} (x : (sequence S W Z).Page r (degree r i j k))</span>
+<span id="L84"><a href="#L84">  84</a>     (a : (sequence S W X).Page r i) (b : (sequence S X Y).Page r j)</span>
+<span id="L85"><a href="#L85">  85</a>     (c : (sequence S Y Z).Page r k) : Prop :=</span>
+<span id="L86"><a href="#L86">  86</a>   ∃ (a&#x27; : (sequence S W X).Page (r-1) i)</span>
+<span id="L87"><a href="#L87">  87</a>     (b&#x27; : (sequence S X Y).Page (r-1) j) (c&#x27; : (sequence S Y Z).Page (r-1) k)</span>
+<span id="L88"><a href="#L88">  88</a>     (y : (sequence S W Y).Page (r-1) (i+j-(r-1,r-2)))</span>
+<span id="L89"><a href="#L89">  89</a>     (z : (sequence S X Z).Page (r-1) (j+k-(r-1,r-2))),</span>
+<span id="L90"><a href="#L90">  90</a>     Passage S W X r i a&#x27; a ∧ Passage S X Y r j b&#x27; b ∧ Passage S Y Z r k c&#x27; c ∧</span>
+<span id="L91"><a href="#L91">  91</a>     precedingDifferential S W Y r i j y = (M.pairing W X Y).ssPairing.pair (r-1) i j a&#x27; b&#x27; ∧</span>
+<span id="L92"><a href="#L92">  92</a>     precedingDifferential S X Z r j k z = (M.pairing X Y Z).ssPairing.pair (r-1) j k b&#x27; c&#x27; ∧</span>
+<span id="L93"><a href="#L93">  93</a>     Passage S W Z r (degree r i j k) (definingValue S M W X Y Z r i j k a&#x27; c&#x27; y z) x</span>
+<span id="L94"><a href="#L94">  94</a> </span>
+<span id="L95"><a href="#L95">  95</a> /-- Full additive indeterminacy, with both free summands and their degrees. -/</span>
+<span id="L96"><a href="#L96">  96</a> public def Indeterminacy (r : ℤ) {W X Y Z : MappingObject scope} {i j k : ℤ × ℤ}</span>
+<span id="L97"><a href="#L97">  97</a>     (a : (sequence S W X).Page r i) (c : (sequence S Y Z).Page r k)</span>
+<span id="L98"><a href="#L98">  98</a>     (z : (sequence S W Z).Page r (degree r i j k)) : Prop :=</span>
+<span id="L99"><a href="#L99">  99</a>   ∃ (u : (sequence S W Y).Page r (i+j-(r-1,r-2)))</span>
+<span id="L100"><a href="#L100"> 100</a>     (v : (sequence S X Z).Page r (j+k-(r-1,r-2))),</span>
+<span id="L101"><a href="#L101"> 101</a>     z = pageCast S W Z rfl (by unfold degree; abel)</span>
+<span id="L102"><a href="#L102"> 102</a>       ((M.pairing W Y Z).ssPairing.pair r (i+j-(r-1,r-2)) k u c) +</span>
+<span id="L103"><a href="#L103"> 103</a>       pageCast S W Z rfl (by unfold degree; abel)</span>
+<span id="L104"><a href="#L104"> 104</a>       ((M.pairing W X Z).ssPairing.pair r i (j+k-(r-1,r-2)) a v)</span>
+<span id="L105"><a href="#L105"> 105</a> end PageMassey</span>
+<span id="L106"><a href="#L106"> 106</a> </span>
+<span id="L107"><a href="#L107"> 107</a> /-- Residual injectivity in the actual mapping Adams tower. An associated</span>
+<span id="L108"><a href="#L108"> 108</a> graded convergence isomorphism alone does not imply this condition. -/</span>
+<span id="L109"><a href="#L109"> 109</a> public def WeakConvergence (X Y : MappingObject scope) : Prop :=</span>
+<span id="L110"><a href="#L110"> 110</a>   let T := P.tower (mappingSpectrum B X.val Y.val)</span>
+<span id="L111"><a href="#L111"> 111</a>   ∀ (s : ℕ) (n : ℤ) (f : HomotopyGroup n (T.stage (s+1))),</span>
+<span id="L112"><a href="#L112"> 112</a>     (∀ (t : ℕ) (hst : s+1 ≤ t), ∃ g : HomotopyGroup n (T.stage t), g ≫ T.map hst = f) →</span>
+<span id="L113"><a href="#L113"> 113</a>     f ≫ T.map (Nat.le_succ s) = 0 → f = 0</span>
+<span id="L114"><a href="#L114"> 114</a> </span>
+<span id="L115"><a href="#L115"> 115</a> public def crossingSourceDegree (k : ℤ × ℤ) (q : ℤ) : ℤ × ℤ :=</span>
+<span id="L116"><a href="#L116"> 116</a>   (q,q+stem k+1)</span>
+<span id="L117"><a href="#L117"> 117</a> </span>
+<span id="L118"><a href="#L118"> 118</a> /-- Moss-direction crossing, distinct from extension-sequence crossings. -/</span>
+<span id="L119"><a href="#L119"> 119</a> public def HasMossCrossing (X Y : MappingObject scope) (r : ℤ) (k : ℤ × ℤ) : Prop :=</span>
+<span id="L120"><a href="#L120"> 120</a>   ∃ m q : ℤ, r &lt; m ∧ 0 ≤ q ∧ q &lt; k.1-(r-1) ∧ k.1 &lt; q+m ∧</span>
+<span id="L121"><a href="#L121"> 121</a>     (sequence S X Y).d m (crossingSourceDegree k q) ≠ 0</span>
+<span id="L122"><a href="#L122"> 122</a> </span>
+<span id="L123"><a href="#L123"> 123</a> public def NoMossCrossingForProducts (W X Y Z : MappingObject scope)</span>
+<span id="L124"><a href="#L124"> 124</a>     (r : ℤ) (i j k : ℤ × ℤ) : Prop :=</span>
+<span id="L125"><a href="#L125"> 125</a>   ¬ HasMossCrossing S W Y r (i+j) ∧ ¬ HasMossCrossing S X Z r (j+k)</span>
+<span id="L126"><a href="#L126"> 126</a> </span>
+<span id="L127"><a href="#L127"> 127</a> /-- A finite and infinite class from one actual Z∞ representative. -/</span>
+<span id="L128"><a href="#L128"> 128</a> public def HasEInftyClass (X Y : MappingObject scope) (r : ℤ) (k : ℤ × ℤ)</span>
+<span id="L129"><a href="#L129"> 129</a>     (x : (sequence S X Y).Page r k) (e : ((sequence S X Y).ssData k).eInfty) : Prop :=</span>
+<span id="L130"><a href="#L130"> 130</a>   ∃ z : InfiniteCycles (sequence S X Y) k,</span>
+<span id="L131"><a href="#L131"> 131</a>     infinityToPage (sequence S X Y) r k z = x ∧ ((sequence S X Y).ssData k).pageπ ⊤ z = e</span>
+<span id="L132"><a href="#L132"> 132</a> </span>
+<span id="L133"><a href="#L133"> 133</a> /-- Permanence here allows zero, as in the source Moss statement. -/</span>
+<span id="L134"><a href="#L134"> 134</a> public def PermanentCycle (X Y : MappingObject scope) (r : ℤ) (k : ℤ × ℤ)</span>
+<span id="L135"><a href="#L135"> 135</a>     (x : (sequence S X Y).Page r k) : Prop := ∃ e, HasEInftyClass S X Y r k x e</span>
+<span id="L136"><a href="#L136"> 136</a> </span>
+<span id="L137"><a href="#L137"> 137</a> /-- Detection through the same tower&#x27;s filtration and convergence. -/</span>
+<span id="L138"><a href="#L138"> 138</a> public def DetectsAbutment (X Y : MappingObject scope) (r : ℤ) (k : ℤ × ℤ)</span>
+<span id="L139"><a href="#L139"> 139</a>     (x : (sequence S X Y).Page r k) (α : abutment (B := B) X Y (stem k)) : Prop :=</span>
+<span id="L140"><a href="#L140"> 140</a>   ∃ e, HasEInftyClass S X Y r k x e ∧</span>
+<span id="L141"><a href="#L141"> 141</a>     ∃ a : (Subobject.underlying.obj</span>
+<span id="L142"><a href="#L142"> 142</a>       ((P.tower (mappingSpectrum B X.val Y.val)).filtration.F k.1 (stem k)) : ModuleCat ℤ),</span>
+<span id="L143"><a href="#L143"> 143</a>       ((P.tower (mappingSpectrum B X.val Y.val)).filtration.F k.1 (stem k)).arrow a = α ∧</span>
+<span id="L144"><a href="#L144"> 144</a>       ((S.convergence X.val Y.val X.property Y.property).identification k).hom e =</span>
+<span id="L145"><a href="#L145"> 145</a>         (P.tower (mappingSpectrum B X.val Y.val)).filtration.toAssociatedGraded k.1 (stem k) a</span>
+<span id="L146"><a href="#L146"> 146</a> </span>
+<span id="L147"><a href="#L147"> 147</a> public def abutmentMap (X Y : MappingObject scope) (k : ℤ × ℤ)</span>
+<span id="L148"><a href="#L148"> 148</a>     (a : abutment (B := B) X Y (stem k)) : X.val⟦stem k⟧ ⟶ Y.val :=</span>
+<span id="L149"><a href="#L149"> 149</a>   mappingHomotopyEquiv B (stem k) X.val Y.val a</span>
+<span id="L150"><a href="#L150"> 150</a> </span>
+<span id="L151"><a href="#L151"> 151</a> public def shiftMap (X Y : MappingObject scope) (k : ℤ × ℤ) (n : ℤ)</span>
+<span id="L152"><a href="#L152"> 152</a>     (a : abutment (B := B) X Y (stem k)) : X.val⟦stem k+n⟧ ⟶ Y.val⟦n⟧ :=</span>
+<span id="L153"><a href="#L153"> 153</a>   (shiftFunctorAdd C (stem k) n).hom.app X.val ≫</span>
+<span id="L154"><a href="#L154"> 154</a>     (shiftFunctor C n).map (abutmentMap X Y k a)</span>
+<span id="L155"><a href="#L155"> 155</a> </span>
+<span id="L156"><a href="#L156"> 156</a> /-- The actual stable composite, transported through the fixed adjunction. -/</span>
+<span id="L157"><a href="#L157"> 157</a> public def abutmentComposition (X Y Z : MappingObject scope) (i j : ℤ × ℤ)</span>
+<span id="L158"><a href="#L158"> 158</a>     (a : abutment (B := B) X Y (stem i)) (b : abutment (B := B) Y Z (stem j)) :</span>
+<span id="L159"><a href="#L159"> 159</a>     abutment (B := B) X Z (stem (i+j)) :=</span>
+<span id="L160"><a href="#L160"> 160</a>   (mappingHomotopyEquiv B (stem (i+j)) X.val Z.val).symm</span>
+<span id="L161"><a href="#L161"> 161</a>     (eqToHom (congrArg (fun n : ℤ =&gt; X.val⟦n⟧) (by</span>
+<span id="L162"><a href="#L162"> 162</a>       dsimp [stem]; omega : stem (i+j) = stem i+stem j)) ≫</span>
+<span id="L163"><a href="#L163"> 163</a>       shiftMap X Y i (stem j) a ≫ abutmentMap Y Z j b)</span>
+<span id="L164"><a href="#L164"> 164</a> </span>
+<span id="L165"><a href="#L165"> 165</a> public def todaMap (r : ℤ) (W Z : MappingObject scope) (i j k : ℤ × ℤ)</span>
+<span id="L166"><a href="#L166"> 166</a>     (a : abutment (B := B) W Z (stem (PageMassey.degree r i j k))) :</span>
+<span id="L167"><a href="#L167"> 167</a>     (W.val⟦stem i+(stem j+stem k)⟧)⟦(1 : ℤ)⟧ ⟶ Z.val :=</span>
+<span id="L168"><a href="#L168"> 168</a>   (shiftFunctorAdd C (stem i+(stem j+stem k)) 1).inv.app W.val ≫</span>
+<span id="L169"><a href="#L169"> 169</a>     eqToHom (congrArg (fun n : ℤ =&gt; W.val⟦n⟧) (by</span>
+<span id="L170"><a href="#L170"> 170</a>       dsimp [stem, PageMassey.degree]; omega : stem i+(stem j+stem k)+1 =</span>
+<span id="L171"><a href="#L171"> 171</a>         stem (PageMassey.degree r i j k))) ≫</span>
+<span id="L172"><a href="#L172"> 172</a>       abutmentMap W Z (PageMassey.degree r i j k) a</span>
+<span id="L173"><a href="#L173"> 173</a> </span>
+<span id="L174"><a href="#L174"> 174</a> variable (M : MappingComposition S)</span>
+<span id="L175"><a href="#L175"> 175</a> </span>
+<span id="L176"><a href="#L176"> 176</a> /-- The finite-page detection compatibility appearing in the original Moss</span>
+<span id="L177"><a href="#L177"> 177</a> hypotheses. All products and targets are already fixed by S and M. -/</span>
+<span id="L178"><a href="#L178"> 178</a> public def DetectionCompatible : Prop :=</span>
+<span id="L179"><a href="#L179"> 179</a>   ∀ (X Y Z : MappingObject scope) (r : ℤ) (_hr : 2 ≤ r) (i j : ℤ × ℤ)</span>
+<span id="L180"><a href="#L180"> 180</a>     (a : (sequence S X Y).Page r i) (b : (sequence S Y Z).Page r j)</span>
+<span id="L181"><a href="#L181"> 181</a>     (α : abutment (B := B) X Y (stem i)) (β : abutment (B := B) Y Z (stem j)),</span>
+<span id="L182"><a href="#L182"> 182</a>     DetectsAbutment S X Y r i a α → DetectsAbutment S Y Z r j b β →</span>
+<span id="L183"><a href="#L183"> 183</a>     DetectsAbutment S X Z r (i+j) ((M.pairing X Y Z).ssPairing.pair r i j a b)</span>
+<span id="L184"><a href="#L184"> 184</a>       (abutmentComposition X Y Z i j α β)</span>
+<span id="L185"><a href="#L185"> 185</a> </span>
+<span id="L186"><a href="#L186"> 186</a> /-- General Moss implication. Both product-tower weak-convergence premises,</span>
+<span id="L187"><a href="#L187"> 187</a> both noncrossing ranges, actual zero composites and full defining systems</span>
+<span id="L188"><a href="#L188"> 188</a> are retained. Only existence of some surviving Massey member is asserted. -/</span>
+<span id="L189"><a href="#L189"> 189</a> public def StatementAt (W X Y Z : MappingObject scope) : Prop :=</span>
+<span id="L190"><a href="#L190"> 190</a>   ∀ (r : ℤ) (hr : 3 ≤ r) (i j k : ℤ × ℤ),</span>
+<span id="L191"><a href="#L191"> 191</a>     WeakConvergence (P := P) (B := B) W Y → WeakConvergence (P := P) (B := B) X Z →</span>
+<span id="L192"><a href="#L192"> 192</a>     ∀ (a : (sequence S W X).Page r i) (b : (sequence S X Y).Page r j)</span>
+<span id="L193"><a href="#L193"> 193</a>       (c : (sequence S Y Z).Page r k)</span>
+<span id="L194"><a href="#L194"> 194</a>       (α : abutment (B := B) W X (stem i)) (β : abutment (B := B) X Y (stem j))</span>
+<span id="L195"><a href="#L195"> 195</a>       (γ : abutment (B := B) Y Z (stem k)),</span>
+<span id="L196"><a href="#L196"> 196</a>     let f := shiftMap W X i (stem j+stem k) α</span>
+<span id="L197"><a href="#L197"> 197</a>     let g := shiftMap X Y j (stem k) β</span>
+<span id="L198"><a href="#L198"> 198</a>     let h := abutmentMap Y Z k γ</span>
+<span id="L199"><a href="#L199"> 199</a>     DetectsAbutment S W X r i a α → DetectsAbutment S X Y r j b β →</span>
+<span id="L200"><a href="#L200"> 200</a>     DetectsAbutment S Y Z r k c γ →</span>
+<span id="L201"><a href="#L201"> 201</a>     (M.pairing W X Y).ssPairing.pair r i j a b = 0 →</span>
+<span id="L202"><a href="#L202"> 202</a>     (M.pairing X Y Z).ssPairing.pair r j k b c = 0 →</span>
+<span id="L203"><a href="#L203"> 203</a>     f ≫ g = 0 → g ≫ h = 0 → NoMossCrossingForProducts S W X Y Z r i j k →</span>
+<span id="L204"><a href="#L204"> 204</a>     ∃ (x : (sequence S W Z).Page r (PageMassey.degree r i j k))</span>
+<span id="L205"><a href="#L205"> 205</a>       (ξ : abutment (B := B) W Z (stem (PageMassey.degree r i j k))),</span>
+<span id="L206"><a href="#L206"> 206</a>       PageMassey.Relation S M r hr x a b c ∧</span>
+<span id="L207"><a href="#L207"> 207</a>       PermanentCycle S W Z r (PageMassey.degree r i j k) x ∧</span>
+<span id="L208"><a href="#L208"> 208</a>       DetectsAbutment S W Z r (PageMassey.degree r i j k) x ξ ∧</span>
+<span id="L209"><a href="#L209"> 209</a>       KIP126.StableHomotopy.Toda.Relation (todaMap r W Z i j k ξ) f g h</span>
+<span id="L210"><a href="#L210"> 210</a> </span>
+<span id="L211"><a href="#L211"> 211</a> /-- The literature delivery contract for this object scope. Scope identity</span>
+<span id="L212"><a href="#L212"> 212</a> (for example finite spectra) and comparison with the source model are producer</span>
+<span id="L213"><a href="#L213"> 213</a> obligations. This definition neither supplies an inhabitant nor removes them. -/</span>
+<span id="L214"><a href="#L214"> 214</a> public def Statement : Prop :=</span>
+<span id="L215"><a href="#L215"> 215</a>   DetectionCompatible S M → ∀ W X Y Z, StatementAt S M W X Y Z</span>
+<span id="L216"><a href="#L216"> 216</a> </span>
+<span id="L217"><a href="#L217"> 217</a> /-- Model-side delivery for Moss. The complete coset law is an obligation</span>
+<span id="L218"><a href="#L218"> 218</a> on the defined Massey relation; it does not replace that relation with a</span>
+<span id="L219"><a href="#L219"> 219</a> chosen operation or discard either indeterminacy summand. The generic</span>
+<span id="L220"><a href="#L220"> 220</a> pairing already contains signed Leibniz, successor compatibility and</span>
+<span id="L221"><a href="#L221"> 221</a> associativity, so no duplicate coherence structure is selected here. -/</span>
+<span id="L222"><a href="#L222"> 222</a> private structure Context where</span>
+<span id="L223"><a href="#L223"> 223</a>   composition : MappingComposition S</span>
+<span id="L224"><a href="#L224"> 224</a>   weak_convergence : ∀ X Y : MappingObject scope, WeakConvergence (P := P) (B := B) X Y</span>
+<span id="L225"><a href="#L225"> 225</a>   detection : DetectionCompatible S composition</span>
+<span id="L226"><a href="#L226"> 226</a>   indeterminacy : ∀ (r : ℤ) (hr : 3 ≤ r) (W X Y Z : MappingObject scope) (i j k : ℤ × ℤ)</span>
+<span id="L227"><a href="#L227"> 227</a>     (a : (sequence S W X).Page r i) (b : (sequence S X Y).Page r j)</span>
+<span id="L228"><a href="#L228"> 228</a>     (c : (sequence S Y Z).Page r k)</span>
+<span id="L229"><a href="#L229"> 229</a>     (x₀ x : (sequence S W Z).Page r (PageMassey.degree r i j k)),</span>
+<span id="L230"><a href="#L230"> 230</a>     PageMassey.Relation S composition r hr x₀ a b c →</span>
+<span id="L231"><a href="#L231"> 231</a>       (PageMassey.Relation S composition r hr x a b c ↔</span>
+<span id="L232"><a href="#L232"> 232</a>         PageMassey.Indeterminacy S composition r (j := j) a c (x-x₀))</span>
+<span id="L233"><a href="#L233"> 233</a> </span>
+<span id="L234"><a href="#L234"> 234</a> /-- The external theorem is separate from the internal mapping context.</span>
+<span id="L235"><a href="#L235"> 235</a> Its source-to-model comparison is required of a producer supplying it. -/</span>
+<span id="L236"><a href="#L236"> 236</a> private def SourceResults (Q : Context S) : Prop := Statement S Q.composition</span>
+<span id="L237"><a href="#L237"> 237</a> </span>
+<span id="L238"><a href="#L238"> 238</a> /-- Consume the source theorem on exactly the context&#x27;s fixed data. -/</span>
+<span id="L239"><a href="#L239"> 239</a> private theorem SourceResults.at {Q : Context S} (h : SourceResults S Q)</span>
+<span id="L240"><a href="#L240"> 240</a>     (W X Y Z : MappingObject scope) : StatementAt S Q.composition W X Y Z :=</span>
+<span id="L241"><a href="#L241"> 241</a>   h Q.detection W X Y Z</span>
+<span id="L242"><a href="#L242"> 242</a> </span>
+<span id="L243"><a href="#L243"> 243</a> end</span>
+<span id="L244"><a href="#L244"> 244</a> end KIP126.Literature.Moss</span></pre>

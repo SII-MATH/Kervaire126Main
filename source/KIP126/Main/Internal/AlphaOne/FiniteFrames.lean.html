@@ -1,0 +1,802 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/AlphaOne/FiniteFrames.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/AlphaOne/FiniteFrames.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.Selected.NormalizedFacts</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.PageCalculus</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.AlphaOne.Quotients</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Full finite three-layer frames, AlphaOne/Existence.lean:58–873,</span>
+<span id="L9"><a href="#L9">   9</a> pinned bbac1fc05843 (MIT); same finite rows and complete bases. -/</span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Main.Internal.AlphaOne</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Main.Internal KIP126.Main.Internal.Selected</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Computation.Table</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> universe v</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L20"><a href="#L20">  20</a> set_option maxRecDepth 10000</span>
+<span id="L21"><a href="#L21">  21</a> set_option maxHeartbeats 1000000</span>
+<span id="L22"><a href="#L22">  22</a> private theorem alpha_all_finite_frames_d2_s14_t138_basis1  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)</span>
+<span id="L23"><a href="#L23">  23</a>     (Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 1 + Normalized.basis .sphere 16 139 2) := by</span>
+<span id="L24"><a href="#L24">  24</a>   classical</span>
+<span id="L25"><a href="#L25">  25</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,14,138,[1],16,139,[1, 2],&quot;S0_AdamsE2_ss&quot;,3072⟩ (by</span>
+<span id="L26"><a href="#L26">  26</a>     exact List.mem_of_getElem? (i := 366) (by rfl))</span>
+<span id="L27"><a href="#L27">  27</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L28"><a href="#L28">  28</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L29"><a href="#L29">  29</a>   change HasDifferential (Normalized.sphere) 2 (14,138) (16,139) x y at hd</span>
+<span id="L30"><a href="#L30">  30</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 14 138 [1] = true := rfl</span>
+<span id="L31"><a href="#L31">  31</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 16 139 [1, 2] = true := rfl</span>
+<span id="L32"><a href="#L32">  32</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L33"><a href="#L33">  33</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L34"><a href="#L34">  34</a>   rw [←hx,←hy] at hd</span>
+<span id="L35"><a href="#L35">  35</a>   simpa only [add_assoc] using hd</span>
+<span id="L36"><a href="#L36">  36</a> </span>
+<span id="L37"><a href="#L37">  37</a> private theorem alpha_all_finite_frames_d2_s14_t138_basis0_add_basis1  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)</span>
+<span id="L38"><a href="#L38">  38</a>     (Normalized.basis .sphere 14 138 0 + Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 2) := by</span>
+<span id="L39"><a href="#L39">  39</a>   classical</span>
+<span id="L40"><a href="#L40">  40</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,14,138,[0, 1],16,139,[2],&quot;S0_AdamsE2_ss&quot;,3073⟩ (by</span>
+<span id="L41"><a href="#L41">  41</a>     exact List.mem_of_getElem? (i := 367) (by rfl))</span>
+<span id="L42"><a href="#L42">  42</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L43"><a href="#L43">  43</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L44"><a href="#L44">  44</a>   change HasDifferential (Normalized.sphere) 2 (14,138) (16,139) x y at hd</span>
+<span id="L45"><a href="#L45">  45</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 14 138 [0, 1] = true := rfl</span>
+<span id="L46"><a href="#L46">  46</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 16 139 [2] = true := rfl</span>
+<span id="L47"><a href="#L47">  47</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L48"><a href="#L48">  48</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L49"><a href="#L49">  49</a>   rw [←hx,←hy] at hd</span>
+<span id="L50"><a href="#L50">  50</a>   simpa only [add_assoc] using hd</span>
+<span id="L51"><a href="#L51">  51</a> </span>
+<span id="L52"><a href="#L52">  52</a> private theorem alpha_all_finite_frames_d2_s12_t137_basis1  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)</span>
+<span id="L53"><a href="#L53">  53</a>     (Normalized.basis .sphere 12 137 1) (Normalized.basis .sphere 14 138 4) := by</span>
+<span id="L54"><a href="#L54">  54</a>   classical</span>
+<span id="L55"><a href="#L55">  55</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[1],14,138,[4],&quot;S0_AdamsE2_ss&quot;,2921⟩ (by</span>
+<span id="L56"><a href="#L56">  56</a>     exact List.mem_of_getElem? (i := 308) (by rfl))</span>
+<span id="L57"><a href="#L57">  57</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L58"><a href="#L58">  58</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L59"><a href="#L59">  59</a>   change HasDifferential (Normalized.sphere) 2 (12,137) (14,138) x y at hd</span>
+<span id="L60"><a href="#L60">  60</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 12 137 [1] = true := rfl</span>
+<span id="L61"><a href="#L61">  61</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 14 138 [4] = true := rfl</span>
+<span id="L62"><a href="#L62">  62</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L63"><a href="#L63">  63</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L64"><a href="#L64">  64</a>   rw [←hx,←hy] at hd</span>
+<span id="L65"><a href="#L65">  65</a>   simpa only [add_assoc] using hd</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> private theorem alpha_all_finite_frames_d2_s12_t137_basis0  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)</span>
+<span id="L68"><a href="#L68">  68</a>     (Normalized.basis .sphere 12 137 0) (Normalized.basis .sphere 14 138 3) := by</span>
+<span id="L69"><a href="#L69">  69</a>   classical</span>
+<span id="L70"><a href="#L70">  70</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[0],14,138,[3],&quot;S0_AdamsE2_ss&quot;,2922⟩ (by</span>
+<span id="L71"><a href="#L71">  71</a>     exact List.mem_of_getElem? (i := 309) (by rfl))</span>
+<span id="L72"><a href="#L72">  72</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L73"><a href="#L73">  73</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L74"><a href="#L74">  74</a>   change HasDifferential (Normalized.sphere) 2 (12,137) (14,138) x y at hd</span>
+<span id="L75"><a href="#L75">  75</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 12 137 [0] = true := rfl</span>
+<span id="L76"><a href="#L76">  76</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 14 138 [3] = true := rfl</span>
+<span id="L77"><a href="#L77">  77</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L78"><a href="#L78">  78</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L79"><a href="#L79">  79</a>   rw [←hx,←hy] at hd</span>
+<span id="L80"><a href="#L80">  80</a>   simpa only [add_assoc] using hd</span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> private theorem alpha_all_finite_frames_d2_s15_t139_basis3  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)</span>
+<span id="L83"><a href="#L83">  83</a>     (Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 2 + Normalized.basis .sphere 17 140 3) := by</span>
+<span id="L84"><a href="#L84">  84</a>   classical</span>
+<span id="L85"><a href="#L85">  85</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,15,139,[3],17,140,[2, 3],&quot;S0_AdamsE2_ss&quot;,3141⟩ (by</span>
+<span id="L86"><a href="#L86">  86</a>     exact List.mem_of_getElem? (i := 382) (by rfl))</span>
+<span id="L87"><a href="#L87">  87</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L88"><a href="#L88">  88</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L89"><a href="#L89">  89</a>   change HasDifferential (Normalized.sphere) 2 (15,139) (17,140) x y at hd</span>
+<span id="L90"><a href="#L90">  90</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 15 139 [3] = true := rfl</span>
+<span id="L91"><a href="#L91">  91</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 17 140 [2, 3] = true := rfl</span>
+<span id="L92"><a href="#L92">  92</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L93"><a href="#L93">  93</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L94"><a href="#L94">  94</a>   rw [←hx,←hy] at hd</span>
+<span id="L95"><a href="#L95">  95</a>   simpa only [add_assoc] using hd</span>
+<span id="L96"><a href="#L96">  96</a> </span>
+<span id="L97"><a href="#L97">  97</a> private theorem alpha_all_finite_frames_d2_s15_t139_basis2_add_basis3  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)</span>
+<span id="L98"><a href="#L98">  98</a>     (Normalized.basis .sphere 15 139 2 + Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 3) := by</span>
+<span id="L99"><a href="#L99">  99</a>   classical</span>
+<span id="L100"><a href="#L100"> 100</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,15,139,[2, 3],17,140,[3],&quot;S0_AdamsE2_ss&quot;,3142⟩ (by</span>
+<span id="L101"><a href="#L101"> 101</a>     exact List.mem_of_getElem? (i := 383) (by rfl))</span>
+<span id="L102"><a href="#L102"> 102</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L103"><a href="#L103"> 103</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L104"><a href="#L104"> 104</a>   change HasDifferential (Normalized.sphere) 2 (15,139) (17,140) x y at hd</span>
+<span id="L105"><a href="#L105"> 105</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 15 139 [2, 3] = true := rfl</span>
+<span id="L106"><a href="#L106"> 106</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 17 140 [3] = true := rfl</span>
+<span id="L107"><a href="#L107"> 107</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L108"><a href="#L108"> 108</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L109"><a href="#L109"> 109</a>   rw [←hx,←hy] at hd</span>
+<span id="L110"><a href="#L110"> 110</a>   simpa only [add_assoc] using hd</span>
+<span id="L111"><a href="#L111"> 111</a> </span>
+<span id="L112"><a href="#L112"> 112</a> private theorem alpha_all_finite_frames_d4_s11_t136_basis0  : HasDifferential (Normalized.sphere) 4 (11,136) (15,139)</span>
+<span id="L113"><a href="#L113"> 113</a>     (Normalized.basis .sphere 11 136 0) (Normalized.basis .sphere 15 139 0) := by</span>
+<span id="L114"><a href="#L114"> 114</a>   classical</span>
+<span id="L115"><a href="#L115"> 115</a>   have hrow := Normalized.result ⟨.sphere,.equation,4,11,136,[0],15,139,[0],&quot;S0_AdamsE2_ss&quot;,2853⟩ (by</span>
+<span id="L116"><a href="#L116"> 116</a>     exact List.mem_of_getElem? (i := 282) (by rfl))</span>
+<span id="L117"><a href="#L117"> 117</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L118"><a href="#L118"> 118</a>   obtain ⟨x,hx,y,hy,hd⟩ := hrow</span>
+<span id="L119"><a href="#L119"> 119</a>   change HasDifferential (Normalized.sphere) 4 (11,136) (15,139) x y at hd</span>
+<span id="L120"><a href="#L120"> 120</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 11 136 [0] = true := rfl</span>
+<span id="L121"><a href="#L121"> 121</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 15 139 [0] = true := rfl</span>
+<span id="L122"><a href="#L122"> 122</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,</span>
+<span id="L123"><a href="#L123"> 123</a>     List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L124"><a href="#L124"> 124</a>   rw [←hx,←hy] at hd</span>
+<span id="L125"><a href="#L125"> 125</a>   simpa only [add_assoc] using hd</span>
+<span id="L126"><a href="#L126"> 126</a> </span>
+<span id="L127"><a href="#L127"> 127</a> private theorem alpha_all_finite_frames_d2_s11_t136_basis4  : HasDifferential (Normalized.sphere) 2 (11,136) (13,137)</span>
+<span id="L128"><a href="#L128"> 128</a>     (Normalized.basis .sphere 11 136 4) (Normalized.basis .sphere 13 137 3) := by</span>
+<span id="L129"><a href="#L129"> 129</a>   classical</span>
+<span id="L130"><a href="#L130"> 130</a>   have hrow := Normalized.result ⟨.sphere,.equation,2,11,136,[4],13,137,[3],&quot;S0_AdamsE2_ss&quot;,2914⟩ (by</span>
+<span id="L131"><a href="#L131"> 131</a>     exact List.mem_of_getElem? (i := 321) (by rfl))</span>
+<span id="L132"><a href="#L132"> 132</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L133"><a href="#L133"> 133</a>   obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L134"><a href="#L134"> 134</a>   change HasDifferential (Normalized.sphere) 2 (11,136) (13,137) a b at h</span>
+<span id="L135"><a href="#L135"> 135</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 11 136 [4] = true := rfl</span>
+<span id="L136"><a href="#L136"> 136</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 13 137 [3] = true := rfl</span>
+<span id="L137"><a href="#L137"> 137</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L138"><a href="#L138"> 138</a>   rw [←ha,←hb] at h</span>
+<span id="L139"><a href="#L139"> 139</a>   exact h</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> private theorem alpha_all_finite_frames_d3_s10_t135_basis0  : HasDifferential (Normalized.sphere) 3 (10,135) (13,137)</span>
+<span id="L142"><a href="#L142"> 142</a>     (Normalized.basis .sphere 10 135 0) (Normalized.basis .sphere 13 137 0) := by</span>
+<span id="L143"><a href="#L143"> 143</a>   classical</span>
+<span id="L144"><a href="#L144"> 144</a>   have hrow := Normalized.result ⟨.sphere,.equation,3,10,135,[0],13,137,[0],&quot;S0_AdamsE2_ss&quot;,2915⟩ (by</span>
+<span id="L145"><a href="#L145"> 145</a>     exact List.mem_of_getElem? (i := 322) (by rfl))</span>
+<span id="L146"><a href="#L146"> 146</a>   dsimp only [Normalized.Statement] at hrow</span>
+<span id="L147"><a href="#L147"> 147</a>   obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L148"><a href="#L148"> 148</a>   change HasDifferential (Normalized.sphere) 3 (10,135) (13,137) a b at h</span>
+<span id="L149"><a href="#L149"> 149</a>   have vx : Raw.coordinatesValid Raw.degrees .sphere 10 135 [0] = true := rfl</span>
+<span id="L150"><a href="#L150"> 150</a>   have vy : Raw.coordinatesValid Raw.degrees .sphere 13 137 [0] = true := rfl</span>
+<span id="L151"><a href="#L151"> 151</a>   simp only [Normalized.decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L152"><a href="#L152"> 152</a>   rw [←ha,←hb] at h</span>
+<span id="L153"><a href="#L153"> 153</a>   exact h</span>
+<span id="L154"><a href="#L154"> 154</a> </span>
+<span id="L155"><a href="#L155"> 155</a> private theorem alpha_all_finite_frames_boundary_of_zero_representative</span>
+<span id="L156"><a href="#L156"> 156</a>     {r : ℤ} {p : ℤ×ℤ} {x : Normalized.sphere.Page 2 p}</span>
+<span id="L157"><a href="#L157"> 157</a>     (hx : RepresentsOnPage (Normalized.sphere) r p x 0) :</span>
+<span id="L158"><a href="#L158"> 158</a>     x ∈ boundaries (r-1) p := by</span>
+<span id="L159"><a href="#L159"> 159</a>   classical</span>
+<span id="L160"><a href="#L160"> 160</a>   let E := Normalized.sphere</span>
+<span id="L161"><a href="#L161"> 161</a>   let P := E.ssData p</span>
+<span id="L162"><a href="#L162"> 162</a>   obtain ⟨hr,z,hz,hzero⟩ := hx</span>
+<span id="L163"><a href="#L163"> 163</a>   change (Subobject.ofLE (P.Z ↑(r-2).toNat) (P.Z 0) _ ≫ P.pageπ 0) z=x at hz</span>
+<span id="L164"><a href="#L164"> 164</a>   change P.pageπ ↑(r-2).toNat z=0 at hzero</span>
+<span id="L165"><a href="#L165"> 165</a>   obtain ⟨y,hy⟩ := (cokernel_π_eq_zero_iff_mem_range</span>
+<span id="L166"><a href="#L166"> 166</a>     (Subobject.ofLE (P.B ↑(r-2).toNat) (P.Z ↑(r-2).toNat) (P.B_le_Z _)) z).mp hzero</span>
+<span id="L167"><a href="#L167"> 167</a>   have hrindex : r-1-1=r-2 := by omega</span>
+<span id="L168"><a href="#L168"> 168</a>   change ∃ y, boundaryMap ↑(r-1-1).toNat p y=x</span>
+<span id="L169"><a href="#L169"> 169</a>   rw [hrindex]</span>
+<span id="L170"><a href="#L170"> 170</a>   refine ⟨y,?_⟩</span>
+<span id="L171"><a href="#L171"> 171</a>   have hf : Subobject.ofLE (P.B ↑(r-2).toNat) (P.Z ↑(r-2).toNat) (P.B_le_Z _) ≫</span>
+<span id="L172"><a href="#L172"> 172</a>       cycleMap ↑(r-2).toNat p = boundaryMap ↑(r-2).toNat p := by</span>
+<span id="L173"><a href="#L173"> 173</a>     dsimp only [boundaryMap,boundaryMapFor,cycleMap,cycleMapFor,P,E]</span>
+<span id="L174"><a href="#L174"> 174</a>     rw [←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L175"><a href="#L175"> 175</a>   rw [←hf,CategoryTheory.comp_apply,hy]</span>
+<span id="L176"><a href="#L176"> 176</a>   exact hz</span>
+<span id="L177"><a href="#L177"> 177</a> </span>
+<span id="L178"><a href="#L178"> 178</a> </span>
+<span id="L179"><a href="#L179"> 179</a> private theorem alpha_all_finite_frames_cycle_differential_zero</span>
+<span id="L180"><a href="#L180"> 180</a>     {r c : ℤ} {p : ℤ×ℤ} {x : Normalized.sphere.Page 2 p}</span>
+<span id="L181"><a href="#L181"> 181</a>     {a : (Normalized.sphere).Page r p}</span>
+<span id="L182"><a href="#L182"> 182</a>     (hr : 2≤r) (hc : r≤c)</span>
+<span id="L183"><a href="#L183"> 183</a>     (hx : x∈cycles c p)</span>
+<span id="L184"><a href="#L184"> 184</a>     (ha : RepresentsOnPage (Normalized.sphere) r p x a) :</span>
+<span id="L185"><a href="#L185"> 185</a>     (Normalized.sphere).d r p a=0 := by</span>
+<span id="L186"><a href="#L186"> 186</a>   classical</span>
+<span id="L187"><a href="#L187"> 187</a>   obtain ⟨y,hy⟩ := (cycles_reaches c p (by omega) x).mp hx</span>
+<span id="L188"><a href="#L188"> 188</a>   exact represents_d_zero_of_later hr (by omega : r&lt;c+1) ha ⟨y,hy⟩</span>
+<span id="L189"><a href="#L189"> 189</a> </span>
+<span id="L190"><a href="#L190"> 190</a> </span>
+<span id="L191"><a href="#L191"> 191</a> private theorem alpha_all_finite_frames_cycle_quotient_frame_of_boundary</span>
+<span id="L192"><a href="#L192"> 192</a>     {c b : ℤ} {p : ℤ×ℤ} (v : Normalized.sphere.Page 2 (p.1,p.2))</span>
+<span id="L193"><a href="#L193"> 193</a>     (hv : v∈cycles c p)</span>
+<span id="L194"><a href="#L194"> 194</a>     (h : ∀ z, z∈cycles c p → z∈boundaries b p ∨ z-v∈boundaries b p) :</span>
+<span id="L195"><a href="#L195"> 195</a>     ∀ q : CycleQuotient c b p,</span>
+<span id="L196"><a href="#L196"> 196</a>       q=0 ∨ q=KIP126.Literature.subquotientClass _ _ ⟨v,hv⟩ := by</span>
+<span id="L197"><a href="#L197"> 197</a>   classical</span>
+<span id="L198"><a href="#L198"> 198</a>   rintro ⟨z⟩</span>
+<span id="L199"><a href="#L199"> 199</a>   rcases h z.val z.property with hz|hz</span>
+<span id="L200"><a href="#L200"> 200</a>   · exact Or.inl ((subquotientClass_eq_zero_iff _ _ z).mpr hz)</span>
+<span id="L201"><a href="#L201"> 201</a>   · right</span>
+<span id="L202"><a href="#L202"> 202</a>     apply sub_eq_zero.mp</span>
+<span id="L203"><a href="#L203"> 203</a>     change KIP126.Literature.subquotientClass _ _ z-KIP126.Literature.subquotientClass _ _ ⟨v,hv⟩=0</span>
+<span id="L204"><a href="#L204"> 204</a>     rw [←map_sub]</span>
+<span id="L205"><a href="#L205"> 205</a>     exact (subquotientClass_eq_zero_iff _ _ (z-⟨v,hv⟩)).mpr hz</span>
+<span id="L206"><a href="#L206"> 206</a> </span>
+<span id="L207"><a href="#L207"> 207</a> </span>
+<span id="L208"><a href="#L208"> 208</a> private theorem alpha_all_finite_frames_rep_two (p : ℤ×ℤ) (x : (Normalized.sphere).Page 2 p) :</span>
+<span id="L209"><a href="#L209"> 209</a>     RepresentsOnPage (Normalized.sphere) 2 p x x := by</span>
+<span id="L210"><a href="#L210"> 210</a>   classical</span>
+<span id="L211"><a href="#L211"> 211</a>   let E := Normalized.sphere</span>
+<span id="L212"><a href="#L212"> 212</a>   haveI : Epi ((E.ssData p).pageπ 0) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L213"><a href="#L213"> 213</a>   obtain ⟨z,rfl⟩ := (ModuleCat.epi_iff_surjective ((E.ssData p).pageπ 0)).mp inferInstance x</span>
+<span id="L214"><a href="#L214"> 214</a>   exact ⟨by decide,z,by simp only [Subobject.ofLE_refl,Category.id_comp]; rfl,rfl⟩</span>
+<span id="L215"><a href="#L215"> 215</a> </span>
+<span id="L216"><a href="#L216"> 216</a> </span>
+<span id="L217"><a href="#L217"> 217</a> private theorem alpha_all_finite_frames_alpha_finite_frame_14</span>
+<span id="L218"><a href="#L218"> 218</a>     (hc : (Normalized.basis .sphere 14 138 2)∈cycles 4 (14,138)) :</span>
+<span id="L219"><a href="#L219"> 219</a>     ∀ q : CycleQuotient 4 8 (14,138),</span>
+<span id="L220"><a href="#L220"> 220</a>       q=0 ∨ q=KIP126.Literature.subquotientClass _ _ ⟨(Normalized.basis .sphere 14 138 2),hc⟩ := by</span>
+<span id="L221"><a href="#L221"> 221</a>   classical</span>
+<span id="L222"><a href="#L222"> 222</a>   let E := Normalized.sphere</span>
+<span id="L223"><a href="#L223"> 223</a>   have h366 : HasDifferential E 2 (14,138) (16,139)</span>
+<span id="L224"><a href="#L224"> 224</a>       (Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 1 + Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_d2_s14_t138_basis1</span>
+<span id="L225"><a href="#L225"> 225</a>   have h367 : HasDifferential E 2 (14,138) (16,139)</span>
+<span id="L226"><a href="#L226"> 226</a>       (Normalized.basis .sphere 14 138 0 + Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_d2_s14_t138_basis0_add_basis1</span>
+<span id="L227"><a href="#L227"> 227</a>   have h308 : HasDifferential E 2 (12,137) (14,138)</span>
+<span id="L228"><a href="#L228"> 228</a>       (Normalized.basis .sphere 12 137 1) (Normalized.basis .sphere 14 138 4) := alpha_all_finite_frames_d2_s12_t137_basis1</span>
+<span id="L229"><a href="#L229"> 229</a>   have h309 : HasDifferential E 2 (12,137) (14,138)</span>
+<span id="L230"><a href="#L230"> 230</a>       (Normalized.basis .sphere 12 137 0) (Normalized.basis .sphere 14 138 3) := alpha_all_finite_frames_d2_s12_t137_basis0</span>
+<span id="L231"><a href="#L231"> 231</a>   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,14,138,[&quot;440,1&quot;, &quot;439,1&quot;, &quot;23,1,190,1&quot;, &quot;1,1,418,1&quot;, &quot;1,1,417,1&quot;]⟩ (by</span>
+<span id="L232"><a href="#L232"> 232</a>     exact List.mem_of_getElem? (i := 216) (by rfl))</span>
+<span id="L233"><a href="#L233"> 233</a>   change E.Page 2 (14,138) ≃ₗ[ℤ] (Fin 5 →₀ F2) at e</span>
+<span id="L234"><a href="#L234"> 234</a>   change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = Normalized.basis .sphere 14 138 i.val at he</span>
+<span id="L235"><a href="#L235"> 235</a>   have he0 : e.symm (Finsupp.single (0:Fin 5) 1) = Normalized.basis .sphere 14 138 0 := he 0</span>
+<span id="L236"><a href="#L236"> 236</a>   have he1 : e.symm (Finsupp.single (1:Fin 5) 1) = Normalized.basis .sphere 14 138 1 := he 1</span>
+<span id="L237"><a href="#L237"> 237</a>   have he2 : e.symm (Finsupp.single (2:Fin 5) 1) = Normalized.basis .sphere 14 138 2 := he 2</span>
+<span id="L238"><a href="#L238"> 238</a>   have he3 : e.symm (Finsupp.single (3:Fin 5) 1) = Normalized.basis .sphere 14 138 3 := he 3</span>
+<span id="L239"><a href="#L239"> 239</a>   have he4 : e.symm (Finsupp.single (4:Fin 5) 1) = Normalized.basis .sphere 14 138 4 := he 4</span>
+<span id="L240"><a href="#L240"> 240</a>   obtain ⟨f,hf⟩ := Normalized.basis_correct ⟨.sphere,16,139,[&quot;1,1,424,1&quot;, &quot;0,1,438,1&quot;, &quot;0,3,418,1&quot;]⟩ (by</span>
+<span id="L241"><a href="#L241"> 241</a>     exact List.mem_of_getElem? (i := 230) (by rfl))</span>
+<span id="L242"><a href="#L242"> 242</a>   change E.Page 2 (16,139) ≃ₗ[ℤ] (Fin 3 →₀ F2) at f</span>
+<span id="L243"><a href="#L243"> 243</a>   change ∀ i : Fin 3, f.symm (Finsupp.single i 1) = Normalized.basis .sphere 16 139 i.val at hf</span>
+<span id="L244"><a href="#L244"> 244</a>   have hf0 : f.symm (Finsupp.single (0:Fin 3) 1) = Normalized.basis .sphere 16 139 0 := hf 0</span>
+<span id="L245"><a href="#L245"> 245</a>   have hf1 : f.symm (Finsupp.single (1:Fin 3) 1) = Normalized.basis .sphere 16 139 1 := hf 1</span>
+<span id="L246"><a href="#L246"> 246</a>   have hf2 : f.symm (Finsupp.single (2:Fin 3) 1) = Normalized.basis .sphere 16 139 2 := hf 2</span>
+<span id="L247"><a href="#L247"> 247</a>   let B := boundaries 8 (14,138)</span>
+<span id="L248"><a href="#L248"> 248</a>   have b3 : Normalized.basis .sphere 14 138 3∈B := by</span>
+<span id="L249"><a href="#L249"> 249</a>     exact alpha_all_finite_frames_boundary_of_zero_representative (r:=9) (p:=(14,138))</span>
+<span id="L250"><a href="#L250"> 250</a>       (differential_target_later_zero (E:=E) (by change (2:ℤ)≤2;omega) (by decide) h309)</span>
+<span id="L251"><a href="#L251"> 251</a>   have hd3 : E.d 2 (14,138) (Normalized.basis .sphere 14 138 3)=0 :=</span>
+<span id="L252"><a href="#L252"> 252</a>     alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=4) (p:=(14,138)) (by decide) (by decide)</span>
+<span id="L253"><a href="#L253"> 253</a>       (boundaries_le_cycles (14,138) 8 4 b3) (alpha_all_finite_frames_rep_two (14,138) _)</span>
+<span id="L254"><a href="#L254"> 254</a>   have b4 : Normalized.basis .sphere 14 138 4∈B := by</span>
+<span id="L255"><a href="#L255"> 255</a>     exact alpha_all_finite_frames_boundary_of_zero_representative (r:=9) (p:=(14,138))</span>
+<span id="L256"><a href="#L256"> 256</a>       (differential_target_later_zero (E:=E) (by change (2:ℤ)≤2;omega) (by decide) h308)</span>
+<span id="L257"><a href="#L257"> 257</a>   have hd4 : E.d 2 (14,138) (Normalized.basis .sphere 14 138 4)=0 :=</span>
+<span id="L258"><a href="#L258"> 258</a>     alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=4) (p:=(14,138)) (by decide) (by decide)</span>
+<span id="L259"><a href="#L259"> 259</a>       (boundaries_le_cycles (14,138) 8 4 b4) (alpha_all_finite_frames_rep_two (14,138) _)</span>
+<span id="L260"><a href="#L260"> 260</a>   have hd2 : E.d 2 (14,138) (Normalized.basis .sphere 14 138 2)=0 :=</span>
+<span id="L261"><a href="#L261"> 261</a>     alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=4) (p:=(14,138)) (by decide) (by decide) hc (alpha_all_finite_frames_rep_two (14,138) _)</span>
+<span id="L262"><a href="#L262"> 262</a>   have hd1 : E.d 2 (14,138) (Normalized.basis .sphere 14 138 1)=Normalized.basis .sphere 16 139 1+Normalized.basis .sphere 16 139 2 := h366.eq_on_page_two.2</span>
+<span id="L263"><a href="#L263"> 263</a>   have hd0 : E.d 2 (14,138) (Normalized.basis .sphere 14 138 0)=-Normalized.basis .sphere 16 139 1 := by</span>
+<span id="L264"><a href="#L264"> 264</a>     have hh := h367.eq_on_page_two.2</span>
+<span id="L265"><a href="#L265"> 265</a>     change E.d 2 (14,138) (Normalized.basis .sphere 14 138 0+Normalized.basis .sphere 14 138 1)=Normalized.basis .sphere 16 139 2 at hh</span>
+<span id="L266"><a href="#L266"> 266</a>     rw [map_add,hd1] at hh</span>
+<span id="L267"><a href="#L267"> 267</a>     have haux : ((show E.Page 2 (16,139) from E.d 2 (14,138) (Normalized.basis .sphere 14 138 0))+Normalized.basis .sphere 16 139 1)+Normalized.basis .sphere 16 139 2=0+Normalized.basis .sphere 16 139 2 := by</span>
+<span id="L268"><a href="#L268"> 268</a>       simpa only [add_assoc,zero_add] using hh</span>
+<span id="L269"><a href="#L269"> 269</a>     exact eq_neg_of_add_eq_zero_left (add_right_cancel haux)</span>
+<span id="L270"><a href="#L270"> 270</a>   apply alpha_all_finite_frames_cycle_quotient_frame_of_boundary _ hc</span>
+<span id="L271"><a href="#L271"> 271</a>   intro x hx</span>
+<span id="L272"><a href="#L272"> 272</a>   have hd : E.d 2 (14,138) x=0 := alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=4) (p:=(14,138)) (by decide) (by decide) hx (alpha_all_finite_frames_rep_two (14,138) x)</span>
+<span id="L273"><a href="#L273"> 273</a>   have heq : e x=Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2) + Finsupp.single 3 (e x 3) + Finsupp.single 4 (e x 4) := by</span>
+<span id="L274"><a href="#L274"> 274</a>     ext i</span>
+<span id="L275"><a href="#L275"> 275</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L276"><a href="#L276"> 276</a>   have hxe : x=e.symm (Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2) + Finsupp.single 3 (e x 3) + Finsupp.single 4 (e x 4)) := by rw [←heq,LinearEquiv.symm_apply_apply]</span>
+<span id="L277"><a href="#L277"> 277</a>   generalize hc0 : e x 0=c0 at hxe</span>
+<span id="L278"><a href="#L278"> 278</a>   generalize hc1 : e x 1=c1 at hxe</span>
+<span id="L279"><a href="#L279"> 279</a>   generalize hc2 : e x 2=c2 at hxe</span>
+<span id="L280"><a href="#L280"> 280</a>   generalize hc3 : e x 3=c3 at hxe</span>
+<span id="L281"><a href="#L281"> 281</a>   generalize hc4 : e x 4=c4 at hxe</span>
+<span id="L282"><a href="#L282"> 282</a>   fin_cases c0 &lt;;&gt; fin_cases c1 &lt;;&gt; fin_cases c2 &lt;;&gt; fin_cases c3 &lt;;&gt; fin_cases c4</span>
+<span id="L283"><a href="#L283"> 283</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L284"><a href="#L284"> 284</a>     simp only [Finsupp.single_zero,map_zero,add_zero] at hxe</span>
+<span id="L285"><a href="#L285"> 285</a>     left</span>
+<span id="L286"><a href="#L286"> 286</a>     rw [hxe]</span>
+<span id="L287"><a href="#L287"> 287</a>     exact B.zero_mem</span>
+<span id="L288"><a href="#L288"> 288</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L289"><a href="#L289"> 289</a>     simp only [Finsupp.single_zero,he4,add_zero,zero_add] at hxe</span>
+<span id="L290"><a href="#L290"> 290</a>     left</span>
+<span id="L291"><a href="#L291"> 291</a>     rw [hxe]</span>
+<span id="L292"><a href="#L292"> 292</a>     exact b4</span>
+<span id="L293"><a href="#L293"> 293</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L294"><a href="#L294"> 294</a>     simp only [Finsupp.single_zero,he3,add_zero,zero_add] at hxe</span>
+<span id="L295"><a href="#L295"> 295</a>     left</span>
+<span id="L296"><a href="#L296"> 296</a>     rw [hxe]</span>
+<span id="L297"><a href="#L297"> 297</a>     exact b3</span>
+<span id="L298"><a href="#L298"> 298</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L299"><a href="#L299"> 299</a>     simp only [map_add,Finsupp.single_zero,he3,he4,add_zero,zero_add] at hxe</span>
+<span id="L300"><a href="#L300"> 300</a>     left</span>
+<span id="L301"><a href="#L301"> 301</a>     rw [hxe]</span>
+<span id="L302"><a href="#L302"> 302</a>     exact B.add_mem b3 b4</span>
+<span id="L303"><a href="#L303"> 303</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L304"><a href="#L304"> 304</a>     simp only [Finsupp.single_zero,he2,add_zero,zero_add] at hxe</span>
+<span id="L305"><a href="#L305"> 305</a>     right</span>
+<span id="L306"><a href="#L306"> 306</a>     rw [hxe]</span>
+<span id="L307"><a href="#L307"> 307</a>     have hcanc : ((Normalized.basis .sphere 14 138 2)-(Normalized.basis .sphere 14 138 2) : E.Page 2 (14,138))=0 := by abel</span>
+<span id="L308"><a href="#L308"> 308</a>     rw [hcanc]</span>
+<span id="L309"><a href="#L309"> 309</a>     exact B.zero_mem</span>
+<span id="L310"><a href="#L310"> 310</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L311"><a href="#L311"> 311</a>     simp only [map_add,Finsupp.single_zero,he2,he4,add_zero,zero_add] at hxe</span>
+<span id="L312"><a href="#L312"> 312</a>     right</span>
+<span id="L313"><a href="#L313"> 313</a>     rw [hxe]</span>
+<span id="L314"><a href="#L314"> 314</a>     have hcanc : ((Normalized.basis .sphere 14 138 2 + Normalized.basis .sphere 14 138 4)-(Normalized.basis .sphere 14 138 2) : E.Page 2 (14,138))=Normalized.basis .sphere 14 138 4 := by abel</span>
+<span id="L315"><a href="#L315"> 315</a>     rw [hcanc]</span>
+<span id="L316"><a href="#L316"> 316</a>     exact b4</span>
+<span id="L317"><a href="#L317"> 317</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L318"><a href="#L318"> 318</a>     simp only [map_add,Finsupp.single_zero,he2,he3,add_zero,zero_add] at hxe</span>
+<span id="L319"><a href="#L319"> 319</a>     right</span>
+<span id="L320"><a href="#L320"> 320</a>     rw [hxe]</span>
+<span id="L321"><a href="#L321"> 321</a>     have hcanc : ((Normalized.basis .sphere 14 138 2 + Normalized.basis .sphere 14 138 3)-(Normalized.basis .sphere 14 138 2) : E.Page 2 (14,138))=Normalized.basis .sphere 14 138 3 := by abel</span>
+<span id="L322"><a href="#L322"> 322</a>     rw [hcanc]</span>
+<span id="L323"><a href="#L323"> 323</a>     exact b3</span>
+<span id="L324"><a href="#L324"> 324</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L325"><a href="#L325"> 325</a>     simp only [map_add,Finsupp.single_zero,he2,he3,he4,add_zero,zero_add] at hxe</span>
+<span id="L326"><a href="#L326"> 326</a>     right</span>
+<span id="L327"><a href="#L327"> 327</a>     rw [hxe]</span>
+<span id="L328"><a href="#L328"> 328</a>     have hcanc : ((Normalized.basis .sphere 14 138 2 + Normalized.basis .sphere 14 138 3 + Normalized.basis .sphere 14 138 4)-(Normalized.basis .sphere 14 138 2) : E.Page 2 (14,138))=Normalized.basis .sphere 14 138 3 + Normalized.basis .sphere 14 138 4 := by abel</span>
+<span id="L329"><a href="#L329"> 329</a>     rw [hcanc]</span>
+<span id="L330"><a href="#L330"> 330</a>     exact B.add_mem b3 b4</span>
+<span id="L331"><a href="#L331"> 331</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L332"><a href="#L332"> 332</a>     simp only [Finsupp.single_zero,he1,add_zero,zero_add] at hxe</span>
+<span id="L333"><a href="#L333"> 333</a>     exfalso</span>
+<span id="L334"><a href="#L334"> 334</a>     rw [hxe] at hd</span>
+<span id="L335"><a href="#L335"> 335</a>     simp only [hd1] at hd</span>
+<span id="L336"><a href="#L336"> 336</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L337"><a href="#L337"> 337</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L338"><a href="#L338"> 338</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L339"><a href="#L339"> 339</a>     simp only [map_add,Finsupp.single_zero,he1,he4,add_zero,zero_add] at hxe</span>
+<span id="L340"><a href="#L340"> 340</a>     exfalso</span>
+<span id="L341"><a href="#L341"> 341</a>     rw [hxe] at hd</span>
+<span id="L342"><a href="#L342"> 342</a>     simp only [map_add,hd1,hd4,add_zero] at hd</span>
+<span id="L343"><a href="#L343"> 343</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L344"><a href="#L344"> 344</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L345"><a href="#L345"> 345</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L346"><a href="#L346"> 346</a>     simp only [map_add,Finsupp.single_zero,he1,he3,add_zero,zero_add] at hxe</span>
+<span id="L347"><a href="#L347"> 347</a>     exfalso</span>
+<span id="L348"><a href="#L348"> 348</a>     rw [hxe] at hd</span>
+<span id="L349"><a href="#L349"> 349</a>     simp only [map_add,hd1,hd3,add_zero] at hd</span>
+<span id="L350"><a href="#L350"> 350</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L351"><a href="#L351"> 351</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L352"><a href="#L352"> 352</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L353"><a href="#L353"> 353</a>     simp only [map_add,Finsupp.single_zero,he1,he3,he4,add_zero,zero_add] at hxe</span>
+<span id="L354"><a href="#L354"> 354</a>     exfalso</span>
+<span id="L355"><a href="#L355"> 355</a>     rw [hxe] at hd</span>
+<span id="L356"><a href="#L356"> 356</a>     simp only [map_add,hd1,hd3,hd4,add_zero] at hd</span>
+<span id="L357"><a href="#L357"> 357</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L358"><a href="#L358"> 358</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L359"><a href="#L359"> 359</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L360"><a href="#L360"> 360</a>     simp only [map_add,Finsupp.single_zero,he1,he2,add_zero,zero_add] at hxe</span>
+<span id="L361"><a href="#L361"> 361</a>     exfalso</span>
+<span id="L362"><a href="#L362"> 362</a>     rw [hxe] at hd</span>
+<span id="L363"><a href="#L363"> 363</a>     simp only [map_add,hd1,hd2,add_zero] at hd</span>
+<span id="L364"><a href="#L364"> 364</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L365"><a href="#L365"> 365</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L366"><a href="#L366"> 366</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L367"><a href="#L367"> 367</a>     simp only [map_add,Finsupp.single_zero,he1,he2,he4,add_zero,zero_add] at hxe</span>
+<span id="L368"><a href="#L368"> 368</a>     exfalso</span>
+<span id="L369"><a href="#L369"> 369</a>     rw [hxe] at hd</span>
+<span id="L370"><a href="#L370"> 370</a>     simp only [map_add,hd1,hd2,hd4,add_zero] at hd</span>
+<span id="L371"><a href="#L371"> 371</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L372"><a href="#L372"> 372</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L373"><a href="#L373"> 373</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L374"><a href="#L374"> 374</a>     simp only [map_add,Finsupp.single_zero,he1,he2,he3,add_zero,zero_add] at hxe</span>
+<span id="L375"><a href="#L375"> 375</a>     exfalso</span>
+<span id="L376"><a href="#L376"> 376</a>     rw [hxe] at hd</span>
+<span id="L377"><a href="#L377"> 377</a>     simp only [map_add,hd1,hd2,hd3,add_zero] at hd</span>
+<span id="L378"><a href="#L378"> 378</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L379"><a href="#L379"> 379</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L380"><a href="#L380"> 380</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L381"><a href="#L381"> 381</a>     simp only [map_add,Finsupp.single_zero,he1,he2,he3,he4,zero_add] at hxe</span>
+<span id="L382"><a href="#L382"> 382</a>     exfalso</span>
+<span id="L383"><a href="#L383"> 383</a>     rw [hxe] at hd</span>
+<span id="L384"><a href="#L384"> 384</a>     simp only [map_add,hd1,hd2,hd3,hd4,add_zero] at hd</span>
+<span id="L385"><a href="#L385"> 385</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L386"><a href="#L386"> 386</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L387"><a href="#L387"> 387</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L388"><a href="#L388"> 388</a>     simp only [Finsupp.single_zero,he0,add_zero] at hxe</span>
+<span id="L389"><a href="#L389"> 389</a>     exfalso</span>
+<span id="L390"><a href="#L390"> 390</a>     rw [hxe] at hd</span>
+<span id="L391"><a href="#L391"> 391</a>     simp only [hd0] at hd</span>
+<span id="L392"><a href="#L392"> 392</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L393"><a href="#L393"> 393</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L394"><a href="#L394"> 394</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L395"><a href="#L395"> 395</a>     simp only [map_add,Finsupp.single_zero,he0,he4,add_zero] at hxe</span>
+<span id="L396"><a href="#L396"> 396</a>     exfalso</span>
+<span id="L397"><a href="#L397"> 397</a>     rw [hxe] at hd</span>
+<span id="L398"><a href="#L398"> 398</a>     simp only [map_add,hd0,hd4,add_zero] at hd</span>
+<span id="L399"><a href="#L399"> 399</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L400"><a href="#L400"> 400</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L401"><a href="#L401"> 401</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L402"><a href="#L402"> 402</a>     simp only [map_add,Finsupp.single_zero,he0,he3,add_zero] at hxe</span>
+<span id="L403"><a href="#L403"> 403</a>     exfalso</span>
+<span id="L404"><a href="#L404"> 404</a>     rw [hxe] at hd</span>
+<span id="L405"><a href="#L405"> 405</a>     simp only [map_add,hd0,hd3,add_zero] at hd</span>
+<span id="L406"><a href="#L406"> 406</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L407"><a href="#L407"> 407</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L408"><a href="#L408"> 408</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L409"><a href="#L409"> 409</a>     simp only [map_add,Finsupp.single_zero,he0,he3,he4,add_zero] at hxe</span>
+<span id="L410"><a href="#L410"> 410</a>     exfalso</span>
+<span id="L411"><a href="#L411"> 411</a>     rw [hxe] at hd</span>
+<span id="L412"><a href="#L412"> 412</a>     simp only [map_add,hd0,hd3,hd4,add_zero] at hd</span>
+<span id="L413"><a href="#L413"> 413</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L414"><a href="#L414"> 414</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L415"><a href="#L415"> 415</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L416"><a href="#L416"> 416</a>     simp only [map_add,Finsupp.single_zero,he0,he2,add_zero] at hxe</span>
+<span id="L417"><a href="#L417"> 417</a>     exfalso</span>
+<span id="L418"><a href="#L418"> 418</a>     rw [hxe] at hd</span>
+<span id="L419"><a href="#L419"> 419</a>     simp only [map_add,hd0,hd2,add_zero] at hd</span>
+<span id="L420"><a href="#L420"> 420</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L421"><a href="#L421"> 421</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L422"><a href="#L422"> 422</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L423"><a href="#L423"> 423</a>     simp only [map_add,Finsupp.single_zero,he0,he2,he4,add_zero] at hxe</span>
+<span id="L424"><a href="#L424"> 424</a>     exfalso</span>
+<span id="L425"><a href="#L425"> 425</a>     rw [hxe] at hd</span>
+<span id="L426"><a href="#L426"> 426</a>     simp only [map_add,hd0,hd2,hd4,add_zero] at hd</span>
+<span id="L427"><a href="#L427"> 427</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L428"><a href="#L428"> 428</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L429"><a href="#L429"> 429</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L430"><a href="#L430"> 430</a>     simp only [map_add,Finsupp.single_zero,he0,he2,he3,add_zero] at hxe</span>
+<span id="L431"><a href="#L431"> 431</a>     exfalso</span>
+<span id="L432"><a href="#L432"> 432</a>     rw [hxe] at hd</span>
+<span id="L433"><a href="#L433"> 433</a>     simp only [map_add,hd0,hd2,hd3,add_zero] at hd</span>
+<span id="L434"><a href="#L434"> 434</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L435"><a href="#L435"> 435</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L436"><a href="#L436"> 436</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L437"><a href="#L437"> 437</a>     simp only [map_add,Finsupp.single_zero,he0,he2,he3,he4,add_zero] at hxe</span>
+<span id="L438"><a href="#L438"> 438</a>     exfalso</span>
+<span id="L439"><a href="#L439"> 439</a>     rw [hxe] at hd</span>
+<span id="L440"><a href="#L440"> 440</a>     simp only [map_add,hd0,hd2,hd3,hd4,add_zero] at hd</span>
+<span id="L441"><a href="#L441"> 441</a>     have hh := congrArg (fun z=&gt;f z 1) hd</span>
+<span id="L442"><a href="#L442"> 442</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L443"><a href="#L443"> 443</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L444"><a href="#L444"> 444</a>     simp only [map_add,Finsupp.single_zero,he0,he1,add_zero] at hxe</span>
+<span id="L445"><a href="#L445"> 445</a>     exfalso</span>
+<span id="L446"><a href="#L446"> 446</a>     rw [hxe] at hd</span>
+<span id="L447"><a href="#L447"> 447</a>     simp only [map_add,hd0,hd1] at hd</span>
+<span id="L448"><a href="#L448"> 448</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L449"><a href="#L449"> 449</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L450"><a href="#L450"> 450</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L451"><a href="#L451"> 451</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he4,add_zero] at hxe</span>
+<span id="L452"><a href="#L452"> 452</a>     exfalso</span>
+<span id="L453"><a href="#L453"> 453</a>     rw [hxe] at hd</span>
+<span id="L454"><a href="#L454"> 454</a>     simp only [map_add,hd0,hd1,hd4,add_zero] at hd</span>
+<span id="L455"><a href="#L455"> 455</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L456"><a href="#L456"> 456</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L457"><a href="#L457"> 457</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L458"><a href="#L458"> 458</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he3,add_zero] at hxe</span>
+<span id="L459"><a href="#L459"> 459</a>     exfalso</span>
+<span id="L460"><a href="#L460"> 460</a>     rw [hxe] at hd</span>
+<span id="L461"><a href="#L461"> 461</a>     simp only [map_add,hd0,hd1,hd3,add_zero] at hd</span>
+<span id="L462"><a href="#L462"> 462</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L463"><a href="#L463"> 463</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L464"><a href="#L464"> 464</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L465"><a href="#L465"> 465</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he3,he4,add_zero] at hxe</span>
+<span id="L466"><a href="#L466"> 466</a>     exfalso</span>
+<span id="L467"><a href="#L467"> 467</a>     rw [hxe] at hd</span>
+<span id="L468"><a href="#L468"> 468</a>     simp only [map_add,hd0,hd1,hd3,hd4,add_zero] at hd</span>
+<span id="L469"><a href="#L469"> 469</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L470"><a href="#L470"> 470</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L471"><a href="#L471"> 471</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L472"><a href="#L472"> 472</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he2,add_zero] at hxe</span>
+<span id="L473"><a href="#L473"> 473</a>     exfalso</span>
+<span id="L474"><a href="#L474"> 474</a>     rw [hxe] at hd</span>
+<span id="L475"><a href="#L475"> 475</a>     simp only [map_add,hd0,hd1,hd2,add_zero] at hd</span>
+<span id="L476"><a href="#L476"> 476</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L477"><a href="#L477"> 477</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L478"><a href="#L478"> 478</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L479"><a href="#L479"> 479</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he2,he4,add_zero] at hxe</span>
+<span id="L480"><a href="#L480"> 480</a>     exfalso</span>
+<span id="L481"><a href="#L481"> 481</a>     rw [hxe] at hd</span>
+<span id="L482"><a href="#L482"> 482</a>     simp only [map_add,hd0,hd1,hd2,hd4,add_zero] at hd</span>
+<span id="L483"><a href="#L483"> 483</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L484"><a href="#L484"> 484</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L485"><a href="#L485"> 485</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (0:F2)) at hxe</span>
+<span id="L486"><a href="#L486"> 486</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he2,he3,add_zero] at hxe</span>
+<span id="L487"><a href="#L487"> 487</a>     exfalso</span>
+<span id="L488"><a href="#L488"> 488</a>     rw [hxe] at hd</span>
+<span id="L489"><a href="#L489"> 489</a>     simp only [map_add,hd0,hd1,hd2,hd3,add_zero] at hd</span>
+<span id="L490"><a href="#L490"> 490</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L491"><a href="#L491"> 491</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L492"><a href="#L492"> 492</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2) + Finsupp.single 4 (1:F2)) at hxe</span>
+<span id="L493"><a href="#L493"> 493</a>     simp only [map_add,he0,he1,he2,he3,he4] at hxe</span>
+<span id="L494"><a href="#L494"> 494</a>     exfalso</span>
+<span id="L495"><a href="#L495"> 495</a>     rw [hxe] at hd</span>
+<span id="L496"><a href="#L496"> 496</a>     simp only [map_add,hd0,hd1,hd2,hd3,hd4,add_zero] at hd</span>
+<span id="L497"><a href="#L497"> 497</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L498"><a href="#L498"> 498</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L499"><a href="#L499"> 499</a> </span>
+<span id="L500"><a href="#L500"> 500</a> </span>
+<span id="L501"><a href="#L501"> 501</a> private theorem alpha_all_finite_frames_alpha_finite_frame_15</span>
+<span id="L502"><a href="#L502"> 502</a>     (hc : (Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3)∈cycles 3 (15,139)) :</span>
+<span id="L503"><a href="#L503"> 503</a>     ∀ q : CycleQuotient 3 9 (15,139),</span>
+<span id="L504"><a href="#L504"> 504</a>       q=0 ∨ q=KIP126.Literature.subquotientClass _ _ ⟨(Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3),hc⟩ := by</span>
+<span id="L505"><a href="#L505"> 505</a>   classical</span>
+<span id="L506"><a href="#L506"> 506</a>   let E := Normalized.sphere</span>
+<span id="L507"><a href="#L507"> 507</a>   have h382 : HasDifferential E 2 (15,139) (17,140)</span>
+<span id="L508"><a href="#L508"> 508</a>       (Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 2 + Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_d2_s15_t139_basis3</span>
+<span id="L509"><a href="#L509"> 509</a>   have h383 : HasDifferential E 2 (15,139) (17,140)</span>
+<span id="L510"><a href="#L510"> 510</a>       (Normalized.basis .sphere 15 139 2 + Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_d2_s15_t139_basis2_add_basis3</span>
+<span id="L511"><a href="#L511"> 511</a>   have h282 : HasDifferential E 4 (11,136) (15,139)</span>
+<span id="L512"><a href="#L512"> 512</a>       (Normalized.basis .sphere 11 136 0) (Normalized.basis .sphere 15 139 0) := alpha_all_finite_frames_d4_s11_t136_basis0</span>
+<span id="L513"><a href="#L513"> 513</a>   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,15,139,[&quot;448,1&quot;, &quot;3,2,287,1&quot;, &quot;0,1,440,1&quot;, &quot;0,1,439,1&quot;]⟩ (by</span>
+<span id="L514"><a href="#L514"> 514</a>     exact List.mem_of_getElem? (i := 223) (by rfl))</span>
+<span id="L515"><a href="#L515"> 515</a>   change E.Page 2 (15,139) ≃ₗ[ℤ] (Fin 4 →₀ F2) at e</span>
+<span id="L516"><a href="#L516"> 516</a>   change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = Normalized.basis .sphere 15 139 i.val at he</span>
+<span id="L517"><a href="#L517"> 517</a>   have he0 : e.symm (Finsupp.single (0:Fin 4) 1) = Normalized.basis .sphere 15 139 0 := he 0</span>
+<span id="L518"><a href="#L518"> 518</a>   have he1 : e.symm (Finsupp.single (1:Fin 4) 1) = Normalized.basis .sphere 15 139 1 := he 1</span>
+<span id="L519"><a href="#L519"> 519</a>   have he2 : e.symm (Finsupp.single (2:Fin 4) 1) = Normalized.basis .sphere 15 139 2 := he 2</span>
+<span id="L520"><a href="#L520"> 520</a>   have he3 : e.symm (Finsupp.single (3:Fin 4) 1) = Normalized.basis .sphere 15 139 3 := he 3</span>
+<span id="L521"><a href="#L521"> 521</a>   obtain ⟨f,hf⟩ := Normalized.basis_correct ⟨.sphere,17,140,[&quot;8,1,280,1&quot;, &quot;3,1,359,1&quot;, &quot;0,2,438,1&quot;, &quot;0,4,418,1&quot;]⟩ (by</span>
+<span id="L522"><a href="#L522"> 522</a>     exact List.mem_of_getElem? (i := 238) (by rfl))</span>
+<span id="L523"><a href="#L523"> 523</a>   change E.Page 2 (17,140) ≃ₗ[ℤ] (Fin 4 →₀ F2) at f</span>
+<span id="L524"><a href="#L524"> 524</a>   change ∀ i : Fin 4, f.symm (Finsupp.single i 1) = Normalized.basis .sphere 17 140 i.val at hf</span>
+<span id="L525"><a href="#L525"> 525</a>   have hf0 : f.symm (Finsupp.single (0:Fin 4) 1) = Normalized.basis .sphere 17 140 0 := hf 0</span>
+<span id="L526"><a href="#L526"> 526</a>   have hf1 : f.symm (Finsupp.single (1:Fin 4) 1) = Normalized.basis .sphere 17 140 1 := hf 1</span>
+<span id="L527"><a href="#L527"> 527</a>   have hf2 : f.symm (Finsupp.single (2:Fin 4) 1) = Normalized.basis .sphere 17 140 2 := hf 2</span>
+<span id="L528"><a href="#L528"> 528</a>   have hf3 : f.symm (Finsupp.single (3:Fin 4) 1) = Normalized.basis .sphere 17 140 3 := hf 3</span>
+<span id="L529"><a href="#L529"> 529</a>   let B := boundaries 9 (15,139)</span>
+<span id="L530"><a href="#L530"> 530</a>   have b0 : Normalized.basis .sphere 15 139 0∈B := by</span>
+<span id="L531"><a href="#L531"> 531</a>     exact alpha_all_finite_frames_boundary_of_zero_representative (r:=10) (p:=(15,139))</span>
+<span id="L532"><a href="#L532"> 532</a>       (differential_target_later_zero (E:=E) (by change (2:ℤ)≤4;omega) (by decide) h282)</span>
+<span id="L533"><a href="#L533"> 533</a>   have hd0 : E.d 2 (15,139) (Normalized.basis .sphere 15 139 0)=0 :=</span>
+<span id="L534"><a href="#L534"> 534</a>     alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=3) (p:=(15,139)) (by decide) (by decide)</span>
+<span id="L535"><a href="#L535"> 535</a>       (boundaries_le_cycles (15,139) 9 3 b0) (alpha_all_finite_frames_rep_two (15,139) _)</span>
+<span id="L536"><a href="#L536"> 536</a>   have hd3 : E.d 2 (15,139) (Normalized.basis .sphere 15 139 3)=Normalized.basis .sphere 17 140 2+Normalized.basis .sphere 17 140 3 := h382.eq_on_page_two.2</span>
+<span id="L537"><a href="#L537"> 537</a>   have hd1 : E.d 2 (15,139) (Normalized.basis .sphere 15 139 1)=-(Normalized.basis .sphere 17 140 2+Normalized.basis .sphere 17 140 3) := by</span>
+<span id="L538"><a href="#L538"> 538</a>     have hh : E.d 2 (15,139) (Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3)=0 :=</span>
+<span id="L539"><a href="#L539"> 539</a>       alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=3) (p:=(15,139)) (by decide) (by decide) hc (alpha_all_finite_frames_rep_two (15,139) _)</span>
+<span id="L540"><a href="#L540"> 540</a>     rw [map_add,hd3] at hh</span>
+<span id="L541"><a href="#L541"> 541</a>     exact eq_neg_of_add_eq_zero_left hh</span>
+<span id="L542"><a href="#L542"> 542</a>   have hd2 : E.d 2 (15,139) (Normalized.basis .sphere 15 139 2)=-Normalized.basis .sphere 17 140 2 := by</span>
+<span id="L543"><a href="#L543"> 543</a>     have hh := h383.eq_on_page_two.2</span>
+<span id="L544"><a href="#L544"> 544</a>     change E.d 2 (15,139) (Normalized.basis .sphere 15 139 2+Normalized.basis .sphere 15 139 3)=Normalized.basis .sphere 17 140 3 at hh</span>
+<span id="L545"><a href="#L545"> 545</a>     rw [map_add,hd3] at hh</span>
+<span id="L546"><a href="#L546"> 546</a>     have haux : ((show E.Page 2 (17,140) from E.d 2 (15,139) (Normalized.basis .sphere 15 139 2))+Normalized.basis .sphere 17 140 2)+Normalized.basis .sphere 17 140 3=0+Normalized.basis .sphere 17 140 3 := by</span>
+<span id="L547"><a href="#L547"> 547</a>       simpa only [add_assoc,zero_add] using hh</span>
+<span id="L548"><a href="#L548"> 548</a>     exact eq_neg_of_add_eq_zero_left (add_right_cancel haux)</span>
+<span id="L549"><a href="#L549"> 549</a>   apply alpha_all_finite_frames_cycle_quotient_frame_of_boundary _ hc</span>
+<span id="L550"><a href="#L550"> 550</a>   intro x hx</span>
+<span id="L551"><a href="#L551"> 551</a>   have hd : E.d 2 (15,139) x=0 := alpha_all_finite_frames_cycle_differential_zero (r:=2) (c:=3) (p:=(15,139)) (by decide) (by decide) hx (alpha_all_finite_frames_rep_two (15,139) x)</span>
+<span id="L552"><a href="#L552"> 552</a>   have heq : e x=Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2) + Finsupp.single 3 (e x 3) := by</span>
+<span id="L553"><a href="#L553"> 553</a>     ext i</span>
+<span id="L554"><a href="#L554"> 554</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L555"><a href="#L555"> 555</a>   have hxe : x=e.symm (Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) + Finsupp.single 2 (e x 2) + Finsupp.single 3 (e x 3)) := by rw [←heq,LinearEquiv.symm_apply_apply]</span>
+<span id="L556"><a href="#L556"> 556</a>   generalize hc0 : e x 0=c0 at hxe</span>
+<span id="L557"><a href="#L557"> 557</a>   generalize hc1 : e x 1=c1 at hxe</span>
+<span id="L558"><a href="#L558"> 558</a>   generalize hc2 : e x 2=c2 at hxe</span>
+<span id="L559"><a href="#L559"> 559</a>   generalize hc3 : e x 3=c3 at hxe</span>
+<span id="L560"><a href="#L560"> 560</a>   fin_cases c0 &lt;;&gt; fin_cases c1 &lt;;&gt; fin_cases c2 &lt;;&gt; fin_cases c3</span>
+<span id="L561"><a href="#L561"> 561</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L562"><a href="#L562"> 562</a>     simp only [Finsupp.single_zero,map_zero,add_zero] at hxe</span>
+<span id="L563"><a href="#L563"> 563</a>     left</span>
+<span id="L564"><a href="#L564"> 564</a>     rw [hxe]</span>
+<span id="L565"><a href="#L565"> 565</a>     exact B.zero_mem</span>
+<span id="L566"><a href="#L566"> 566</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L567"><a href="#L567"> 567</a>     simp only [Finsupp.single_zero,he3,add_zero,zero_add] at hxe</span>
+<span id="L568"><a href="#L568"> 568</a>     exfalso</span>
+<span id="L569"><a href="#L569"> 569</a>     rw [hxe] at hd</span>
+<span id="L570"><a href="#L570"> 570</a>     simp only [hd3] at hd</span>
+<span id="L571"><a href="#L571"> 571</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L572"><a href="#L572"> 572</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L573"><a href="#L573"> 573</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L574"><a href="#L574"> 574</a>     simp only [Finsupp.single_zero,he2,add_zero,zero_add] at hxe</span>
+<span id="L575"><a href="#L575"> 575</a>     exfalso</span>
+<span id="L576"><a href="#L576"> 576</a>     rw [hxe] at hd</span>
+<span id="L577"><a href="#L577"> 577</a>     simp only [hd2] at hd</span>
+<span id="L578"><a href="#L578"> 578</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L579"><a href="#L579"> 579</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L580"><a href="#L580"> 580</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L581"><a href="#L581"> 581</a>     simp only [map_add,Finsupp.single_zero,he2,he3,add_zero,zero_add] at hxe</span>
+<span id="L582"><a href="#L582"> 582</a>     exfalso</span>
+<span id="L583"><a href="#L583"> 583</a>     rw [hxe] at hd</span>
+<span id="L584"><a href="#L584"> 584</a>     simp only [map_add,hd2,hd3] at hd</span>
+<span id="L585"><a href="#L585"> 585</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L586"><a href="#L586"> 586</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L587"><a href="#L587"> 587</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L588"><a href="#L588"> 588</a>     simp only [Finsupp.single_zero,he1,add_zero,zero_add] at hxe</span>
+<span id="L589"><a href="#L589"> 589</a>     exfalso</span>
+<span id="L590"><a href="#L590"> 590</a>     rw [hxe] at hd</span>
+<span id="L591"><a href="#L591"> 591</a>     simp only [hd1] at hd</span>
+<span id="L592"><a href="#L592"> 592</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L593"><a href="#L593"> 593</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L594"><a href="#L594"> 594</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L595"><a href="#L595"> 595</a>     simp only [map_add,Finsupp.single_zero,he1,he3,add_zero,zero_add] at hxe</span>
+<span id="L596"><a href="#L596"> 596</a>     right</span>
+<span id="L597"><a href="#L597"> 597</a>     rw [hxe]</span>
+<span id="L598"><a href="#L598"> 598</a>     have hcanc : ((Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3)-(Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3) : E.Page 2 (15,139))=0 := by abel</span>
+<span id="L599"><a href="#L599"> 599</a>     rw [hcanc]</span>
+<span id="L600"><a href="#L600"> 600</a>     exact B.zero_mem</span>
+<span id="L601"><a href="#L601"> 601</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L602"><a href="#L602"> 602</a>     simp only [map_add,Finsupp.single_zero,he1,he2,add_zero,zero_add] at hxe</span>
+<span id="L603"><a href="#L603"> 603</a>     exfalso</span>
+<span id="L604"><a href="#L604"> 604</a>     rw [hxe] at hd</span>
+<span id="L605"><a href="#L605"> 605</a>     simp only [map_add,hd1,hd2] at hd</span>
+<span id="L606"><a href="#L606"> 606</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L607"><a href="#L607"> 607</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L608"><a href="#L608"> 608</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L609"><a href="#L609"> 609</a>     simp only [map_add,Finsupp.single_zero,he1,he2,he3,zero_add] at hxe</span>
+<span id="L610"><a href="#L610"> 610</a>     exfalso</span>
+<span id="L611"><a href="#L611"> 611</a>     rw [hxe] at hd</span>
+<span id="L612"><a href="#L612"> 612</a>     simp only [map_add,hd1,hd2,hd3] at hd</span>
+<span id="L613"><a href="#L613"> 613</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L614"><a href="#L614"> 614</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L615"><a href="#L615"> 615</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L616"><a href="#L616"> 616</a>     simp only [Finsupp.single_zero,he0,add_zero] at hxe</span>
+<span id="L617"><a href="#L617"> 617</a>     left</span>
+<span id="L618"><a href="#L618"> 618</a>     rw [hxe]</span>
+<span id="L619"><a href="#L619"> 619</a>     exact b0</span>
+<span id="L620"><a href="#L620"> 620</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L621"><a href="#L621"> 621</a>     simp only [map_add,Finsupp.single_zero,he0,he3,add_zero] at hxe</span>
+<span id="L622"><a href="#L622"> 622</a>     exfalso</span>
+<span id="L623"><a href="#L623"> 623</a>     rw [hxe] at hd</span>
+<span id="L624"><a href="#L624"> 624</a>     simp only [map_add,hd0,hd3,zero_add] at hd</span>
+<span id="L625"><a href="#L625"> 625</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L626"><a href="#L626"> 626</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L627"><a href="#L627"> 627</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L628"><a href="#L628"> 628</a>     simp only [map_add,Finsupp.single_zero,he0,he2,add_zero] at hxe</span>
+<span id="L629"><a href="#L629"> 629</a>     exfalso</span>
+<span id="L630"><a href="#L630"> 630</a>     rw [hxe] at hd</span>
+<span id="L631"><a href="#L631"> 631</a>     simp only [map_add,hd0,hd2,zero_add] at hd</span>
+<span id="L632"><a href="#L632"> 632</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L633"><a href="#L633"> 633</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L634"><a href="#L634"> 634</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L635"><a href="#L635"> 635</a>     simp only [map_add,Finsupp.single_zero,he0,he2,he3,add_zero] at hxe</span>
+<span id="L636"><a href="#L636"> 636</a>     exfalso</span>
+<span id="L637"><a href="#L637"> 637</a>     rw [hxe] at hd</span>
+<span id="L638"><a href="#L638"> 638</a>     simp only [map_add,hd0,hd2,hd3,zero_add] at hd</span>
+<span id="L639"><a href="#L639"> 639</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L640"><a href="#L640"> 640</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L641"><a href="#L641"> 641</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L642"><a href="#L642"> 642</a>     simp only [map_add,Finsupp.single_zero,he0,he1,add_zero] at hxe</span>
+<span id="L643"><a href="#L643"> 643</a>     exfalso</span>
+<span id="L644"><a href="#L644"> 644</a>     rw [hxe] at hd</span>
+<span id="L645"><a href="#L645"> 645</a>     simp only [map_add,hd0,hd1,zero_add] at hd</span>
+<span id="L646"><a href="#L646"> 646</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L647"><a href="#L647"> 647</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L648"><a href="#L648"> 648</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L649"><a href="#L649"> 649</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he3,add_zero] at hxe</span>
+<span id="L650"><a href="#L650"> 650</a>     right</span>
+<span id="L651"><a href="#L651"> 651</a>     rw [hxe]</span>
+<span id="L652"><a href="#L652"> 652</a>     have hcanc : ((Normalized.basis .sphere 15 139 0 + Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3)-(Normalized.basis .sphere 15 139 1 + Normalized.basis .sphere 15 139 3) : E.Page 2 (15,139))=Normalized.basis .sphere 15 139 0 := by abel</span>
+<span id="L653"><a href="#L653"> 653</a>     rw [hcanc]</span>
+<span id="L654"><a href="#L654"> 654</a>     exact b0</span>
+<span id="L655"><a href="#L655"> 655</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L656"><a href="#L656"> 656</a>     simp only [map_add,Finsupp.single_zero,he0,he1,he2,add_zero] at hxe</span>
+<span id="L657"><a href="#L657"> 657</a>     exfalso</span>
+<span id="L658"><a href="#L658"> 658</a>     rw [hxe] at hd</span>
+<span id="L659"><a href="#L659"> 659</a>     simp only [map_add,hd0,hd1,hd2,zero_add] at hd</span>
+<span id="L660"><a href="#L660"> 660</a>     have hh := congrArg (fun z=&gt;f z 3) hd</span>
+<span id="L661"><a href="#L661"> 661</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L662"><a href="#L662"> 662</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L663"><a href="#L663"> 663</a>     simp only [map_add,he0,he1,he2,he3] at hxe</span>
+<span id="L664"><a href="#L664"> 664</a>     exfalso</span>
+<span id="L665"><a href="#L665"> 665</a>     rw [hxe] at hd</span>
+<span id="L666"><a href="#L666"> 666</a>     simp only [map_add,hd0,hd1,hd2,hd3,zero_add] at hd</span>
+<span id="L667"><a href="#L667"> 667</a>     have hh := congrArg (fun z=&gt;f z 2) hd</span>
+<span id="L668"><a href="#L668"> 668</a>     norm_num [map_add,map_neg,map_zero,←hf0,←hf1,←hf2,←hf3,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.neg_apply,Finsupp.zero_apply,Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L669"><a href="#L669"> 669</a> </span>
+<span id="L670"><a href="#L670"> 670</a> </span>
+<span id="L671"><a href="#L671"> 671</a> private theorem alpha_all_finite_frames_alpha_finite_frame_13   :</span>
+<span id="L672"><a href="#L672"> 672</a>     ∃ c : cycles 5 (13,137), c.val=Normalized.basis .sphere 13 137 1 ∧</span>
+<span id="L673"><a href="#L673"> 673</a>       ∀ q : CycleQuotient 5 7 (13,137),</span>
+<span id="L674"><a href="#L674"> 674</a>         q=0 ∨ q=KIP126.Literature.subquotientClass _ _ c := by</span>
+<span id="L675"><a href="#L675"> 675</a>   classical</span>
+<span id="L676"><a href="#L676"> 676</a>   let E := Normalized.sphere</span>
+<span id="L677"><a href="#L677"> 677</a>   let A := E.ssData (13,137)</span>
+<span id="L678"><a href="#L678"> 678</a>   obtain ⟨z,hz,hzn⟩ := Normalized.correction_permanent</span>
+<span id="L679"><a href="#L679"> 679</a>   change (Subobject.ofLE (A.Z ⊤) (A.Z 0) (A.Z_anti le_top) ≫ A.pageπ 0) z = _ at hz</span>
+<span id="L680"><a href="#L680"> 680</a>   change A.pageπ ⊤ z ≠ 0 at hzn</span>
+<span id="L681"><a href="#L681"> 681</a>   have h321 : HasDifferential E 2 (11,136) (13,137)</span>
+<span id="L682"><a href="#L682"> 682</a>       (Normalized.basis .sphere 11 136 4) (Normalized.basis .sphere 13 137 3) := alpha_all_finite_frames_d2_s11_t136_basis4</span>
+<span id="L683"><a href="#L683"> 683</a>   have h322 : HasDifferential E 3 (10,135) (13,137)</span>
+<span id="L684"><a href="#L684"> 684</a>       (Normalized.basis .sphere 10 135 0) (Normalized.basis .sphere 13 137 0) := alpha_all_finite_frames_d3_s10_t135_basis0</span>
+<span id="L685"><a href="#L685"> 685</a>   obtain ⟨_,incoming,a,hincoming,ha,hda⟩ := h322</span>
+<span id="L686"><a href="#L686"> 686</a>   have hd2 := Normalized.d3_h4_x109</span>
+<span id="L687"><a href="#L687"> 687</a>   change HasNonzeroDifferential E 3 (13,137) (16,139)</span>
+<span id="L688"><a href="#L688"> 688</a>     (Normalized.basis .sphere 13 137 2) _ at hd2</span>
+<span id="L689"><a href="#L689"> 689</a>   obtain ⟨_,c,t,hc,ht,hdc,htn⟩ := hd2</span>
+<span id="L690"><a href="#L690"> 690</a>   have hdc&#x27; : E.d 3 (13,137) c = t := hdc</span>
+<span id="L691"><a href="#L691"> 691</a>   have hda&#x27; : E.d 3 (10,135) incoming = a := hda</span>
+<span id="L692"><a href="#L692"> 692</a>   let down (r : ℤ) := Subobject.ofLE (A.Z ⊤) (A.Z ↑(r-2).toNat) (A.Z_anti le_top)</span>
+<span id="L693"><a href="#L693"> 693</a>   let val (r : ℤ) := down r ≫ A.pageπ ↑(r-2).toNat</span>
+<span id="L694"><a href="#L694"> 694</a>   have rep (r : ℤ) (hr : 2 ≤ r) (q : (Subobject.underlying.obj (A.Z ⊤) : ModuleCat ℤ)) :</span>
+<span id="L695"><a href="#L695"> 695</a>       RepresentsOnPage E r (13,137) (val 2 q) (val r q) := by</span>
+<span id="L696"><a href="#L696"> 696</a>     refine ⟨hr, down r q, ?_, rfl⟩</span>
+<span id="L697"><a href="#L697"> 697</a>     change (Subobject.ofLE _ _ _ ≫ A.pageπ 0) ((down r) q) = val 2 q</span>
+<span id="L698"><a href="#L698"> 698</a>     dsimp only [val, down]</span>
+<span id="L699"><a href="#L699"> 699</a>     rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L700"><a href="#L700"> 700</a>     rfl</span>
+<span id="L701"><a href="#L701"> 701</a>   let b : E.Page 3 (13,137) := val 3 z</span>
+<span id="L702"><a href="#L702"> 702</a>   have hb : RepresentsOnPage E 3 (13,137) (Normalized.basis .sphere 13 137 1) b := by</span>
+<span id="L703"><a href="#L703"> 703</a>     have h := rep 3 (by decide) z</span>
+<span id="L704"><a href="#L704"> 704</a>     change val 2 z = _ at hz</span>
+<span id="L705"><a href="#L705"> 705</a>     rw [hz] at h</span>
+<span id="L706"><a href="#L706"> 706</a>     exact h</span>
+<span id="L707"><a href="#L707"> 707</a>   have hthree : RepresentsOnPage E 3 (13,137) (Normalized.basis .sphere 13 137 3) 0 :=</span>
+<span id="L708"><a href="#L708"> 708</a>     differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;3) h321</span>
+<span id="L709"><a href="#L709"> 709</a>   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,13,137,[&quot;76,1,82,1&quot;, &quot;9,1,251,1&quot;, &quot;7,1,275,1&quot;, &quot;0,5,367,1&quot;]⟩ (by</span>
+<span id="L710"><a href="#L710"> 710</a>     exact List.mem_of_getElem? (i := 208) (by rfl))</span>
+<span id="L711"><a href="#L711"> 711</a>   change E.Page 2 (13,137) ≃ₗ[ℤ] (Fin 4 →₀ F2) at e</span>
+<span id="L712"><a href="#L712"> 712</a>   change ∀i : Fin 4, e.symm (Finsupp.single i 1) = Normalized.basis .sphere 13 137 i.val at he</span>
+<span id="L713"><a href="#L713"> 713</a>   have hbzero : E.d 3 (13,137) b = 0 := by</span>
+<span id="L714"><a href="#L714"> 714</a>     apply represents_d_zero_of_later (by change (2:ℤ)≤3; omega) (by decide : (3:ℤ)&lt;4) (rep 3 (by decide) z)</span>
+<span id="L715"><a href="#L715"> 715</a>     exact ⟨val 4 z,rep 4 (by decide) z⟩</span>
+<span id="L716"><a href="#L716"> 716</a>   have hazero : E.d 3 (13,137) a = 0 := by</span>
+<span id="L717"><a href="#L717"> 717</a>     exact IsPageBoundary.d_eq_zero (E:=E) (r:=3) (p:=(10,135)) ⟨incoming,hda&#x27;⟩</span>
+<span id="L718"><a href="#L718"> 718</a>   have hkernel (q : E.Page 3 (13,137)) (hq : E.d 3 (13,137) q=0) :</span>
+<span id="L719"><a href="#L719"> 719</a>       q=0 ∨ q=a ∨ q=b ∨ q=a+b := by</span>
+<span id="L720"><a href="#L720"> 720</a>     let vv : Fin 4 → E.Page 3 (13,137) := ![a,b,c,0]</span>
+<span id="L721"><a href="#L721"> 721</a>     have hv (i : Fin 4) : RepresentsOnPage E 3 (13,137) (e.symm (Finsupp.single i 1)) (vv i) := by</span>
+<span id="L722"><a href="#L722"> 722</a>       rw [he i]</span>
+<span id="L723"><a href="#L723"> 723</a>       fin_cases i</span>
+<span id="L724"><a href="#L724"> 724</a>       · exact ha</span>
+<span id="L725"><a href="#L725"> 725</a>       · exact hb</span>
+<span id="L726"><a href="#L726"> 726</a>       · exact hc</span>
+<span id="L727"><a href="#L727"> 727</a>       · exact hthree</span>
+<span id="L728"><a href="#L728"> 728</a>     obtain ⟨coef,hcoef⟩ := page_generated_from_representatives (by decide : (2:ℤ)≤3) e vv hv q</span>
+<span id="L729"><a href="#L729"> 729</a>     simp only [Fin.sum_univ_succ] at hcoef</span>
+<span id="L730"><a href="#L730"> 730</a>     change q = (if coef 0=0 then 0 else a) + ((if coef 1=0 then 0 else b) + ((if coef 2=0 then 0 else c) + ((if coef 3=0 then 0 else 0) + 0))) at hcoef</span>
+<span id="L731"><a href="#L731"> 731</a>     have hczero : coef 2 = 0 := by</span>
+<span id="L732"><a href="#L732"> 732</a>       by_contra hh</span>
+<span id="L733"><a href="#L733"> 733</a>       have hd := congrArg (E.d 3 (13,137)) hcoef</span>
+<span id="L734"><a href="#L734"> 734</a>       simp only [hq,map_add,apply_ite,map_zero,hazero,hbzero,hdc&#x27;,hh,ite_false,ite_self,zero_add,add_zero] at hd</span>
+<span id="L735"><a href="#L735"> 735</a>       exact htn hd.symm</span>
+<span id="L736"><a href="#L736"> 736</a>     by_cases h0 : coef 0=0 &lt;;&gt; by_cases h1 : coef 1=0</span>
+<span id="L737"><a href="#L737"> 737</a>     all_goals simp only [h0,h1,hczero,ite_true,ite_false,ite_self,add_zero,zero_add] at hcoef</span>
+<span id="L738"><a href="#L738"> 738</a>     · exact Or.inl hcoef</span>
+<span id="L739"><a href="#L739"> 739</a>     · exact Or.inr (Or.inr (Or.inl hcoef))</span>
+<span id="L740"><a href="#L740"> 740</a>     · exact Or.inr (Or.inl hcoef)</span>
+<span id="L741"><a href="#L741"> 741</a>     · exact Or.inr (Or.inr (Or.inr hcoef))</span>
+<span id="L742"><a href="#L742"> 742</a> </span>
+<span id="L743"><a href="#L743"> 743</a>   let v := Normalized.basis .sphere 13 137 1</span>
+<span id="L744"><a href="#L744"> 744</a>   have hvc : v∈cycles 5 (13,137) := by</span>
+<span id="L745"><a href="#L745"> 745</a>     apply (cycles_reaches 5 (13,137) (by decide) v).mpr</span>
+<span id="L746"><a href="#L746"> 746</a>     refine ⟨val 6 z,?_⟩</span>
+<span id="L747"><a href="#L747"> 747</a>     have hh := rep 6 (by decide) z</span>
+<span id="L748"><a href="#L748"> 748</a>     change val 2 z=_ at hz</span>
+<span id="L749"><a href="#L749"> 749</a>     rw [hz] at hh</span>
+<span id="L750"><a href="#L750"> 750</a>     exact hh</span>
+<span id="L751"><a href="#L751"> 751</a>   refine ⟨⟨v,hvc⟩,rfl,?_⟩</span>
+<span id="L752"><a href="#L752"> 752</a>   apply alpha_all_finite_frames_cycle_quotient_frame_of_boundary (p:=(13,137)) (c:=5) (b:=7) v hvc</span>
+<span id="L753"><a href="#L753"> 753</a>   let B := boundaries 7 (13,137)</span>
+<span id="L754"><a href="#L754"> 754</a>   have b0 : Normalized.basis .sphere 13 137 0∈B := by</span>
+<span id="L755"><a href="#L755"> 755</a>     apply alpha_all_finite_frames_boundary_of_zero_representative (r:=8) (p:=(13,137))</span>
+<span id="L756"><a href="#L756"> 756</a>     exact differential_target_later_zero (E:=E) (r:=3) (t:=8) (p:=(10,135)) (q:=(13,137)) (by change (2:ℤ)≤3;omega) (by decide)</span>
+<span id="L757"><a href="#L757"> 757</a>       ⟨rfl,incoming,a,hincoming,ha,hda⟩</span>
+<span id="L758"><a href="#L758"> 758</a>   have lift_boundary {y : E.Page 2 (13,137)} (hy : RepresentsOnPage E 3 (13,137) y 0) : y∈B := by</span>
+<span id="L759"><a href="#L759"> 759</a>     exact boundaries_monotone (13,137) (by decide : (2:ℤ)≤7)</span>
+<span id="L760"><a href="#L760"> 760</a>       (alpha_all_finite_frames_boundary_of_zero_representative (r:=3) (p:=(13,137)) hy)</span>
+<span id="L761"><a href="#L761"> 761</a>   intro x hx</span>
+<span id="L762"><a href="#L762"> 762</a>   obtain ⟨xr,hxr⟩ := (cycles_reaches 2 (13,137) (by decide) x).mp</span>
+<span id="L763"><a href="#L763"> 763</a>     (cycles_antitone (13,137) (by decide : (2:ℤ)≤5) hx)</span>
+<span id="L764"><a href="#L764"> 764</a>   have hxzero : E.d 3 (13,137) xr=0 :=</span>
+<span id="L765"><a href="#L765"> 765</a>     alpha_all_finite_frames_cycle_differential_zero (r:=3) (c:=5) (p:=(13,137)) (by decide) (by decide) hx hxr</span>
+<span id="L766"><a href="#L766"> 766</a>   rcases hkernel xr hxzero with hq|hq|hq|hq</span>
+<span id="L767"><a href="#L767"> 767</a>   · left</span>
+<span id="L768"><a href="#L768"> 768</a>     rw [hq] at hxr</span>
+<span id="L769"><a href="#L769"> 769</a>     exact lift_boundary hxr</span>
+<span id="L770"><a href="#L770"> 770</a>   · left</span>
+<span id="L771"><a href="#L771"> 771</a>     have hh := represents_sub_tail hxr ha</span>
+<span id="L772"><a href="#L772"> 772</a>     rw [hq,sub_self] at hh</span>
+<span id="L773"><a href="#L773"> 773</a>     have hm := B.add_mem (lift_boundary hh) b0</span>
+<span id="L774"><a href="#L774"> 774</a>     simpa only [sub_add_cancel] using hm</span>
+<span id="L775"><a href="#L775"> 775</a>   · right</span>
+<span id="L776"><a href="#L776"> 776</a>     have hh := represents_sub_tail hxr hb</span>
+<span id="L777"><a href="#L777"> 777</a>     rw [hq,sub_self] at hh</span>
+<span id="L778"><a href="#L778"> 778</a>     exact lift_boundary hh</span>
+<span id="L779"><a href="#L779"> 779</a>   · right</span>
+<span id="L780"><a href="#L780"> 780</a>     have hh := represents_sub_tail (represents_sub_tail hxr hb) ha</span>
+<span id="L781"><a href="#L781"> 781</a>     rw [hq,add_sub_cancel_right,sub_self] at hh</span>
+<span id="L782"><a href="#L782"> 782</a>     have hm := B.add_mem (lift_boundary hh) b0</span>
+<span id="L783"><a href="#L783"> 783</a>     simpa only [sub_add_cancel] using hm</span>
+<span id="L784"><a href="#L784"> 784</a> </span>
+<span id="L785"><a href="#L785"> 785</a> </span>
+<span id="L786"><a href="#L786"> 786</a> private theorem alpha_all_finite_frames</span>
+<span id="L787"><a href="#L787"> 787</a> </span>
+<span id="L788"><a href="#L788"> 788</a>     (h14 : Normalized.basis .sphere 14 138 2∈cycles 4 (14,138))</span>
+<span id="L789"><a href="#L789"> 789</a>     (h15 : Normalized.basis .sphere 15 139 1+Normalized.basis .sphere 15 139 3∈cycles 3 (15,139)) :</span>
+<span id="L790"><a href="#L790"> 790</a>     (∃ c : cycles 5 (13,137), c.val=Normalized.basis .sphere 13 137 1 ∧</span>
+<span id="L791"><a href="#L791"> 791</a>       ∀ q : CycleQuotient 5 7 (13,137), q=0 ∨ q=KIP126.Literature.subquotientClass _ _ c) ∧</span>
+<span id="L792"><a href="#L792"> 792</a>     (∀ q : CycleQuotient 4 8 (14,138), q=0 ∨</span>
+<span id="L793"><a href="#L793"> 793</a>       q=KIP126.Literature.subquotientClass _ _ ⟨Normalized.basis .sphere 14 138 2,h14⟩) ∧</span>
+<span id="L794"><a href="#L794"> 794</a>     (∀ q : CycleQuotient 3 9 (15,139), q=0 ∨</span>
+<span id="L795"><a href="#L795"> 795</a>       q=KIP126.Literature.subquotientClass _ _ ⟨Normalized.basis .sphere 15 139 1+Normalized.basis .sphere 15 139 3,h15⟩) := by</span>
+<span id="L796"><a href="#L796"> 796</a>   classical</span>
+<span id="L797"><a href="#L797"> 797</a>   exact ⟨alpha_all_finite_frames_alpha_finite_frame_13  ,alpha_all_finite_frames_alpha_finite_frame_14  h14,alpha_all_finite_frames_alpha_finite_frame_15  h15⟩</span>
+<span id="L798"><a href="#L798"> 798</a> </span>
+<span id="L799"><a href="#L799"> 799</a> </span>
+<span id="L800"><a href="#L800"> 800</a> end</span>
+<span id="L801"><a href="#L801"> 801</a> end KIP126.Main.Internal.AlphaOne</span>
+<span id="L802"><a href="#L802"> 802</a> end</span></pre>

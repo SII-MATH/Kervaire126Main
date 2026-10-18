@@ -1,0 +1,1503 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FinitePageCalculus/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FinitePageCalculus/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import Mathlib.Algebra.Homology.ShortComplex.ModuleCat</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.SpectralSequence.Computation.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.SpectralSequence.Computation.Proofs</span>
+<span id="L6"><a href="#L6">   6</a> public import KIP126.SpectralSequence.Permanence.Proofs</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.SpectralSequence.Permanence.Proofs</span>
+<span id="L8"><a href="#L8">   8</a> public import KIP126.SpectralSequence.Basic.PageHomology.Data</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.SpectralSequence.Basic.PageHomology.Data</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.SpectralSequence.ModuleQuotient.Proofs</span>
+<span id="L11"><a href="#L11">  11</a> public import KIP126.SpectralSequence.Internal.Algebra.Coefficients.Data</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.SpectralSequence.Internal.Algebra.Coefficients.Data</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> @[expose] section</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> /-! Generic representative and finite-page generation lemmas for internal</span>
+<span id="L17"><a href="#L17">  17</a> spectral sequences. These use the specified cycle and boundary subobjects;</span>
+<span id="L18"><a href="#L18">  18</a> no computation delivery or selected model is assumed. -/</span>
+<span id="L19"><a href="#L19">  19</a> namespace KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L20"><a href="#L20">  20</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.Core.SpectralSequence</span>
+<span id="L22"><a href="#L22">  22</a> universe v</span>
+<span id="L23"><a href="#L23">  23</a> noncomputable section</span>
+<span id="L24"><a href="#L24">  24</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L25"><a href="#L25">  25</a> set_option maxRecDepth 10000</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> public theorem represents_unique</span>
+<span id="L28"><a href="#L28">  28</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a b : E.Page r p}</span>
+<span id="L29"><a href="#L29">  29</a>     (ha : RepresentsOnPage E r p x a) (hb : RepresentsOnPage E r p x b) : a = b := by</span>
+<span id="L30"><a href="#L30">  30</a>   obtain ⟨hr, z, hz, hza⟩ := ha</span>
+<span id="L31"><a href="#L31">  31</a>   obtain ⟨_, z&#x27;, hz&#x27;, hzb⟩ := hb</span>
+<span id="L32"><a href="#L32">  32</a>   let D := E.ssData p</span>
+<span id="L33"><a href="#L33">  33</a>   let n : WithTop ℕ := ↑(2 - E.r₀).toNat</span>
+<span id="L34"><a href="#L34">  34</a>   let m : WithTop ℕ := ↑(r - E.r₀).toNat</span>
+<span id="L35"><a href="#L35">  35</a>   have hnm : n ≤ m := by</span>
+<span id="L36"><a href="#L36">  36</a>     dsimp only [n, m]</span>
+<span id="L37"><a href="#L37">  37</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (r-E.r₀).toNat by omega)</span>
+<span id="L38"><a href="#L38">  38</a>   apply sub_eq_zero.mp</span>
+<span id="L39"><a href="#L39">  39</a>   rw [← hza, ← hzb, ← map_sub]</span>
+<span id="L40"><a href="#L40">  40</a>   apply (subobject_cokernel_π_eq_zero_iff (D.B m) (D.Z m) (D.B_le_Z m) _).mpr</span>
+<span id="L41"><a href="#L41">  41</a>   have heq : D.pageπ n ((Subobject.ofLE _ _ (D.Z_anti hnm)) (z-z&#x27;)) = 0 := by</span>
+<span id="L42"><a href="#L42">  42</a>     change (Subobject.ofLE _ _ (D.Z_anti hnm) ≫ D.pageπ n) (z-z&#x27;) = 0</span>
+<span id="L43"><a href="#L43">  43</a>     rw [map_sub, hz, hz&#x27;, sub_self]</span>
+<span id="L44"><a href="#L44">  44</a>   have hh := (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mp heq</span>
+<span id="L45"><a href="#L45">  45</a>   have he : (D.Z n).arrow ((Subobject.ofLE _ _ (D.Z_anti hnm)) (z-z&#x27;)) =</span>
+<span id="L46"><a href="#L46">  46</a>       (D.Z m).arrow (z-z&#x27;) := ConcreteCategory.congr_hom (Subobject.ofLE_arrow (D.Z_anti hnm)) _</span>
+<span id="L47"><a href="#L47">  47</a>   rw [he] at hh</span>
+<span id="L48"><a href="#L48">  48</a>   exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hh</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> public theorem represents_d_zero_of_later</span>
+<span id="L52"><a href="#L52">  52</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hr0 : E.r₀ ≤ r) (hrt : r &lt; t)</span>
+<span id="L53"><a href="#L53">  53</a>     {a : E.Page r p} (ha : RepresentsOnPage E r p x a)</span>
+<span id="L54"><a href="#L54">  54</a>     (ht : ReachesPage E t p x) : E.d r p a = 0 := by</span>
+<span id="L55"><a href="#L55">  55</a>   obtain ⟨b, ht2, z, hz, _⟩ := ht</span>
+<span id="L56"><a href="#L56">  56</a>   let D := E.ssData p</span>
+<span id="L57"><a href="#L57">  57</a>   let nt : WithTop ℕ := ↑(t-E.r₀).toNat</span>
+<span id="L58"><a href="#L58">  58</a>   let nr : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L59"><a href="#L59">  59</a>   let ns : WithTop ℕ := ↑((r-E.r₀).toNat+1)</span>
+<span id="L60"><a href="#L60">  60</a>   have hrs : nr ≤ ns := by</span>
+<span id="L61"><a href="#L61">  61</a>     dsimp only [nr, ns]</span>
+<span id="L62"><a href="#L62">  62</a>     exact_mod_cast (show (r-E.r₀).toNat ≤ (r-E.r₀).toNat+1 by omega)</span>
+<span id="L63"><a href="#L63">  63</a>   have hst : ns ≤ nt := by</span>
+<span id="L64"><a href="#L64">  64</a>     dsimp only [ns, nt]</span>
+<span id="L65"><a href="#L65">  65</a>     exact_mod_cast (show (r-E.r₀).toNat+1 ≤ (t-E.r₀).toNat by omega)</span>
+<span id="L66"><a href="#L66">  66</a>   let zr := (Subobject.ofLE (D.Z nt) (D.Z nr) (D.Z_anti (hrs.trans hst))) z</span>
+<span id="L67"><a href="#L67">  67</a>   have hrep : RepresentsOnPage E r p x (D.pageπ nr zr) := by</span>
+<span id="L68"><a href="#L68">  68</a>     refine ⟨ha.1, zr, ?_, rfl⟩</span>
+<span id="L69"><a href="#L69">  69</a>     dsimp only [zr]</span>
+<span id="L70"><a href="#L70">  70</a>     rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L71"><a href="#L71">  71</a>     exact hz</span>
+<span id="L72"><a href="#L72">  72</a>   rw [represents_unique ha hrep]</span>
+<span id="L73"><a href="#L73">  73</a>   change D.pageπ nr zr ∈ LinearMap.ker (E.d r p).hom</span>
+<span id="L74"><a href="#L74">  74</a>   rw [← subobjectModule_kernel, E.Z_succ r p hr0, subobjectModule_image]</span>
+<span id="L75"><a href="#L75">  75</a>   refine ⟨(Subobject.ofLE (D.Z nt) (D.Z ns) (D.Z_anti hst)) z, ?_⟩</span>
+<span id="L76"><a href="#L76">  76</a>   change (Subobject.ofLE (D.Z ns) (D.Z nr) (D.Z_anti hrs) ≫ D.pageπ nr)</span>
+<span id="L77"><a href="#L77">  77</a>     ((Subobject.ofLE (D.Z nt) (D.Z ns) (D.Z_anti hst)) z) = D.pageπ nr zr</span>
+<span id="L78"><a href="#L78">  78</a>   rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L79"><a href="#L79">  79</a>   rfl</span>
+<span id="L80"><a href="#L80">  80</a> </span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> public theorem next_projection_zero_iff_incoming</span>
+<span id="L83"><a href="#L83">  83</a>     (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))</span>
+<span id="L84"><a href="#L84">  84</a>     (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)</span>
+<span id="L85"><a href="#L85">  85</a>     (z : (Subobject.underlying.obj ((E.ssData (p+E.diffDeg r)).Z</span>
+<span id="L86"><a href="#L86">  86</a>       ↑((r-E.r₀).toNat+1)) : ModuleCat.{v} ℤ)) :</span>
+<span id="L87"><a href="#L87">  87</a>     (E.ssData (p+E.diffDeg r)).pageπ ↑((r-E.r₀).toNat+1) z = 0 ↔</span>
+<span id="L88"><a href="#L88">  88</a>       (Subobject.ofLE _ _ ((E.ssData (p+E.diffDeg r)).Z_anti</span>
+<span id="L89"><a href="#L89">  89</a>         (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat)) ≫</span>
+<span id="L90"><a href="#L90">  90</a>           (E.ssData (p+E.diffDeg r)).pageπ ↑(r-E.r₀).toNat) z ∈</span>
+<span id="L91"><a href="#L91">  91</a>         LinearMap.range (E.d r p).hom := by</span>
+<span id="L92"><a href="#L92">  92</a>   let D := E.ssData (p+E.diffDeg r)</span>
+<span id="L93"><a href="#L93">  93</a>   let n := (r-E.r₀).toNat</span>
+<span id="L94"><a href="#L94">  94</a>   have hnm : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n</span>
+<span id="L95"><a href="#L95">  95</a>   let i := Subobject.ofLE (D.Z ↑(n+1)) (D.Z ↑n) (D.Z_anti hnm)</span>
+<span id="L96"><a href="#L96">  96</a>   let j := Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑n)</span>
+<span id="L97"><a href="#L97">  97</a>     ((D.B_le_Z _).trans (D.Z_anti hnm))</span>
+<span id="L98"><a href="#L98">  98</a>   rw [← subobjectModule_image, E.B_succ r p hr, subobjectModule_image]</span>
+<span id="L99"><a href="#L99">  99</a>   change D.pageπ ↑(n+1) z = 0 ↔ (i ≫ D.pageπ ↑n) z ∈ LinearMap.range (j ≫ D.pageπ ↑n).hom</span>
+<span id="L100"><a href="#L100"> 100</a>   constructor</span>
+<span id="L101"><a href="#L101"> 101</a>   · intro hz</span>
+<span id="L102"><a href="#L102"> 102</a>     obtain ⟨v, hv⟩ := (cokernel_π_eq_zero_iff_mem_range</span>
+<span id="L103"><a href="#L103"> 103</a>       (Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _)) z).mp hz</span>
+<span id="L104"><a href="#L104"> 104</a>     refine ⟨v, ?_⟩</span>
+<span id="L105"><a href="#L105"> 105</a>     rw [← hv]</span>
+<span id="L106"><a href="#L106"> 106</a>     change (j ≫ D.pageπ ↑n) v =</span>
+<span id="L107"><a href="#L107"> 107</a>       ((Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _)) ≫ i ≫ D.pageπ ↑n) v</span>
+<span id="L108"><a href="#L108"> 108</a>     congr 2</span>
+<span id="L109"><a href="#L109"> 109</a>     dsimp only [i,j]</span>
+<span id="L110"><a href="#L110"> 110</a>     rw [← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L111"><a href="#L111"> 111</a>   · rintro ⟨v, hv⟩</span>
+<span id="L112"><a href="#L112"> 112</a>     apply (subobject_cokernel_π_eq_zero_iff (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _) z).mpr</span>
+<span id="L113"><a href="#L113"> 113</a>     have hz : D.pageπ ↑n (i z-j v) = 0 := by</span>
+<span id="L114"><a href="#L114"> 114</a>       rw [map_sub]</span>
+<span id="L115"><a href="#L115"> 115</a>       exact sub_eq_zero.mpr hv.symm</span>
+<span id="L116"><a href="#L116"> 116</a>     have hb := (subobject_cokernel_π_eq_zero_iff (D.B ↑n) (D.Z ↑n) (D.B_le_Z _) _).mp hz</span>
+<span id="L117"><a href="#L117"> 117</a>     have hb&#x27; := (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hb</span>
+<span id="L118"><a href="#L118"> 118</a>     have hv&#x27; : (D.Z ↑n).arrow (j v) ∈ (ModuleCat.subobjectModule D.V) (D.B ↑(n+1)) := by</span>
+<span id="L119"><a href="#L119"> 119</a>       change (j ≫ (D.Z ↑n).arrow) v ∈ _</span>
+<span id="L120"><a href="#L120"> 120</a>       dsimp only [j]</span>
+<span id="L121"><a href="#L121"> 121</a>       rw [Subobject.ofLE_arrow]</span>
+<span id="L122"><a href="#L122"> 122</a>       exact ⟨v, rfl⟩</span>
+<span id="L123"><a href="#L123"> 123</a>     have hh := ((ModuleCat.subobjectModule D.V) (D.B ↑(n+1))).add_mem hb&#x27; hv&#x27;</span>
+<span id="L124"><a href="#L124"> 124</a>     rw [map_sub, sub_add_cancel] at hh</span>
+<span id="L125"><a href="#L125"> 125</a>     change (i ≫ (D.Z ↑n).arrow) z ∈ _ at hh</span>
+<span id="L126"><a href="#L126"> 126</a>     dsimp only [i] at hh</span>
+<span id="L127"><a href="#L127"> 127</a>     rwa [Subobject.ofLE_arrow] at hh</span>
+<span id="L128"><a href="#L128"> 128</a> </span>
+<span id="L129"><a href="#L129"> 129</a> </span>
+<span id="L130"><a href="#L130"> 130</a> public theorem page_generated_from_representatives</span>
+<span id="L131"><a href="#L131"> 131</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r)</span>
+<span id="L132"><a href="#L132"> 132</a>     {N : ℕ} (e : E.Page 2 p ≃ₗ[ℤ] (Fin N →₀ KIP126.Core.Algebra.F2))</span>
+<span id="L133"><a href="#L133"> 133</a>     (v : Fin N → E.Page r p)</span>
+<span id="L134"><a href="#L134"> 134</a>     (hv : ∀ i, RepresentsOnPage E r p (e.symm (Finsupp.single i 1)) (v i))</span>
+<span id="L135"><a href="#L135"> 135</a>     (a : E.Page r p) :</span>
+<span id="L136"><a href="#L136"> 136</a>     ∃ c : Fin N → KIP126.Core.Algebra.F2, a = ∑ i, if c i = 0 then 0 else v i := by</span>
+<span id="L137"><a href="#L137"> 137</a>   classical</span>
+<span id="L138"><a href="#L138"> 138</a>   have hadd {x y : E.Page 2 p} {xr yr : E.Page r p}</span>
+<span id="L139"><a href="#L139"> 139</a>       (hx : RepresentsOnPage E r p x xr) (hy : RepresentsOnPage E r p y yr) :</span>
+<span id="L140"><a href="#L140"> 140</a>       RepresentsOnPage E r p (x+y) (xr+yr) := by</span>
+<span id="L141"><a href="#L141"> 141</a>     obtain ⟨hr, zx, hx, hxr⟩ := hx</span>
+<span id="L142"><a href="#L142"> 142</a>     obtain ⟨_, zy, hy, hyr⟩ := hy</span>
+<span id="L143"><a href="#L143"> 143</a>     exact ⟨hr, zx+zy, by rw [map_add,hx,hy], by rw [map_add,hxr,hyr]⟩</span>
+<span id="L144"><a href="#L144"> 144</a>   let D := E.ssData p</span>
+<span id="L145"><a href="#L145"> 145</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L146"><a href="#L146"> 146</a>   haveI : Epi (D.pageπ n) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L147"><a href="#L147"> 147</a>   obtain ⟨z, hz⟩ := (ModuleCat.epi_iff_surjective (D.pageπ n)).mp inferInstance a</span>
+<span id="L148"><a href="#L148"> 148</a>   let x : E.Page 2 p := (Subobject.ofLE _ _ (D.Z_anti (by</span>
+<span id="L149"><a href="#L149"> 149</a>     dsimp only [n]</span>
+<span id="L150"><a href="#L150"> 150</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (r-E.r₀).toNat by omega))) ≫ D.pageπ _) z</span>
+<span id="L151"><a href="#L151"> 151</a>   have hxa : RepresentsOnPage E r p x a := ⟨hr,z,rfl,hz⟩</span>
+<span id="L152"><a href="#L152"> 152</a>   let c : Fin N → KIP126.Core.Algebra.F2 := e x</span>
+<span id="L153"><a href="#L153"> 153</a>   have hsum (s : Finset (Fin N)) :</span>
+<span id="L154"><a href="#L154"> 154</a>       RepresentsOnPage E r p</span>
+<span id="L155"><a href="#L155"> 155</a>         (∑ i ∈ s, if c i = 0 then 0 else e.symm (Finsupp.single i 1))</span>
+<span id="L156"><a href="#L156"> 156</a>         (∑ i ∈ s, if c i = 0 then 0 else v i) := by</span>
+<span id="L157"><a href="#L157"> 157</a>     induction s using Finset.induction_on with</span>
+<span id="L158"><a href="#L158"> 158</a>     | empty =&gt; simpa using (RepresentsOnPage.zero (E := E) (p := p) hr)</span>
+<span id="L159"><a href="#L159"> 159</a>     | @insert i s hi ih =&gt;</span>
+<span id="L160"><a href="#L160"> 160</a>       simp only [Finset.sum_insert hi]</span>
+<span id="L161"><a href="#L161"> 161</a>       apply hadd _ ih</span>
+<span id="L162"><a href="#L162"> 162</a>       by_cases hc : c i = 0</span>
+<span id="L163"><a href="#L163"> 163</a>       · simpa only [hc,ite_true] using (RepresentsOnPage.zero (E := E) (p := p) hr)</span>
+<span id="L164"><a href="#L164"> 164</a>       · simpa only [hc,ite_false] using hv i</span>
+<span id="L165"><a href="#L165"> 165</a>   have hx : (∑ i : Fin N, if c i = 0 then 0 else e.symm (Finsupp.single i 1)) = x := by</span>
+<span id="L166"><a href="#L166"> 166</a>     apply e.injective</span>
+<span id="L167"><a href="#L167"> 167</a>     rw [map_sum]</span>
+<span id="L168"><a href="#L168"> 168</a>     ext i</span>
+<span id="L169"><a href="#L169"> 169</a>     simp only [Finsupp.finsetSum_apply]</span>
+<span id="L170"><a href="#L170"> 170</a>     rw [Finset.sum_eq_single i]</span>
+<span id="L171"><a href="#L171"> 171</a>     · change (e (if c i = 0 then 0 else e.symm (Finsupp.single i 1))) i = c i</span>
+<span id="L172"><a href="#L172"> 172</a>       generalize c i = b</span>
+<span id="L173"><a href="#L173"> 173</a>       fin_cases b</span>
+<span id="L174"><a href="#L174"> 174</a>       · change (e 0) i = 0</span>
+<span id="L175"><a href="#L175"> 175</a>         simp</span>
+<span id="L176"><a href="#L176"> 176</a>       · change (e (e.symm (Finsupp.single i 1))) i = 1</span>
+<span id="L177"><a href="#L177"> 177</a>         simp</span>
+<span id="L178"><a href="#L178"> 178</a>     · intro j hj hji</span>
+<span id="L179"><a href="#L179"> 179</a>       by_cases hc : c j = 0</span>
+<span id="L180"><a href="#L180"> 180</a>       · simp [hc]</span>
+<span id="L181"><a href="#L181"> 181</a>       · simp [hc,hji]</span>
+<span id="L182"><a href="#L182"> 182</a>     · simp</span>
+<span id="L183"><a href="#L183"> 183</a>   refine ⟨c, represents_unique (E:=E) (r:=r) (p:=p) (x:=x) hxa ?_⟩</span>
+<span id="L184"><a href="#L184"> 184</a>   have hh := hsum Finset.univ</span>
+<span id="L185"><a href="#L185"> 185</a>   simpa only [hx] using hh</span>
+<span id="L186"><a href="#L186"> 186</a> </span>
+<span id="L187"><a href="#L187"> 187</a> </span>
+<span id="L188"><a href="#L188"> 188</a> public theorem represents_before</span>
+<span id="L189"><a href="#L189"> 189</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r t : ℤ} {p : ℤ × ℤ}</span>
+<span id="L190"><a href="#L190"> 190</a>     {x : E.Page 2 p} {xt : E.Page t p}</span>
+<span id="L191"><a href="#L191"> 191</a>     (hr : 2 ≤ r) (hrt : r ≤ t) (ht : RepresentsOnPage E t p x xt) :</span>
+<span id="L192"><a href="#L192"> 192</a>     ∃ xr, RepresentsOnPage E r p x xr := by</span>
+<span id="L193"><a href="#L193"> 193</a>   obtain ⟨_, z, hz, _⟩ := ht</span>
+<span id="L194"><a href="#L194"> 194</a>   let D := E.ssData p</span>
+<span id="L195"><a href="#L195"> 195</a>   have hrt&#x27; : (↑(r-E.r₀).toNat : WithTop ℕ) ≤ ↑(t-E.r₀).toNat := by</span>
+<span id="L196"><a href="#L196"> 196</a>     exact_mod_cast (show (r-E.r₀).toNat ≤ (t-E.r₀).toNat by omega)</span>
+<span id="L197"><a href="#L197"> 197</a>   let zr := (Subobject.ofLE (D.Z ↑(t-E.r₀).toNat) (D.Z ↑(r-E.r₀).toNat) (D.Z_anti hrt&#x27;)) z</span>
+<span id="L198"><a href="#L198"> 198</a>   refine ⟨D.pageπ _ zr, hr, zr, ?_, rfl⟩</span>
+<span id="L199"><a href="#L199"> 199</a>   dsimp only [zr]</span>
+<span id="L200"><a href="#L200"> 200</a>   rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L201"><a href="#L201"> 201</a>   exact hz</span>
+<span id="L202"><a href="#L202"> 202</a> </span>
+<span id="L203"><a href="#L203"> 203</a> </span>
+<span id="L204"><a href="#L204"> 204</a> public theorem next_page_two_of_kernel</span>
+<span id="L205"><a href="#L205"> 205</a>     (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)) (r : ℤ) (hr : E.r₀ ≤ r) (p : ℤ × ℤ)</span>
+<span id="L206"><a href="#L206"> 206</a>     (v : (Subobject.underlying.obj ((E.ssData p).Z ↑((r-E.r₀).toNat+1)) : ModuleCat.{v} ℤ))</span>
+<span id="L207"><a href="#L207"> 207</a>     (hcases : ∀ a : E.Page r p, E.d r p a = 0 → a = 0 ∨</span>
+<span id="L208"><a href="#L208"> 208</a>       a = (Subobject.ofLE _ _ ((E.ssData p).Z_anti</span>
+<span id="L209"><a href="#L209"> 209</a>         (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat)) ≫</span>
+<span id="L210"><a href="#L210"> 210</a>           (E.ssData p).pageπ ↑(r-E.r₀).toNat) v) :</span>
+<span id="L211"><a href="#L211"> 211</a>     ∀ a : ((E.ssData p).page ↑((r-E.r₀).toNat+1) : ModuleCat.{v} ℤ),</span>
+<span id="L212"><a href="#L212"> 212</a>       a = 0 ∨ a = (E.ssData p).pageπ ↑((r-E.r₀).toNat+1) v := by</span>
+<span id="L213"><a href="#L213"> 213</a>   let D := E.ssData p</span>
+<span id="L214"><a href="#L214"> 214</a>   let n := (r-E.r₀).toNat</span>
+<span id="L215"><a href="#L215"> 215</a>   have hnm : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n</span>
+<span id="L216"><a href="#L216"> 216</a>   let i := Subobject.ofLE (D.Z ↑(n+1)) (D.Z ↑n) (D.Z_anti hnm)</span>
+<span id="L217"><a href="#L217"> 217</a>   let down := i ≫ D.pageπ ↑n</span>
+<span id="L218"><a href="#L218"> 218</a>   have hzero (z : (Subobject.underlying.obj (D.Z ↑(n+1)) : ModuleCat.{v} ℤ))</span>
+<span id="L219"><a href="#L219"> 219</a>       (hz : down z = 0) : D.pageπ ↑(n+1) z = 0 := by</span>
+<span id="L220"><a href="#L220"> 220</a>     apply (subobject_cokernel_π_eq_zero_iff (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _) _).mpr</span>
+<span id="L221"><a href="#L221"> 221</a>     have hb := (subobject_cokernel_π_eq_zero_iff (D.B ↑n) (D.Z ↑n) (D.B_le_Z _) (i z)).mp hz</span>
+<span id="L222"><a href="#L222"> 222</a>     change (i ≫ (D.Z ↑n).arrow) z ∈ _ at hb</span>
+<span id="L223"><a href="#L223"> 223</a>     dsimp only [i] at hb</span>
+<span id="L224"><a href="#L224"> 224</a>     rw [Subobject.ofLE_arrow] at hb</span>
+<span id="L225"><a href="#L225"> 225</a>     exact (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hb</span>
+<span id="L226"><a href="#L226"> 226</a>   intro a</span>
+<span id="L227"><a href="#L227"> 227</a>   haveI : Epi (D.pageπ ↑(n+1)) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L228"><a href="#L228"> 228</a>   obtain ⟨z, rfl⟩ := (ModuleCat.epi_iff_surjective (D.pageπ ↑(n+1))).mp inferInstance a</span>
+<span id="L229"><a href="#L229"> 229</a>   have hcycle : E.d r p (down z) = 0 := by</span>
+<span id="L230"><a href="#L230"> 230</a>     change down z ∈ LinearMap.ker (E.d r p).hom</span>
+<span id="L231"><a href="#L231"> 231</a>     rw [← subobjectModule_kernel,E.Z_succ r p hr,subobjectModule_image]</span>
+<span id="L232"><a href="#L232"> 232</a>     exact ⟨z,rfl⟩</span>
+<span id="L233"><a href="#L233"> 233</a>   obtain hz | hz := hcases (down z) hcycle</span>
+<span id="L234"><a href="#L234"> 234</a>   · exact Or.inl (hzero z hz)</span>
+<span id="L235"><a href="#L235"> 235</a>   · right</span>
+<span id="L236"><a href="#L236"> 236</a>     apply sub_eq_zero.mp</span>
+<span id="L237"><a href="#L237"> 237</a>     rw [← map_sub]</span>
+<span id="L238"><a href="#L238"> 238</a>     apply hzero</span>
+<span id="L239"><a href="#L239"> 239</a>     rw [map_sub,hz,sub_self]</span>
+<span id="L240"><a href="#L240"> 240</a> </span>
+<span id="L241"><a href="#L241"> 241</a> </span>
+<span id="L242"><a href="#L242"> 242</a> public theorem represents_next_nonzero_of_incoming_zero</span>
+<span id="L243"><a href="#L243"> 243</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ}</span>
+<span id="L244"><a href="#L244"> 244</a>     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L245"><a href="#L245"> 245</a>     (hin : E.d r (p-E.diffDeg r) = 0)</span>
+<span id="L246"><a href="#L246"> 246</a>     {x : E.Page 2 p} {a : E.Page (r+1) p} {b : E.Page r p}</span>
+<span id="L247"><a href="#L247"> 247</a>     (ha : RepresentsOnPage E (r+1) p x a) (hb : RepresentsOnPage E r p x b)</span>
+<span id="L248"><a href="#L248"> 248</a>     (hne : b ≠ 0) : a ≠ 0 := by</span>
+<span id="L249"><a href="#L249"> 249</a>   obtain ⟨_, z, hz, hza⟩ := ha</span>
+<span id="L250"><a href="#L250"> 250</a>   let D := E.ssData p</span>
+<span id="L251"><a href="#L251"> 251</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L252"><a href="#L252"> 252</a>   let m : WithTop ℕ := ↑(r+1-E.r₀).toNat</span>
+<span id="L253"><a href="#L253"> 253</a>   have hnm : n ≤ m := by</span>
+<span id="L254"><a href="#L254"> 254</a>     dsimp only [n,m]</span>
+<span id="L255"><a href="#L255"> 255</a>     exact_mod_cast (show (r-E.r₀).toNat ≤ (r+1-E.r₀).toNat by omega)</span>
+<span id="L256"><a href="#L256"> 256</a>   have hB : D.B m = D.B n := by</span>
+<span id="L257"><a href="#L257"> 257</a>     have hh := boundaries_succ_of_zero E r hr0 (p-E.diffDeg r) hin</span>
+<span id="L258"><a href="#L258"> 258</a>     have hi : (r+1-E.r₀).toNat = (r-E.r₀).toNat+1 := by omega</span>
+<span id="L259"><a href="#L259"> 259</a>     have hp : p-E.diffDeg r+E.diffDeg r = p := by abel</span>
+<span id="L260"><a href="#L260"> 260</a>     rw [hp] at hh</span>
+<span id="L261"><a href="#L261"> 261</a>     simpa only [D,n,m,hi] using hh</span>
+<span id="L262"><a href="#L262"> 262</a>   let i := Subobject.ofLE (D.Z m) (D.Z n) (D.Z_anti hnm)</span>
+<span id="L263"><a href="#L263"> 263</a>   have hb&#x27; : RepresentsOnPage E r p x (D.pageπ n (i z)) := by</span>
+<span id="L264"><a href="#L264"> 264</a>     refine ⟨hr,i z,?_,rfl⟩</span>
+<span id="L265"><a href="#L265"> 265</a>     change ((Subobject.ofLE _ _ (D.Z_anti hnm)) ≫</span>
+<span id="L266"><a href="#L266"> 266</a>       Subobject.ofLE _ _ _ ≫ D.pageπ _) z = x</span>
+<span id="L267"><a href="#L267"> 267</a>     rw [← Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L268"><a href="#L268"> 268</a>     exact hz</span>
+<span id="L269"><a href="#L269"> 269</a>   intro ha0</span>
+<span id="L270"><a href="#L270"> 270</a>   apply hne</span>
+<span id="L271"><a href="#L271"> 271</a>   rw [represents_unique hb hb&#x27;]</span>
+<span id="L272"><a href="#L272"> 272</a>   apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mpr</span>
+<span id="L273"><a href="#L273"> 273</a>   have hm := (subobject_cokernel_π_eq_zero_iff (D.B m) (D.Z m) (D.B_le_Z m) z).mp (hza.trans ha0)</span>
+<span id="L274"><a href="#L274"> 274</a>   rw [hB] at hm</span>
+<span id="L275"><a href="#L275"> 275</a>   change (i ≫ (D.Z n).arrow) z ∈ _</span>
+<span id="L276"><a href="#L276"> 276</a>   dsimp only [i]</span>
+<span id="L277"><a href="#L277"> 277</a>   rwa [Subobject.ofLE_arrow]</span>
+<span id="L278"><a href="#L278"> 278</a> </span>
+<span id="L279"><a href="#L279"> 279</a> </span>
+<span id="L280"><a href="#L280"> 280</a> public theorem differential_target_later_zero</span>
+<span id="L281"><a href="#L281"> 281</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r t : ℤ} {p q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q}</span>
+<span id="L282"><a href="#L282"> 282</a>     (hr0 : E.r₀ ≤ r) (hrt : r &lt; t)</span>
+<span id="L283"><a href="#L283"> 283</a>     (h : HasDifferential E r p q x y) : RepresentsOnPage E t q y 0 := by</span>
+<span id="L284"><a href="#L284"> 284</a>   obtain ⟨rfl, xr, yr, hx, hy, hd⟩ := h</span>
+<span id="L285"><a href="#L285"> 285</a>   simp only [eqToHom_refl, Category.comp_id] at hd</span>
+<span id="L286"><a href="#L286"> 286</a>   obtain ⟨hr, z, hz2, hzr⟩ := hy</span>
+<span id="L287"><a href="#L287"> 287</a>   let A := E.ssData (p + E.diffDeg r)</span>
+<span id="L288"><a href="#L288"> 288</a>   let n : ℕ := (r-E.r₀).toNat</span>
+<span id="L289"><a href="#L289"> 289</a>   let n₀ : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L290"><a href="#L290"> 290</a>   let m : WithTop ℕ := ↑(t-E.r₀).toNat</span>
+<span id="L291"><a href="#L291"> 291</a>   have hnm : (↑(n+1) : WithTop ℕ) ≤ m := by</span>
+<span id="L292"><a href="#L292"> 292</a>     dsimp only [n,m]</span>
+<span id="L293"><a href="#L293"> 293</a>     exact_mod_cast (show (r-E.r₀).toNat+1 ≤ (t-E.r₀).toNat by omega)</span>
+<span id="L294"><a href="#L294"> 294</a>   have hn0 : n₀ ≤ ↑n := by</span>
+<span id="L295"><a href="#L295"> 295</a>     dsimp only [n₀,n]</span>
+<span id="L296"><a href="#L296"> 296</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (r-E.r₀).toNat by omega)</span>
+<span id="L297"><a href="#L297"> 297</a>   have hn1 : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n</span>
+<span id="L298"><a href="#L298"> 298</a>   have hdmem : yr ∈ LinearMap.range (E.d r p).hom := ⟨xr, hd⟩</span>
+<span id="L299"><a href="#L299"> 299</a>   rw [← subobjectModule_image, E.B_succ r p hr0, subobjectModule_image] at hdmem</span>
+<span id="L300"><a href="#L300"> 300</a>   obtain ⟨b, hb⟩ := hdmem</span>
+<span id="L301"><a href="#L301"> 301</a>   let j := Subobject.ofLE (A.B ↑(n+1)) (A.Z ↑n)</span>
+<span id="L302"><a href="#L302"> 302</a>     ((A.B_le_Z _).trans (A.Z_anti hn1))</span>
+<span id="L303"><a href="#L303"> 303</a>   have hb&#x27; : A.pageπ ↑n (j b) = yr := hb</span>
+<span id="L304"><a href="#L304"> 304</a>   have hdif : A.pageπ ↑n (z-j b) = 0 := by rw [map_sub, hzr, hb&#x27;, sub_self]</span>
+<span id="L305"><a href="#L305"> 305</a>   have hmem := (subobject_cokernel_π_eq_zero_iff (A.B ↑n) (A.Z ↑n) (A.B_le_Z _) _).mp hdif</span>
+<span id="L306"><a href="#L306"> 306</a>   have hmem&#x27; := (ModuleCat.subobjectModule A.V).monotone (A.B_mono hn1) hmem</span>
+<span id="L307"><a href="#L307"> 307</a>   have hj : (A.Z ↑n).arrow (j b) ∈ (ModuleCat.subobjectModule A.V) (A.B ↑(n+1)) := by</span>
+<span id="L308"><a href="#L308"> 308</a>     change (j ≫ (A.Z ↑n).arrow) b ∈ _</span>
+<span id="L309"><a href="#L309"> 309</a>     dsimp only [j]</span>
+<span id="L310"><a href="#L310"> 310</a>     rw [Subobject.ofLE_arrow]</span>
+<span id="L311"><a href="#L311"> 311</a>     exact ⟨b,rfl⟩</span>
+<span id="L312"><a href="#L312"> 312</a>   have hzmem := ((ModuleCat.subobjectModule A.V) (A.B ↑(n+1))).add_mem hmem&#x27; hj</span>
+<span id="L313"><a href="#L313"> 313</a>   rw [map_sub, sub_add_cancel] at hzmem</span>
+<span id="L314"><a href="#L314"> 314</a>   obtain ⟨b&#x27;, hb&#x27;⟩ := hzmem</span>
+<span id="L315"><a href="#L315"> 315</a>   let i := Subobject.ofLE (A.B ↑(n+1)) (A.Z m) ((A.B_mono hnm).trans (A.B_le_Z _))</span>
+<span id="L316"><a href="#L316"> 316</a>   refine ⟨by omega, i b&#x27;, ?_, ?_⟩</span>
+<span id="L317"><a href="#L317"> 317</a>   · have he : (Subobject.ofLE (A.Z m) (A.Z n₀) (A.Z_anti (hn0.trans (hn1.trans hnm))))</span>
+<span id="L318"><a href="#L318"> 318</a>         (i b&#x27;) = (Subobject.ofLE (A.Z ↑n) (A.Z n₀) (A.Z_anti hn0)) z := by</span>
+<span id="L319"><a href="#L319"> 319</a>       apply (ModuleCat.mono_iff_injective (A.Z n₀).arrow).mp inferInstance</span>
+<span id="L320"><a href="#L320"> 320</a>       change (i ≫ Subobject.ofLE (A.Z m) (A.Z n₀) _ ≫ (A.Z n₀).arrow) b&#x27; =</span>
+<span id="L321"><a href="#L321"> 321</a>         (Subobject.ofLE (A.Z ↑n) (A.Z n₀) _ ≫ (A.Z n₀).arrow) z</span>
+<span id="L322"><a href="#L322"> 322</a>       simpa only [Category.assoc, i, Subobject.ofLE_arrow] using hb&#x27;</span>
+<span id="L323"><a href="#L323"> 323</a>     exact (congrArg (fun v =&gt; A.pageπ n₀ v) he).trans hz2</span>
+<span id="L324"><a href="#L324"> 324</a>   · apply (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z _) _).mpr</span>
+<span id="L325"><a href="#L325"> 325</a>     change (i ≫ (A.Z m).arrow) b&#x27; ∈ _</span>
+<span id="L326"><a href="#L326"> 326</a>     dsimp only [i]</span>
+<span id="L327"><a href="#L327"> 327</a>     rw [Subobject.ofLE_arrow]</span>
+<span id="L328"><a href="#L328"> 328</a>     exact (ModuleCat.subobjectModule A.V).monotone (A.B_mono hnm) ⟨b&#x27;,rfl⟩</span>
+<span id="L329"><a href="#L329"> 329</a> </span>
+<span id="L330"><a href="#L330"> 330</a> </span>
+<span id="L331"><a href="#L331"> 331</a> public theorem represents_add_tail</span>
+<span id="L332"><a href="#L332"> 332</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L333"><a href="#L333"> 333</a>     {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}</span>
+<span id="L334"><a href="#L334"> 334</a>     (hx : RepresentsOnPage E r p x a) (hy : RepresentsOnPage E r p y b) :</span>
+<span id="L335"><a href="#L335"> 335</a>     RepresentsOnPage E r p (x+y) (a+b) := by</span>
+<span id="L336"><a href="#L336"> 336</a>   obtain ⟨hr,z,hz,ha⟩ := hx</span>
+<span id="L337"><a href="#L337"> 337</a>   obtain ⟨_,w,hw,hb⟩ := hy</span>
+<span id="L338"><a href="#L338"> 338</a>   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩</span>
+<span id="L339"><a href="#L339"> 339</a> </span>
+<span id="L340"><a href="#L340"> 340</a> </span>
+<span id="L341"><a href="#L341"> 341</a> public theorem sixth_zero_of_second_kernel</span>
+<span id="L342"><a href="#L342"> 342</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L343"><a href="#L343"> 343</a>     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)</span>
+<span id="L344"><a href="#L344"> 344</a>     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 6 p x 0) :</span>
+<span id="L345"><a href="#L345"> 345</a>     Subsingleton (E.Page 6 p) := by</span>
+<span id="L346"><a href="#L346"> 346</a>   have hz (a : E.Page 6 p) : a=0 := by</span>
+<span id="L347"><a href="#L347"> 347</a>     let A := E.ssData p</span>
+<span id="L348"><a href="#L348"> 348</a>     haveI : Epi (A.pageπ ↑(6-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L349"><a href="#L349"> 349</a>     obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(6-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L350"><a href="#L350"> 350</a>     let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L351"><a href="#L351"> 351</a>       exact_mod_cast (show (2-E.r₀).toNat ≤ (6-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L352"><a href="#L352"> 352</a>     have hx : RepresentsOnPage E 6 p x a := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L353"><a href="#L353"> 353</a>     have hself : RepresentsOnPage E 2 p x x := by</span>
+<span id="L354"><a href="#L354"> 354</a>       obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤6) hx</span>
+<span id="L355"><a href="#L355"> 355</a>       have hh := hb.eq_on_page_two</span>
+<span id="L356"><a href="#L356"> 356</a>       simpa only [hh] using hb</span>
+<span id="L357"><a href="#L357"> 357</a>     have hc : E.d 2 p x = 0 := represents_d_zero_of_later hstart (by decide) hself ⟨a,hx⟩</span>
+<span id="L358"><a href="#L358"> 358</a>     exact represents_unique hx (hker x hc)</span>
+<span id="L359"><a href="#L359"> 359</a>   exact ⟨fun a b =&gt; (hz a).trans (hz b).symm⟩</span>
+<span id="L360"><a href="#L360"> 360</a> </span>
+<span id="L361"><a href="#L361"> 361</a> </span>
+<span id="L362"><a href="#L362"> 362</a> public theorem fifth_frame_of_second_kernel</span>
+<span id="L363"><a href="#L363"> 363</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L364"><a href="#L364"> 364</a>     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ) (v : E.Page 5 p)</span>
+<span id="L365"><a href="#L365"> 365</a>     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 →</span>
+<span id="L366"><a href="#L366"> 366</a>       ∃ a : E.Page 5 p, RepresentsOnPage E 5 p x a ∧ (a=0 ∨ a=v)) :</span>
+<span id="L367"><a href="#L367"> 367</a>     ∀ a : E.Page 5 p, a=0 ∨ a=v := by</span>
+<span id="L368"><a href="#L368"> 368</a>   intro a</span>
+<span id="L369"><a href="#L369"> 369</a>   let A := E.ssData p</span>
+<span id="L370"><a href="#L370"> 370</a>   haveI : Epi (A.pageπ ↑(5-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L371"><a href="#L371"> 371</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(5-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L372"><a href="#L372"> 372</a>   let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L373"><a href="#L373"> 373</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (5-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L374"><a href="#L374"> 374</a>   have hx : RepresentsOnPage E 5 p x a := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L375"><a href="#L375"> 375</a>   have hself : RepresentsOnPage E 2 p x x := by</span>
+<span id="L376"><a href="#L376"> 376</a>     obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤5) hx</span>
+<span id="L377"><a href="#L377"> 377</a>     rw [←hb.eq_on_page_two] at hb</span>
+<span id="L378"><a href="#L378"> 378</a>     exact hb</span>
+<span id="L379"><a href="#L379"> 379</a>   have hc : E.d 2 p x=0 := represents_d_zero_of_later hstart (by decide) hself ⟨a,hx⟩</span>
+<span id="L380"><a href="#L380"> 380</a>   obtain ⟨b,hb,hcases⟩ := hker x hc</span>
+<span id="L381"><a href="#L381"> 381</a>   rw [represents_unique hx hb]</span>
+<span id="L382"><a href="#L382"> 382</a>   exact hcases</span>
+<span id="L383"><a href="#L383"> 383</a> </span>
+<span id="L384"><a href="#L384"> 384</a> </span>
+<span id="L385"><a href="#L385"> 385</a> </span>
+<span id="L386"><a href="#L386"> 386</a> public theorem fifth_zero_of_second_kernel</span>
+<span id="L387"><a href="#L387"> 387</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L388"><a href="#L388"> 388</a>     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)</span>
+<span id="L389"><a href="#L389"> 389</a>     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 5 p x 0) :</span>
+<span id="L390"><a href="#L390"> 390</a>     Subsingleton (E.Page 5 p) := by</span>
+<span id="L391"><a href="#L391"> 391</a>   classical</span>
+<span id="L392"><a href="#L392"> 392</a>   have hz (a : E.Page 5 p) : a=0 := by</span>
+<span id="L393"><a href="#L393"> 393</a>     let A := E.ssData p</span>
+<span id="L394"><a href="#L394"> 394</a>     haveI : Epi (A.pageπ ↑(5-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L395"><a href="#L395"> 395</a>     obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(5-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L396"><a href="#L396"> 396</a>     let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L397"><a href="#L397"> 397</a>       exact_mod_cast (show (2-E.r₀).toNat ≤ (5-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L398"><a href="#L398"> 398</a>     have hx : RepresentsOnPage E 5 p x a := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L399"><a href="#L399"> 399</a>     have hself : RepresentsOnPage E 2 p x x := by</span>
+<span id="L400"><a href="#L400"> 400</a>       obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤5) hx</span>
+<span id="L401"><a href="#L401"> 401</a>       have hh := hb.eq_on_page_two</span>
+<span id="L402"><a href="#L402"> 402</a>       simpa only [hh] using hb</span>
+<span id="L403"><a href="#L403"> 403</a>     have hc : E.d 2 p x = 0 := represents_d_zero_of_later hstart (by decide) hself ⟨a,hx⟩</span>
+<span id="L404"><a href="#L404"> 404</a>     exact represents_unique hx (hker x hc)</span>
+<span id="L405"><a href="#L405"> 405</a>   exact ⟨fun a b =&gt; (hz a).trans (hz b).symm⟩</span>
+<span id="L406"><a href="#L406"> 406</a> </span>
+<span id="L407"><a href="#L407"> 407</a> </span>
+<span id="L408"><a href="#L408"> 408</a> public theorem fifth_zero_of_all_basis</span>
+<span id="L409"><a href="#L409"> 409</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {n : ℕ}</span>
+<span id="L410"><a href="#L410"> 410</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin n →₀ F2))</span>
+<span id="L411"><a href="#L411"> 411</a>     (he : ∀ i, RepresentsOnPage E 5 p (e.symm (Finsupp.single i 1)) 0) :</span>
+<span id="L412"><a href="#L412"> 412</a>     Subsingleton (E.Page 5 p) := by</span>
+<span id="L413"><a href="#L413"> 413</a>   classical</span>
+<span id="L414"><a href="#L414"> 414</a>   have hz (a : E.Page 5 p) : a=0 := by</span>
+<span id="L415"><a href="#L415"> 415</a>     obtain ⟨c,hc⟩ := page_generated_from_representatives (by decide : (2:ℤ)≤5) e (fun _=&gt;0) he a</span>
+<span id="L416"><a href="#L416"> 416</a>     simpa using hc</span>
+<span id="L417"><a href="#L417"> 417</a>   exact ⟨fun a b =&gt; (hz a).trans (hz b).symm⟩</span>
+<span id="L418"><a href="#L418"> 418</a> </span>
+<span id="L419"><a href="#L419"> 419</a> </span>
+<span id="L420"><a href="#L420"> 420</a> public theorem frame_after_second</span>
+<span id="L421"><a href="#L421"> 421</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L422"><a href="#L422"> 422</a>     {r : ℤ} {p : ℤ × ℤ} (hs : E.r₀≤2) (hr : 3≤r)</span>
+<span id="L423"><a href="#L423"> 423</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 2 →₀ F2))</span>
+<span id="L424"><a href="#L424"> 424</a>     {a : E.Page r p} (ha : RepresentsOnPage E r p (e.symm (Finsupp.single 0 1)) a)</span>
+<span id="L425"><a href="#L425"> 425</a>     (hn : E.d 2 p (e.symm (Finsupp.single 1 1)) ≠ 0) :</span>
+<span id="L426"><a href="#L426"> 426</a>     ∀ q : E.Page r p, q=0 ∨ q=a := by</span>
+<span id="L427"><a href="#L427"> 427</a>   classical</span>
+<span id="L428"><a href="#L428"> 428</a>   have hz0 : E.d 2 p (e.symm (Finsupp.single 0 1)) = 0 := by</span>
+<span id="L429"><a href="#L429"> 429</a>     obtain ⟨z,hz⟩ := represents_before (by decide : (2:ℤ)≤2) (by omega : (2:ℤ)≤r) ha</span>
+<span id="L430"><a href="#L430"> 430</a>     rw [←hz.eq_on_page_two] at hz</span>
+<span id="L431"><a href="#L431"> 431</a>     exact represents_d_zero_of_later hs (by omega) hz ⟨a,ha⟩</span>
+<span id="L432"><a href="#L432"> 432</a>   intro q</span>
+<span id="L433"><a href="#L433"> 433</a>   let A := E.ssData p</span>
+<span id="L434"><a href="#L434"> 434</a>   haveI : Epi (A.pageπ ↑(r-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L435"><a href="#L435"> 435</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(r-E.r₀).toNat)).mp inferInstance q</span>
+<span id="L436"><a href="#L436"> 436</a>   let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L437"><a href="#L437"> 437</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (r-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L438"><a href="#L438"> 438</a>   have hx : RepresentsOnPage E r p x q := ⟨by omega,z,rfl,hz⟩</span>
+<span id="L439"><a href="#L439"> 439</a>   have hc : E.d 2 p x = 0 := by</span>
+<span id="L440"><a href="#L440"> 440</a>     obtain ⟨z,hz⟩ := represents_before (by decide : (2:ℤ)≤2) (by omega : (2:ℤ)≤r) hx</span>
+<span id="L441"><a href="#L441"> 441</a>     rw [←hz.eq_on_page_two] at hz</span>
+<span id="L442"><a href="#L442"> 442</a>     exact represents_d_zero_of_later hs (by omega) hz ⟨q,hx⟩</span>
+<span id="L443"><a href="#L443"> 443</a>   have heq : e x = Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1) := by</span>
+<span id="L444"><a href="#L444"> 444</a>     ext i</span>
+<span id="L445"><a href="#L445"> 445</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L446"><a href="#L446"> 446</a>   have hxe : x=e.symm (Finsupp.single 0 (e x 0) + Finsupp.single 1 (e x 1)) := by</span>
+<span id="L447"><a href="#L447"> 447</a>     rw [←heq,LinearEquiv.symm_apply_apply]</span>
+<span id="L448"><a href="#L448"> 448</a>   generalize h0 : e x 0 = c0 at hxe</span>
+<span id="L449"><a href="#L449"> 449</a>   generalize h1 : e x 1 = c1 at hxe</span>
+<span id="L450"><a href="#L450"> 450</a>   fin_cases c0 &lt;;&gt; fin_cases c1</span>
+<span id="L451"><a href="#L451"> 451</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2)) at hxe</span>
+<span id="L452"><a href="#L452"> 452</a>     simp only [Finsupp.single_zero,zero_add,map_zero] at hxe</span>
+<span id="L453"><a href="#L453"> 453</a>     rw [hxe] at hx</span>
+<span id="L454"><a href="#L454"> 454</a>     exact Or.inl (represents_unique hx (RepresentsOnPage.zero (by omega)))</span>
+<span id="L455"><a href="#L455"> 455</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2)) at hxe</span>
+<span id="L456"><a href="#L456"> 456</a>     simp only [Finsupp.single_zero,zero_add] at hxe</span>
+<span id="L457"><a href="#L457"> 457</a>     exact (hn (by simpa only [hxe] using hc)).elim</span>
+<span id="L458"><a href="#L458"> 458</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2)) at hxe</span>
+<span id="L459"><a href="#L459"> 459</a>     simp only [Finsupp.single_zero,add_zero] at hxe</span>
+<span id="L460"><a href="#L460"> 460</a>     rw [hxe] at hx</span>
+<span id="L461"><a href="#L461"> 461</a>     exact Or.inr (represents_unique hx ha)</span>
+<span id="L462"><a href="#L462"> 462</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2)) at hxe</span>
+<span id="L463"><a href="#L463"> 463</a>     exact (hn (by simpa only [hxe,map_add,hz0,zero_add] using hc)).elim</span>
+<span id="L464"><a href="#L464"> 464</a> </span>
+<span id="L465"><a href="#L465"> 465</a> </span>
+<span id="L466"><a href="#L466"> 466</a> public theorem third_zero_of_second_kernel</span>
+<span id="L467"><a href="#L467"> 467</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L468"><a href="#L468"> 468</a>     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)</span>
+<span id="L469"><a href="#L469"> 469</a>     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 → RepresentsOnPage E 3 p x 0) :</span>
+<span id="L470"><a href="#L470"> 470</a>     Subsingleton (E.Page 3 p) := by</span>
+<span id="L471"><a href="#L471"> 471</a>   classical</span>
+<span id="L472"><a href="#L472"> 472</a>   have hz (a : E.Page 3 p) : a=0 := by</span>
+<span id="L473"><a href="#L473"> 473</a>     let A := E.ssData p</span>
+<span id="L474"><a href="#L474"> 474</a>     haveI : Epi (A.pageπ ↑(3-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L475"><a href="#L475"> 475</a>     obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(3-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L476"><a href="#L476"> 476</a>     let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L477"><a href="#L477"> 477</a>       exact_mod_cast (show (2-E.r₀).toNat ≤ (3-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L478"><a href="#L478"> 478</a>     have hx : RepresentsOnPage E 3 p x a := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L479"><a href="#L479"> 479</a>     have hself : RepresentsOnPage E 2 p x x := by</span>
+<span id="L480"><a href="#L480"> 480</a>       obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤3) hx</span>
+<span id="L481"><a href="#L481"> 481</a>       have hh := hb.eq_on_page_two</span>
+<span id="L482"><a href="#L482"> 482</a>       simpa only [hh] using hb</span>
+<span id="L483"><a href="#L483"> 483</a>     have hc : E.d 2 p x = 0 := represents_d_zero_of_later hstart (by decide) hself ⟨a,hx⟩</span>
+<span id="L484"><a href="#L484"> 484</a>     exact represents_unique hx (hker x hc)</span>
+<span id="L485"><a href="#L485"> 485</a>   exact ⟨fun a b =&gt; (hz a).trans (hz b).symm⟩</span>
+<span id="L486"><a href="#L486"> 486</a> </span>
+<span id="L487"><a href="#L487"> 487</a> </span>
+<span id="L488"><a href="#L488"> 488</a> public theorem fourth_d_zero_of_second_kernel</span>
+<span id="L489"><a href="#L489"> 489</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L490"><a href="#L490"> 490</a>     (hstart : E.r₀ ≤ 2) (p : ℤ × ℤ)</span>
+<span id="L491"><a href="#L491"> 491</a>     (hker : ∀ x : E.Page 2 p, E.d 2 p x = 0 →</span>
+<span id="L492"><a href="#L492"> 492</a>       ∃ a : E.Page 4 p, RepresentsOnPage E 4 p x a ∧ E.d 4 p a=0) : E.d 4 p = 0 := by</span>
+<span id="L493"><a href="#L493"> 493</a>   classical</span>
+<span id="L494"><a href="#L494"> 494</a>   ext a</span>
+<span id="L495"><a href="#L495"> 495</a>   let A := E.ssData p</span>
+<span id="L496"><a href="#L496"> 496</a>   haveI : Epi (A.pageπ ↑(4-E.r₀).toNat) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L497"><a href="#L497"> 497</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ ↑(4-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L498"><a href="#L498"> 498</a>   let x : E.Page 2 p := (Subobject.ofLE _ _ (A.Z_anti (by</span>
+<span id="L499"><a href="#L499"> 499</a>     exact_mod_cast (show (2-E.r₀).toNat ≤ (4-E.r₀).toNat by omega))) ≫ A.pageπ _) z</span>
+<span id="L500"><a href="#L500"> 500</a>   have hx : RepresentsOnPage E 4 p x a := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L501"><a href="#L501"> 501</a>   have hself : RepresentsOnPage E 2 p x x := by</span>
+<span id="L502"><a href="#L502"> 502</a>     obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) (by decide : (2:ℤ)≤4) hx</span>
+<span id="L503"><a href="#L503"> 503</a>     have hh := hb.eq_on_page_two</span>
+<span id="L504"><a href="#L504"> 504</a>     simpa only [hh] using hb</span>
+<span id="L505"><a href="#L505"> 505</a>   have hc : E.d 2 p x=0 := represents_d_zero_of_later hstart (by decide) hself ⟨a,hx⟩</span>
+<span id="L506"><a href="#L506"> 506</a>   obtain ⟨b,hb,hdb⟩ := hker x hc</span>
+<span id="L507"><a href="#L507"> 507</a>   rw [represents_unique hx hb]</span>
+<span id="L508"><a href="#L508"> 508</a>   exact hdb</span>
+<span id="L509"><a href="#L509"> 509</a> </span>
+<span id="L510"><a href="#L510"> 510</a> </span>
+<span id="L511"><a href="#L511"> 511</a> public theorem vx_nonzero_no_incoming</span>
+<span id="L512"><a href="#L512"> 512</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ×ℤ}</span>
+<span id="L513"><a href="#L513"> 513</a>     (hr0 : E.r₀≤2) (hin : ∀ r : ℤ, 2≤r → E.d r (p-E.diffDeg r)=0)</span>
+<span id="L514"><a href="#L514"> 514</a>     {r : ℤ} {x : E.Page 2 p} {a : E.Page r p}</span>
+<span id="L515"><a href="#L515"> 515</a>     (ha : RepresentsOnPage E r p x a) (hn : x≠0) : a≠0 := by</span>
+<span id="L516"><a href="#L516"> 516</a>   classical</span>
+<span id="L517"><a href="#L517"> 517</a>   obtain ⟨hr,z,hz,hza⟩ := ha</span>
+<span id="L518"><a href="#L518"> 518</a>   let A := E.ssData p</span>
+<span id="L519"><a href="#L519"> 519</a>   let n : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L520"><a href="#L520"> 520</a>   let m : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L521"><a href="#L521"> 521</a>   have hnm : n≤m := by</span>
+<span id="L522"><a href="#L522"> 522</a>     dsimp only [n,m]</span>
+<span id="L523"><a href="#L523"> 523</a>     exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega)</span>
+<span id="L524"><a href="#L524"> 524</a>   let i := Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm)</span>
+<span id="L525"><a href="#L525"> 525</a>   have hB : A.B ⊤=A.B n := boundaries_top_eq_of_d_eq_zero E 2 hr0 p hin</span>
+<span id="L526"><a href="#L526"> 526</a>   intro ha0</span>
+<span id="L527"><a href="#L527"> 527</a>   have hb := (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z _) z).mp (hza.trans ha0)</span>
+<span id="L528"><a href="#L528"> 528</a>   have hb&#x27; := (ModuleCat.subobjectModule A.V).monotone (A.B_mono (show m≤⊤ from le_top)) hb</span>
+<span id="L529"><a href="#L529"> 529</a>   rw [hB] at hb&#x27;</span>
+<span id="L530"><a href="#L530"> 530</a>   apply hn</span>
+<span id="L531"><a href="#L531"> 531</a>   rw [←hz]</span>
+<span id="L532"><a href="#L532"> 532</a>   change A.pageπ n (i z)=0</span>
+<span id="L533"><a href="#L533"> 533</a>   apply (subobject_cokernel_π_eq_zero_iff (A.B n) (A.Z n) (A.B_le_Z _) (i z)).mpr</span>
+<span id="L534"><a href="#L534"> 534</a>   change (i ≫ (A.Z n).arrow) z ∈ _</span>
+<span id="L535"><a href="#L535"> 535</a>   dsimp only [i]</span>
+<span id="L536"><a href="#L536"> 536</a>   rwa [Subobject.ofLE_arrow]</span>
+<span id="L537"><a href="#L537"> 537</a> </span>
+<span id="L538"><a href="#L538"> 538</a> </span>
+<span id="L539"><a href="#L539"> 539</a> public theorem pq_rep3zero_boundary</span>
+<span id="L540"><a href="#L540"> 540</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L541"><a href="#L541"> 541</a>     {p : ℤ×ℤ} {x : E.Page 2 p}</span>
+<span id="L542"><a href="#L542"> 542</a>     (h : RepresentsOnPage E 3 p x 0) : IsBoundaryBy E 2 p x := by</span>
+<span id="L543"><a href="#L543"> 543</a>   classical</span>
+<span id="L544"><a href="#L544"> 544</a>   obtain ⟨_,z,hzx,hz0⟩ := h</span>
+<span id="L545"><a href="#L545"> 545</a>   let A := E.ssData p</span>
+<span id="L546"><a href="#L546"> 546</a>   let m : WithTop ℕ := ↑(3-E.r₀).toNat</span>
+<span id="L547"><a href="#L547"> 547</a>   let n : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L548"><a href="#L548"> 548</a>   have hm := (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z _) _).mp hz0</span>
+<span id="L549"><a href="#L549"> 549</a>   obtain ⟨b,hb⟩ := hm</span>
+<span id="L550"><a href="#L550"> 550</a>   refine ⟨by decide,?_⟩</span>
+<span id="L551"><a href="#L551"> 551</a>   refine ⟨b,?_⟩</span>
+<span id="L552"><a href="#L552"> 552</a>   have heq : (Subobject.ofLE (A.B m) (A.B ⊤) (A.B_mono le_top) ≫</span>
+<span id="L553"><a href="#L553"> 553</a>       Subobject.ofLE (A.B ⊤) (A.Z ⊤) (A.B_le_Z ⊤) ≫</span>
+<span id="L554"><a href="#L554"> 554</a>       Subobject.ofLE (A.Z ⊤) (A.Z n) (A.Z_anti le_top)) b =</span>
+<span id="L555"><a href="#L555"> 555</a>       (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti (by dsimp only [n,m]; exact_mod_cast (show (2-E.r₀).toNat ≤ (3-E.r₀).toNat by omega)))) z := by</span>
+<span id="L556"><a href="#L556"> 556</a>     apply (ModuleCat.mono_iff_injective (A.Z n).arrow).mp inferInstance</span>
+<span id="L557"><a href="#L557"> 557</a>     change (Subobject.ofLE _ _ _ ≫ Subobject.ofLE _ _ _ ≫ Subobject.ofLE _ _ _ ≫ (A.Z n).arrow) b =</span>
+<span id="L558"><a href="#L558"> 558</a>       (Subobject.ofLE _ _ _ ≫ (A.Z n).arrow) z</span>
+<span id="L559"><a href="#L559"> 559</a>     simpa only [Category.assoc,Subobject.ofLE_arrow] using hb</span>
+<span id="L560"><a href="#L560"> 560</a>   exact (congrArg (fun v =&gt; A.pageπ n v) heq).trans hzx</span>
+<span id="L561"><a href="#L561"> 561</a> </span>
+<span id="L562"><a href="#L562"> 562</a> public theorem represents_sub_tail</span>
+<span id="L563"><a href="#L563"> 563</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}</span>
+<span id="L564"><a href="#L564"> 564</a>     {x y : E.Page 2 p} {a b : E.Page r p}</span>
+<span id="L565"><a href="#L565"> 565</a>     (ha : RepresentsOnPage E r p x a) (hb : RepresentsOnPage E r p y b) :</span>
+<span id="L566"><a href="#L566"> 566</a>     RepresentsOnPage E r p (x-y) (a-b) := by</span>
+<span id="L567"><a href="#L567"> 567</a>   classical</span>
+<span id="L568"><a href="#L568"> 568</a>   obtain ⟨hr,z,hz,hza⟩ := ha</span>
+<span id="L569"><a href="#L569"> 569</a>   obtain ⟨_,w,hw,hwb⟩ := hb</span>
+<span id="L570"><a href="#L570"> 570</a>   exact ⟨hr,z-w,by rw [map_sub,hz,hw],by rw [map_sub,hza,hwb]⟩</span>
+<span id="L571"><a href="#L571"> 571</a> </span>
+<span id="L572"><a href="#L572"> 572</a> </span>
+<span id="L573"><a href="#L573"> 573</a> public theorem page_has_representative</span>
+<span id="L574"><a href="#L574"> 574</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}</span>
+<span id="L575"><a href="#L575"> 575</a>     (hr : 2≤r) (a : E.Page r p) : ∃ x, RepresentsOnPage E r p x a := by</span>
+<span id="L576"><a href="#L576"> 576</a>   classical</span>
+<span id="L577"><a href="#L577"> 577</a>   let A := E.ssData p</span>
+<span id="L578"><a href="#L578"> 578</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L579"><a href="#L579"> 579</a>   haveI : Epi (A.pageπ n) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L580"><a href="#L580"> 580</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ n)).mp inferInstance a</span>
+<span id="L581"><a href="#L581"> 581</a>   let x := (Subobject.ofLE (A.Z n) (A.Z ↑(2-E.r₀).toNat) (A.Z_anti (by</span>
+<span id="L582"><a href="#L582"> 582</a>     dsimp only [n]</span>
+<span id="L583"><a href="#L583"> 583</a>     exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega))) ≫ A.pageπ ↑(2-E.r₀).toNat) z</span>
+<span id="L584"><a href="#L584"> 584</a>   exact ⟨x,hr,z,rfl,hz⟩</span>
+<span id="L585"><a href="#L585"> 585</a> </span>
+<span id="L586"><a href="#L586"> 586</a> </span>
+<span id="L587"><a href="#L587"> 587</a> public theorem reaches_from_support</span>
+<span id="L588"><a href="#L588"> 588</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L589"><a href="#L589"> 589</a>     {p : ℤ×ℤ} {r : ℤ} (hr : 2≤r) {N : ℕ}</span>
+<span id="L590"><a href="#L590"> 590</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin N →₀ F2)) (x : E.Page 2 p)</span>
+<span id="L591"><a href="#L591"> 591</a>     (hv : ∀ i, e x i≠0 → ReachesPage E r p (e.symm (Finsupp.single i 1))) :</span>
+<span id="L592"><a href="#L592"> 592</a>     ReachesPage E r p x := by</span>
+<span id="L593"><a href="#L593"> 593</a>   classical</span>
+<span id="L594"><a href="#L594"> 594</a>   classical</span>
+<span id="L595"><a href="#L595"> 595</a>   let c : Fin N → F2 := e x</span>
+<span id="L596"><a href="#L596"> 596</a>   have hsum (s : Finset (Fin N)) :</span>
+<span id="L597"><a href="#L597"> 597</a>       ReachesPage E r p (∑ i ∈ s, if c i=0 then 0 else e.symm (Finsupp.single i 1)) := by</span>
+<span id="L598"><a href="#L598"> 598</a>     induction s using Finset.induction_on with</span>
+<span id="L599"><a href="#L599"> 599</a>     | empty =&gt; simpa using (show ReachesPage E r p 0 from ⟨0,RepresentsOnPage.zero hr⟩)</span>
+<span id="L600"><a href="#L600"> 600</a>     | @insert i s hi ih =&gt;</span>
+<span id="L601"><a href="#L601"> 601</a>       simp only [Finset.sum_insert hi]</span>
+<span id="L602"><a href="#L602"> 602</a>       by_cases hc : c i=0</span>
+<span id="L603"><a href="#L603"> 603</a>       · simpa only [hc,ite_true,zero_add] using ih</span>
+<span id="L604"><a href="#L604"> 604</a>       · obtain ⟨a,ha⟩ := hv i hc</span>
+<span id="L605"><a href="#L605"> 605</a>         obtain ⟨b,hb⟩ := ih</span>
+<span id="L606"><a href="#L606"> 606</a>         refine ⟨a+b,?_⟩</span>
+<span id="L607"><a href="#L607"> 607</a>         simpa only [hc,ite_false] using represents_add_tail ha hb</span>
+<span id="L608"><a href="#L608"> 608</a>   have hx : (∑ i : Fin N, if c i = 0 then 0 else e.symm (Finsupp.single i 1)) = x := by</span>
+<span id="L609"><a href="#L609"> 609</a>     apply e.injective</span>
+<span id="L610"><a href="#L610"> 610</a>     rw [map_sum]</span>
+<span id="L611"><a href="#L611"> 611</a>     ext i</span>
+<span id="L612"><a href="#L612"> 612</a>     simp only [Finsupp.finsetSum_apply]</span>
+<span id="L613"><a href="#L613"> 613</a>     rw [Finset.sum_eq_single i]</span>
+<span id="L614"><a href="#L614"> 614</a>     · change (e (if c i = 0 then 0 else e.symm (Finsupp.single i 1))) i = c i</span>
+<span id="L615"><a href="#L615"> 615</a>       generalize c i = b</span>
+<span id="L616"><a href="#L616"> 616</a>       fin_cases b</span>
+<span id="L617"><a href="#L617"> 617</a>       · change (e 0) i = 0</span>
+<span id="L618"><a href="#L618"> 618</a>         simp</span>
+<span id="L619"><a href="#L619"> 619</a>       · change (e (e.symm (Finsupp.single i 1))) i = 1</span>
+<span id="L620"><a href="#L620"> 620</a>         simp</span>
+<span id="L621"><a href="#L621"> 621</a>     · intro j hj hji</span>
+<span id="L622"><a href="#L622"> 622</a>       by_cases hc : c j = 0</span>
+<span id="L623"><a href="#L623"> 623</a>       · simp [hc]</span>
+<span id="L624"><a href="#L624"> 624</a>       · simp [hc,hji]</span>
+<span id="L625"><a href="#L625"> 625</a>     · simp</span>
+<span id="L626"><a href="#L626"> 626</a>   obtain ⟨a,ha⟩ := hsum Finset.univ</span>
+<span id="L627"><a href="#L627"> 627</a>   exact ⟨a,by simpa only [hx] using ha⟩</span>
+<span id="L628"><a href="#L628"> 628</a> </span>
+<span id="L629"><a href="#L629"> 629</a> </span>
+<span id="L630"><a href="#L630"> 630</a> public theorem d_zero_of_second_kernel_extends</span>
+<span id="L631"><a href="#L631"> 631</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L632"><a href="#L632"> 632</a>     (hs : E.r₀≤2) {p : ℤ×ℤ} {r : ℤ} (hr : 3≤r)</span>
+<span id="L633"><a href="#L633"> 633</a>     (hext : ∀ x : E.Page 2 p, E.d 2 p x=0 → ReachesPage E (r+1) p x) : E.d r p=0 := by</span>
+<span id="L634"><a href="#L634"> 634</a>   classical</span>
+<span id="L635"><a href="#L635"> 635</a>   ext a</span>
+<span id="L636"><a href="#L636"> 636</a>   change E.d r p a=0</span>
+<span id="L637"><a href="#L637"> 637</a>   let A := E.ssData p</span>
+<span id="L638"><a href="#L638"> 638</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L639"><a href="#L639"> 639</a>   haveI : Epi (A.pageπ n) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L640"><a href="#L640"> 640</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ n)).mp inferInstance a</span>
+<span id="L641"><a href="#L641"> 641</a>   let x := (Subobject.ofLE (A.Z n) (A.Z ↑(2-E.r₀).toNat) (A.Z_anti (by</span>
+<span id="L642"><a href="#L642"> 642</a>     dsimp only [n]</span>
+<span id="L643"><a href="#L643"> 643</a>     exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega))) ≫ A.pageπ ↑(2-E.r₀).toNat) z</span>
+<span id="L644"><a href="#L644"> 644</a>   have hxa : RepresentsOnPage E r p x a := ⟨by omega,z,rfl,hz⟩</span>
+<span id="L645"><a href="#L645"> 645</a>   obtain ⟨a2,ha2⟩ := represents_before (by decide : (2:ℤ)≤2) (by omega : (2:ℤ)≤r) hxa</span>
+<span id="L646"><a href="#L646"> 646</a>   have hx2 : E.d 2 p x=0 := by</span>
+<span id="L647"><a href="#L647"> 647</a>     have hh := represents_d_zero_of_later hs (by omega : (2:ℤ)&lt;r) ha2 ⟨a,hxa⟩</span>
+<span id="L648"><a href="#L648"> 648</a>     simpa only [ha2.eq_on_page_two] using hh</span>
+<span id="L649"><a href="#L649"> 649</a>   exact represents_d_zero_of_later (by omega) (by omega : r&lt;r+1) hxa (hext x hx2)</span>
+<span id="L650"><a href="#L650"> 650</a> </span>
+<span id="L651"><a href="#L651"> 651</a> </span>
+<span id="L652"><a href="#L652"> 652</a> public theorem reaches_before {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {t : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p}</span>
+<span id="L653"><a href="#L653"> 653</a>     (hr : 2≤r) (hrt : r≤t) (ht : ReachesPage E t p x) : ReachesPage E r p x := by</span>
+<span id="L654"><a href="#L654"> 654</a>   obtain ⟨a,_,z,hz,_⟩ := ht</span>
+<span id="L655"><a href="#L655"> 655</a>   let D := E.ssData p</span>
+<span id="L656"><a href="#L656"> 656</a>   have hrt&#x27; : (↑(r-E.r₀).toNat : WithTop ℕ)≤↑(t-E.r₀).toNat := by</span>
+<span id="L657"><a href="#L657"> 657</a>     exact_mod_cast (show (r-E.r₀).toNat≤(t-E.r₀).toNat by omega)</span>
+<span id="L658"><a href="#L658"> 658</a>   let zr := (Subobject.ofLE (D.Z ↑(t-E.r₀).toNat) (D.Z ↑(r-E.r₀).toNat) (D.Z_anti hrt&#x27;)) z</span>
+<span id="L659"><a href="#L659"> 659</a>   refine ⟨D.pageπ _ zr,hr,zr,?_,rfl⟩</span>
+<span id="L660"><a href="#L660"> 660</a>   dsimp only [zr]</span>
+<span id="L661"><a href="#L661"> 661</a>   rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L662"><a href="#L662"> 662</a>   exact hz</span>
+<span id="L663"><a href="#L663"> 663</a> </span>
+<span id="L664"><a href="#L664"> 664</a> public theorem choice_frame_of_three_basis</span>
+<span id="L665"><a href="#L665"> 665</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}</span>
+<span id="L666"><a href="#L666"> 666</a>     (hr : 2&lt;r) (hr0 : E.r₀≤2)</span>
+<span id="L667"><a href="#L667"> 667</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2))</span>
+<span id="L668"><a href="#L668"> 668</a>     (b0 b1 b2 : E.Page 2 p)</span>
+<span id="L669"><a href="#L669"> 669</a>     (he0 : e.symm (Finsupp.single 0 1)=b0)</span>
+<span id="L670"><a href="#L670"> 670</a>     (he1 : e.symm (Finsupp.single 1 1)=b1)</span>
+<span id="L671"><a href="#L671"> 671</a>     (he2 : e.symm (Finsupp.single 2 1)=b2)</span>
+<span id="L672"><a href="#L672"> 672</a>     (a : E.Page r p) (ha : RepresentsOnPage E r p b1 a)</span>
+<span id="L673"><a href="#L673"> 673</a>     (hz : RepresentsOnPage E r p b2 0)</span>
+<span id="L674"><a href="#L674"> 674</a>     (hd0 : E.d 2 p b0≠0) : ∀ y:E.Page r p,y=0∨y=a := by</span>
+<span id="L675"><a href="#L675"> 675</a>   classical</span>
+<span id="L676"><a href="#L676"> 676</a>   have dz {x : E.Page 2 p} {b : E.Page r p}</span>
+<span id="L677"><a href="#L677"> 677</a>       (hb : RepresentsOnPage E r p x b) : E.d 2 p x=0 := by</span>
+<span id="L678"><a href="#L678"> 678</a>     obtain ⟨b2,hb2⟩ := reaches_before (by decide : (2:ℤ)≤2) (by omega : (2:ℤ)≤r) ⟨b,hb⟩</span>
+<span id="L679"><a href="#L679"> 679</a>     have hh := represents_d_zero_of_later hr0 hr hb2 ⟨b,hb⟩</span>
+<span id="L680"><a href="#L680"> 680</a>     simpa only [hb2.eq_on_page_two] using hh</span>
+<span id="L681"><a href="#L681"> 681</a>   have hd1 := dz ha</span>
+<span id="L682"><a href="#L682"> 682</a>   have hd2 := dz hz</span>
+<span id="L683"><a href="#L683"> 683</a>   have hadd : RepresentsOnPage E r p (b1+b2) a := by</span>
+<span id="L684"><a href="#L684"> 684</a>     obtain ⟨hr&#x27;,z,hz&#x27;,hza⟩ := ha</span>
+<span id="L685"><a href="#L685"> 685</a>     obtain ⟨_,w,hw,hwb⟩ := hz</span>
+<span id="L686"><a href="#L686"> 686</a>     refine ⟨hr&#x27;,z+w,by rw [map_add,hz&#x27;,hw],?_⟩</span>
+<span id="L687"><a href="#L687"> 687</a>     rw [map_add,hza,hwb,add_zero]</span>
+<span id="L688"><a href="#L688"> 688</a>   intro y</span>
+<span id="L689"><a href="#L689"> 689</a>   let A := E.ssData p</span>
+<span id="L690"><a href="#L690"> 690</a>   let m : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L691"><a href="#L691"> 691</a>   let n : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L692"><a href="#L692"> 692</a>   have hnm : n≤m := by</span>
+<span id="L693"><a href="#L693"> 693</a>     dsimp only [n,m]</span>
+<span id="L694"><a href="#L694"> 694</a>     exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega)</span>
+<span id="L695"><a href="#L695"> 695</a>   haveI : Epi (A.pageπ m) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L696"><a href="#L696"> 696</a>   obtain ⟨z,hy⟩ := (ModuleCat.epi_iff_surjective (A.pageπ m)).mp inferInstance y</span>
+<span id="L697"><a href="#L697"> 697</a>   let x := (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm) ≫ A.pageπ n) z</span>
+<span id="L698"><a href="#L698"> 698</a>   have hxrep : RepresentsOnPage E r p x y := ⟨by omega,z,rfl,hy⟩</span>
+<span id="L699"><a href="#L699"> 699</a>   have hx : E.d 2 p x=0 := dz hxrep</span>
+<span id="L700"><a href="#L700"> 700</a>   have heq : e x=Finsupp.single 0 (e x 0)+Finsupp.single 1 (e x 1)+Finsupp.single 2 (e x 2) := by</span>
+<span id="L701"><a href="#L701"> 701</a>     apply Finsupp.ext</span>
+<span id="L702"><a href="#L702"> 702</a>     intro i</span>
+<span id="L703"><a href="#L703"> 703</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L704"><a href="#L704"> 704</a>   have hxe : x=e.symm (Finsupp.single 0 (e x 0)+Finsupp.single 1 (e x 1)+Finsupp.single 2 (e x 2)) := by</span>
+<span id="L705"><a href="#L705"> 705</a>     rw [←heq,LinearEquiv.symm_apply_apply]</span>
+<span id="L706"><a href="#L706"> 706</a>   generalize hc0 : e x 0=c0 at hxe</span>
+<span id="L707"><a href="#L707"> 707</a>   generalize hc1 : e x 1=c1 at hxe</span>
+<span id="L708"><a href="#L708"> 708</a>   generalize hc2 : e x 2=c2 at hxe</span>
+<span id="L709"><a href="#L709"> 709</a>   fin_cases c0 &lt;;&gt; fin_cases c1 &lt;;&gt; fin_cases c2</span>
+<span id="L710"><a href="#L710"> 710</a>   · change x=e.symm (Finsupp.single 0 (0:KIP126.Core.Algebra.F2)+Finsupp.single 1 (0:KIP126.Core.Algebra.F2)+Finsupp.single 2 (0:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L711"><a href="#L711"> 711</a>     simp only [Finsupp.single_zero,map_zero,add_zero] at hxe</span>
+<span id="L712"><a href="#L712"> 712</a>     rw [hxe] at hx hxrep</span>
+<span id="L713"><a href="#L713"> 713</a>     left</span>
+<span id="L714"><a href="#L714"> 714</a>     apply represents_unique hxrep</span>
+<span id="L715"><a href="#L715"> 715</a>     exact RepresentsOnPage.zero (by omega)</span>
+<span id="L716"><a href="#L716"> 716</a>   · change x=e.symm (Finsupp.single 0 (0:KIP126.Core.Algebra.F2)+Finsupp.single 1 (0:KIP126.Core.Algebra.F2)+Finsupp.single 2 (1:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L717"><a href="#L717"> 717</a>     simp only [Finsupp.single_zero,zero_add,add_zero,he2] at hxe</span>
+<span id="L718"><a href="#L718"> 718</a>     rw [hxe] at hx hxrep</span>
+<span id="L719"><a href="#L719"> 719</a>     left</span>
+<span id="L720"><a href="#L720"> 720</a>     apply represents_unique hxrep</span>
+<span id="L721"><a href="#L721"> 721</a>     exact hz</span>
+<span id="L722"><a href="#L722"> 722</a>   · change x=e.symm (Finsupp.single 0 (0:KIP126.Core.Algebra.F2)+Finsupp.single 1 (1:KIP126.Core.Algebra.F2)+Finsupp.single 2 (0:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L723"><a href="#L723"> 723</a>     simp only [Finsupp.single_zero,zero_add,add_zero,he1] at hxe</span>
+<span id="L724"><a href="#L724"> 724</a>     rw [hxe] at hx hxrep</span>
+<span id="L725"><a href="#L725"> 725</a>     right</span>
+<span id="L726"><a href="#L726"> 726</a>     apply represents_unique hxrep</span>
+<span id="L727"><a href="#L727"> 727</a>     exact ha</span>
+<span id="L728"><a href="#L728"> 728</a>   · change x=e.symm (Finsupp.single 0 (0:KIP126.Core.Algebra.F2)+Finsupp.single 1 (1:KIP126.Core.Algebra.F2)+Finsupp.single 2 (1:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L729"><a href="#L729"> 729</a>     simp only [Finsupp.single_zero,map_add,zero_add,he1,he2] at hxe</span>
+<span id="L730"><a href="#L730"> 730</a>     rw [hxe] at hx hxrep</span>
+<span id="L731"><a href="#L731"> 731</a>     right</span>
+<span id="L732"><a href="#L732"> 732</a>     apply represents_unique hxrep</span>
+<span id="L733"><a href="#L733"> 733</a>     exact hadd</span>
+<span id="L734"><a href="#L734"> 734</a>   · change x=e.symm (Finsupp.single 0 (1:KIP126.Core.Algebra.F2)+Finsupp.single 1 (0:KIP126.Core.Algebra.F2)+Finsupp.single 2 (0:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L735"><a href="#L735"> 735</a>     simp only [Finsupp.single_zero,add_zero,he0] at hxe</span>
+<span id="L736"><a href="#L736"> 736</a>     rw [hxe] at hx hxrep</span>
+<span id="L737"><a href="#L737"> 737</a>     simp only [] at hx</span>
+<span id="L738"><a href="#L738"> 738</a>     exact (hd0 hx).elim</span>
+<span id="L739"><a href="#L739"> 739</a>   · change x=e.symm (Finsupp.single 0 (1:KIP126.Core.Algebra.F2)+Finsupp.single 1 (0:KIP126.Core.Algebra.F2)+Finsupp.single 2 (1:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L740"><a href="#L740"> 740</a>     simp only [Finsupp.single_zero,map_add,add_zero,he0,he2] at hxe</span>
+<span id="L741"><a href="#L741"> 741</a>     rw [hxe] at hx hxrep</span>
+<span id="L742"><a href="#L742"> 742</a>     simp only [map_add,hd2,add_zero] at hx</span>
+<span id="L743"><a href="#L743"> 743</a>     exact (hd0 hx).elim</span>
+<span id="L744"><a href="#L744"> 744</a>   · change x=e.symm (Finsupp.single 0 (1:KIP126.Core.Algebra.F2)+Finsupp.single 1 (1:KIP126.Core.Algebra.F2)+Finsupp.single 2 (0:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L745"><a href="#L745"> 745</a>     simp only [Finsupp.single_zero,map_add,add_zero,he0,he1] at hxe</span>
+<span id="L746"><a href="#L746"> 746</a>     rw [hxe] at hx hxrep</span>
+<span id="L747"><a href="#L747"> 747</a>     simp only [map_add,hd1,add_zero] at hx</span>
+<span id="L748"><a href="#L748"> 748</a>     exact (hd0 hx).elim</span>
+<span id="L749"><a href="#L749"> 749</a>   · change x=e.symm (Finsupp.single 0 (1:KIP126.Core.Algebra.F2)+Finsupp.single 1 (1:KIP126.Core.Algebra.F2)+Finsupp.single 2 (1:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L750"><a href="#L750"> 750</a>     simp only [map_add,he0,he1,he2] at hxe</span>
+<span id="L751"><a href="#L751"> 751</a>     rw [hxe] at hx hxrep</span>
+<span id="L752"><a href="#L752"> 752</a>     simp only [map_add,hd1,hd2,add_zero] at hx</span>
+<span id="L753"><a href="#L753"> 753</a>     exact (hd0 hx).elim</span>
+<span id="L754"><a href="#L754"> 754</a> </span>
+<span id="L755"><a href="#L755"> 755</a> public theorem choice_single_basis_zero_page</span>
+<span id="L756"><a href="#L756"> 756</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}</span>
+<span id="L757"><a href="#L757"> 757</a>     (hr : 2≤r)</span>
+<span id="L758"><a href="#L758"> 758</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 1 →₀ KIP126.Core.Algebra.F2))</span>
+<span id="L759"><a href="#L759"> 759</a>     (b : E.Page 2 p) (he : e.symm (Finsupp.single 0 1)=b)</span>
+<span id="L760"><a href="#L760"> 760</a>     (hb : RepresentsOnPage E r p b 0) : Subsingleton (E.Page r p) := by</span>
+<span id="L761"><a href="#L761"> 761</a>   classical</span>
+<span id="L762"><a href="#L762"> 762</a>   have hall (y : E.Page r p) : y=0 := by</span>
+<span id="L763"><a href="#L763"> 763</a>     let A := E.ssData p</span>
+<span id="L764"><a href="#L764"> 764</a>     let m : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L765"><a href="#L765"> 765</a>     let n : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L766"><a href="#L766"> 766</a>     have hnm : n≤m := by</span>
+<span id="L767"><a href="#L767"> 767</a>       dsimp only [n,m]</span>
+<span id="L768"><a href="#L768"> 768</a>       exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega)</span>
+<span id="L769"><a href="#L769"> 769</a>     haveI : Epi (A.pageπ m) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L770"><a href="#L770"> 770</a>     obtain ⟨z,hy⟩ := (ModuleCat.epi_iff_surjective (A.pageπ m)).mp inferInstance y</span>
+<span id="L771"><a href="#L771"> 771</a>     let x := (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm) ≫ A.pageπ n) z</span>
+<span id="L772"><a href="#L772"> 772</a>     have hxrep : RepresentsOnPage E r p x y := ⟨hr,z,rfl,hy⟩</span>
+<span id="L773"><a href="#L773"> 773</a>     have heq : e x=Finsupp.single 0 (e x 0) := by</span>
+<span id="L774"><a href="#L774"> 774</a>       apply Finsupp.ext</span>
+<span id="L775"><a href="#L775"> 775</a>       intro i</span>
+<span id="L776"><a href="#L776"> 776</a>       fin_cases i</span>
+<span id="L777"><a href="#L777"> 777</a>       simp</span>
+<span id="L778"><a href="#L778"> 778</a>     have hxe : x=e.symm (Finsupp.single 0 (e x 0)) := by</span>
+<span id="L779"><a href="#L779"> 779</a>       rw [←heq,LinearEquiv.symm_apply_apply]</span>
+<span id="L780"><a href="#L780"> 780</a>     generalize hc : e x 0=c at hxe</span>
+<span id="L781"><a href="#L781"> 781</a>     fin_cases c</span>
+<span id="L782"><a href="#L782"> 782</a>     · change x=e.symm (Finsupp.single 0 (0:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L783"><a href="#L783"> 783</a>       simp only [Finsupp.single_zero,map_zero] at hxe</span>
+<span id="L784"><a href="#L784"> 784</a>       rw [hxe] at hxrep</span>
+<span id="L785"><a href="#L785"> 785</a>       exact represents_unique hxrep (RepresentsOnPage.zero hr)</span>
+<span id="L786"><a href="#L786"> 786</a>     · change x=e.symm (Finsupp.single 0 (1:KIP126.Core.Algebra.F2)) at hxe</span>
+<span id="L787"><a href="#L787"> 787</a>       rw [he] at hxe</span>
+<span id="L788"><a href="#L788"> 788</a>       rw [hxe] at hxrep</span>
+<span id="L789"><a href="#L789"> 789</a>       exact represents_unique hxrep hb</span>
+<span id="L790"><a href="#L790"> 790</a>   exact ⟨fun x y=&gt;(hall x).trans (hall y).symm⟩</span>
+<span id="L791"><a href="#L791"> 791</a> </span>
+<span id="L792"><a href="#L792"> 792</a> public theorem choice_next_zero_of_single_frame_nonzero_differential</span>
+<span id="L793"><a href="#L793"> 793</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)} {r : ℤ} {p : ℤ×ℤ}</span>
+<span id="L794"><a href="#L794"> 794</a>     (hr : 2≤r) (hr0 : E.r₀≤r)</span>
+<span id="L795"><a href="#L795"> 795</a>     (a : E.Page r p) (ha : E.d r p a≠0) (hall : ∀b:E.Page r p,b=0∨b=a) :</span>
+<span id="L796"><a href="#L796"> 796</a>     Subsingleton (E.Page (r+1) p) := by</span>
+<span id="L797"><a href="#L797"> 797</a>   classical</span>
+<span id="L798"><a href="#L798"> 798</a>   have hzero (y:E.Page (r+1) p) : y=0 := by</span>
+<span id="L799"><a href="#L799"> 799</a>     let A := E.ssData p</span>
+<span id="L800"><a href="#L800"> 800</a>     let m : WithTop ℕ := ↑(r+1-E.r₀).toNat</span>
+<span id="L801"><a href="#L801"> 801</a>     let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L802"><a href="#L802"> 802</a>     let n0 : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L803"><a href="#L803"> 803</a>     have hnm : n≤m := by</span>
+<span id="L804"><a href="#L804"> 804</a>       dsimp only [n,m]</span>
+<span id="L805"><a href="#L805"> 805</a>       exact_mod_cast (show (r-E.r₀).toNat≤(r+1-E.r₀).toNat by omega)</span>
+<span id="L806"><a href="#L806"> 806</a>     have hn0 : n0≤n := by</span>
+<span id="L807"><a href="#L807"> 807</a>       dsimp only [n0,n]</span>
+<span id="L808"><a href="#L808"> 808</a>       exact_mod_cast (show (2-E.r₀).toNat≤(r-E.r₀).toNat by omega)</span>
+<span id="L809"><a href="#L809"> 809</a>     haveI : Epi (A.pageπ m) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L810"><a href="#L810"> 810</a>     obtain ⟨z,hy⟩ := (ModuleCat.epi_iff_surjective (A.pageπ m)).mp inferInstance y</span>
+<span id="L811"><a href="#L811"> 811</a>     let x := (Subobject.ofLE (A.Z m) (A.Z n0) (A.Z_anti (hn0.trans hnm)) ≫ A.pageπ n0) z</span>
+<span id="L812"><a href="#L812"> 812</a>     let i := Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm)</span>
+<span id="L813"><a href="#L813"> 813</a>     let b := A.pageπ n (i z)</span>
+<span id="L814"><a href="#L814"> 814</a>     have hty : RepresentsOnPage E (r+1) p x y := ⟨by omega,z,rfl,hy⟩</span>
+<span id="L815"><a href="#L815"> 815</a>     have hbr : RepresentsOnPage E r p x b := by</span>
+<span id="L816"><a href="#L816"> 816</a>       refine ⟨hr,i z,?_,rfl⟩</span>
+<span id="L817"><a href="#L817"> 817</a>       dsimp only [i,x]</span>
+<span id="L818"><a href="#L818"> 818</a>       rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L819"><a href="#L819"> 819</a>     have hdb : E.d r p b=0 := represents_d_zero_of_later hr0 (by omega) hbr ⟨y,hty⟩</span>
+<span id="L820"><a href="#L820"> 820</a>     have hb : b=0 := (hall b).resolve_right (fun he=&gt;ha (he ▸ hdb))</span>
+<span id="L821"><a href="#L821"> 821</a>     rw [←hy]</span>
+<span id="L822"><a href="#L822"> 822</a>     apply (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z _) _).mpr</span>
+<span id="L823"><a href="#L823"> 823</a>     have hh := (subobject_cokernel_π_eq_zero_iff (A.B n) (A.Z n) (A.B_le_Z _) _).mp hb</span>
+<span id="L824"><a href="#L824"> 824</a>     have he : (A.Z n).arrow (i z)=(A.Z m).arrow z :=</span>
+<span id="L825"><a href="#L825"> 825</a>       ConcreteCategory.congr_hom (Subobject.ofLE_arrow (A.Z_anti hnm)) z</span>
+<span id="L826"><a href="#L826"> 826</a>     rw [he] at hh</span>
+<span id="L827"><a href="#L827"> 827</a>     exact (ModuleCat.subobjectModule A.V).monotone (A.B_mono hnm) hh</span>
+<span id="L828"><a href="#L828"> 828</a>   exact ⟨fun x y=&gt;(hzero x).trans (hzero y).symm⟩</span>
+<span id="L829"><a href="#L829"> 829</a> </span>
+<span id="L830"><a href="#L830"> 830</a> </span>
+<span id="L831"><a href="#L831"> 831</a> public theorem d_zero_of_complete_representatives</span>
+<span id="L832"><a href="#L832"> 832</a>     {ESeq : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L833"><a href="#L833"> 833</a>     {r : ℤ} {p : ℤ × ℤ} {n : ℕ} (hr : 2 ≤ r)</span>
+<span id="L834"><a href="#L834"> 834</a>     (e : ESeq.Page 2 p ≃ₗ[ℤ] (Fin n →₀ KIP126.Core.Algebra.F2))</span>
+<span id="L835"><a href="#L835"> 835</a>     (hb : ∀ i : Fin n, ∃ xr : ESeq.Page r p,</span>
+<span id="L836"><a href="#L836"> 836</a>       RepresentsOnPage ESeq r p (e.symm (Finsupp.single i 1)) xr ∧ ESeq.d r p xr = 0) :</span>
+<span id="L837"><a href="#L837"> 837</a>     ESeq.d r p = 0 := by</span>
+<span id="L838"><a href="#L838"> 838</a>   have hall (f : Fin n →₀ KIP126.Core.Algebra.F2) :</span>
+<span id="L839"><a href="#L839"> 839</a>       ∃ xr : ESeq.Page r p, RepresentsOnPage ESeq r p (e.symm f) xr ∧ ESeq.d r p xr = 0 := by</span>
+<span id="L840"><a href="#L840"> 840</a>     induction f using Finsupp.induction with</span>
+<span id="L841"><a href="#L841"> 841</a>     | zero =&gt; exact ⟨0, (map_zero e.symm) ▸ RepresentsOnPage.zero hr, map_zero _⟩</span>
+<span id="L842"><a href="#L842"> 842</a>     | @single_add i a f hi ha ih =&gt;</span>
+<span id="L843"><a href="#L843"> 843</a>       fin_cases a</span>
+<span id="L844"><a href="#L844"> 844</a>       · simpa using ih</span>
+<span id="L845"><a href="#L845"> 845</a>       · obtain ⟨xr,hxr,hdx⟩ := hb i</span>
+<span id="L846"><a href="#L846"> 846</a>         obtain ⟨yr,hyr,hdy⟩ := ih</span>
+<span id="L847"><a href="#L847"> 847</a>         exact ⟨xr+yr, (map_add e.symm _ _) ▸ represents_add_tail hxr hyr, by rw [map_add,hdx,hdy,zero_add]⟩</span>
+<span id="L848"><a href="#L848"> 848</a>   ext yr</span>
+<span id="L849"><a href="#L849"> 849</a>   haveI : Epi ((ESeq.ssData p).pageπ ↑(r-ESeq.r₀).toNat) := by</span>
+<span id="L850"><a href="#L850"> 850</a>     change Epi (cokernel.π _)</span>
+<span id="L851"><a href="#L851"> 851</a>     infer_instance</span>
+<span id="L852"><a href="#L852"> 852</a>   obtain ⟨z,rfl⟩ := (ModuleCat.epi_iff_surjective ((ESeq.ssData p).pageπ ↑(r-ESeq.r₀).toNat)).mp inferInstance yr</span>
+<span id="L853"><a href="#L853"> 853</a>   let x : ESeq.Page 2 p := (Subobject.ofLE _ _ ((ESeq.ssData p).Z_anti</span>
+<span id="L854"><a href="#L854"> 854</a>     (by exact_mod_cast (show (2-ESeq.r₀).toNat ≤ (r-ESeq.r₀).toNat by omega))) ≫</span>
+<span id="L855"><a href="#L855"> 855</a>     (ESeq.ssData p).pageπ ↑(2-ESeq.r₀).toNat) z</span>
+<span id="L856"><a href="#L856"> 856</a>   have hrep : RepresentsOnPage ESeq r p x ((ESeq.ssData p).pageπ ↑(r-ESeq.r₀).toNat z) :=</span>
+<span id="L857"><a href="#L857"> 857</a>     ⟨hr,z,rfl,rfl⟩</span>
+<span id="L858"><a href="#L858"> 858</a>   obtain ⟨xr,hxr,hdx⟩ := hall (e x)</span>
+<span id="L859"><a href="#L859"> 859</a>   rw [LinearEquiv.symm_apply_apply] at hxr</span>
+<span id="L860"><a href="#L860"> 860</a>   rw [represents_unique hrep hxr]</span>
+<span id="L861"><a href="#L861"> 861</a>   exact hdx</span>
+<span id="L862"><a href="#L862"> 862</a> </span>
+<span id="L863"><a href="#L863"> 863</a> </span>
+<span id="L864"><a href="#L864"> 864</a> public theorem page_eq_sum_of_complete_representatives</span>
+<span id="L865"><a href="#L865"> 865</a>     {ESeq : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L866"><a href="#L866"> 866</a>     {r : ℤ} {p : ℤ × ℤ} {n : ℕ} (hr : 2 ≤ r)</span>
+<span id="L867"><a href="#L867"> 867</a>     (e : ESeq.Page 2 p ≃ₗ[ℤ] (Fin n →₀ KIP126.Core.Algebra.F2))</span>
+<span id="L868"><a href="#L868"> 868</a>     (xr : Fin n → ESeq.Page r p)</span>
+<span id="L869"><a href="#L869"> 869</a>     (hb : ∀ i : Fin n, RepresentsOnPage ESeq r p (e.symm (Finsupp.single i 1)) (xr i))</span>
+<span id="L870"><a href="#L870"> 870</a>     (a : ESeq.Page r p) :</span>
+<span id="L871"><a href="#L871"> 871</a>     ∃ c : Fin n → KIP126.Core.Algebra.F2, a = ∑ i, if c i = 0 then 0 else xr i := by</span>
+<span id="L872"><a href="#L872"> 872</a>   classical</span>
+<span id="L873"><a href="#L873"> 873</a>   have htwo (i : Fin n) : xr i + xr i = 0 := by</span>
+<span id="L874"><a href="#L874"> 874</a>     have hh := represents_add_tail (hb i) (hb i)</span>
+<span id="L875"><a href="#L875"> 875</a>     have he : e.symm (Finsupp.single i 1) + e.symm (Finsupp.single i 1) = 0 := by</span>
+<span id="L876"><a href="#L876"> 876</a>       rw [← map_add, ← Finsupp.single_add]</span>
+<span id="L877"><a href="#L877"> 877</a>       have h2 : (1 : KIP126.Core.Algebra.F2)+1 = 0 := rfl</span>
+<span id="L878"><a href="#L878"> 878</a>       rw [h2,Finsupp.single_zero,map_zero]</span>
+<span id="L879"><a href="#L879"> 879</a>     rw [he] at hh</span>
+<span id="L880"><a href="#L880"> 880</a>     exact represents_unique hh (RepresentsOnPage.zero hr)</span>
+<span id="L881"><a href="#L881"> 881</a>   have hadd2 : (1 : KIP126.Core.Algebra.F2)+1 = 0 := rfl</span>
+<span id="L882"><a href="#L882"> 882</a>   let φ (i : Fin n) : KIP126.Core.Algebra.F2 →+ ESeq.Page r p :=</span>
+<span id="L883"><a href="#L883"> 883</a>     { toFun := fun c =&gt; if c=0 then 0 else xr i</span>
+<span id="L884"><a href="#L884"> 884</a>       map_zero&#x27; := by simp</span>
+<span id="L885"><a href="#L885"> 885</a>       map_add&#x27; := by</span>
+<span id="L886"><a href="#L886"> 886</a>         intro a b</span>
+<span id="L887"><a href="#L887"> 887</a>         fin_cases a &lt;;&gt; fin_cases b &lt;;&gt; simp [htwo,hadd2] }</span>
+<span id="L888"><a href="#L888"> 888</a>   let Φ := Finsupp.liftAddHom φ</span>
+<span id="L889"><a href="#L889"> 889</a>   have hrep (f : Fin n →₀ KIP126.Core.Algebra.F2) :</span>
+<span id="L890"><a href="#L890"> 890</a>       RepresentsOnPage ESeq r p (e.symm f) (Φ f) := by</span>
+<span id="L891"><a href="#L891"> 891</a>     induction f using Finsupp.induction with</span>
+<span id="L892"><a href="#L892"> 892</a>     | zero =&gt; simpa only [map_zero] using (RepresentsOnPage.zero (E := ESeq) (p := p) hr)</span>
+<span id="L893"><a href="#L893"> 893</a>     | @single_add i a f hi ha ih =&gt;</span>
+<span id="L894"><a href="#L894"> 894</a>       fin_cases a</span>
+<span id="L895"><a href="#L895"> 895</a>       · simpa using ih</span>
+<span id="L896"><a href="#L896"> 896</a>       · rw [map_add,map_add]</span>
+<span id="L897"><a href="#L897"> 897</a>         apply represents_add_tail _ ih</span>
+<span id="L898"><a href="#L898"> 898</a>         simpa only [Φ,Finsupp.liftAddHom_apply_single,φ,AddMonoidHom.coe_mk,ZeroHom.coe_mk,</span>
+<span id="L899"><a href="#L899"> 899</a>           show (⟨1,by decide⟩ : KIP126.Core.Algebra.F2) = 1 from rfl, one_ne_zero, ite_false] using hb i</span>
+<span id="L900"><a href="#L900"> 900</a>   haveI : Epi ((ESeq.ssData p).pageπ ↑(r-ESeq.r₀).toNat) := by</span>
+<span id="L901"><a href="#L901"> 901</a>     change Epi (cokernel.π _)</span>
+<span id="L902"><a href="#L902"> 902</a>     infer_instance</span>
+<span id="L903"><a href="#L903"> 903</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective ((ESeq.ssData p).pageπ ↑(r-ESeq.r₀).toNat)).mp inferInstance a</span>
+<span id="L904"><a href="#L904"> 904</a>   let x : ESeq.Page 2 p := (Subobject.ofLE _ _ ((ESeq.ssData p).Z_anti</span>
+<span id="L905"><a href="#L905"> 905</a>     (by exact_mod_cast (show (2-ESeq.r₀).toNat ≤ (r-ESeq.r₀).toNat by omega))) ≫</span>
+<span id="L906"><a href="#L906"> 906</a>     (ESeq.ssData p).pageπ ↑(2-ESeq.r₀).toNat) z</span>
+<span id="L907"><a href="#L907"> 907</a>   have hx : RepresentsOnPage ESeq r p x a := ⟨hr,z,rfl,hz⟩</span>
+<span id="L908"><a href="#L908"> 908</a>   have hy := hrep (e x)</span>
+<span id="L909"><a href="#L909"> 909</a>   rw [LinearEquiv.symm_apply_apply] at hy</span>
+<span id="L910"><a href="#L910"> 910</a>   refine ⟨e x, ?_⟩</span>
+<span id="L911"><a href="#L911"> 911</a>   rw [represents_unique hx hy]</span>
+<span id="L912"><a href="#L912"> 912</a>   change Finsupp.sum (e x) (fun i c =&gt; if c=0 then 0 else xr i) = _</span>
+<span id="L913"><a href="#L913"> 913</a>   exact Finsupp.sum_fintype _ _ (fun _ =&gt; by simp)</span>
+<span id="L914"><a href="#L914"> 914</a> </span>
+<span id="L915"><a href="#L915"> 915</a> </span>
+<span id="L916"><a href="#L916"> 916</a> public theorem same_boundaries_projection_eq</span>
+<span id="L917"><a href="#L917"> 917</a>     (A : SSData (ModuleCat.{v} ℤ))</span>
+<span id="L918"><a href="#L918"> 918</a>     (n m : WithTop ℕ) (hnm : n ≤ m) (hB : A.B m = A.B n)</span>
+<span id="L919"><a href="#L919"> 919</a>     (z z&#x27; : (Subobject.underlying.obj (A.Z m) : ModuleCat.{v} ℤ))</span>
+<span id="L920"><a href="#L920"> 920</a>     (hz : A.pageπ m z = A.pageπ m z&#x27;) :</span>
+<span id="L921"><a href="#L921"> 921</a>     (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm) ≫ A.pageπ n) z =</span>
+<span id="L922"><a href="#L922"> 922</a>     (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm) ≫ A.pageπ n) z&#x27; := by</span>
+<span id="L923"><a href="#L923"> 923</a>   apply sub_eq_zero.mp</span>
+<span id="L924"><a href="#L924"> 924</a>   rw [← map_sub]</span>
+<span id="L925"><a href="#L925"> 925</a>   have hz0 : A.pageπ m (z-z&#x27;) = 0 := by rw [map_sub,hz,sub_self]</span>
+<span id="L926"><a href="#L926"> 926</a>   have hm := (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z m) (z-z&#x27;)).mp hz0</span>
+<span id="L927"><a href="#L927"> 927</a>   rw [hB] at hm</span>
+<span id="L928"><a href="#L928"> 928</a>   change A.pageπ n ((Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm)) (z-z&#x27;)) = 0</span>
+<span id="L929"><a href="#L929"> 929</a>   apply (subobject_cokernel_π_eq_zero_iff (A.B n) (A.Z n) (A.B_le_Z n) _).mpr</span>
+<span id="L930"><a href="#L930"> 930</a>   change (Subobject.ofLE (A.Z m) (A.Z n) _ ≫ (A.Z n).arrow) (z-z&#x27;) ∈ _</span>
+<span id="L931"><a href="#L931"> 931</a>   rwa [Subobject.ofLE_arrow]</span>
+<span id="L932"><a href="#L932"> 932</a> </span>
+<span id="L933"><a href="#L933"> 933</a> </span>
+<span id="L934"><a href="#L934"> 934</a> public theorem middle_add {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {a b : E.Page r p}</span>
+<span id="L935"><a href="#L935"> 935</a>     (hx : RepresentsOnPage E r p x a) (hy : RepresentsOnPage E r p y b) :</span>
+<span id="L936"><a href="#L936"> 936</a>     RepresentsOnPage E r p (x+y) (a+b) := by</span>
+<span id="L937"><a href="#L937"> 937</a>   classical</span>
+<span id="L938"><a href="#L938"> 938</a>   obtain ⟨hr,z,hz,ha⟩ := hx</span>
+<span id="L939"><a href="#L939"> 939</a>   obtain ⟨_,w,hw,hb⟩ := hy</span>
+<span id="L940"><a href="#L940"> 940</a>   exact ⟨hr,z+w,by rw [map_add,hz,hw],by rw [map_add,ha,hb]⟩</span>
+<span id="L941"><a href="#L941"> 941</a> </span>
+<span id="L942"><a href="#L942"> 942</a> </span>
+<span id="L943"><a href="#L943"> 943</a> public theorem middle_if {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {a : E.Page r p}</span>
+<span id="L944"><a href="#L944"> 944</a>     (c : F2) (h : RepresentsOnPage E r p x a) :</span>
+<span id="L945"><a href="#L945"> 945</a>     RepresentsOnPage E r p (if c=0 then 0 else x) (if c=0 then 0 else a) := by</span>
+<span id="L946"><a href="#L946"> 946</a>   classical</span>
+<span id="L947"><a href="#L947"> 947</a>   split</span>
+<span id="L948"><a href="#L948"> 948</a>   · exact RepresentsOnPage.zero h.1</span>
+<span id="L949"><a href="#L949"> 949</a>   · exact h</span>
+<span id="L950"><a href="#L950"> 950</a> </span>
+<span id="L951"><a href="#L951"> 951</a> </span>
+<span id="L952"><a href="#L952"> 952</a> public theorem middle_rep2 {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L953"><a href="#L953"> 953</a>     {p : ℤ × ℤ} {r : ℤ} {x : E.Page 2 p} {a : E.Page r p} (hr : 2≤r)</span>
+<span id="L954"><a href="#L954"> 954</a>     (ha : RepresentsOnPage E r p x a) : RepresentsOnPage E 2 p x x := by</span>
+<span id="L955"><a href="#L955"> 955</a>   classical</span>
+<span id="L956"><a href="#L956"> 956</a>   obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤2) hr ha</span>
+<span id="L957"><a href="#L957"> 957</a>   rw [←hb.eq_on_page_two] at hb</span>
+<span id="L958"><a href="#L958"> 958</a>   exact hb</span>
+<span id="L959"><a href="#L959"> 959</a> </span>
+<span id="L960"><a href="#L960"> 960</a> </span>
+<span id="L961"><a href="#L961"> 961</a> public theorem reaches_earlier {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hr : 2 ≤ r) (hrt : r ≤ t)</span>
+<span id="L962"><a href="#L962"> 962</a>     (ht : ReachesPage E t p x) : ReachesPage E r p x := by</span>
+<span id="L963"><a href="#L963"> 963</a>   classical</span>
+<span id="L964"><a href="#L964"> 964</a>   obtain ⟨_, _, z, hz, _⟩ := ht</span>
+<span id="L965"><a href="#L965"> 965</a>   let A := E.ssData p</span>
+<span id="L966"><a href="#L966"> 966</a>   let m : WithTop ℕ := ↑(t-E.r₀).toNat</span>
+<span id="L967"><a href="#L967"> 967</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L968"><a href="#L968"> 968</a>   have hnm : n ≤ m := by</span>
+<span id="L969"><a href="#L969"> 969</a>     dsimp only [n,m]</span>
+<span id="L970"><a href="#L970"> 970</a>     exact_mod_cast (show (r-E.r₀).toNat ≤ (t-E.r₀).toNat by omega)</span>
+<span id="L971"><a href="#L971"> 971</a>   let z&#x27; := (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm)) z</span>
+<span id="L972"><a href="#L972"> 972</a>   refine ⟨A.pageπ n z&#x27;, hr, z&#x27;, ?_, rfl⟩</span>
+<span id="L973"><a href="#L973"> 973</a>   dsimp only [z&#x27;]</span>
+<span id="L974"><a href="#L974"> 974</a>   rw [← CategoryTheory.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]</span>
+<span id="L975"><a href="#L975"> 975</a>   exact hz</span>
+<span id="L976"><a href="#L976"> 976</a> </span>
+<span id="L977"><a href="#L977"> 977</a> </span>
+<span id="L978"><a href="#L978"> 978</a> public theorem represents_sub {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {a b : E.Page 2 p} {ar br : E.Page r p}</span>
+<span id="L979"><a href="#L979"> 979</a>     (ha : RepresentsOnPage E r p a ar) (hb : RepresentsOnPage E r p b br) :</span>
+<span id="L980"><a href="#L980"> 980</a>     RepresentsOnPage E r p (a-b) (ar-br) := by</span>
+<span id="L981"><a href="#L981"> 981</a>   classical</span>
+<span id="L982"><a href="#L982"> 982</a>   obtain ⟨hr,z,hz,hzr⟩ := ha</span>
+<span id="L983"><a href="#L983"> 983</a>   obtain ⟨_,w,hw,hwr⟩ := hb</span>
+<span id="L984"><a href="#L984"> 984</a>   exact ⟨hr,z-w,by rw [map_sub,hz,hw],by rw [map_sub,hzr,hwr]⟩</span>
+<span id="L985"><a href="#L985"> 985</a> </span>
+<span id="L986"><a href="#L986"> 986</a> </span>
+<span id="L987"><a href="#L987"> 987</a> public theorem differential_target_cycle {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p q : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 q} (h : HasDifferential E r p q x y) :</span>
+<span id="L988"><a href="#L988"> 988</a>     ∃ yr : E.Page r q, RepresentsOnPage E r q y yr ∧ E.d r q yr = 0 := by</span>
+<span id="L989"><a href="#L989"> 989</a>   classical</span>
+<span id="L990"><a href="#L990"> 990</a>   obtain ⟨rfl,xr,yr,_,hy,hd⟩ := h</span>
+<span id="L991"><a href="#L991"> 991</a>   simp only [eqToHom_refl, Category.comp_id] at hd</span>
+<span id="L992"><a href="#L992"> 992</a>   exact ⟨yr,hy,IsPageBoundary.d_eq_zero ⟨xr,hd⟩⟩</span>
+<span id="L993"><a href="#L993"> 993</a> </span>
+<span id="L994"><a href="#L994"> 994</a> </span>
+<span id="L995"><a href="#L995"> 995</a> public theorem represents_two_self {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} (x : E.Page 2 p) : RepresentsOnPage E 2 p x x := by</span>
+<span id="L996"><a href="#L996"> 996</a>   classical</span>
+<span id="L997"><a href="#L997"> 997</a>   haveI : Epi ((E.ssData p).pageπ ↑(2-E.r₀).toNat) := by</span>
+<span id="L998"><a href="#L998"> 998</a>     change Epi (cokernel.π _)</span>
+<span id="L999"><a href="#L999"> 999</a>     infer_instance</span>
+<span id="L1000"><a href="#L1000">1000</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective ((E.ssData p).pageπ ↑(2-E.r₀).toNat)).mp inferInstance x</span>
+<span id="L1001"><a href="#L1001">1001</a>   exact ⟨le_rfl,z,by simpa only [Subobject.ofLE_refl,Category.id_comp] using hz,hz⟩</span>
+<span id="L1002"><a href="#L1002">1002</a> </span>
+<span id="L1003"><a href="#L1003">1003</a> </span>
+<span id="L1004"><a href="#L1004">1004</a> public theorem represents_later_zero {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {x : E.Page 2 p} {t : ℤ} (hrt : r ≤ t)</span>
+<span id="L1005"><a href="#L1005">1005</a>     (hr : RepresentsOnPage E r p x 0) {y : E.Page t p}</span>
+<span id="L1006"><a href="#L1006">1006</a>     (ht : RepresentsOnPage E t p x y) : y = 0 := by</span>
+<span id="L1007"><a href="#L1007">1007</a>   classical</span>
+<span id="L1008"><a href="#L1008">1008</a>   obtain ⟨_,z,hz,hzy⟩ := ht</span>
+<span id="L1009"><a href="#L1009">1009</a>   let A := E.ssData p</span>
+<span id="L1010"><a href="#L1010">1010</a>   let n : WithTop ℕ := ↑(r-E.r₀).toNat</span>
+<span id="L1011"><a href="#L1011">1011</a>   let m : WithTop ℕ := ↑(t-E.r₀).toNat</span>
+<span id="L1012"><a href="#L1012">1012</a>   have hnm : n ≤ m := by</span>
+<span id="L1013"><a href="#L1013">1013</a>     dsimp only [n,m]</span>
+<span id="L1014"><a href="#L1014">1014</a>     exact_mod_cast (show (r-E.r₀).toNat ≤ (t-E.r₀).toNat by omega)</span>
+<span id="L1015"><a href="#L1015">1015</a>   let z&#x27; := (Subobject.ofLE (A.Z m) (A.Z n) (A.Z_anti hnm)) z</span>
+<span id="L1016"><a href="#L1016">1016</a>   have hrep : RepresentsOnPage E r p x (A.pageπ n z&#x27;) := by</span>
+<span id="L1017"><a href="#L1017">1017</a>     refine ⟨hr.1,z&#x27;,?_,rfl⟩</span>
+<span id="L1018"><a href="#L1018">1018</a>     dsimp only [z&#x27;]</span>
+<span id="L1019"><a href="#L1019">1019</a>     rw [← CategoryTheory.comp_apply,← Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L1020"><a href="#L1020">1020</a>     exact hz</span>
+<span id="L1021"><a href="#L1021">1021</a>   have hh := (subobject_cokernel_π_eq_zero_iff (A.B n) (A.Z n) (A.B_le_Z _) _).mp</span>
+<span id="L1022"><a href="#L1022">1022</a>     (represents_unique hrep hr)</span>
+<span id="L1023"><a href="#L1023">1023</a>   have hh&#x27; := (ModuleCat.subobjectModule A.V).monotone (A.B_mono hnm) hh</span>
+<span id="L1024"><a href="#L1024">1024</a>   rw [← hzy]</span>
+<span id="L1025"><a href="#L1025">1025</a>   apply (subobject_cokernel_π_eq_zero_iff (A.B m) (A.Z m) (A.B_le_Z _) _).mpr</span>
+<span id="L1026"><a href="#L1026">1026</a>   change (Subobject.ofLE (A.Z m) (A.Z n) _ ≫ (A.Z n).arrow) z ∈ _ at hh&#x27;</span>
+<span id="L1027"><a href="#L1027">1027</a>   rwa [Subobject.ofLE_arrow] at hh&#x27;</span>
+<span id="L1028"><a href="#L1028">1028</a> </span>
+<span id="L1029"><a href="#L1029">1029</a> </span>
+<span id="L1030"><a href="#L1030">1030</a> public theorem page_has_initial_representative {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (hr : 2 ≤ r) (a : E.Page r p) :</span>
+<span id="L1031"><a href="#L1031">1031</a>     ∃ x : E.Page 2 p, RepresentsOnPage E r p x a := by</span>
+<span id="L1032"><a href="#L1032">1032</a>   classical</span>
+<span id="L1033"><a href="#L1033">1033</a>   haveI : Epi ((E.ssData p).pageπ ↑(r-E.r₀).toNat) := by</span>
+<span id="L1034"><a href="#L1034">1034</a>     change Epi (cokernel.π _)</span>
+<span id="L1035"><a href="#L1035">1035</a>     infer_instance</span>
+<span id="L1036"><a href="#L1036">1036</a>   obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective ((E.ssData p).pageπ ↑(r-E.r₀).toNat)).mp inferInstance a</span>
+<span id="L1037"><a href="#L1037">1037</a>   exact ⟨_,hr,z,rfl,hz⟩</span>
+<span id="L1038"><a href="#L1038">1038</a> </span>
+<span id="L1039"><a href="#L1039">1039</a> </span>
+<span id="L1040"><a href="#L1040">1040</a> public theorem represents_transport_eq {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} {t : ℤ} {x y : E.Page 2 p}</span>
+<span id="L1041"><a href="#L1041">1041</a>     {ar : E.Page r p} {a b : E.Page t p} (hrt : r ≤ t)</span>
+<span id="L1042"><a href="#L1042">1042</a>     (hx : RepresentsOnPage E r p x ar) (hy : RepresentsOnPage E r p y ar)</span>
+<span id="L1043"><a href="#L1043">1043</a>     (hxt : RepresentsOnPage E t p x a) (hyt : RepresentsOnPage E t p y b) : a = b := by</span>
+<span id="L1044"><a href="#L1044">1044</a>   classical</span>
+<span id="L1045"><a href="#L1045">1045</a>   apply sub_eq_zero.mp</span>
+<span id="L1046"><a href="#L1046">1046</a>   exact represents_later_zero hrt</span>
+<span id="L1047"><a href="#L1047">1047</a>     (by simpa only [sub_self] using represents_sub hx hy) (represents_sub hxt hyt)</span>
+<span id="L1048"><a href="#L1048">1048</a> </span>
+<span id="L1049"><a href="#L1049">1049</a> </span>
+<span id="L1050"><a href="#L1050">1050</a> public theorem represents_bit {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} {p : ℤ × ℤ} (c : KIP126.Core.Algebra.F2) {x : E.Page 2 p} {a : E.Page r p}</span>
+<span id="L1051"><a href="#L1051">1051</a>     (h : RepresentsOnPage E r p x a) :</span>
+<span id="L1052"><a href="#L1052">1052</a>     RepresentsOnPage E r p (if c=0 then 0 else x) (if c=0 then 0 else a) := by</span>
+<span id="L1053"><a href="#L1053">1053</a>   classical</span>
+<span id="L1054"><a href="#L1054">1054</a>   by_cases hc : c=0</span>
+<span id="L1055"><a href="#L1055">1055</a>   · simpa only [hc,ite_true] using (RepresentsOnPage.zero (E := E) (p := p) h.1)</span>
+<span id="L1056"><a href="#L1056">1056</a>   · simpa only [hc,ite_false] using h</span>
+<span id="L1057"><a href="#L1057">1057</a> </span>
+<span id="L1058"><a href="#L1058">1058</a> </span>
+<span id="L1059"><a href="#L1059">1059</a> public theorem differential_two_direct {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {p : ℤ × ℤ} {x : E.Page 2 p} {y : E.Page 2 (p+E.diffDeg 2)}</span>
+<span id="L1060"><a href="#L1060">1060</a>     (h : HasDifferential E 2 p (p+E.diffDeg 2) x y) : E.d 2 p x = y := by</span>
+<span id="L1061"><a href="#L1061">1061</a>   classical</span>
+<span id="L1062"><a href="#L1062">1062</a>   obtain ⟨_,hd⟩ := h.eq_on_page_two</span>
+<span id="L1063"><a href="#L1063">1063</a>   simpa only [eqToHom_refl,Category.comp_id] using hd</span>
+<span id="L1064"><a href="#L1064">1064</a> </span>
+<span id="L1065"><a href="#L1065">1065</a> </span>
+<span id="L1066"><a href="#L1066">1066</a> </span>
+<span id="L1067"><a href="#L1067">1067</a> public theorem f2_expand {N : ℕ} (f : Fin N →₀ F2) :</span>
+<span id="L1068"><a href="#L1068">1068</a>     f = ∑ i : Fin N, if f i=0 then 0 else Finsupp.single i 1 := by</span>
+<span id="L1069"><a href="#L1069">1069</a>   ext i</span>
+<span id="L1070"><a href="#L1070">1070</a>   simp only [Finsupp.finsetSum_apply]</span>
+<span id="L1071"><a href="#L1071">1071</a>   rw [Finset.sum_eq_single i]</span>
+<span id="L1072"><a href="#L1072">1072</a>   · generalize f i=b</span>
+<span id="L1073"><a href="#L1073">1073</a>     fin_cases b &lt;;&gt; simp</span>
+<span id="L1074"><a href="#L1074">1074</a>   · intro j hj hji</span>
+<span id="L1075"><a href="#L1075">1075</a>     by_cases hf : f j=0</span>
+<span id="L1076"><a href="#L1076">1076</a>     · simp [hf]</span>
+<span id="L1077"><a href="#L1077">1077</a>     · simp [hf,hji]</span>
+<span id="L1078"><a href="#L1078">1078</a>   · simp</span>
+<span id="L1079"><a href="#L1079">1079</a> </span>
+<span id="L1080"><a href="#L1080">1080</a> public theorem generated_one {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}</span>
+<span id="L1081"><a href="#L1081">1081</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 1 →₀ F2)) (a : E.Page r p)</span>
+<span id="L1082"><a href="#L1082">1082</a>     (ha : RepresentsOnPage E r p (e.symm (Finsupp.single 0 1)) a)</span>
+<span id="L1083"><a href="#L1083">1083</a>     (x : E.Page r p) : x=0 ∨ x=a := by</span>
+<span id="L1084"><a href="#L1084">1084</a>   have hv (i : Fin 1) : RepresentsOnPage E r p (e.symm (Finsupp.single i 1)) a := by</span>
+<span id="L1085"><a href="#L1085">1085</a>     fin_cases i</span>
+<span id="L1086"><a href="#L1086">1086</a>     exact ha</span>
+<span id="L1087"><a href="#L1087">1087</a>   obtain ⟨c,hc⟩ := page_generated_from_representatives hr e (fun _ =&gt; a) hv x</span>
+<span id="L1088"><a href="#L1088">1088</a>   simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero] at hc</span>
+<span id="L1089"><a href="#L1089">1089</a>   by_cases h : c 0=0</span>
+<span id="L1090"><a href="#L1090">1090</a>   · exact Or.inl (by simpa only [h,ite_true] using hc)</span>
+<span id="L1091"><a href="#L1091">1091</a>   · exact Or.inr (by simpa only [h,ite_false] using hc)</span>
+<span id="L1092"><a href="#L1092">1092</a> </span>
+<span id="L1093"><a href="#L1093">1093</a> public theorem generated_two {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ} (hr : 2≤r) {p : ℤ×ℤ}</span>
+<span id="L1094"><a href="#L1094">1094</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 2 →₀ F2)) (a b : E.Page r p)</span>
+<span id="L1095"><a href="#L1095">1095</a>     (ha : RepresentsOnPage E r p (e.symm (Finsupp.single 0 1)) a)</span>
+<span id="L1096"><a href="#L1096">1096</a>     (hb : RepresentsOnPage E r p (e.symm (Finsupp.single 1 1)) b)</span>
+<span id="L1097"><a href="#L1097">1097</a>     (x : E.Page r p) : x=0 ∨ x=a ∨ x=b ∨ x=a+b := by</span>
+<span id="L1098"><a href="#L1098">1098</a>   let vv : Fin 2 → E.Page r p := ![a,b]</span>
+<span id="L1099"><a href="#L1099">1099</a>   have hv (i : Fin 2) : RepresentsOnPage E r p (e.symm (Finsupp.single i 1)) (vv i) := by</span>
+<span id="L1100"><a href="#L1100">1100</a>     fin_cases i</span>
+<span id="L1101"><a href="#L1101">1101</a>     · exact ha</span>
+<span id="L1102"><a href="#L1102">1102</a>     · exact hb</span>
+<span id="L1103"><a href="#L1103">1103</a>   obtain ⟨c,hc⟩ := page_generated_from_representatives hr e vv hv x</span>
+<span id="L1104"><a href="#L1104">1104</a>   simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero] at hc</span>
+<span id="L1105"><a href="#L1105">1105</a>   change x=(if c 0=0 then 0 else a)+(if c 1=0 then 0 else b) at hc</span>
+<span id="L1106"><a href="#L1106">1106</a>   by_cases h0 : c 0=0 &lt;;&gt; by_cases h1 : c 1=0</span>
+<span id="L1107"><a href="#L1107">1107</a>   all_goals simp only [h0,h1,ite_true,ite_false,zero_add,add_zero] at hc</span>
+<span id="L1108"><a href="#L1108">1108</a>   · exact Or.inl hc</span>
+<span id="L1109"><a href="#L1109">1109</a>   · exact Or.inr (Or.inr (Or.inl hc))</span>
+<span id="L1110"><a href="#L1110">1110</a>   · exact Or.inr (Or.inl hc)</span>
+<span id="L1111"><a href="#L1111">1111</a>   · exact Or.inr (Or.inr (Or.inr hc))</span>
+<span id="L1112"><a href="#L1112">1112</a> </span>
+<span id="L1113"><a href="#L1113">1113</a> </span>
+<span id="L1114"><a href="#L1114">1114</a> public theorem fourth_zero_of_three_basis</span>
+<span id="L1115"><a href="#L1115">1115</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} (hstart : E.r₀ ≤ 2) {p : ℤ × ℤ}</span>
+<span id="L1116"><a href="#L1116">1116</a>       (e : E.Page 2 p ≃ₗ[ℤ] (Fin 3 →₀ F2))</span>
+<span id="L1117"><a href="#L1117">1117</a>       (y0 y1 : E.Page 2 (p+E.diffDeg 3))</span>
+<span id="L1118"><a href="#L1118">1118</a>       (h0 : HasDifferential E 3 p (p+E.diffDeg 3) (e.symm (Finsupp.single 0 1)) y0)</span>
+<span id="L1119"><a href="#L1119">1119</a>       (h1 : HasDifferential E 3 p (p+E.diffDeg 3) (e.symm (Finsupp.single 1 1)) y1)</span>
+<span id="L1120"><a href="#L1120">1120</a>       (hz : RepresentsOnPage E 3 p (e.symm (Finsupp.single 2 1)) 0)</span>
+<span id="L1121"><a href="#L1121">1121</a>       (hin : E.d 2 (p+E.diffDeg 3-E.diffDeg 2)=0)</span>
+<span id="L1122"><a href="#L1122">1122</a>       (hn0 : y0≠0) (hn1 : y1≠0) (hn01 : y0+y1≠0) : Subsingleton (E.Page 4 p) := by</span>
+<span id="L1123"><a href="#L1123">1123</a>   classical</span>
+<span id="L1124"><a href="#L1124">1124</a>   obtain ⟨_,a0,b0,ha0,hb0,hd0⟩ := h0</span>
+<span id="L1125"><a href="#L1125">1125</a>   obtain ⟨_,a1,b1,ha1,hb1,hd1⟩ := h1</span>
+<span id="L1126"><a href="#L1126">1126</a>   change E.d 3 p a0=b0 at hd0</span>
+<span id="L1127"><a href="#L1127">1127</a>   change E.d 3 p a1=b1 at hd1</span>
+<span id="L1128"><a href="#L1128">1128</a>   have n0 := represents_next_nonzero_of_incoming_zero (E := E) (r := 2) (p := p+E.diffDeg 3) (by omega) (by decide) hin hb0 (represents_two_self _) hn0</span>
+<span id="L1129"><a href="#L1129">1129</a>   have n1 := represents_next_nonzero_of_incoming_zero (E := E) (r := 2) (p := p+E.diffDeg 3) (by omega) (by decide) hin hb1 (represents_two_self _) hn1</span>
+<span id="L1130"><a href="#L1130">1130</a>   have n01 := represents_next_nonzero_of_incoming_zero (E := E) (r := 2) (p := p+E.diffDeg 3) (by omega) (by decide) hin (represents_add_tail hb0 hb1) (represents_two_self _) hn01</span>
+<span id="L1131"><a href="#L1131">1131</a>   have ker (a : E.Page 3 p) (ha : E.d 3 p a=0) : a=0 := by</span>
+<span id="L1132"><a href="#L1132">1132</a>     let vv : Fin 3 → E.Page 3 p := ![a0,a1,0]</span>
+<span id="L1133"><a href="#L1133">1133</a>     have hv (i : Fin 3) : RepresentsOnPage E 3 p (e.symm (Finsupp.single i 1)) (vv i) := by</span>
+<span id="L1134"><a href="#L1134">1134</a>       fin_cases i</span>
+<span id="L1135"><a href="#L1135">1135</a>       · exact ha0</span>
+<span id="L1136"><a href="#L1136">1136</a>       · exact ha1</span>
+<span id="L1137"><a href="#L1137">1137</a>       · exact hz</span>
+<span id="L1138"><a href="#L1138">1138</a>     obtain ⟨c,hc⟩ := page_generated_from_representatives (by decide : (2:ℤ)≤3) e vv hv a</span>
+<span id="L1139"><a href="#L1139">1139</a>     simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero] at hc</span>
+<span id="L1140"><a href="#L1140">1140</a>     change a=(if c 0=0 then 0 else a0)+((if c 1=0 then 0 else a1)+(if c 2=0 then 0 else 0)) at hc</span>
+<span id="L1141"><a href="#L1141">1141</a>     simp only [ite_self,add_zero] at hc</span>
+<span id="L1142"><a href="#L1142">1142</a>     by_cases h0 : c 0=0 &lt;;&gt; by_cases h1 : c 1=0</span>
+<span id="L1143"><a href="#L1143">1143</a>     all_goals simp only [h0,h1,ite_true,ite_false,zero_add,add_zero] at hc</span>
+<span id="L1144"><a href="#L1144">1144</a>     · exact hc</span>
+<span id="L1145"><a href="#L1145">1145</a>     · exact (n1 (by simpa only [hc,hd1] using ha)).elim</span>
+<span id="L1146"><a href="#L1146">1146</a>     · exact (n0 (by simpa only [hc,hd0] using ha)).elim</span>
+<span id="L1147"><a href="#L1147">1147</a>     · exact (n01 (by simpa only [hc,map_add,hd0,hd1] using ha)).elim</span>
+<span id="L1148"><a href="#L1148">1148</a>   let S := E.pageShortComplex 3 (p-E.diffDeg 3)</span>
+<span id="L1149"><a href="#L1149">1149</a>   have kerS : ∀ a : S.X₂, S.g a=0 → a=0 := by</span>
+<span id="L1150"><a href="#L1150">1150</a>     change ∀ a : E.Page 3 (p-E.diffDeg 3+E.diffDeg 3), E.d 3 (p-E.diffDeg 3+E.diffDeg 3) a=0 → a=0</span>
+<span id="L1151"><a href="#L1151">1151</a>     rw [sub_add_cancel]</span>
+<span id="L1152"><a href="#L1152">1152</a>     exact ker</span>
+<span id="L1153"><a href="#L1153">1153</a>   have hs : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L1154"><a href="#L1154">1154</a>     intro a ha</span>
+<span id="L1155"><a href="#L1155">1155</a>     exact ⟨0,by rw [kerS a ha,map_zero]⟩)</span>
+<span id="L1156"><a href="#L1156">1156</a>   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 3 p</span>
+<span id="L1157"><a href="#L1157">1157</a>     (by omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hs))</span>
+<span id="L1158"><a href="#L1158">1158</a> </span>
+<span id="L1159"><a href="#L1159">1159</a> </span>
+<span id="L1160"><a href="#L1160">1160</a> public theorem next_page_zero_of_kernel</span>
+<span id="L1161"><a href="#L1161">1161</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1162"><a href="#L1162">1162</a>     {r : ℤ} {p : ℤ × ℤ} (hr : E.r₀ ≤ r)</span>
+<span id="L1163"><a href="#L1163">1163</a>     (hker : ∀ x : E.Page r p, E.d r p x = 0 → x = 0) :</span>
+<span id="L1164"><a href="#L1164">1164</a>     Subsingleton (E.Page (r+1) p) := by</span>
+<span id="L1165"><a href="#L1165">1165</a>   let S := E.pageShortComplex r (p-E.diffDeg r)</span>
+<span id="L1166"><a href="#L1166">1166</a>   have kerS : ∀ x : S.X₂, S.g x = 0 → x = 0 := by</span>
+<span id="L1167"><a href="#L1167">1167</a>     change ∀ x : E.Page r (p-E.diffDeg r+E.diffDeg r),</span>
+<span id="L1168"><a href="#L1168">1168</a>       E.d r (p-E.diffDeg r+E.diffDeg r) x = 0 → x = 0</span>
+<span id="L1169"><a href="#L1169">1169</a>     rw [sub_add_cancel]</span>
+<span id="L1170"><a href="#L1170">1170</a>     exact hker</span>
+<span id="L1171"><a href="#L1171">1171</a>   have hs : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L1172"><a href="#L1172">1172</a>     intro x hx</span>
+<span id="L1173"><a href="#L1173">1173</a>     exact ⟨0,by rw [kerS x hx,map_zero]⟩)</span>
+<span id="L1174"><a href="#L1174">1174</a>   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E r p hr).isZero_iff.mpr</span>
+<span id="L1175"><a href="#L1175">1175</a>     ((S.exact_iff_isZero_homology).mp hs))</span>
+<span id="L1176"><a href="#L1176">1176</a> public theorem finite_basis_expansion {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}</span>
+<span id="L1177"><a href="#L1177">1177</a>     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (a : A) :</span>
+<span id="L1178"><a href="#L1178">1178</a>     a=∑ i : Fin N, if (e a) i=0 then 0 else e.symm (Finsupp.single i 1) := by</span>
+<span id="L1179"><a href="#L1179">1179</a>   apply e.injective</span>
+<span id="L1180"><a href="#L1180">1180</a>   rw [map_sum]</span>
+<span id="L1181"><a href="#L1181">1181</a>   ext i</span>
+<span id="L1182"><a href="#L1182">1182</a>   simp only [Finsupp.finsetSum_apply]</span>
+<span id="L1183"><a href="#L1183">1183</a>   rw [Finset.sum_eq_single i]</span>
+<span id="L1184"><a href="#L1184">1184</a>   · generalize (e a) i=b</span>
+<span id="L1185"><a href="#L1185">1185</a>     fin_cases b &lt;;&gt; simp</span>
+<span id="L1186"><a href="#L1186">1186</a>   · intro j hj hji</span>
+<span id="L1187"><a href="#L1187">1187</a>     by_cases hc : (e a) j=0</span>
+<span id="L1188"><a href="#L1188">1188</a>     · simp [hc]</span>
+<span id="L1189"><a href="#L1189">1189</a>     · simp [hc,hji]</span>
+<span id="L1190"><a href="#L1190">1190</a>   · simp</span>
+<span id="L1191"><a href="#L1191">1191</a> </span>
+<span id="L1192"><a href="#L1192">1192</a> public theorem fourth_frame_of_four_basis</span>
+<span id="L1193"><a href="#L1193">1193</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1194"><a href="#L1194">1194</a>     {p : ℤ × ℤ} (hstart : E.r₀ ≤ 2)</span>
+<span id="L1195"><a href="#L1195">1195</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 4 →₀ F2))</span>
+<span id="L1196"><a href="#L1196">1196</a>     (f : E.Page 2 (p+E.diffDeg 2) ≃ₗ[ℤ] (Fin 2 →₀ F2))</span>
+<span id="L1197"><a href="#L1197">1197</a>     (a b c : E.Page 4 p)</span>
+<span id="L1198"><a href="#L1198">1198</a>     (ha : RepresentsOnPage E 4 p</span>
+<span id="L1199"><a href="#L1199">1199</a>       (e.symm (Finsupp.single 0 1)+e.symm (Finsupp.single 1 1)) a)</span>
+<span id="L1200"><a href="#L1200">1200</a>     (hb : RepresentsOnPage E 4 p (e.symm (Finsupp.single 2 1)) b)</span>
+<span id="L1201"><a href="#L1201">1201</a>     (hc : RepresentsOnPage E 4 p (e.symm (Finsupp.single 3 1)) c)</span>
+<span id="L1202"><a href="#L1202">1202</a>     (d0 : E.d 2 p (e.symm (Finsupp.single 0 1))=f.symm (Finsupp.single 0 1))</span>
+<span id="L1203"><a href="#L1203">1203</a>     (d1 : E.d 2 p (e.symm (Finsupp.single 1 1))=f.symm (Finsupp.single 0 1))</span>
+<span id="L1204"><a href="#L1204">1204</a>     (d2 : E.d 2 p (e.symm (Finsupp.single 2 1))=0)</span>
+<span id="L1205"><a href="#L1205">1205</a>     (d3 : E.d 2 p (e.symm (Finsupp.single 3 1))=0)</span>
+<span id="L1206"><a href="#L1206">1206</a>     (z : E.Page 4 p) :</span>
+<span id="L1207"><a href="#L1207">1207</a>     z=0 ∨ z=c ∨ z=b ∨ z=b+c ∨ z=a ∨ z=a+c ∨ z=a+b ∨ z=a+b+c := by</span>
+<span id="L1208"><a href="#L1208">1208</a>   classical</span>
+<span id="L1209"><a href="#L1209">1209</a>   let b0 := e.symm (Finsupp.single (0:Fin 4) 1)</span>
+<span id="L1210"><a href="#L1210">1210</a>   have he0 : e.symm (Finsupp.single (0:Fin 4) 1)=b0 := rfl</span>
+<span id="L1211"><a href="#L1211">1211</a>   let b1 := e.symm (Finsupp.single (1:Fin 4) 1)</span>
+<span id="L1212"><a href="#L1212">1212</a>   have he1 : e.symm (Finsupp.single (1:Fin 4) 1)=b1 := rfl</span>
+<span id="L1213"><a href="#L1213">1213</a>   let b2 := e.symm (Finsupp.single (2:Fin 4) 1)</span>
+<span id="L1214"><a href="#L1214">1214</a>   have he2 : e.symm (Finsupp.single (2:Fin 4) 1)=b2 := rfl</span>
+<span id="L1215"><a href="#L1215">1215</a>   let b3 := e.symm (Finsupp.single (3:Fin 4) 1)</span>
+<span id="L1216"><a href="#L1216">1216</a>   have he3 : e.symm (Finsupp.single (3:Fin 4) 1)=b3 := rfl</span>
+<span id="L1217"><a href="#L1217">1217</a>   change E.d 2 p b0=f.symm (Finsupp.single 0 1) at d0</span>
+<span id="L1218"><a href="#L1218">1218</a>   change E.d 2 p b1=f.symm (Finsupp.single 0 1) at d1</span>
+<span id="L1219"><a href="#L1219">1219</a>   change E.d 2 p b2=0 at d2</span>
+<span id="L1220"><a href="#L1220">1220</a>   change E.d 2 p b3=0 at d3</span>
+<span id="L1221"><a href="#L1221">1221</a>   have hf0 : f.symm (Finsupp.single (0:Fin 2) 1)=f.symm (Finsupp.single (0:Fin 2) 1) := rfl</span>
+<span id="L1222"><a href="#L1222">1222</a> </span>
+<span id="L1223"><a href="#L1223">1223</a>   obtain ⟨x,hx⟩ := page_has_representative (by decide : (2:ℤ)≤4) z</span>
+<span id="L1224"><a href="#L1224">1224</a>   have dx : E.d 2 p x=0 :=</span>
+<span id="L1225"><a href="#L1225">1225</a>     represents_d_zero_of_later (by omega) (by decide : (2:ℤ)&lt;4) (represents_two_self x) ⟨z,hx⟩</span>
+<span id="L1226"><a href="#L1226">1226</a>   have hex : e x=Finsupp.single 0 (e x 0)+Finsupp.single 1 (e x 1)+Finsupp.single 2 (e x 2)+Finsupp.single 3 (e x 3) := by</span>
+<span id="L1227"><a href="#L1227">1227</a>     ext i</span>
+<span id="L1228"><a href="#L1228">1228</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L1229"><a href="#L1229">1229</a>   have hxe : x=e.symm (Finsupp.single 0 (e x 0)+Finsupp.single 1 (e x 1)+Finsupp.single 2 (e x 2)+Finsupp.single 3 (e x 3)) := by rw [←hex,LinearEquiv.symm_apply_apply]</span>
+<span id="L1230"><a href="#L1230">1230</a>   generalize h0 : e x 0=c0 at hxe</span>
+<span id="L1231"><a href="#L1231">1231</a>   generalize h1 : e x 1=c1 at hxe</span>
+<span id="L1232"><a href="#L1232">1232</a>   generalize h2 : e x 2=c2 at hxe</span>
+<span id="L1233"><a href="#L1233">1233</a>   generalize h3 : e x 3=c3 at hxe</span>
+<span id="L1234"><a href="#L1234">1234</a>   fin_cases c0 &lt;;&gt; fin_cases c1 &lt;;&gt; fin_cases c2 &lt;;&gt; fin_cases c3</span>
+<span id="L1235"><a href="#L1235">1235</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1236"><a href="#L1236">1236</a>     simp only [Finsupp.single_zero,add_zero,map_zero] at hxe</span>
+<span id="L1237"><a href="#L1237">1237</a>     exact Or.inl (represents_unique (by simpa only [hxe] using hx) (RepresentsOnPage.zero (by decide)))</span>
+<span id="L1238"><a href="#L1238">1238</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1239"><a href="#L1239">1239</a>     simp only [Finsupp.single_zero,zero_add,add_zero] at hxe</span>
+<span id="L1240"><a href="#L1240">1240</a>     rw [he3] at hxe</span>
+<span id="L1241"><a href="#L1241">1241</a>     exact Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (hc)))</span>
+<span id="L1242"><a href="#L1242">1242</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1243"><a href="#L1243">1243</a>     simp only [Finsupp.single_zero,zero_add,add_zero] at hxe</span>
+<span id="L1244"><a href="#L1244">1244</a>     rw [he2] at hxe</span>
+<span id="L1245"><a href="#L1245">1245</a>     exact Or.inr (Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (hb))))</span>
+<span id="L1246"><a href="#L1246">1246</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1247"><a href="#L1247">1247</a>     simp only [Finsupp.single_zero,zero_add,add_zero,map_add] at hxe</span>
+<span id="L1248"><a href="#L1248">1248</a>     rw [he2] at hxe</span>
+<span id="L1249"><a href="#L1249">1249</a>     rw [he3] at hxe</span>
+<span id="L1250"><a href="#L1250">1250</a>     exact Or.inr (Or.inr (Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (represents_add_tail (hb) hc)))))</span>
+<span id="L1251"><a href="#L1251">1251</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1252"><a href="#L1252">1252</a>     simp only [Finsupp.single_zero,zero_add,add_zero] at hxe</span>
+<span id="L1253"><a href="#L1253">1253</a>     rw [he1] at hxe</span>
+<span id="L1254"><a href="#L1254">1254</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1255"><a href="#L1255">1255</a>     rw [hxe] at hh</span>
+<span id="L1256"><a href="#L1256">1256</a>     simp only [d1,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1257"><a href="#L1257">1257</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1258"><a href="#L1258">1258</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1259"><a href="#L1259">1259</a>     simp only [Finsupp.single_zero,zero_add,add_zero,map_add] at hxe</span>
+<span id="L1260"><a href="#L1260">1260</a>     rw [he1] at hxe</span>
+<span id="L1261"><a href="#L1261">1261</a>     rw [he3] at hxe</span>
+<span id="L1262"><a href="#L1262">1262</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1263"><a href="#L1263">1263</a>     rw [hxe] at hh</span>
+<span id="L1264"><a href="#L1264">1264</a>     simp only [map_add,d1,d3,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1265"><a href="#L1265">1265</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1266"><a href="#L1266">1266</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1267"><a href="#L1267">1267</a>     simp only [Finsupp.single_zero,zero_add,add_zero,map_add] at hxe</span>
+<span id="L1268"><a href="#L1268">1268</a>     rw [he1] at hxe</span>
+<span id="L1269"><a href="#L1269">1269</a>     rw [he2] at hxe</span>
+<span id="L1270"><a href="#L1270">1270</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1271"><a href="#L1271">1271</a>     rw [hxe] at hh</span>
+<span id="L1272"><a href="#L1272">1272</a>     simp only [map_add,d1,d2,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1273"><a href="#L1273">1273</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1274"><a href="#L1274">1274</a>   · change x=e.symm (Finsupp.single 0 (0:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1275"><a href="#L1275">1275</a>     simp only [Finsupp.single_zero,zero_add,map_add] at hxe</span>
+<span id="L1276"><a href="#L1276">1276</a>     rw [he1] at hxe</span>
+<span id="L1277"><a href="#L1277">1277</a>     rw [he2] at hxe</span>
+<span id="L1278"><a href="#L1278">1278</a>     rw [he3] at hxe</span>
+<span id="L1279"><a href="#L1279">1279</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1280"><a href="#L1280">1280</a>     rw [hxe] at hh</span>
+<span id="L1281"><a href="#L1281">1281</a>     simp only [map_add,d1,d2,d3,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1282"><a href="#L1282">1282</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1283"><a href="#L1283">1283</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1284"><a href="#L1284">1284</a>     simp only [Finsupp.single_zero,add_zero] at hxe</span>
+<span id="L1285"><a href="#L1285">1285</a>     rw [he0] at hxe</span>
+<span id="L1286"><a href="#L1286">1286</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1287"><a href="#L1287">1287</a>     rw [hxe] at hh</span>
+<span id="L1288"><a href="#L1288">1288</a>     simp only [d0,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1289"><a href="#L1289">1289</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1290"><a href="#L1290">1290</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1291"><a href="#L1291">1291</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1292"><a href="#L1292">1292</a>     rw [he0] at hxe</span>
+<span id="L1293"><a href="#L1293">1293</a>     rw [he3] at hxe</span>
+<span id="L1294"><a href="#L1294">1294</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1295"><a href="#L1295">1295</a>     rw [hxe] at hh</span>
+<span id="L1296"><a href="#L1296">1296</a>     simp only [map_add,d0,d3,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1297"><a href="#L1297">1297</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1298"><a href="#L1298">1298</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1299"><a href="#L1299">1299</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1300"><a href="#L1300">1300</a>     rw [he0] at hxe</span>
+<span id="L1301"><a href="#L1301">1301</a>     rw [he2] at hxe</span>
+<span id="L1302"><a href="#L1302">1302</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1303"><a href="#L1303">1303</a>     rw [hxe] at hh</span>
+<span id="L1304"><a href="#L1304">1304</a>     simp only [map_add,d0,d2,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1305"><a href="#L1305">1305</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1306"><a href="#L1306">1306</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (0:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1307"><a href="#L1307">1307</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1308"><a href="#L1308">1308</a>     rw [he0] at hxe</span>
+<span id="L1309"><a href="#L1309">1309</a>     rw [he2] at hxe</span>
+<span id="L1310"><a href="#L1310">1310</a>     rw [he3] at hxe</span>
+<span id="L1311"><a href="#L1311">1311</a>     have hh := congrArg (fun y =&gt; f y 0) dx</span>
+<span id="L1312"><a href="#L1312">1312</a>     rw [hxe] at hh</span>
+<span id="L1313"><a href="#L1313">1313</a>     simp only [map_add,d0,d2,d3,add_zero,LinearEquiv.apply_symm_apply,map_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1314"><a href="#L1314">1314</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L1315"><a href="#L1315">1315</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1316"><a href="#L1316">1316</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1317"><a href="#L1317">1317</a>     rw [he0] at hxe</span>
+<span id="L1318"><a href="#L1318">1318</a>     rw [he1] at hxe</span>
+<span id="L1319"><a href="#L1319">1319</a>     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (ha))))))</span>
+<span id="L1320"><a href="#L1320">1320</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (0:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1321"><a href="#L1321">1321</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1322"><a href="#L1322">1322</a>     rw [he0] at hxe</span>
+<span id="L1323"><a href="#L1323">1323</a>     rw [he1] at hxe</span>
+<span id="L1324"><a href="#L1324">1324</a>     rw [he3] at hxe</span>
+<span id="L1325"><a href="#L1325">1325</a>     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (represents_add_tail (ha) hc)))))))</span>
+<span id="L1326"><a href="#L1326">1326</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (0:F2)) at hxe</span>
+<span id="L1327"><a href="#L1327">1327</a>     simp only [Finsupp.single_zero,add_zero,map_add] at hxe</span>
+<span id="L1328"><a href="#L1328">1328</a>     rw [he0] at hxe</span>
+<span id="L1329"><a href="#L1329">1329</a>     rw [he1] at hxe</span>
+<span id="L1330"><a href="#L1330">1330</a>     rw [he2] at hxe</span>
+<span id="L1331"><a href="#L1331">1331</a>     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl (represents_unique (by simpa only [hxe] using hx) (represents_add_tail (ha) hb))))))))</span>
+<span id="L1332"><a href="#L1332">1332</a>   · change x=e.symm (Finsupp.single 0 (1:F2) + Finsupp.single 1 (1:F2) + Finsupp.single 2 (1:F2) + Finsupp.single 3 (1:F2)) at hxe</span>
+<span id="L1333"><a href="#L1333">1333</a>     simp only [map_add] at hxe</span>
+<span id="L1334"><a href="#L1334">1334</a>     rw [he0] at hxe</span>
+<span id="L1335"><a href="#L1335">1335</a>     rw [he1] at hxe</span>
+<span id="L1336"><a href="#L1336">1336</a>     rw [he2] at hxe</span>
+<span id="L1337"><a href="#L1337">1337</a>     rw [he3] at hxe</span>
+<span id="L1338"><a href="#L1338">1338</a>     exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (Or.inr (represents_unique (by simpa only [hxe] using hx) (represents_add_tail (represents_add_tail (ha) hb) hc))))))))</span>
+<span id="L1339"><a href="#L1339">1339</a> </span>
+<span id="L1340"><a href="#L1340">1340</a> public theorem represents_next_nonzero_of_incoming_two_cases</span>
+<span id="L1341"><a href="#L1341">1341</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1342"><a href="#L1342">1342</a>     {r : ℤ} {q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L1343"><a href="#L1343">1343</a>     {x : E.Page 2 (q+E.diffDeg r)} {a : E.Page (r+1) (q+E.diffDeg r)}</span>
+<span id="L1344"><a href="#L1344">1344</a>     {b c : E.Page r (q+E.diffDeg r)}</span>
+<span id="L1345"><a href="#L1345">1345</a>     (ha : RepresentsOnPage E (r+1) (q+E.diffDeg r) x a)</span>
+<span id="L1346"><a href="#L1346">1346</a>     (hb : RepresentsOnPage E r (q+E.diffDeg r) x b)</span>
+<span id="L1347"><a href="#L1347">1347</a>     (himage : ∀ v : E.Page r q, E.d r q v=0 ∨ E.d r q v=c)</span>
+<span id="L1348"><a href="#L1348">1348</a>     (hbne : b ≠ 0) (hbc : b-c ≠ 0) : a ≠ 0 := by</span>
+<span id="L1349"><a href="#L1349">1349</a>   obtain ⟨_,z,hz,hza⟩ := ha</span>
+<span id="L1350"><a href="#L1350">1350</a>   let D := E.ssData (q+E.diffDeg r)</span>
+<span id="L1351"><a href="#L1351">1351</a>   let n : ℕ := (r-E.r₀).toNat</span>
+<span id="L1352"><a href="#L1352">1352</a>   let m : ℕ := (r+1-E.r₀).toNat</span>
+<span id="L1353"><a href="#L1353">1353</a>   have hnm : n ≤ m := by dsimp only [n,m]; omega</span>
+<span id="L1354"><a href="#L1354">1354</a>   let i := Subobject.ofLE (D.Z ↑m) (D.Z ↑n) (D.Z_anti (by exact_mod_cast hnm))</span>
+<span id="L1355"><a href="#L1355">1355</a>   have hb&#x27; : RepresentsOnPage E r (q+E.diffDeg r) x (D.pageπ ↑n (i z)) := by</span>
+<span id="L1356"><a href="#L1356">1356</a>     as_aux_lemma =&gt;</span>
+<span id="L1357"><a href="#L1357">1357</a>       refine ⟨hr,i z,?_,rfl⟩</span>
+<span id="L1358"><a href="#L1358">1358</a>       change (i ≫ Subobject.ofLE _ _ _ ≫ D.pageπ _) z = x</span>
+<span id="L1359"><a href="#L1359">1359</a>       dsimp only [i]</span>
+<span id="L1360"><a href="#L1360">1360</a>       rw [←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L1361"><a href="#L1361">1361</a>       exact hz</span>
+<span id="L1362"><a href="#L1362">1362</a>   have heq : D.pageπ ↑n (i z)=b := represents_unique hb&#x27; hb</span>
+<span id="L1363"><a href="#L1363">1363</a>   let P (k : ℕ) : Prop := ∀ (hk : n ≤ k)</span>
+<span id="L1364"><a href="#L1364">1364</a>       (w : (Subobject.underlying.obj (D.Z ↑k) : ModuleCat.{v} ℤ)),</span>
+<span id="L1365"><a href="#L1365">1365</a>     D.pageπ ↑k w = 0 ↔</span>
+<span id="L1366"><a href="#L1366">1366</a>       (Subobject.ofLE (D.Z ↑k) (D.Z ↑n) (D.Z_anti (by exact_mod_cast hk)) ≫</span>
+<span id="L1367"><a href="#L1367">1367</a>         D.pageπ ↑n) w ∈ LinearMap.range (E.d r q).hom</span>
+<span id="L1368"><a href="#L1368">1368</a>   have hP : P (n+1) := by</span>
+<span id="L1369"><a href="#L1369">1369</a>     intro hk w</span>
+<span id="L1370"><a href="#L1370">1370</a>     exact next_projection_zero_iff_incoming E r hr0 q w</span>
+<span id="L1371"><a href="#L1371">1371</a>   have hi : m=n+1 := by dsimp only [m,n]; omega</span>
+<span id="L1372"><a href="#L1372">1372</a>   have hPm : P m := hi.symm ▸ hP</span>
+<span id="L1373"><a href="#L1373">1373</a>   intro ha0</span>
+<span id="L1374"><a href="#L1374">1374</a>   have hm := (hPm hnm z).mp (hza.trans ha0)</span>
+<span id="L1375"><a href="#L1375">1375</a>   change D.pageπ ↑n (i z) ∈ LinearMap.range (E.d r q).hom at hm</span>
+<span id="L1376"><a href="#L1376">1376</a>   rw [heq] at hm</span>
+<span id="L1377"><a href="#L1377">1377</a>   obtain ⟨v,hv⟩ := hm</span>
+<span id="L1378"><a href="#L1378">1378</a>   rcases himage v with hv0|hvc</span>
+<span id="L1379"><a href="#L1379">1379</a>   · exact hbne (hv.symm.trans hv0)</span>
+<span id="L1380"><a href="#L1380">1380</a>   · exact hbc (sub_eq_zero.mpr (hv.symm.trans hvc))</span>
+<span id="L1381"><a href="#L1381">1381</a> </span>
+<span id="L1382"><a href="#L1382">1382</a> /-- Keep the source degree explicit when specializing the page passage lemma. -/</span>
+<span id="L1383"><a href="#L1383">1383</a> public theorem represents_next_nonzero_of_incoming_zero_at</span>
+<span id="L1384"><a href="#L1384">1384</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)} {r : ℤ}</span>
+<span id="L1385"><a href="#L1385">1385</a>     {p q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L1386"><a href="#L1386">1386</a>     (hin : E.d r q=0)</span>
+<span id="L1387"><a href="#L1387">1387</a>     {x : E.Page 2 p} {a : E.Page (r+1) p} {b : E.Page r p}</span>
+<span id="L1388"><a href="#L1388">1388</a>     (ha : RepresentsOnPage E (r+1) p x a) (hb : RepresentsOnPage E r p x b)</span>
+<span id="L1389"><a href="#L1389">1389</a>     (hne : b≠0) (hdeg : q+E.diffDeg r=p := by first | rfl | simp only [sub_add_cancel]) : a≠0 := by</span>
+<span id="L1390"><a href="#L1390">1390</a>   subst p</span>
+<span id="L1391"><a href="#L1391">1391</a>   have hin&#x27; : E.d r ((q+E.diffDeg r)-E.diffDeg r)=0 := by</span>
+<span id="L1392"><a href="#L1392">1392</a>     exact (congrArg (fun k =&gt; E.d r k=0) (add_sub_cancel_right q (E.diffDeg r))).mpr hin</span>
+<span id="L1393"><a href="#L1393">1393</a>   exact represents_next_nonzero_of_incoming_zero hr0 hr hin&#x27; ha hb hne</span>
+<span id="L1394"><a href="#L1394">1394</a> </span>
+<span id="L1395"><a href="#L1395">1395</a> /-- Separate the target degree from its arithmetic description during elaboration. -/</span>
+<span id="L1396"><a href="#L1396">1396</a> public theorem represents_next_nonzero_of_incoming_two_cases_at</span>
+<span id="L1397"><a href="#L1397">1397</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1398"><a href="#L1398">1398</a>     {r : ℤ} {p q : ℤ × ℤ} (hdeg : q+E.diffDeg r=p)</span>
+<span id="L1399"><a href="#L1399">1399</a>     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L1400"><a href="#L1400">1400</a>     {x : E.Page 2 p} {a : E.Page (r+1) p} {b c : E.Page r p}</span>
+<span id="L1401"><a href="#L1401">1401</a>     (ha : RepresentsOnPage E (r+1) p x a) (hb : RepresentsOnPage E r p x b)</span>
+<span id="L1402"><a href="#L1402">1402</a>     (himage : ∀ v : E.Page r q,</span>
+<span id="L1403"><a href="#L1403">1403</a>       (E.d r q ≫ eqToHom (congrArg (E.Page r) hdeg)) v=0 ∨</span>
+<span id="L1404"><a href="#L1404">1404</a>       (E.d r q ≫ eqToHom (congrArg (E.Page r) hdeg)) v=c)</span>
+<span id="L1405"><a href="#L1405">1405</a>     (hbne : b≠0) (hbc : b-c≠0) : a≠0 := by</span>
+<span id="L1406"><a href="#L1406">1406</a>   subst p</span>
+<span id="L1407"><a href="#L1407">1407</a>   simp only [eqToHom_refl,Category.comp_id] at himage</span>
+<span id="L1408"><a href="#L1408">1408</a>   exact represents_next_nonzero_of_incoming_two_cases hr0 hr ha hb himage hbne hbc</span>
+<span id="L1409"><a href="#L1409">1409</a> </span>
+<span id="L1410"><a href="#L1410">1410</a> /-- An explicit target degree keeps the two complete coordinate systems separate. -/</span>
+<span id="L1411"><a href="#L1411">1411</a> public theorem fourth_frame_of_four_basis_at</span>
+<span id="L1412"><a href="#L1412">1412</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1413"><a href="#L1413">1413</a>     {p q : ℤ × ℤ} (hdeg : p+E.diffDeg 2=q) (hstart : E.r₀ ≤ 2)</span>
+<span id="L1414"><a href="#L1414">1414</a>     (e : E.Page 2 p ≃ₗ[ℤ] (Fin 4 →₀ F2))</span>
+<span id="L1415"><a href="#L1415">1415</a>     (f : E.Page 2 q ≃ₗ[ℤ] (Fin 2 →₀ F2))</span>
+<span id="L1416"><a href="#L1416">1416</a>     (a b c : E.Page 4 p)</span>
+<span id="L1417"><a href="#L1417">1417</a>     (ha : RepresentsOnPage E 4 p</span>
+<span id="L1418"><a href="#L1418">1418</a>       (e.symm (Finsupp.single 0 1)+e.symm (Finsupp.single 1 1)) a)</span>
+<span id="L1419"><a href="#L1419">1419</a>     (hb : RepresentsOnPage E 4 p (e.symm (Finsupp.single 2 1)) b)</span>
+<span id="L1420"><a href="#L1420">1420</a>     (hc : RepresentsOnPage E 4 p (e.symm (Finsupp.single 3 1)) c)</span>
+<span id="L1421"><a href="#L1421">1421</a>     (d0 : (E.d 2 p ≫ eqToHom (congrArg (E.Page 2) hdeg))</span>
+<span id="L1422"><a href="#L1422">1422</a>       (e.symm (Finsupp.single 0 1))=f.symm (Finsupp.single 0 1))</span>
+<span id="L1423"><a href="#L1423">1423</a>     (d1 : (E.d 2 p ≫ eqToHom (congrArg (E.Page 2) hdeg))</span>
+<span id="L1424"><a href="#L1424">1424</a>       (e.symm (Finsupp.single 1 1))=f.symm (Finsupp.single 0 1))</span>
+<span id="L1425"><a href="#L1425">1425</a>     (d2 : E.d 2 p (e.symm (Finsupp.single 2 1))=0)</span>
+<span id="L1426"><a href="#L1426">1426</a>     (d3 : E.d 2 p (e.symm (Finsupp.single 3 1))=0)</span>
+<span id="L1427"><a href="#L1427">1427</a>     (z : E.Page 4 p) :</span>
+<span id="L1428"><a href="#L1428">1428</a>     z=0 ∨ z=c ∨ z=b ∨ z=b+c ∨ z=a ∨ z=a+c ∨ z=a+b ∨ z=a+b+c := by</span>
+<span id="L1429"><a href="#L1429">1429</a>   subst q</span>
+<span id="L1430"><a href="#L1430">1430</a>   simp only [eqToHom_refl,Category.comp_id] at d0 d1</span>
+<span id="L1431"><a href="#L1431">1431</a>   exact fourth_frame_of_four_basis hstart e f a b c ha hb hc d0 d1 d2 d3 z</span>
+<span id="L1432"><a href="#L1432">1432</a> </span>
+<span id="L1433"><a href="#L1433">1433</a> public theorem represents_next_nonzero_of_not_incoming</span>
+<span id="L1434"><a href="#L1434">1434</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1435"><a href="#L1435">1435</a>     {r : ℤ} {q : ℤ × ℤ} (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L1436"><a href="#L1436">1436</a>     {x : E.Page 2 (q+E.diffDeg r)} {a : E.Page (r+1) (q+E.diffDeg r)}</span>
+<span id="L1437"><a href="#L1437">1437</a>     {b : E.Page r (q+E.diffDeg r)}</span>
+<span id="L1438"><a href="#L1438">1438</a>     (ha : RepresentsOnPage E (r+1) (q+E.diffDeg r) x a)</span>
+<span id="L1439"><a href="#L1439">1439</a>     (hb : RepresentsOnPage E r (q+E.diffDeg r) x b)</span>
+<span id="L1440"><a href="#L1440">1440</a>     (havoid : ∀ v : E.Page r q, E.d r q v≠b) : a ≠ 0 := by</span>
+<span id="L1441"><a href="#L1441">1441</a>   obtain ⟨_,z,hz,hza⟩ := ha</span>
+<span id="L1442"><a href="#L1442">1442</a>   let D := E.ssData (q+E.diffDeg r)</span>
+<span id="L1443"><a href="#L1443">1443</a>   let n : ℕ := (r-E.r₀).toNat</span>
+<span id="L1444"><a href="#L1444">1444</a>   let m : ℕ := (r+1-E.r₀).toNat</span>
+<span id="L1445"><a href="#L1445">1445</a>   have hnm : n ≤ m := by dsimp only [n,m]; omega</span>
+<span id="L1446"><a href="#L1446">1446</a>   let i := Subobject.ofLE (D.Z ↑m) (D.Z ↑n) (D.Z_anti (by exact_mod_cast hnm))</span>
+<span id="L1447"><a href="#L1447">1447</a>   have hb&#x27; : RepresentsOnPage E r (q+E.diffDeg r) x (D.pageπ ↑n (i z)) := by</span>
+<span id="L1448"><a href="#L1448">1448</a>     as_aux_lemma =&gt;</span>
+<span id="L1449"><a href="#L1449">1449</a>       refine ⟨hr,i z,?_,rfl⟩</span>
+<span id="L1450"><a href="#L1450">1450</a>       change (i ≫ Subobject.ofLE _ _ _ ≫ D.pageπ _) z = x</span>
+<span id="L1451"><a href="#L1451">1451</a>       dsimp only [i]</span>
+<span id="L1452"><a href="#L1452">1452</a>       rw [←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L1453"><a href="#L1453">1453</a>       exact hz</span>
+<span id="L1454"><a href="#L1454">1454</a>   have heq : D.pageπ ↑n (i z)=b := represents_unique hb&#x27; hb</span>
+<span id="L1455"><a href="#L1455">1455</a>   let P (k : ℕ) : Prop := ∀ (hk : n ≤ k)</span>
+<span id="L1456"><a href="#L1456">1456</a>       (w : (Subobject.underlying.obj (D.Z ↑k) : ModuleCat.{v} ℤ)),</span>
+<span id="L1457"><a href="#L1457">1457</a>     D.pageπ ↑k w = 0 ↔</span>
+<span id="L1458"><a href="#L1458">1458</a>       (Subobject.ofLE (D.Z ↑k) (D.Z ↑n) (D.Z_anti (by exact_mod_cast hk)) ≫</span>
+<span id="L1459"><a href="#L1459">1459</a>         D.pageπ ↑n) w ∈ LinearMap.range (E.d r q).hom</span>
+<span id="L1460"><a href="#L1460">1460</a>   have hP : P (n+1) := by</span>
+<span id="L1461"><a href="#L1461">1461</a>     intro hk w</span>
+<span id="L1462"><a href="#L1462">1462</a>     exact next_projection_zero_iff_incoming E r hr0 q w</span>
+<span id="L1463"><a href="#L1463">1463</a>   have hi : m=n+1 := by dsimp only [m,n]; omega</span>
+<span id="L1464"><a href="#L1464">1464</a>   have hPm : P m := hi.symm ▸ hP</span>
+<span id="L1465"><a href="#L1465">1465</a>   intro ha0</span>
+<span id="L1466"><a href="#L1466">1466</a>   have hm := (hPm hnm z).mp (hza.trans ha0)</span>
+<span id="L1467"><a href="#L1467">1467</a>   change D.pageπ ↑n (i z) ∈ LinearMap.range (E.d r q).hom at hm</span>
+<span id="L1468"><a href="#L1468">1468</a>   rw [heq] at hm</span>
+<span id="L1469"><a href="#L1469">1469</a>   obtain ⟨v,hv⟩ := hm</span>
+<span id="L1470"><a href="#L1470">1470</a>   exact havoid v hv</span>
+<span id="L1471"><a href="#L1471">1471</a> </span>
+<span id="L1472"><a href="#L1472">1472</a> public theorem represents_next_nonzero_of_not_incoming_at</span>
+<span id="L1473"><a href="#L1473">1473</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}</span>
+<span id="L1474"><a href="#L1474">1474</a>     {r : ℤ} {p q : ℤ × ℤ} (hdeg : q+E.diffDeg r=p)</span>
+<span id="L1475"><a href="#L1475">1475</a>     (hr0 : E.r₀ ≤ r) (hr : 2 ≤ r)</span>
+<span id="L1476"><a href="#L1476">1476</a>     {x : E.Page 2 p} {a : E.Page (r+1) p} {b : E.Page r p}</span>
+<span id="L1477"><a href="#L1477">1477</a>     (ha : RepresentsOnPage E (r+1) p x a) (hb : RepresentsOnPage E r p x b)</span>
+<span id="L1478"><a href="#L1478">1478</a>     (havoid : ∀ v : E.Page r q,</span>
+<span id="L1479"><a href="#L1479">1479</a>       (E.d r q ≫ eqToHom (congrArg (E.Page r) hdeg)) v≠b) : a≠0 := by</span>
+<span id="L1480"><a href="#L1480">1480</a>   subst p</span>
+<span id="L1481"><a href="#L1481">1481</a>   simp only [eqToHom_refl,Category.comp_id] at havoid</span>
+<span id="L1482"><a href="#L1482">1482</a>   exact represents_next_nonzero_of_not_incoming hr0 hr ha hb havoid</span>
+<span id="L1483"><a href="#L1483">1483</a> </span>
+<span id="L1484"><a href="#L1484">1484</a> public theorem basis_vector_ne_zero</span>
+<span id="L1485"><a href="#L1485">1485</a>     {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}</span>
+<span id="L1486"><a href="#L1486">1486</a>     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (i : Fin N) : e.symm (Finsupp.single i 1)≠0 := by</span>
+<span id="L1487"><a href="#L1487">1487</a>   intro h</span>
+<span id="L1488"><a href="#L1488">1488</a>   have hh := congrArg (fun a =&gt; e a i) h</span>
+<span id="L1489"><a href="#L1489">1489</a>   exact one_ne_zero (by simpa only [LinearEquiv.apply_symm_apply,map_zero,</span>
+<span id="L1490"><a href="#L1490">1490</a>     Finsupp.single_eq_same,Finsupp.zero_apply] using hh)</span>
+<span id="L1491"><a href="#L1491">1491</a> </span>
+<span id="L1492"><a href="#L1492">1492</a> public theorem basis_pair_sum_ne_zero</span>
+<span id="L1493"><a href="#L1493">1493</a>     {A : Type v} [AddCommGroup A] [Module ℤ A] {N : ℕ}</span>
+<span id="L1494"><a href="#L1494">1494</a>     (e : A ≃ₗ[ℤ] (Fin N →₀ F2)) (i j : Fin N) (hij : i≠j) :</span>
+<span id="L1495"><a href="#L1495">1495</a>     e.symm (Finsupp.single i 1)+e.symm (Finsupp.single j 1)≠0 := by</span>
+<span id="L1496"><a href="#L1496">1496</a>   intro h</span>
+<span id="L1497"><a href="#L1497">1497</a>   have hh := congrArg (fun a =&gt; e a i) h</span>
+<span id="L1498"><a href="#L1498">1498</a>   simp only [map_add,LinearEquiv.apply_symm_apply,map_zero,Finsupp.add_apply,</span>
+<span id="L1499"><a href="#L1499">1499</a>     Finsupp.single_eq_same,Finsupp.single_apply,if_neg (Ne.symm hij),add_zero,Finsupp.zero_apply] at hh</span>
+<span id="L1500"><a href="#L1500">1500</a>   exact one_ne_zero hh</span>
+<span id="L1501"><a href="#L1501">1501</a> </span>
+<span id="L1502"><a href="#L1502">1502</a> end</span>
+<span id="L1503"><a href="#L1503">1503</a> end KIP126.Core.SpectralSequence.FinitePageCalculus</span></pre>

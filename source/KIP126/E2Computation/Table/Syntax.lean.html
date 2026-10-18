@@ -1,0 +1,42 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/E2Computation/Table/Syntax.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/E2Computation/Table/Syntax.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-! Pinned finite computation syntax (bbac1fc05843, MIT). -/</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> namespace KIP126.Computation.Table.Raw</span>
+<span id="L7"><a href="#L7">   7</a> public inductive Spectrum where</span>
+<span id="L8"><a href="#L8">   8</a>   | sphere | nuCofiber</span>
+<span id="L9"><a href="#L9">   9</a>   deriving DecidableEq, BEq, Repr</span>
+<span id="L10"><a href="#L10">  10</a> public structure Degree where</span>
+<span id="L11"><a href="#L11">  11</a>   spectrum : Spectrum</span>
+<span id="L12"><a href="#L12">  12</a>   s : Nat</span>
+<span id="L13"><a href="#L13">  13</a>   t : Nat</span>
+<span id="L14"><a href="#L14">  14</a>   monomials : List String</span>
+<span id="L15"><a href="#L15">  15</a>   deriving DecidableEq, BEq, Repr</span>
+<span id="L16"><a href="#L16">  16</a> public structure Product where</span>
+<span id="L17"><a href="#L17">  17</a>   s : Nat</span>
+<span id="L18"><a href="#L18">  18</a>   t : Nat</span>
+<span id="L19"><a href="#L19">  19</a>   sp : Nat</span>
+<span id="L20"><a href="#L20">  20</a>   tp : Nat</span>
+<span id="L21"><a href="#L21">  21</a>   deriving DecidableEq, BEq, Repr</span>
+<span id="L22"><a href="#L22">  22</a> public structure BottomMap where</span>
+<span id="L23"><a href="#L23">  23</a>   s : Nat</span>
+<span id="L24"><a href="#L24">  24</a>   t : Nat</span>
+<span id="L25"><a href="#L25">  25</a>   x : List Nat</span>
+<span id="L26"><a href="#L26">  26</a>   y : List Nat</span>
+<span id="L27"><a href="#L27">  27</a>   deriving DecidableEq, BEq, Repr</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> /-- Coordinate validation is independent of any mathematical realization.</span>
+<span id="L30"><a href="#L30">  30</a> Missing degree, duplicate/out-of-order indices, and out-of-range indices fail. -/</span>
+<span id="L31"><a href="#L31">  31</a> public def strictlyIncreasing : List Nat → Bool</span>
+<span id="L32"><a href="#L32">  32</a>   | [] =&gt; true</span>
+<span id="L33"><a href="#L33">  33</a>   | [_] =&gt; true</span>
+<span id="L34"><a href="#L34">  34</a>   | a :: b :: rest =&gt; a &lt; b &amp;&amp; strictlyIncreasing (b :: rest)</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> public def coordinatesValid (degrees : List Degree) (o : Spectrum)</span>
+<span id="L37"><a href="#L37">  37</a>     (s t : Nat) (indices : List Nat) : Bool :=</span>
+<span id="L38"><a href="#L38">  38</a>   match degrees.find? (fun d =&gt; d.spectrum == o &amp;&amp; d.s == s &amp;&amp; d.t == t) with</span>
+<span id="L39"><a href="#L39">  39</a>   | none =&gt; false</span>
+<span id="L40"><a href="#L40">  40</a>   | some d =&gt; indices.all (· &lt; d.monomials.length) &amp;&amp; strictlyIncreasing indices</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> end KIP126.Computation.Table.Raw</span></pre>

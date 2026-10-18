@@ -1,0 +1,200 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/AlphaOne/ErrorFiltration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/AlphaOne/ErrorFiltration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.ProofTools.Operations</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L6"><a href="#L6">   6</a> public import KIP126.Literature.Standard.Filtration</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.AlphaOne.Detection</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.AlphaOne.Coherence</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.Internal.Selected.SphereDetection</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.Internal.Choice.Filtration</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-! The boundary comparison and finite-filtration error in</span>
+<span id="L13"><a href="#L13">  13</a> AlphaOne/Existence.lean:1434–1491,1679–1814, bbac1fc05843 (MIT). -/</span>
+<span id="L14"><a href="#L14">  14</a> @[expose] section</span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.Main.Internal.AlphaOne</span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Main.SectionSeven KIP126.Kervaire.Route</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.ProofTools.Operations KIP126.Main.Internal</span>
+<span id="L22"><a href="#L22">  22</a> noncomputable section</span>
+<span id="L23"><a href="#L23">  23</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L24"><a href="#L24">  24</a> set_option maxRecDepth 10000</span>
+<span id="L25"><a href="#L25">  25</a> set_option maxHeartbeats 800000</span>
+<span id="L26"><a href="#L26">  26</a> private theorem cycle_quotient_zero_of_page (r c b : ℤ) (p : ℤ×ℤ)</span>
+<span id="L27"><a href="#L27">  27</a>     (hr : 2≤r) (hc : r≤c+1) (hb : r-1≤b)</span>
+<span id="L28"><a href="#L28">  28</a>     (hz : Subsingleton (model.classical.sphere.Page r p)) :</span>
+<span id="L29"><a href="#L29">  29</a>     Subsingleton (KIP126.Literature.CycleQuotient model .sphere c b p) := by</span>
+<span id="L30"><a href="#L30">  30</a>   apply Choice.subquotient_subsingleton_of_le</span>
+<span id="L31"><a href="#L31">  31</a>   intro x hx</span>
+<span id="L32"><a href="#L32">  32</a>   obtain ⟨x&#x27;,hx&#x27;⟩ := (KIP126.ProofTools.isCycle_iff_reaches model .sphere (c+1) (by omega) p x).mp</span>
+<span id="L33"><a href="#L33">  33</a>     ⟨by omega,by simpa using hx⟩</span>
+<span id="L34"><a href="#L34">  34</a>   obtain ⟨xr,hxr⟩ := represents_before hr hc hx&#x27;</span>
+<span id="L35"><a href="#L35">  35</a>   rw [hz.elim xr 0] at hxr</span>
+<span id="L36"><a href="#L36">  36</a>   exact KIP126.Literature.boundaries_monotone model .sphere p hb</span>
+<span id="L37"><a href="#L37">  37</a>     (represents_zero_mem_boundary model .sphere r p x hxr)</span>
+<span id="L38"><a href="#L38">  38</a> private theorem finite_boundary_detects_sub_filtration</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a>     (x y : model.classical.sphere.Page 2 (10,134))</span>
+<span id="L41"><a href="#L41">  41</a>     (hx : x∈KIP126.Literature.cycles model .sphere 8 (10,134))</span>
+<span id="L42"><a href="#L42">  42</a>     (hy : y∈KIP126.Literature.cycles model .sphere 8 (10,134))</span>
+<span id="L43"><a href="#L43">  43</a>     (hxy : x-y∈KIP126.Literature.boundaries model .sphere 4 (10,134))</span>
+<span id="L44"><a href="#L44">  44</a>     (a b : BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))</span>
+<span id="L45"><a href="#L45">  45</a>     (ha : Detects (model.convergence (.quotient 11 .sphere)) (10,134,131)</span>
+<span id="L46"><a href="#L46">  46</a>       (quotientLabel 11 10 134 3 x) a)</span>
+<span id="L47"><a href="#L47">  47</a>     (hb : Detects (model.convergence (.quotient 11 .sphere)) (10,134,131)</span>
+<span id="L48"><a href="#L48">  48</a>       (quotientLabel 11 10 134 3 y) b) :</span>
+<span id="L49"><a href="#L49">  49</a>     FiltrationAtLeast model.syntheticTower 11 (a-b) := by</span>
+<span id="L50"><a href="#L50">  50</a>   classical</span>
+<span id="L51"><a href="#L51">  51</a>   obtain ⟨e,he,a&#x27;,ha&#x27;,hga⟩ := ha</span>
+<span id="L52"><a href="#L52">  52</a>   obtain ⟨f,hf,b&#x27;,hb&#x27;,hgb⟩ := hb</span>
+<span id="L53"><a href="#L53">  53</a>   let g := XModLambdaN.map model.nu.unitIso.inv 11</span>
+<span id="L54"><a href="#L54">  54</a>   have he&#x27; := family_infinity_representative_map g (10,134,131) _ _ he</span>
+<span id="L55"><a href="#L55">  55</a>   have hf&#x27; := family_infinity_representative_map g (10,134,131) _ _ hf</span>
+<span id="L56"><a href="#L56">  56</a>   have hlx := sphere_quotient_label_to_nu  11 3 10 134 x</span>
+<span id="L57"><a href="#L57">  57</a>   have hly := sphere_quotient_label_to_nu  11 3 10 134 y</span>
+<span id="L58"><a href="#L58">  58</a>   change familyPageMap model.family g 2 (10,134,131) (quotientLabel 11 10 134 3 x)=_ at hlx</span>
+<span id="L59"><a href="#L59">  59</a>   change familyPageMap model.family g 2 (10,134,131) (quotientLabel 11 10 134 3 y)=_ at hly</span>
+<span id="L60"><a href="#L60">  60</a>   rw [hlx] at he&#x27;</span>
+<span id="L61"><a href="#L61">  61</a>   rw [hly] at hf&#x27;</span>
+<span id="L62"><a href="#L62">  62</a>   let xx : KIP126.Literature.cycles model .sphere (11-134+(134-3)) (10,134) := ⟨x,hx⟩</span>
+<span id="L63"><a href="#L63">  63</a>   let yy : KIP126.Literature.cycles model .sphere (11-134+(134-3)) (10,134) := ⟨y,hy⟩</span>
+<span id="L64"><a href="#L64">  64</a>   have hxq := (finite_target_label_iff .sphere 11 (by decide) 10 134 3 (by decide) xx _).mp he&#x27;</span>
+<span id="L65"><a href="#L65">  65</a>   have hyq := (finite_target_label_iff .sphere 11 (by decide) 10 134 3 (by decide) yy _).mp hf&#x27;</span>
+<span id="L66"><a href="#L66">  66</a>   have hz : KIP126.Literature.subquotientClass _ (KIP126.Literature.boundaries model .sphere 4 (10,134)) (xx-yy)=0 :=</span>
+<span id="L67"><a href="#L67">  67</a>     (subquotientClass_eq_zero_iff _ _ (xx-yy)).mpr hxy</span>
+<span id="L68"><a href="#L68">  68</a>   rw [map_sub] at hz</span>
+<span id="L69"><a href="#L69">  69</a>   have heq := sub_eq_zero.mp hz</span>
+<span id="L70"><a href="#L70">  70</a>   have hge : (model.family.functor.map g).eInftyMap (10,134,131) e=</span>
+<span id="L71"><a href="#L71">  71</a>       (model.family.functor.map g).eInftyMap (10,134,131) f := by</span>
+<span id="L72"><a href="#L72">  72</a>     apply (KIP126.Literature.Standard.infinityFiniteWindow .sphere 11 (by decide) (10,134) 131 (by decide)).injective</span>
+<span id="L73"><a href="#L73">  73</a>     change KIP126.Literature.Standard.infinityFiniteWindow .sphere 11 (by decide) (10,134) 131 (by decide)</span>
+<span id="L74"><a href="#L74">  74</a>       ((model.family.functor.map g).eInftyMap (10,134,131) e) =</span>
+<span id="L75"><a href="#L75">  75</a>       KIP126.Literature.subquotientClass _ (KIP126.Literature.boundaries model .sphere 4 (10,134)) xx at hxq</span>
+<span id="L76"><a href="#L76">  76</a>     change KIP126.Literature.Standard.infinityFiniteWindow .sphere 11 (by decide) (10,134) 131 (by decide)</span>
+<span id="L77"><a href="#L77">  77</a>       ((model.family.functor.map g).eInftyMap (10,134,131) f) =</span>
+<span id="L78"><a href="#L78">  78</a>       KIP126.Literature.subquotientClass _ (KIP126.Literature.boundaries model .sphere 4 (10,134)) yy at hyq</span>
+<span id="L79"><a href="#L79">  79</a>     exact hxq.trans (heq.trans hyq.symm)</span>
+<span id="L80"><a href="#L80">  80</a>   let h := (model.family.functor.map (XModLambdaN.map model.nu.unitIso.hom 11)).eInftyMap (10,134,131)</span>
+<span id="L81"><a href="#L81">  81</a>   have hgh : (model.family.functor.map g).eInftyMap (10,134,131) ≫ h=𝟙 _ := by</span>
+<span id="L82"><a href="#L82">  82</a>     dsimp only [g,h]</span>
+<span id="L83"><a href="#L83">  83</a>     rw [←SpectralSequenceMorphism.eInftyMap_comp,←Functor.map_comp,</span>
+<span id="L84"><a href="#L84">  84</a>       ←model.quotients.functoriality.map_comp,model.nu.unitIso.inv_hom_id,</span>
+<span id="L85"><a href="#L85">  85</a>       model.quotients.functoriality.map_id,CategoryTheory.Functor.map_id,SpectralSequenceMorphism.eInftyMap_id]</span>
+<span id="L86"><a href="#L86">  86</a>   have hef : e=f := by</span>
+<span id="L87"><a href="#L87">  87</a>     have he0 := ConcreteCategory.congr_hom hgh e</span>
+<span id="L88"><a href="#L88">  88</a>     have hf0 := ConcreteCategory.congr_hom hgh f</span>
+<span id="L89"><a href="#L89">  89</a>     change h ((model.family.functor.map g).eInftyMap (10,134,131) e)=e at he0</span>
+<span id="L90"><a href="#L90">  90</a>     change h ((model.family.functor.map g).eInftyMap (10,134,131) f)=f at hf0</span>
+<span id="L91"><a href="#L91">  91</a>     exact he0.symm.trans ((congrArg h hge).trans hf0)</span>
+<span id="L92"><a href="#L92">  92</a>   apply detects_sub_filtration (model.convergence (.quotient 11 .sphere)) (10,134,131)</span>
+<span id="L93"><a href="#L93">  93</a>     (show Detects _ _ (quotientLabel 11 10 134 3 x) a from ⟨e,he,a&#x27;,ha&#x27;,hga⟩)</span>
+<span id="L94"><a href="#L94">  94</a>   exact ⟨e,he,b&#x27;,hb&#x27;,hef ▸ hgb⟩</span>
+<span id="L95"><a href="#L95">  95</a> </span>
+<span id="L96"><a href="#L96">  96</a> </span>
+<span id="L97"><a href="#L97">  97</a> </span>
+<span id="L98"><a href="#L98">  98</a> private theorem alpha_error_filtration_gap</span>
+<span id="L99"><a href="#L99">  99</a> </span>
+<span id="L100"><a href="#L100"> 100</a>     (h11 : Subsingleton ((model.classical.sphere).Page 5 (11,135)))</span>
+<span id="L101"><a href="#L101"> 101</a>     (h12 : Subsingleton ((model.classical.sphere).Page 4 (12,136)))</span>
+<span id="L102"><a href="#L102"> 102</a>     (a : BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11)) :</span>
+<span id="L103"><a href="#L103"> 103</a>     FiltrationAtLeast model.syntheticTower 11 a ↔</span>
+<span id="L104"><a href="#L104"> 104</a>       FiltrationAtLeast model.syntheticTower 13 a := by</span>
+<span id="L105"><a href="#L105"> 105</a>   classical</span>
+<span id="L106"><a href="#L106"> 106</a>   apply filtration_iff_of_infinity_zero (model.convergence (.quotient 11 .sphere))</span>
+<span id="L107"><a href="#L107"> 107</a>     11 13 124 131 (by decide)</span>
+<span id="L108"><a href="#L108"> 108</a>   intro j hj hj&#x27;</span>
+<span id="L109"><a href="#L109"> 109</a>   haveI : Subsingleton (KIP126.Literature.CycleQuotient model .sphere</span>
+<span id="L110"><a href="#L110"> 110</a>       (11-(124+j)+131) (1+(124+j)-131) (j,124+j)) := by</span>
+<span id="L111"><a href="#L111"> 111</a>     rw [show (11:ℤ)-(124+j)+131=18-j by omega,</span>
+<span id="L112"><a href="#L112"> 112</a>       show (1:ℤ)+(124+j)-131=j-6 by omega,add_comm 124 j]</span>
+<span id="L113"><a href="#L113"> 113</a>     have hjcases : j=11 ∨ j=12 := by omega</span>
+<span id="L114"><a href="#L114"> 114</a>     rcases hjcases with rfl|rfl</span>
+<span id="L115"><a href="#L115"> 115</a>     · exact cycle_quotient_zero_of_page 5 7 5 (11,135) (by decide) (by decide) (by decide) h11</span>
+<span id="L116"><a href="#L116"> 116</a>     · exact cycle_quotient_zero_of_page 4 6 6 (12,136) (by decide) (by decide) (by decide) h12</span>
+<span id="L117"><a href="#L117"> 117</a>   let e := KIP126.Literature.Standard.infinityFiniteWindow .sphere 11 (by decide) (j,124+j) 131</span>
+<span id="L118"><a href="#L118"> 118</a>     (by constructor &lt;;&gt; omega)</span>
+<span id="L119"><a href="#L119"> 119</a>   haveI : Subsingleton (((model.family.quotient (model.nu.functor.obj SphereSpectrum) 11).sequence.ssData (j,124+j,131)).eInfty) :=</span>
+<span id="L120"><a href="#L120"> 120</a>     e.injective.subsingleton</span>
+<span id="L121"><a href="#L121"> 121</a>   let hn := ModuleCat.isZero_of_subsingleton</span>
+<span id="L122"><a href="#L122"> 122</a>     (((model.family.quotient (model.nu.functor.obj SphereSpectrum) 11).sequence.ssData (j,124+j,131)).eInfty)</span>
+<span id="L123"><a href="#L123"> 123</a>   let f := (model.family.functor.map (XModLambdaN.map model.nu.unitIso.hom 11)).eInftyMap (j,124+j,131)</span>
+<span id="L124"><a href="#L124"> 124</a>   let g := (model.family.functor.map (XModLambdaN.map model.nu.unitIso.inv 11)).eInftyMap (j,124+j,131)</span>
+<span id="L125"><a href="#L125"> 125</a>   have hfg : g ≫ f=𝟙 _ := by</span>
+<span id="L126"><a href="#L126"> 126</a>     dsimp only [f,g]</span>
+<span id="L127"><a href="#L127"> 127</a>     rw [←SpectralSequenceMorphism.eInftyMap_comp,←Functor.map_comp,</span>
+<span id="L128"><a href="#L128"> 128</a>       ←model.quotients.functoriality.map_comp,model.nu.unitIso.inv_hom_id,</span>
+<span id="L129"><a href="#L129"> 129</a>       model.quotients.functoriality.map_id,CategoryTheory.Functor.map_id,SpectralSequenceMorphism.eInftyMap_id]</span>
+<span id="L130"><a href="#L130"> 130</a>   apply (CategoryTheory.Limits.IsZero.iff_id_eq_zero _).mpr</span>
+<span id="L131"><a href="#L131"> 131</a>   exact hfg.symm.trans (by rw [hn.eq_of_src f 0,CategoryTheory.Limits.comp_zero])</span>
+<span id="L132"><a href="#L132"> 132</a> </span>
+<span id="L133"><a href="#L133"> 133</a> </span>
+<span id="L134"><a href="#L134"> 134</a> private theorem alpha_error_filtration_thirteen</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> </span>
+<span id="L137"><a href="#L137"> 137</a>     (U : model.classical.sphere.Page 2 (10,134)) (V : model.classical.sphere.Page 2 (9,132))</span>
+<span id="L138"><a href="#L138"> 138</a>     (source : model.classical.sphere.Page 2 (8,133))</span>
+<span id="L139"><a href="#L139"> 139</a>     (hU : U∈KIP126.Literature.cycles model .sphere 8 (10,134))</span>
+<span id="L140"><a href="#L140"> 140</a>     (hd : HasDifferential (model.classical.sphere)</span>
+<span id="L141"><a href="#L141"> 141</a>       2 (8,133) (10,134) source (KIP126.Computation.Standard.product (r := (10,134)) (KIP126.Computation.Standard.h1) V + U))</span>
+<span id="L142"><a href="#L142"> 142</a>     (h11 : Subsingleton ((model.classical.sphere).Page 5 (11,135)))</span>
+<span id="L143"><a href="#L143"> 143</a>     (h12 : Subsingleton ((model.classical.sphere).Page 4 (12,136)))</span>
+<span id="L144"><a href="#L144"> 144</a>     (a : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))</span>
+<span id="L145"><a href="#L145"> 145</a>     (ha : FiniteDetected 11 (by decide) 9 132 0 V a)</span>
+<span id="L146"><a href="#L146"> 146</a>     (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : SphereDetected 10 134 0 U u) :</span>
+<span id="L147"><a href="#L147"> 147</a>     FiltrationAtLeast model.syntheticTower 13</span>
+<span id="L148"><a href="#L148"> 148</a>       ((show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11) from lambdaMultiply 3 (sphereAction KIP126.Literature.Standard.eta a))-</span>
+<span id="L149"><a href="#L149"> 149</a>         (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11) from lambdaMultiply 3 (quotientClass 11 u))) := by</span>
+<span id="L150"><a href="#L150"> 150</a>   classical</span>
+<span id="L151"><a href="#L151"> 151</a>   have hlabel := Selected.sphere_zero_weight_label_10_134 U u hu.1</span>
+<span id="L152"><a href="#L152"> 152</a>   have he := model.sphereDetectionCompatible.homotopy_lambda 1 2 3 KIP126.Literature.Standard.eta</span>
+<span id="L153"><a href="#L153"> 153</a>   have hη := KIP126.Literature.Standard.eta_label</span>
+<span id="L154"><a href="#L154"> 154</a>   dsimp only [KIP126.Literature.sphereFirstQuotient] at hη</span>
+<span id="L155"><a href="#L155"> 155</a>   rw [hη] at he</span>
+<span id="L156"><a href="#L156"> 156</a>   have hp : Detects (model.convergence (.quotient 11 .sphere)) (10,134,131)</span>
+<span id="L157"><a href="#L157"> 157</a>       (quotientLabel 11 10 134 3 (KIP126.Computation.Standard.product (r := (10,134)) (KIP126.Computation.Standard.h1) V))</span>
+<span id="L158"><a href="#L158"> 158</a>       (sphereAction (lambdaMultiply 3 KIP126.Literature.Standard.eta) a) :=</span>
+<span id="L159"><a href="#L159"> 159</a>     KIP126.Literature.Standard.finite_action 11 (by decide) 1 2 9 132 3 0</span>
+<span id="L160"><a href="#L160"> 160</a>       (KIP126.Computation.Standard.h1) V (lambdaMultiply 3 KIP126.Literature.Standard.eta) a he ha.1</span>
+<span id="L161"><a href="#L161"> 161</a>   rw [sphere_action_lambda_three KIP126.Literature.Standard.eta a] at hp</span>
+<span id="L162"><a href="#L162"> 162</a>   have hu3 := model.sphereDetectionCompatible.homotopy_lambda 10 134 3 u</span>
+<span id="L163"><a href="#L163"> 163</a>   dsimp only [KIP126.Literature.sphereFirstQuotient] at hlabel</span>
+<span id="L164"><a href="#L164"> 164</a>   rw [hlabel] at hu3</span>
+<span id="L165"><a href="#L165"> 165</a>   have huq := detects_map  .sphere (.quotient 11 .sphere)</span>
+<span id="L166"><a href="#L166"> 166</a>     (XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 11) (10,134,131) _ (lambdaMultiply 3 u) hu3</span>
+<span id="L167"><a href="#L167"> 167</a>   have hcomm : lambdaMultiply 3 u≫XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 11 =</span>
+<span id="L168"><a href="#L168"> 168</a>       lambdaMultiply 3 (quotientClass 11 u) := by</span>
+<span id="L169"><a href="#L169"> 169</a>     simp only [lambdaMultiply,quotientClass,Category.assoc]</span>
+<span id="L170"><a href="#L170"> 170</a>   change Detects (model.convergence (.quotient 11 .sphere)) (10,134,131)</span>
+<span id="L171"><a href="#L171"> 171</a>     (quotientLabel 11 10 134 3 U) (lambdaMultiply 3 u≫XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 11) at huq</span>
+<span id="L172"><a href="#L172"> 172</a>   rw [hcomm] at huq</span>
+<span id="L173"><a href="#L173"> 173</a>   have hU2 : U+U=0 := by</span>
+<span id="L174"><a href="#L174"> 174</a>     apply (KIP126.Computation.Standard.coordinates 10 134 (by decide)).injective</span>
+<span id="L175"><a href="#L175"> 175</a>     rw [map_add,map_zero]</span>
+<span id="L176"><a href="#L176"> 176</a>     ext i</span>
+<span id="L177"><a href="#L177"> 177</a>     exact CharTwo.add_self_eq_zero _</span>
+<span id="L178"><a href="#L178"> 178</a>   have hneg : -U=U := by</span>
+<span id="L179"><a href="#L179"> 179</a>     apply neg_eq_iff_add_eq_zero.mpr</span>
+<span id="L180"><a href="#L180"> 180</a>     exact hU2</span>
+<span id="L181"><a href="#L181"> 181</a>   have hd0 := differential_target_later_zero (le_of_eq (model.classical.firstPage _))</span>
+<span id="L182"><a href="#L182"> 182</a>     (show (2:ℤ)&lt;3 from by decide) hd</span>
+<span id="L183"><a href="#L183"> 183</a>   have hbound := represents_zero_mem_boundary model .sphere 3 (10,134) _ hd0</span>
+<span id="L184"><a href="#L184"> 184</a>   have hbound4 : KIP126.Computation.Standard.product (r := (10,134)) (KIP126.Computation.Standard.h1) V-U∈</span>
+<span id="L185"><a href="#L185"> 185</a>       KIP126.Literature.boundaries model .sphere 4 (10,134) := by</span>
+<span id="L186"><a href="#L186"> 186</a>     rw [sub_eq_add_neg,hneg]</span>
+<span id="L187"><a href="#L187"> 187</a>     exact KIP126.Literature.boundaries_monotone model .sphere (10,134) (by decide : (2:ℤ)≤4) hbound</span>
+<span id="L188"><a href="#L188"> 188</a>   have hprod : KIP126.Computation.Standard.product (r := (10,134)) (KIP126.Computation.Standard.h1) V∈</span>
+<span id="L189"><a href="#L189"> 189</a>       KIP126.Literature.cycles model .sphere 8 (10,134) := by</span>
+<span id="L190"><a href="#L190"> 190</a>     have hb := KIP126.ProofTools.Operations.boundaries_le_cycles model .sphere (10,134) 4 8 hbound4</span>
+<span id="L191"><a href="#L191"> 191</a>     have hh := (KIP126.Literature.cycles model .sphere 8 (10,134)).add_mem hb hU</span>
+<span id="L192"><a href="#L192"> 192</a>     simpa only [sub_add_cancel] using hh</span>
+<span id="L193"><a href="#L193"> 193</a>   apply (alpha_error_filtration_gap h11 h12 _).mp</span>
+<span id="L194"><a href="#L194"> 194</a>   exact finite_boundary_detects_sub_filtration _ U hprod hU hbound4 _ _ hp huq</span>
+<span id="L195"><a href="#L195"> 195</a> </span>
+<span id="L196"><a href="#L196"> 196</a> </span>
+<span id="L197"><a href="#L197"> 197</a> </span>
+<span id="L198"><a href="#L198"> 198</a> end</span>
+<span id="L199"><a href="#L199"> 199</a> end KIP126.Main.Internal.AlphaOne</span>
+<span id="L200"><a href="#L200"> 200</a> end</span></pre>

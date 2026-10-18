@@ -1,0 +1,40 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/PageComparison/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/PageComparison/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.PageComparison.Raw.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> public import Mathlib.Algebra.Homology.ShortComplex.Homology</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # The induced centered-complex and homology isomorphisms</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> Both maps are constructed from the supplied page isomorphisms and their</span>
+<span id="L12"><a href="#L12">  12</a> differential compatibility.  A comparison supplies no additional homology</span>
+<span id="L13"><a href="#L13">  13</a> map and no ambient-object map.</span>
+<span id="L14"><a href="#L14">  14</a> -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Core.SpectralSequence.PagewiseIso</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> open CategoryTheory</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> universe u v w</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L23"><a href="#L23">  23</a>   {ι : Type w} [AddCommGroup ι] [DecidableEq ι]</span>
+<span id="L24"><a href="#L24">  24</a>   {E F : KIP126.Core.SpectralSequence C ι} (Q : PagewiseIso E F)</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- The centered short-complex isomorphism assembled from the very same</span>
+<span id="L27"><a href="#L27">  27</a> page maps and the two differential squares. -/</span>
+<span id="L28"><a href="#L28">  28</a> noncomputable def shortComplexIso (r : ℤ) (hr : E.r₀ ≤ r) (k : ι) :</span>
+<span id="L29"><a href="#L29">  29</a>     E.pageShortComplex r (k - E.diffDeg r) ≅</span>
+<span id="L30"><a href="#L30">  30</a>       F.pageShortComplex r (k - F.diffDeg r) :=</span>
+<span id="L31"><a href="#L31">  31</a>   ShortComplex.isoMk (Q.leftIso r hr k) (Q.middleIso r hr k)</span>
+<span id="L32"><a href="#L32">  32</a>     (Q.rightIso r hr k) (Q.left_middle_comm r hr k) (Q.middle_right_comm r hr k)</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> /-- The actual map induced on homology by the centered-complex comparison. -/</span>
+<span id="L35"><a href="#L35">  35</a> noncomputable def homologyIso (r : ℤ) (hr : E.r₀ ≤ r) (k : ι) :</span>
+<span id="L36"><a href="#L36">  36</a>     (E.pageShortComplex r (k - E.diffDeg r)).homology ≅</span>
+<span id="L37"><a href="#L37">  37</a>       (F.pageShortComplex r (k - F.diffDeg r)).homology :=</span>
+<span id="L38"><a href="#L38">  38</a>   ShortComplex.homologyMapIso (Q.shortComplexIso r hr k)</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> end KIP126.Core.SpectralSequence.PagewiseIso</span></pre>

@@ -1,0 +1,92 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/PaperResults/TodaFiltration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/PaperResults/TodaFiltration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.AlphaOne.FiniteWindow</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.Selected.ThetaFrames</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.SectionSeven.WeakStrip</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.SectionSeven.NuTargetFiniteGap</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Finite-quotient bounds on the actual right indeterminacy of the</span>
+<span id="L9"><a href="#L9">   9</a> alpha-one Toda bracket. These are auxiliary bounds, not a claim that a</span>
+<span id="L10"><a href="#L10">  10</a> filtered Toda member has already been constructed. -/</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> @[expose] section</span>
+<span id="L13"><a href="#L13">  13</a> namespace KIP126.Main.Paper.Internal</span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.Core.SpectralSequence.FinitePageCalculus KIP126.ProofTools.Operations</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Main.Internal KIP126.Main.Internal.Selected</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.Main.SectionSeven.Internal</span>
+<span id="L21"><a href="#L21">  21</a> noncomputable section</span>
+<span id="L22"><a href="#L22">  22</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L23"><a href="#L23">  23</a> set_option maxHeartbeats 1500000</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> private theorem stem124_low_finite_quotient_zero</span>
+<span id="L26"><a href="#L26">  26</a>     (s r : ℤ) (hs : 6 ≤ s ∧ s ≤ 9) (hr : 2 ≤ r) (hrc : r ≤ 16-s)</span>
+<span id="L27"><a href="#L27">  27</a>     (hz : Subsingleton (Normalized.sphere.Page r (s,s+124))) :</span>
+<span id="L28"><a href="#L28">  28</a>     Subsingleton (KIP126.Literature.CycleQuotient model .sphere (15-s) (s-5) (s,s+124)) := by</span>
+<span id="L29"><a href="#L29">  29</a>   apply AlphaOne.quotient_vanishing_actual</span>
+<span id="L30"><a href="#L30">  30</a>   apply AlphaOne.quotient_subsingleton_of_le</span>
+<span id="L31"><a href="#L31">  31</a>   intro x hx</span>
+<span id="L32"><a href="#L32">  32</a>   obtain ⟨_,hxc⟩ := (AlphaOne.cycles_reaches (15-s) (s,s+124) (by omega) x).mp hx</span>
+<span id="L33"><a href="#L33">  33</a>   obtain ⟨xr,hxr⟩ := represents_before hr (show r ≤ 15-s+1 by omega) hxc</span>
+<span id="L34"><a href="#L34">  34</a>   rw [hz.elim xr 0] at hxr</span>
+<span id="L35"><a href="#L35">  35</a>   have hb := AlphaOne.stem123_weight130_finite_quotients_boundary_of_zero_representative hxr</span>
+<span id="L36"><a href="#L36">  36</a>   let E := Normalized.sphere</span>
+<span id="L37"><a href="#L37">  37</a>   let A := E.ssData (s,s+124)</span>
+<span id="L38"><a href="#L38">  38</a>   have hin (m : ℤ) (hm : s-4 ≤ m) : E.d m ((s,s+124)-E.diffDeg m)=0 := by</span>
+<span id="L39"><a href="#L39">  39</a>     have hi : (s,s+124)-E.diffDeg m=(s-m,(s-m)+125) := by</span>
+<span id="L40"><a href="#L40">  40</a>       change (s,s+124)-(m,m-1)=_</span>
+<span id="L41"><a href="#L41">  41</a>       ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L42"><a href="#L42">  42</a>     rw [hi]</span>
+<span id="L43"><a href="#L43">  43</a>     ext z</span>
+<span id="L44"><a href="#L44">  44</a>     exact no_outgoing_stem125_low (s-m) (by omega) m (by omega) z</span>
+<span id="L45"><a href="#L45">  45</a>   have hB := boundaries_top_eq_of_d_eq_zero E (s-4) (by change (2:ℤ)≤s-4; omega) (s,s+124) hin</span>
+<span id="L46"><a href="#L46">  46</a>   change A.B ⊤=A.B ↑(s-4-2).toNat at hB</span>
+<span id="L47"><a href="#L47">  47</a>   have hle : A.B ↑(r-1-1).toNat ≤ A.B ↑(s-5-1).toNat := by</span>
+<span id="L48"><a href="#L48">  48</a>     have hi : s-4-2=s-5-1 := by omega</span>
+<span id="L49"><a href="#L49">  49</a>     rw [hi] at hB</span>
+<span id="L50"><a href="#L50">  50</a>     exact (A.B_mono le_top).trans hB.le</span>
+<span id="L51"><a href="#L51">  51</a>   obtain ⟨y,hy⟩ := hb</span>
+<span id="L52"><a href="#L52">  52</a>   refine ⟨(Subobject.ofLE _ _ hle) y,?_⟩</span>
+<span id="L53"><a href="#L53">  53</a>   change (Subobject.ofLE _ _ hle ≫ AlphaOne.boundaryMap (↑(s-5-1).toNat) (s,s+124)) y=x</span>
+<span id="L54"><a href="#L54">  54</a>   simpa only [AlphaOne.boundaryMap,AlphaOne.boundaryMapFor,A,E,</span>
+<span id="L55"><a href="#L55">  55</a>     ←Category.assoc,Subobject.ofLE_comp_ofLE] using hy</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> private theorem ninth_stem124_weight130_filtration_ten</span>
+<span id="L58"><a href="#L58">  58</a>     (a : BiHom 124 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9)) :</span>
+<span id="L59"><a href="#L59">  59</a>     FiltrationAtLeast model.syntheticTower 10 a := by</span>
+<span id="L60"><a href="#L60">  60</a>   have h6 := finite_sphere_bottom_filtration 9 (by decide) 6 130 a</span>
+<span id="L61"><a href="#L61">  61</a>   apply (filtration_iff_of_infinity_zero (model.convergence (.quotient 9 .sphere))</span>
+<span id="L62"><a href="#L62">  62</a>     6 10 124 130 (by decide) ?_ a).mp h6</span>
+<span id="L63"><a href="#L63">  63</a>   intro s hs hs&#x27;</span>
+<span id="L64"><a href="#L64">  64</a>   have hss : 6 ≤ s ∧ s ≤ 9 := by omega</span>
+<span id="L65"><a href="#L65">  65</a>   have hz : Subsingleton (KIP126.Literature.CycleQuotient model .sphere (15-s) (s-5) (s,s+124)) := by</span>
+<span id="L66"><a href="#L66">  66</a>     obtain ⟨h6,h7,h8,h9⟩ := stem124_finite_pages</span>
+<span id="L67"><a href="#L67">  67</a>     interval_cases s</span>
+<span id="L68"><a href="#L68">  68</a>     · exact stem124_low_finite_quotient_zero 6 6 (by decide) (by decide) (by decide) h6</span>
+<span id="L69"><a href="#L69">  69</a>     · exact stem124_low_finite_quotient_zero 7 6 (by decide) (by decide) (by decide) h7</span>
+<span id="L70"><a href="#L70">  70</a>     · exact stem124_low_finite_quotient_zero 8 3 (by decide) (by decide) (by decide) h8</span>
+<span id="L71"><a href="#L71">  71</a>     · exact stem124_low_finite_quotient_zero 9 4 (by decide) (by decide) (by decide) h9</span>
+<span id="L72"><a href="#L72">  72</a>   rw [show 124+s=s+124 by omega]</span>
+<span id="L73"><a href="#L73">  73</a>   apply finite_sphere_zero_of_classical_quotient 9 (by decide) s (s+124) 130 (by constructor &lt;;&gt; omega)</span>
+<span id="L74"><a href="#L74">  74</a>   convert hz using 1 &lt;;&gt; congr 1 &lt;;&gt; norm_num &lt;;&gt; omega</span>
+<span id="L75"><a href="#L75">  75</a> </span>
+<span id="L76"><a href="#L76">  76</a> private theorem eta_ninth_stem124_weight130_filtration_eleven</span>
+<span id="L77"><a href="#L77">  77</a>     (a : BiHom 124 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9)) :</span>
+<span id="L78"><a href="#L78">  78</a>     FiltrationAtLeast model.syntheticTower 11</span>
+<span id="L79"><a href="#L79">  79</a>       (sphereAction KIP126.Literature.Standard.eta a) := by</span>
+<span id="L80"><a href="#L80">  80</a>   have heta := model.sphereDetectionCompatible.homotopy_lambda 1 2 0 KIP126.Literature.Standard.eta</span>
+<span id="L81"><a href="#L81">  81</a>   change Detects (model.convergence .sphere) (1,2,2)</span>
+<span id="L82"><a href="#L82">  82</a>     (sphereLabel 1 2 0 (KIP126.Literature.sphereFirstQuotient model 1 2</span>
+<span id="L83"><a href="#L83">  83</a>       (quotientClass 1 KIP126.Literature.Standard.eta)))</span>
+<span id="L84"><a href="#L84">  84</a>     (lambdaMultiply 0 KIP126.Literature.Standard.eta) at heta</span>
+<span id="L85"><a href="#L85">  85</a>   rw [KIP126.Literature.Standard.eta_label,lambda_zero_1_2] at heta</span>
+<span id="L86"><a href="#L86">  86</a>   exact KIP126.Literature.Standard.action_filtration (.quotient 9 .sphere)</span>
+<span id="L87"><a href="#L87">  87</a>     1 2 124 130 1 10 KIP126.Literature.Standard.eta a</span>
+<span id="L88"><a href="#L88">  88</a>     (detected_filtration .sphere (1,2,2) heta)</span>
+<span id="L89"><a href="#L89">  89</a>     (ninth_stem124_weight130_filtration_ten a)</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> end</span>
+<span id="L92"><a href="#L92">  92</a> end KIP126.Main.Paper.Internal</span></pre>

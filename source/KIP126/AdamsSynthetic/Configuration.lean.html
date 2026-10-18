@@ -1,0 +1,81 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Configuration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Configuration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Context</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Object closure for the selected proof route. Auxiliary objects are</span>
+<span id="L8"><a href="#L8">   8</a> parameters with explicit maps, not asserted to have tmf&#x27;s properties by</span>
+<span id="L9"><a href="#L9">   9</a> their names. A(M) supplies the literature identifications/properties.</span>
+<span id="L10"><a href="#L10">  10</a> The cofiber and its cell maps are derived from the supplied ν map. -/</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Kervaire.Route</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L13"><a href="#L13">  13</a> universe u v w</span>
+<span id="L14"><a href="#L14">  14</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> public structure AuxiliaryData (C : Type u) [StableHomotopyCategory.{u, v} C] where</span>
+<span id="L17"><a href="#L17">  17</a>   /-- The classical η map used by the generalized Leibniz rule.</span>
+<span id="L18"><a href="#L18">  18</a>   Its identification with h₁ and with the synthetic η is an A(M) input. -/</span>
+<span id="L19"><a href="#L19">  19</a>   etaMap : Sphere (C := C) 1 ⟶ SphereSpectrum</span>
+<span id="L20"><a href="#L20">  20</a>   /-- The selected classical Hopf map; its h₂ detection is an A(M) input. -/</span>
+<span id="L21"><a href="#L21">  21</a>   nuMap : Sphere (C := C) 3 ⟶ SphereSpectrum</span>
+<span id="L22"><a href="#L22">  22</a>   /-- In the paper this pointed detecting spectrum is tmf. -/</span>
+<span id="L23"><a href="#L23">  23</a>   detector : C</span>
+<span id="L24"><a href="#L24">  24</a>   detectorUnit : SphereSpectrum ⟶ detector</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- No other spectra are needed in the selected Section 7 route when C(M)</span>
+<span id="L27"><a href="#L27">  27</a> results are accepted; spectra used to prove C(M) are a separate dependency. -/</span>
+<span id="L28"><a href="#L28">  28</a> public inductive ClassicalObject</span>
+<span id="L29"><a href="#L29">  29</a>   | sphere</span>
+<span id="L30"><a href="#L30">  30</a>   | nuCofiber</span>
+<span id="L31"><a href="#L31">  31</a>   | detector</span>
+<span id="L32"><a href="#L32">  32</a>   | shift (n : ℤ) (X : ClassicalObject)</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> public noncomputable def ClassicalObject.obj [HasFunctorialCofiber (C := C)]</span>
+<span id="L35"><a href="#L35">  35</a>     (A : AuxiliaryData C) : ClassicalObject → C</span>
+<span id="L36"><a href="#L36">  36</a>   | .sphere =&gt; SphereSpectrum</span>
+<span id="L37"><a href="#L37">  37</a>   | .nuCofiber =&gt; HasFunctorialCofiber.cofib A.nuMap</span>
+<span id="L38"><a href="#L38">  38</a>   | .detector =&gt; A.detector</span>
+<span id="L39"><a href="#L39">  39</a>   | .shift n X =&gt; (shiftFunctor C n).obj (X.obj A)</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> /-- Synthetic objects used by normalized maps, finite λ/ρ/δ triangles,</span>
+<span id="L42"><a href="#L42">  42</a> and the untruncated argument. Closure includes all shifts and quotients,</span>
+<span id="L43"><a href="#L43">  43</a> but does not demand convergence on every object of the ambient category. -/</span>
+<span id="L44"><a href="#L44">  44</a> public inductive SyntheticObject</span>
+<span id="L45"><a href="#L45">  45</a>   | sphere</span>
+<span id="L46"><a href="#L46">  46</a>   | nu (X : ClassicalObject)</span>
+<span id="L47"><a href="#L47">  47</a>   | shift (p : ℤ × ℤ) (X : SyntheticObject)</span>
+<span id="L48"><a href="#L48">  48</a>   | quotient (n : ℕ) (X : SyntheticObject)</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> public noncomputable def SyntheticObject.obj [HasFunctorialCofiber (C := C)]</span>
+<span id="L51"><a href="#L51">  51</a>     {Syn : Type w} [SyntheticCategory.{w, v} Syn] [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L52"><a href="#L52">  52</a>     (N : NuFunctorData C Syn) (A : AuxiliaryData C) : SyntheticObject → Syn</span>
+<span id="L53"><a href="#L53">  53</a>   | .sphere =&gt; S_0_0</span>
+<span id="L54"><a href="#L54">  54</a>   | .nu X =&gt; N.functor.obj (X.obj A)</span>
+<span id="L55"><a href="#L55">  55</a>   | .shift p X =&gt; (SyntheticCategory.biShift p).obj (X.obj N A)</span>
+<span id="L56"><a href="#L56">  56</a>   | .quotient n X =&gt; XModLambdaN (X.obj N A) n</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> /-- A distinguished triangle within the selected classical object closure.</span>
+<span id="L59"><a href="#L59">  59</a> The connecting map lands in the actual suspension of X. -/</span>
+<span id="L60"><a href="#L60">  60</a> public structure TriangleData [HasFunctorialCofiber (C := C)] (A : AuxiliaryData C) where</span>
+<span id="L61"><a href="#L61">  61</a>   X : ClassicalObject</span>
+<span id="L62"><a href="#L62">  62</a>   Y : ClassicalObject</span>
+<span id="L63"><a href="#L63">  63</a>   Z : ClassicalObject</span>
+<span id="L64"><a href="#L64">  64</a>   f : X.obj A ⟶ Y.obj A</span>
+<span id="L65"><a href="#L65">  65</a>   g : Y.obj A ⟶ Z.obj A</span>
+<span id="L66"><a href="#L66">  66</a>   h : Z.obj A ⟶ (ClassicalObject.shift 1 X).obj A</span>
+<span id="L67"><a href="#L67">  67</a>   distinguished : CategoryTheory.Pretriangulated.Triangle.mk f g h ∈</span>
+<span id="L68"><a href="#L68">  68</a>     distTriang C</span>
+<span id="L69"><a href="#L69">  69</a> </span>
+<span id="L70"><a href="#L70">  70</a> /-- The specific triangle used in the ν-extension argument. Neither its</span>
+<span id="L71"><a href="#L71">  71</a> cofiber nor its bottom/top cell maps are independent choices. -/</span>
+<span id="L72"><a href="#L72">  72</a> public noncomputable def AuxiliaryData.nuRouteTriangle [HasFunctorialCofiber (C := C)]</span>
+<span id="L73"><a href="#L73">  73</a>     (A : AuxiliaryData C) : TriangleData A where</span>
+<span id="L74"><a href="#L74">  74</a>   X := .shift 3 .sphere</span>
+<span id="L75"><a href="#L75">  75</a>   Y := .sphere</span>
+<span id="L76"><a href="#L76">  76</a>   Z := .nuCofiber</span>
+<span id="L77"><a href="#L77">  77</a>   f := A.nuMap</span>
+<span id="L78"><a href="#L78">  78</a>   g := HasFunctorialCofiber.cofibι A.nuMap</span>
+<span id="L79"><a href="#L79">  79</a>   h := HasFunctorialCofiber.cofibδ A.nuMap</span>
+<span id="L80"><a href="#L80">  80</a>   distinguished := HasFunctorialCofiber.cofib_distinguished A.nuMap</span>
+<span id="L81"><a href="#L81">  81</a> end KIP126.Kervaire.Route</span></pre>

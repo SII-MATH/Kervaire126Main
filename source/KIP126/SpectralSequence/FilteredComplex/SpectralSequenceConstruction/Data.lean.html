@@ -1,0 +1,71 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredComplex/SpectralSequenceConstruction/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredComplex/SpectralSequenceConstruction/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.SSDataConstruction.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.FilteredDifferential.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Spectral-sequence assembly for a filtered complex</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> The data are supplied by `FilteredComplex.toPreSS`; this layer discharges the</span>
+<span id="L12"><a href="#L12">  12</a> three spectral-sequence laws using the finite-page proofs.</span>
+<span id="L13"><a href="#L13">  13</a> -/</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> universe u v</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> namespace FilteredComplex</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> set_option maxHeartbeats 6400000 in</span>
+<span id="L26"><a href="#L26">  26</a> /-- The nested-subobject spectral sequence canonically built from a bounded</span>
+<span id="L27"><a href="#L27">  27</a> filtered complex. -/</span>
+<span id="L28"><a href="#L28">  28</a> noncomputable def toSpectralSequence (FC : FilteredComplex C)</span>
+<span id="L29"><a href="#L29">  29</a>     (bnd : FC.IsBounded) : SpectralSequence C (ℤ × ℤ) :=</span>
+<span id="L30"><a href="#L30">  30</a>   SpectralSequence.ofPreSS (FC.toPreSS bnd)</span>
+<span id="L31"><a href="#L31">  31</a>     (fun r ⟨s, k⟩ =&gt; by</span>
+<span id="L32"><a href="#L32">  32</a>       by_cases hr : 0 ≤ r</span>
+<span id="L33"><a href="#L33">  33</a>       · obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hr</span>
+<span id="L34"><a href="#L34">  34</a>         simp only [FC.toPreSS_d_nat bnd]</span>
+<span id="L35"><a href="#L35">  35</a>         change FC.pageDifferential s k n ≫</span>
+<span id="L36"><a href="#L36">  36</a>           FC.pageDifferential (s + ↑n) (k - 1) n = 0</span>
+<span id="L37"><a href="#L37">  37</a>         exact FC.pageDifferential_comp s k n</span>
+<span id="L38"><a href="#L38">  38</a>       · dsimp only [FilteredComplex.toPreSS]</span>
+<span id="L39"><a href="#L39">  39</a>         rw [dif_neg hr]</span>
+<span id="L40"><a href="#L40">  40</a>         exact zero_comp)</span>
+<span id="L41"><a href="#L41">  41</a>     (fun r ⟨s, k⟩ hr =&gt; by</span>
+<span id="L42"><a href="#L42">  42</a>       have hr0 : 0 ≤ r := by</span>
+<span id="L43"><a href="#L43">  43</a>         simpa only [FilteredComplex.toPreSS] using hr</span>
+<span id="L44"><a href="#L44">  44</a>       obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hr0</span>
+<span id="L45"><a href="#L45">  45</a>       simp only [FC.toPreSS_d_nat bnd]</span>
+<span id="L46"><a href="#L46">  46</a>       change kernelSubobject (FC.pageDifferential s k n) =</span>
+<span id="L47"><a href="#L47">  47</a>         imageSubobject (Subobject.ofLE</span>
+<span id="L48"><a href="#L48">  48</a>           (FC.cycleSubobject s k ↑(n + 1)) (FC.cycleSubobject s k ↑n)</span>
+<span id="L49"><a href="#L49">  49</a>           (FC.cycleSubobject_antitone s k</span>
+<span id="L50"><a href="#L50">  50</a>             (by exact_mod_cast Nat.le_succ n)) ≫ FC.pageπ s k ↑n)</span>
+<span id="L51"><a href="#L51">  51</a>       apply le_antisymm</span>
+<span id="L52"><a href="#L52">  52</a>       · exact pageDifferential_Z_succ_le FC s k n</span>
+<span id="L53"><a href="#L53">  53</a>       · exact pageDifferential_Z_succ_ge FC s k n)</span>
+<span id="L54"><a href="#L54">  54</a>     (fun r ⟨s, k⟩ hr =&gt; by</span>
+<span id="L55"><a href="#L55">  55</a>       have hr0 : 0 ≤ r := by</span>
+<span id="L56"><a href="#L56">  56</a>         simpa only [FilteredComplex.toPreSS] using hr</span>
+<span id="L57"><a href="#L57">  57</a>       obtain ⟨n, rfl⟩ := Int.eq_ofNat_of_zero_le hr0</span>
+<span id="L58"><a href="#L58">  58</a>       simp only [FC.toPreSS_d_nat bnd]</span>
+<span id="L59"><a href="#L59">  59</a>       change imageSubobject (FC.pageDifferential s k n) =</span>
+<span id="L60"><a href="#L60">  60</a>         imageSubobject (Subobject.ofLE</span>
+<span id="L61"><a href="#L61">  61</a>           (FC.boundarySubobject (s + ↑n) (k - 1) ↑(n + 1))</span>
+<span id="L62"><a href="#L62">  62</a>           (FC.cycleSubobject (s + ↑n) (k - 1) ↑n)</span>
+<span id="L63"><a href="#L63">  63</a>           (le_trans (FC.B_le_Z_aux (s + ↑n) (k - 1) ↑(n + 1))</span>
+<span id="L64"><a href="#L64">  64</a>             (FC.cycleSubobject_antitone (s + ↑n) (k - 1)</span>
+<span id="L65"><a href="#L65">  65</a>               (by exact_mod_cast Nat.le_succ n))) ≫</span>
+<span id="L66"><a href="#L66">  66</a>           FC.pageπ (s + ↑n) (k - 1) ↑n)</span>
+<span id="L67"><a href="#L67">  67</a>       exact FC.pageDifferential_B_succ s k n)</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> end FilteredComplex</span>
+<span id="L70"><a href="#L70">  70</a> </span>
+<span id="L71"><a href="#L71">  71</a> end KIP126.Core.SpectralSequence</span></pre>

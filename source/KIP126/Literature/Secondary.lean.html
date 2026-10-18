@@ -1,0 +1,47 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Secondary.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Secondary.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Classical</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Literature.Classical</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.Literature.Toda</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Literature.Toda</span>
+<span id="L7"><a href="#L7">   7</a> public import KIP126.Literature.May</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Literature.May</span>
+<span id="L9"><a href="#L9">   9</a> public import KIP126.Literature.Moss</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Literature.Moss</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-! Correlated secondary-operation input for the one supplied model. The</span>
+<span id="L13"><a href="#L13">  13</a> general Moss contract remains available, while this delivery fixes its route</span>
+<span id="L14"><a href="#L14">  14</a> scope to the actual sphere and its mapping composition to the already chosen</span>
+<span id="L15"><a href="#L15">  15</a> sphere E₂ algebra. No second η or freely selected object-scope predicate is</span>
+<span id="L16"><a href="#L16">  16</a> introduced. -/</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> @[expose] section</span>
+<span id="L19"><a href="#L19">  19</a> namespace KIP126.Literature</span>
+<span id="L20"><a href="#L20">  20</a> open CategoryTheory</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Kervaire.Route</span>
+<span id="L23"><a href="#L23">  23</a> universe u v w</span>
+<span id="L24"><a href="#L24">  24</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L25"><a href="#L25">  25</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L26"><a href="#L26">  26</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L27"><a href="#L27">  27</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> /-- Model-side mapping, tensor and Toda data. The sphere mapping spectrum</span>
+<span id="L30"><a href="#L30">  30</a> uses D&#x27;s actual tower; its E₂ product and unit agree with D&#x27;s existing algebra. -/</span>
+<span id="L31"><a href="#L31">  31</a> private structure SecondaryBindings where</span>
+<span id="L32"><a href="#L32">  32</a>   closed : ClosedSymmetricTensorTriangulated C</span>
+<span id="L33"><a href="#L33">  33</a>   mapping : MappingSpectrumSystem closed D.classicalTower</span>
+<span id="L34"><a href="#L34">  34</a>     (fun X : C =&gt; X = SphereSpectrum)</span>
+<span id="L35"><a href="#L35">  35</a>   moss : Moss.Context mapping</span>
+<span id="L36"><a href="#L36">  36</a>   sphereComposition : MappingSphereCompatibility moss.composition D.sphereAlgebra rfl</span>
+<span id="L37"><a href="#L37">  37</a>   may : Route.MayContext Syn</span>
+<span id="L38"><a href="#L38">  38</a>   toda : Route.TodaSourceData (Syn := Syn)</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- Source results are separate from construction of the bound model data.</span>
+<span id="L41"><a href="#L41">  41</a> The Toda statements use precisely the η in the existing classical binding. -/</span>
+<span id="L42"><a href="#L42">  42</a> private structure SecondaryResults (B : ClassicalBindings D) (Q : SecondaryBindings D) : Prop where</span>
+<span id="L43"><a href="#L43">  43</a>   moss : Moss.SourceResults Q.mapping Q.moss</span>
+<span id="L44"><a href="#L44">  44</a>   may : Route.MaySourceResults Syn Q.may</span>
+<span id="L45"><a href="#L45">  45</a>   toda : Route.TodaSourceResults D B.eta Q.toda</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> end KIP126.Literature</span></pre>

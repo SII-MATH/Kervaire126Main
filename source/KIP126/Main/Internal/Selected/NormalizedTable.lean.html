@@ -1,0 +1,113 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Selected/NormalizedTable.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Selected/NormalizedTable.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsCalculations.Table</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! A private change of presentation for the fixed Adams sequence. The</span>
+<span id="L6"><a href="#L6">   6</a> record is proved equal to the actual input; it only makes the known first</span>
+<span id="L7"><a href="#L7">   7</a> page and differential degree reducible in the finite calculations. -/</span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> namespace KIP126.Main.Internal.Selected.Normalized</span>
+<span id="L10"><a href="#L10">  10</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.SpectralSequence</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Computation.Table</span>
+<span id="L13"><a href="#L13">  13</a> noncomputable section</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> private def pre (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ))</span>
+<span id="L17"><a href="#L17">  17</a>     (hr : E.r₀=2) (hd : E.diffDeg=fun r =&gt; (r,r-1)) :</span>
+<span id="L18"><a href="#L18">  18</a>     PreSS (ModuleCat.{v} ℤ) (ℤ×ℤ) where</span>
+<span id="L19"><a href="#L19">  19</a>   r₀ := 2</span>
+<span id="L20"><a href="#L20">  20</a>   ssData := E.ssData</span>
+<span id="L21"><a href="#L21">  21</a>   diffDeg := fun r =&gt; (r,r-1)</span>
+<span id="L22"><a href="#L22">  22</a>   d r p := by simpa only [hr,hd] using E.d r p</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> private theorem pre_eq (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ))</span>
+<span id="L25"><a href="#L25">  25</a>     (hr : E.r₀=2) (hd : E.diffDeg=fun r =&gt; (r,r-1)) : pre E hr hd=E.toPreSS := by</span>
+<span id="L26"><a href="#L26">  26</a>   rcases E with ⟨⟨r,data,degree,d⟩,hdd,hZ,hB⟩</span>
+<span id="L27"><a href="#L27">  27</a>   dsimp only at hr hd</span>
+<span id="L28"><a href="#L28">  28</a>   subst r</span>
+<span id="L29"><a href="#L29">  29</a>   subst degree</span>
+<span id="L30"><a href="#L30">  30</a>   rfl</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> private def normalize (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ))</span>
+<span id="L33"><a href="#L33">  33</a>     (hr : E.r₀=2) (hd : E.diffDeg=fun r =&gt; (r,r-1)) :</span>
+<span id="L34"><a href="#L34">  34</a>     KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ) where</span>
+<span id="L35"><a href="#L35">  35</a>   toPreSS := pre E hr hd</span>
+<span id="L36"><a href="#L36">  36</a>   d_comp_d := by rw [pre_eq]; exact E.d_comp_d</span>
+<span id="L37"><a href="#L37">  37</a>   Z_succ := by rw [pre_eq]; exact E.Z_succ</span>
+<span id="L38"><a href="#L38">  38</a>   B_succ := by rw [pre_eq]; exact E.B_succ</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> private theorem normalize_eq (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ))</span>
+<span id="L41"><a href="#L41">  41</a>     (hr : E.r₀=2) (hd : E.diffDeg=fun r =&gt; (r,r-1)) : normalize E hr hd=E := by</span>
+<span id="L42"><a href="#L42">  42</a>   rcases E with ⟨⟨r,data,degree,d⟩,hdd,hZ,hB⟩</span>
+<span id="L43"><a href="#L43">  43</a>   dsimp only at hr hd</span>
+<span id="L44"><a href="#L44">  44</a>   subst r</span>
+<span id="L45"><a href="#L45">  45</a>   subst degree</span>
+<span id="L46"><a href="#L46">  46</a>   rfl</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> private def sequence (o : Raw.Spectrum) := normalize (KIP126.Computation.Table.sequence o)</span>
+<span id="L49"><a href="#L49">  49</a>   (model.classical.firstPage _) (funext (model.classical.differentialDegree _))</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> private theorem sequence_eq (o : Raw.Spectrum) : sequence o=KIP126.Computation.Table.sequence o :=</span>
+<span id="L52"><a href="#L52">  52</a>   normalize_eq _ _ _</span>
+<span id="L53"><a href="#L53">  53</a> </span>
+<span id="L54"><a href="#L54">  54</a> private abbrev sphere := sequence .sphere</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> private abbrev Page (o : Raw.Spectrum) (s t : ℕ) := (sequence o).Page 2 (s,t)</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> private def basis (o : Raw.Spectrum) (s t i : ℕ) : Page o s t :=</span>
+<span id="L59"><a href="#L59">  59</a>   (eqToHom (congrArg (fun E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ) =&gt; E.Page 2 (s,t))</span>
+<span id="L60"><a href="#L60">  60</a>     (sequence_eq o).symm)) (KIP126.Computation.Table.basis o s t i)</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> private def decode (o : Raw.Spectrum) (s t : ℕ) (indices : List ℕ) : Option (Page o s t) :=</span>
+<span id="L63"><a href="#L63">  63</a>   if Raw.coordinatesValid Raw.degrees o s t indices then some ((indices.map (basis o s t)).sum) else none</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> private def BasisCorrect (d : Raw.Degree) : Prop :=</span>
+<span id="L66"><a href="#L66">  66</a>   ∃ e : Page d.spectrum d.s d.t ≃ₗ[ℤ] (Fin d.monomials.length →₀ ZMod 2),</span>
+<span id="L67"><a href="#L67">  67</a>     ∀ i, e.symm (Finsupp.single i 1)=basis d.spectrum d.s d.t i.val</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> private theorem basis_correct (d : Raw.Degree) (hd : d ∈ Raw.degrees) : BasisCorrect d := by</span>
+<span id="L70"><a href="#L70">  70</a>   have transport (E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ)) (h : E=E&#x27;)</span>
+<span id="L71"><a href="#L71">  71</a>       (b : ℕ → E.Page 2 (d.s,d.t))</span>
+<span id="L72"><a href="#L72">  72</a>       (hb : ∃ e : E.Page 2 (d.s,d.t) ≃ₗ[ℤ] (Fin d.monomials.length →₀ ZMod 2),</span>
+<span id="L73"><a href="#L73">  73</a>         ∀ i, e.symm (Finsupp.single i 1)=b i.val) :</span>
+<span id="L74"><a href="#L74">  74</a>       ∃ e : E&#x27;.Page 2 (d.s,d.t) ≃ₗ[ℤ] (Fin d.monomials.length →₀ ZMod 2),</span>
+<span id="L75"><a href="#L75">  75</a>         ∀ i, e.symm (Finsupp.single i 1)=</span>
+<span id="L76"><a href="#L76">  76</a>           (eqToHom (congrArg (fun A =&gt; A.Page 2 (d.s,d.t)) h)) (b i.val) := by</span>
+<span id="L77"><a href="#L77">  77</a>     subst E&#x27;</span>
+<span id="L78"><a href="#L78">  78</a>     simpa only [eqToHom_refl,ModuleCat.id_apply] using hb</span>
+<span id="L79"><a href="#L79">  79</a>   exact transport _ _ (sequence_eq d.spectrum).symm</span>
+<span id="L80"><a href="#L80">  80</a>     (KIP126.Computation.Table.basis d.spectrum d.s d.t)</span>
+<span id="L81"><a href="#L81">  81</a>     (KIP126.Computation.Table.basis_correct d hd)</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> private def Statement (c : Raw.Claim) : Prop :=</span>
+<span id="L84"><a href="#L84">  84</a>   ∃ x, decode c.spectrum c.s c.t c.x=some x ∧</span>
+<span id="L85"><a href="#L85">  85</a>     match c.kind with</span>
+<span id="L86"><a href="#L86">  86</a>     | .reaches =&gt; ReachesPage (sequence c.spectrum) c.r (c.s,c.t) x</span>
+<span id="L87"><a href="#L87">  87</a>     | .boundaryBy =&gt; IsBoundaryBy (sequence c.spectrum) c.r (c.s,c.t) x</span>
+<span id="L88"><a href="#L88">  88</a>     | .equation =&gt; ∃ y, decode c.spectrum c.ts c.tt c.y=some y ∧</span>
+<span id="L89"><a href="#L89">  89</a>         HasDifferential (sequence c.spectrum) c.r (c.s,c.t) (c.ts,c.tt) x y</span>
+<span id="L90"><a href="#L90">  90</a>     | .refutation =&gt; ∃ y, decode c.spectrum c.ts c.tt c.y=some y ∧</span>
+<span id="L91"><a href="#L91">  91</a>         ¬ HasDifferential (sequence c.spectrum) c.r (c.s,c.t) (c.ts,c.tt) x y</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> private theorem result (c : Raw.Claim) (hc : c ∈ Raw.claims) : Statement c := by</span>
+<span id="L94"><a href="#L94">  94</a>   let stmt (E : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ))</span>
+<span id="L95"><a href="#L95">  95</a>       (b : (s t i : ℕ) → E.Page 2 (s,t)) : Prop :=</span>
+<span id="L96"><a href="#L96">  96</a>     let dec (s t : ℕ) (indices : List ℕ) : Option (E.Page 2 (s,t)) :=</span>
+<span id="L97"><a href="#L97">  97</a>       if Raw.coordinatesValid Raw.degrees c.spectrum s t indices then some ((indices.map (b s t)).sum) else none</span>
+<span id="L98"><a href="#L98">  98</a>     ∃ x, dec c.s c.t c.x=some x ∧</span>
+<span id="L99"><a href="#L99">  99</a>       match c.kind with</span>
+<span id="L100"><a href="#L100"> 100</a>       | .reaches =&gt; ReachesPage E c.r (c.s,c.t) x</span>
+<span id="L101"><a href="#L101"> 101</a>       | .boundaryBy =&gt; IsBoundaryBy E c.r (c.s,c.t) x</span>
+<span id="L102"><a href="#L102"> 102</a>       | .equation =&gt; ∃ y, dec c.ts c.tt c.y=some y ∧ HasDifferential E c.r (c.s,c.t) (c.ts,c.tt) x y</span>
+<span id="L103"><a href="#L103"> 103</a>       | .refutation =&gt; ∃ y, dec c.ts c.tt c.y=some y ∧ ¬HasDifferential E c.r (c.s,c.t) (c.ts,c.tt) x y</span>
+<span id="L104"><a href="#L104"> 104</a>   have transport (E E&#x27; : KIP126.Core.SpectralSequence (ModuleCat ℤ) (ℤ×ℤ)) (h : E=E&#x27;)</span>
+<span id="L105"><a href="#L105"> 105</a>       (b : (s t i : ℕ) → E.Page 2 (s,t)) (hb : stmt E b) :</span>
+<span id="L106"><a href="#L106"> 106</a>       stmt E&#x27; (fun s t i =&gt; (eqToHom (congrArg (fun A =&gt; A.Page 2 (s,t)) h)) (b s t i)) := by</span>
+<span id="L107"><a href="#L107"> 107</a>     subst E&#x27;</span>
+<span id="L108"><a href="#L108"> 108</a>     simpa only [eqToHom_refl,ModuleCat.id_apply] using hb</span>
+<span id="L109"><a href="#L109"> 109</a>   exact transport _ _ (sequence_eq c.spectrum).symm</span>
+<span id="L110"><a href="#L110"> 110</a>     (KIP126.Computation.Table.basis c.spectrum) (KIP126.Computation.Table.result c hc)</span>
+<span id="L111"><a href="#L111"> 111</a> </span>
+<span id="L112"><a href="#L112"> 112</a> end</span>
+<span id="L113"><a href="#L113"> 113</a> end KIP126.Main.Internal.Selected.Normalized</span></pre>

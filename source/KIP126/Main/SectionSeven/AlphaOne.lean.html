@@ -1,0 +1,63 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/AlphaOne.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/AlphaOne.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L4"><a href="#L4">   4</a> /-! The compatible alpha₁ language in the paper&#x27;s Section 7.</span>
+<span id="L5"><a href="#L5">   5</a> Adapted from Kervaire126 bbac1fc05843,</span>
+<span id="L6"><a href="#L6">   6</a> Def/Kervaire/Route/Section7/AlphaOne.lean (MIT; see the retained source LICENSE).</span>
+<span id="L7"><a href="#L7">   7</a> These are predicates for paper deductions; no existence or correction</span>
+<span id="L8"><a href="#L8">   8</a> identity is added to the upstream model. -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Main.SectionSeven</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> /-- One common infinite representative generates the entire nonzero</span>
+<span id="L19"><a href="#L19">  19</a> classical E∞ component. The specified E₂ class is retained. -/</span>
+<span id="L20"><a href="#L20">  20</a> private def ClassicalInfinityGenerated (s t : ℤ)</span>
+<span id="L21"><a href="#L21">  21</a>     (x : sphereSequence.Page 2 (s,t)) : Prop :=</span>
+<span id="L22"><a href="#L22">  22</a>   let P := sphereSequence.ssData (s,t)</span>
+<span id="L23"><a href="#L23">  23</a>   let n : WithTop ℕ := ↑(2-sphereSequence.r₀).toNat</span>
+<span id="L24"><a href="#L24">  24</a>   ∃ z : (Subobject.underlying.obj (P.Z ⊤) : ModuleCat ℤ),</span>
+<span id="L25"><a href="#L25">  25</a>     (Subobject.ofLE (P.Z ⊤) (P.Z n) (P.Z_anti le_top) ≫ P.pageπ n) z = x ∧</span>
+<span id="L26"><a href="#L26">  26</a>     P.pageπ ⊤ z ≠ 0 ∧ ∀ y : P.eInfty, y = 0 ∨ y = P.pageπ ⊤ z</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> /-- An actual finite-quotient differential with common representatives and</span>
+<span id="L29"><a href="#L29">  29</a> nonzero target on the stated page, not just nonzero E₂ coordinates. -/</span>
+<span id="L30"><a href="#L30">  30</a> private def FiniteNonzeroDifferential (q : ℕ) (r s t s&#x27; t&#x27; : ℤ) (k k&#x27; : ℕ)</span>
+<span id="L31"><a href="#L31">  31</a>     (x : sphereSequence.Page 2 (s,t)) (y : sphereSequence.Page 2 (s&#x27;,t&#x27;)) : Prop :=</span>
+<span id="L32"><a href="#L32">  32</a>   let A := family.quotient syntheticSphere q</span>
+<span id="L33"><a href="#L33">  33</a>   ∃ h : (s,t,t-k) + A.sequence.diffDeg r = (s&#x27;,t&#x27;,t&#x27;-k&#x27;),</span>
+<span id="L34"><a href="#L34">  34</a>     ∃ (xr : A.Page r (s,t,t-k)) (yr : A.Page r (s&#x27;,t&#x27;,t&#x27;-k&#x27;)),</span>
+<span id="L35"><a href="#L35">  35</a>       SyntheticRepresentsOnPage A r (s,t,t-k)</span>
+<span id="L36"><a href="#L36">  36</a>         ((family.quotientProjection syntheticSphere q).pageMap 2 (s,t,t-k)</span>
+<span id="L37"><a href="#L37">  37</a>           (comparison.sphereE2 s t k x)) xr ∧</span>
+<span id="L38"><a href="#L38">  38</a>       SyntheticRepresentsOnPage A r (s&#x27;,t&#x27;,t&#x27;-k&#x27;)</span>
+<span id="L39"><a href="#L39">  39</a>         ((family.quotientProjection syntheticSphere q).pageMap 2 (s&#x27;,t&#x27;,t&#x27;-k&#x27;)</span>
+<span id="L40"><a href="#L40">  40</a>           (comparison.sphereE2 s&#x27; t&#x27; k&#x27; y)) yr ∧</span>
+<span id="L41"><a href="#L41">  41</a>       (A.sequence.d r (s,t,t-k) ≫ eqToHom (congrArg (A.Page r) h)) xr = yr ∧ yr ≠ 0</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> /-- One Q11 representative and its actual Q9 image; correction choices may</span>
+<span id="L44"><a href="#L44">  44</a> vary with the untruncated U representative. The final relation is exact. -/</span>
+<span id="L45"><a href="#L45">  45</a> private def AlphaOneProperties</span>
+<span id="L46"><a href="#L46">  46</a>     (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11)) : Prop :=</span>
+<span id="L47"><a href="#L47">  47</a>   let a9 := a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)</span>
+<span id="L48"><a href="#L48">  48</a>   FiniteDetected 11 (by decide) 9 132 0 KIP126.Computation.Standard.V a11 ∧</span>
+<span id="L49"><a href="#L49">  49</a>   FiniteDetected 9 (by decide) 9 132 0 KIP126.Computation.Standard.V a9 ∧</span>
+<span id="L50"><a href="#L50">  50</a>   (∀ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L51"><a href="#L51">  51</a>     SphereDetected 10 134 0 KIP126.Computation.Standard.U u →</span>
+<span id="L52"><a href="#L52">  52</a>     ∃ (a2 : BiHom 124 137 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L53"><a href="#L53">  53</a>       (a3 : BiHom 125 140 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9)),</span>
+<span id="L54"><a href="#L54">  54</a>       lambdaMultiply 3 (sphereAction KIP126.Literature.Standard.eta a9) =</span>
+<span id="L55"><a href="#L55">  55</a>         (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from</span>
+<span id="L56"><a href="#L56">  56</a>           lambdaMultiply 3 (quotientClass 9 u)) +</span>
+<span id="L57"><a href="#L57">  57</a>         (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from</span>
+<span id="L58"><a href="#L58">  58</a>           lambdaMultiply 6 a2) ∧</span>
+<span id="L59"><a href="#L59">  59</a>       sphereAction KIP126.Literature.Standard.eta a2 = lambdaMultiply 1 a3) ∧</span>
+<span id="L60"><a href="#L60">  60</a>   lambdaMultiply 3 (sphereAction KIP126.Literature.Standard.syntheticH0 a9) = 0</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> end</span>
+<span id="L63"><a href="#L63">  63</a> end KIP126.Main.SectionSeven</span></pre>

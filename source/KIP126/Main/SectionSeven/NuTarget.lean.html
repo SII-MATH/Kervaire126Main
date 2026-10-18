@@ -1,0 +1,56 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NuTarget.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NuTarget.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Main.Conditions</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.SectionSeven.NormalizedNu</span>
+<span id="L6"><a href="#L6">   6</a> public import KIP126.Main.SectionSeven.Indeterminacy</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.NuNinth.Assembly</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.SectionSeven.ThetaToda</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.SectionSeven.TodaNonempty</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.Internal.AlphaOne.Existence</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.Main.SectionSeven.AnyYTarget</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.Main.SectionSeven.WeakRepresentative</span>
+<span id="L13"><a href="#L13">  13</a> import all KIP126.Main.SectionSeven.WeakYDetection</span>
+<span id="L14"><a href="#L14">  14</a> import all KIP126.Main.SectionSeven.NuTargetFull</span>
+<span id="L15"><a href="#L15">  15</a> /-! Proposition 7.9&#x27;s divisibility step.</span>
+<span id="L16"><a href="#L16">  16</a> Source: Kervaire126 bbac1fc05843,</span>
+<span id="L17"><a href="#L17">  17</a> Main/Solution/Route/Section7/NuTarget.lean:61–104</span>
+<span id="L18"><a href="#L18">  18</a> (MIT; see the retained source LICENSE).</span>
+<span id="L19"><a href="#L19">  19</a> The original argument is assembled from the migrated AlphaOne, Toda,</span>
+<span id="L20"><a href="#L20">  20</a> ninth-quotient ν, and P/Q proofs on the fixed public upstream objects. -/</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> @[expose] section</span>
+<span id="L23"><a href="#L23">  23</a> namespace KIP126.Main.SectionSeven</span>
+<span id="L24"><a href="#L24">  24</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L25"><a href="#L25">  25</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature.Route KIP126.Main.Internal</span>
+<span id="L26"><a href="#L26">  26</a> open KIP126.Main.SectionSeven.Internal</span>
+<span id="L27"><a href="#L27">  27</a> open KIP126.Literature.Standard (eta syntheticH0)</span>
+<span id="L28"><a href="#L28">  28</a> open KIP126.Computation.Standard (T)</span>
+<span id="L29"><a href="#L29">  29</a> noncomputable section</span>
+<span id="L30"><a href="#L30">  30</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L31"><a href="#L31">  31</a> set_option maxHeartbeats 1000000</span>
+<span id="L32"><a href="#L32">  32</a> /-- The P and Q branches give the exact λν divisibility equation for the</span>
+<span id="L33"><a href="#L33">  33</a> fixed target class, under the genuine Stem126D6Vanishes and EtaExtensionDetection hypotheses. -/</span>
+<span id="L34"><a href="#L34">  34</a> private theorem target_nu_divisible (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :</span>
+<span id="L35"><a href="#L35">  35</a>     TargetNuDivisible T hopfNu := by</span>
+<span id="L36"><a href="#L36">  36</a>   obtain ⟨a11,ha⟩ := AlphaOne.alpha_one_exists</span>
+<span id="L37"><a href="#L37">  37</a>   obtain ⟨z,hz⟩ := module_toda_nonempty_of_alpha a11 ha</span>
+<span id="L38"><a href="#L38">  38</a>   obtain ⟨t,ht,he,_⟩ := anyy_bracket_exact_target hc3 hc5 a11 ha z hz</span>
+<span id="L39"><a href="#L39">  39</a>   have hzn := weak_initial_twice_h0_nonzero hc3 syntheticH0 z t ht he</span>
+<span id="L40"><a href="#L40">  40</a>   let theta := KIP126.Literature.Standard.bxTheta5</span>
+<span id="L41"><a href="#L41">  41</a>   have htheta : ThetaChoice theta := KIP126.Literature.Standard.bx_theta_label</span>
+<span id="L42"><a href="#L42">  42</a>   obtain ⟨b,zTheta,hb,hzTheta,hToda⟩ := synthetic_theta_b_toda theta htheta KIP126.Literature.Standard.bx_order_two</span>
+<span id="L43"><a href="#L43">  43</a>   obtain ⟨y,hf,hn⟩ := main_weak_high_representative eta KIP126.Literature.Standard.eta_label</span>
+<span id="L44"><a href="#L44">  44</a>     syntheticH0 theta htheta b hb zTheta hzTheta (theta_b_multiplied_shuffle theta htheta KIP126.Literature.Standard.bx_order_two b zTheta hToda) z hzn</span>
+<span id="L45"><a href="#L45">  45</a>   have hd := model.sphereDetectionCompatible.homotopy_lambda 1 1 0 syntheticH0</span>
+<span id="L46"><a href="#L46">  46</a>   change Detects (model.convergence .sphere) (1,1,1)</span>
+<span id="L47"><a href="#L47">  47</a>     (sphereLabel 1 1 0 (KIP126.Literature.sphereFirstQuotient model 1 1 (quotientClass 1 syntheticH0)))</span>
+<span id="L48"><a href="#L48">  48</a>     (lambdaMultiply 0 syntheticH0) at hd</span>
+<span id="L49"><a href="#L49">  49</a>   have hh0 : KIP126.Literature.sphereFirstQuotient model 1 1 (quotientClass 1 syntheticH0)=KIP126.Computation.Standard.h0 := KIP126.Literature.Standard.toda_h0_label</span>
+<span id="L50"><a href="#L50">  50</a>   rw [hh0,lambda_zero_0_1] at hd</span>
+<span id="L51"><a href="#L51">  51</a>   have hy := weak_y_detected_of_f11_and_nonzero syntheticH0 hd y hf hn</span>
+<span id="L52"><a href="#L52">  52</a>   exact nu_target_full_of_nonzero hopfNu KIP126.Literature.Standard.nuCofiber_normalized_label</span>
+<span id="L53"><a href="#L53">  53</a>     syntheticH0 KIP126.Literature.Standard.toda_h0_label</span>
+<span id="L54"><a href="#L54">  54</a>     KIP126.Main.Internal.NuNinth.nu_extension_in_ninth_quotient y hy.1 hn</span>
+<span id="L55"><a href="#L55">  55</a> end</span>
+<span id="L56"><a href="#L56">  56</a> end KIP126.Main.SectionSeven</span></pre>

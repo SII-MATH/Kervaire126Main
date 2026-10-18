@@ -1,0 +1,50 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Convergence/Vanishing/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Convergence/Vanishing/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Convergence.Data</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.SpectralSequence.Truncation.Proofs</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> /-! Vanishing of associated grades raises the filtration of the same</span>
+<span id="L10"><a href="#L10">  10</a> object. This extracts the filtration argument from the historical Adams</span>
+<span id="L11"><a href="#L11">  11</a> divisibility proof without importing its Adams objects or assumptions. -/</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> universe u v w</span>
+<span id="L18"><a href="#L18">  18</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L19"><a href="#L19">  19</a>   {ω : Type w} {A : ω → C} (F : Filtration A)</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> /-- A zero associated grade identifies adjacent filtration subobjects. -/</span>
+<span id="L22"><a href="#L22">  22</a> public theorem Filtration.eq_succ_of_associatedGraded_isZero (s : ℤ) (k : ω)</span>
+<span id="L23"><a href="#L23">  23</a>     (h : IsZero (F.associatedGraded s k)) : F.F s k = F.F (s + 1) k := by</span>
+<span id="L24"><a href="#L24">  24</a>   let i := Subobject.ofLE (F.F (s + 1) k) (F.F s k) (F.mono s k)</span>
+<span id="L25"><a href="#L25">  25</a>   haveI : Epi i := Abelian.epi_of_cokernel_π_eq_zero i (h.eq_of_tgt _ _)</span>
+<span id="L26"><a href="#L26">  26</a>   haveI : IsIso i := isIso_of_mono_of_epi i</span>
+<span id="L27"><a href="#L27">  27</a>   apply le_antisymm</span>
+<span id="L28"><a href="#L28">  28</a>   · apply Subobject.le_of_comm (inv i)</span>
+<span id="L29"><a href="#L29">  29</a>     rw [← Subobject.ofLE_arrow (F.mono s k)]</span>
+<span id="L30"><a href="#L30">  30</a>     exact IsIso.inv_hom_id_assoc i _</span>
+<span id="L31"><a href="#L31">  31</a>   · exact F.mono s k</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> /-- Vanishing on a finite interval identifies its endpoint filtrations.</span>
+<span id="L34"><a href="#L34">  34</a> No separation or convergence hypothesis is required. -/</span>
+<span id="L35"><a href="#L35">  35</a> public theorem Filtration.eq_of_associatedGraded_isZero (s t : ℤ) (k : ω)</span>
+<span id="L36"><a href="#L36">  36</a>     (hst : s ≤ t)</span>
+<span id="L37"><a href="#L37">  37</a>     (h : ∀ j : ℤ, s ≤ j → j &lt; t → IsZero (F.associatedGraded j k)) :</span>
+<span id="L38"><a href="#L38">  38</a>     F.F s k = F.F t k := by</span>
+<span id="L39"><a href="#L39">  39</a>   have step : ∀ n : ℕ, s + n ≤ t → F.F s k = F.F (s + n) k := by</span>
+<span id="L40"><a href="#L40">  40</a>     intro n hn</span>
+<span id="L41"><a href="#L41">  41</a>     induction n with</span>
+<span id="L42"><a href="#L42">  42</a>     | zero =&gt; simp</span>
+<span id="L43"><a href="#L43">  43</a>     | succ n ih =&gt;</span>
+<span id="L44"><a href="#L44">  44</a>       rw [show s + ((n + 1 : ℕ) : ℤ) = (s + n) + 1 by omega]</span>
+<span id="L45"><a href="#L45">  45</a>       exact (ih (by omega)).trans</span>
+<span id="L46"><a href="#L46">  46</a>         (F.eq_succ_of_associatedGraded_isZero _ k (h _ (by omega) (by omega)))</span>
+<span id="L47"><a href="#L47">  47</a>   simpa only [show s + ((t - s).toNat : ℤ) = t by omega] using</span>
+<span id="L48"><a href="#L48">  48</a>     step (t - s).toNat (by omega)</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> end KIP126.Core.SpectralSequence</span></pre>

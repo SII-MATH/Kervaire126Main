@@ -1,0 +1,94 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz/Survival.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz/Survival.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedLeibniz.Boundary</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> /-! The survival implication in the absolute-boundary comparison of AimPaper</span>
+<span id="L5"><a href="#L5">   5</a> Proposition `prop:6de7d130`. A high-filtration absolute boundary is divisible</span>
+<span id="L6"><a href="#L6">   6</a> by the exact λ power that vanishes in the complementary quotient. Exactness</span>
+<span id="L7"><a href="#L7">   7</a> then lifts the specified source through the higher quotient; the fixed BHS</span>
+<span id="L8"><a href="#L8">   8</a> finite-lift criterion identifies its original classical label as a cycle. -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L20"><a href="#L20">  20</a> set_option maxHeartbeats 1600000</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> private theorem lambdaMultiply_quotient_zero (A : SyntheticSpectrum)</span>
+<span id="L23"><a href="#L23">  23</a>     (n : ℕ) (m w : ℤ) (a : BiHom m w A) :</span>
+<span id="L24"><a href="#L24">  24</a>     lambdaMultiply n a ≫ XModLambdaN.incl A n = 0 := by</span>
+<span id="L25"><a href="#L25">  25</a>   have hz : lambdaPow n (Smn m w) ≫ a ≫ XModLambdaN.incl A n = 0 := by</span>
+<span id="L26"><a href="#L26">  26</a>     rw [←Category.assoc]</span>
+<span id="L27"><a href="#L27">  27</a>     erw [←lambdaPow_naturality n a]</span>
+<span id="L28"><a href="#L28">  28</a>     rw [Category.assoc,XModLambdaN.lambdaPow_comp_incl,comp_zero]</span>
+<span id="L29"><a href="#L29">  29</a>   simp only [lambdaMultiply,Category.assoc,hz,comp_zero]</span>
+<span id="L30"><a href="#L30">  30</a> </span>
+<span id="L31"><a href="#L31">  31</a> private theorem absolute_boundary_filtration_lift (X : ClassicalObject)</span>
+<span id="L32"><a href="#L32">  32</a>     (i j : ℕ) (hi : 0 &lt; i) (hij : i &lt; j) (s t : ℤ)</span>
+<span id="L33"><a href="#L33">  33</a>     (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i))</span>
+<span id="L34"><a href="#L34">  34</a>     (hfil : FiltrationAtLeast model.syntheticTower (s+j+1)</span>
+<span id="L35"><a href="#L35">  35</a>       (biSuspensionHomEquiv (t-s) t i (model.nu.functor.obj (X.obj model.auxiliary))</span>
+<span id="L36"><a href="#L36">  36</a>         (a ≫ XModLambdaN.proj _ i))) :</span>
+<span id="L37"><a href="#L37">  37</a>     ∃ b : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) j),</span>
+<span id="L38"><a href="#L38">  38</a>       b ≫ (model.quotients.tower _).rho i j hij.le = a := by</span>
+<span id="L39"><a href="#L39">  39</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L40"><a href="#L40">  40</a>   let α := biSuspensionHomEquiv (t-s) t i A (a ≫ XModLambdaN.proj A i)</span>
+<span id="L41"><a href="#L41">  41</a>   obtain ⟨β,hβ⟩ := (KIP126.Literature.Standard.selected_filtration_lambda X</span>
+<span id="L42"><a href="#L42">  42</a>     (t-s-1) (t+i) (s+j+1) (by omega) α).mp hfil</span>
+<span id="L43"><a href="#L43">  43</a>   have hexp : ((t-s-1)+(s+j+1)-(t+i)).toNat = j-i := by omega</span>
+<span id="L44"><a href="#L44">  44</a>   have hzero : α ≫ XModLambdaN.incl A (j-i) = 0 := by</span>
+<span id="L45"><a href="#L45">  45</a>     rw [←hβ]</span>
+<span id="L46"><a href="#L46">  46</a>     have hz (n q : ℕ) (hn : n = q) : lambdaMultiply n β ≫ XModLambdaN.incl A q = 0 := by</span>
+<span id="L47"><a href="#L47">  47</a>       subst q</span>
+<span id="L48"><a href="#L48">  48</a>       exact lambdaMultiply_quotient_zero A n _ _ β</span>
+<span id="L49"><a href="#L49">  49</a>     simp only [regrade_precomp,Category.assoc,hz _ _ hexp,comp_zero]</span>
+<span id="L50"><a href="#L50">  50</a>   let T := (model.quotients.tower A).triangle hi hij</span>
+<span id="L51"><a href="#L51">  51</a>   have hz : a ≫ T.delta = 0 := by</span>
+<span id="L52"><a href="#L52">  52</a>     apply (biSuspensionHomEquiv (t-s) t i (XModLambdaN A (j-i))).injective</span>
+<span id="L53"><a href="#L53">  53</a>     rw [map_zero,cofiber_boundary_projection]</span>
+<span id="L54"><a href="#L54">  54</a>     exact hzero</span>
+<span id="L55"><a href="#L55">  55</a>   obtain ⟨b,hb⟩ := (Triangle.mk T.lambdaMap T.rho T.delta).coyoneda_exact₃ T.distinguished a hz</span>
+<span id="L56"><a href="#L56">  56</a>   refine ⟨b,?_⟩</span>
+<span id="L57"><a href="#L57">  57</a>   simpa only [T,Triangle.mk,(model.quotients.tower A).triangle_rho hi hij] using hb.symm</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> private theorem first_label_lift_cycles (X : ClassicalObject)</span>
+<span id="L60"><a href="#L60">  60</a>     (j : ℕ) (hj : 0 &lt; j) (s t : ℤ) (x : Ambient model X (s,t))</span>
+<span id="L61"><a href="#L61">  61</a>     (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) j))</span>
+<span id="L62"><a href="#L62">  62</a>     (ha : a ≫ (model.quotients.tower _).rho 1 j hj =</span>
+<span id="L63"><a href="#L63">  63</a>       firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1) :</span>
+<span id="L64"><a href="#L64">  64</a>     x ∈ cycles model X j (s,t) := by</span>
+<span id="L65"><a href="#L65">  65</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L66"><a href="#L66">  66</a>   let inv : A ⟶ nuZero model X := SyntheticCategory.biShift_zero.inv.app A</span>
+<span id="L67"><a href="#L67">  67</a>   have hfirst : (a ≫ XModLambdaN.map inv j) ≫ (model.quotients.tower _).rho 1 j hj =</span>
+<span id="L68"><a href="#L68">  68</a>       firstLabel model X s t x := by</span>
+<span id="L69"><a href="#L69">  69</a>     rw [Category.assoc,←(model.quotients.natural inv).rho_naturality hj,←Category.assoc,ha,</span>
+<span id="L70"><a href="#L70">  70</a>       Category.assoc,←model.quotients.functoriality.map_comp]</span>
+<span id="L71"><a href="#L71">  71</a>     simp only [inv,A,Iso.hom_inv_id_app,model.quotients.functoriality.map_id,Category.comp_id]</span>
+<span id="L72"><a href="#L72">  72</a>   have hx := (KIP126.Literature.Standard.bhs_finite_lift X j hj s t x).mpr</span>
+<span id="L73"><a href="#L73">  73</a>     ⟨a ≫ XModLambdaN.map inv j,hfirst⟩</span>
+<span id="L74"><a href="#L74">  74</a>   have hc := ((isCycle_iff_reaches model X (j+1) (by omega) (s,t) x).mpr hx).2</span>
+<span id="L75"><a href="#L75">  75</a>   simpa only [add_sub_cancel_right] using hc</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> private theorem absolute_boundary_filtration_cycles (X : ClassicalObject)</span>
+<span id="L78"><a href="#L78">  78</a>     (i j : ℕ) (hi : 0 &lt; i) (hij : i ≤ j) (s t : ℤ) (x : Ambient model X (s,t))</span>
+<span id="L79"><a href="#L79">  79</a>     (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i))</span>
+<span id="L80"><a href="#L80">  80</a>     (ha : a ≫ (model.quotients.tower _).rho 1 i hi =</span>
+<span id="L81"><a href="#L81">  81</a>       firstLabel model X s t x ≫ XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1)</span>
+<span id="L82"><a href="#L82">  82</a>     (hfil : FiltrationAtLeast model.syntheticTower (s+j+1)</span>
+<span id="L83"><a href="#L83">  83</a>       (biSuspensionHomEquiv (t-s) t i (model.nu.functor.obj (X.obj model.auxiliary))</span>
+<span id="L84"><a href="#L84">  84</a>         (a ≫ XModLambdaN.proj _ i))) :</span>
+<span id="L85"><a href="#L85">  85</a>     x ∈ cycles model X j (s,t) := by</span>
+<span id="L86"><a href="#L86">  86</a>   rcases hij.eq_or_lt with rfl | hij</span>
+<span id="L87"><a href="#L87">  87</a>   · exact first_label_lift_cycles X i hi s t x a ha</span>
+<span id="L88"><a href="#L88">  88</a>   obtain ⟨b,hb⟩ := absolute_boundary_filtration_lift X i j hi hij s t a hfil</span>
+<span id="L89"><a href="#L89">  89</a>   apply first_label_lift_cycles X j (by omega) s t x b</span>
+<span id="L90"><a href="#L90">  90</a>   rw [←(model.quotients.tower _).rho_comp hi hij.le,←Category.assoc,hb]</span>
+<span id="L91"><a href="#L91">  91</a>   exact ha</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> end</span>
+<span id="L94"><a href="#L94">  94</a> end KIP126.ProofTools.Internal.Leibniz</span></pre>

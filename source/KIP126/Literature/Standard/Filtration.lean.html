@@ -1,0 +1,82 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Standard/Filtration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Standard/Filtration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.Literature.Standard.QuotientAlgebra</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> /-! Structural filtration binding retained from bbac1fc05843,</span>
+<span id="L7"><a href="#L7">   7</a> Def/Kervaire/Route/SourceLanguage.lean:1135 and</span>
+<span id="L8"><a href="#L8">   8</a> Def/Kervaire/Route/Multiplication/Comparison.lean:82–89 (MIT).</span>
+<span id="L9"><a href="#L9">   9</a> This is the original selected-object action law, with no finite upper bound. -/</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Literature.Standard</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory KIP126.StableHomotopy</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Synthetic.Context KIP126.AdamsSynthetic KIP126.Kervaire.Route</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> public theorem action_filtration (X : SyntheticObject) (m w m&#x27; w&#x27; s s&#x27; : ℤ)</span>
+<span id="L16"><a href="#L16">  16</a>     (a : BiHom m w (S_0_0 : SyntheticSpectrum))</span>
+<span id="L17"><a href="#L17">  17</a>     (b : BiHom m&#x27; w&#x27; (X.obj model.nu model.auxiliary))</span>
+<span id="L18"><a href="#L18">  18</a>     (ha : FiltrationAtLeast model.syntheticTower s a)</span>
+<span id="L19"><a href="#L19">  19</a>     (hb : FiltrationAtLeast model.syntheticTower s&#x27; b) :</span>
+<span id="L20"><a href="#L20">  20</a>     FiltrationAtLeast model.syntheticTower (s+s&#x27;) (sphereAction a b) := by</span>
+<span id="L21"><a href="#L21">  21</a>   sorry</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- Original AlgebraBinding.finite_action: multiplication on the actual finite</span>
+<span id="L24"><a href="#L24">  24</a> quotient, with the original positive length and all weight indices. -/</span>
+<span id="L25"><a href="#L25">  25</a> public theorem finite_action (q : ℕ) (hq : 0 &lt; q) (s t s&#x27; t&#x27; k l : ℕ)</span>
+<span id="L26"><a href="#L26">  26</a>     (x : model.classical.sphere.Page 2 (s,t))</span>
+<span id="L27"><a href="#L27">  27</a>     (y : model.classical.sphere.Page 2 (s&#x27;,t&#x27;))</span>
+<span id="L28"><a href="#L28">  28</a>     (a : BiHom ((t : ℤ)-s) ((t : ℤ)-k) (S_0_0 : SyntheticSpectrum))</span>
+<span id="L29"><a href="#L29">  29</a>     (b : BiHom ((t&#x27; : ℤ)-s&#x27;) ((t&#x27; : ℤ)-l) (XModLambdaN (S_0_0 : SyntheticSpectrum) q))</span>
+<span id="L30"><a href="#L30">  30</a>     (ha : Detects (model.convergence .sphere) (s,t,(t : ℤ)-k) (model.comparison.sphereE2 s t k x) a)</span>
+<span id="L31"><a href="#L31">  31</a>     (hb : Detects (model.convergence (.quotient q .sphere)) (s&#x27;,t&#x27;,(t&#x27; : ℤ)-l)</span>
+<span id="L32"><a href="#L32">  32</a>       ((model.family.quotientProjection (S_0_0 : SyntheticSpectrum) q).pageMap 2</span>
+<span id="L33"><a href="#L33">  33</a>         (s&#x27;,t&#x27;,(t&#x27; : ℤ)-l) (model.comparison.sphereE2 s&#x27; t&#x27; l y)) b) :</span>
+<span id="L34"><a href="#L34">  34</a>     Detects (model.convergence (.quotient q .sphere))</span>
+<span id="L35"><a href="#L35">  35</a>       ((s+s&#x27; : ℕ),(t+t&#x27; : ℕ),(t+t&#x27; : ℕ)-(k+l : ℕ))</span>
+<span id="L36"><a href="#L36">  36</a>       ((model.family.quotientProjection (S_0_0 : SyntheticSpectrum) q).pageMap 2</span>
+<span id="L37"><a href="#L37">  37</a>         ((s+s&#x27; : ℕ),(t+t&#x27; : ℕ),(t+t&#x27; : ℕ)-(k+l : ℕ))</span>
+<span id="L38"><a href="#L38">  38</a>         (model.comparison.sphereE2 (s+s&#x27;) (t+t&#x27;) (k+l)</span>
+<span id="L39"><a href="#L39">  39</a>           (by simpa only [Nat.cast_add, Prod.mk_add_mk] using</span>
+<span id="L40"><a href="#L40">  40</a>             model.sphereAlgebra.product (s,t) (s&#x27;,t&#x27;) x y)))</span>
+<span id="L41"><a href="#L41">  41</a>       (homotopyRegrade (by simp only [Nat.cast_add]; omega)</span>
+<span id="L42"><a href="#L42">  42</a>         (by simp only [Nat.cast_add]; omega) (sphereAction a b)) := by</span>
+<span id="L43"><a href="#L43">  43</a>   sorry</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> /-- The original general first-quotient multiplication comparison composed</span>
+<span id="L46"><a href="#L46">  46</a> with QuotientAlgebraBinding.sphere_action (SourceLanguage:969–971,1129–1130).</span>
+<span id="L47"><a href="#L47">  47</a> No paper-specific unit or detection conclusion is asserted. -/</span>
+<span id="L48"><a href="#L48">  48</a> public theorem first_quotient_action (s t s&#x27; t&#x27; : ℕ)</span>
+<span id="L49"><a href="#L49">  49</a>     (x : BiHom ((t : ℤ)-s) t (S_0_0 : SyntheticSpectrum))</span>
+<span id="L50"><a href="#L50">  50</a>     (y : BiHom ((t&#x27; : ℤ)-s&#x27;) t&#x27; (XModLambdaN (S_0_0 : SyntheticSpectrum) 1)) :</span>
+<span id="L51"><a href="#L51">  51</a>     KIP126.Literature.sphereFirstQuotient model ((s+s&#x27; : ℕ) : ℤ) ((t+t&#x27; : ℕ) : ℤ)</span>
+<span id="L52"><a href="#L52">  52</a>       (homotopyRegrade (by simp only [Nat.cast_add]; omega)</span>
+<span id="L53"><a href="#L53">  53</a>         (by simp only [Nat.cast_add]) (sphereAction x y)) =</span>
+<span id="L54"><a href="#L54">  54</a>       (eqToHom (congrArg (model.classical.sphere.Page 2)</span>
+<span id="L55"><a href="#L55">  55</a>         (show ((s : ℤ),(t : ℤ)) + ((s&#x27; : ℤ),(t&#x27; : ℤ)) = (((s+s&#x27; : ℕ) : ℤ),((t+t&#x27; : ℕ) : ℤ)) by</span>
+<span id="L56"><a href="#L56">  56</a>           simp only [Prod.mk_add_mk,Nat.cast_add])))</span>
+<span id="L57"><a href="#L57">  57</a>         (model.sphereAlgebra.product (s,t) (s&#x27;,t&#x27;)</span>
+<span id="L58"><a href="#L58">  58</a>           (KIP126.Literature.sphereFirstQuotient model s t (quotientClass 1 x))</span>
+<span id="L59"><a href="#L59">  59</a>           (KIP126.Literature.sphereFirstQuotient model s&#x27; t&#x27; y)) := by</span>
+<span id="L60"><a href="#L60">  60</a>   rw [← quotientAlgebra_sphere_action 1 (by decide) ((t : ℤ)-s) t ((t&#x27; : ℤ)-s&#x27;) t&#x27; x y]</span>
+<span id="L61"><a href="#L61">  61</a>   exact quotientAlgebra_first_quotient s t s&#x27; t&#x27; (quotientClass 1 x) y</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> /-- Original AlgebraBinding.classical_detection (SourceLanguage:1061–1070,</span>
+<span id="L64"><a href="#L64">  64</a> 1128), on the actual homotopy product and the same classical sphere E₂. -/</span>
+<span id="L65"><a href="#L65">  65</a> public theorem classical_product_detection (s t s&#x27; t&#x27; : ℕ)</span>
+<span id="L66"><a href="#L66">  66</a>     (x : model.classical.sphere.Page 2 (s,t))</span>
+<span id="L67"><a href="#L67">  67</a>     (y : model.classical.sphere.Page 2 (s&#x27;,t&#x27;))</span>
+<span id="L68"><a href="#L68">  68</a>     (a : HomotopyGroup (C := Spectrum) ((t : ℤ)-s) SphereSpectrum)</span>
+<span id="L69"><a href="#L69">  69</a>     (b : HomotopyGroup (C := Spectrum) ((t&#x27; : ℤ)-s&#x27;) SphereSpectrum)</span>
+<span id="L70"><a href="#L70">  70</a>     (ha : ClassicalDetects (model.classicalConvergence .sphere) (s,t) x a)</span>
+<span id="L71"><a href="#L71">  71</a>     (hb : ClassicalDetects (model.classicalConvergence .sphere) (s&#x27;,t&#x27;) y b) :</span>
+<span id="L72"><a href="#L72">  72</a>     ClassicalDetects (model.classicalConvergence .sphere) ((s+s&#x27; : ℕ),(t+t&#x27; : ℕ))</span>
+<span id="L73"><a href="#L73">  73</a>       ((eqToHom (congrArg (model.classical.sphere.Page 2)</span>
+<span id="L74"><a href="#L74">  74</a>         (show ((s : ℤ),(t : ℤ)) + ((s&#x27; : ℤ),(t&#x27; : ℤ)) = (((s+s&#x27; : ℕ) : ℤ),((t+t&#x27; : ℕ) : ℤ)) by</span>
+<span id="L75"><a href="#L75">  75</a>           simp only [Prod.mk_add_mk,Nat.cast_add])))</span>
+<span id="L76"><a href="#L76">  76</a>         (model.sphereAlgebra.product (s,t) (s&#x27;,t&#x27;) x y))</span>
+<span id="L77"><a href="#L77">  77</a>       (eqToHom (congrArg (fun n : ℤ =&gt; Sphere (C := Spectrum) n)</span>
+<span id="L78"><a href="#L78">  78</a>         (by simp only [Nat.cast_add]; omega : ((t+t&#x27; : ℕ) : ℤ)-(s+s&#x27;) =</span>
+<span id="L79"><a href="#L79">  79</a>           ((t : ℤ)-s)+((t&#x27; : ℤ)-s&#x27;))) ≫ classicalSphereProduct a b) := by</span>
+<span id="L80"><a href="#L80">  80</a>   sorry</span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> end KIP126.Literature.Standard</span></pre>

@@ -1,0 +1,136 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/CumulativeBoundary.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/CumulativeBoundary.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite</span>
+<span id="L3"><a href="#L3">   3</a> </span>
+<span id="L4"><a href="#L4">   4</a> @[expose] section</span>
+<span id="L5"><a href="#L5">   5</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L6"><a href="#L6">   6</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L7"><a href="#L7">   7</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L8"><a href="#L8">   8</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L11"><a href="#L11">  11</a> noncomputable section</span>
+<span id="L12"><a href="#L12">  12</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L13"><a href="#L13">  13</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L14"><a href="#L14">  14</a> set_option maxHeartbeats 2000000</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> private theorem cumulative_boundary_permanent (X : ClassicalObject) (b : ℤ)</span>
+<span id="L17"><a href="#L17">  17</a>     (p : Bidegree) (y : Ambient model X p)</span>
+<span id="L18"><a href="#L18">  18</a>     (hy : y ∈ boundaries model X b p) : ClassicalPermanentCycle model X p y := by</span>
+<span id="L19"><a href="#L19">  19</a>   obtain ⟨z,hz⟩ := hy</span>
+<span id="L20"><a href="#L20">  20</a>   let E := model.classical.obj (X.obj model.auxiliary)</span>
+<span id="L21"><a href="#L21">  21</a>   let P := E.ssData p</span>
+<span id="L22"><a href="#L22">  22</a>   let n₀ : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L23"><a href="#L23">  23</a>   have hn₀ : n₀=0 := by dsimp [n₀,E]; rw [model.classical.firstPage]; rfl</span>
+<span id="L24"><a href="#L24">  24</a>   let j := Subobject.ofLE (P.B (↑(b-1).toNat)) (P.Z ⊤)</span>
+<span id="L25"><a href="#L25">  25</a>     ((P.B_mono le_top).trans (P.B_le_Z ⊤))</span>
+<span id="L26"><a href="#L26">  26</a>   refine ⟨j z,?_⟩</span>
+<span id="L27"><a href="#L27">  27</a>   change (j ≫ Subobject.ofLE (P.Z ⊤) (P.Z n₀) (P.Z_anti le_top) ≫ P.pageπ n₀) z=y</span>
+<span id="L28"><a href="#L28">  28</a>   rw [normalizeInitialProjection P n₀ ⊤ hn₀ le_top]</span>
+<span id="L29"><a href="#L29">  29</a>   change ((j ≫ Subobject.ofLE (P.Z ⊤) (P.Z 0) (P.Z_anti bot_le)) ≫ P.pageπ 0 ≫ _) z=y</span>
+<span id="L30"><a href="#L30">  30</a>   rw [show j ≫ Subobject.ofLE (P.Z ⊤) (P.Z 0) (P.Z_anti bot_le) =</span>
+<span id="L31"><a href="#L31">  31</a>     Subobject.ofLE (P.B (↑(b-1).toNat)) (P.Z 0) _ by simp only [j,Subobject.ofLE_comp_ofLE]]</span>
+<span id="L32"><a href="#L32">  32</a>   exact hz</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> private theorem cumulative_boundary_hit (X : ClassicalObject)</span>
+<span id="L35"><a href="#L35">  35</a>     (r : ℕ) (hr : 2 ≤ r) (p : Bidegree) (y : Ambient model X p)</span>
+<span id="L36"><a href="#L36">  36</a>     (hy : y ∈ boundaries model X r p)</span>
+<span id="L37"><a href="#L37">  37</a>     (hprev : y ∉ boundaries model X (r-1) p) :</span>
+<span id="L38"><a href="#L38">  38</a>     HitOnPage (model.classical.obj (X.obj model.auxiliary)) r p y := by</span>
+<span id="L39"><a href="#L39">  39</a>   let E := model.classical.obj (X.obj model.auxiliary)</span>
+<span id="L40"><a href="#L40">  40</a>   let P := E.ssData p</span>
+<span id="L41"><a href="#L41">  41</a>   let n : ℕ := ((r:ℤ)-E.r₀).toNat</span>
+<span id="L42"><a href="#L42">  42</a>   let n₀ : WithTop ℕ := ↑(2-E.r₀).toNat</span>
+<span id="L43"><a href="#L43">  43</a>   have hn₀ : n₀=0 := by dsimp [n₀,E]; rw [model.classical.firstPage]; rfl</span>
+<span id="L44"><a href="#L44">  44</a>   have hn&#x27; : ((r:ℤ)-1).toNat=n+1 := by dsimp [n,E]; rw [model.classical.firstPage]; omega</span>
+<span id="L45"><a href="#L45">  45</a>   change y ∈ LinearMap.range (boundaryLabel model X (↑((r:ℤ)-1).toNat) p).hom at hy</span>
+<span id="L46"><a href="#L46">  46</a>   rw [hn&#x27;] at hy</span>
+<span id="L47"><a href="#L47">  47</a>   obtain ⟨z,hz⟩ := hy</span>
+<span id="L48"><a href="#L48">  48</a>   let j := Subobject.ofLE (P.B ↑(n+1)) (P.Z ↑n)</span>
+<span id="L49"><a href="#L49">  49</a>     ((P.B_le_Z _).trans (P.Z_anti (by exact_mod_cast Nat.le_succ n)))</span>
+<span id="L50"><a href="#L50">  50</a>   let yr : E.Page r p := P.pageπ ↑n (j z)</span>
+<span id="L51"><a href="#L51">  51</a>   have hyr : RepresentsOnPage E r p y yr := by</span>
+<span id="L52"><a href="#L52">  52</a>     refine ⟨by omega,j z,?_,rfl⟩</span>
+<span id="L53"><a href="#L53">  53</a>     change (j ≫ Subobject.ofLE (P.Z ↑n) (P.Z n₀) _ ≫ P.pageπ n₀) z=y</span>
+<span id="L54"><a href="#L54">  54</a>     rw [normalizeInitialProjection P n₀ ↑n hn₀ (by rw [hn₀]; exact bot_le)]</span>
+<span id="L55"><a href="#L55">  55</a>     change ((j ≫ Subobject.ofLE (P.Z ↑n) (P.Z 0) _) ≫ P.pageπ 0 ≫ _) z=y</span>
+<span id="L56"><a href="#L56">  56</a>     rw [show j ≫ Subobject.ofLE (P.Z ↑n) (P.Z 0) _ =</span>
+<span id="L57"><a href="#L57">  57</a>       Subobject.ofLE (P.B ↑(n+1)) (P.Z 0) _ by simp only [j,Subobject.ofLE_comp_ofLE]]</span>
+<span id="L58"><a href="#L58">  58</a>     exact hz</span>
+<span id="L59"><a href="#L59">  59</a>   have hyrne : yr ≠ 0 := by</span>
+<span id="L60"><a href="#L60">  60</a>     intro hyrzero</span>
+<span id="L61"><a href="#L61">  61</a>     exact hprev (represents_zero_mem_boundary model X r p y (by simpa only [E,hyrzero] using hyr))</span>
+<span id="L62"><a href="#L62">  62</a>   let q := p-E.diffDeg r</span>
+<span id="L63"><a href="#L63">  63</a>   have hqp : q+E.diffDeg r=p := by dsimp [q]; abel</span>
+<span id="L64"><a href="#L64">  64</a>   have himage : yr ∈ LinearMap.range (E.d r q ≫ eqToHom (congrArg (E.Page r) hqp)).hom := by</span>
+<span id="L65"><a href="#L65">  65</a>     have h := congrArg (ModuleCat.subobjectModule (E.Page r (q+E.diffDeg r)))</span>
+<span id="L66"><a href="#L66">  66</a>       (E.B_succ r q (by dsimp [E]; rw [model.classical.firstPage]; omega))</span>
+<span id="L67"><a href="#L67">  67</a>     simp only [subobjectModule_image] at h</span>
+<span id="L68"><a href="#L68">  68</a>     have transport (p&#x27; : Bidegree) (hp : p&#x27;=p)</span>
+<span id="L69"><a href="#L69">  69</a>         (d : E.Page r q ⟶ E.Page r p&#x27;)</span>
+<span id="L70"><a href="#L70">  70</a>         (hd : LinearMap.range d.hom = LinearMap.range</span>
+<span id="L71"><a href="#L71">  71</a>           (Subobject.ofLE ((E.ssData p&#x27;).B ↑(n+1)) ((E.ssData p&#x27;).Z ↑n)</span>
+<span id="L72"><a href="#L72">  72</a>             (((E.ssData p&#x27;).B_le_Z _).trans ((E.ssData p&#x27;).Z_anti</span>
+<span id="L73"><a href="#L73">  73</a>               (by exact_mod_cast Nat.le_succ n))) ≫</span>
+<span id="L74"><a href="#L74">  74</a>             (E.ssData p&#x27;).pageπ ↑n).hom) :</span>
+<span id="L75"><a href="#L75">  75</a>         yr ∈ LinearMap.range (d ≫ eqToHom (congrArg (E.Page r) hp)).hom := by</span>
+<span id="L76"><a href="#L76">  76</a>       subst p&#x27;</span>
+<span id="L77"><a href="#L77">  77</a>       simp only [eqToHom_refl,Category.comp_id,hd]</span>
+<span id="L78"><a href="#L78">  78</a>       exact ⟨z,rfl⟩</span>
+<span id="L79"><a href="#L79">  79</a>     exact transport _ hqp (E.d r q) h</span>
+<span id="L80"><a href="#L80">  80</a>   obtain ⟨a,ha⟩ := himage</span>
+<span id="L81"><a href="#L81">  81</a>   exact ⟨q,hqp,a,yr,hyr,hyrne,ha⟩</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> private theorem lambdaMultiply_zero_of_le {A : SyntheticSpectrum} (m w : ℤ)</span>
+<span id="L84"><a href="#L84">  84</a>     (i j : ℕ) (hij : i ≤ j) (a : BiHom m w A)</span>
+<span id="L85"><a href="#L85">  85</a>     (ha : lambdaMultiply i a=0) : lambdaMultiply j a=0 := by</span>
+<span id="L86"><a href="#L86">  86</a>   simp only [lambdaMultiply,comp_eq_zero_iff_of_epi] at ha ⊢</span>
+<span id="L87"><a href="#L87">  87</a>   rw [lambdaPow_add model.quotients.coherence (j-i) i j (Nat.sub_add_cancel hij) _,</span>
+<span id="L88"><a href="#L88">  88</a>     Category.assoc,Category.assoc,ha,comp_zero,comp_zero]</span>
+<span id="L89"><a href="#L89">  89</a> </span>
+<span id="L90"><a href="#L90">  90</a> private theorem cumulative_boundary_torsion_lift (X : ClassicalObject)</span>
+<span id="L91"><a href="#L91">  91</a>     (k : ℕ) (s t : ℤ) (y : Ambient model X (s,t))</span>
+<span id="L92"><a href="#L92">  92</a>     (hy : y ∈ boundaries model X (k+1) (s,t)) :</span>
+<span id="L93"><a href="#L93">  93</a>     ∃ a : BiHom (t-s) t (nuZero model X),</span>
+<span id="L94"><a href="#L94">  94</a>       quotientClass 1 a=firstLabel model X s t y ∧ lambdaMultiply k a=0 := by</span>
+<span id="L95"><a href="#L95">  95</a>   induction k with</span>
+<span id="L96"><a href="#L96">  96</a>   | zero =&gt;</span>
+<span id="L97"><a href="#L97">  97</a>     have hyzero : y=0 := by</span>
+<span id="L98"><a href="#L98">  98</a>       simpa only [Nat.cast_zero,zero_add,boundaries_one,Submodule.mem_bot] using hy</span>
+<span id="L99"><a href="#L99">  99</a>     subst y</span>
+<span id="L100"><a href="#L100"> 100</a>     refine ⟨0,?_,?_⟩</span>
+<span id="L101"><a href="#L101"> 101</a>     · have cast_zero (m w w&#x27; : ℤ) (A : SyntheticSpectrum) (hw : w=w&#x27;)</span>
+<span id="L102"><a href="#L102"> 102</a>           (he : BiHom m w A = BiHom m w&#x27; A) : he.mp 0=0 := by subst w&#x27;; rfl</span>
+<span id="L103"><a href="#L103"> 103</a>       simp only [quotientClass,zero_comp,firstLabel,map_zero]</span>
+<span id="L104"><a href="#L104"> 104</a>       rw [cast_zero _ _ _ _ (Int.add_zero t)]</span>
+<span id="L105"><a href="#L105"> 105</a>     · simp only [lambdaMultiply,comp_zero]</span>
+<span id="L106"><a href="#L106"> 106</a>   | succ k ih =&gt;</span>
+<span id="L107"><a href="#L107"> 107</a>     by_cases hprev : y ∈ boundaries model X (k+1) (s,t)</span>
+<span id="L108"><a href="#L108"> 108</a>     · obtain ⟨a,ha,hak⟩ := ih hprev</span>
+<span id="L109"><a href="#L109"> 109</a>       exact ⟨a,ha,lambdaMultiply_zero_of_le (t-s) t k (k+1) (by omega) a hak⟩</span>
+<span id="L110"><a href="#L110"> 110</a>     · have hy&#x27; : y ∈ boundaries model X (k+2) (s,t) := by</span>
+<span id="L111"><a href="#L111"> 111</a>         simpa only [Nat.cast_succ,add_assoc,Int.reduceAdd] using hy</span>
+<span id="L112"><a href="#L112"> 112</a>       have hhit := cumulative_boundary_hit X (k+2) (by omega) (s,t) y hy&#x27;</span>
+<span id="L113"><a href="#L113"> 113</a>         (by simpa only [show ((k+2:ℕ):ℤ)-1=(k:ℤ)+1 by omega] using hprev)</span>
+<span id="L114"><a href="#L114"> 114</a>       obtain ⟨a,ha,hak⟩ := KIP126.Literature.Standard.selected_realization_boundary_lift X s t</span>
+<span id="L115"><a href="#L115"> 115</a>         (k+2) (by omega) y (cumulative_boundary_permanent X _ (s,t) y hy&#x27;) hhit</span>
+<span id="L116"><a href="#L116"> 116</a>       have hk : (k+2:ℕ)-1=k+1 := by omega</span>
+<span id="L117"><a href="#L117"> 117</a>       rw [hk] at hak</span>
+<span id="L118"><a href="#L118"> 118</a>       exact ⟨a,ha,hak⟩</span>
+<span id="L119"><a href="#L119"> 119</a> </span>
+<span id="L120"><a href="#L120"> 120</a> private theorem cumulative_boundary_torsion_lift_unshifted (X : ClassicalObject)</span>
+<span id="L121"><a href="#L121"> 121</a>     (k : ℕ) (s t : ℤ) (y : Ambient model X (s,t))</span>
+<span id="L122"><a href="#L122"> 122</a>     (hy : y ∈ boundaries model X (k+1) (s,t)) :</span>
+<span id="L123"><a href="#L123"> 123</a>     ∃ a : BiHom (t-s) t (model.nu.functor.obj (X.obj model.auxiliary)),</span>
+<span id="L124"><a href="#L124"> 124</a>       a ≫ XModLambdaN.incl _ 1 = firstLabel model X s t y ≫</span>
+<span id="L125"><a href="#L125"> 125</a>         XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ∧</span>
+<span id="L126"><a href="#L126"> 126</a>       lambdaMultiply k a=0 := by</span>
+<span id="L127"><a href="#L127"> 127</a>   obtain ⟨a,ha,hak⟩ := cumulative_boundary_torsion_lift X k s t y hy</span>
+<span id="L128"><a href="#L128"> 128</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L129"><a href="#L129"> 129</a>   let z : nuZero model X ⟶ A := SyntheticCategory.biShift_zero.hom.app A</span>
+<span id="L130"><a href="#L130"> 130</a>   refine ⟨a ≫ z,?_,?_⟩</span>
+<span id="L131"><a href="#L131"> 131</a>   · rw [Category.assoc,XModLambdaN.incl_naturality,←Category.assoc]</span>
+<span id="L132"><a href="#L132"> 132</a>     exact congrArg (fun f =&gt; f ≫ XModLambdaN.map z 1) ha</span>
+<span id="L133"><a href="#L133"> 133</a>   · simpa only [lambdaMultiply,Category.assoc,zero_comp] using congrArg (fun f =&gt; f ≫ z) hak</span>
+<span id="L134"><a href="#L134"> 134</a> </span>
+<span id="L135"><a href="#L135"> 135</a> end</span>
+<span id="L136"><a href="#L136"> 136</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

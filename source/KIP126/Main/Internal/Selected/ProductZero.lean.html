@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Selected/ProductZero.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Selected/ProductZero.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.E2Computation.Table.Values</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! The h₁U vanishing used in Selected/DetectionData, derived from the</span>
+<span id="L6"><a href="#L6">   6</a> original bounded multiplication relation h₀h₁=0 and actual associativity. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.Internal.Selected</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory KIP126.AdamsSynthetic.Standard KIP126.Computation.Standard</span>
+<span id="L10"><a href="#L10">  10</a> noncomputable section</span>
+<span id="L11"><a href="#L11">  11</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L12"><a href="#L12">  12</a> private theorem h1_u_zero : product (r := (11,136)) h1 U=0 := by</span>
+<span id="L13"><a href="#L13">  13</a>   have h10 : product (r := (2,3)) h1 h0=0 :=</span>
+<span id="L14"><a href="#L14">  14</a>     (KIP126.Computation.Table.product_comm 1 2 1 1 (by decide) h1 h0).trans</span>
+<span id="L15"><a href="#L15">  15</a>       KIP126.Computation.Table.h0_h1_zero</span>
+<span id="L16"><a href="#L16">  16</a>   have h1sq : product (r := (3,4)) h1 h0Square=0 := by</span>
+<span id="L17"><a href="#L17">  17</a>     have ha := model.sphereAlgebra.assoc (1,2) (1,1) (1,1) h1 h0 h0</span>
+<span id="L18"><a href="#L18">  18</a>     have he : product (r := (3,4)) (product (r := (2,3)) h1 h0) h0 =</span>
+<span id="L19"><a href="#L19">  19</a>         product (r := (3,4)) h1 h0Square := eq_of_heq ha</span>
+<span id="L20"><a href="#L20">  20</a>     rw [←he,h10]</span>
+<span id="L21"><a href="#L21">  21</a>     simp only [product,map_zero,LinearMap.zero_apply]</span>
+<span id="L22"><a href="#L22">  22</a>   have ha := model.sphereAlgebra.assoc (1,2) (2,2) (8,132) h1 h0Square (atom .x_124_8)</span>
+<span id="L23"><a href="#L23">  23</a>   have he : product (r := (11,136)) (product (r := (3,4)) h1 h0Square) (atom .x_124_8)=</span>
+<span id="L24"><a href="#L24">  24</a>       product (r := (11,136)) h1 U := eq_of_heq ha</span>
+<span id="L25"><a href="#L25">  25</a>   rw [←he,h1sq]</span>
+<span id="L26"><a href="#L26">  26</a>   simp only [product,map_zero,LinearMap.zero_apply]</span>
+<span id="L27"><a href="#L27">  27</a> end</span>
+<span id="L28"><a href="#L28">  28</a> end KIP126.Main.Internal.Selected</span></pre>

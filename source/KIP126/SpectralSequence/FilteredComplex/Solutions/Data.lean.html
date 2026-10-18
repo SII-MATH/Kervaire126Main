@@ -1,0 +1,57 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredComplex/Solutions/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredComplex/Solutions/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.SSData.Predicates</span>
+<span id="L4"><a href="#L4">   4</a> public import Mathlib.Algebra.Group.Subgroup.Ker</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Actual fibers of the filtered representative equation. Neither the</span>
+<span id="L9"><a href="#L9">   9</a> solution set nor its group of differences is an independently chosen input. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Core.SpectralSequence.FilteredComplex</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> universe u v</span>
+<span id="L16"><a href="#L16">  16</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> namespace Solutions</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- The two actual filtered representatives, before imposing their equation. -/</span>
+<span id="L21"><a href="#L21">  21</a> abbrev Representatives (FC : FilteredComplex C) (T : C) (r s k : ℤ) :=</span>
+<span id="L22"><a href="#L22">  22</a>   (T ⟶ Subobject.underlying.obj (FC.fil s k)) ×</span>
+<span id="L23"><a href="#L23">  23</a>     (T ⟶ Subobject.underlying.obj (FC.fil (s + r) (k - 1)))</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> /-- Source label, target label, and the differential discrepancy. -/</span>
+<span id="L26"><a href="#L26">  26</a> abbrev Equations (FC : FilteredComplex C) (T : C) (r s k : ℤ) :=</span>
+<span id="L27"><a href="#L27">  27</a>   (T ⟶ FC.assocGraded s k) × (T ⟶ FC.assocGraded (s + r) (k - 1)) ×</span>
+<span id="L28"><a href="#L28">  28</a>     (T ⟶ FC.A (k - 1))</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> /-- All three equations use the original filtered complex and quotient maps.</span>
+<span id="L31"><a href="#L31">  31</a> The ambient differential equation avoids a choice of a shorter-image group:</span>
+<span id="L32"><a href="#L32">  32</a> changing the source lift already allows every higher-filtration correction. -/</span>
+<span id="L33"><a href="#L33">  33</a> noncomputable def equation (FC : FilteredComplex C) (T : C) (r s k : ℤ) :</span>
+<span id="L34"><a href="#L34">  34</a>     Representatives FC T r s k →+ Equations FC T r s k where</span>
+<span id="L35"><a href="#L35">  35</a>   toFun z := (z.1 ≫ FC.filToAssocGraded s k,</span>
+<span id="L36"><a href="#L36">  36</a>     z.2 ≫ FC.filToAssocGraded (s + r) (k - 1),</span>
+<span id="L37"><a href="#L37">  37</a>     z.1 ≫ (FC.fil s k).arrow ≫ FC.d k -</span>
+<span id="L38"><a href="#L38">  38</a>       z.2 ≫ (FC.fil (s + r) (k - 1)).arrow)</span>
+<span id="L39"><a href="#L39">  39</a>   map_zero&#x27; := by simp</span>
+<span id="L40"><a href="#L40">  40</a>   map_add&#x27; a b := by</span>
+<span id="L41"><a href="#L41">  41</a>     simp only [Prod.fst_add, Prod.snd_add, Preadditive.add_comp, Prod.mk_add_mk]</span>
+<span id="L42"><a href="#L42">  42</a>     congr 2</span>
+<span id="L43"><a href="#L43">  43</a>     abel</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> /-- The actual representative-solution fiber over the prescribed labels. -/</span>
+<span id="L46"><a href="#L46">  46</a> def Fiber (FC : FilteredComplex C) {T : C} (r s k : ℤ)</span>
+<span id="L47"><a href="#L47">  47</a>     (x : T ⟶ FC.assocGraded s k)</span>
+<span id="L48"><a href="#L48">  48</a>     (y : T ⟶ FC.assocGraded (s + r) (k - 1)) :=</span>
+<span id="L49"><a href="#L49">  49</a>   { z : Representatives FC T r s k // equation FC T r s k z = (x, y, 0) }</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> /-- Homogeneous solutions are precisely the kernel of the same equation map. -/</span>
+<span id="L52"><a href="#L52">  52</a> noncomputable def differences (FC : FilteredComplex C) (T : C) (r s k : ℤ) :</span>
+<span id="L53"><a href="#L53">  53</a>     AddSubgroup (Representatives FC T r s k) :=</span>
+<span id="L54"><a href="#L54">  54</a>   (equation FC T r s k).ker</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> end Solutions</span>
+<span id="L57"><a href="#L57">  57</a> end KIP126.Core.SpectralSequence.FilteredComplex</span></pre>

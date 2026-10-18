@@ -1,0 +1,208 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/DetectionOperations.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/DetectionOperations.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.ConvergenceOperations</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.FiltrationOperations</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.StretchingRepresentatives</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Detection transport used in the retained Mahowald proof.</span>
+<span id="L9"><a href="#L9">   9</a> Adapted from GeneralizedMahowald/Proofs.lean:354–479 at bbac1fc05843</span>
+<span id="L10"><a href="#L10">  10</a> (MIT; see the retained source LICENSE). All maps are the prescribed maps</span>
+<span id="L11"><a href="#L11">  11</a> on the fixed background, and every helper below is proved. -/</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> @[expose] section</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.ProofTools.Internal</span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L21"><a href="#L21">  21</a> noncomputable section</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> theorem grade_natural (A B : SyntheticObject)</span>
+<span id="L24"><a href="#L24">  24</a>     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)</span>
+<span id="L25"><a href="#L25">  25</a>     (a : (Subobject.underlying.obj ((model.syntheticTower.filtration</span>
+<span id="L26"><a href="#L26">  26</a>       (A.obj model.nu model.auxiliary)).F i.1 (i.2.1-i.1,i.2.2)) : ModuleCat ℤ))</span>
+<span id="L27"><a href="#L27">  27</a>     (b : (Subobject.underlying.obj ((model.syntheticTower.filtration</span>
+<span id="L28"><a href="#L28">  28</a>       (B.obj model.nu model.auxiliary)).F i.1 (i.2.1-i.1,i.2.2)) : ModuleCat ℤ))</span>
+<span id="L29"><a href="#L29">  29</a>     (hab : ((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).F</span>
+<span id="L30"><a href="#L30">  30</a>       i.1 (i.2.1-i.1,i.2.2)).arrow a ≫ f =</span>
+<span id="L31"><a href="#L31">  31</a>       ((model.syntheticTower.filtration (B.obj model.nu model.auxiliary)).F</span>
+<span id="L32"><a href="#L32">  32</a>         i.1 (i.2.1-i.1,i.2.2)).arrow b) :</span>
+<span id="L33"><a href="#L33">  33</a>     ((model.convergence B).identification i).inv</span>
+<span id="L34"><a href="#L34">  34</a>       ((model.syntheticTower.filtration (B.obj model.nu model.auxiliary)).toAssociatedGraded</span>
+<span id="L35"><a href="#L35">  35</a>         i.1 (i.2.1-i.1,i.2.2) b) =</span>
+<span id="L36"><a href="#L36">  36</a>       (model.family.map f).eInftyMap i (((model.convergence A).identification i).inv</span>
+<span id="L37"><a href="#L37">  37</a>         ((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).toAssociatedGraded</span>
+<span id="L38"><a href="#L38">  38</a>           i.1 (i.2.1-i.1,i.2.2) a)) := by</span>
+<span id="L39"><a href="#L39">  39</a>   let M := model.convergentMap A B f</span>
+<span id="L40"><a href="#L40">  40</a>   let FA := model.syntheticTower.filtration (A.obj model.nu model.auxiliary)</span>
+<span id="L41"><a href="#L41">  41</a>   let FB := model.syntheticTower.filtration (B.obj model.nu model.auxiliary)</span>
+<span id="L42"><a href="#L42">  42</a>   let p := (i.2.1-i.1,i.2.2)</span>
+<span id="L43"><a href="#L43">  43</a>   have hb : (M.filteredMap.compat i.1 p).choose a = b := by</span>
+<span id="L44"><a href="#L44">  44</a>     apply (ModuleCat.mono_iff_injective (FB.F i.1 p).arrow).mp inferInstance</span>
+<span id="L45"><a href="#L45">  45</a>     have h := ConcreteCategory.congr_hom (M.filteredMap.compat i.1 p).choose_spec a</span>
+<span id="L46"><a href="#L46">  46</a>     change (FB.F i.1 p).arrow ((M.filteredMap.compat i.1 p).choose a) =</span>
+<span id="L47"><a href="#L47">  47</a>       M.filteredMap.map p ((FA.F i.1 p).arrow a) at h</span>
+<span id="L48"><a href="#L48">  48</a>     have hm := ConcreteCategory.congr_hom (M.filteredMap_map p) ((FA.F i.1 p).arrow a)</span>
+<span id="L49"><a href="#L49">  49</a>     change M.filteredMap.map p ((FA.F i.1 p).arrow a) = (FA.F i.1 p).arrow a ≫ f at hm</span>
+<span id="L50"><a href="#L50">  50</a>     exact h.trans (hm.trans hab)</span>
+<span id="L51"><a href="#L51">  51</a>   have hp := graded_map_representative M.filteredMap i.1 p a</span>
+<span id="L52"><a href="#L52">  52</a>   rw [hb] at hp</span>
+<span id="L53"><a href="#L53">  53</a>   apply ((model.convergence B).identification i).toLinearEquiv.injective</span>
+<span id="L54"><a href="#L54">  54</a>   have hn := ConcreteCategory.congr_hom (M.infinity_action_graded i)</span>
+<span id="L55"><a href="#L55">  55</a>     (((model.convergence A).identification i).inv (FA.toAssociatedGraded i.1 p a))</span>
+<span id="L56"><a href="#L56">  56</a>   change M.filteredMap.inducedGrMap i.1 p</span>
+<span id="L57"><a href="#L57">  57</a>       (((model.convergence A).identification i).hom</span>
+<span id="L58"><a href="#L58">  58</a>         (((model.convergence A).identification i).inv (FA.toAssociatedGraded i.1 p a))) =</span>
+<span id="L59"><a href="#L59">  59</a>     ((model.convergence B).identification i).hom</span>
+<span id="L60"><a href="#L60">  60</a>       ((model.family.map f).eInftyMap i</span>
+<span id="L61"><a href="#L61">  61</a>         (((model.convergence A).identification i).inv (FA.toAssociatedGraded i.1 p a))) at hn</span>
+<span id="L62"><a href="#L62">  62</a>   have hA := ((model.convergence A).identification i).toLinearEquiv.apply_symm_apply</span>
+<span id="L63"><a href="#L63">  63</a>     (FA.toAssociatedGraded i.1 p a)</span>
+<span id="L64"><a href="#L64">  64</a>   have hB := ((model.convergence B).identification i).toLinearEquiv.apply_symm_apply</span>
+<span id="L65"><a href="#L65">  65</a>     (FB.toAssociatedGraded i.1 p b)</span>
+<span id="L66"><a href="#L66">  66</a>   exact hB.trans (hp.symm.trans</span>
+<span id="L67"><a href="#L67">  67</a>     ((congrArg (M.filteredMap.inducedGrMap i.1 p) hA.symm).trans hn))</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> theorem detects_map (A B : SyntheticObject)</span>
+<span id="L70"><a href="#L70">  70</a>     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)</span>
+<span id="L71"><a href="#L71">  71</a>     (x : (model.family.obj (A.obj model.nu model.auxiliary)).E₂ i)</span>
+<span id="L72"><a href="#L72">  72</a>     (a : BiHom (i.2.1-i.1) i.2.2 (A.obj model.nu model.auxiliary))</span>
+<span id="L73"><a href="#L73">  73</a>     (ha : Detects (model.convergence A) i x a) :</span>
+<span id="L74"><a href="#L74">  74</a>     Detects (model.convergence B) i (familyPageMap model.family f 2 i x) (a ≫ f) := by</span>
+<span id="L75"><a href="#L75">  75</a>   obtain ⟨e,he,a&#x27;,ha&#x27;,hga⟩ := ha</span>
+<span id="L76"><a href="#L76">  76</a>   let M := model.convergentMap A B f</span>
+<span id="L77"><a href="#L77">  77</a>   let b := (M.filteredMap.compat i.1 (i.2.1-i.1,i.2.2)).choose a&#x27;</span>
+<span id="L78"><a href="#L78">  78</a>   have hb : ((model.syntheticTower.filtration (B.obj model.nu model.auxiliary)).F</span>
+<span id="L79"><a href="#L79">  79</a>       i.1 (i.2.1-i.1,i.2.2)).arrow b = a ≫ f := by</span>
+<span id="L80"><a href="#L80">  80</a>     have h := ConcreteCategory.congr_hom</span>
+<span id="L81"><a href="#L81">  81</a>       (M.filteredMap.compat i.1 (i.2.1-i.1,i.2.2)).choose_spec a&#x27;</span>
+<span id="L82"><a href="#L82">  82</a>     change _ = M.filteredMap.map (i.2.1-i.1,i.2.2) _ at h</span>
+<span id="L83"><a href="#L83">  83</a>     have hm := ConcreteCategory.congr_hom (M.filteredMap_map (i.2.1-i.1,i.2.2))</span>
+<span id="L84"><a href="#L84">  84</a>       (((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).F</span>
+<span id="L85"><a href="#L85">  85</a>         i.1 (i.2.1-i.1,i.2.2)).arrow a&#x27;)</span>
+<span id="L86"><a href="#L86">  86</a>     change _ = _ ≫ f at hm</span>
+<span id="L87"><a href="#L87">  87</a>     exact h.trans (hm.trans (congrArg (fun z =&gt; z ≫ f) ha&#x27;))</span>
+<span id="L88"><a href="#L88">  88</a>   refine ⟨_,family_infinity_representative_map f i x e he,b,hb,?_⟩</span>
+<span id="L89"><a href="#L89">  89</a>   have h := grade_natural A B f i a&#x27; b (by rw [ha&#x27;,hb])</span>
+<span id="L90"><a href="#L90">  90</a>   have haE : ((model.convergence A).identification i).inv</span>
+<span id="L91"><a href="#L91">  91</a>       ((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).toAssociatedGraded</span>
+<span id="L92"><a href="#L92">  92</a>         i.1 (i.2.1-i.1,i.2.2) a&#x27;) = e := by</span>
+<span id="L93"><a href="#L93">  93</a>     rw [← hga]</span>
+<span id="L94"><a href="#L94">  94</a>     exact ((model.convergence A).identification i).toLinearEquiv.symm_apply_apply e</span>
+<span id="L95"><a href="#L95">  95</a>   rw [haE] at h</span>
+<span id="L96"><a href="#L96">  96</a>   exact (congrArg ((model.convergence B).identification i).hom h).symm.trans</span>
+<span id="L97"><a href="#L97">  97</a>     (((model.convergence B).identification i).toLinearEquiv.apply_symm_apply _)</span>
+<span id="L98"><a href="#L98">  98</a> </span>
+<span id="L99"><a href="#L99">  99</a> theorem detects_reflect (A B : SyntheticObject)</span>
+<span id="L100"><a href="#L100"> 100</a>     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)</span>
+<span id="L101"><a href="#L101"> 101</a>     (hf : Function.Injective ((model.family.map f).eInftyMap i).hom)</span>
+<span id="L102"><a href="#L102"> 102</a>     (x : (model.family.obj (A.obj model.nu model.auxiliary)).E₂ i)</span>
+<span id="L103"><a href="#L103"> 103</a>     (e : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData i).eInfty)</span>
+<span id="L104"><a href="#L104"> 104</a>     (he : HasInfinityRepresentative _ 2 i x e)</span>
+<span id="L105"><a href="#L105"> 105</a>     (a : BiHom (i.2.1-i.1) i.2.2 (A.obj model.nu model.auxiliary))</span>
+<span id="L106"><a href="#L106"> 106</a>     (ha : FiltrationAtLeast model.syntheticTower i.1 a)</span>
+<span id="L107"><a href="#L107"> 107</a>     (hb : Detects (model.convergence B) i (familyPageMap model.family f 2 i x) (a ≫ f)) :</span>
+<span id="L108"><a href="#L108"> 108</a>     Detects (model.convergence A) i x a := by</span>
+<span id="L109"><a href="#L109"> 109</a>   obtain ⟨a&#x27;,ha&#x27;⟩ := filtration_representative_exists model.syntheticTower</span>
+<span id="L110"><a href="#L110"> 110</a>     (A.obj model.nu model.auxiliary) (i.2.1-i.1,i.2.2) i.1 a ha</span>
+<span id="L111"><a href="#L111"> 111</a>   obtain ⟨eB,heB,b,hb,hgb⟩ := hb</span>
+<span id="L112"><a href="#L112"> 112</a>   have huniq := heB.unique (family_infinity_representative_map f i x e he)</span>
+<span id="L113"><a href="#L113"> 113</a>   have h := grade_natural A B f i a&#x27; b (by rw [ha&#x27;,hb])</span>
+<span id="L114"><a href="#L114"> 114</a>   have hB : ((model.convergence B).identification i).inv</span>
+<span id="L115"><a href="#L115"> 115</a>       ((model.syntheticTower.filtration (B.obj model.nu model.auxiliary)).toAssociatedGraded</span>
+<span id="L116"><a href="#L116"> 116</a>         i.1 (i.2.1-i.1,i.2.2) b) = (model.family.map f).eInftyMap i e := by</span>
+<span id="L117"><a href="#L117"> 117</a>     rw [← hgb]</span>
+<span id="L118"><a href="#L118"> 118</a>     exact (((model.convergence B).identification i).toLinearEquiv.symm_apply_apply eB).trans huniq</span>
+<span id="L119"><a href="#L119"> 119</a>   have hA := hf (h.symm.trans hB)</span>
+<span id="L120"><a href="#L120"> 120</a>   refine ⟨e,he,a&#x27;,ha&#x27;,?_⟩</span>
+<span id="L121"><a href="#L121"> 121</a>   exact (congrArg ((model.convergence A).identification i).hom hA).symm.trans</span>
+<span id="L122"><a href="#L122"> 122</a>     (((model.convergence A).identification i).toLinearEquiv.apply_symm_apply _)</span>
+<span id="L123"><a href="#L123"> 123</a> </span>
+<span id="L124"><a href="#L124"> 124</a> section Frames</span>
+<span id="L125"><a href="#L125"> 125</a> universe u v</span>
+<span id="L126"><a href="#L126"> 126</a> variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L127"><a href="#L127"> 127</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L128"><a href="#L128"> 128</a>   {H : Syn} {unit : S_0_0 ⟶ H} {F : SyntheticAdamsFamily Syn}</span>
+<span id="L129"><a href="#L129"> 129</a>   {P : SyntheticTowerPresentation unit F} {X Y : Syn} {g : X ⟶ Y}</span>
+<span id="L130"><a href="#L130"> 130</a>   {cx : SyntheticTowerConvergence P X} {cy : SyntheticTowerConvergence P Y}</span>
+<span id="L131"><a href="#L131"> 131</a> </span>
+<span id="L132"><a href="#L132"> 132</a> /-- A filtration frame, reindexed by the same stem, gives detection. -/</span>
+<span id="L133"><a href="#L133"> 133</a> theorem source_frame_detects (cx : SyntheticTowerConvergence P X)</span>
+<span id="L134"><a href="#L134"> 134</a>     (p : ℤ × ℤ) (s : ℤ)</span>
+<span id="L135"><a href="#L135"> 135</a>     (x : ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L136"><a href="#L136"> 136</a>     (x0 : (F.obj X).E₂ (s,p.1+s,p.2))</span>
+<span id="L137"><a href="#L137"> 137</a>     (hx : HasInfinityRepresentative _ 2 _ x0 x)</span>
+<span id="L138"><a href="#L138"> 138</a>     (a : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))</span>
+<span id="L139"><a href="#L139"> 139</a>     (ha : (P.filtration X).toAssociatedGraded s p a = (infinityGradedIso cx p s).hom x) :</span>
+<span id="L140"><a href="#L140"> 140</a>     Detects cx (s,p.1+s,p.2) x0</span>
+<span id="L141"><a href="#L141"> 141</a>       (homotopyRegrade (by dsimp; omega) rfl (((P.filtration X).F s p).arrow a)) := by</span>
+<span id="L142"><a href="#L142"> 142</a>   have lift_frame (m m&#x27; w s : ℤ) (hm : m=m&#x27;) {V : ModuleCat.{v} ℤ} (e : V)</span>
+<span id="L143"><a href="#L143"> 143</a>       (I : V ≅ (P.filtration X).associatedGraded s (m&#x27;,w))</span>
+<span id="L144"><a href="#L144"> 144</a>       (a : (Subobject.underlying.obj ((P.filtration X).F s (m,w)) : ModuleCat.{v} ℤ))</span>
+<span id="L145"><a href="#L145"> 145</a>       (ha : (P.filtration X).toAssociatedGraded s (m,w) a =</span>
+<span id="L146"><a href="#L146"> 146</a>         (I ≪≫ eqToIso (congrArg</span>
+<span id="L147"><a href="#L147"> 147</a>           (fun z =&gt; (P.filtration X).associatedGraded s (z,w)) hm.symm)).hom e) :</span>
+<span id="L148"><a href="#L148"> 148</a>       ∃ a&#x27; : (Subobject.underlying.obj ((P.filtration X).F s (m&#x27;,w)) : ModuleCat.{v} ℤ),</span>
+<span id="L149"><a href="#L149"> 149</a>         ((P.filtration X).F s (m&#x27;,w)).arrow a&#x27; =</span>
+<span id="L150"><a href="#L150"> 150</a>           homotopyRegrade hm rfl (((P.filtration X).F s (m,w)).arrow a) ∧</span>
+<span id="L151"><a href="#L151"> 151</a>         I.hom e = (P.filtration X).toAssociatedGraded s (m&#x27;,w) a&#x27; := by</span>
+<span id="L152"><a href="#L152"> 152</a>     subst m&#x27;</span>
+<span id="L153"><a href="#L153"> 153</a>     refine ⟨a,rfl,?_⟩</span>
+<span id="L154"><a href="#L154"> 154</a>     simpa only [eqToIso_refl, Iso.trans_refl] using ha.symm</span>
+<span id="L155"><a href="#L155"> 155</a>   obtain ⟨a&#x27;,ha&#x27;,hga⟩ := lift_frame p.1 ((p.1+s)-s) p.2 s (by omega) x</span>
+<span id="L156"><a href="#L156"> 156</a>     (cx.identification (s,p.1+s,p.2)) a ha</span>
+<span id="L157"><a href="#L157"> 157</a>   exact ⟨x,hx,a&#x27;,ha&#x27;,hga⟩</span>
+<span id="L158"><a href="#L158"> 158</a> </span>
+<span id="L159"><a href="#L159"> 159</a> /-- Detection supplies a frame in the original stem coordinates. -/</span>
+<span id="L160"><a href="#L160"> 160</a> theorem frame_of_source_detects (cx : SyntheticTowerConvergence P X)</span>
+<span id="L161"><a href="#L161"> 161</a>     (p : ℤ × ℤ) (s : ℤ) (x0 : (F.obj X).E₂ (s,p.1+s,p.2))</span>
+<span id="L162"><a href="#L162"> 162</a>     (a0 : BiHom p.1 p.2 X)</span>
+<span id="L163"><a href="#L163"> 163</a>     (ha0 : Detects cx (s,p.1+s,p.2) x0 (homotopyRegrade (by dsimp; omega) rfl a0)) :</span>
+<span id="L164"><a href="#L164"> 164</a>     ∃ x : ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty,</span>
+<span id="L165"><a href="#L165"> 165</a>       HasInfinityRepresentative _ 2 _ x0 x ∧</span>
+<span id="L166"><a href="#L166"> 166</a>       ∃ a : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ),</span>
+<span id="L167"><a href="#L167"> 167</a>         ((P.filtration X).F s p).arrow a = a0 ∧</span>
+<span id="L168"><a href="#L168"> 168</a>         (P.filtration X).toAssociatedGraded s p a = (infinityGradedIso cx p s).hom x := by</span>
+<span id="L169"><a href="#L169"> 169</a>   have lower_frame (m m&#x27; w s : ℤ) (hm : m=m&#x27;) {V : ModuleCat.{v} ℤ} (e : V)</span>
+<span id="L170"><a href="#L170"> 170</a>       (I : V ≅ (P.filtration X).associatedGraded s (m&#x27;,w))</span>
+<span id="L171"><a href="#L171"> 171</a>       (a0 : BiHom m w X)</span>
+<span id="L172"><a href="#L172"> 172</a>       (a&#x27; : (Subobject.underlying.obj ((P.filtration X).F s (m&#x27;,w)) : ModuleCat.{v} ℤ))</span>
+<span id="L173"><a href="#L173"> 173</a>       (ha&#x27; : ((P.filtration X).F s (m&#x27;,w)).arrow a&#x27; = homotopyRegrade hm rfl a0)</span>
+<span id="L174"><a href="#L174"> 174</a>       (hga : I.hom e = (P.filtration X).toAssociatedGraded s (m&#x27;,w) a&#x27;) :</span>
+<span id="L175"><a href="#L175"> 175</a>       ∃ a : (Subobject.underlying.obj ((P.filtration X).F s (m,w)) : ModuleCat.{v} ℤ),</span>
+<span id="L176"><a href="#L176"> 176</a>         ((P.filtration X).F s (m,w)).arrow a = a0 ∧</span>
+<span id="L177"><a href="#L177"> 177</a>         (P.filtration X).toAssociatedGraded s (m,w) a =</span>
+<span id="L178"><a href="#L178"> 178</a>           (I ≪≫ eqToIso (congrArg</span>
+<span id="L179"><a href="#L179"> 179</a>             (fun z =&gt; (P.filtration X).associatedGraded s (z,w)) hm.symm)).hom e := by</span>
+<span id="L180"><a href="#L180"> 180</a>     subst m&#x27;</span>
+<span id="L181"><a href="#L181"> 181</a>     exact ⟨a&#x27;,ha&#x27;,hga.symm⟩</span>
+<span id="L182"><a href="#L182"> 182</a>   obtain ⟨e,he,a&#x27;,ha&#x27;,hga⟩ := ha0</span>
+<span id="L183"><a href="#L183"> 183</a>   obtain ⟨a,ha,hg⟩ := lower_frame p.1 ((p.1+s)-s) p.2 s (by omega) e</span>
+<span id="L184"><a href="#L184"> 184</a>     (cx.identification (s,p.1+s,p.2)) a0 a&#x27; ha&#x27; hga</span>
+<span id="L185"><a href="#L185"> 185</a>   exact ⟨e,he,a,ha,hg⟩</span>
+<span id="L186"><a href="#L186"> 186</a> </span>
+<span id="L187"><a href="#L187"> 187</a> /-- Exact representatives of two detected classes determine the extension</span>
+<span id="L188"><a href="#L188"> 188</a> equation for this same map and pair of convergences. -/</span>
+<span id="L189"><a href="#L189"> 189</a> theorem extension_equation_of_detected_pair</span>
+<span id="L190"><a href="#L190"> 190</a>     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)</span>
+<span id="L191"><a href="#L191"> 191</a>     (p : ℤ × ℤ) (s n : ℤ) (hn : 0 ≤ n)</span>
+<span id="L192"><a href="#L192"> 192</a>     (x0 : (F.obj X).E₂ (s,p.1+s,p.2))</span>
+<span id="L193"><a href="#L193"> 193</a>     (y0 : (F.obj Y).E₂ (s+n,p.1+(s+n),p.2))</span>
+<span id="L194"><a href="#L194"> 194</a>     (a : BiHom p.1 p.2 X) (b : BiHom p.1 p.2 Y)</span>
+<span id="L195"><a href="#L195"> 195</a>     (ha : Detects cx (s,p.1+s,p.2) x0 (homotopyRegrade (by dsimp; omega) rfl a))</span>
+<span id="L196"><a href="#L196"> 196</a>     (hb : Detects cy (s+n,p.1+(s+n),p.2) y0 (homotopyRegrade (by dsimp; omega) rfl b))</span>
+<span id="L197"><a href="#L197"> 197</a>     (hab : a ≫ g = b) :</span>
+<span id="L198"><a href="#L198"> 198</a>     ∃ x y, HasInfinityRepresentative _ 2 _ x0 x ∧</span>
+<span id="L199"><a href="#L199"> 199</a>       HasInfinityRepresentative _ 2 _ y0 y ∧ TowerExtensionEquation M p s n x y := by</span>
+<span id="L200"><a href="#L200"> 200</a>   obtain ⟨x,hx,a&#x27;,ha&#x27;,hax⟩ := frame_of_source_detects cx p s x0 a ha</span>
+<span id="L201"><a href="#L201"> 201</a>   obtain ⟨y,hy,b&#x27;,hb&#x27;,hby⟩ := frame_of_source_detects cy p (s+n) y0 b hb</span>
+<span id="L202"><a href="#L202"> 202</a>   exact ⟨x,y,hx,hy,(tower_extension_iff M p s n x y).mpr</span>
+<span id="L203"><a href="#L203"> 203</a>     ⟨hn,a&#x27;,b&#x27;,by rw [ha&#x27;,hb&#x27;]; exact hab,hax,hby⟩⟩</span>
+<span id="L204"><a href="#L204"> 204</a> </span>
+<span id="L205"><a href="#L205"> 205</a> end Frames</span>
+<span id="L206"><a href="#L206"> 206</a> </span>
+<span id="L207"><a href="#L207"> 207</a> end</span>
+<span id="L208"><a href="#L208"> 208</a> end KIP126.ProofTools.Internal</span></pre>

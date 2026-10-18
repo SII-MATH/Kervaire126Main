@@ -1,0 +1,715 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Standard/Secondary.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Standard/Secondary.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard</span>
+<span id="L4"><a href="#L4">   4</a> import KIP126.AdamsSynthetic.Standard.ClassicalSupport</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> /-! The two source-to-synthetic secondary-operation comparisons previously</span>
+<span id="L7"><a href="#L7">   7</a> left unfinished in Kervaire126 bbac1fc05843,</span>
+<span id="L8"><a href="#L8">   8</a> Main/Solution/StageInput.lean:281 and :289 (MIT; see the retained source LICENSE).</span>
+<span id="L9"><a href="#L9">   9</a> They are upstream Literature responsibilities, not proof obligations of the</span>
+<span id="L10"><a href="#L10">  10</a> paper&#x27;s Main module. The second comparison retains the actual order-two</span>
+<span id="L11"><a href="#L11">  11</a> hypothesis for every theta, not just the selected theta_5. -/</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> @[expose] section</span>
+<span id="L14"><a href="#L14">  14</a> namespace KIP126.Literature.Standard</span>
+<span id="L15"><a href="#L15">  15</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic</span>
+<span id="L17"><a href="#L17">  17</a> universe u w v</span>
+<span id="L18"><a href="#L18">  18</a> variable {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.AdamsSynthetic.Standard (SyntheticSpectrum model)</span>
+<span id="L20"><a href="#L20">  20</a> noncomputable section</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> /- a48 Main/AdamsSynthetic/Toda/Product.lean:23–183; MIT.</span>
+<span id="L23"><a href="#L23">  23</a> The existing coherent shifts suffice for the actual λ² product comparison. -/</span>
+<span id="L24"><a href="#L24">  24</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L25"><a href="#L25">  25</a> set_option maxHeartbeats 2000000 in</span>
+<span id="L26"><a href="#L26">  26</a> private theorem secondary_star_product (coh : BiShiftCoherence Syn)</span>
+<span id="L27"><a href="#L27">  27</a>     (eta : BiHom 1 2 (S_0_0 : Syn)) (theta : BiHom 62 64 (S_0_0 : Syn)) :</span>
+<span id="L28"><a href="#L28">  28</a>     sphereProduct (lambdaMultiply 2 eta) theta = lambdaMultiply 2 (sphereProduct eta theta) := by</span>
+<span id="L29"><a href="#L29">  29</a>   let shiftSwap (a b : ℤ × ℤ) (A : Syn) :</span>
+<span id="L30"><a href="#L30">  30</a>       (SyntheticCategory.biShift b).obj ((SyntheticCategory.biShift a).obj A) ≅</span>
+<span id="L31"><a href="#L31">  31</a>       (SyntheticCategory.biShift a).obj ((SyntheticCategory.biShift b).obj A) :=</span>
+<span id="L32"><a href="#L32">  32</a>     (biShiftAddIso a b (a+b) rfl).app A ≪≫</span>
+<span id="L33"><a href="#L33">  33</a>       ((biShiftAddIso b a (a+b) (add_comm _ _)).app A).symm</span>
+<span id="L34"><a href="#L34">  34</a>   have shiftSwap_add (coh : BiShiftCoherence Syn)</span>
+<span id="L35"><a href="#L35">  35</a>       (a b c : ℤ × ℤ) (A : Syn) :</span>
+<span id="L36"><a href="#L36">  36</a>       (shiftSwap a (b+c) A).hom ≫</span>
+<span id="L37"><a href="#L37">  37</a>         (SyntheticCategory.biShift a).map ((biShiftAddIso b c (b+c) rfl).inv.app A) =</span>
+<span id="L38"><a href="#L38">  38</a>       (biShiftAddIso b c (b+c) rfl).inv.app ((SyntheticCategory.biShift a).obj A) ≫</span>
+<span id="L39"><a href="#L39">  39</a>         (SyntheticCategory.biShift c).map (shiftSwap a b A).hom ≫</span>
+<span id="L40"><a href="#L40">  40</a>         (shiftSwap a c ((SyntheticCategory.biShift b).obj A)).hom := by</span>
+<span id="L41"><a href="#L41">  41</a>     let habc : (a+b)+c=a+(b+c) := add_assoc a b c</span>
+<span id="L42"><a href="#L42">  42</a>     let hbac : b+(a+c)=a+(b+c) := by abel</span>
+<span id="L43"><a href="#L43">  43</a>     have h₁ := coh.associativity a b c (a+b) (b+c) (a+(b+c)) rfl rfl habc rfl A</span>
+<span id="L44"><a href="#L44">  44</a>     have h₂ := coh.associativity b a c (a+b) (a+c) (a+(b+c))</span>
+<span id="L45"><a href="#L45">  45</a>       (add_comm _ _) rfl habc hbac A</span>
+<span id="L46"><a href="#L46">  46</a>     have h₃ := coh.associativity b c a (b+c) (a+c) (a+(b+c))</span>
+<span id="L47"><a href="#L47">  47</a>       rfl (add_comm _ _) (add_comm _ _) hbac A</span>
+<span id="L48"><a href="#L48">  48</a>     simp (config := { congrConsts := false }) only [shiftSwap,Iso.trans_hom,Iso.symm_hom,Iso.app_hom,Iso.app_inv]</span>
+<span id="L49"><a href="#L49">  49</a>     rw [Functor.map_comp]</span>
+<span id="L50"><a href="#L50">  50</a>     apply (cancel_epi ((biShiftAddIso b c (b+c) rfl).hom.app</span>
+<span id="L51"><a href="#L51">  51</a>       ((SyntheticCategory.biShift a).obj A))).mp</span>
+<span id="L52"><a href="#L52">  52</a>     simp (config := { congrConsts := false }) only [Category.assoc,Iso.hom_inv_id_app_assoc]</span>
+<span id="L53"><a href="#L53">  53</a>     rw [← Category.assoc,← h₁]</span>
+<span id="L54"><a href="#L54">  54</a>     simp (config := { congrConsts := false }) only [Category.assoc]</span>
+<span id="L55"><a href="#L55">  55</a>     apply (cancel_epi ((SyntheticCategory.biShift c).map</span>
+<span id="L56"><a href="#L56">  56</a>       ((biShiftAddIso a b (a+b) rfl).hom.app A))).mpr</span>
+<span id="L57"><a href="#L57">  57</a>     -- Cancel the common left factor introduced by the first associativity square.</span>
+<span id="L58"><a href="#L58">  58</a>     apply (cancel_epi ((SyntheticCategory.biShift c).map</span>
+<span id="L59"><a href="#L59">  59</a>       ((biShiftAddIso b a (a+b) (add_comm _ _)).hom.app A))).mp</span>
+<span id="L60"><a href="#L60">  60</a>     simp (config := { congrConsts := false }) only [← Functor.map_comp_assoc, Iso.hom_inv_id_app,CategoryTheory.Functor.map_id,Category.id_comp]</span>
+<span id="L61"><a href="#L61">  61</a>     rw [← Category.assoc,h₂]</span>
+<span id="L62"><a href="#L62">  62</a>     simp (config := { congrConsts := false }) only [Category.assoc]</span>
+<span id="L63"><a href="#L63">  63</a>     apply (cancel_epi ((biShiftAddIso a c (a+c) rfl).hom.app</span>
+<span id="L64"><a href="#L64">  64</a>       ((SyntheticCategory.biShift b).obj A))).mpr</span>
+<span id="L65"><a href="#L65">  65</a>     apply (cancel_epi ((biShiftAddIso c a (a+c) (add_comm _ _)).hom.app</span>
+<span id="L66"><a href="#L66">  66</a>       ((SyntheticCategory.biShift b).obj A))).mp</span>
+<span id="L67"><a href="#L67">  67</a>     rw [← Category.assoc,← Category.assoc,← h₃]</span>
+<span id="L68"><a href="#L68">  68</a>     simp (config := { congrConsts := false }) only [Category.assoc,</span>
+<span id="L69"><a href="#L69">  69</a>       Iso.hom_inv_id_app]</span>
+<span id="L70"><a href="#L70">  70</a>     erw [CategoryTheory.Category.id_comp,←Functor.map_comp,Iso.hom_inv_id_app,CategoryTheory.Functor.map_id]</span>
+<span id="L71"><a href="#L71">  71</a>     rfl</span>
+<span id="L72"><a href="#L72">  72</a>   have shiftSwap_add_eq (coh : BiShiftCoherence Syn)</span>
+<span id="L73"><a href="#L73">  73</a>       (a b c d : ℤ × ℤ) (h : b+c=d) (A : Syn) :</span>
+<span id="L74"><a href="#L74">  74</a>       (shiftSwap a d A).hom ≫</span>
+<span id="L75"><a href="#L75">  75</a>         (SyntheticCategory.biShift a).map ((biShiftAddIso b c d h).inv.app A) =</span>
+<span id="L76"><a href="#L76">  76</a>       (biShiftAddIso b c d h).inv.app ((SyntheticCategory.biShift a).obj A) ≫</span>
+<span id="L77"><a href="#L77">  77</a>         (SyntheticCategory.biShift c).map (shiftSwap a b A).hom ≫</span>
+<span id="L78"><a href="#L78">  78</a>         (shiftSwap a c ((SyntheticCategory.biShift b).obj A)).hom := by</span>
+<span id="L79"><a href="#L79">  79</a>     subst d</span>
+<span id="L80"><a href="#L80">  80</a>     exact shiftSwap_add coh a b c A</span>
+<span id="L81"><a href="#L81">  81</a>   have shiftSwap_natural (a b : ℤ × ℤ) {A B : Syn} (f : A ⟶ B) :</span>
+<span id="L82"><a href="#L82">  82</a>       (SyntheticCategory.biShift b).map ((SyntheticCategory.biShift a).map f) ≫</span>
+<span id="L83"><a href="#L83">  83</a>         (shiftSwap a b B).hom =</span>
+<span id="L84"><a href="#L84">  84</a>       (shiftSwap a b A).hom ≫</span>
+<span id="L85"><a href="#L85">  85</a>         (SyntheticCategory.biShift a).map ((SyntheticCategory.biShift b).map f) := by</span>
+<span id="L86"><a href="#L86">  86</a>     exact ((biShiftAddIso a b (a+b) rfl) ≪≫</span>
+<span id="L87"><a href="#L87">  87</a>       (biShiftAddIso b a (a+b) (add_comm _ _)).symm).hom.naturality f</span>
+<span id="L88"><a href="#L88">  88</a>   have shiftSwap_hom_eq (a b d : ℤ × ℤ)</span>
+<span id="L89"><a href="#L89">  89</a>       (hab : a+b=d) (hba : b+a=d) (A : Syn) :</span>
+<span id="L90"><a href="#L90">  90</a>       (shiftSwap a b A).hom =</span>
+<span id="L91"><a href="#L91">  91</a>         (biShiftAddIso a b d hab).hom.app A ≫ (biShiftAddIso b a d hba).inv.app A := by</span>
+<span id="L92"><a href="#L92">  92</a>     subst d</span>
+<span id="L93"><a href="#L93">  93</a>     rfl</span>
+<span id="L94"><a href="#L94">  94</a>   have lambda_pow_shift (coh : BiShiftCoherence Syn)</span>
+<span id="L95"><a href="#L95">  95</a>       (n : ℕ) (a : ℤ × ℤ) (A : Syn) :</span>
+<span id="L96"><a href="#L96">  96</a>       lambdaPow n ((SyntheticCategory.biShift a).obj A) =</span>
+<span id="L97"><a href="#L97">  97</a>         (shiftSwap a (KIP126.Synthetic.Context.lambdaDegree n) A).hom ≫</span>
+<span id="L98"><a href="#L98">  98</a>           (SyntheticCategory.biShift a).map (lambdaPow n A) := by</span>
+<span id="L99"><a href="#L99">  99</a>     induction n generalizing A with</span>
+<span id="L100"><a href="#L100"> 100</a>     | zero =&gt;</span>
+<span id="L101"><a href="#L101"> 101</a>       change SyntheticCategory.biShift_zero.hom.app ((SyntheticCategory.biShift a).obj A) =</span>
+<span id="L102"><a href="#L102"> 102</a>         (shiftSwap a 0 A).hom ≫</span>
+<span id="L103"><a href="#L103"> 103</a>           (SyntheticCategory.biShift a).map (SyntheticCategory.biShift_zero.hom.app A)</span>
+<span id="L104"><a href="#L104"> 104</a>       have h : SyntheticCategory.biShift_zero.hom.app ((SyntheticCategory.biShift a).obj A) =</span>
+<span id="L105"><a href="#L105"> 105</a>           (biShiftAddIso a 0 a (add_zero a)).hom.app A ≫</span>
+<span id="L106"><a href="#L106"> 106</a>             (biShiftAddIso 0 a a (zero_add a)).inv.app A ≫</span>
+<span id="L107"><a href="#L107"> 107</a>               (SyntheticCategory.biShift a).map (SyntheticCategory.biShift_zero.hom.app A) := by</span>
+<span id="L108"><a href="#L108"> 108</a>         rw [←coh.left_unit a A,Iso.inv_hom_id_app,Category.comp_id]</span>
+<span id="L109"><a href="#L109"> 109</a>         exact (coh.right_unit a A).symm</span>
+<span id="L110"><a href="#L110"> 110</a>       rw [shiftSwap_hom_eq a 0 a (add_zero a) (zero_add a),Category.assoc]</span>
+<span id="L111"><a href="#L111"> 111</a>       exact h</span>
+<span id="L112"><a href="#L112"> 112</a>     | succ n ih =&gt;</span>
+<span id="L113"><a href="#L113"> 113</a>       have h1 : lambdaPow 1 ((SyntheticCategory.biShift a).obj A) =</span>
+<span id="L114"><a href="#L114"> 114</a>           (shiftSwap a (KIP126.Synthetic.Context.lambdaDegree 1) A).hom ≫</span>
+<span id="L115"><a href="#L115"> 115</a>             (SyntheticCategory.biShift a).map (lambdaPow 1 A) := by</span>
+<span id="L116"><a href="#L116"> 116</a>         rw [lambdaPow_one coh,lambdaPow_one coh]</span>
+<span id="L117"><a href="#L117"> 117</a>         change SyntheticCategory.lam.app ((SyntheticCategory.biShift a).obj A) =</span>
+<span id="L118"><a href="#L118"> 118</a>           (shiftSwap a (0,-1) A).hom ≫ (SyntheticCategory.biShift a).map (SyntheticCategory.lam.app A)</span>
+<span id="L119"><a href="#L119"> 119</a>         rw [shiftSwap_hom_eq a (0,-1) (a+(0,-1)) rfl (add_comm _ _),Category.assoc]</span>
+<span id="L120"><a href="#L120"> 120</a>         exact coh.lambda_comm a A</span>
+<span id="L121"><a href="#L121"> 121</a>       have hn := shiftSwap_natural a (KIP126.Synthetic.Context.lambdaDegree n) (lambdaPow 1 A)</span>
+<span id="L122"><a href="#L122"> 122</a>       have hh := shiftSwap_add_eq coh a (KIP126.Synthetic.Context.lambdaDegree 1) (KIP126.Synthetic.Context.lambdaDegree n)</span>
+<span id="L123"><a href="#L123"> 123</a>         (KIP126.Synthetic.Context.lambdaDegree (n+1)) (by ext &lt;;&gt; simp [KIP126.Synthetic.Context.lambdaDegree]) A</span>
+<span id="L124"><a href="#L124"> 124</a>       change (shiftSwap a (KIP126.Synthetic.Context.lambdaDegree (n+1)) A).hom ≫</span>
+<span id="L125"><a href="#L125"> 125</a>           (SyntheticCategory.biShift a).map ((lambdaShiftAddIso 1 n (n+1) (by omega)).inv.app A) =</span>
+<span id="L126"><a href="#L126"> 126</a>         (lambdaShiftAddIso 1 n (n+1) (by omega)).inv.app ((SyntheticCategory.biShift a).obj A) ≫</span>
+<span id="L127"><a href="#L127"> 127</a>           (SyntheticCategory.biShift (KIP126.Synthetic.Context.lambdaDegree n)).map (shiftSwap a (KIP126.Synthetic.Context.lambdaDegree 1) A).hom ≫</span>
+<span id="L128"><a href="#L128"> 128</a>           (shiftSwap a (KIP126.Synthetic.Context.lambdaDegree n) ((SyntheticCategory.biShift (KIP126.Synthetic.Context.lambdaDegree 1)).obj A)).hom at hh</span>
+<span id="L129"><a href="#L129"> 129</a>       rw [lambdaPow_add coh 1 n (n+1) (by omega) ((SyntheticCategory.biShift a).obj A),</span>
+<span id="L130"><a href="#L130"> 130</a>         lambdaPow_add coh 1 n (n+1) (by omega) A,h1,ih]</span>
+<span id="L131"><a href="#L131"> 131</a>       simp (config := { congrConsts := false }) only [Functor.map_comp,Category.assoc]</span>
+<span id="L132"><a href="#L132"> 132</a>       rw [reassoc_of% hn]</span>
+<span id="L133"><a href="#L133"> 133</a>       rw [reassoc_of% hh]</span>
+<span id="L134"><a href="#L134"> 134</a>       rfl</span>
+<span id="L135"><a href="#L135"> 135</a>   have shift_assoc_inv (coh : BiShiftCoherence Syn)</span>
+<span id="L136"><a href="#L136"> 136</a>       (a b c ab bc total : ℤ × ℤ) (hab : a+b=ab) (hbc : b+c=bc)</span>
+<span id="L137"><a href="#L137"> 137</a>       (habc : ab+c=total) (habc&#x27; : a+bc=total) (A : Syn) :</span>
+<span id="L138"><a href="#L138"> 138</a>       (biShiftAddIso ab c total habc).inv.app A ≫</span>
+<span id="L139"><a href="#L139"> 139</a>         (SyntheticCategory.biShift c).map ((biShiftAddIso a b ab hab).inv.app A) =</span>
+<span id="L140"><a href="#L140"> 140</a>       (biShiftAddIso a bc total habc&#x27;).inv.app A ≫</span>
+<span id="L141"><a href="#L141"> 141</a>         (biShiftAddIso b c bc hbc).inv.app ((SyntheticCategory.biShift a).obj A) := by</span>
+<span id="L142"><a href="#L142"> 142</a>     have he : ((SyntheticCategory.biShift c).mapIso ((biShiftAddIso a b ab hab).app A) ≪≫</span>
+<span id="L143"><a href="#L143"> 143</a>         (biShiftAddIso ab c total habc).app A) =</span>
+<span id="L144"><a href="#L144"> 144</a>       ((biShiftAddIso b c bc hbc).app ((SyntheticCategory.biShift a).obj A) ≪≫</span>
+<span id="L145"><a href="#L145"> 145</a>         (biShiftAddIso a bc total habc&#x27;).app A) :=</span>
+<span id="L146"><a href="#L146"> 146</a>       Iso.ext (coh.associativity a b c ab bc total hab hbc habc habc&#x27; A)</span>
+<span id="L147"><a href="#L147"> 147</a>     have hi := congrArg Iso.inv he</span>
+<span id="L148"><a href="#L148"> 148</a>     exact hi</span>
+<span id="L149"><a href="#L149"> 149</a>   have shuffle_lambda_left_two (coh : BiShiftCoherence Syn)</span>
+<span id="L150"><a href="#L150"> 150</a>       (etaShuffle : BiHom 1 2 (S_0_0 : Syn))</span>
+<span id="L151"><a href="#L151"> 151</a>       (a : BiHom 62 64 (S_0_0 : Syn)) :</span>
+<span id="L152"><a href="#L152"> 152</a>       sphereAction (lambdaMultiply 2 etaShuffle) a = lambdaMultiply 2 (sphereAction etaShuffle a) := by</span>
+<span id="L153"><a href="#L153"> 153</a>     let S := (S_0_0 : Syn)</span>
+<span id="L154"><a href="#L154"> 154</a>     have h₁ := shift_assoc_inv coh (1,2) (62,64) (0,-2)</span>
+<span id="L155"><a href="#L155"> 155</a>       (63,66) (62,62) (63,64) (by decide) (by decide) (by decide) (by decide) S</span>
+<span id="L156"><a href="#L156"> 156</a>     have h₂ := shift_assoc_inv coh (1,2) (0,-2) (62,64)</span>
+<span id="L157"><a href="#L157"> 157</a>       (1,0) (62,62) (63,64) (by decide) (by decide) (by decide) (by decide) S</span>
+<span id="L158"><a href="#L158"> 158</a>     simp (config := { congrConsts := false }) only [biShiftAddIso,Iso.trans_inv,eqToIso.inv,</span>
+<span id="L159"><a href="#L159"> 159</a>       eqToHom_refl,Category.id_comp] at h₁ h₂</span>
+<span id="L160"><a href="#L160"> 160</a>     have hp :</span>
+<span id="L161"><a href="#L161"> 161</a>       (SyntheticCategory.biShift_comp (63,66) (0,-2)).inv.app S ≫</span>
+<span id="L162"><a href="#L162"> 162</a>         lambdaPow 2 (Smn 63 66) ≫</span>
+<span id="L163"><a href="#L163"> 163</a>         (SyntheticCategory.biShift_comp (1,2) (62,64)).inv.app S =</span>
+<span id="L164"><a href="#L164"> 164</a>       (SyntheticCategory.biShift_comp (1,0) (62,64)).inv.app S ≫</span>
+<span id="L165"><a href="#L165"> 165</a>         (SyntheticCategory.biShift (62,64)).map</span>
+<span id="L166"><a href="#L166"> 166</a>           ((SyntheticCategory.biShift_comp (1,2) (0,-2)).inv.app S) ≫</span>
+<span id="L167"><a href="#L167"> 167</a>         (SyntheticCategory.biShift (62,64)).map (lambdaPow 2 (Smn 1 2)) := by</span>
+<span id="L168"><a href="#L168"> 168</a>       rw [←lambdaPow_naturality]</span>
+<span id="L169"><a href="#L169"> 169</a>       change (SyntheticCategory.biShift_comp (63,66) (0,-2)).inv.app S ≫</span>
+<span id="L170"><a href="#L170"> 170</a>         (SyntheticCategory.biShift (0,-2)).map ((SyntheticCategory.biShift_comp (1,2) (62,64)).inv.app S) ≫</span>
+<span id="L171"><a href="#L171"> 171</a>         lambdaPow 2 ((SyntheticCategory.biShift (62,64)).obj (Smn 1 2)) = _</span>
+<span id="L172"><a href="#L172"> 172</a>       rw [lambda_pow_shift coh 2 (62,64) (Smn 1 2)]</span>
+<span id="L173"><a href="#L173"> 173</a>       dsimp only [shiftSwap,KIP126.Synthetic.Context.lambdaDegree]</span>
+<span id="L174"><a href="#L174"> 174</a>       simp (config := { congrConsts := false }) only [Iso.trans_hom,Iso.trans_inv,Iso.symm_hom,Iso.app_hom,Iso.app_inv,biShiftAddIso,eqToIso.hom,eqToIso.inv,eqToHom_refl,</span>
+<span id="L175"><a href="#L175"> 175</a>         Category.comp_id,Category.id_comp]</span>
+<span id="L176"><a href="#L176"> 176</a>       simp (config := { congrConsts := false }) only [Category.assoc]</span>
+<span id="L177"><a href="#L177"> 177</a>       erw [←Category.assoc ((SyntheticCategory.biShift_comp (63,66) (0,-2)).inv.app S)]</span>
+<span id="L178"><a href="#L178"> 178</a>       erw [h₁]</span>
+<span id="L179"><a href="#L179"> 179</a>       simp (config := { congrConsts := false }) only [Category.assoc,Smn,S,Nat.cast_ofNat,Iso.inv_hom_id_app_assoc]</span>
+<span id="L180"><a href="#L180"> 180</a>       simpa (config := { congrConsts := false }) only [Category.assoc,Smn,S,Nat.cast_ofNat,Nat.cast_one,Int.natCast_one] using</span>
+<span id="L181"><a href="#L181"> 181</a>         (congrArg (fun z =&gt; z ≫ (SyntheticCategory.biShift (62,64)).map (lambdaPow 2 (Smn 1 2))) h₂.symm)</span>
+<span id="L182"><a href="#L182"> 182</a>     delta sphereAction lambdaMultiply</span>
+<span id="L183"><a href="#L183"> 183</a>     simp (config := { congrConsts := false }) only [eqToHom_refl,Category.id_comp,Functor.map_comp,Category.assoc]</span>
+<span id="L184"><a href="#L184"> 184</a>     simpa (config := { congrConsts := false }) only [Category.assoc,S,Smn,Int.reduceAdd,Int.reduceSub,Nat.cast_ofNat,Nat.cast_one,Int.natCast_one] using</span>
+<span id="L185"><a href="#L185"> 185</a>       (congrArg (fun z =&gt; z ≫ (SyntheticCategory.biShift (62,64)).map etaShuffle ≫ a) hp).symm</span>
+<span id="L186"><a href="#L186"> 186</a>   change sphereAction (lambdaMultiply 2 eta) theta = lambdaMultiply 2 (sphereAction eta theta)</span>
+<span id="L187"><a href="#L187"> 187</a>   exact shuffle_lambda_left_two coh eta theta</span>
+<span id="L188"><a href="#L188"> 188</a> </span>
+<span id="L189"><a href="#L189"> 189</a> </span>
+<span id="L190"><a href="#L190"> 190</a> /- Actual private source adaptations; public specified-value obligations remain pending. -/</span>
+<span id="L191"><a href="#L191"> 191</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L192"><a href="#L192"> 192</a> set_option maxHeartbeats 1000000 in</span>
+<span id="L193"><a href="#L193"> 193</a> private theorem secondary_lambda_precomp_injective_at_degree (m : ℕ) (wt : ℤ) (hw : wt ≤ (m:ℤ)+2) :</span>
+<span id="L194"><a href="#L194"> 194</a>     Function.Injective (fun a : BiHom (m:ℤ) wt (S_0_0 : SyntheticSpectrum) =&gt;</span>
+<span id="L195"><a href="#L195"> 195</a>       SyntheticCategory.lam.app (Smn (m:ℤ) wt) ≫ a) := by</span>
+<span id="L196"><a href="#L196"> 196</a>   letI := model.exactness.shiftAdditive (0,-1)</span>
+<span id="L197"><a href="#L197"> 197</a>   letI := (SyntheticCategory.biShift_fullyFaithful (Syn := SyntheticSpectrum) (0,-1)).faithful</span>
+<span id="L198"><a href="#L198"> 198</a>   let U := (SyntheticCategory.biShift (0,-1)).obj (Smn (Syn := SyntheticSpectrum) (m:ℤ) wt)</span>
+<span id="L199"><a href="#L199"> 199</a>   let T := XModLambdaN.cofiberTriangle (S_0_0 : SyntheticSpectrum) 1</span>
+<span id="L200"><a href="#L200"> 200</a>   let e₀ : U ≅ Smn (Syn := SyntheticSpectrum) (m:ℤ) (wt-1) :=</span>
+<span id="L201"><a href="#L201"> 201</a>     (SyntheticCategory.biShift_comp ((m:ℤ),wt) (0,-1)).app S_0_0 ≪≫</span>
+<span id="L202"><a href="#L202"> 202</a>       eqToIso (by congr 1 &lt;;&gt; simp (config := { congrConsts := false }) [sub_eq_add_neg])</span>
+<span id="L203"><a href="#L203"> 203</a>   let e₁ : U⟦(1 : ℤ)⟧ ≅ Smn (Syn := SyntheticSpectrum) ((m:ℤ)+1) (wt-1) :=</span>
+<span id="L204"><a href="#L204"> 204</a>     (shiftFunctor SyntheticSpectrum (1 : ℤ)).mapIso e₀ ≪≫</span>
+<span id="L205"><a href="#L205"> 205</a>       (SyntheticCategory.biShift_compat (Syn := SyntheticSpectrum) 1).symm.app _ ≪≫</span>
+<span id="L206"><a href="#L206"> 206</a>       (SyntheticCategory.biShift_comp ((m:ℤ),wt-1) (1,0)).app S_0_0 ≪≫</span>
+<span id="L207"><a href="#L207"> 207</a>       eqToIso (by congr 1 &lt;;&gt; simp (config := { congrConsts := false }))</span>
+<span id="L208"><a href="#L208"> 208</a>   have hQ : ∀ q : U⟦(1 : ℤ)⟧ ⟶ T.obj₃, q = 0 := by</span>
+<span id="L209"><a href="#L209"> 209</a>     intro q</span>
+<span id="L210"><a href="#L210"> 210</a>     haveI : Subsingleton (model.classical.sphere.Page 2 (wt-(m:ℤ)-2,wt-1)) := by</span>
+<span id="L211"><a href="#L211"> 211</a>       by_cases he : wt = (m:ℤ)+2</span>
+<span id="L212"><a href="#L212"> 212</a>       · subst wt</span>
+<span id="L213"><a href="#L213"> 213</a>         have hp : (m:ℤ)+2-(m:ℤ)-2=0 := by omega</span>
+<span id="L214"><a href="#L214"> 214</a>         have ht : (m:ℤ)+2-1=((m+1:ℕ):ℤ) := by omega</span>
+<span id="L215"><a href="#L215"> 215</a>         rw [hp,ht]</span>
+<span id="L216"><a href="#L216"> 216</a>         exact KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero 2 (m+1) (by omega)</span>
+<span id="L217"><a href="#L217"> 217</a>       · exact KIP126.AdamsSynthetic.Standard.classical_page_negative .sphere</span>
+<span id="L218"><a href="#L218"> 218</a>           2 (wt-(m:ℤ)-2) (wt-1) (by omega)</span>
+<span id="L219"><a href="#L219"> 219</a>     have hz : ∀ a : BiHom ((m:ℤ)+1) (wt-1) (XModLambdaN (S_0_0 : SyntheticSpectrum) 1), a = 0 := by</span>
+<span id="L220"><a href="#L220"> 220</a>       intro a</span>
+<span id="L221"><a href="#L221"> 221</a>       have hp : wt-1-(wt-(m:ℤ)-2)= (m:ℤ)+1 := by omega</span>
+<span id="L222"><a href="#L222"> 222</a>       have hsub : Subsingleton (BiHom (wt-1-(wt-(m:ℤ)-2)) (wt-1)</span>
+<span id="L223"><a href="#L223"> 223</a>           (XModLambdaN (S_0_0 : SyntheticSpectrum) 1)) :=</span>
+<span id="L224"><a href="#L224"> 224</a>         (KIP126.Literature.sphereFirstQuotient model (wt-(m:ℤ)-2) (wt-1)).injective.subsingleton</span>
+<span id="L225"><a href="#L225"> 225</a>       rw [hp] at hsub</span>
+<span id="L226"><a href="#L226"> 226</a>       exact @Subsingleton.elim _ hsub a 0</span>
+<span id="L227"><a href="#L227"> 227</a>     apply (cancel_epi e₁.inv).mp</span>
+<span id="L228"><a href="#L228"> 228</a>     simpa (config := { congrConsts := false }) only [comp_zero] using hz (e₁.inv ≫ q)</span>
+<span id="L229"><a href="#L229"> 229</a>   intro a b hab</span>
+<span id="L230"><a href="#L230"> 230</a>   dsimp only at hab</span>
+<span id="L231"><a href="#L231"> 231</a>   have hpre : SyntheticCategory.lam.app (Smn (Syn := SyntheticSpectrum) (m:ℤ) wt) ≫ (a-b)=0 := by</span>
+<span id="L232"><a href="#L232"> 232</a>     rw [Preadditive.comp_sub, hab, sub_self]</span>
+<span id="L233"><a href="#L233"> 233</a>   have hf : (SyntheticCategory.biShift (0,-1)).map (a-b) ≫ T.mor₁=0 := by</span>
+<span id="L234"><a href="#L234"> 234</a>     change (SyntheticCategory.biShift (0,-1)).map (a-b) ≫ lambdaPow 1 S_0_0=0</span>
+<span id="L235"><a href="#L235"> 235</a>     rw [lambdaPow_one model.quotients.coherence, SyntheticCategory.lam.naturality]</span>
+<span id="L236"><a href="#L236"> 236</a>     exact hpre</span>
+<span id="L237"><a href="#L237"> 237</a>   have hfs : ((SyntheticCategory.biShift (0,-1)).map (a-b))⟦(1 : ℤ)⟧&#x27; ≫</span>
+<span id="L238"><a href="#L238"> 238</a>       T.mor₁⟦(1 : ℤ)⟧&#x27;=0 := by</span>
+<span id="L239"><a href="#L239"> 239</a>     rw [← Functor.map_comp, hf, Functor.map_zero]</span>
+<span id="L240"><a href="#L240"> 240</a>   obtain ⟨q,hq⟩ := T.coyoneda_exact₁ (HasFunctorialCofiber.cofib_distinguished _) _ hfs</span>
+<span id="L241"><a href="#L241"> 241</a>   have hz : ((SyntheticCategory.biShift (0,-1)).map (a-b))⟦(1 : ℤ)⟧&#x27;=0 := by</span>
+<span id="L242"><a href="#L242"> 242</a>     rw [hq, hQ q, zero_comp]</span>
+<span id="L243"><a href="#L243"> 243</a>   have hz&#x27; : (SyntheticCategory.biShift (0,-1)).map (a-b)=0 := by</span>
+<span id="L244"><a href="#L244"> 244</a>     apply (shiftFunctor SyntheticSpectrum (1 : ℤ)).map_injective</span>
+<span id="L245"><a href="#L245"> 245</a>     simpa (config := { congrConsts := false }) only [Functor.map_zero] using hz</span>
+<span id="L246"><a href="#L246"> 246</a>   apply sub_eq_zero.mp</span>
+<span id="L247"><a href="#L247"> 247</a>   apply (SyntheticCategory.biShift (0,-1)).map_injective</span>
+<span id="L248"><a href="#L248"> 248</a>   simpa (config := { congrConsts := false }) only [Functor.map_zero] using hz&#x27;</span>
+<span id="L249"><a href="#L249"> 249</a> </span>
+<span id="L250"><a href="#L250"> 250</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L251"><a href="#L251"> 251</a> set_option maxHeartbeats 1000000 in</span>
+<span id="L252"><a href="#L252"> 252</a> private theorem secondary_lambda_powers_injective_at_degree (m : ℕ) (wt : ℤ) (hw : wt ≤ (m:ℤ)+2) :</span>
+<span id="L253"><a href="#L253"> 253</a>     ∀ k : ℕ, Function.Injective (fun a : BiHom (m:ℤ) wt (S_0_0 : SyntheticSpectrum) =&gt; lambdaMultiply k a) := by</span>
+<span id="L254"><a href="#L254"> 254</a>   let Syn := SyntheticSpectrum</span>
+<span id="L255"><a href="#L255"> 255</a>   let X := (S_0_0 : Syn)</span>
+<span id="L256"><a href="#L256"> 256</a>   let coh := model.quotients.coherence</span>
+<span id="L257"><a href="#L257"> 257</a>   have one (k : ℕ) : Function.Injective (fun a :</span>
+<span id="L258"><a href="#L258"> 258</a>       (SyntheticCategory.biShift (0,-(k : ℤ))).obj (Smn (Syn := Syn) (m:ℤ) wt) ⟶ X =&gt;</span>
+<span id="L259"><a href="#L259"> 259</a>       SyntheticCategory.lam.app _ ≫ a) := by</span>
+<span id="L260"><a href="#L260"> 260</a>     let e : Smn (Syn := Syn) (m:ℤ) (wt-k) ≅</span>
+<span id="L261"><a href="#L261"> 261</a>         (SyntheticCategory.biShift (0,-(k : ℤ))).obj (Smn (m:ℤ) wt) :=</span>
+<span id="L262"><a href="#L262"> 262</a>       eqToIso (by dsimp only [Smn]; congr 1 &lt;;&gt; simp (config := { congrConsts := false }) [sub_eq_add_neg]) ≪≫</span>
+<span id="L263"><a href="#L263"> 263</a>         ((SyntheticCategory.biShift_comp ((m:ℤ),wt) (0,-(k : ℤ))).app S_0_0).symm</span>
+<span id="L264"><a href="#L264"> 264</a>     intro a b hab</span>
+<span id="L265"><a href="#L265"> 265</a>     apply (cancel_epi e.hom).mp</span>
+<span id="L266"><a href="#L266"> 266</a>     apply secondary_lambda_precomp_injective_at_degree m (wt-k) (by omega)</span>
+<span id="L267"><a href="#L267"> 267</a>     dsimp only</span>
+<span id="L268"><a href="#L268"> 268</a>     dsimp only at hab</span>
+<span id="L269"><a href="#L269"> 269</a>     have hn := SyntheticCategory.lam.naturality e.hom</span>
+<span id="L270"><a href="#L270"> 270</a>     dsimp only [Functor.id_map] at hn</span>
+<span id="L271"><a href="#L271"> 271</a>     rw [← Category.assoc, ← Category.assoc, ← hn]</span>
+<span id="L272"><a href="#L272"> 272</a>     simpa (config := { congrConsts := false }) only [Category.assoc] using</span>
+<span id="L273"><a href="#L273"> 273</a>       congrArg (fun z =&gt; (SyntheticCategory.biShift (0,-1)).map e.hom ≫ z) hab</span>
+<span id="L274"><a href="#L274"> 274</a>   have powers (k : ℕ) : Function.Injective (fun a : BiHom (m:ℤ) wt X =&gt; lambdaPow k (Smn (m:ℤ) wt) ≫ a) := by</span>
+<span id="L275"><a href="#L275"> 275</a>     induction k with</span>
+<span id="L276"><a href="#L276"> 276</a>     | zero =&gt;</span>
+<span id="L277"><a href="#L277"> 277</a>       intro a b hab</span>
+<span id="L278"><a href="#L278"> 278</a>       exact (cancel_epi (SyntheticCategory.biShift_zero.hom.app (Smn (m:ℤ) wt))).mp hab</span>
+<span id="L279"><a href="#L279"> 279</a>     | succ k ih =&gt;</span>
+<span id="L280"><a href="#L280"> 280</a>       intro a b hab</span>
+<span id="L281"><a href="#L281"> 281</a>       apply ih</span>
+<span id="L282"><a href="#L282"> 282</a>       apply one k</span>
+<span id="L283"><a href="#L283"> 283</a>       rw [lambdaPow_add coh k 1 (k+1) rfl, lambdaPow_one coh] at hab</span>
+<span id="L284"><a href="#L284"> 284</a>       have hc := (cancel_epi ((lambdaShiftAddIso k 1 (k+1) rfl).inv.app (Smn (Syn := Syn) (m:ℤ) wt))).mp</span>
+<span id="L285"><a href="#L285"> 285</a>         (by simpa (config := { congrConsts := false }) only [Category.assoc] using hab)</span>
+<span id="L286"><a href="#L286"> 286</a>       have hn := SyntheticCategory.lam.naturality (lambdaPow k (Smn (Syn := Syn) (m:ℤ) wt))</span>
+<span id="L287"><a href="#L287"> 287</a>       dsimp only [Functor.id_map] at hn</span>
+<span id="L288"><a href="#L288"> 288</a>       change (SyntheticCategory.biShift (0,-1)).map (lambdaPow k (Smn (m:ℤ) wt)) ≫</span>
+<span id="L289"><a href="#L289"> 289</a>         (SyntheticCategory.lam.app (Smn (m:ℤ) wt) ≫ a) =</span>
+<span id="L290"><a href="#L290"> 290</a>         (SyntheticCategory.biShift (0,-1)).map (lambdaPow k (Smn (m:ℤ) wt)) ≫</span>
+<span id="L291"><a href="#L291"> 291</a>         (SyntheticCategory.lam.app (Smn (m:ℤ) wt) ≫ b) at hc</span>
+<span id="L292"><a href="#L292"> 292</a>       rw [← Category.assoc, ← Category.assoc, hn] at hc</span>
+<span id="L293"><a href="#L293"> 293</a>       simpa (config := { congrConsts := false }) only [Category.assoc] using hc</span>
+<span id="L294"><a href="#L294"> 294</a>   intro k a b hab</span>
+<span id="L295"><a href="#L295"> 295</a>   apply powers k</span>
+<span id="L296"><a href="#L296"> 296</a>   dsimp only [lambdaMultiply] at hab</span>
+<span id="L297"><a href="#L297"> 297</a>   have hc := (cancel_epi (eqToHom (by congr 1 &lt;;&gt; simp (config := { congrConsts := false })))).mp hab</span>
+<span id="L298"><a href="#L298"> 298</a>   exact (cancel_epi ((SyntheticCategory.biShift_comp ((m:ℤ),wt) (0,-(k : ℤ))).inv.app S_0_0)).mp</span>
+<span id="L299"><a href="#L299"> 299</a>     (by simpa (config := { congrConsts := false }) only [Category.assoc] using hc)</span>
+<span id="L300"><a href="#L300"> 300</a> </span>
+<span id="L301"><a href="#L301"> 301</a> </span>
+<span id="L302"><a href="#L302"> 302</a> private theorem secondary_lambda_precomp_injective (wt : ℤ) (hw : wt ≤ 4) :</span>
+<span id="L303"><a href="#L303"> 303</a>     Function.Injective (fun a : BiHom 2 wt (S_0_0 : SyntheticSpectrum) =&gt;</span>
+<span id="L304"><a href="#L304"> 304</a>       SyntheticCategory.lam.app (Smn 2 wt) ≫ a) :=</span>
+<span id="L305"><a href="#L305"> 305</a>   secondary_lambda_precomp_injective_at_degree 2 wt (by omega)</span>
+<span id="L306"><a href="#L306"> 306</a> </span>
+<span id="L307"><a href="#L307"> 307</a> private theorem secondary_lambda_powers_injective (wt : ℤ) (hw : wt ≤ 4) :</span>
+<span id="L308"><a href="#L308"> 308</a>     ∀ k : ℕ, Function.Injective (fun a : BiHom 2 wt (S_0_0 : SyntheticSpectrum) =&gt; lambdaMultiply k a) :=</span>
+<span id="L309"><a href="#L309"> 309</a>   secondary_lambda_powers_injective_at_degree 2 wt (by omega)</span>
+<span id="L310"><a href="#L310"> 310</a> </span>
+<span id="L311"><a href="#L311"> 311</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L312"><a href="#L312"> 312</a> private theorem secondary_realization_injective :</span>
+<span id="L313"><a href="#L313"> 313</a>     Function.Injective (fun a : BiHom 2 4 (S_0_0 : SyntheticSpectrum) =&gt; model.recovery.realization.map a) := by</span>
+<span id="L314"><a href="#L314"> 314</a>   letI := realization_additive</span>
+<span id="L315"><a href="#L315"> 315</a>   intro a b hab</span>
+<span id="L316"><a href="#L316"> 316</a>   dsimp only at hab</span>
+<span id="L317"><a href="#L317"> 317</a>   have hz : model.recovery.realization.map (a-b)=0 := by rw [Functor.map_sub, hab, sub_self]</span>
+<span id="L318"><a href="#L318"> 318</a>   obtain ⟨k,hk⟩ := (selected_realization_kernel .sphere 2 4 (a-b)).mp hz</span>
+<span id="L319"><a href="#L319"> 319</a>   apply sub_eq_zero.mp</span>
+<span id="L320"><a href="#L320"> 320</a>   apply secondary_lambda_powers_injective 4 (by omega) k</span>
+<span id="L321"><a href="#L321"> 321</a>   dsimp only [lambdaMultiply] at hk ⊢</span>
+<span id="L322"><a href="#L322"> 322</a>   simpa (config := { congrConsts := false }) only [comp_zero] using hk</span>
+<span id="L323"><a href="#L323"> 323</a> </span>
+<span id="L324"><a href="#L324"> 324</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L325"><a href="#L325"> 325</a> set_option maxHeartbeats 1000000 in</span>
+<span id="L326"><a href="#L326"> 326</a> private theorem secondary_low_nonempty :</span>
+<span id="L327"><a href="#L327"> 327</a>     ∃ value : BiHom 2 4 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L328"><a href="#L328"> 328</a>       Route.TripleToda syntheticH0 eta syntheticH0 value := by</span>
+<span id="L329"><a href="#L329"> 329</a>   let h := syntheticH0</span>
+<span id="L330"><a href="#L330"> 330</a>   have hh : sphereProduct h eta = 0 := toda_h0_eta</span>
+<span id="L331"><a href="#L331"> 331</a>   have heh : sphereProduct eta h = 0 := by</span>
+<span id="L332"><a href="#L332"> 332</a>     rw [model.sphereProductCommutative 1 2 0 1 eta h]</span>
+<span id="L333"><a href="#L333"> 333</a>     simp (config := { congrConsts := false }) only</span>
+<span id="L334"><a href="#L334"> 334</a>       [mul_zero, Int.natAbs_zero, pow_zero, one_smul, hh]</span>
+<span id="L335"><a href="#L335"> 335</a>     rfl</span>
+<span id="L336"><a href="#L336"> 336</a>   letI := model.exactness.shiftAdditive (0,1)</span>
+<span id="L337"><a href="#L337"> 337</a>   let f := (SyntheticCategory.biShift (1,3)).map h</span>
+<span id="L338"><a href="#L338"> 338</a>   let g := (SyntheticCategory.biShift_comp (1,2) (0,1)).inv.app</span>
+<span id="L339"><a href="#L339"> 339</a>     (S_0_0 : SyntheticSpectrum) ≫ (SyntheticCategory.biShift (0,1)).map eta</span>
+<span id="L340"><a href="#L340"> 340</a>   have hraw : (SyntheticCategory.biShift (1,2)).map h ≫ eta = 0 := by</span>
+<span id="L341"><a href="#L341"> 341</a>     apply (cancel_epi ((SyntheticCategory.biShift_comp (0,1) (1,2)).inv.app</span>
+<span id="L342"><a href="#L342"> 342</a>       (S_0_0 : SyntheticSpectrum))).mp</span>
+<span id="L343"><a href="#L343"> 343</a>     dsimp only [sphereProduct] at hh</span>
+<span id="L344"><a href="#L344"> 344</a>     simpa (config := { congrConsts := false }) only</span>
+<span id="L345"><a href="#L345"> 345</a>       [Category.assoc, comp_zero] using hh</span>
+<span id="L346"><a href="#L346"> 346</a>   have hfg : f ≫ g = 0 := by</span>
+<span id="L347"><a href="#L347"> 347</a>     dsimp only [f,g]</span>
+<span id="L348"><a href="#L348"> 348</a>     erw [← Category.assoc, (SyntheticCategory.biShift_comp (1,2) (0,1)).inv.naturality]</span>
+<span id="L349"><a href="#L349"> 349</a>     dsimp only [Functor.comp_map]</span>
+<span id="L350"><a href="#L350"> 350</a>     rw [Category.assoc, ← Functor.map_comp, hraw, Functor.map_zero, comp_zero]</span>
+<span id="L351"><a href="#L351"> 351</a>   have hgh : g ≫ h = 0 := by</span>
+<span id="L352"><a href="#L352"> 352</a>     dsimp only [g, sphereProduct] at heh ⊢</span>
+<span id="L353"><a href="#L353"> 353</a>     simpa (config := { congrConsts := false }) only [Category.assoc] using heh</span>
+<span id="L354"><a href="#L354"> 354</a>   obtain ⟨x,hx⟩ := KIP126.StableHomotopy.Toda.exists_relation f g h hfg hgh</span>
+<span id="L355"><a href="#L355"> 355</a>   refine ⟨(Route.tripleTodaSource 0 1 1 2 0 1).hom ≫ x, ?_⟩</span>
+<span id="L356"><a href="#L356"> 356</a>   change KIP126.StableHomotopy.Toda.Relation</span>
+<span id="L357"><a href="#L357"> 357</a>     ((Route.tripleTodaSource 0 1 1 2 0 1).inv ≫</span>
+<span id="L358"><a href="#L358"> 358</a>       ((Route.tripleTodaSource 0 1 1 2 0 1).hom ≫ x)) f g h</span>
+<span id="L359"><a href="#L359"> 359</a>   simpa (config := { congrConsts := false }) only [Iso.inv_hom_id_assoc] using hx</span>
+<span id="L360"><a href="#L360"> 360</a> </span>
+<span id="L361"><a href="#L361"> 361</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L362"><a href="#L362"> 362</a> set_option maxHeartbeats 1000000 in</span>
+<span id="L363"><a href="#L363"> 363</a> private theorem secondary_symmetric_nonempty</span>
+<span id="L364"><a href="#L364"> 364</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : theta+theta=0) :</span>
+<span id="L365"><a href="#L365"> 365</a>     ∃ value : BiHom 63 64 (S_0_0 : SyntheticSpectrum),</span>
+<span id="L366"><a href="#L366"> 366</a>       Route.TripleToda Route.syntheticTwo theta Route.syntheticTwo value := by</span>
+<span id="L367"><a href="#L367"> 367</a>   let S := (S_0_0 : SyntheticSpectrum)</span>
+<span id="L368"><a href="#L368"> 368</a>   let F := SyntheticCategory.biShift (Syn := SyntheticSpectrum) (62,64)</span>
+<span id="L369"><a href="#L369"> 369</a>   let F0 := SyntheticCategory.biShift (Syn := SyntheticSpectrum) (0,0)</span>
+<span id="L370"><a href="#L370"> 370</a>   letI : F.Additive := model.exactness.shiftAdditive (62,64)</span>
+<span id="L371"><a href="#L371"> 371</a>   let A := F.obj S</span>
+<span id="L372"><a href="#L372"> 372</a>   let Z := F0.obj S</span>
+<span id="L373"><a href="#L373"> 373</a>   let u : Z ≅ S := SyntheticCategory.biShift_zero.app S</span>
+<span id="L374"><a href="#L374"> 374</a>   let f := F.map Route.syntheticTwo</span>
+<span id="L375"><a href="#L375"> 375</a>   let g : A ⟶ Z := (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫ F0.map theta</span>
+<span id="L376"><a href="#L376"> 376</a>   have hright : (SyntheticCategory.biShift_comp (62,64) (0,0)).hom.app S =</span>
+<span id="L377"><a href="#L377"> 377</a>       SyntheticCategory.biShift_zero.hom.app A := by</span>
+<span id="L378"><a href="#L378"> 378</a>     have hh := model.quotients.coherence.right_unit (62,64) S</span>
+<span id="L379"><a href="#L379"> 379</a>     simp (config := { congrConsts := false }) only [biShiftAddIso, Iso.trans_hom,</span>
+<span id="L380"><a href="#L380"> 380</a>       NatTrans.comp_app, eqToIso.hom, eqToHom_app, eqToHom_refl, Category.comp_id] at hh</span>
+<span id="L381"><a href="#L381"> 381</a>     exact hh</span>
+<span id="L382"><a href="#L382"> 382</a>   have hgu : g ≫ u.hom = theta := by</span>
+<span id="L383"><a href="#L383"> 383</a>     calc</span>
+<span id="L384"><a href="#L384"> 384</a>       g ≫ u.hom = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L385"><a href="#L385"> 385</a>           (F0.map theta ≫ SyntheticCategory.biShift_zero.hom.app S) := Category.assoc _ _ _</span>
+<span id="L386"><a href="#L386"> 386</a>       _ = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L387"><a href="#L387"> 387</a>           (SyntheticCategory.biShift_zero.hom.app A ≫ theta) :=</span>
+<span id="L388"><a href="#L388"> 388</a>         congrArg (fun z =&gt; (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫ z)</span>
+<span id="L389"><a href="#L389"> 389</a>           (SyntheticCategory.biShift_zero.hom.naturality theta)</span>
+<span id="L390"><a href="#L390"> 390</a>       _ = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L391"><a href="#L391"> 391</a>           ((SyntheticCategory.biShift_comp (62,64) (0,0)).hom.app S ≫ theta) := by rw [hright]</span>
+<span id="L392"><a href="#L392"> 392</a>       _ = theta := ((SyntheticCategory.biShift_comp (62,64) (0,0)).app S).inv_hom_id_assoc theta</span>
+<span id="L393"><a href="#L393"> 393</a>   have hg2 : (2:ℕ) • g = 0 := by</span>
+<span id="L394"><a href="#L394"> 394</a>     apply (cancel_mono u.hom).mp</span>
+<span id="L395"><a href="#L395"> 395</a>     simpa (config := { congrConsts := false }) only</span>
+<span id="L396"><a href="#L396"> 396</a>       [Preadditive.nsmul_comp, hgu, two_nsmul, Preadditive.add_comp, zero_comp] using htheta</span>
+<span id="L397"><a href="#L397"> 397</a>   have hf : f = (2:ℕ) • F.map (SyntheticCategory.biShift_zero.hom.app S) := by</span>
+<span id="L398"><a href="#L398"> 398</a>     dsimp only [f, S, Route.syntheticTwo]</span>
+<span id="L399"><a href="#L399"> 399</a>     simp (config := { congrConsts := false }) only</span>
+<span id="L400"><a href="#L400"> 400</a>       [Functor.map_comp, Functor.map_nsmul, Functor.map_id,</span>
+<span id="L401"><a href="#L401"> 401</a>         Preadditive.comp_nsmul, Category.comp_id]</span>
+<span id="L402"><a href="#L402"> 402</a>   have hfg : f ≫ g = 0 := by</span>
+<span id="L403"><a href="#L403"> 403</a>     rw [hf, Preadditive.nsmul_comp, ← Preadditive.comp_nsmul, hg2, comp_zero]</span>
+<span id="L404"><a href="#L404"> 404</a>   have hgh : g ≫ Route.syntheticTwo = 0 := by</span>
+<span id="L405"><a href="#L405"> 405</a>     change g ≫ (u.hom ≫ ((2:ℕ) • 𝟙 S)) = 0</span>
+<span id="L406"><a href="#L406"> 406</a>     rw [← Category.assoc, Preadditive.comp_nsmul, Category.comp_id,</span>
+<span id="L407"><a href="#L407"> 407</a>       ← Preadditive.nsmul_comp, hg2, zero_comp]</span>
+<span id="L408"><a href="#L408"> 408</a>   obtain ⟨x,hx⟩ := KIP126.StableHomotopy.Toda.exists_relation f g Route.syntheticTwo hfg hgh</span>
+<span id="L409"><a href="#L409"> 409</a>   refine ⟨(Route.tripleTodaSource 0 0 62 64 0 0).hom ≫ x, ?_⟩</span>
+<span id="L410"><a href="#L410"> 410</a>   change KIP126.StableHomotopy.Toda.Relation</span>
+<span id="L411"><a href="#L411"> 411</a>     ((Route.tripleTodaSource 0 0 62 64 0 0).inv ≫</span>
+<span id="L412"><a href="#L412"> 412</a>       ((Route.tripleTodaSource 0 0 62 64 0 0).hom ≫ x)) f g Route.syntheticTwo</span>
+<span id="L413"><a href="#L413"> 413</a>   simpa (config := { congrConsts := false }) only [Iso.inv_hom_id_assoc] using hx</span>
+<span id="L414"><a href="#L414"> 414</a> </span>
+<span id="L415"><a href="#L415"> 415</a> section Moore</span>
+<span id="L416"><a href="#L416"> 416</a> </span>
+<span id="L417"><a href="#L417"> 417</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L418"><a href="#L418"> 418</a> </span>
+<span id="L419"><a href="#L419"> 419</a> /-- The source&#x27;s factorization on any *given* distinguished Moore triangle.</span>
+<span id="L420"><a href="#L420"> 420</a> The same `M`, `i`, and `p` occur throughout the conclusion. -/</span>
+<span id="L421"><a href="#L421"> 421</a> private theorem moore_factor_on_triangle</span>
+<span id="L422"><a href="#L422"> 422</a>     {S M : C} (i : S ⟶ M) (p : M ⟶ S⟦(1 : ℤ)⟧)</span>
+<span id="L423"><a href="#L423"> 423</a>     (hT : Triangle.mk ((2 : ℕ) • 𝟙 S) i p ∈ distTriang C)</span>
+<span id="L424"><a href="#L424"> 424</a>     (htf : ∀ a : S ⟶ S, a + a = 0 → a = 0) :</span>
+<span id="L425"><a href="#L425"> 425</a>     ∃ ε : S⟦(1 : ℤ)⟧ ⟶ S, (2 : ℕ) • 𝟙 M = p ≫ ε ≫ i := by</span>
+<span id="L426"><a href="#L426"> 426</a>   let T := Triangle.mk ((2 : ℕ) • 𝟙 S) i p</span>
+<span id="L427"><a href="#L427"> 427</a>   have hp : (2 : ℕ) • p = 0 := by</span>
+<span id="L428"><a href="#L428"> 428</a>     have h := comp_distTriang_mor_zero₃₁ T hT</span>
+<span id="L429"><a href="#L429"> 429</a>     change p ≫ ((2 : ℕ) • 𝟙 S)⟦(1 : ℤ)⟧&#x27; = 0 at h</span>
+<span id="L430"><a href="#L430"> 430</a>     simpa (config := { congrConsts := false }) only</span>
+<span id="L431"><a href="#L431"> 431</a>       [Functor.map_nsmul, CategoryTheory.Functor.map_id,</span>
+<span id="L432"><a href="#L432"> 432</a>         Preadditive.comp_nsmul, Category.comp_id] using h</span>
+<span id="L433"><a href="#L433"> 433</a>   have hp&#x27; : ((2 : ℕ) • 𝟙 M) ≫ p = 0 := by</span>
+<span id="L434"><a href="#L434"> 434</a>     simpa (config := { congrConsts := false }) only</span>
+<span id="L435"><a href="#L435"> 435</a>       [Preadditive.nsmul_comp, Category.id_comp] using hp</span>
+<span id="L436"><a href="#L436"> 436</a>   obtain ⟨a, ha⟩ := T.coyoneda_exact₃ hT ((2 : ℕ) • 𝟙 M) hp&#x27;</span>
+<span id="L437"><a href="#L437"> 437</a>   change M ⟶ S at a</span>
+<span id="L438"><a href="#L438"> 438</a>   change (2 : ℕ) • 𝟙 M = a ≫ i at ha</span>
+<span id="L439"><a href="#L439"> 439</a>   have hi : (2 : ℕ) • i = 0 := by</span>
+<span id="L440"><a href="#L440"> 440</a>     have h := comp_distTriang_mor_zero₁₂ T hT</span>
+<span id="L441"><a href="#L441"> 441</a>     change ((2 : ℕ) • 𝟙 S) ≫ i = 0 at h</span>
+<span id="L442"><a href="#L442"> 442</a>     simpa (config := { congrConsts := false }) only</span>
+<span id="L443"><a href="#L443"> 443</a>       [Preadditive.nsmul_comp, Category.id_comp] using h</span>
+<span id="L444"><a href="#L444"> 444</a>   have hai : i ≫ a = 0 := by</span>
+<span id="L445"><a href="#L445"> 445</a>     apply htf</span>
+<span id="L446"><a href="#L446"> 446</a>     have h : (2 : ℕ) • (i ≫ a) = 0 := by</span>
+<span id="L447"><a href="#L447"> 447</a>       rw [← Preadditive.nsmul_comp, hi, zero_comp]</span>
+<span id="L448"><a href="#L448"> 448</a>     simpa (config := { congrConsts := false }) only [two_nsmul] using h</span>
+<span id="L449"><a href="#L449"> 449</a>   obtain ⟨ε, hε⟩ := T.yoneda_exact₃ hT a hai</span>
+<span id="L450"><a href="#L450"> 450</a>   change S⟦(1 : ℤ)⟧ ⟶ S at ε</span>
+<span id="L451"><a href="#L451"> 451</a>   change a = p ≫ ε at hε</span>
+<span id="L452"><a href="#L452"> 452</a>   exact ⟨ε, by rw [ha, hε, Category.assoc] &lt;;&gt; rfl⟩</span>
+<span id="L453"><a href="#L453"> 453</a> </span>
+<span id="L454"><a href="#L454"> 454</a> /-- The source&#x27;s existential statement, with no source result package. -/</span>
+<span id="L455"><a href="#L455"> 455</a> private theorem moore_factor</span>
+<span id="L456"><a href="#L456"> 456</a>     (S : C) (htf : ∀ a : S ⟶ S, a + a = 0 → a = 0) :</span>
+<span id="L457"><a href="#L457"> 457</a>     ∃ (M : C) (i : S ⟶ M) (p : M ⟶ S⟦(1 : ℤ)⟧)</span>
+<span id="L458"><a href="#L458"> 458</a>       (ε : S⟦(1 : ℤ)⟧ ⟶ S),</span>
+<span id="L459"><a href="#L459"> 459</a>       Triangle.mk ((2 : ℕ) • 𝟙 S) i p ∈ distTriang C ∧</span>
+<span id="L460"><a href="#L460"> 460</a>         (2 : ℕ) • 𝟙 M = p ≫ ε ≫ i := by</span>
+<span id="L461"><a href="#L461"> 461</a>   obtain ⟨M, i, p, hT⟩ := distinguished_cocone_triangle ((2 : ℕ) • 𝟙 S)</span>
+<span id="L462"><a href="#L462"> 462</a>   obtain ⟨ε, hε⟩ := moore_factor_on_triangle i p hT htf</span>
+<span id="L463"><a href="#L463"> 463</a>   exact ⟨M, i, p, ε, hT, hε⟩</span>
+<span id="L464"><a href="#L464"> 464</a> </span>
+<span id="L465"><a href="#L465"> 465</a> /-- A specialization preserving the registered *chosen* cofiber object and</span>
+<span id="L466"><a href="#L466"> 466</a> both of its actual structure maps. -/</span>
+<span id="L467"><a href="#L467"> 467</a> private theorem moore_factor_chosen [HasFunctorialCofiber (C := C)]</span>
+<span id="L468"><a href="#L468"> 468</a>     (S : C) (htf : ∀ a : S ⟶ S, a + a = 0 → a = 0) :</span>
+<span id="L469"><a href="#L469"> 469</a>     ∃ ε : S⟦(1 : ℤ)⟧ ⟶ S,</span>
+<span id="L470"><a href="#L470"> 470</a>       (2 : ℕ) • 𝟙 (HasFunctorialCofiber.cofib ((2 : ℕ) • 𝟙 S)) =</span>
+<span id="L471"><a href="#L471"> 471</a>         HasFunctorialCofiber.cofibδ ((2 : ℕ) • 𝟙 S) ≫ ε ≫</span>
+<span id="L472"><a href="#L472"> 472</a>           HasFunctorialCofiber.cofibι ((2 : ℕ) • 𝟙 S) :=</span>
+<span id="L473"><a href="#L473"> 473</a>   moore_factor_on_triangle</span>
+<span id="L474"><a href="#L474"> 474</a>     (HasFunctorialCofiber.cofibι ((2 : ℕ) • 𝟙 S))</span>
+<span id="L475"><a href="#L475"> 475</a>     (HasFunctorialCofiber.cofibδ ((2 : ℕ) • 𝟙 S))</span>
+<span id="L476"><a href="#L476"> 476</a>     (HasFunctorialCofiber.cofib_distinguished ((2 : ℕ) • 𝟙 S)) htf</span>
+<span id="L477"><a href="#L477"> 477</a> </span>
+<span id="L478"><a href="#L478"> 478</a> /-- This equivalence isolates the actual lifting obstruction; it does not</span>
+<span id="L479"><a href="#L479"> 479</a> assume or claim that the obstruction always vanishes. -/</span>
+<span id="L480"><a href="#L480"> 480</a> private theorem moore_factor_iff_lift</span>
+<span id="L481"><a href="#L481"> 481</a>     {S M : C} (i : S ⟶ M) (p : M ⟶ S⟦(1 : ℤ)⟧)</span>
+<span id="L482"><a href="#L482"> 482</a>     (hT : Triangle.mk ((2 : ℕ) • 𝟙 S) i p ∈ distTriang C) :</span>
+<span id="L483"><a href="#L483"> 483</a>     (∃ ε : S⟦(1 : ℤ)⟧ ⟶ S, (2 : ℕ) • 𝟙 M = p ≫ ε ≫ i) ↔</span>
+<span id="L484"><a href="#L484"> 484</a>       ∃ a : M ⟶ S, (2 : ℕ) • 𝟙 M = a ≫ i ∧ i ≫ a = 0 := by</span>
+<span id="L485"><a href="#L485"> 485</a>   let T := Triangle.mk ((2 : ℕ) • 𝟙 S) i p</span>
+<span id="L486"><a href="#L486"> 486</a>   constructor</span>
+<span id="L487"><a href="#L487"> 487</a>   · rintro ⟨ε, hε⟩</span>
+<span id="L488"><a href="#L488"> 488</a>     refine ⟨p ≫ ε, ?_, ?_⟩</span>
+<span id="L489"><a href="#L489"> 489</a>     · simpa (config := { congrConsts := false }) only [Category.assoc] using hε</span>
+<span id="L490"><a href="#L490"> 490</a>     · have hip := comp_distTriang_mor_zero₂₃ T hT</span>
+<span id="L491"><a href="#L491"> 491</a>       change i ≫ p = 0 at hip</span>
+<span id="L492"><a href="#L492"> 492</a>       rw [← Category.assoc, hip, zero_comp]</span>
+<span id="L493"><a href="#L493"> 493</a>   · rintro ⟨a, ha, hai⟩</span>
+<span id="L494"><a href="#L494"> 494</a>     obtain ⟨ε, hε⟩ := T.yoneda_exact₃ hT a hai</span>
+<span id="L495"><a href="#L495"> 495</a>     change S⟦(1 : ℤ)⟧ ⟶ S at ε</span>
+<span id="L496"><a href="#L496"> 496</a>     change a = p ≫ ε at hε</span>
+<span id="L497"><a href="#L497"> 497</a>     exact ⟨ε, by rw [ha, hε, Category.assoc] &lt;;&gt; rfl⟩</span>
+<span id="L498"><a href="#L498"> 498</a> </span>
+<span id="L499"><a href="#L499"> 499</a> end Moore</span>
+<span id="L500"><a href="#L500"> 500</a> </span>
+<span id="L501"><a href="#L501"> 501</a> section ScalarToda</span>
+<span id="L502"><a href="#L502"> 502</a> </span>
+<span id="L503"><a href="#L503"> 503</a> variable {C : Type u} [Category.{v} C] [Preadditive C]</span>
+<span id="L504"><a href="#L504"> 504</a>   [HasZeroObject C] [HasShift C ℤ]</span>
+<span id="L505"><a href="#L505"> 505</a>   [∀ n : ℤ, Functor.Additive (shiftFunctor C n)] [Pretriangulated C]</span>
+<span id="L506"><a href="#L506"> 506</a> </span>
+<span id="L507"><a href="#L507"> 507</a> /-- The actual scalar defect on the *same* cone yields the Toda witness.</span>
+<span id="L508"><a href="#L508"> 508</a> No separate cone, comparison object, or externally supplied bracket value is</span>
+<span id="L509"><a href="#L509"> 509</a> introduced. `j` only identifies the doubled first map&#x27;s two objects. -/</span>
+<span id="L510"><a href="#L510"> 510</a> private theorem scalar_defect_to_toda</span>
+<span id="L511"><a href="#L511"> 511</a>     {X A Q Z W : C} (j : X ≅ A) (f : X ⟶ A)</span>
+<span id="L512"><a href="#L512"> 512</a>     (hf : f = (2 : ℕ) • j.hom)</span>
+<span id="L513"><a href="#L513"> 513</a>     (i : A ⟶ Q) (p : Q ⟶ X⟦(1 : ℤ)⟧)</span>
+<span id="L514"><a href="#L514"> 514</a>     (hT : Triangle.mk f i p ∈ distTriang C)</span>
+<span id="L515"><a href="#L515"> 515</a>     (b : X⟦(1 : ℤ)⟧ ⟶ A)</span>
+<span id="L516"><a href="#L516"> 516</a>     (hQ : (2 : ℕ) • 𝟙 Q = p ≫ b ≫ i)</span>
+<span id="L517"><a href="#L517"> 517</a>     (g : A ⟶ Z) (hg : (2 : ℕ) • g = 0) (u : Z ⟶ W) :</span>
+<span id="L518"><a href="#L518"> 518</a>     Toda.Relation (b ≫ g ≫ u) f g ((2 : ℕ) • u) := by</span>
+<span id="L519"><a href="#L519"> 519</a>   let T := Triangle.mk f i p</span>
+<span id="L520"><a href="#L520"> 520</a>   have hfg : f ≫ g = 0 := by</span>
+<span id="L521"><a href="#L521"> 521</a>     rw [hf, Preadditive.nsmul_comp, ← Preadditive.comp_nsmul, hg, comp_zero]</span>
+<span id="L522"><a href="#L522"> 522</a>   obtain ⟨gbar, hgbar⟩ := T.yoneda_exact₂ hT g hfg</span>
+<span id="L523"><a href="#L523"> 523</a>   change g = i ≫ gbar at hgbar</span>
+<span id="L524"><a href="#L524"> 524</a>   have hibar : i ≫ gbar = g := hgbar.symm</span>
+<span id="L525"><a href="#L525"> 525</a>   refine ⟨Q, i, p, hT, gbar, hibar, ?_⟩</span>
+<span id="L526"><a href="#L526"> 526</a>   calc</span>
+<span id="L527"><a href="#L527"> 527</a>     p ≫ (b ≫ g ≫ u) = (p ≫ b ≫ i) ≫ gbar ≫ u := by</span>
+<span id="L528"><a href="#L528"> 528</a>       rw [← hibar]</span>
+<span id="L529"><a href="#L529"> 529</a>       simp (config := { congrConsts := false }) only [Category.assoc]</span>
+<span id="L530"><a href="#L530"> 530</a>     _ = ((2 : ℕ) • 𝟙 Q) ≫ gbar ≫ u := by rw [hQ]</span>
+<span id="L531"><a href="#L531"> 531</a>     _ = gbar ≫ ((2 : ℕ) • u) := by</span>
+<span id="L532"><a href="#L532"> 532</a>       simp (config := { congrConsts := false }) only</span>
+<span id="L533"><a href="#L533"> 533</a>         [Preadditive.nsmul_comp, Preadditive.comp_nsmul, Category.id_comp] &lt;;&gt; rfl</span>
+<span id="L534"><a href="#L534"> 534</a> </span>
+<span id="L535"><a href="#L535"> 535</a> end ScalarToda</span>
+<span id="L536"><a href="#L536"> 536</a> </span>
+<span id="L537"><a href="#L537"> 537</a> /- a48 Symmetric.lean:4745–4894; actual same-object Moore/Toda construction. -/</span>
+<span id="L538"><a href="#L538"> 538</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L539"><a href="#L539"> 539</a> set_option maxHeartbeats 2000000 in</span>
+<span id="L540"><a href="#L540"> 540</a> private theorem secondary_symmetric_from_moore</span>
+<span id="L541"><a href="#L541"> 541</a>       (hs1 : ∀ a b : BiHom 1 0 (S_0_0 : SyntheticSpectrum), a ≠ 0 → b ≠ 0 → a = b)</span>
+<span id="L542"><a href="#L542"> 542</a>       (he : lambdaMultiply 2 eta ≠ 0)</span>
+<span id="L543"><a href="#L543"> 543</a>       (M : SyntheticSpectrum) (i : (S_0_0 : SyntheticSpectrum) ⟶ M)</span>
+<span id="L544"><a href="#L544"> 544</a>       (p : M ⟶ (S_0_0 : SyntheticSpectrum)⟦(1 : ℤ)⟧)</span>
+<span id="L545"><a href="#L545"> 545</a>       (ε : (S_0_0 : SyntheticSpectrum)⟦(1 : ℤ)⟧ ⟶ (S_0_0 : SyntheticSpectrum))</span>
+<span id="L546"><a href="#L546"> 546</a>       (hT : Triangle.mk ((2 : ℕ) • 𝟙 (S_0_0 : SyntheticSpectrum)) i p ∈ distTriang SyntheticSpectrum)</span>
+<span id="L547"><a href="#L547"> 547</a>       (hMoore : (2 : ℕ) • 𝟙 M = p ≫ ε ≫ i)</span>
+<span id="L548"><a href="#L548"> 548</a>       (hM : (2 : ℕ) • 𝟙 M ≠ 0) :</span>
+<span id="L549"><a href="#L549"> 549</a>       ∀ θ : BiHom 62 64 (S_0_0 : SyntheticSpectrum), θ + θ = 0 →</span>
+<span id="L550"><a href="#L550"> 550</a>         Route.TripleToda Route.syntheticTwo θ Route.syntheticTwo</span>
+<span id="L551"><a href="#L551"> 551</a>           (lambdaMultiply 2 (sphereProduct eta θ)) := by</span>
+<span id="L552"><a href="#L552"> 552</a>     let Syn := SyntheticSpectrum</span>
+<span id="L553"><a href="#L553"> 553</a>     have hproduct : ∀ θ : BiHom 62 64 (S_0_0 : Syn),</span>
+<span id="L554"><a href="#L554"> 554</a>         sphereProduct (lambdaMultiply 2 eta) θ = lambdaMultiply 2 (sphereProduct eta θ) :=</span>
+<span id="L555"><a href="#L555"> 555</a>       secondary_star_product model.quotients.coherence eta</span>
+<span id="L556"><a href="#L556"> 556</a>     let S := (S_0_0 : Syn)</span>
+<span id="L557"><a href="#L557"> 557</a>     let F := SyntheticCategory.biShift (Syn := Syn) (62,64)</span>
+<span id="L558"><a href="#L558"> 558</a>     let F0 := SyntheticCategory.biShift (Syn := Syn) (0,0)</span>
+<span id="L559"><a href="#L559"> 559</a>     let Fs := SyntheticCategory.biShift (Syn := Syn) (1,0)</span>
+<span id="L560"><a href="#L560"> 560</a>     let FF := SyntheticCategory.biShift_fullyFaithful (Syn := Syn) (62,64)</span>
+<span id="L561"><a href="#L561"> 561</a>     letI : F.Additive := model.exactness.shiftAdditive (62,64)</span>
+<span id="L562"><a href="#L562"> 562</a>     letI : F.CommShift ℤ := model.exactness.shiftCommShift (62,64)</span>
+<span id="L563"><a href="#L563"> 563</a>     letI : F.IsTriangulated := model.exactness.shiftExact (62,64)</span>
+<span id="L564"><a href="#L564"> 564</a>     let X := F.obj (F0.obj S)</span>
+<span id="L565"><a href="#L565"> 565</a>     let A := F.obj S</span>
+<span id="L566"><a href="#L566"> 566</a>     let Q := F.obj M</span>
+<span id="L567"><a href="#L567"> 567</a>     let e0 : F0.obj S ≅ S := SyntheticCategory.biShift_zero.app S</span>
+<span id="L568"><a href="#L568"> 568</a>     let j : X ≅ A := F.mapIso e0</span>
+<span id="L569"><a href="#L569"> 569</a>     let js : X⟦(1 : ℤ)⟧ ≅ A⟦(1 : ℤ)⟧ :=</span>
+<span id="L570"><a href="#L570"> 570</a>       (shiftFunctor Syn (1 : ℤ)).mapIso j</span>
+<span id="L571"><a href="#L571"> 571</a>     let γ : F.obj (S⟦(1 : ℤ)⟧) ≅ A⟦(1 : ℤ)⟧ :=</span>
+<span id="L572"><a href="#L572"> 572</a>       (F.commShiftIso (1 : ℤ)).app S</span>
+<span id="L573"><a href="#L573"> 573</a>     let f : X ⟶ A := F.map Route.syntheticTwo</span>
+<span id="L574"><a href="#L574"> 574</a>     let ir : A ⟶ Q := F.map i</span>
+<span id="L575"><a href="#L575"> 575</a>     let px : Q ⟶ X⟦(1 : ℤ)⟧ := F.map p ≫ γ.hom ≫ js.inv</span>
+<span id="L576"><a href="#L576"> 576</a>     let b : X⟦(1 : ℤ)⟧ ⟶ A := js.hom ≫ γ.inv ≫ F.map ε</span>
+<span id="L577"><a href="#L577"> 577</a>     let T := Triangle.mk ((2 : ℕ) • 𝟙 S) i p</span>
+<span id="L578"><a href="#L578"> 578</a>     let TX := Triangle.mk f ir px</span>
+<span id="L579"><a href="#L579"> 579</a>     have hTX : TX ∈ distTriang Syn := by</span>
+<span id="L580"><a href="#L580"> 580</a>       apply isomorphic_distinguished _ (F.map_distinguished T hT)</span>
+<span id="L581"><a href="#L581"> 581</a>       refine Triangle.isoMk TX (F.mapTriangle.obj T) j (Iso.refl _) (Iso.refl _)</span>
+<span id="L582"><a href="#L582"> 582</a>         ?_ ?_ ?_</span>
+<span id="L583"><a href="#L583"> 583</a>       · dsimp only [Syn, S, TX, T, f, j, e0, Route.syntheticTwo, Functor.mapTriangle]</span>
+<span id="L584"><a href="#L584"> 584</a>         dsimp only [Smn]</span>
+<span id="L585"><a href="#L585"> 585</a>         simp (config := { congrConsts := false }) [Functor.map_comp, F.map_id S]</span>
+<span id="L586"><a href="#L586"> 586</a>         erw [CategoryTheory.Functor.map_id, Category.comp_id]</span>
+<span id="L587"><a href="#L587"> 587</a>       · dsimp only [Syn, S, TX, T, ir, Functor.mapTriangle]</span>
+<span id="L588"><a href="#L588"> 588</a>         simp (config := { congrConsts := false })</span>
+<span id="L589"><a href="#L589"> 589</a>       · change (F.map p ≫ γ.hom ≫ js.inv) ≫ js.hom =</span>
+<span id="L590"><a href="#L590"> 590</a>           𝟙 Q ≫ (F.map p ≫ γ.hom)</span>
+<span id="L591"><a href="#L591"> 591</a>         simp (config := { congrConsts := false }) only [Syn, S, Category.assoc, Iso.inv_hom_id,</span>
+<span id="L592"><a href="#L592"> 592</a>           Category.comp_id, Category.id_comp]</span>
+<span id="L593"><a href="#L593"> 593</a>     have hQ : (2 : ℕ) • 𝟙 Q = px ≫ b ≫ ir := by</span>
+<span id="L594"><a href="#L594"> 594</a>       have h := congrArg F.map hMoore</span>
+<span id="L595"><a href="#L595"> 595</a>       simpa only [Syn, S, Functor.map_nsmul, CategoryTheory.Functor.map_id, Functor.map_comp,</span>
+<span id="L596"><a href="#L596"> 596</a>         Q, px, b, ir, Category.assoc, Iso.inv_hom_id_assoc,</span>
+<span id="L597"><a href="#L597"> 597</a>         Iso.hom_inv_id_assoc] using h</span>
+<span id="L598"><a href="#L598"> 598</a> </span>
+<span id="L599"><a href="#L599"> 599</a>     have hε : ε ≠ 0 := by</span>
+<span id="L600"><a href="#L600"> 600</a>       intro hz</span>
+<span id="L601"><a href="#L601"> 601</a>       apply hM</span>
+<span id="L602"><a href="#L602"> 602</a>       simpa only [Syn, S, hz, zero_comp, comp_zero] using hMoore</span>
+<span id="L603"><a href="#L603"> 603</a>     have hFε : F.map ε ≠ 0 := by</span>
+<span id="L604"><a href="#L604"> 604</a>       intro hz</span>
+<span id="L605"><a href="#L605"> 605</a>       apply hε</span>
+<span id="L606"><a href="#L606"> 606</a>       exact FF.map_injective (by simpa only [Syn, S, Functor.map_zero] using hz)</span>
+<span id="L607"><a href="#L607"> 607</a>     have hbne : b ≠ 0 := by</span>
+<span id="L608"><a href="#L608"> 608</a>       intro hz</span>
+<span id="L609"><a href="#L609"> 609</a>       apply hFε</span>
+<span id="L610"><a href="#L610"> 610</a>       apply (cancel_epi γ.inv).mp</span>
+<span id="L611"><a href="#L611"> 611</a>       apply (cancel_epi js.hom).mp</span>
+<span id="L612"><a href="#L612"> 612</a>       simpa only [Syn, S, b, Category.assoc, comp_zero] using hz</span>
+<span id="L613"><a href="#L613"> 613</a> </span>
+<span id="L614"><a href="#L614"> 614</a>     let t : Smn (Syn := Syn) 63 64 ≅ X⟦(1 : ℤ)⟧ :=</span>
+<span id="L615"><a href="#L615"> 615</a>       Route.tripleTodaSource 0 0 62 64 0 0</span>
+<span id="L616"><a href="#L616"> 616</a>     let μ : F.obj (Fs.obj S) ≅ Smn (Syn := Syn) 63 64 :=</span>
+<span id="L617"><a href="#L617"> 617</a>       (SyntheticCategory.biShift_comp (1,0) (62,64)).app S</span>
+<span id="L618"><a href="#L618"> 618</a>     let κ : F.obj (Fs.obj S) ≅ X⟦(1 : ℤ)⟧ := μ ≪≫ t</span>
+<span id="L619"><a href="#L619"> 619</a>     let e : BiHom 1 0 S := lambdaMultiply 2 eta</span>
+<span id="L620"><a href="#L620"> 620</a>     let σ : Smn (Syn := Syn) 63 64 ⟶ A := μ.inv ≫ F.map e</span>
+<span id="L621"><a href="#L621"> 621</a>     let b0 : BiHom 1 0 S := FF.preimage (κ.hom ≫ b)</span>
+<span id="L622"><a href="#L622"> 622</a>     have hb0map : F.map b0 = κ.hom ≫ b := FF.map_preimage _</span>
+<span id="L623"><a href="#L623"> 623</a>     have hb0ne : b0 ≠ 0 := by</span>
+<span id="L624"><a href="#L624"> 624</a>       intro hz</span>
+<span id="L625"><a href="#L625"> 625</a>       apply hbne</span>
+<span id="L626"><a href="#L626"> 626</a>       apply (cancel_epi κ.hom).mp</span>
+<span id="L627"><a href="#L627"> 627</a>       have hh := hb0map.symm</span>
+<span id="L628"><a href="#L628"> 628</a>       simpa only [Syn, S, hz, Functor.map_zero, comp_zero] using hh</span>
+<span id="L629"><a href="#L629"> 629</a>     have hb0 : b0 = e := hs1 b0 e hb0ne he</span>
+<span id="L630"><a href="#L630"> 630</a>     have hb : b = t.inv ≫ σ := by</span>
+<span id="L631"><a href="#L631"> 631</a>       apply (cancel_epi κ.hom).mp</span>
+<span id="L632"><a href="#L632"> 632</a>       rw [← hb0map, hb0]</span>
+<span id="L633"><a href="#L633"> 633</a>       simp (config := { congrConsts := false }) only [Syn, S, κ, σ, Iso.trans_hom, Category.assoc,</span>
+<span id="L634"><a href="#L634"> 634</a>         Iso.hom_inv_id_assoc]</span>
+<span id="L635"><a href="#L635"> 635</a> </span>
+<span id="L636"><a href="#L636"> 636</a>     intro θ hθ</span>
+<span id="L637"><a href="#L637"> 637</a>     let Z := F0.obj S</span>
+<span id="L638"><a href="#L638"> 638</a>     let u : Z ⟶ S := e0.hom</span>
+<span id="L639"><a href="#L639"> 639</a>     let g : A ⟶ Z :=</span>
+<span id="L640"><a href="#L640"> 640</a>       (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫ F0.map θ</span>
+<span id="L641"><a href="#L641"> 641</a>     have hright :</span>
+<span id="L642"><a href="#L642"> 642</a>         (SyntheticCategory.biShift_comp (62,64) (0,0)).hom.app S =</span>
+<span id="L643"><a href="#L643"> 643</a>           SyntheticCategory.biShift_zero.hom.app A := by</span>
+<span id="L644"><a href="#L644"> 644</a>       have hh := model.quotients.coherence.right_unit (62,64) S</span>
+<span id="L645"><a href="#L645"> 645</a>       simp (config := { congrConsts := false }) only [biShiftAddIso, Iso.trans_hom, NatTrans.comp_app,</span>
+<span id="L646"><a href="#L646"> 646</a>         eqToIso.hom, eqToHom_app, eqToHom_refl, Category.comp_id] at hh</span>
+<span id="L647"><a href="#L647"> 647</a>       exact hh</span>
+<span id="L648"><a href="#L648"> 648</a>     have hgu : g ≫ u = θ := by</span>
+<span id="L649"><a href="#L649"> 649</a>       calc</span>
+<span id="L650"><a href="#L650"> 650</a>         g ≫ u = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L651"><a href="#L651"> 651</a>             (F0.map θ ≫ SyntheticCategory.biShift_zero.hom.app S) :=</span>
+<span id="L652"><a href="#L652"> 652</a>           Category.assoc _ _ _</span>
+<span id="L653"><a href="#L653"> 653</a>         _ = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L654"><a href="#L654"> 654</a>             (SyntheticCategory.biShift_zero.hom.app A ≫ θ) :=</span>
+<span id="L655"><a href="#L655"> 655</a>           congrArg (fun a : F0.obj A ⟶ S =&gt;</span>
+<span id="L656"><a href="#L656"> 656</a>             (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫ a)</span>
+<span id="L657"><a href="#L657"> 657</a>             (SyntheticCategory.biShift_zero.hom.naturality θ)</span>
+<span id="L658"><a href="#L658"> 658</a>         _ = (SyntheticCategory.biShift_comp (62,64) (0,0)).inv.app S ≫</span>
+<span id="L659"><a href="#L659"> 659</a>             ((SyntheticCategory.biShift_comp (62,64) (0,0)).hom.app S ≫ θ) := by</span>
+<span id="L660"><a href="#L660"> 660</a>           rw [hright]</span>
+<span id="L661"><a href="#L661"> 661</a>         _ = θ := ((SyntheticCategory.biShift_comp (62,64) (0,0)).app S).inv_hom_id_assoc θ</span>
+<span id="L662"><a href="#L662"> 662</a>     have hg2 : (2 : ℕ) • g = 0 := by</span>
+<span id="L663"><a href="#L663"> 663</a>       apply (cancel_mono u).mp</span>
+<span id="L664"><a href="#L664"> 664</a>       simpa only [Syn, S, Preadditive.nsmul_comp, hgu, two_nsmul, Preadditive.add_comp, zero_comp] using hθ</span>
+<span id="L665"><a href="#L665"> 665</a>     have hf : f = (2 : ℕ) • j.hom := by</span>
+<span id="L666"><a href="#L666"> 666</a>       dsimp only [Syn, S, f, Route.syntheticTwo, j, e0]</span>
+<span id="L667"><a href="#L667"> 667</a>       simp (config := { congrConsts := false }) only</span>
+<span id="L668"><a href="#L668"> 668</a>         [Functor.map_comp, Functor.map_nsmul, CategoryTheory.Functor.map_id,</span>
+<span id="L669"><a href="#L669"> 669</a>           Preadditive.comp_nsmul, Category.comp_id, Functor.mapIso_hom, Iso.app_hom]</span>
+<span id="L670"><a href="#L670"> 670</a>     have hfg : f ≫ g = 0 := by</span>
+<span id="L671"><a href="#L671"> 671</a>       rw [hf, Preadditive.nsmul_comp, ← Preadditive.comp_nsmul, hg2, comp_zero]</span>
+<span id="L672"><a href="#L672"> 672</a>     obtain ⟨gbar, hgbar⟩ := TX.yoneda_exact₂ hTX g hfg</span>
+<span id="L673"><a href="#L673"> 673</a>     change g = ir ≫ gbar at hgbar</span>
+<span id="L674"><a href="#L674"> 674</a>     have hgbar&#x27; : ir ≫ gbar = g := hgbar.symm</span>
+<span id="L675"><a href="#L675"> 675</a>     have hbar : gbar ≫ Route.syntheticTwo = px ≫ t.inv ≫ sphereProduct e θ := by</span>
+<span id="L676"><a href="#L676"> 676</a>       calc</span>
+<span id="L677"><a href="#L677"> 677</a>         gbar ≫ Route.syntheticTwo = ((2 : ℕ) • 𝟙 Q) ≫ gbar ≫ u := by</span>
+<span id="L678"><a href="#L678"> 678</a>           dsimp only [Syn, S, Route.syntheticTwo, u, e0]</span>
+<span id="L679"><a href="#L679"> 679</a>           simp (config := { congrConsts := false }) only</span>
+<span id="L680"><a href="#L680"> 680</a>             [Iso.app_hom, Category.assoc, Preadditive.comp_nsmul,</span>
+<span id="L681"><a href="#L681"> 681</a>               Preadditive.nsmul_comp, Category.id_comp, Category.comp_id]</span>
+<span id="L682"><a href="#L682"> 682</a>         _ = px ≫ b ≫ ir ≫ gbar ≫ u := by</span>
+<span id="L683"><a href="#L683"> 683</a>           rw [hQ]</span>
+<span id="L684"><a href="#L684"> 684</a>           simp (config := { congrConsts := false }) only [Syn, S, Category.assoc]</span>
+<span id="L685"><a href="#L685"> 685</a>         _ = px ≫ b ≫ θ := by</span>
+<span id="L686"><a href="#L686"> 686</a>           rw [← Category.assoc ir gbar u, hgbar&#x27;, hgu]</span>
+<span id="L687"><a href="#L687"> 687</a>         _ = px ≫ t.inv ≫ sphereProduct e θ := by</span>
+<span id="L688"><a href="#L688"> 688</a>           rw [hb]</span>
+<span id="L689"><a href="#L689"> 689</a>           dsimp only [Syn, S, F, σ, sphereProduct, μ]</span>
+<span id="L690"><a href="#L690"> 690</a>           simp (config := { congrConsts := false }) only [Iso.app_inv, Category.assoc]</span>
+<span id="L691"><a href="#L691"> 691</a>     have hv : sphereProduct e θ = lambdaMultiply 2 (sphereProduct eta θ) :=</span>
+<span id="L692"><a href="#L692"> 692</a>       hproduct θ</span>
+<span id="L693"><a href="#L693"> 693</a>     rw [hv] at hbar</span>
+<span id="L694"><a href="#L694"> 694</a>     change Toda.Relation</span>
+<span id="L695"><a href="#L695"> 695</a>       (t.inv ≫ lambdaMultiply 2 (sphereProduct eta θ)) f g Route.syntheticTwo</span>
+<span id="L696"><a href="#L696"> 696</a>     refine ⟨Q, ir, px, hTX, gbar, hgbar&#x27;, ?_⟩</span>
+<span id="L697"><a href="#L697"> 697</a>     simpa only [Syn, S, Category.assoc] using hbar.symm</span>
+<span id="L698"><a href="#L698"> 698</a> </span>
+<span id="L699"><a href="#L699"> 699</a> /-- Low Toda comparison used at MainPaper/main.tex:2498.</span>
+<span id="L700"><a href="#L700"> 700</a> This is the original pending secondary-operation comparison. -/</span>
+<span id="L701"><a href="#L701"> 701</a> public theorem toda_eta_squared :</span>
+<span id="L702"><a href="#L702"> 702</a>     Route.TripleToda syntheticH0 eta syntheticH0</span>
+<span id="L703"><a href="#L703"> 703</a>       (sphereProduct (m := 1) (n := 2) (k := 1) (l := 2) eta eta) := by</span>
+<span id="L704"><a href="#L704"> 704</a>   sorry</span>
+<span id="L705"><a href="#L705"> 705</a> </span>
+<span id="L706"><a href="#L706"> 706</a> /-- The symmetric comparison retains the synthetic λ² normalization from</span>
+<span id="L707"><a href="#L707"> 707</a> MainPaper/main.tex:2550-2551 and applies to each actual order-two theta. -/</span>
+<span id="L708"><a href="#L708"> 708</a> public theorem toda_symmetric</span>
+<span id="L709"><a href="#L709"> 709</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : theta + theta = 0) :</span>
+<span id="L710"><a href="#L710"> 710</a>     Route.TripleToda Route.syntheticTwo theta Route.syntheticTwo</span>
+<span id="L711"><a href="#L711"> 711</a>       (lambdaMultiply 2 (sphereProduct eta theta)) := by</span>
+<span id="L712"><a href="#L712"> 712</a>   sorry</span>
+<span id="L713"><a href="#L713"> 713</a> </span>
+<span id="L714"><a href="#L714"> 714</a> end</span>
+<span id="L715"><a href="#L715"> 715</a> end KIP126.Literature.Standard</span></pre>

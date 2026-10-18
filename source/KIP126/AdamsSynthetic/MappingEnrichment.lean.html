@@ -1,0 +1,88 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/MappingEnrichment.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/MappingEnrichment.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.MappingComposition</span>
+<span id="L4"><a href="#L4">   4</a> public import Mathlib.CategoryTheory.Enriched.Basic</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-! Explicit enrichment on the full converging-sequence category. Its Hom</span>
+<span id="L9"><a href="#L9">   9</a> objects and composition agree with the actual mapping systems. Unit data</span>
+<span id="L10"><a href="#L10">  10</a> are bound on finite pages, E∞ and the actual abutment as well. This repairs</span>
+<span id="L11"><a href="#L11">  11</a> the older convergence-only ambient category, which forgot all finite pages.</span>
+<span id="L12"><a href="#L12">  12</a> Source: KIPBase `multiplicativeSS/AdamsEnriched.lean`, baseline 5aa845241533. -/</span>
+<span id="L13"><a href="#L13">  13</a> namespace KIP126.AdamsSynthetic</span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory CategoryTheory.MonoidalCategory</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.StableHomotopy KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> universe u v</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L19"><a href="#L19">  19</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L20"><a href="#L20">  20</a>   {A : ClassicalAdamsFamily C} {B : ClosedSymmetricTensorTriangulated C}</span>
+<span id="L21"><a href="#L21">  21</a>   {P : ClassicalTowerPresentation unit A} {scope : C → Prop}</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- A supplied enrichment, rather than a globally postulated one. Every Hom</span>
+<span id="L24"><a href="#L24">  24</a> is this system&#x27;s actual converging mapping sequence; its full morphisms see</span>
+<span id="L25"><a href="#L25">  25</a> all pages and the same E∞ comparison. -/</span>
+<span id="L26"><a href="#L26">  26</a> public structure MappingEnrichment {S : MappingSpectrumSystem B P scope}</span>
+<span id="L27"><a href="#L27">  27</a>     (M : MappingComposition S) where</span>
+<span id="L28"><a href="#L28">  28</a>   monoidal : MonoidalCategory (ConvergingSequence.{0,v} ℤ)</span>
+<span id="L29"><a href="#L29">  29</a>   enriched : @EnrichedCategory (ConvergingSequence.{0,v} ℤ) _ monoidal (MappingObject scope)</span>
+<span id="L30"><a href="#L30">  30</a>   hom_eq : ∀ X Y : MappingObject scope, enriched.Hom X Y = S.hom X Y</span>
+<span id="L31"><a href="#L31">  31</a>   /-- Elementary tensor products for the composable mapping systems. These</span>
+<span id="L32"><a href="#L32">  32</a>   are requested only for these systems, whose differential degrees agree;</span>
+<span id="L33"><a href="#L33">  33</a>   arbitrary ambient converging sequences need not have compatible degrees. -/</span>
+<span id="L34"><a href="#L34">  34</a>   tensorPairing : letI := monoidal</span>
+<span id="L35"><a href="#L35">  35</a>     ∀ X Y Z : MappingObject scope,</span>
+<span id="L36"><a href="#L36">  36</a>       ConvergingSSPairing (S.hom X Y).underlying (S.hom Y Z).underlying</span>
+<span id="L37"><a href="#L37">  37</a>         ((S.hom X Y ⊗ S.hom Y Z).underlying)</span>
+<span id="L38"><a href="#L38">  38</a>   /-- Actual enriched composition takes elementary page tensors to the</span>
+<span id="L39"><a href="#L39">  39</a>   specified page products. No arbitrary equivalence of pairing records is</span>
+<span id="L40"><a href="#L40">  40</a>   used to give composition its mathematical meaning. -/</span>
+<span id="L41"><a href="#L41">  41</a>   composition_page : letI := monoidal</span>
+<span id="L42"><a href="#L42">  42</a>     ∀ (X Y Z : MappingObject scope) (r : ℤ) (i j : ℤ × ℤ)</span>
+<span id="L43"><a href="#L43">  43</a>       (x : (S.hom X Y).underlying.E.Page r i)</span>
+<span id="L44"><a href="#L44">  44</a>       (y : (S.hom Y Z).underlying.E.Page r j),</span>
+<span id="L45"><a href="#L45">  45</a>       let f : (S.hom X Y ⊗ S.hom Y Z) ⟶ S.hom X Z :=</span>
+<span id="L46"><a href="#L46">  46</a>         eqToHom (congrArg₂ (fun A B : ConvergingSequence.{0,v} ℤ =&gt; A ⊗ B)</span>
+<span id="L47"><a href="#L47">  47</a>           (hom_eq X Y).symm (hom_eq Y Z).symm) ≫ enriched.comp X Y Z ≫</span>
+<span id="L48"><a href="#L48">  48</a>             eqToHom (hom_eq X Z)</span>
+<span id="L49"><a href="#L49">  49</a>       f.sequence.pageMap r (i+j) ((tensorPairing X Y Z).ssPairing.pair r i j x y) =</span>
+<span id="L50"><a href="#L50">  50</a>         (M.pairing X Y Z).ssPairing.pair r i j x y</span>
+<span id="L51"><a href="#L51">  51</a>   composition_eInfty : letI := monoidal</span>
+<span id="L52"><a href="#L52">  52</a>     ∀ (X Y Z : MappingObject scope) (i j : ℤ × ℤ)</span>
+<span id="L53"><a href="#L53">  53</a>       (x : ((S.hom X Y).underlying.E.ssData i).eInfty)</span>
+<span id="L54"><a href="#L54">  54</a>       (y : ((S.hom Y Z).underlying.E.ssData j).eInfty),</span>
+<span id="L55"><a href="#L55">  55</a>       let f : (S.hom X Y ⊗ S.hom Y Z) ⟶ S.hom X Z :=</span>
+<span id="L56"><a href="#L56">  56</a>         eqToHom (congrArg₂ (fun A B : ConvergingSequence.{0,v} ℤ =&gt; A ⊗ B)</span>
+<span id="L57"><a href="#L57">  57</a>           (hom_eq X Y).symm (hom_eq Y Z).symm) ≫ enriched.comp X Y Z ≫</span>
+<span id="L58"><a href="#L58">  58</a>             eqToHom (hom_eq X Z)</span>
+<span id="L59"><a href="#L59">  59</a>       f.sequence.eInftyMap (i+j) ((tensorPairing X Y Z).eInftyPair i j x y) =</span>
+<span id="L60"><a href="#L60">  60</a>         (M.pairing X Y Z).eInftyPair i j x y</span>
+<span id="L61"><a href="#L61">  61</a>   composition_abutment : letI := monoidal</span>
+<span id="L62"><a href="#L62">  62</a>     ∀ (X Y Z : MappingObject scope) (i j : ℤ)</span>
+<span id="L63"><a href="#L63">  63</a>       (x : (S.hom X Y).underlying.A i) (y : (S.hom Y Z).underlying.A j),</span>
+<span id="L64"><a href="#L64">  64</a>       let f : (S.hom X Y ⊗ S.hom Y Z) ⟶ S.hom X Z :=</span>
+<span id="L65"><a href="#L65">  65</a>         eqToHom (congrArg₂ (fun A B : ConvergingSequence.{0,v} ℤ =&gt; A ⊗ B)</span>
+<span id="L66"><a href="#L66">  66</a>           (hom_eq X Y).symm (hom_eq Y Z).symm) ≫ enriched.comp X Y Z ≫</span>
+<span id="L67"><a href="#L67">  67</a>             eqToHom (hom_eq X Z)</span>
+<span id="L68"><a href="#L68">  68</a>       f.convergence.aMap (i+j) ((tensorPairing X Y Z).abutmentPair i j x y) =</span>
+<span id="L69"><a href="#L69">  69</a>         (M.pairing X Y Z).abutmentPair i j x y</span>
+<span id="L70"><a href="#L70">  70</a>   unit_reindex : monoidal.tensorUnit.underlying.conv.reindex (0,0) = (0,0)</span>
+<span id="L71"><a href="#L71">  71</a>   unit_data : ConvergingSSUnit monoidal.tensorUnit.underlying unit_reindex</span>
+<span id="L72"><a href="#L72">  72</a>   identity_page : letI := monoidal</span>
+<span id="L73"><a href="#L73">  73</a>     ∀ (X : MappingObject scope) (r : ℤ),</span>
+<span id="L74"><a href="#L74">  74</a>       let f : 𝟙_ (ConvergingSequence.{0,v} ℤ) ⟶ S.hom X X :=</span>
+<span id="L75"><a href="#L75">  75</a>         enriched.id X ≫ eqToHom (hom_eq X X)</span>
+<span id="L76"><a href="#L76">  76</a>       f.sequence.pageMap r (0,0) (unit_data.page r) = (M.identity X).page r</span>
+<span id="L77"><a href="#L77">  77</a>   identity_eInfty : letI := monoidal</span>
+<span id="L78"><a href="#L78">  78</a>     ∀ X : MappingObject scope,</span>
+<span id="L79"><a href="#L79">  79</a>       let f : 𝟙_ (ConvergingSequence.{0,v} ℤ) ⟶ S.hom X X :=</span>
+<span id="L80"><a href="#L80">  80</a>         enriched.id X ≫ eqToHom (hom_eq X X)</span>
+<span id="L81"><a href="#L81">  81</a>       f.sequence.eInftyMap (0,0) unit_data.eInfty = (M.identity X).eInfty</span>
+<span id="L82"><a href="#L82">  82</a>   identity_abutment : letI := monoidal</span>
+<span id="L83"><a href="#L83">  83</a>     ∀ X : MappingObject scope,</span>
+<span id="L84"><a href="#L84">  84</a>       let f : 𝟙_ (ConvergingSequence.{0,v} ℤ) ⟶ S.hom X X :=</span>
+<span id="L85"><a href="#L85">  85</a>         enriched.id X ≫ eqToHom (hom_eq X X)</span>
+<span id="L86"><a href="#L86">  86</a>       f.convergence.aMap 0 unit_data.abutment = (M.identity X).abutment</span>
+<span id="L87"><a href="#L87">  87</a> end</span>
+<span id="L88"><a href="#L88">  88</a> end KIP126.AdamsSynthetic</span></pre>

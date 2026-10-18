@@ -1,0 +1,78 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NormalizedNu.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NormalizedNu.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Main.SectionSeven.Predicates</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Actual ν-bottom equations from the Cν rigidity argument.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from Kervaire126 bbac1fc05843,</span>
+<span id="L7"><a href="#L7">   7</a> Main/Solution/Route/Section7/CnuRigidity.lean:48-127 (MIT; see the retained source LICENSE).</span>
+<span id="L8"><a href="#L8">   8</a> The selected triangle is supplied by Literature; the zero composites and</span>
+<span id="L9"><a href="#L9">   9</a> λν multiple equation below are proved here from that callable theorem. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Main.SectionSeven</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.Standard</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.Literature</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> private def hopfNu : BiHom 3 4 (S_0_0 : SyntheticSpectrum) :=</span>
+<span id="L21"><a href="#L21">  21</a>   normalizedNu model Standard.nuCofiber_nu_exponent</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> private def nuBottom : (S_0_0 : SyntheticSpectrum) ⟶</span>
+<span id="L24"><a href="#L24">  24</a>     model.nu.functor.obj (HasFunctorialCofiber.cofib model.auxiliary.nuMap) :=</span>
+<span id="L25"><a href="#L25">  25</a>   model.nu.unitIso.inv ≫</span>
+<span id="L26"><a href="#L26">  26</a>     model.nu.functor.map (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> private def negativeZeroIso (k : ℕ) (hk : k = 0) (X : SyntheticSpectrum) :</span>
+<span id="L29"><a href="#L29">  29</a>     (SyntheticCategory.biShift (0,-(k:ℤ))).obj X ≅ X := by</span>
+<span id="L30"><a href="#L30">  30</a>   subst k</span>
+<span id="L31"><a href="#L31">  31</a>   exact SyntheticCategory.biShift_zero.app X</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> private theorem negative_lift_zero_factorization {X Y : SyntheticSpectrum}</span>
+<span id="L34"><a href="#L34">  34</a>     (k : ℕ) (hk : k=0)</span>
+<span id="L35"><a href="#L35">  35</a>     (f : (SyntheticCategory.biShift (0,(k:ℤ))).obj X ⟶ Y)</span>
+<span id="L36"><a href="#L36">  36</a>     (g : X ⟶ Y) (h : lambdaToPositivePow k X ≫ f = g) :</span>
+<span id="L37"><a href="#L37">  37</a>     negativeLift k f ≫ (negativeZeroIso k hk Y).hom = g := by</span>
+<span id="L38"><a href="#L38">  38</a>   subst k</span>
+<span id="L39"><a href="#L39">  39</a>   rw [← h]</span>
+<span id="L40"><a href="#L40">  40</a>   dsimp only [negativeLift, negativeZeroIso, lambdaToPositivePow, lambdaPow]</span>
+<span id="L41"><a href="#L41">  41</a>   simp only [eqToHom_refl, Category.id_comp, Iso.app_hom, Category.assoc]</span>
+<span id="L42"><a href="#L42">  42</a>   erw [SyntheticCategory.biShift_zero.hom.naturality]</span>
+<span id="L43"><a href="#L43">  43</a>   rfl</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> private theorem normalized_nu_bottom_zero : hopfNu ≫ nuBottom = 0 := by</span>
+<span id="L46"><a href="#L46">  46</a>   have hz := comp_distTriang_mor_zero₁₂ _</span>
+<span id="L47"><a href="#L47">  47</a>     (Standard.nuCofiber_triangle Standard.nuCofiber_exponent_sum)</span>
+<span id="L48"><a href="#L48">  48</a>   change (model.normalizedMap (.shift 3 .sphere) .sphere model.auxiliary.nuMap).map ≫</span>
+<span id="L49"><a href="#L49">  49</a>     negativeLift (normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L50"><a href="#L50">  50</a>       (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).map = 0 at hz</span>
+<span id="L51"><a href="#L51">  51</a>   have hb := negative_lift_zero_factorization</span>
+<span id="L52"><a href="#L52">  52</a>     (normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L53"><a href="#L53">  53</a>     Standard.nuCofiber_bottom_exponent</span>
+<span id="L54"><a href="#L54">  54</a>     (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).map</span>
+<span id="L55"><a href="#L55">  55</a>     (model.nu.functor.map model.auxiliary.nuRouteTriangle.g)</span>
+<span id="L56"><a href="#L56">  56</a>     (model.normalizedMap .sphere .nuCofiber model.auxiliary.nuRouteTriangle.g).factorization</span>
+<span id="L57"><a href="#L57">  57</a>   have hzero : (model.normalizedMap (.shift 3 .sphere) .sphere model.auxiliary.nuMap).map ≫</span>
+<span id="L58"><a href="#L58">  58</a>       model.nu.functor.map (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) = 0 := by</span>
+<span id="L59"><a href="#L59">  59</a>     erw [← hb, ← Category.assoc, hz, zero_comp]</span>
+<span id="L60"><a href="#L60">  60</a>   dsimp only [hopfNu, normalizedNu, nuBottom]</span>
+<span id="L61"><a href="#L61">  61</a>   simp only [Category.assoc, Iso.hom_inv_id_assoc]</span>
+<span id="L62"><a href="#L62">  62</a>   rw [hzero, comp_zero]</span>
+<span id="L63"><a href="#L63">  63</a> </span>
+<span id="L64"><a href="#L64">  64</a> private theorem lambda_nu_multiple_bottom_zero</span>
+<span id="L65"><a href="#L65">  65</a>     (a : BiHom 122 132 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L66"><a href="#L66">  66</a>     sphereProduct (lambdaMultiply 1 hopfNu) a ≫ nuBottom = 0 := by</span>
+<span id="L67"><a href="#L67">  67</a>   have hlam : lambdaMultiply 1 hopfNu ≫ nuBottom = 0 := by</span>
+<span id="L68"><a href="#L68">  68</a>     dsimp only [lambdaMultiply]</span>
+<span id="L69"><a href="#L69">  69</a>     simp only [Category.assoc]</span>
+<span id="L70"><a href="#L70">  70</a>     rw [normalized_nu_bottom_zero, comp_zero, comp_zero, comp_zero]</span>
+<span id="L71"><a href="#L71">  71</a>   have hc := model.sphereProductCommutative 3 3 122 132 (lambdaMultiply 1 hopfNu) a</span>
+<span id="L72"><a href="#L72">  72</a>   norm_num [homotopyRegrade] at hc</span>
+<span id="L73"><a href="#L73">  73</a>   rw [hc]</span>
+<span id="L74"><a href="#L74">  74</a>   dsimp only [sphereProduct]</span>
+<span id="L75"><a href="#L75">  75</a>   simp only [Category.assoc, hlam, comp_zero]</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> end</span>
+<span id="L78"><a href="#L78">  78</a> end KIP126.Main.SectionSeven</span></pre>

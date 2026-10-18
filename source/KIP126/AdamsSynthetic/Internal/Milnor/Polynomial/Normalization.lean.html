@@ -1,0 +1,288 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Internal/Milnor/Polynomial/Normalization.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Internal/Milnor/Polynomial/Normalization.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-</span>
+<span id="L4"><a href="#L4">   4</a> Copyright (c) 2026 Jiashuo Zhang and KIP126 contributors.</span>
+<span id="L5"><a href="#L5">   5</a> Released under the MIT license; see LICENSE.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from SII-MATH/Kervaire126, commit</span>
+<span id="L7"><a href="#L7">   7</a> 8cb35dad5f75ecc095e474df6c765baec9b175bf.</span>
+<span id="L8"><a href="#L8">   8</a> -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Grading</span>
+<span id="L11"><a href="#L11">  11</a> import Mathlib.Algebra.CharP.Two</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> @[expose] section</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> /-! Concrete normalized Milnor cobar construction.</span>
+<span id="L16"><a href="#L16">  16</a> Adapted from SII-MATH/Kervaire126 (MIT), develop commit</span>
+<span id="L17"><a href="#L17">  17</a> 8cb35dad5f75ecc095e474df6c765baec9b175bf.</span>
+<span id="L18"><a href="#L18">  18</a> These internal definitions have no chosen Adams page, named Ext class,</span>
+<span id="L19"><a href="#L19">  19</a> or computation data as input. -/</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> namespace KIP126.AdamsSynthetic.Milnor</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Polynomial/Normalization/Proofs.lean. -/</span>
+<span id="L24"><a href="#L24">  24</a> noncomputable section</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> open MvPolynomial</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> /-- Augmenting a renamed slot agrees with renaming after augmentation. -/</span>
+<span id="L29"><a href="#L29">  29</a> theorem augmentSlot_rename {s s&#x27; : ℕ} (f : Fin s → Fin s&#x27;)</span>
+<span id="L30"><a href="#L30">  30</a>     (hf : Function.Injective f) (slot : Fin s) (x : TensorPower s) :</span>
+<span id="L31"><a href="#L31">  31</a>     augmentSlot (f slot) (rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2)) x) =</span>
+<span id="L32"><a href="#L32">  32</a>       rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2)) (augmentSlot slot x) := by</span>
+<span id="L33"><a href="#L33">  33</a>   have h : (augmentSlot (f slot)).comp (rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2))) =</span>
+<span id="L34"><a href="#L34">  34</a>       (rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2))).comp (augmentSlot slot) := by</span>
+<span id="L35"><a href="#L35">  35</a>     ext a : 1</span>
+<span id="L36"><a href="#L36">  36</a>     by_cases ha : a.1 = slot &lt;;&gt; simp [augmentSlot, hf.eq_iff, ha]</span>
+<span id="L37"><a href="#L37">  37</a>   exact DFunLike.congr_fun h x</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> @[simp] theorem augmentSlot_xi_same {s : ℕ} (slot : Fin s) (j : ℕ) :</span>
+<span id="L40"><a href="#L40">  40</a>     augmentSlot slot (xi slot j) = if j = 0 then 1 else 0 := by</span>
+<span id="L41"><a href="#L41">  41</a>   cases j &lt;;&gt; simp [xi, augmentSlot]</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> theorem augmentSlot_xi_of_ne {s : ℕ} (slot other : Fin s) (h : other ≠ slot) (j : ℕ) :</span>
+<span id="L44"><a href="#L44">  44</a>     augmentSlot slot (xi other j) = xi other j := by</span>
+<span id="L45"><a href="#L45">  45</a>   cases j &lt;;&gt; simp [xi, augmentSlot, h]</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> /-- The left counit identity on a Milnor generator. -/</span>
+<span id="L48"><a href="#L48">  48</a> theorem augmentSlot_coproduct_left {s : ℕ} (slot : Fin s) (j : ℕ) :</span>
+<span id="L49"><a href="#L49">  49</a>     augmentSlot slot.castSucc (coproductGenerator slot j) = X (slot.succ, j) := by</span>
+<span id="L50"><a href="#L50">  50</a>   have hne : slot.succ ≠ slot.castSucc := by</span>
+<span id="L51"><a href="#L51">  51</a>     intro h</span>
+<span id="L52"><a href="#L52">  52</a>     have := congrArg Fin.val h</span>
+<span id="L53"><a href="#L53">  53</a>     simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L54"><a href="#L54">  54</a>     omega</span>
+<span id="L55"><a href="#L55">  55</a>   simp only [coproductGenerator, map_sum, map_mul, map_pow,</span>
+<span id="L56"><a href="#L56">  56</a>     augmentSlot_xi_same, augmentSlot_xi_of_ne _ _ hne]</span>
+<span id="L57"><a href="#L57">  57</a>   rw [Finset.sum_eq_single (j + 1)]</span>
+<span id="L58"><a href="#L58">  58</a>   · simp [xi]</span>
+<span id="L59"><a href="#L59">  59</a>   · intro i hi hij</span>
+<span id="L60"><a href="#L60">  60</a>     have hi&#x27; : i &lt; j + 1 := by have := Finset.mem_range.mp hi; omega</span>
+<span id="L61"><a href="#L61">  61</a>     simp [Nat.sub_ne_zero_of_lt hi&#x27;]</span>
+<span id="L62"><a href="#L62">  62</a>   · intro h</span>
+<span id="L63"><a href="#L63">  63</a>     exact (h (Finset.mem_range.mpr (by omega))).elim</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> /-- The right counit identity on a Milnor generator. -/</span>
+<span id="L66"><a href="#L66">  66</a> theorem augmentSlot_coproduct_right {s : ℕ} (slot : Fin s) (j : ℕ) :</span>
+<span id="L67"><a href="#L67">  67</a>     augmentSlot slot.succ (coproductGenerator slot j) = X (slot.castSucc, j) := by</span>
+<span id="L68"><a href="#L68">  68</a>   have hne : slot.castSucc ≠ slot.succ := by</span>
+<span id="L69"><a href="#L69">  69</a>     intro h</span>
+<span id="L70"><a href="#L70">  70</a>     have := congrArg Fin.val h</span>
+<span id="L71"><a href="#L71">  71</a>     simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L72"><a href="#L72">  72</a>     omega</span>
+<span id="L73"><a href="#L73">  73</a>   simp only [coproductGenerator, map_sum, map_mul, map_pow,</span>
+<span id="L74"><a href="#L74">  74</a>     augmentSlot_xi_same, augmentSlot_xi_of_ne _ _ hne]</span>
+<span id="L75"><a href="#L75">  75</a>   rw [Finset.sum_eq_single 0]</span>
+<span id="L76"><a href="#L76">  76</a>   · simp [xi]</span>
+<span id="L77"><a href="#L77">  77</a>   · intro i hi hi0</span>
+<span id="L78"><a href="#L78">  78</a>     simp [hi0]</span>
+<span id="L79"><a href="#L79">  79</a>   · intro h</span>
+<span id="L80"><a href="#L80">  80</a>     exact (h (Finset.mem_range.mpr (by omega))).elim</span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> /-- Augmenting a disjoint slot leaves a coproduct generator unchanged. -/</span>
+<span id="L83"><a href="#L83">  83</a> theorem augmentSlot_coproduct_other {s : ℕ} (slot : Fin s) (other : Fin (s + 1))</span>
+<span id="L84"><a href="#L84">  84</a>     (h₁ : slot.castSucc ≠ other) (h₂ : slot.succ ≠ other) (j : ℕ) :</span>
+<span id="L85"><a href="#L85">  85</a>     augmentSlot other (coproductGenerator slot j) = coproductGenerator slot j := by</span>
+<span id="L86"><a href="#L86">  86</a>   simp only [coproductGenerator, map_sum, map_mul, map_pow,</span>
+<span id="L87"><a href="#L87">  87</a>     augmentSlot_xi_of_ne _ _ h₁, augmentSlot_xi_of_ne _ _ h₂]</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> /-- Left augmentation of a split slot inserts a unit in that slot. -/</span>
+<span id="L90"><a href="#L90">  90</a> theorem augmentSlot_splitSlot_left {s : ℕ} (slot : Fin s) (x : TensorPower s) :</span>
+<span id="L91"><a href="#L91">  91</a>     augmentSlot slot.castSucc (splitSlot slot x) =</span>
+<span id="L92"><a href="#L92">  92</a>       rename (fun a : Fin s × ℕ =&gt; (slot.castSucc.succAbove a.1, a.2)) x := by</span>
+<span id="L93"><a href="#L93">  93</a>   have he : (augmentSlot slot.castSucc).comp (splitSlot slot) =</span>
+<span id="L94"><a href="#L94">  94</a>       rename (fun a : Fin s × ℕ =&gt; (slot.castSucc.succAbove a.1, a.2)) := by</span>
+<span id="L95"><a href="#L95">  95</a>     ext a : 1</span>
+<span id="L96"><a href="#L96">  96</a>     simp only [AlgHom.comp_apply, splitSlot, aeval_X, rename_X]</span>
+<span id="L97"><a href="#L97">  97</a>     by_cases ha : a.1 = slot</span>
+<span id="L98"><a href="#L98">  98</a>     · simp [ha, augmentSlot_coproduct_left]</span>
+<span id="L99"><a href="#L99">  99</a>     · rw [if_neg ha]</span>
+<span id="L100"><a href="#L100"> 100</a>       by_cases hlt : a.1 &lt; slot</span>
+<span id="L101"><a href="#L101"> 101</a>       · have hne : a.1.castSucc ≠ slot.castSucc := fun h =&gt; ha (Fin.castSucc_injective _ h)</span>
+<span id="L102"><a href="#L102"> 102</a>         simp [hlt, augmentSlot, hne, Fin.succAbove_castSucc_of_lt slot a.1 hlt]</span>
+<span id="L103"><a href="#L103"> 103</a>       · have hne : a.1.succ ≠ slot.castSucc := by</span>
+<span id="L104"><a href="#L104"> 104</a>           intro h</span>
+<span id="L105"><a href="#L105"> 105</a>           have := congrArg Fin.val h</span>
+<span id="L106"><a href="#L106"> 106</a>           simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L107"><a href="#L107"> 107</a>           have := Fin.not_lt.mp hlt</span>
+<span id="L108"><a href="#L108"> 108</a>           omega</span>
+<span id="L109"><a href="#L109"> 109</a>         simp [hlt, augmentSlot, hne,</span>
+<span id="L110"><a href="#L110"> 110</a>           Fin.succAbove_castSucc_of_le slot a.1 (Fin.not_lt.mp hlt)]</span>
+<span id="L111"><a href="#L111"> 111</a>   exact DFunLike.congr_fun he x</span>
+<span id="L112"><a href="#L112"> 112</a> </span>
+<span id="L113"><a href="#L113"> 113</a> /-- Right augmentation of a split slot inserts a unit after that slot. -/</span>
+<span id="L114"><a href="#L114"> 114</a> theorem augmentSlot_splitSlot_right {s : ℕ} (slot : Fin s) (x : TensorPower s) :</span>
+<span id="L115"><a href="#L115"> 115</a>     augmentSlot slot.succ (splitSlot slot x) =</span>
+<span id="L116"><a href="#L116"> 116</a>       rename (fun a : Fin s × ℕ =&gt; (slot.succ.succAbove a.1, a.2)) x := by</span>
+<span id="L117"><a href="#L117"> 117</a>   have he : (augmentSlot slot.succ).comp (splitSlot slot) =</span>
+<span id="L118"><a href="#L118"> 118</a>       rename (fun a : Fin s × ℕ =&gt; (slot.succ.succAbove a.1, a.2)) := by</span>
+<span id="L119"><a href="#L119"> 119</a>     ext a : 1</span>
+<span id="L120"><a href="#L120"> 120</a>     simp only [AlgHom.comp_apply, splitSlot, aeval_X, rename_X]</span>
+<span id="L121"><a href="#L121"> 121</a>     by_cases ha : a.1 = slot</span>
+<span id="L122"><a href="#L122"> 122</a>     · simp [ha, augmentSlot_coproduct_right]</span>
+<span id="L123"><a href="#L123"> 123</a>     · rw [if_neg ha]</span>
+<span id="L124"><a href="#L124"> 124</a>       by_cases hlt : a.1 &lt; slot</span>
+<span id="L125"><a href="#L125"> 125</a>       · have hne : a.1.castSucc ≠ slot.succ := by</span>
+<span id="L126"><a href="#L126"> 126</a>           intro h</span>
+<span id="L127"><a href="#L127"> 127</a>           have := congrArg Fin.val h</span>
+<span id="L128"><a href="#L128"> 128</a>           simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L129"><a href="#L129"> 129</a>           omega</span>
+<span id="L130"><a href="#L130"> 130</a>         simp [hlt, augmentSlot, hne, Fin.succAbove_succ_of_le slot a.1 (Fin.le_of_lt hlt)]</span>
+<span id="L131"><a href="#L131"> 131</a>       · have hgt : slot &lt; a.1 := lt_of_le_of_ne (Fin.not_lt.mp hlt) (Ne.symm ha)</span>
+<span id="L132"><a href="#L132"> 132</a>         have hne : a.1.succ ≠ slot.succ := fun h =&gt; ha (Fin.succ_injective _ h)</span>
+<span id="L133"><a href="#L133"> 133</a>         simp [hlt, augmentSlot, hne, Fin.succAbove_succ_of_lt slot a.1 hgt]</span>
+<span id="L134"><a href="#L134"> 134</a>   exact DFunLike.congr_fun he x</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> /-- Augmentation in an earlier slot commutes with splitting a later slot. -/</span>
+<span id="L137"><a href="#L137"> 137</a> theorem augmentSlot_splitSlot_of_lt {s : ℕ} (slot other : Fin s) (hlt : other &lt; slot)</span>
+<span id="L138"><a href="#L138"> 138</a>     (x : TensorPower s) :</span>
+<span id="L139"><a href="#L139"> 139</a>     augmentSlot other.castSucc (splitSlot slot x) = splitSlot slot (augmentSlot other x) := by</span>
+<span id="L140"><a href="#L140"> 140</a>   have he : (augmentSlot other.castSucc).comp (splitSlot slot) =</span>
+<span id="L141"><a href="#L141"> 141</a>       (splitSlot slot).comp (augmentSlot other) := by</span>
+<span id="L142"><a href="#L142"> 142</a>     ext a : 1</span>
+<span id="L143"><a href="#L143"> 143</a>     by_cases ha : a.1 = slot</span>
+<span id="L144"><a href="#L144"> 144</a>     · have h₁ : slot.castSucc ≠ other.castSucc := by</span>
+<span id="L145"><a href="#L145"> 145</a>         intro h; have := Fin.castSucc_injective _ h; subst other; exact (lt_irrefl _ hlt)</span>
+<span id="L146"><a href="#L146"> 146</a>       have h₂ : slot.succ ≠ other.castSucc := by</span>
+<span id="L147"><a href="#L147"> 147</a>         intro h; have := congrArg Fin.val h</span>
+<span id="L148"><a href="#L148"> 148</a>         simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L149"><a href="#L149"> 149</a>         omega</span>
+<span id="L150"><a href="#L150"> 150</a>       have hso : slot ≠ other := ne_of_gt hlt</span>
+<span id="L151"><a href="#L151"> 151</a>       simp only [AlgHom.comp_apply, splitSlot, augmentSlot, aeval_X, ha, if_pos,</span>
+<span id="L152"><a href="#L152"> 152</a>         hso, if_false]</span>
+<span id="L153"><a href="#L153"> 153</a>       exact augmentSlot_coproduct_other slot other.castSucc h₁ h₂ a.2</span>
+<span id="L154"><a href="#L154"> 154</a>     · have hiff : (if a.1 &lt; slot then a.1.castSucc else a.1.succ) = other.castSucc ↔ a.1 = other := by</span>
+<span id="L155"><a href="#L155"> 155</a>         split_ifs with h</span>
+<span id="L156"><a href="#L156"> 156</a>         · exact Fin.castSucc_inj</span>
+<span id="L157"><a href="#L157"> 157</a>         · constructor</span>
+<span id="L158"><a href="#L158"> 158</a>           · intro heq</span>
+<span id="L159"><a href="#L159"> 159</a>             have := congrArg Fin.val heq</span>
+<span id="L160"><a href="#L160"> 160</a>             simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L161"><a href="#L161"> 161</a>             have := Fin.not_lt.mp h</span>
+<span id="L162"><a href="#L162"> 162</a>             omega</span>
+<span id="L163"><a href="#L163"> 163</a>           · intro heq; exact (h (heq ▸ hlt)).elim</span>
+<span id="L164"><a href="#L164"> 164</a>       by_cases hao : a.1 = other &lt;;&gt;</span>
+<span id="L165"><a href="#L165"> 165</a>         simp [AlgHom.comp_apply, splitSlot, augmentSlot, ha, hiff, hao,</span>
+<span id="L166"><a href="#L166"> 166</a>           hlt, ne_of_lt hlt]</span>
+<span id="L167"><a href="#L167"> 167</a>   exact DFunLike.congr_fun he x</span>
+<span id="L168"><a href="#L168"> 168</a> </span>
+<span id="L169"><a href="#L169"> 169</a> /-- Augmentation in a later slot commutes with splitting an earlier slot. -/</span>
+<span id="L170"><a href="#L170"> 170</a> theorem augmentSlot_splitSlot_of_gt {s : ℕ} (slot other : Fin s) (hlt : slot &lt; other)</span>
+<span id="L171"><a href="#L171"> 171</a>     (x : TensorPower s) :</span>
+<span id="L172"><a href="#L172"> 172</a>     augmentSlot other.succ (splitSlot slot x) = splitSlot slot (augmentSlot other x) := by</span>
+<span id="L173"><a href="#L173"> 173</a>   have he : (augmentSlot other.succ).comp (splitSlot slot) =</span>
+<span id="L174"><a href="#L174"> 174</a>       (splitSlot slot).comp (augmentSlot other) := by</span>
+<span id="L175"><a href="#L175"> 175</a>     ext a : 1</span>
+<span id="L176"><a href="#L176"> 176</a>     by_cases ha : a.1 = slot</span>
+<span id="L177"><a href="#L177"> 177</a>     · have h₁ : slot.castSucc ≠ other.succ := by</span>
+<span id="L178"><a href="#L178"> 178</a>         intro h; have := congrArg Fin.val h</span>
+<span id="L179"><a href="#L179"> 179</a>         simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L180"><a href="#L180"> 180</a>         omega</span>
+<span id="L181"><a href="#L181"> 181</a>       have h₂ : slot.succ ≠ other.succ := by</span>
+<span id="L182"><a href="#L182"> 182</a>         intro h; have := Fin.succ_injective _ h; subst other; exact (lt_irrefl _ hlt)</span>
+<span id="L183"><a href="#L183"> 183</a>       have hso : slot ≠ other := ne_of_lt hlt</span>
+<span id="L184"><a href="#L184"> 184</a>       simp only [AlgHom.comp_apply, splitSlot, augmentSlot, aeval_X, ha, if_pos,</span>
+<span id="L185"><a href="#L185"> 185</a>         hso, if_false]</span>
+<span id="L186"><a href="#L186"> 186</a>       exact augmentSlot_coproduct_other slot other.succ h₁ h₂ a.2</span>
+<span id="L187"><a href="#L187"> 187</a>     · have hiff : (if a.1 &lt; slot then a.1.castSucc else a.1.succ) = other.succ ↔ a.1 = other := by</span>
+<span id="L188"><a href="#L188"> 188</a>         split_ifs with h</span>
+<span id="L189"><a href="#L189"> 189</a>         · constructor</span>
+<span id="L190"><a href="#L190"> 190</a>           · intro heq</span>
+<span id="L191"><a href="#L191"> 191</a>             have := congrArg Fin.val heq</span>
+<span id="L192"><a href="#L192"> 192</a>             simp only [Fin.val_succ, Fin.val_castSucc] at this</span>
+<span id="L193"><a href="#L193"> 193</a>             omega</span>
+<span id="L194"><a href="#L194"> 194</a>           · intro heq; exact (not_lt_of_ge (le_of_lt hlt) (heq ▸ h)).elim</span>
+<span id="L195"><a href="#L195"> 195</a>         · exact Fin.succ_inj</span>
+<span id="L196"><a href="#L196"> 196</a>       by_cases hao : a.1 = other &lt;;&gt;</span>
+<span id="L197"><a href="#L197"> 197</a>         simp [AlgHom.comp_apply, splitSlot, augmentSlot, ha, hiff, hao,</span>
+<span id="L198"><a href="#L198"> 198</a>           ne_of_gt hlt, not_lt_of_ge (le_of_lt hlt)]</span>
+<span id="L199"><a href="#L199"> 199</a>   exact DFunLike.congr_fun he x</span>
+<span id="L200"><a href="#L200"> 200</a> </span>
+<span id="L201"><a href="#L201"> 201</a> /-- The two adjacent cofaces give the only surviving terms after augmentation. -/</span>
+<span id="L202"><a href="#L202"> 202</a> theorem augmentSlot_splitSlot_normalized {s : ℕ} (x : TensorPower s)</span>
+<span id="L203"><a href="#L203"> 203</a>     (hx : ∀ slot, augmentSlot slot x = 0) (j : Fin (s + 1)) (i : Fin s) :</span>
+<span id="L204"><a href="#L204"> 204</a>     augmentSlot j (splitSlot i x) =</span>
+<span id="L205"><a href="#L205"> 205</a>       (if j = i.castSucc then rename (fun a : Fin s × ℕ =&gt; (j.succAbove a.1, a.2)) x else 0) +</span>
+<span id="L206"><a href="#L206"> 206</a>       (if j = i.succ then rename (fun a : Fin s × ℕ =&gt; (j.succAbove a.1, a.2)) x else 0) := by</span>
+<span id="L207"><a href="#L207"> 207</a>   by_cases h₁ : j = i.castSucc</span>
+<span id="L208"><a href="#L208"> 208</a>   · subst j</span>
+<span id="L209"><a href="#L209"> 209</a>     have hne : i.castSucc ≠ i.succ := by</span>
+<span id="L210"><a href="#L210"> 210</a>       intro h; have := congrArg Fin.val h; simp only [Fin.val_castSucc, Fin.val_succ] at this; omega</span>
+<span id="L211"><a href="#L211"> 211</a>     simp [hne, augmentSlot_splitSlot_left]</span>
+<span id="L212"><a href="#L212"> 212</a>   · by_cases h₂ : j = i.succ</span>
+<span id="L213"><a href="#L213"> 213</a>     · subst j</span>
+<span id="L214"><a href="#L214"> 214</a>       simp [h₁, augmentSlot_splitSlot_right]</span>
+<span id="L215"><a href="#L215"> 215</a>     · simp only [if_neg h₁, if_neg h₂, zero_add]</span>
+<span id="L216"><a href="#L216"> 216</a>       by_cases hlt : j.val &lt; i.val</span>
+<span id="L217"><a href="#L217"> 217</a>       · let k : Fin s := ⟨j.val, lt_trans hlt i.isLt⟩</span>
+<span id="L218"><a href="#L218"> 218</a>         have hj : j = k.castSucc := Fin.ext rfl</span>
+<span id="L219"><a href="#L219"> 219</a>         rw [hj, augmentSlot_splitSlot_of_lt i k hlt, hx, map_zero]</span>
+<span id="L220"><a href="#L220"> 220</a>       · have hji : j.val ≠ i.val := fun h =&gt; h₁ (Fin.ext h)</span>
+<span id="L221"><a href="#L221"> 221</a>         have hji&#x27; : j.val ≠ i.val + 1 := fun h =&gt; h₂ (Fin.ext h)</span>
+<span id="L222"><a href="#L222"> 222</a>         have hjpos : 0 &lt; j.val := by omega</span>
+<span id="L223"><a href="#L223"> 223</a>         let k : Fin s := ⟨j.val - 1, by have := j.isLt; omega⟩</span>
+<span id="L224"><a href="#L224"> 224</a>         have hj : j = k.succ := Fin.ext (by dsimp [k]; omega)</span>
+<span id="L225"><a href="#L225"> 225</a>         have hk : i &lt; k := by change i.val &lt; j.val - 1; omega</span>
+<span id="L226"><a href="#L226"> 226</a>         rw [hj, augmentSlot_splitSlot_of_gt i k hk, hx, map_zero]</span>
+<span id="L227"><a href="#L227"> 227</a> </span>
+<span id="L228"><a href="#L228"> 228</a> /-- Renaming into slots disjoint from the augmented slot is unchanged. -/</span>
+<span id="L229"><a href="#L229"> 229</a> theorem augmentSlot_rename_disjoint {s s&#x27; : ℕ} (f : Fin s → Fin s&#x27;) (slot : Fin s&#x27;)</span>
+<span id="L230"><a href="#L230"> 230</a>     (hf : ∀ i, f i ≠ slot) (x : TensorPower s) :</span>
+<span id="L231"><a href="#L231"> 231</a>     augmentSlot slot (rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2)) x) =</span>
+<span id="L232"><a href="#L232"> 232</a>       rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2)) x := by</span>
+<span id="L233"><a href="#L233"> 233</a>   have he : (augmentSlot slot).comp (rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2))) =</span>
+<span id="L234"><a href="#L234"> 234</a>       rename (fun a : Fin s × ℕ =&gt; (f a.1, a.2)) := by</span>
+<span id="L235"><a href="#L235"> 235</a>     ext a : 1</span>
+<span id="L236"><a href="#L236"> 236</a>     simp [augmentSlot, hf]</span>
+<span id="L237"><a href="#L237"> 237</a>   exact DFunLike.congr_fun he x</span>
+<span id="L238"><a href="#L238"> 238</a> </span>
+<span id="L239"><a href="#L239"> 239</a> /-- Only augmentation at the newly inserted left endpoint survives. -/</span>
+<span id="L240"><a href="#L240"> 240</a> theorem augmentSlot_insertLeft_normalized {s : ℕ} (x : TensorPower s)</span>
+<span id="L241"><a href="#L241"> 241</a>     (hx : ∀ slot, augmentSlot slot x = 0) (j : Fin (s + 1)) :</span>
+<span id="L242"><a href="#L242"> 242</a>     augmentSlot j (insertLeft s x) =</span>
+<span id="L243"><a href="#L243"> 243</a>       if j = 0 then rename (fun a : Fin s × ℕ =&gt; (j.succAbove a.1, a.2)) x else 0 := by</span>
+<span id="L244"><a href="#L244"> 244</a>   refine Fin.cases ?_ (fun i =&gt; ?_) j</span>
+<span id="L245"><a href="#L245"> 245</a>   · simpa [insertLeft] using augmentSlot_rename_disjoint Fin.succ 0 (fun i =&gt; Fin.succ_ne_zero i) x</span>
+<span id="L246"><a href="#L246"> 246</a>   · simp only [insertLeft, augmentSlot_rename Fin.succ (Fin.succ_injective s), hx, map_zero,</span>
+<span id="L247"><a href="#L247"> 247</a>       Fin.succ_ne_zero, if_false]</span>
+<span id="L248"><a href="#L248"> 248</a> </span>
+<span id="L249"><a href="#L249"> 249</a> /-- Only augmentation at the newly inserted right endpoint survives. -/</span>
+<span id="L250"><a href="#L250"> 250</a> theorem augmentSlot_insertRight_normalized {s : ℕ} (x : TensorPower s)</span>
+<span id="L251"><a href="#L251"> 251</a>     (hx : ∀ slot, augmentSlot slot x = 0) (j : Fin (s + 1)) :</span>
+<span id="L252"><a href="#L252"> 252</a>     augmentSlot j (insertRight s x) =</span>
+<span id="L253"><a href="#L253"> 253</a>       if j = Fin.last s then rename (fun a : Fin s × ℕ =&gt; (j.succAbove a.1, a.2)) x else 0 := by</span>
+<span id="L254"><a href="#L254"> 254</a>   refine Fin.lastCases ?_ (fun i =&gt; ?_) j</span>
+<span id="L255"><a href="#L255"> 255</a>   · simpa [insertRight] using augmentSlot_rename_disjoint Fin.castSucc (Fin.last s)</span>
+<span id="L256"><a href="#L256"> 256</a>       (fun i =&gt; Fin.castSucc_ne_last i) x</span>
+<span id="L257"><a href="#L257"> 257</a>   · simp only [insertRight, augmentSlot_rename Fin.castSucc (Fin.castSucc_injective s), hx, map_zero,</span>
+<span id="L258"><a href="#L258"> 258</a>       Fin.castSucc_ne_last, if_false]</span>
+<span id="L259"><a href="#L259"> 259</a> </span>
+<span id="L260"><a href="#L260"> 260</a> /-- The cobar differential preserves the intersection of augmentation kernels. -/</span>
+<span id="L261"><a href="#L261"> 261</a> theorem differentialPolynomial_normalized {s : ℕ} (x : TensorPower s)</span>
+<span id="L262"><a href="#L262"> 262</a>     (hx : ∀ slot, augmentSlot slot x = 0) (j : Fin (s + 1)) :</span>
+<span id="L263"><a href="#L263"> 263</a>     augmentSlot j (differentialPolynomial s x) = 0 := by</span>
+<span id="L264"><a href="#L264"> 264</a>   classical</span>
+<span id="L265"><a href="#L265"> 265</a>   let q := rename (fun a : Fin s × ℕ =&gt; (j.succAbove a.1, a.2)) x</span>
+<span id="L266"><a href="#L266"> 266</a>   have hleft : (if j = 0 then q else 0) + ∑ i : Fin s, (if j = i.succ then q else 0) = q := by</span>
+<span id="L267"><a href="#L267"> 267</a>     rw [← Fin.sum_univ_succ (fun k : Fin (s + 1) =&gt; if j = k then q else 0)]</span>
+<span id="L268"><a href="#L268"> 268</a>     simp</span>
+<span id="L269"><a href="#L269"> 269</a>   have hright : (∑ i : Fin s, (if j = i.castSucc then q else 0)) +</span>
+<span id="L270"><a href="#L270"> 270</a>       (if j = Fin.last s then q else 0) = q := by</span>
+<span id="L271"><a href="#L271"> 271</a>     rw [← Fin.sum_univ_castSucc (fun k : Fin (s + 1) =&gt; if j = k then q else 0)]</span>
+<span id="L272"><a href="#L272"> 272</a>     simp</span>
+<span id="L273"><a href="#L273"> 273</a>   simp only [differentialPolynomial, LinearMap.add_apply, LinearMap.sum_apply,</span>
+<span id="L274"><a href="#L274"> 274</a>     AlgHom.toLinearMap_apply, map_add, map_sum,</span>
+<span id="L275"><a href="#L275"> 275</a>     augmentSlot_insertLeft_normalized x hx, augmentSlot_insertRight_normalized x hx,</span>
+<span id="L276"><a href="#L276"> 276</a>     augmentSlot_splitSlot_normalized x hx, Finset.sum_add_distrib]</span>
+<span id="L277"><a href="#L277"> 277</a>   change (if j = 0 then q else 0) + (if j = Fin.last s then q else 0) +</span>
+<span id="L278"><a href="#L278"> 278</a>     ((∑ i : Fin s, if j = i.castSucc then q else 0) +</span>
+<span id="L279"><a href="#L279"> 279</a>       ∑ i : Fin s, if j = i.succ then q else 0) = 0</span>
+<span id="L280"><a href="#L280"> 280</a>   calc</span>
+<span id="L281"><a href="#L281"> 281</a>     _ = ((∑ i : Fin s, if j = i.castSucc then q else 0) + (if j = Fin.last s then q else 0)) +</span>
+<span id="L282"><a href="#L282"> 282</a>         ((if j = 0 then q else 0) + ∑ i : Fin s, if j = i.succ then q else 0) := by abel</span>
+<span id="L283"><a href="#L283"> 283</a>     _ = q + q := by rw [hleft, hright]</span>
+<span id="L284"><a href="#L284"> 284</a>     _ = 0 := CharTwo.add_self_eq_zero q</span>
+<span id="L285"><a href="#L285"> 285</a> </span>
+<span id="L286"><a href="#L286"> 286</a> end</span>
+<span id="L287"><a href="#L287"> 287</a> </span>
+<span id="L288"><a href="#L288"> 288</a> end KIP126.AdamsSynthetic.Milnor</span></pre>

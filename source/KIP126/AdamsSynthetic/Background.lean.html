@@ -1,0 +1,70 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Background.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Background.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Context</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Additional background contracts on the same stable category. The chosen</span>
+<span id="L6"><a href="#L6">   6</a> closed structure and every shift comparison are explicit inputs; declaring</span>
+<span id="L7"><a href="#L7">   7</a> these records does not select an enhancement for an arbitrary category.</span>
+<span id="L8"><a href="#L8">   8</a> Source: KIPBase `StableHomotopy/TensorTriangulatedCategory.lean` and</span>
+<span id="L9"><a href="#L9">   9</a> `StableHomotopy/Basic.lean`, migration baseline 5aa845241533. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.StableHomotopy</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory CategoryTheory.Limits MonoidalCategory Pretriangulated</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> universe u v</span>
+<span id="L17"><a href="#L17">  17</a> variable (C : Type u) [StableHomotopyCategory.{u, v} C]</span>
+<span id="L18"><a href="#L18">  18</a> </span>
+<span id="L19"><a href="#L19">  19</a> /-- Closed symmetric tensor triangulated structure on this very background.</span>
+<span id="L20"><a href="#L20">  20</a> The exactness statements use the supplied coherent shift comparisons, so a</span>
+<span id="L21"><a href="#L21">  21</a> consumer need not independently assume that tensor or internal hom commutes</span>
+<span id="L22"><a href="#L22">  22</a> with suspension. -/</span>
+<span id="L23"><a href="#L23">  23</a> public structure ClosedSymmetricTensorTriangulated where</span>
+<span id="L24"><a href="#L24">  24</a>   symmetric : SymmetricCategory C</span>
+<span id="L25"><a href="#L25">  25</a>   closed : MonoidalClosed C</span>
+<span id="L26"><a href="#L26">  26</a>   tensorShift : ∀ W : C, (tensorRight W).CommShift ℤ</span>
+<span id="L27"><a href="#L27">  27</a>   tensorExact : ∀ W : C,</span>
+<span id="L28"><a href="#L28">  28</a>     letI := tensorShift W</span>
+<span id="L29"><a href="#L29">  29</a>     (tensorRight W).IsTriangulated</span>
+<span id="L30"><a href="#L30">  30</a>   ihomShift : letI := closed</span>
+<span id="L31"><a href="#L31">  31</a>     ∀ W : C, (ihom W).CommShift ℤ</span>
+<span id="L32"><a href="#L32">  32</a>   ihomExact : letI := closed</span>
+<span id="L33"><a href="#L33">  33</a>     ∀ W : C,</span>
+<span id="L34"><a href="#L34">  34</a>     letI := ihomShift W</span>
+<span id="L35"><a href="#L35">  35</a>     (ihom W).IsTriangulated</span>
+<span id="L36"><a href="#L36">  36</a> </span>
+<span id="L37"><a href="#L37">  37</a> variable {C}</span>
+<span id="L38"><a href="#L38">  38</a> namespace ClosedSymmetricTensorTriangulated</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- Tensoring a shifted unit with an object is its actual integer shift.</span>
+<span id="L41"><a href="#L41">  41</a> This comparison is derived from the supplied tensor shift coherence. -/</span>
+<span id="L42"><a href="#L42">  42</a> public noncomputable def sphereTensorShift</span>
+<span id="L43"><a href="#L43">  43</a>     (B : ClosedSymmetricTensorTriangulated C) (n : ℤ) (X : C) :</span>
+<span id="L44"><a href="#L44">  44</a>     (Sphere n : C) ⊗ X ≅ (shiftFunctor C n).obj X := by</span>
+<span id="L45"><a href="#L45">  45</a>   letI := B.tensorShift X</span>
+<span id="L46"><a href="#L46">  46</a>   exact ((tensorRight X).commShiftIso n).app SphereSpectrum ≪≫</span>
+<span id="L47"><a href="#L47">  47</a>     (shiftFunctor C n).mapIso (λ_ X)</span>
+<span id="L48"><a href="#L48">  48</a> </span>
+<span id="L49"><a href="#L49">  49</a> /-- The sphere product comparison determined by this background. -/</span>
+<span id="L50"><a href="#L50">  50</a> public noncomputable def smashSpheres</span>
+<span id="L51"><a href="#L51">  51</a>     (B : ClosedSymmetricTensorTriangulated C) (m n : ℤ) :</span>
+<span id="L52"><a href="#L52">  52</a>     (Sphere m : C) ⊗ Sphere n ≅ Sphere (m + n) :=</span>
+<span id="L53"><a href="#L53">  53</a>   B.sphereTensorShift m (Sphere n) ≪≫</span>
+<span id="L54"><a href="#L54">  54</a>     ((shiftFunctorAdd C n m).app SphereSpectrum).symm ≪≫</span>
+<span id="L55"><a href="#L55">  55</a>     eqToIso (congrArg (Sphere (C := C)) (add_comm n m))</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> end ClosedSymmetricTensorTriangulated</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> /-- The stable Koszul sign for the actual braiding and the sphere product</span>
+<span id="L60"><a href="#L60">  60</a> comparisons supplied by `B`. It is a separate proof input, since symmetry</span>
+<span id="L61"><a href="#L61">  61</a> alone does not imply the stable sign convention. -/</span>
+<span id="L62"><a href="#L62">  62</a> public structure SphereTwistSign (B : ClosedSymmetricTensorTriangulated C) : Prop where</span>
+<span id="L63"><a href="#L63">  63</a>   twist : letI := B.symmetric</span>
+<span id="L64"><a href="#L64">  64</a>     ∀ r s : ℤ,</span>
+<span id="L65"><a href="#L65">  65</a>       (β_ (Sphere r : C) (Sphere s)).hom ≫ (B.smashSpheres s r).hom ≫</span>
+<span id="L66"><a href="#L66">  66</a>         eqToHom (congrArg (Sphere (C := C)) (add_comm s r)) =</span>
+<span id="L67"><a href="#L67">  67</a>       if Even (r * s) then (B.smashSpheres r s).hom</span>
+<span id="L68"><a href="#L68">  68</a>       else -(B.smashSpheres r s).hom</span>
+<span id="L69"><a href="#L69">  69</a> </span>
+<span id="L70"><a href="#L70">  70</a> end KIP126.StableHomotopy</span></pre>

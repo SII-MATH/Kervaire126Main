@@ -1,0 +1,77 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NuTargetFrame.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NuTargetFrame.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.E2Computation.Table.Values</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.Selected.InfinityFrames</span>
+<span id="L5"><a href="#L5">   5</a> /-! The target E₆ component computation from NuTargetHelpers.lean:1327–1643,</span>
+<span id="L6"><a href="#L6">   6</a> bbac1fc05843 (MIT). The generic three-coordinate kernel proof is reused</span>
+<span id="L7"><a href="#L7">   7</a> from SpectralSequence.FinitePageCalculus. -/</span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L10"><a href="#L10">  10</a> set_option maxHeartbeats 800000</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Main.SectionSeven.Internal</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Core.SpectralSequence.FinitePageCalculus KIP126.Literature</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard KIP126.ProofTools.Operations</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Computation.Table KIP126.Main.Internal</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> theorem target_page_six_frame :</span>
+<span id="L19"><a href="#L19">  19</a>     ∃ a : model.classical.sphere.Page 6 (14,139),</span>
+<span id="L20"><a href="#L20">  20</a>       RepresentsOnPage model.classical.sphere 6 (14,139) KIP126.Computation.Standard.T a ∧</span>
+<span id="L21"><a href="#L21">  21</a>       ∀ y : model.classical.sphere.Page 6 (14,139), y=0 ∨ y=a := by</span>
+<span id="L22"><a href="#L22">  22</a>   have hd2 : HasDifferential model.classical.sphere 2 (12,138) (14,139)</span>
+<span id="L23"><a href="#L23">  23</a>       (basis .sphere 12 138 1) (basis .sphere 14 139 2) := by</span>
+<span id="L24"><a href="#L24">  24</a>     have h := result ⟨.sphere,.equation,2,12,138,[1],14,139,[2],&quot;S0_AdamsE2_ss&quot;,3079⟩ (by</span>
+<span id="L25"><a href="#L25">  25</a>       exact List.mem_of_getElem? (l := Raw.claims) (i := 341) rfl)</span>
+<span id="L26"><a href="#L26">  26</a>     dsimp only [Statement] at h</span>
+<span id="L27"><a href="#L27">  27</a>     obtain ⟨x,hx,y,hy,hd⟩ := h</span>
+<span id="L28"><a href="#L28">  28</a>     have vx : Raw.coordinatesValid Raw.degrees .sphere 12 138 [1] = true := rfl</span>
+<span id="L29"><a href="#L29">  29</a>     have vy : Raw.coordinatesValid Raw.degrees .sphere 14 139 [2] = true := rfl</span>
+<span id="L30"><a href="#L30">  30</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,</span>
+<span id="L31"><a href="#L31">  31</a>       add_zero,Option.some.injEq] at hx hy</span>
+<span id="L32"><a href="#L32">  32</a>     rw [←hx,←hy] at hd</span>
+<span id="L33"><a href="#L33">  33</a>     exact hd</span>
+<span id="L34"><a href="#L34">  34</a>   have hd3 : HasDifferential model.classical.sphere 2 (14,139) (16,140)</span>
+<span id="L35"><a href="#L35">  35</a>       (basis .sphere 14 139 0) (basis .sphere 16 140 2) := by</span>
+<span id="L36"><a href="#L36">  36</a>     have h := result ⟨.sphere,.equation,2,14,139,[0],16,140,[2],&quot;S0_AdamsE2_ss&quot;,3081⟩ (by</span>
+<span id="L37"><a href="#L37">  37</a>       exact List.mem_of_getElem? (l := Raw.claims) (i := 343) rfl)</span>
+<span id="L38"><a href="#L38">  38</a>     dsimp only [Statement] at h</span>
+<span id="L39"><a href="#L39">  39</a>     obtain ⟨x,hx,y,hy,hd⟩ := h</span>
+<span id="L40"><a href="#L40">  40</a>     have vx : Raw.coordinatesValid Raw.degrees .sphere 14 139 [0] = true := rfl</span>
+<span id="L41"><a href="#L41">  41</a>     have vy : Raw.coordinatesValid Raw.degrees .sphere 16 140 [2] = true := rfl</span>
+<span id="L42"><a href="#L42">  42</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,</span>
+<span id="L43"><a href="#L43">  43</a>       add_zero,Option.some.injEq] at hx hy</span>
+<span id="L44"><a href="#L44">  44</a>     rw [←hx,←hy] at hd</span>
+<span id="L45"><a href="#L45">  45</a>     exact hd</span>
+<span id="L46"><a href="#L46">  46</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,14,139,[&quot;449,1&quot;,&quot;1,1,7,1,275,1&quot;,&quot;0,2,425,1&quot;]⟩ (by</span>
+<span id="L47"><a href="#L47">  47</a>     exact List.mem_of_getElem? (l := Raw.degrees) (i := 217) rfl)</span>
+<span id="L48"><a href="#L48">  48</a>   change model.classical.sphere.Page 2 (14,139) ≃ₗ[ℤ] (Fin 3 →₀ ZMod 2) at e</span>
+<span id="L49"><a href="#L49">  49</a>   change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = basis .sphere 14 139 i.val at he</span>
+<span id="L50"><a href="#L50">  50</a>   obtain ⟨f,hf⟩ := basis_correct ⟨.sphere,16,140,[&quot;9,1,261,1&quot;,&quot;1,1,438,1&quot;,&quot;0,1,448,1&quot;,&quot;0,2,440,1&quot;,&quot;0,2,439,1&quot;]⟩ (by</span>
+<span id="L51"><a href="#L51">  51</a>     exact List.mem_of_getElem? (l := Raw.degrees) (i := 231) rfl)</span>
+<span id="L52"><a href="#L52">  52</a>   change model.classical.sphere.Page 2 (16,140) ≃ₗ[ℤ] (Fin 5 →₀ ZMod 2) at f</span>
+<span id="L53"><a href="#L53">  53</a>   change ∀ i : Fin 5, f.symm (Finsupp.single i 1) = basis .sphere 16 140 i.val at hf</span>
+<span id="L54"><a href="#L54">  54</a>   obtain ⟨a,ha⟩ := KIP126.Main.Internal.Selected.permanent_reaches .sphere 6 (by decide) (14,139)</span>
+<span id="L55"><a href="#L55">  55</a>     KIP126.Computation.Standard.T ((permanent_cycle_iff_mem .sphere (14,139) _).mp KIP126.Computation.Standard.t_permanent_cycle)</span>
+<span id="L56"><a href="#L56">  56</a>   have hz : RepresentsOnPage model.classical.sphere 6 (14,139) (basis .sphere 14 139 2) 0 :=</span>
+<span id="L57"><a href="#L57">  57</a>     differential_target_later_zero (by rw [model.classical.firstPage] &lt;;&gt; omega) (by decide) hd2</span>
+<span id="L58"><a href="#L58">  58</a>   have hn : model.classical.sphere.d 2 (14,139) (basis .sphere 14 139 0) ≠ 0 := by</span>
+<span id="L59"><a href="#L59">  59</a>     intro hn</span>
+<span id="L60"><a href="#L60">  60</a>     have h := hd3.eq_on_page_two.2</span>
+<span id="L61"><a href="#L61">  61</a>     simp only [ModuleCat.comp_apply,hn,map_zero] at h</span>
+<span id="L62"><a href="#L62">  62</a>     have hh := congrArg (fun y =&gt; f y 2) h.symm</span>
+<span id="L63"><a href="#L63">  63</a>     have hf2 : f.symm (Finsupp.single (2:Fin 5) 1) = basis .sphere 16 140 2 := hf 2</span>
+<span id="L64"><a href="#L64">  64</a>     rw [←hf2,LinearEquiv.apply_symm_apply,f.map_zero] at hh</span>
+<span id="L65"><a href="#L65">  65</a>     norm_num [Finsupp.single_apply] at hh</span>
+<span id="L66"><a href="#L66">  66</a>   refine ⟨a,ha,?_⟩</span>
+<span id="L67"><a href="#L67">  67</a>   apply choice_frame_of_three_basis (by decide : (2:ℤ)&lt;6)</span>
+<span id="L68"><a href="#L68">  68</a>     (by rw [model.classical.firstPage]) e _ _ _ (he 0) (he 1) (he 2) a</span>
+<span id="L69"><a href="#L69">  69</a>   · have hT : e.symm (Finsupp.single (1:Fin 3) 1) = KIP126.Computation.Standard.T :=</span>
+<span id="L70"><a href="#L70">  70</a>       (he 1).trans basis_T</span>
+<span id="L71"><a href="#L71">  71</a>     exact (congrArg (fun x =&gt; RepresentsOnPage model.classical.sphere 6 (14,139) x a)</span>
+<span id="L72"><a href="#L72">  72</a>       ((he 1).symm.trans hT)).mpr ha</span>
+<span id="L73"><a href="#L73">  73</a>   · exact hz</span>
+<span id="L74"><a href="#L74">  74</a>   · exact hn</span>
+<span id="L75"><a href="#L75">  75</a> </span>
+<span id="L76"><a href="#L76">  76</a> end</span>
+<span id="L77"><a href="#L77">  77</a> end KIP126.Main.SectionSeven.Internal</span></pre>

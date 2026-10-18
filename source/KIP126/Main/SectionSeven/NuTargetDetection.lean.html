@@ -1,0 +1,143 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NuTargetDetection.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NuTargetDetection.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard.Filtration</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.LambdaZero</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.Selected.InfinityFrames</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.Selected.SphereDetection</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.SectionSeven.NuTargetWindows</span>
+<span id="L10"><a href="#L10">  10</a> /-! Detection and filtration steps of NuTargetHelpers.lean:955–1070,</span>
+<span id="L11"><a href="#L11">  11</a> 1672–1693 at bbac1fc05843 (MIT). -/</span>
+<span id="L12"><a href="#L12">  12</a> @[expose] section</span>
+<span id="L13"><a href="#L13">  13</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L15"><a href="#L15">  15</a> set_option maxHeartbeats 1000000</span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Main.SectionSeven.Internal</span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.AdamsSynthetic.Standard KIP126.Main.Internal KIP126.Main.Internal.Selected</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.ProofTools.Operations</span>
+<span id="L22"><a href="#L22">  22</a> noncomputable section</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> theorem nu_target_sphere_detected</span>
+<span id="L25"><a href="#L25">  25</a>     (T : model.classical.sphere.Page 2 (14,139))</span>
+<span id="L26"><a href="#L26">  26</a>     (ht : IsPermanentCycle model.classical.sphere (14,139) T)</span>
+<span id="L27"><a href="#L27">  27</a>     (hf : ∃ a : model.classical.sphere.Page 6 (14,139),</span>
+<span id="L28"><a href="#L28">  28</a>       RepresentsOnPage model.classical.sphere 6 (14,139) T a ∧</span>
+<span id="L29"><a href="#L29">  29</a>       ∀ y : model.classical.sphere.Page 6 (14,139),y=0 ∨ y=a)</span>
+<span id="L30"><a href="#L30">  30</a>     (a : BiHom 125 135 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L31"><a href="#L31">  31</a>     (ha : FiltrationAtLeast model.syntheticTower 14 a)</span>
+<span id="L32"><a href="#L32">  32</a>     (hne : quotientClass 9 (lambdaMultiply 4 a) ≠ 0) :</span>
+<span id="L33"><a href="#L33">  33</a>     Detects (model.convergence .sphere) (14,139,135) (sphereLabel 14 139 4 T) a := by</span>
+<span id="L34"><a href="#L34">  34</a>   let F := model.syntheticTower.filtration (S_0_0 : SyntheticSpectrum)</span>
+<span id="L35"><a href="#L35">  35</a>   obtain ⟨a&#x27;,ha&#x27;⟩ := filtration_representative_exists model.syntheticTower _ (125,135) 14 a ha</span>
+<span id="L36"><a href="#L36">  36</a>   let gr := F.toAssociatedGraded 14 (125,135) a&#x27;</span>
+<span id="L37"><a href="#L37">  37</a>   let e := ((model.convergence .sphere).identification (14,139,135)).inv gr</span>
+<span id="L38"><a href="#L38">  38</a>   have he : ((model.convergence .sphere).identification (14,139,135)).hom e = gr :=</span>
+<span id="L39"><a href="#L39">  39</a>     ConcreteCategory.congr_hom ((model.convergence .sphere).identification (14,139,135)).inv_hom_id gr</span>
+<span id="L40"><a href="#L40">  40</a>   obtain ⟨b,hb,hall⟩ := hf</span>
+<span id="L41"><a href="#L41">  41</a>   have hq := permanent_quotient_frame_of_page 6 5 (by decide) (by decide)</span>
+<span id="L42"><a href="#L42">  42</a>     14 139 T ht b hb hall</span>
+<span id="L43"><a href="#L43">  43</a>   have hframe := sphere_frame_of_permanent_quotient 14 139 4 T hq</span>
+<span id="L44"><a href="#L44">  44</a>   rcases hframe e with hz | hz</span>
+<span id="L45"><a href="#L45">  45</a>   · have hd0 : Detects (model.convergence .sphere) (14,139,135) 0 a :=</span>
+<span id="L46"><a href="#L46">  46</a>       ⟨0,HasInfinityRepresentative.zero _ 2 (by decide) _,a&#x27;,ha&#x27;,by rw [←hz]; exact he⟩</span>
+<span id="L47"><a href="#L47">  47</a>     have hh := detects_zero_filtration (model.convergence .sphere) (14,139,135) hd0</span>
+<span id="L48"><a href="#L48">  48</a>     have hl := lambda_filtration_preserved 4 15 a hh</span>
+<span id="L49"><a href="#L49">  49</a>     have hproj := map_preserves_filtration</span>
+<span id="L50"><a href="#L50">  50</a>       (model.convergentMap .sphere (.quotient 9 .sphere) (XModLambdaN.incl _ 9))</span>
+<span id="L51"><a href="#L51">  51</a>       (125,131) 15 (lambdaMultiply 4 a) hl</span>
+<span id="L52"><a href="#L52">  52</a>     exact False.elim (hne (sphere_quotient_high_filtration_zero 9 (by decide) 125 131 15 (by decide) _ hproj))</span>
+<span id="L53"><a href="#L53">  53</a>   · exact ⟨e,hz,a&#x27;,ha&#x27;,he⟩</span>
+<span id="L54"><a href="#L54">  54</a> </span>
+<span id="L55"><a href="#L55">  55</a> theorem nu_target_sphere_products_filtration</span>
+<span id="L56"><a href="#L56">  56</a>     (nu : BiHom 3 4 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L57"><a href="#L57">  57</a>     (hnu : (KIP126.Literature.sphereFirstQuotient model) 1 4 (quotientClass 1 nu) = KIP126.Computation.Standard.h2)</span>
+<span id="L58"><a href="#L58">  58</a>     (P : model.classical.sphere.Page 2 (11,133)) (Q : model.classical.sphere.Page 2 (12,134))</span>
+<span id="L59"><a href="#L59">  59</a>     (hp : model.sphereAlgebra.product (1,4) (11,133) KIP126.Computation.Standard.h2 P ∈ boundaries model .sphere 2 (12,137))</span>
+<span id="L60"><a href="#L60">  60</a>     (hq : model.sphereAlgebra.product (1,4) (12,134) KIP126.Computation.Standard.h2 Q ∈ boundaries model .sphere 2 (13,138))</span>
+<span id="L61"><a href="#L61">  61</a>     (p : BiHom 122 133 (S_0_0 : SyntheticSpectrum)) (q : BiHom 122 134 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L62"><a href="#L62">  62</a>     (hlp : (KIP126.Literature.sphereFirstQuotient model) 11 133 (quotientClass 1 p) = P)</span>
+<span id="L63"><a href="#L63">  63</a>     (hlq : (KIP126.Literature.sphereFirstQuotient model) 12 134 (quotientClass 1 q) = Q) :</span>
+<span id="L64"><a href="#L64">  64</a>     FiltrationAtLeast model.syntheticTower 14 (sphereProduct (lambdaMultiply 1 nu) (lambdaMultiply 1 p)) ∧</span>
+<span id="L65"><a href="#L65">  65</a>     FiltrationAtLeast model.syntheticTower 14 (sphereProduct (lambdaMultiply 1 nu) (lambdaMultiply 2 q)) := by</span>
+<span id="L66"><a href="#L66">  66</a>   have hn := model.sphereDetectionCompatible.homotopy_lambda 1 4 1 nu</span>
+<span id="L67"><a href="#L67">  67</a>   change Detects (model.convergence .sphere) (1,4,3)</span>
+<span id="L68"><a href="#L68">  68</a>     (sphereLabel 1 4 1 ((KIP126.Literature.sphereFirstQuotient model) 1 4 (quotientClass 1 nu))) (lambdaMultiply 1 nu) at hn</span>
+<span id="L69"><a href="#L69">  69</a>   rw [hnu] at hn</span>
+<span id="L70"><a href="#L70">  70</a>   constructor</span>
+<span id="L71"><a href="#L71">  71</a>   · have hpd := model.sphereDetectionCompatible.homotopy_lambda 11 133 1 p</span>
+<span id="L72"><a href="#L72">  72</a>     change Detects (model.convergence .sphere) (11,133,132)</span>
+<span id="L73"><a href="#L73">  73</a>       (sphereLabel 11 133 1 ((KIP126.Literature.sphereFirstQuotient model) 11 133 (quotientClass 1 p))) (lambdaMultiply 1 p) at hpd</span>
+<span id="L74"><a href="#L74">  74</a>     rw [hlp] at hpd</span>
+<span id="L75"><a href="#L75">  75</a>     have hd := model.multiplicationCompatible 1 4 11 133 1 1 _ P (lambdaMultiply 1 nu) (lambdaMultiply 1 p) hn hpd</span>
+<span id="L76"><a href="#L76">  76</a>     let v := model.sphereAlgebra.product (1,4) (11,133) KIP126.Computation.Standard.h2 P</span>
+<span id="L77"><a href="#L77">  77</a>     have hb : v ∈ boundaries model .sphere 3 (12,137) :=</span>
+<span id="L78"><a href="#L78">  78</a>       boundaries_monotone model .sphere (12,137) (by decide : (2:ℤ) ≤ 3) hp</span>
+<span id="L79"><a href="#L79">  79</a>     have hz := sphere_boundary_detects_zero 2 12 137 v hb</span>
+<span id="L80"><a href="#L80">  80</a>     have hf : FiltrationAtLeast model.syntheticTower 13 (sphereProduct (lambdaMultiply 1 nu) (lambdaMultiply 1 p)) := by</span>
+<span id="L81"><a href="#L81">  81</a>       simpa only [sub_zero,homotopyRegrade,Int.reduceAdd,Int.reduceSub,Nat.reduceAdd,Nat.cast_ofNat] using</span>
+<span id="L82"><a href="#L82">  82</a>         detects_sub_filtration (model.convergence .sphere) (12,137,135) hd hz</span>
+<span id="L83"><a href="#L83">  83</a>     exact (nu_target_sphere_gap KIP126.Computation.Standard.e5_stem125_af13 _).mp hf</span>
+<span id="L84"><a href="#L84">  84</a>   · have hqd := model.sphereDetectionCompatible.homotopy_lambda 12 134 2 q</span>
+<span id="L85"><a href="#L85">  85</a>     change Detects (model.convergence .sphere) (12,134,132)</span>
+<span id="L86"><a href="#L86">  86</a>       (sphereLabel 12 134 2 ((KIP126.Literature.sphereFirstQuotient model) 12 134 (quotientClass 1 q))) (lambdaMultiply 2 q) at hqd</span>
+<span id="L87"><a href="#L87">  87</a>     rw [hlq] at hqd</span>
+<span id="L88"><a href="#L88">  88</a>     have hd := model.multiplicationCompatible 1 4 12 134 1 2 _ Q (lambdaMultiply 1 nu) (lambdaMultiply 2 q) hn hqd</span>
+<span id="L89"><a href="#L89">  89</a>     let v := model.sphereAlgebra.product (1,4) (12,134) KIP126.Computation.Standard.h2 Q</span>
+<span id="L90"><a href="#L90">  90</a>     have hb : v ∈ boundaries model .sphere 4 (13,138) :=</span>
+<span id="L91"><a href="#L91">  91</a>       boundaries_monotone model .sphere (13,138) (by decide : (2:ℤ) ≤ 4) hq</span>
+<span id="L92"><a href="#L92">  92</a>     have hz := sphere_boundary_detects_zero 3 13 138 v hb</span>
+<span id="L93"><a href="#L93">  93</a>     simpa only [sub_zero,homotopyRegrade,Int.reduceAdd,Int.reduceSub,Nat.reduceAdd,Nat.cast_ofNat] using</span>
+<span id="L94"><a href="#L94">  94</a>       detects_sub_filtration (model.convergence .sphere) (13,138,135) hd hz</span>
+<span id="L95"><a href="#L95">  95</a> </span>
+<span id="L96"><a href="#L96">  96</a> theorem nu_target_remainder_zero</span>
+<span id="L97"><a href="#L97">  97</a>     (nu : BiHom 3 4 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L98"><a href="#L98">  98</a>     (hd : Detects (model.convergence .sphere) (1,4,4)</span>
+<span id="L99"><a href="#L99">  99</a>       (sphereLabel 1 4 0 KIP126.Computation.Standard.h2) nu)</span>
+<span id="L100"><a href="#L100"> 100</a>     (hprod : ∀ x : model.classical.sphere.Page 2 (13,135),</span>
+<span id="L101"><a href="#L101"> 101</a>       model.sphereAlgebra.product (1,4) (13,135) KIP126.Computation.Standard.h2 x = 0)</span>
+<span id="L102"><a href="#L102"> 102</a>     (a : BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L103"><a href="#L103"> 103</a>     (ha : FiltrationAtLeast model.syntheticTower 13 a) : sphereAction nu a = 0 := by</span>
+<span id="L104"><a href="#L104"> 104</a>   obtain ⟨x,_,hx⟩ := finite_sphere_filtration_has_cycle_label 9 8 (by decide) (by decide) 13 135 a ha</span>
+<span id="L105"><a href="#L105"> 105</a>   have hm := KIP126.Literature.Standard.finite_action 9 (by decide) 1 4 13 135 0 8</span>
+<span id="L106"><a href="#L106"> 106</a>     KIP126.Computation.Standard.h2 x nu a hd hx</span>
+<span id="L107"><a href="#L107"> 107</a>   change Detects (model.convergence (.quotient 9 .sphere)) (14,139,131)</span>
+<span id="L108"><a href="#L108"> 108</a>     (quotientLabel 9 14 139 8 (model.sphereAlgebra.product (1,4) (13,135) KIP126.Computation.Standard.h2 x))</span>
+<span id="L109"><a href="#L109"> 109</a>     (sphereAction nu a) at hm</span>
+<span id="L110"><a href="#L110"> 110</a>   rw [hprod x] at hm</span>
+<span id="L111"><a href="#L111"> 111</a>   have hz := finite_sphere_boundary_detects_zero 9 8 (by decide) (by decide) 14 139 0 (Submodule.zero_mem _)</span>
+<span id="L112"><a href="#L112"> 112</a>   have hf : FiltrationAtLeast model.syntheticTower 15 (sphereAction nu a) := by</span>
+<span id="L113"><a href="#L113"> 113</a>     simpa only [sub_zero,homotopyRegrade,Int.reduceAdd,Int.reduceSub,SyntheticObject.obj] using</span>
+<span id="L114"><a href="#L114"> 114</a>       detects_sub_filtration (model.convergence (.quotient 9 .sphere)) (14,139,131) hm hz</span>
+<span id="L115"><a href="#L115"> 115</a>   exact sphere_quotient_high_filtration_zero 9 (by decide) 125 131 15 (by decide) _ hf</span>
+<span id="L116"><a href="#L116"> 116</a> </span>
+<span id="L117"><a href="#L117"> 117</a> theorem target_first_label_nonzero_detection</span>
+<span id="L118"><a href="#L118"> 118</a>     (T : model.classical.sphere.Page 2 (14,139))</span>
+<span id="L119"><a href="#L119"> 119</a>     (htn : T ≠ 0) (t : BiHom 125 139 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L120"><a href="#L120"> 120</a>     (hlt : (KIP126.Literature.sphereFirstQuotient model) 14 139 (quotientClass 1 t) = T) :</span>
+<span id="L121"><a href="#L121"> 121</a>     SphereDetected 14 139 0 T t := by</span>
+<span id="L122"><a href="#L122"> 122</a>   have hd := model.sphereDetectionCompatible.homotopy_lambda 14 139 0 t</span>
+<span id="L123"><a href="#L123"> 123</a>   change Detects (model.convergence .sphere) (14,139,139)</span>
+<span id="L124"><a href="#L124"> 124</a>     (sphereLabel 14 139 0 ((KIP126.Literature.sphereFirstQuotient model) 14 139 (quotientClass 1 t))) (lambdaMultiply 0 t) at hd</span>
+<span id="L125"><a href="#L125"> 125</a>   rw [hlt,KIP126.Main.Internal.lambda_zero_125_139] at hd</span>
+<span id="L126"><a href="#L126"> 126</a>   refine ⟨hd,?_⟩</span>
+<span id="L127"><a href="#L127"> 127</a>   obtain ⟨e,he,_,_,_⟩ := hd</span>
+<span id="L128"><a href="#L128"> 128</a>   refine ⟨e,he,?_⟩</span>
+<span id="L129"><a href="#L129"> 129</a>   intro he0</span>
+<span id="L130"><a href="#L130"> 130</a>   have hn := family_infinity_representative_map model.nu.unitIso.inv (14,139,139) _ _ he</span>
+<span id="L131"><a href="#L131"> 131</a>   have hl := sphere_label_to_nu 0 14 139 T</span>
+<span id="L132"><a href="#L132"> 132</a>   change familyPageMap model.family model.nu.unitIso.inv 2 (14,139,139)</span>
+<span id="L133"><a href="#L133"> 133</a>     (sphereLabel 14 139 0 T) = targetNuLabel model .sphere 14 139 0 T at hl</span>
+<span id="L134"><a href="#L134"> 134</a>   rw [hl,he0,map_zero] at hn</span>
+<span id="L135"><a href="#L135"> 135</a>   obtain ⟨ht,hz⟩ := (KIP126.Main.Internal.Selected.nu_target_label_iff 14 139 0 T 0).mp hn</span>
+<span id="L136"><a href="#L136"> 136</a>   rw [map_zero] at hz</span>
+<span id="L137"><a href="#L137"> 137</a>   have hh := (subquotientClass_eq_zero_iff _ _ ⟨T,ht⟩).mp hz.symm</span>
+<span id="L138"><a href="#L138"> 138</a>   change T ∈ boundaries model .sphere 1 (14,139) at hh</span>
+<span id="L139"><a href="#L139"> 139</a>   rw [boundaries_one] at hh</span>
+<span id="L140"><a href="#L140"> 140</a>   exact htn hh</span>
+<span id="L141"><a href="#L141"> 141</a> </span>
+<span id="L142"><a href="#L142"> 142</a> end</span>
+<span id="L143"><a href="#L143"> 143</a> end KIP126.Main.SectionSeven.Internal</span></pre>

@@ -1,0 +1,365 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz/Filtration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.FiniteFiltration</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.ConvergenceOperations</span>
+<span id="L4"><a href="#L4">   4</a> /-! Finite filtration correction and actual extension-square representatives.</span>
+<span id="L5"><a href="#L5">   5</a> ProofTools-private implementation of the representative argument in AimPaper</span>
+<span id="L6"><a href="#L6">   6</a> Proposition `prop:i8r47oe` and Corollary `cor:0012nik`;</span>
+<span id="L7"><a href="#L7">   7</a> no completion or bounded ESS is used. -/</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L11"><a href="#L11">  11</a> set_option maxHeartbeats 2000000</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L13"><a href="#L13">  13</a> noncomputable section</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> /-- Raising the source filtration terminates at the target filtration.</span>
+<span id="L16"><a href="#L16">  16</a> The correction premise is exactly nonessentiality of the fixed target grade. -/</span>
+<span id="L17"><a href="#L17">  17</a> private theorem higher_source_image_of_nonessential</span>
+<span id="L18"><a href="#L18">  18</a>     {A B : Type*} [AddCommGroup A] [AddCommGroup B]</span>
+<span id="L19"><a href="#L19">  19</a>     (f : A →+ B) (F : ℤ → AddSubgroup A) (G : ℤ → AddSubgroup B)</span>
+<span id="L20"><a href="#L20">  20</a>     (hG : Antitone G)</span>
+<span id="L21"><a href="#L21">  21</a>     (hf : ∀ u a, a ∈ F u → f a ∈ G u)</span>
+<span id="L22"><a href="#L22">  22</a>     (s t : ℤ) (hst : s ≤ t)</span>
+<span id="L23"><a href="#L23">  23</a>     (hcorrect : ∀ u, s &lt; u → u ≤ t → ∀ a, a ∈ F u → f a ∈ G t →</span>
+<span id="L24"><a href="#L24">  24</a>       ∃ b, b ∈ F u ∧ a - b ∈ F (u + 1) ∧ f b ∈ G (t + 1))</span>
+<span id="L25"><a href="#L25">  25</a>     (a : A) (ha : a ∈ F (s + 1)) (hfa : f a ∈ G t) :</span>
+<span id="L26"><a href="#L26">  26</a>     f a ∈ G (t + 1) := by</span>
+<span id="L27"><a href="#L27">  27</a>   have aux : ∀ N : ℕ, ∀ u : ℤ, s &lt; u → u + N = t + 1 →</span>
+<span id="L28"><a href="#L28">  28</a>       ∀ a, a ∈ F u → f a ∈ G t → f a ∈ G (t + 1) := by</span>
+<span id="L29"><a href="#L29">  29</a>     intro N</span>
+<span id="L30"><a href="#L30">  30</a>     induction N with</span>
+<span id="L31"><a href="#L31">  31</a>     | zero =&gt;</span>
+<span id="L32"><a href="#L32">  32</a>       intro u hu he a ha hfa</span>
+<span id="L33"><a href="#L33">  33</a>       have hut : u = t + 1 := by omega</span>
+<span id="L34"><a href="#L34">  34</a>       subst u</span>
+<span id="L35"><a href="#L35">  35</a>       exact hf _ _ ha</span>
+<span id="L36"><a href="#L36">  36</a>     | succ N ih =&gt;</span>
+<span id="L37"><a href="#L37">  37</a>       intro u hu he a ha hfa</span>
+<span id="L38"><a href="#L38">  38</a>       obtain ⟨b, hb, hab, hfb⟩ := hcorrect u hu (by omega) a ha hfa</span>
+<span id="L39"><a href="#L39">  39</a>       have hsub : f (a - b) ∈ G t := by</span>
+<span id="L40"><a href="#L40">  40</a>         rw [map_sub]</span>
+<span id="L41"><a href="#L41">  41</a>         exact (G t).sub_mem hfa (hG (by omega) hfb)</span>
+<span id="L42"><a href="#L42">  42</a>       have hh := ih (u + 1) (by omega) (by omega) (a - b) hab hsub</span>
+<span id="L43"><a href="#L43">  43</a>       have h := (G (t + 1)).add_mem hh hfb</span>
+<span id="L44"><a href="#L44">  44</a>       simpa only [map_sub, sub_add_cancel] using h</span>
+<span id="L45"><a href="#L45">  45</a>   exact aux (t - s).toNat (s + 1) (by omega) (by omega) a ha hfa</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> /-- A finite interval of essential-crossing exclusions makes every higher-source</span>
+<span id="L48"><a href="#L48">  48</a> correction invisible at the selected target grade. No completion is used. -/</span>
+<span id="L49"><a href="#L49">  49</a> private theorem higher_source_image_of_no_crossing</span>
+<span id="L50"><a href="#L50">  50</a>     {A B : Type*} [AddCommGroup A] [AddCommGroup B]</span>
+<span id="L51"><a href="#L51">  51</a>     (f : A →+ B) (F : ℤ → AddSubgroup A) (G : ℤ → AddSubgroup B)</span>
+<span id="L52"><a href="#L52">  52</a>     (hG : Antitone G)</span>
+<span id="L53"><a href="#L53">  53</a>     (hf : ∀ u a, a ∈ F u → f a ∈ G u)</span>
+<span id="L54"><a href="#L54">  54</a>     (s n : ℤ) (hn : 0 ≤ n)</span>
+<span id="L55"><a href="#L55">  55</a>     (hcorrect : ∀ u v, s &lt; u → u ≤ v → v ≤ s + n →</span>
+<span id="L56"><a href="#L56">  56</a>       ∀ a, a ∈ F u → f a ∈ G v →</span>
+<span id="L57"><a href="#L57">  57</a>         ∃ b, b ∈ F u ∧ a - b ∈ F (u + 1) ∧ f b ∈ G (v + 1))</span>
+<span id="L58"><a href="#L58">  58</a>     (a : A) (ha : a ∈ F (s + 1)) : f a ∈ G (s + n + 1) := by</span>
+<span id="L59"><a href="#L59">  59</a>   by_contra hnot</span>
+<span id="L60"><a href="#L60">  60</a>   obtain ⟨v, hv, hvn, hva, hvnext⟩ :=</span>
+<span id="L61"><a href="#L61">  61</a>     first_nonzero_filtration_grade G (s + 1) n.toNat (f a)</span>
+<span id="L62"><a href="#L62">  62</a>       (hf _ _ ha) (by simpa only [Int.toNat_of_nonneg hn, add_assoc, add_comm, add_left_comm] using hnot)</span>
+<span id="L63"><a href="#L63">  63</a>   apply hvnext</span>
+<span id="L64"><a href="#L64">  64</a>   exact higher_source_image_of_nonessential f F G hG hf s v (by omega)</span>
+<span id="L65"><a href="#L65">  65</a>     (fun u hsu huv =&gt; hcorrect u v hsu huv (by omega)) a ha hva</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> /-- The image of every representative has the same target grade once all</span>
+<span id="L68"><a href="#L68">  68</a> higher-source corrections have zero target grade. -/</span>
+<span id="L69"><a href="#L69">  69</a> private theorem image_same_target_of_no_crossing</span>
+<span id="L70"><a href="#L70">  70</a>     {A B : Type*} [AddCommGroup A] [AddCommGroup B]</span>
+<span id="L71"><a href="#L71">  71</a>     (f : A →+ B) (F : ℤ → AddSubgroup A) (G : ℤ → AddSubgroup B)</span>
+<span id="L72"><a href="#L72">  72</a>     (hG : Antitone G)</span>
+<span id="L73"><a href="#L73">  73</a>     (hf : ∀ u a, a ∈ F u → f a ∈ G u)</span>
+<span id="L74"><a href="#L74">  74</a>     (s n : ℤ) (hn : 0 ≤ n)</span>
+<span id="L75"><a href="#L75">  75</a>     (hcorrect : ∀ u v, s &lt; u → u ≤ v → v ≤ s + n →</span>
+<span id="L76"><a href="#L76">  76</a>       ∀ a, a ∈ F u → f a ∈ G v →</span>
+<span id="L77"><a href="#L77">  77</a>         ∃ b, b ∈ F u ∧ a - b ∈ F (u + 1) ∧ f b ∈ G (v + 1))</span>
+<span id="L78"><a href="#L78">  78</a>     (a a₀ : A) (hrep : a - a₀ ∈ F (s + 1)) :</span>
+<span id="L79"><a href="#L79">  79</a>     f a - f a₀ ∈ G (s + n + 1) := by</span>
+<span id="L80"><a href="#L80">  80</a>   simpa only [map_sub] using</span>
+<span id="L81"><a href="#L81">  81</a>     higher_source_image_of_no_crossing f F G hG hf s n hn hcorrect (a-a₀) hrep</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> section Tower</span>
+<span id="L84"><a href="#L84">  84</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L85"><a href="#L85">  85</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L86"><a href="#L86">  86</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L87"><a href="#L87">  87</a> universe u v</span>
+<span id="L88"><a href="#L88">  88</a> variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]</span>
+<span id="L89"><a href="#L89">  89</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L90"><a href="#L90">  90</a>   {H : Syn} {unit : S_0_0 ⟶ H} {E : SyntheticAdamsFamily Syn}</span>
+<span id="L91"><a href="#L91">  91</a>   {P : SyntheticTowerPresentation unit E} {X Y : Syn} {g : X ⟶ Y}</span>
+<span id="L92"><a href="#L92">  92</a>   {cx : SyntheticTowerConvergence P X} {cy : SyntheticTowerConvergence P Y}</span>
+<span id="L93"><a href="#L93">  93</a> </span>
+<span id="L94"><a href="#L94">  94</a> private theorem tower_essential_iff_no_zero</span>
+<span id="L95"><a href="#L95">  95</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L96"><a href="#L96">  96</a>     (p : ℤ × ℤ) (s n : ℤ)</span>
+<span id="L97"><a href="#L97">  97</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L98"><a href="#L98">  98</a>     (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)</span>
+<span id="L99"><a href="#L99">  99</a>     (he : TowerExtensionEquation M p s n x y) :</span>
+<span id="L100"><a href="#L100"> 100</a>     TowerEssentialExtension M p s n x y ↔</span>
+<span id="L101"><a href="#L101"> 101</a>       ¬TowerExtensionEquation M p s n x 0 := by</span>
+<span id="L102"><a href="#L102"> 102</a>   have h0 {A : ModuleCat.{v} ℤ} : elementMap (0 : A) = 0 := by</span>
+<span id="L103"><a href="#L103"> 103</a>     ext z</span>
+<span id="L104"><a href="#L104"> 104</a>     simp [elementMap]</span>
+<span id="L105"><a href="#L105"> 105</a>   simpa only [TowerEssentialExtension, TowerExtensionEquation, h0] using</span>
+<span id="L106"><a href="#L106"> 106</a>     M.essential_iff_no_zero_target p s n</span>
+<span id="L107"><a href="#L107"> 107</a>       (by simp [SyntheticTowerConvergence.toConvergence])</span>
+<span id="L108"><a href="#L108"> 108</a>       (by simp [SyntheticTowerConvergence.toConvergence]) (elementMap x) (elementMap y) he</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> /-- Nonessentiality supplies a representative with the same leading source</span>
+<span id="L111"><a href="#L111"> 111</a> and zero leading target; the difference raises the source filtration. -/</span>
+<span id="L112"><a href="#L112"> 112</a> private theorem tower_correction_of_nonessential</span>
+<span id="L113"><a href="#L113"> 113</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L114"><a href="#L114"> 114</a>     (p : ℤ × ℤ) (s n : ℤ) (hn : 0 ≤ n)</span>
+<span id="L115"><a href="#L115"> 115</a>     (hnot : ∀ x y, ¬TowerEssentialExtension M p s n x y)</span>
+<span id="L116"><a href="#L116"> 116</a>     (a : BiHom p.1 p.2 X) (ha : a ∈ P.filtrationSubmodule X s p)</span>
+<span id="L117"><a href="#L117"> 117</a>     (hfa : a ≫ g ∈ P.filtrationSubmodule Y (s+n) p) :</span>
+<span id="L118"><a href="#L118"> 118</a>     ∃ b, b ∈ P.filtrationSubmodule X s p ∧</span>
+<span id="L119"><a href="#L119"> 119</a>       a-b ∈ P.filtrationSubmodule X (s+1) p ∧</span>
+<span id="L120"><a href="#L120"> 120</a>       b ≫ g ∈ P.filtrationSubmodule Y (s+n+1) p := by</span>
+<span id="L121"><a href="#L121"> 121</a>   obtain ⟨ar, har⟩ := filtration_representative_exists P X p s a ha</span>
+<span id="L122"><a href="#L122"> 122</a>   obtain ⟨br, hbr⟩ := filtration_representative_exists P Y p (s+n) (a≫g) hfa</span>
+<span id="L123"><a href="#L123"> 123</a>   let x := (infinityGradedIso cx p s).inv ((P.filtration X).toAssociatedGraded s p ar)</span>
+<span id="L124"><a href="#L124"> 124</a>   let y := (infinityGradedIso cy p (s+n)).inv ((P.filtration Y).toAssociatedGraded (s+n) p br)</span>
+<span id="L125"><a href="#L125"> 125</a>   have hx : (P.filtration X).toAssociatedGraded s p ar = (infinityGradedIso cx p s).hom x :=</span>
+<span id="L126"><a href="#L126"> 126</a>     ((infinityGradedIso cx p s).toLinearEquiv.apply_symm_apply _).symm</span>
+<span id="L127"><a href="#L127"> 127</a>   have hy : (P.filtration Y).toAssociatedGraded (s+n) p br = (infinityGradedIso cy p (s+n)).hom y :=</span>
+<span id="L128"><a href="#L128"> 128</a>     ((infinityGradedIso cy p (s+n)).toLinearEquiv.apply_symm_apply _).symm</span>
+<span id="L129"><a href="#L129"> 129</a>   have he : TowerExtensionEquation M p s n x y :=</span>
+<span id="L130"><a href="#L130"> 130</a>     (tower_extension_iff M p s n x y).mpr ⟨hn, ar, br, by rw [har,hbr], hx,hy⟩</span>
+<span id="L131"><a href="#L131"> 131</a>   have he0 : TowerExtensionEquation M p s n x 0 := by</span>
+<span id="L132"><a href="#L132"> 132</a>     by_contra hz</span>
+<span id="L133"><a href="#L133"> 133</a>     exact hnot x y ((tower_essential_iff_no_zero M p s n x y he).mpr hz)</span>
+<span id="L134"><a href="#L134"> 134</a>   obtain ⟨_,ar&#x27;,br&#x27;,he&#x27;,hx&#x27;,hy&#x27;⟩ := (tower_extension_iff M p s n x 0).mp he0</span>
+<span id="L135"><a href="#L135"> 135</a>   let b := ((P.filtration X).F s p).arrow ar&#x27;</span>
+<span id="L136"><a href="#L136"> 136</a>   refine ⟨b, ?_, ?_, ?_⟩</span>
+<span id="L137"><a href="#L137"> 137</a>   · have hh : b ∈ ModuleCat.subobjectModule _ ((P.filtration X).F s p) := ⟨ar&#x27;,rfl⟩</span>
+<span id="L138"><a href="#L138"> 138</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hh</span>
+<span id="L139"><a href="#L139"> 139</a>   · have hh := (element_grade_equal_iff (P.filtration X) s p ar ar&#x27;).mp (hx.trans hx&#x27;.symm)</span>
+<span id="L140"><a href="#L140"> 140</a>     rw [har] at hh</span>
+<span id="L141"><a href="#L141"> 141</a>     simpa only [b,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hh</span>
+<span id="L142"><a href="#L142"> 142</a>   · have hh := (element_grade_equal_iff (P.filtration Y) (s+n) p br&#x27; 0).mp (by</span>
+<span id="L143"><a href="#L143"> 143</a>       rw [hy&#x27;]; simp only [map_zero])</span>
+<span id="L144"><a href="#L144"> 144</a>     have hz : ((P.filtration Y).F (s+n) p).arrow (0 : (Subobject.underlying.obj ((P.filtration Y).F (s+n) p) : ModuleCat.{v} ℤ)) = 0 := map_zero _</span>
+<span id="L145"><a href="#L145"> 145</a>     rw [hz,sub_zero,←he&#x27;] at hh</span>
+<span id="L146"><a href="#L146"> 146</a>     simpa only [b,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hh</span>
+<span id="L147"><a href="#L147"> 147</a> </span>
+<span id="L148"><a href="#L148"> 148</a> /-- Absence of essential higher-source extensions on the finite triangle</span>
+<span id="L149"><a href="#L149"> 149</a> forces all choices of a source representative to have the same target grade. -/</span>
+<span id="L150"><a href="#L150"> 150</a> private theorem tower_image_same_target_of_no_crossing</span>
+<span id="L151"><a href="#L151"> 151</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L152"><a href="#L152"> 152</a>     (p : ℤ × ℤ) (s n : ℤ) (hn : 0 ≤ n)</span>
+<span id="L153"><a href="#L153"> 153</a>     (hnot : ∀ u v : ℤ, s &lt; u → u ≤ v → v ≤ s+n →</span>
+<span id="L154"><a href="#L154"> 154</a>       ∀ x y, ¬TowerEssentialExtension M p u (v-u) x y)</span>
+<span id="L155"><a href="#L155"> 155</a>     (a a₀ : BiHom p.1 p.2 X)</span>
+<span id="L156"><a href="#L156"> 156</a>     (ha : a-a₀ ∈ P.filtrationSubmodule X (s+1) p) :</span>
+<span id="L157"><a href="#L157"> 157</a>     a≫g - a₀≫g ∈ P.filtrationSubmodule Y (s+n+1) p := by</span>
+<span id="L158"><a href="#L158"> 158</a>   let F : ℤ → AddSubgroup (BiHom p.1 p.2 X) := fun s =&gt; (P.filtrationSubmodule X s p).toAddSubgroup</span>
+<span id="L159"><a href="#L159"> 159</a>   let G : ℤ → AddSubgroup (BiHom p.1 p.2 Y) := fun s =&gt; (P.filtrationSubmodule Y s p).toAddSubgroup</span>
+<span id="L160"><a href="#L160"> 160</a>   let f : BiHom p.1 p.2 X →+ BiHom p.1 p.2 Y := (syntheticHomotopyMap g p).hom.toAddMonoidHom</span>
+<span id="L161"><a href="#L161"> 161</a>   apply image_same_target_of_no_crossing f F G</span>
+<span id="L162"><a href="#L162"> 162</a>     (fun i j hij a ha =&gt; P.filtrationSubmodule_antitone Y p hij ha)</span>
+<span id="L163"><a href="#L163"> 163</a>     (fun u a ha =&gt; map_preserves_filtration M p u a ha) s n hn ?_ a a₀ ha</span>
+<span id="L164"><a href="#L164"> 164</a>   intro u v hsu huv hvs a ha hfa</span>
+<span id="L165"><a href="#L165"> 165</a>   have huv&#x27; : u + (v-u) = v := by omega</span>
+<span id="L166"><a href="#L166"> 166</a>   change a ≫ g ∈ P.filtrationSubmodule Y v p at hfa</span>
+<span id="L167"><a href="#L167"> 167</a>   change ∃ b, b ∈ P.filtrationSubmodule X u p ∧ a-b ∈ P.filtrationSubmodule X (u+1) p ∧ b ≫ g ∈ P.filtrationSubmodule Y (v+1) p</span>
+<span id="L168"><a href="#L168"> 168</a>   have hh := tower_correction_of_nonessential M p u (v-u) (by omega)</span>
+<span id="L169"><a href="#L169"> 169</a>     (hnot u v hsu huv hvs) a ha (by simpa only [huv&#x27;, f, G, syntheticHomotopyMap] using hfa)</span>
+<span id="L170"><a href="#L170"> 170</a>   simpa only [huv&#x27;,f,F,G,syntheticHomotopyMap] using hh</span>
+<span id="L171"><a href="#L171"> 171</a> </span>
+<span id="L172"><a href="#L172"> 172</a> /-- Every representative of a fixed source grade has the prescribed target</span>
+<span id="L173"><a href="#L173"> 173</a> when the extension has no essential crossing. -/</span>
+<span id="L174"><a href="#L174"> 174</a> private theorem tower_target_of_any_source_frame</span>
+<span id="L175"><a href="#L175"> 175</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L176"><a href="#L176"> 176</a>     (p : ℤ × ℤ) (s n : ℤ)</span>
+<span id="L177"><a href="#L177"> 177</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L178"><a href="#L178"> 178</a>     (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)</span>
+<span id="L179"><a href="#L179"> 179</a>     (he : TowerExtensionEquation M p s n x y)</span>
+<span id="L180"><a href="#L180"> 180</a>     (hnot : ∀ u v : ℤ, s &lt; u → u ≤ v → v ≤ s+n →</span>
+<span id="L181"><a href="#L181"> 181</a>       ∀ x y, ¬TowerEssentialExtension M p u (v-u) x y)</span>
+<span id="L182"><a href="#L182"> 182</a>     (ar : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))</span>
+<span id="L183"><a href="#L183"> 183</a>     (har : (P.filtration X).toAssociatedGraded s p ar = (infinityGradedIso cx p s).hom x) :</span>
+<span id="L184"><a href="#L184"> 184</a>     ∃ br : (Subobject.underlying.obj ((P.filtration Y).F (s+n) p) : ModuleCat.{v} ℤ),</span>
+<span id="L185"><a href="#L185"> 185</a>       ((P.filtration X).F s p).arrow ar ≫ g = ((P.filtration Y).F (s+n) p).arrow br ∧</span>
+<span id="L186"><a href="#L186"> 186</a>       (P.filtration Y).toAssociatedGraded (s+n) p br = (infinityGradedIso cy p (s+n)).hom y := by</span>
+<span id="L187"><a href="#L187"> 187</a>   obtain ⟨hn,ar₀,br₀,he₀,hx₀,hy₀⟩ := (tower_extension_iff M p s n x y).mp he</span>
+<span id="L188"><a href="#L188"> 188</a>   have hsource := (element_grade_equal_iff (P.filtration X) s p ar ar₀).mp (har.trans hx₀.symm)</span>
+<span id="L189"><a href="#L189"> 189</a>   have hsource&#x27; : ((P.filtration X).F s p).arrow ar -</span>
+<span id="L190"><a href="#L190"> 190</a>       ((P.filtration X).F s p).arrow ar₀ ∈ P.filtrationSubmodule X (s+1) p := by</span>
+<span id="L191"><a href="#L191"> 191</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hsource</span>
+<span id="L192"><a href="#L192"> 192</a>   have hdiff := tower_image_same_target_of_no_crossing M p s n hn hnot _ _ hsource&#x27;</span>
+<span id="L193"><a href="#L193"> 193</a>   rw [he₀] at hdiff</span>
+<span id="L194"><a href="#L194"> 194</a>   have hb₀ : ((P.filtration Y).F (s+n) p).arrow br₀ ∈ P.filtrationSubmodule Y (s+n) p := by</span>
+<span id="L195"><a href="#L195"> 195</a>     have hh : ((P.filtration Y).F (s+n) p).arrow br₀ ∈</span>
+<span id="L196"><a href="#L196"> 196</a>         ModuleCat.subobjectModule _ ((P.filtration Y).F (s+n) p) := ⟨br₀,rfl⟩</span>
+<span id="L197"><a href="#L197"> 197</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hh</span>
+<span id="L198"><a href="#L198"> 198</a>   have hb : ((P.filtration X).F s p).arrow ar ≫ g ∈ P.filtrationSubmodule Y (s+n) p := by</span>
+<span id="L199"><a href="#L199"> 199</a>     have hh := (P.filtrationSubmodule Y (s+n) p).add_mem</span>
+<span id="L200"><a href="#L200"> 200</a>       (P.filtrationSubmodule_antitone Y p (show s+n≤s+n+1 by omega) hdiff) hb₀</span>
+<span id="L201"><a href="#L201"> 201</a>     simpa only [sub_add_cancel] using hh</span>
+<span id="L202"><a href="#L202"> 202</a>   obtain ⟨br,hbr⟩ := filtration_representative_exists P Y p (s+n) _ hb</span>
+<span id="L203"><a href="#L203"> 203</a>   refine ⟨br,hbr.symm,?_⟩</span>
+<span id="L204"><a href="#L204"> 204</a>   have hdiff&#x27; : ((P.filtration Y).F (s+n) p).arrow br -</span>
+<span id="L205"><a href="#L205"> 205</a>       ((P.filtration Y).F (s+n) p).arrow br₀ ∈</span>
+<span id="L206"><a href="#L206"> 206</a>         ModuleCat.subobjectModule _ ((P.filtration Y).F (s+n+1) p) := by</span>
+<span id="L207"><a href="#L207"> 207</a>     rw [hbr]</span>
+<span id="L208"><a href="#L208"> 208</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hdiff</span>
+<span id="L209"><a href="#L209"> 209</a>   exact ((element_grade_equal_iff (P.filtration Y) (s+n) p br br₀).mpr hdiff&#x27;).trans hy₀</span>
+<span id="L210"><a href="#L210"> 210</a> </span>
+<span id="L211"><a href="#L211"> 211</a> /-- The actual higher-source triangle of essential extensions, at fixed stem</span>
+<span id="L212"><a href="#L212"> 212</a> and synthetic weight. -/</span>
+<span id="L213"><a href="#L213"> 213</a> private def TowerNoCrossing</span>
+<span id="L214"><a href="#L214"> 214</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L215"><a href="#L215"> 215</a>     (p : ℤ × ℤ) (s n : ℤ) : Prop :=</span>
+<span id="L216"><a href="#L216"> 216</a>   ∀ u v : ℤ, s &lt; u → u ≤ v → v ≤ s+n →</span>
+<span id="L217"><a href="#L217"> 217</a>     ∀ x y, ¬TowerEssentialExtension M p u (v-u) x y</span>
+<span id="L218"><a href="#L218"> 218</a> </span>
+<span id="L219"><a href="#L219"> 219</a> /-- A correction with the same source grade and a higher target filtration</span>
+<span id="L220"><a href="#L220"> 220</a> excludes every essential extension in the specified crossing triangle. -/</span>
+<span id="L221"><a href="#L221"> 221</a> private theorem tower_no_crossing_of_correction</span>
+<span id="L222"><a href="#L222"> 222</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L223"><a href="#L223"> 223</a>     (p : ℤ × ℤ) (s n : ℤ)</span>
+<span id="L224"><a href="#L224"> 224</a>     (hcorrect : ∀ u v : ℤ, s &lt; u → u ≤ v → v ≤ s+n →</span>
+<span id="L225"><a href="#L225"> 225</a>       ∀ a : BiHom p.1 p.2 X, a ∈ P.filtrationSubmodule X u p →</span>
+<span id="L226"><a href="#L226"> 226</a>         a ≫ g ∈ P.filtrationSubmodule Y v p →</span>
+<span id="L227"><a href="#L227"> 227</a>         ∃ b, b ∈ P.filtrationSubmodule X u p ∧</span>
+<span id="L228"><a href="#L228"> 228</a>           a-b ∈ P.filtrationSubmodule X (u+1) p ∧</span>
+<span id="L229"><a href="#L229"> 229</a>           b ≫ g ∈ P.filtrationSubmodule Y (v+1) p) :</span>
+<span id="L230"><a href="#L230"> 230</a>     TowerNoCrossing M p s n := by</span>
+<span id="L231"><a href="#L231"> 231</a>   intro u v hsu huv hvs x y hess</span>
+<span id="L232"><a href="#L232"> 232</a>   have he : TowerExtensionEquation M p u (v-u) x y := hess.1</span>
+<span id="L233"><a href="#L233"> 233</a>   apply (tower_essential_iff_no_zero M p u (v-u) x y he).mp hess</span>
+<span id="L234"><a href="#L234"> 234</a>   obtain ⟨hn,ar,br,heq,hx,hy⟩ := (tower_extension_iff M p u (v-u) x y).mp he</span>
+<span id="L235"><a href="#L235"> 235</a>   let a := ((P.filtration X).F u p).arrow ar</span>
+<span id="L236"><a href="#L236"> 236</a>   have ha : a ∈ P.filtrationSubmodule X u p := by</span>
+<span id="L237"><a href="#L237"> 237</a>     have hm : a ∈ ModuleCat.subobjectModule _ ((P.filtration X).F u p) := ⟨ar,rfl⟩</span>
+<span id="L238"><a href="#L238"> 238</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hm</span>
+<span id="L239"><a href="#L239"> 239</a>   have hfa : a ≫ g ∈ P.filtrationSubmodule Y (u+(v-u)) p := by</span>
+<span id="L240"><a href="#L240"> 240</a>     have hm : a ≫ g ∈ ModuleCat.subobjectModule _ ((P.filtration Y).F (u+(v-u)) p) :=</span>
+<span id="L241"><a href="#L241"> 241</a>       ⟨br,heq.symm⟩</span>
+<span id="L242"><a href="#L242"> 242</a>     simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hm</span>
+<span id="L243"><a href="#L243"> 243</a>   obtain ⟨b,hb,hab,hbg⟩ := hcorrect u (u+(v-u)) hsu (by omega) (by omega) a ha hfa</span>
+<span id="L244"><a href="#L244"> 244</a>   obtain ⟨ar&#x27;,har&#x27;⟩ := filtration_representative_exists P X p u b hb</span>
+<span id="L245"><a href="#L245"> 245</a>   have hbg&#x27; := P.filtrationSubmodule_antitone Y p (show u+(v-u)≤u+(v-u)+1 by omega) hbg</span>
+<span id="L246"><a href="#L246"> 246</a>   obtain ⟨br&#x27;,hbr&#x27;⟩ := filtration_representative_exists P Y p (u+(v-u)) (b≫g) hbg&#x27;</span>
+<span id="L247"><a href="#L247"> 247</a>   apply (tower_extension_iff M p u (v-u) x 0).mpr</span>
+<span id="L248"><a href="#L248"> 248</a>   refine ⟨hn,ar&#x27;,br&#x27;,by rw [har&#x27;,hbr&#x27;],?_,?_⟩</span>
+<span id="L249"><a href="#L249"> 249</a>   · have hdiff : ((P.filtration X).F u p).arrow ar -</span>
+<span id="L250"><a href="#L250"> 250</a>         ((P.filtration X).F u p).arrow ar&#x27; ∈</span>
+<span id="L251"><a href="#L251"> 251</a>         ModuleCat.subobjectModule _ ((P.filtration X).F (u+1) p) := by</span>
+<span id="L252"><a href="#L252"> 252</a>       rw [har&#x27;]</span>
+<span id="L253"><a href="#L253"> 253</a>       simpa only [a,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hab</span>
+<span id="L254"><a href="#L254"> 254</a>     exact ((element_grade_equal_iff (P.filtration X) u p ar ar&#x27;).mpr hdiff).symm.trans hx</span>
+<span id="L255"><a href="#L255"> 255</a>   · rw [map_zero]</span>
+<span id="L256"><a href="#L256"> 256</a>     have hdiff : ((P.filtration Y).F (u+(v-u)) p).arrow br&#x27; -</span>
+<span id="L257"><a href="#L257"> 257</a>         ((P.filtration Y).F (u+(v-u)) p).arrow</span>
+<span id="L258"><a href="#L258"> 258</a>           (0 : (Subobject.underlying.obj ((P.filtration Y).F (u+(v-u)) p) : ModuleCat.{v} ℤ)) ∈</span>
+<span id="L259"><a href="#L259"> 259</a>         ModuleCat.subobjectModule _ ((P.filtration Y).F (u+(v-u)+1) p) := by</span>
+<span id="L260"><a href="#L260"> 260</a>       rw [hbr&#x27;,map_zero,sub_zero]</span>
+<span id="L261"><a href="#L261"> 261</a>       simpa only [SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hbg</span>
+<span id="L262"><a href="#L262"> 262</a>     have hgrade := (element_grade_equal_iff (P.filtration Y) (u+(v-u)) p br&#x27; 0).mpr hdiff</span>
+<span id="L263"><a href="#L263"> 263</a>     simpa only [map_zero] using hgrade</span>
+<span id="L264"><a href="#L264"> 264</a> </span>
+<span id="L265"><a href="#L265"> 265</a> private theorem square_frames</span>
+<span id="L266"><a href="#L266"> 266</a>     {Z W : Syn}</span>
+<span id="L267"><a href="#L267"> 267</a>     {cz : SyntheticTowerConvergence P Z} {cw : SyntheticTowerConvergence P W}</span>
+<span id="L268"><a href="#L268"> 268</a>     {f : X ⟶ Y} {h : X ⟶ Z} {j : Z ⟶ W} {k : Y ⟶ W}</span>
+<span id="L269"><a href="#L269"> 269</a>     (Mf : ConvergentMap E f cx.toConvergence cy.toConvergence)</span>
+<span id="L270"><a href="#L270"> 270</a>     (Mh : ConvergentMap E h cx.toConvergence cz.toConvergence)</span>
+<span id="L271"><a href="#L271"> 271</a>     (Mj : ConvergentMap E j cz.toConvergence cw.toConvergence)</span>
+<span id="L272"><a href="#L272"> 272</a>     (hcomm : f ≫ k = h ≫ j)</span>
+<span id="L273"><a href="#L273"> 273</a>     (p : ℤ × ℤ) (s n m l : ℤ)</span>
+<span id="L274"><a href="#L274"> 274</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L275"><a href="#L275"> 275</a>     (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)</span>
+<span id="L276"><a href="#L276"> 276</a>     (z : ((E.obj Z).sequence.ssData (s+m,p.1+(s+m),p.2)).eInfty)</span>
+<span id="L277"><a href="#L277"> 277</a>     (w : ((E.obj W).sequence.ssData (s+m+l,p.1+(s+m+l),p.2)).eInfty)</span>
+<span id="L278"><a href="#L278"> 278</a>     (hf : TowerExtensionEquation Mf p s n x y)</span>
+<span id="L279"><a href="#L279"> 279</a>     (hh : TowerExtensionEquation Mh p s m x z)</span>
+<span id="L280"><a href="#L280"> 280</a>     (hj : TowerExtensionEquation Mj p (s+m) l z w)</span>
+<span id="L281"><a href="#L281"> 281</a>     (hnc : TowerNoCrossing Mf p s n ∨ TowerNoCrossing Mh p s m)</span>
+<span id="L282"><a href="#L282"> 282</a>     (hncj : TowerNoCrossing Mj p (s+m) l) :</span>
+<span id="L283"><a href="#L283"> 283</a>     ∃ (ar : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))</span>
+<span id="L284"><a href="#L284"> 284</a>       (br : (Subobject.underlying.obj ((P.filtration Y).F (s+n) p) : ModuleCat.{v} ℤ))</span>
+<span id="L285"><a href="#L285"> 285</a>       (cr : (Subobject.underlying.obj ((P.filtration Z).F (s+m) p) : ModuleCat.{v} ℤ))</span>
+<span id="L286"><a href="#L286"> 286</a>       (dr : (Subobject.underlying.obj ((P.filtration W).F (s+m+l) p) : ModuleCat.{v} ℤ)),</span>
+<span id="L287"><a href="#L287"> 287</a>       (P.filtration X).toAssociatedGraded s p ar = (infinityGradedIso cx p s).hom x ∧</span>
+<span id="L288"><a href="#L288"> 288</a>       (P.filtration Y).toAssociatedGraded (s+n) p br = (infinityGradedIso cy p (s+n)).hom y ∧</span>
+<span id="L289"><a href="#L289"> 289</a>       (P.filtration Z).toAssociatedGraded (s+m) p cr = (infinityGradedIso cz p (s+m)).hom z ∧</span>
+<span id="L290"><a href="#L290"> 290</a>       (P.filtration W).toAssociatedGraded (s+m+l) p dr = (infinityGradedIso cw p (s+m+l)).hom w ∧</span>
+<span id="L291"><a href="#L291"> 291</a>       ((P.filtration X).F s p).arrow ar ≫ f = ((P.filtration Y).F (s+n) p).arrow br ∧</span>
+<span id="L292"><a href="#L292"> 292</a>       ((P.filtration X).F s p).arrow ar ≫ h = ((P.filtration Z).F (s+m) p).arrow cr ∧</span>
+<span id="L293"><a href="#L293"> 293</a>       ((P.filtration Z).F (s+m) p).arrow cr ≫ j = ((P.filtration W).F (s+m+l) p).arrow dr ∧</span>
+<span id="L294"><a href="#L294"> 294</a>       ((P.filtration Y).F (s+n) p).arrow br ≫ k = ((P.filtration W).F (s+m+l) p).arrow dr := by</span>
+<span id="L295"><a href="#L295"> 295</a>   have hthree : ∃ (ar : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))</span>
+<span id="L296"><a href="#L296"> 296</a>       (br : (Subobject.underlying.obj ((P.filtration Y).F (s+n) p) : ModuleCat.{v} ℤ))</span>
+<span id="L297"><a href="#L297"> 297</a>       (cr : (Subobject.underlying.obj ((P.filtration Z).F (s+m) p) : ModuleCat.{v} ℤ)),</span>
+<span id="L298"><a href="#L298"> 298</a>       (P.filtration X).toAssociatedGraded s p ar = (infinityGradedIso cx p s).hom x ∧</span>
+<span id="L299"><a href="#L299"> 299</a>       (P.filtration Y).toAssociatedGraded (s+n) p br = (infinityGradedIso cy p (s+n)).hom y ∧</span>
+<span id="L300"><a href="#L300"> 300</a>       (P.filtration Z).toAssociatedGraded (s+m) p cr = (infinityGradedIso cz p (s+m)).hom z ∧</span>
+<span id="L301"><a href="#L301"> 301</a>       ((P.filtration X).F s p).arrow ar ≫ f = ((P.filtration Y).F (s+n) p).arrow br ∧</span>
+<span id="L302"><a href="#L302"> 302</a>       ((P.filtration X).F s p).arrow ar ≫ h = ((P.filtration Z).F (s+m) p).arrow cr := by</span>
+<span id="L303"><a href="#L303"> 303</a>     rcases hnc with hnf | hnh</span>
+<span id="L304"><a href="#L304"> 304</a>     · obtain ⟨_,ar,cr,he,ha,hc⟩ := (tower_extension_iff Mh p s m x z).mp hh</span>
+<span id="L305"><a href="#L305"> 305</a>       obtain ⟨br,he&#x27;,hb⟩ := tower_target_of_any_source_frame Mf p s n x y hf hnf ar ha</span>
+<span id="L306"><a href="#L306"> 306</a>       exact ⟨ar,br,cr,ha,hb,hc,he&#x27;,he⟩</span>
+<span id="L307"><a href="#L307"> 307</a>     · obtain ⟨_,ar,br,he,ha,hb⟩ := (tower_extension_iff Mf p s n x y).mp hf</span>
+<span id="L308"><a href="#L308"> 308</a>       obtain ⟨cr,he&#x27;,hc⟩ := tower_target_of_any_source_frame Mh p s m x z hh hnh ar ha</span>
+<span id="L309"><a href="#L309"> 309</a>       exact ⟨ar,br,cr,ha,hb,hc,he,he&#x27;⟩</span>
+<span id="L310"><a href="#L310"> 310</a>   obtain ⟨ar,br,cr,ha,hb,hc,haf,hah⟩ := hthree</span>
+<span id="L311"><a href="#L311"> 311</a>   obtain ⟨dr,hcj,hd⟩ := tower_target_of_any_source_frame Mj p (s+m) l z w hj hncj cr hc</span>
+<span id="L312"><a href="#L312"> 312</a>   refine ⟨ar,br,cr,dr,ha,hb,hc,hd,haf,hah,hcj,?_⟩</span>
+<span id="L313"><a href="#L313"> 313</a>   rw [←haf,Category.assoc,hcomm,←Category.assoc,hah,hcj]</span>
+<span id="L314"><a href="#L314"> 314</a> </span>
+<span id="L315"><a href="#L315"> 315</a> private theorem tower_map_frame</span>
+<span id="L316"><a href="#L316"> 316</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L317"><a href="#L317"> 317</a>     (p : ℤ × ℤ) (s : ℤ)</span>
+<span id="L318"><a href="#L318"> 318</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L319"><a href="#L319"> 319</a>     (ar : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))</span>
+<span id="L320"><a href="#L320"> 320</a>     (ha : (P.filtration X).toAssociatedGraded s p ar = (infinityGradedIso cx p s).hom x) :</span>
+<span id="L321"><a href="#L321"> 321</a>     ∃ br : (Subobject.underlying.obj ((P.filtration Y).F s p) : ModuleCat.{v} ℤ),</span>
+<span id="L322"><a href="#L322"> 322</a>       ((P.filtration X).F s p).arrow ar ≫ g = ((P.filtration Y).F s p).arrow br ∧</span>
+<span id="L323"><a href="#L323"> 323</a>       (P.filtration Y).toAssociatedGraded s p br = (infinityGradedIso cy p s).hom</span>
+<span id="L324"><a href="#L324"> 324</a>         ((E.functor.map g).eInftyMap (s,p.1+s,p.2) x) := by</span>
+<span id="L325"><a href="#L325"> 325</a>   let br := (M.filteredMap.compat s p).choose ar</span>
+<span id="L326"><a href="#L326"> 326</a>   have hab : ((P.filtration X).F s p).arrow ar ≫ g = ((P.filtration Y).F s p).arrow br := by</span>
+<span id="L327"><a href="#L327"> 327</a>     have h := ConcreteCategory.congr_hom (M.filteredMap.compat s p).choose_spec ar</span>
+<span id="L328"><a href="#L328"> 328</a>     change ((P.filtration Y).F s p).arrow br = M.filteredMap.map p (((P.filtration X).F s p).arrow ar) at h</span>
+<span id="L329"><a href="#L329"> 329</a>     rw [ConvergentMap.filteredMap_map] at h</span>
+<span id="L330"><a href="#L330"> 330</a>     exact h.symm</span>
+<span id="L331"><a href="#L331"> 331</a>   refine ⟨br,hab,?_⟩</span>
+<span id="L332"><a href="#L332"> 332</a>   have h := representative_grade_naturality M p s ar br hab</span>
+<span id="L333"><a href="#L333"> 333</a>   rw [ha] at h</span>
+<span id="L334"><a href="#L334"> 334</a>   have hx : (infinityGradedIso cx p s).inv ((infinityGradedIso cx p s).hom x) = x :=</span>
+<span id="L335"><a href="#L335"> 335</a>     (infinityGradedIso cx p s).toLinearEquiv.symm_apply_apply x</span>
+<span id="L336"><a href="#L336"> 336</a>   rw [hx] at h</span>
+<span id="L337"><a href="#L337"> 337</a>   exact ((infinityGradedIso cy p s).toLinearEquiv.apply_symm_apply _).symm.trans</span>
+<span id="L338"><a href="#L338"> 338</a>     (congrArg (infinityGradedIso cy p s).hom h)</span>
+<span id="L339"><a href="#L339"> 339</a> </span>
+<span id="L340"><a href="#L340"> 340</a> private theorem tower_extension_map</span>
+<span id="L341"><a href="#L341"> 341</a>     {X&#x27; Y&#x27; : Syn}</span>
+<span id="L342"><a href="#L342"> 342</a>     {cx&#x27; : SyntheticTowerConvergence P X&#x27;} {cy&#x27; : SyntheticTowerConvergence P Y&#x27;}</span>
+<span id="L343"><a href="#L343"> 343</a>     {g&#x27; : X&#x27; ⟶ Y&#x27;} {a : X ⟶ X&#x27;} {b : Y ⟶ Y&#x27;}</span>
+<span id="L344"><a href="#L344"> 344</a>     (M : ConvergentMap E g cx.toConvergence cy.toConvergence)</span>
+<span id="L345"><a href="#L345"> 345</a>     (M&#x27; : ConvergentMap E g&#x27; cx&#x27;.toConvergence cy&#x27;.toConvergence)</span>
+<span id="L346"><a href="#L346"> 346</a>     (Ma : ConvergentMap E a cx.toConvergence cx&#x27;.toConvergence)</span>
+<span id="L347"><a href="#L347"> 347</a>     (Mb : ConvergentMap E b cy.toConvergence cy&#x27;.toConvergence)</span>
+<span id="L348"><a href="#L348"> 348</a>     (hcomm : g ≫ b = a ≫ g&#x27;)</span>
+<span id="L349"><a href="#L349"> 349</a>     (p : ℤ × ℤ) (s n : ℤ)</span>
+<span id="L350"><a href="#L350"> 350</a>     (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L351"><a href="#L351"> 351</a>     (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)</span>
+<span id="L352"><a href="#L352"> 352</a>     (he : TowerExtensionEquation M p s n x y) :</span>
+<span id="L353"><a href="#L353"> 353</a>     TowerExtensionEquation M&#x27; p s n</span>
+<span id="L354"><a href="#L354"> 354</a>       ((E.functor.map a).eInftyMap (s,p.1+s,p.2) x)</span>
+<span id="L355"><a href="#L355"> 355</a>       ((E.functor.map b).eInftyMap (s+n,p.1+(s+n),p.2) y) := by</span>
+<span id="L356"><a href="#L356"> 356</a>   obtain ⟨hn,ar,br,hab,ha,hb⟩ := (tower_extension_iff M p s n x y).mp he</span>
+<span id="L357"><a href="#L357"> 357</a>   obtain ⟨ar&#x27;,haa,ha&#x27;⟩ := tower_map_frame Ma p s x ar ha</span>
+<span id="L358"><a href="#L358"> 358</a>   obtain ⟨br&#x27;,hbb,hb&#x27;⟩ := tower_map_frame Mb p (s+n) y br hb</span>
+<span id="L359"><a href="#L359"> 359</a>   apply (tower_extension_iff M&#x27; p s n _ _).mpr</span>
+<span id="L360"><a href="#L360"> 360</a>   refine ⟨hn,ar&#x27;,br&#x27;,?_,ha&#x27;,hb&#x27;⟩</span>
+<span id="L361"><a href="#L361"> 361</a>   rw [←haa,Category.assoc,←hcomm,←Category.assoc,hab,hbb]</span>
+<span id="L362"><a href="#L362"> 362</a> </span>
+<span id="L363"><a href="#L363"> 363</a> end Tower</span>
+<span id="L364"><a href="#L364"> 364</a> end</span>
+<span id="L365"><a href="#L365"> 365</a> end KIP126.ProofTools.Internal.Leibniz</span></pre>

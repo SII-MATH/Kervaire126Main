@@ -1,0 +1,84 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/FiniteFiltration.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/FiniteFiltration.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Finite filtration arguments from the proof of the paper&#x27;s stretching</span>
+<span id="L6"><a href="#L6">   6</a> criterion. Migrated with their proofs from KIP126/Def/Kervaire/Route/Tools/</span>
+<span id="L7"><a href="#L7">   7</a> PageExtensionStretching/Proofs.lean at bbac1fc05843 (MIT; see the retained source LICENSE).</span>
+<span id="L8"><a href="#L8">   8</a> No infinite-completion statement follows from these finite arguments. -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.ProofTools</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> /-- A finite correction argument with the actual residual kept throughout. -/</span>
+<span id="L14"><a href="#L14">  14</a> public theorem finite_filtration_correction</span>
+<span id="L15"><a href="#L15">  15</a>     {A A&#x27; B : Type*} [AddCommGroup A] [AddCommGroup A&#x27;] [AddCommGroup B]</span>
+<span id="L16"><a href="#L16">  16</a>     (ρ : A&#x27; →+ A) (g : A →+ B)</span>
+<span id="L17"><a href="#L17">  17</a>     (E : ℤ → AddSubgroup A) (L : ℤ → AddSubgroup A&#x27;)</span>
+<span id="L18"><a href="#L18">  18</a>     (T : AddSubgroup B) (hL : Antitone L)</span>
+<span id="L19"><a href="#L19">  19</a>     (s : ℤ) (N : ℕ)</span>
+<span id="L20"><a href="#L20">  20</a>     (hstep : ∀ k : ℤ, s ≤ k → k &lt; s + N → ∀ δ : A, δ ∈ E k →</span>
+<span id="L21"><a href="#L21">  21</a>       (∃ ε : A&#x27;, ε ∈ L k ∧ δ - ρ ε ∈ E (k + 1)) ∨ g δ ∈ T)</span>
+<span id="L22"><a href="#L22">  22</a>     (hend : ∀ δ : A, δ ∈ E (s + N) → g δ ∈ T)</span>
+<span id="L23"><a href="#L23">  23</a>     (α₀ : A) (α : A&#x27;) (hδ : α₀ - ρ α ∈ E s) :</span>
+<span id="L24"><a href="#L24">  24</a>     ∃ α&#x27; : A&#x27;, α&#x27; - α ∈ L s ∧ g (α₀ - ρ α&#x27;) ∈ T := by</span>
+<span id="L25"><a href="#L25">  25</a>   induction N generalizing s α with</span>
+<span id="L26"><a href="#L26">  26</a>   | zero =&gt;</span>
+<span id="L27"><a href="#L27">  27</a>     refine ⟨α, ?_, hend _ ?_⟩</span>
+<span id="L28"><a href="#L28">  28</a>     · simpa only [sub_self] using (L s).zero_mem</span>
+<span id="L29"><a href="#L29">  29</a>     · simpa only [Nat.cast_zero, add_zero] using hδ</span>
+<span id="L30"><a href="#L30">  30</a>   | succ N ih =&gt;</span>
+<span id="L31"><a href="#L31">  31</a>     rcases hstep s le_rfl (by omega) _ hδ with hcorrect | hstop</span>
+<span id="L32"><a href="#L32">  32</a>     · obtain ⟨ε, hε, hδε⟩ := hcorrect</span>
+<span id="L33"><a href="#L33">  33</a>       have hδ&#x27; : α₀ - ρ (α + ε) ∈ E (s + 1) := by</span>
+<span id="L34"><a href="#L34">  34</a>         simpa only [map_add, sub_add_eq_sub_sub] using hδε</span>
+<span id="L35"><a href="#L35">  35</a>       obtain ⟨α&#x27;, hα&#x27;, hfinal⟩ := ih (s + 1)</span>
+<span id="L36"><a href="#L36">  36</a>         (fun k hk hkn δ hδ =&gt; hstep k (by omega) (by omega) δ hδ)</span>
+<span id="L37"><a href="#L37">  37</a>         (fun δ hδ =&gt; hend δ (by simpa only [Nat.cast_succ, add_assoc,</span>
+<span id="L38"><a href="#L38">  38</a>           add_comm, add_left_comm] using hδ)) (α + ε) hδ&#x27;</span>
+<span id="L39"><a href="#L39">  39</a>       refine ⟨α&#x27;, ?_, hfinal⟩</span>
+<span id="L40"><a href="#L40">  40</a>       have hmem := (L s).add_mem (hL (by omega) hα&#x27;) hε</span>
+<span id="L41"><a href="#L41">  41</a>       convert hmem using 1</span>
+<span id="L42"><a href="#L42">  42</a>       abel</span>
+<span id="L43"><a href="#L43">  43</a>     · exact ⟨α, by simpa only [sub_self] using (L s).zero_mem, hstop⟩</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> /-- Injectivity of successive graded maps reflects membership through a finite</span>
+<span id="L47"><a href="#L47">  47</a> filtration interval; it does not require injectivity of the ambient map. -/</span>
+<span id="L48"><a href="#L48">  48</a> public theorem finite_filtration_reflection</span>
+<span id="L49"><a href="#L49">  49</a>     {B&#x27; B : Type*} [AddCommGroup B&#x27;] [AddCommGroup B]</span>
+<span id="L50"><a href="#L50">  50</a>     (ρ : B&#x27; →+ B) (L : ℤ → AddSubgroup B&#x27;) (E : ℤ → AddSubgroup B)</span>
+<span id="L51"><a href="#L51">  51</a>     (hE : Antitone E) (s : ℤ) (N : ℕ)</span>
+<span id="L52"><a href="#L52">  52</a>     (hgraded : ∀ k : ℤ, s ≤ k → k &lt; s + N → ∀ b : B&#x27;, b ∈ L k →</span>
+<span id="L53"><a href="#L53">  53</a>       ρ b ∈ E (k + 1) → b ∈ L (k + 1))</span>
+<span id="L54"><a href="#L54">  54</a>     (b : B&#x27;) (hb : b ∈ L s) (hρb : ρ b ∈ E (s + N)) :</span>
+<span id="L55"><a href="#L55">  55</a>     b ∈ L (s + N) := by</span>
+<span id="L56"><a href="#L56">  56</a>   have h : ∀ k : ℕ, k ≤ N → b ∈ L (s + k) := by</span>
+<span id="L57"><a href="#L57">  57</a>     intro k hk</span>
+<span id="L58"><a href="#L58">  58</a>     induction k with</span>
+<span id="L59"><a href="#L59">  59</a>     | zero =&gt; simpa only [Nat.cast_zero, add_zero] using hb</span>
+<span id="L60"><a href="#L60">  60</a>     | succ k ih =&gt;</span>
+<span id="L61"><a href="#L61">  61</a>       have hkN : k ≤ N := by omega</span>
+<span id="L62"><a href="#L62">  62</a>       have hnext := hgraded (s + k) (by omega) (by omega) b (ih hkN)</span>
+<span id="L63"><a href="#L63">  63</a>         (hE (by omega) hρb)</span>
+<span id="L64"><a href="#L64">  64</a>       simpa only [Nat.cast_succ, add_assoc] using hnext</span>
+<span id="L65"><a href="#L65">  65</a>   exact h N le_rfl</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> /-- Failure to lie in the final layer is witnessed by a nonzero leading grade</span>
+<span id="L68"><a href="#L68">  68</a> in the finite interval. -/</span>
+<span id="L69"><a href="#L69">  69</a> public theorem first_nonzero_filtration_grade</span>
+<span id="L70"><a href="#L70">  70</a>     {B : Type*} [AddCommGroup B] (E : ℤ → AddSubgroup B)</span>
+<span id="L71"><a href="#L71">  71</a>     (s : ℤ) (N : ℕ) (b : B) (hb : b ∈ E s) (hnot : b ∉ E (s + N)) :</span>
+<span id="L72"><a href="#L72">  72</a>     ∃ k : ℤ, s ≤ k ∧ k &lt; s + N ∧ b ∈ E k ∧ b ∉ E (k + 1) := by</span>
+<span id="L73"><a href="#L73">  73</a>   induction N generalizing s with</span>
+<span id="L74"><a href="#L74">  74</a>   | zero =&gt; exact (hnot (by simpa only [Nat.cast_zero, add_zero] using hb)).elim</span>
+<span id="L75"><a href="#L75">  75</a>   | succ N ih =&gt;</span>
+<span id="L76"><a href="#L76">  76</a>     by_cases hnext : b ∈ E (s + 1)</span>
+<span id="L77"><a href="#L77">  77</a>     · have hnot&#x27; : b ∉ E ((s + 1) + N) := by</span>
+<span id="L78"><a href="#L78">  78</a>         simpa only [Nat.cast_succ, add_assoc, add_comm, add_left_comm] using hnot</span>
+<span id="L79"><a href="#L79">  79</a>       obtain ⟨k, hk, hkN, hb, hnot⟩ := ih (s + 1) hnext hnot&#x27;</span>
+<span id="L80"><a href="#L80">  80</a>       exact ⟨k, by omega, by omega, hb, hnot⟩</span>
+<span id="L81"><a href="#L81">  81</a>     · exact ⟨s, le_rfl, by omega, hb, hnext⟩</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> </span>
+<span id="L84"><a href="#L84">  84</a> end KIP126.ProofTools</span></pre>

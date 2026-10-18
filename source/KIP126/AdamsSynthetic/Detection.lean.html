@@ -1,0 +1,264 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Detection.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Detection.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Tower</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.SpectralSequence.Convergence.Proofs</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.SpectralSequence.Permanence.Proofs</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> /-! Canonical convergence and detection for the given towers. Filtrations</span>
+<span id="L10"><a href="#L10">  10</a> are ranges of the actual tower projections, not independently chosen data.</span>
+<span id="L11"><a href="#L11">  11</a> Separation is a named proof obligation, never a field silently imposed here. -/</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.AdamsSynthetic</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Core.SpectralSequence KIP126.Synthetic.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> universe u v</span>
+<span id="L17"><a href="#L17">  17</a> noncomputable section</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> section Classical</span>
+<span id="L21"><a href="#L21">  21</a> variable {C : Type u} [StableHomotopyCategory.{u, v} C]</span>
+<span id="L22"><a href="#L22">  22</a>   [HasFunctorialCofiber (C := C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L23"><a href="#L23">  23</a>   {A : KIP126.Classical.Adams.ClassicalAdamsFamily C}</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> /-- Canonical identification on lifts in the ONE supplied abstract tower.</span>
+<span id="L26"><a href="#L26">  26</a> The cofiber image and the actual homotopy class use the same lift. -/</span>
+<span id="L27"><a href="#L27">  27</a> public def ClassicalCanonicalIdentification (P : ClassicalTowerPresentation unit A) (X : C)</span>
+<span id="L28"><a href="#L28">  28</a>     (e : ∀ p : ℤ × ℤ, ((A.obj X).ssData p).eInfty ≅</span>
+<span id="L29"><a href="#L29">  29</a>       (P.tower X).filtration.associatedGraded p.1 (p.2-p.1)) : Prop :=</span>
+<span id="L30"><a href="#L30">  30</a>   ∀ (p : ℤ × ℤ) (a : HomotopyGroup (p.2-p.1) ((P.tower X).stageAt p.1))</span>
+<span id="L31"><a href="#L31">  31</a>     (z : (Subobject.underlying.obj (((A.obj X).ssData p).Z ⊤) : ModuleCat ℤ)),</span>
+<span id="L32"><a href="#L32">  32</a>     (P.sequence X).infiniteRepresentativeE1 p z = (P.tower X).layerMap p a →</span>
+<span id="L33"><a href="#L33">  33</a>     ∀ b : (Subobject.underlying.obj ((P.tower X).filtration.F p.1 (p.2-p.1)) : ModuleCat ℤ),</span>
+<span id="L34"><a href="#L34">  34</a>       ((P.tower X).filtration.F p.1 (p.2-p.1)).arrow b =</span>
+<span id="L35"><a href="#L35">  35</a>         a ≫ (P.tower X).projection p.1 →</span>
+<span id="L36"><a href="#L36">  36</a>       (e p).hom (((A.obj X).ssData p).pageπ ⊤ z) =</span>
+<span id="L37"><a href="#L37">  37</a>         (P.tower X).filtration.toAssociatedGraded p.1 (p.2-p.1) b</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> /-- Convergence is requested only for this object. It does not construct a</span>
+<span id="L40"><a href="#L40">  40</a> convergent instance or assert separation of its filtration. -/</span>
+<span id="L41"><a href="#L41">  41</a> public structure ClassicalTowerConvergence (P : ClassicalTowerPresentation unit A) (X : C) where</span>
+<span id="L42"><a href="#L42">  42</a>   identification : ∀ p : ℤ × ℤ, ((A.obj X).ssData p).eInfty ≅</span>
+<span id="L43"><a href="#L43">  43</a>     (P.tower X).filtration.associatedGraded p.1 (p.2-p.1)</span>
+<span id="L44"><a href="#L44">  44</a>   canonical : ClassicalCanonicalIdentification P X identification</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> public def ClassicalTowerConvergence.toConvergence</span>
+<span id="L47"><a href="#L47">  47</a>     {P : ClassicalTowerPresentation unit A} {X : C} (c : ClassicalTowerConvergence P X) :</span>
+<span id="L48"><a href="#L48">  48</a>     Convergence (A.obj X) (AbstractAdamsTower.homotopy X) (P.tower X).filtration where</span>
+<span id="L49"><a href="#L49">  49</a>   reindex p := (p.1,p.2-p.1)</span>
+<span id="L50"><a href="#L50">  50</a>   reindex_bijective := by</span>
+<span id="L51"><a href="#L51">  51</a>     constructor</span>
+<span id="L52"><a href="#L52">  52</a>     · rintro ⟨s,t⟩ ⟨s&#x27;,t&#x27;⟩ h</span>
+<span id="L53"><a href="#L53">  53</a>       have hs := congrArg Prod.fst h</span>
+<span id="L54"><a href="#L54">  54</a>       have ht := congrArg Prod.snd h</span>
+<span id="L55"><a href="#L55">  55</a>       dsimp at hs ht</span>
+<span id="L56"><a href="#L56">  56</a>       ext &lt;;&gt; omega</span>
+<span id="L57"><a href="#L57">  57</a>     · rintro ⟨s,m⟩</span>
+<span id="L58"><a href="#L58">  58</a>       exact ⟨(s,m+s),by ext &lt;;&gt; simp⟩</span>
+<span id="L59"><a href="#L59">  59</a>   iso := c.identification</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> public def ClassicalDetects {P : ClassicalTowerPresentation unit A} {X : C}</span>
+<span id="L62"><a href="#L62">  62</a>     (c : ClassicalTowerConvergence P X) (p : ℤ × ℤ) (x : (A.obj X).Page 2 p)</span>
+<span id="L63"><a href="#L63">  63</a>     (a : HomotopyGroup (p.2-p.1) X) : Prop :=</span>
+<span id="L64"><a href="#L64">  64</a>   ∃ z : (Subobject.underlying.obj (((A.obj X).ssData p).Z ⊤) : ModuleCat ℤ),</span>
+<span id="L65"><a href="#L65">  65</a>     (Subobject.ofLE _ _ (((A.obj X).ssData p).Z_anti le_top) ≫</span>
+<span id="L66"><a href="#L66">  66</a>       ((A.obj X).ssData p).pageπ (↑(2-(A.obj X).r₀).toNat : WithTop ℕ)) z = x ∧</span>
+<span id="L67"><a href="#L67">  67</a>     ∃ b : (Subobject.underlying.obj ((P.tower X).filtration.F p.1 (p.2-p.1)) : ModuleCat ℤ),</span>
+<span id="L68"><a href="#L68">  68</a>       ((P.tower X).filtration.F p.1 (p.2-p.1)).arrow b = a ∧</span>
+<span id="L69"><a href="#L69">  69</a>       (c.identification p).hom (((A.obj X).ssData p).pageπ ⊤ z) =</span>
+<span id="L70"><a href="#L70">  70</a>         (P.tower X).filtration.toAssociatedGraded p.1 (p.2-p.1) b</span>
+<span id="L71"><a href="#L71">  71</a> end Classical</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> section Synthetic</span>
+<span id="L74"><a href="#L74">  74</a> variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]</span>
+<span id="L75"><a href="#L75">  75</a>   [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}</span>
+<span id="L76"><a href="#L76">  76</a>   {F : SyntheticAdamsFamily Syn}</span>
+<span id="L77"><a href="#L77">  77</a> </span>
+<span id="L78"><a href="#L78">  78</a> public def syntheticHomotopyMap {X Y : Syn} (f : X ⟶ Y) (p : ℤ × ℤ) :</span>
+<span id="L79"><a href="#L79">  79</a>     syntheticHomotopy X p ⟶ syntheticHomotopy Y p :=</span>
+<span id="L80"><a href="#L80">  80</a>   ModuleCat.ofHom ((Preadditive.rightComp (Smn p.1 p.2) f).toIntLinearMap)</span>
+<span id="L81"><a href="#L81">  81</a> </span>
+<span id="L82"><a href="#L82">  82</a> /-- The fixed weight desuspension is dictated by the given grading. -/</span>
+<span id="L83"><a href="#L83">  83</a> public def weightSourceIso (m w : ℤ) :</span>
+<span id="L84"><a href="#L84">  84</a>     (SyntheticCategory.biShift (0,-w)).obj (Smn m w (Syn := Syn)) ≅ Sphere (C := Syn) m :=</span>
+<span id="L85"><a href="#L85">  85</a>   (SyntheticCategory.biShift_comp (m,w) (0,-w)).app S_0_0 ≪≫</span>
+<span id="L86"><a href="#L86">  86</a>     eqToIso (by simp) ≪≫</span>
+<span id="L87"><a href="#L87">  87</a>     (SyntheticCategory.biShift_compat (Syn := Syn) m).app S_0_0</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> public def weightHomotopyMap (m w : ℤ) (X : Syn) (a : BiHom m w X) :</span>
+<span id="L90"><a href="#L90">  90</a>     HomotopyGroup m ((SyntheticCategory.biShift (0,-w)).obj X) :=</span>
+<span id="L91"><a href="#L91">  91</a>   (weightSourceIso m w).inv ≫ (SyntheticCategory.biShift (0,-w)).map a</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> namespace SyntheticTowerPresentation</span>
+<span id="L94"><a href="#L94">  94</a> public def filtrationSubmodule (P : SyntheticTowerPresentation unit F) (X : Syn)</span>
+<span id="L95"><a href="#L95">  95</a>     (s : ℤ) (p : ℤ × ℤ) : Submodule ℤ (BiHom p.1 p.2 X) :=</span>
+<span id="L96"><a href="#L96">  96</a>   LinearMap.range ((Preadditive.rightComp (Smn p.1 p.2)</span>
+<span id="L97"><a href="#L97">  97</a>     ((P.tower X).projection s)).toIntLinearMap)</span>
+<span id="L98"><a href="#L98">  98</a> </span>
+<span id="L99"><a href="#L99">  99</a> public theorem filtrationSubmodule_antitone (P : SyntheticTowerPresentation unit F)</span>
+<span id="L100"><a href="#L100"> 100</a>     (X : Syn) (p : ℤ × ℤ) : Antitone (fun s =&gt; P.filtrationSubmodule X s p) := by</span>
+<span id="L101"><a href="#L101"> 101</a>   intro s t h a ha</span>
+<span id="L102"><a href="#L102"> 102</a>   obtain ⟨b, rfl⟩ := ha</span>
+<span id="L103"><a href="#L103"> 103</a>   refine ⟨b ≫ (P.tower X).mapAt h, ?_⟩</span>
+<span id="L104"><a href="#L104"> 104</a>   change (b ≫ (P.tower X).mapAt h) ≫ (P.tower X).projection s = b ≫ (P.tower X).projection t</span>
+<span id="L105"><a href="#L105"> 105</a>   rw [Category.assoc, (P.tower X).projection_compat h]</span>
+<span id="L106"><a href="#L106"> 106</a> </span>
+<span id="L107"><a href="#L107"> 107</a> public def filtration (P : SyntheticTowerPresentation unit F) (X : Syn) :</span>
+<span id="L108"><a href="#L108"> 108</a>     Filtration (syntheticHomotopy X) where</span>
+<span id="L109"><a href="#L109"> 109</a>   F s p := (ModuleCat.subobjectModule _).symm (P.filtrationSubmodule X s p)</span>
+<span id="L110"><a href="#L110"> 110</a>   mono s p := (ModuleCat.subobjectModule _).symm.monotone</span>
+<span id="L111"><a href="#L111"> 111</a>     (P.filtrationSubmodule_antitone X p (by omega : s ≤ s+1))</span>
+<span id="L112"><a href="#L112"> 112</a> end SyntheticTowerPresentation</span>
+<span id="L113"><a href="#L113"> 113</a> </span>
+<span id="L114"><a href="#L114"> 114</a> /-- Both clauses are necessary: agreement of the actual weight-shifted tower</span>
+<span id="L115"><a href="#L115"> 115</a> filtrations, and the canonical cofiber/projection equation on the same lift. -/</span>
+<span id="L116"><a href="#L116"> 116</a> public def SyntheticCanonicalIdentification (P : SyntheticTowerPresentation unit F) (X : Syn)</span>
+<span id="L117"><a href="#L117"> 117</a>     (e : ∀ i : Tridegree, ((F.obj X).sequence.ssData i).eInfty ≅</span>
+<span id="L118"><a href="#L118"> 118</a>       (P.filtration X).associatedGraded i.1 (i.2.1-i.1,i.2.2)) : Prop :=</span>
+<span id="L119"><a href="#L119"> 119</a>   (∀ (s m w : ℤ) (a : BiHom m w X),</span>
+<span id="L120"><a href="#L120"> 120</a>     a ∈ P.filtrationSubmodule X s (m,w) ↔</span>
+<span id="L121"><a href="#L121"> 121</a>       weightHomotopyMap m w X a ∈</span>
+<span id="L122"><a href="#L122"> 122</a>         (P.tower ((SyntheticCategory.biShift (0,-w)).obj X)).filtrationSubmodule s m) ∧</span>
+<span id="L123"><a href="#L123"> 123</a>   ∀ (i : Tridegree)</span>
+<span id="L124"><a href="#L124"> 124</a>     (a : HomotopyGroup (i.2.1-i.1)</span>
+<span id="L125"><a href="#L125"> 125</a>       ((P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).stageAt i.1))</span>
+<span id="L126"><a href="#L126"> 126</a>     (z : (Subobject.underlying.obj (((F.obj X).sequence.ssData i).Z ⊤) : ModuleCat ℤ)),</span>
+<span id="L127"><a href="#L127"> 127</a>     (P.sequence X i.2.2).infiniteRepresentativeE1 (i.1,i.2.1) z =</span>
+<span id="L128"><a href="#L128"> 128</a>       (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).layerMap (i.1,i.2.1) a →</span>
+<span id="L129"><a href="#L129"> 129</a>     ∀ b : (Subobject.underlying.obj ((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)) : ModuleCat ℤ),</span>
+<span id="L130"><a href="#L130"> 130</a>       weightHomotopyMap (i.2.1-i.1) i.2.2 X</span>
+<span id="L131"><a href="#L131"> 131</a>         (((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b) =</span>
+<span id="L132"><a href="#L132"> 132</a>         a ≫ (P.tower ((SyntheticCategory.biShift (0,-i.2.2)).obj X)).projection i.1 →</span>
+<span id="L133"><a href="#L133"> 133</a>       (e i).hom (((F.obj X).sequence.ssData i).pageπ ⊤ z) =</span>
+<span id="L134"><a href="#L134"> 134</a>         (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) b</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> public structure SyntheticTowerConvergence (P : SyntheticTowerPresentation unit F) (X : Syn) where</span>
+<span id="L137"><a href="#L137"> 137</a>   identification : ∀ i : Tridegree, ((F.obj X).sequence.ssData i).eInfty ≅</span>
+<span id="L138"><a href="#L138"> 138</a>     (P.filtration X).associatedGraded i.1 (i.2.1-i.1,i.2.2)</span>
+<span id="L139"><a href="#L139"> 139</a>   canonical : SyntheticCanonicalIdentification P X identification</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> namespace SyntheticTowerConvergence</span>
+<span id="L142"><a href="#L142"> 142</a> public abbrev filtration {P : SyntheticTowerPresentation unit F} {X : Syn}</span>
+<span id="L143"><a href="#L143"> 143</a>     (_c : SyntheticTowerConvergence P X) := P.filtration X</span>
+<span id="L144"><a href="#L144"> 144</a> </span>
+<span id="L145"><a href="#L145"> 145</a> public def toConvergence {P : SyntheticTowerPresentation unit F} {X : Syn}</span>
+<span id="L146"><a href="#L146"> 146</a>     (c : SyntheticTowerConvergence P X) :</span>
+<span id="L147"><a href="#L147"> 147</a>     Convergence (F.obj X).sequence (syntheticHomotopy X) (P.filtration X) where</span>
+<span id="L148"><a href="#L148"> 148</a>   reindex i := (i.1,i.2.1-i.1,i.2.2)</span>
+<span id="L149"><a href="#L149"> 149</a>   reindex_bijective := by</span>
+<span id="L150"><a href="#L150"> 150</a>     constructor</span>
+<span id="L151"><a href="#L151"> 151</a>     · rintro ⟨s,t,w⟩ ⟨s&#x27;,t&#x27;,w&#x27;⟩ h</span>
+<span id="L152"><a href="#L152"> 152</a>       change (s,t-s,w) = (s&#x27;,t&#x27;-s&#x27;,w&#x27;) at h</span>
+<span id="L153"><a href="#L153"> 153</a>       simp only [Prod.mk.injEq] at h</span>
+<span id="L154"><a href="#L154"> 154</a>       obtain ⟨hs,ht,hw⟩ := h</span>
+<span id="L155"><a href="#L155"> 155</a>       exact Prod.ext hs (Prod.ext (by dsimp; omega) hw)</span>
+<span id="L156"><a href="#L156"> 156</a>     · rintro ⟨s,m,w⟩</span>
+<span id="L157"><a href="#L157"> 157</a>       exact ⟨(s,m+s,w),by ext &lt;;&gt; simp⟩</span>
+<span id="L158"><a href="#L158"> 158</a>   iso := c.identification</span>
+<span id="L159"><a href="#L159"> 159</a> end SyntheticTowerConvergence</span>
+<span id="L160"><a href="#L160"> 160</a> </span>
+<span id="L161"><a href="#L161"> 161</a> /-- A common infinite-cycle representative, including the zero case. -/</span>
+<span id="L162"><a href="#L162"> 162</a> public def HasInfinityRepresentative (A : SyntheticAdamsSS.{v}) (r : ℤ) (i : Tridegree)</span>
+<span id="L163"><a href="#L163"> 163</a>     (x : A.Page r i) (e : (A.sequence.ssData i).eInfty) : Prop :=</span>
+<span id="L164"><a href="#L164"> 164</a>   2 ≤ r ∧ ∃ z : (Subobject.underlying.obj ((A.sequence.ssData i).Z ⊤) : ModuleCat ℤ),</span>
+<span id="L165"><a href="#L165"> 165</a>     (Subobject.ofLE _ _ ((A.sequence.ssData i).Z_anti le_top) ≫</span>
+<span id="L166"><a href="#L166"> 166</a>       (A.sequence.ssData i).pageπ (↑(r-A.sequence.r₀).toNat : WithTop ℕ)) z = x ∧</span>
+<span id="L167"><a href="#L167"> 167</a>       (A.sequence.ssData i).pageπ ⊤ z = e</span>
+<span id="L168"><a href="#L168"> 168</a> </span>
+<span id="L169"><a href="#L169"> 169</a> public def Detects {P : SyntheticTowerPresentation unit F} {X : Syn}</span>
+<span id="L170"><a href="#L170"> 170</a>     (c : SyntheticTowerConvergence P X) (i : Tridegree) (x : (F.obj X).E₂ i)</span>
+<span id="L171"><a href="#L171"> 171</a>     (a : BiHom (i.2.1-i.1) i.2.2 X) : Prop :=</span>
+<span id="L172"><a href="#L172"> 172</a>   ∃ e : ((F.obj X).sequence.ssData i).eInfty,</span>
+<span id="L173"><a href="#L173"> 173</a>     HasInfinityRepresentative (F.obj X) 2 i x e ∧</span>
+<span id="L174"><a href="#L174"> 174</a>     ∃ b : (Subobject.underlying.obj ((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)) : ModuleCat ℤ),</span>
+<span id="L175"><a href="#L175"> 175</a>       ((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b = a ∧</span>
+<span id="L176"><a href="#L176"> 176</a>       (c.identification i).hom e =</span>
+<span id="L177"><a href="#L177"> 177</a>         (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) b</span>
+<span id="L178"><a href="#L178"> 178</a> </span>
+<span id="L179"><a href="#L179"> 179</a> public def DetectsNonzero {P : SyntheticTowerPresentation unit F} {X : Syn}</span>
+<span id="L180"><a href="#L180"> 180</a>     (c : SyntheticTowerConvergence P X) (i : Tridegree) (x : (F.obj X).E₂ i)</span>
+<span id="L181"><a href="#L181"> 181</a>     (a : BiHom (i.2.1-i.1) i.2.2 X) : Prop :=</span>
+<span id="L182"><a href="#L182"> 182</a>   Detects c i x a ∧ ∃ e, HasInfinityRepresentative (F.obj X) 2 i x e ∧ e ≠ 0</span>
+<span id="L183"><a href="#L183"> 183</a> </span>
+<span id="L184"><a href="#L184"> 184</a> public def FiltrationAtLeast (P : SyntheticTowerPresentation unit F) {X : Syn}</span>
+<span id="L185"><a href="#L185"> 185</a>     (s : ℤ) {m w : ℤ} (a : BiHom m w X) : Prop :=</span>
+<span id="L186"><a href="#L186"> 186</a>   a ∈ P.filtrationSubmodule X s (m,w)</span>
+<span id="L187"><a href="#L187"> 187</a> </span>
+<span id="L188"><a href="#L188"> 188</a> /-- A retained producer proof obligation. No convergence record assumes it. -/</span>
+<span id="L189"><a href="#L189"> 189</a> public def HomotopySeparated (P : SyntheticTowerPresentation unit F) (X : Syn) : Prop :=</span>
+<span id="L190"><a href="#L190"> 190</a>   ∀ (m w : ℤ) (a : BiHom m w X), (∀ s : ℕ, FiltrationAtLeast P s a) → a = 0</span>
+<span id="L191"><a href="#L191"> 191</a> </span>
+<span id="L192"><a href="#L192"> 192</a> public theorem HasInfinityRepresentative.zero (A : SyntheticAdamsSS.{v})</span>
+<span id="L193"><a href="#L193"> 193</a>     (r : ℤ) (hr : 2 ≤ r) (i : Tridegree) :</span>
+<span id="L194"><a href="#L194"> 194</a>     HasInfinityRepresentative A r i 0 0 :=</span>
+<span id="L195"><a href="#L195"> 195</a>   ⟨hr, 0, map_zero _, map_zero _⟩</span>
+<span id="L196"><a href="#L196"> 196</a> </span>
+<span id="L197"><a href="#L197"> 197</a> public theorem HasInfinityRepresentative.unique {A : SyntheticAdamsSS.{v}}</span>
+<span id="L198"><a href="#L198"> 198</a>     {r : ℤ} {i : Tridegree} {x : A.Page r i}</span>
+<span id="L199"><a href="#L199"> 199</a>     {e e&#x27; : (A.sequence.ssData i).eInfty}</span>
+<span id="L200"><a href="#L200"> 200</a>     (h : HasInfinityRepresentative A r i x e)</span>
+<span id="L201"><a href="#L201"> 201</a>     (h&#x27; : HasInfinityRepresentative A r i x e&#x27;) : e = e&#x27; := by</span>
+<span id="L202"><a href="#L202"> 202</a>   obtain ⟨_, z, hz, he⟩ := h</span>
+<span id="L203"><a href="#L203"> 203</a>   obtain ⟨_, z&#x27;, hz&#x27;, he&#x27;⟩ := h&#x27;</span>
+<span id="L204"><a href="#L204"> 204</a>   exact he.symm.trans</span>
+<span id="L205"><a href="#L205"> 205</a>     (((A.sequence.ssData i).infinity_projection_eq_of_page_projection_eq</span>
+<span id="L206"><a href="#L206"> 206</a>       (↑(r - A.sequence.r₀).toNat) z z&#x27; (hz.trans hz&#x27;.symm)).trans he&#x27;)</span>
+<span id="L207"><a href="#L207"> 207</a> </span>
+<span id="L208"><a href="#L208"> 208</a> variable {P : SyntheticTowerPresentation unit F} {X : Syn}</span>
+<span id="L209"><a href="#L209"> 209</a>   (c : SyntheticTowerConvergence P X) (i : Tridegree)</span>
+<span id="L210"><a href="#L210"> 210</a> </span>
+<span id="L211"><a href="#L211"> 211</a> public theorem detects_add {x y : (F.obj X).E₂ i}</span>
+<span id="L212"><a href="#L212"> 212</a>     {a b : BiHom (i.2.1-i.1) i.2.2 X}</span>
+<span id="L213"><a href="#L213"> 213</a>     (ha : Detects c i x a) (hb : Detects c i y b) :</span>
+<span id="L214"><a href="#L214"> 214</a>     Detects c i (x+y) (a+b) := by</span>
+<span id="L215"><a href="#L215"> 215</a>   obtain ⟨e, ⟨hr, z, hz, he⟩, a&#x27;, ha&#x27;, hga⟩ := ha</span>
+<span id="L216"><a href="#L216"> 216</a>   obtain ⟨e&#x27;, ⟨_, z&#x27;, hz&#x27;, he&#x27;⟩, b&#x27;, hb&#x27;, hgb⟩ := hb</span>
+<span id="L217"><a href="#L217"> 217</a>   refine ⟨e + e&#x27;, ⟨hr, z + z&#x27;, ?_, ?_⟩, a&#x27; + b&#x27;, ?_, ?_⟩</span>
+<span id="L218"><a href="#L218"> 218</a>   · rw [map_add, hz, hz&#x27;]</span>
+<span id="L219"><a href="#L219"> 219</a>   · rw [map_add, he, he&#x27;]</span>
+<span id="L220"><a href="#L220"> 220</a>   · rw [map_add, ha&#x27;, hb&#x27;]</span>
+<span id="L221"><a href="#L221"> 221</a>   · rw [map_add, map_add, hga, hgb]</span>
+<span id="L222"><a href="#L222"> 222</a> </span>
+<span id="L223"><a href="#L223"> 223</a> private theorem filtrationAtLeast_of_graded_eq_zero (s m w : ℤ)</span>
+<span id="L224"><a href="#L224"> 224</a>     (a : (Subobject.underlying.obj ((P.filtration X).F s (m,w)) : ModuleCat ℤ))</span>
+<span id="L225"><a href="#L225"> 225</a>     (ha : (P.filtration X).toAssociatedGraded s (m,w) a = 0) :</span>
+<span id="L226"><a href="#L226"> 226</a>     FiltrationAtLeast P (s+1) (((P.filtration X).F s (m,w)).arrow a) := by</span>
+<span id="L227"><a href="#L227"> 227</a>   have hmem := ((P.filtration X).toAssociatedGraded_eq_zero_iff s (m,w) a).mp ha</span>
+<span id="L228"><a href="#L228"> 228</a>   simpa only [SyntheticTowerPresentation.filtration, OrderIso.apply_symm_apply,</span>
+<span id="L229"><a href="#L229"> 229</a>     FiltrationAtLeast] using hmem</span>
+<span id="L230"><a href="#L230"> 230</a> </span>
+<span id="L231"><a href="#L231"> 231</a> /-- A zero infinity class raises actual filtration; it does not imply the</span>
+<span id="L232"><a href="#L232"> 232</a> homotopy class itself vanishes. -/</span>
+<span id="L233"><a href="#L233"> 233</a> public theorem detects_zero_infinity_filtration</span>
+<span id="L234"><a href="#L234"> 234</a>     {x : (F.obj X).E₂ i} {a : BiHom (i.2.1-i.1) i.2.2 X}</span>
+<span id="L235"><a href="#L235"> 235</a>     (ha : Detects c i x a)</span>
+<span id="L236"><a href="#L236"> 236</a>     (hx : HasInfinityRepresentative (F.obj X) 2 i x 0) :</span>
+<span id="L237"><a href="#L237"> 237</a>     FiltrationAtLeast P (i.1+1) a := by</span>
+<span id="L238"><a href="#L238"> 238</a>   obtain ⟨e, he, a&#x27;, ha&#x27;, hgr⟩ := ha</span>
+<span id="L239"><a href="#L239"> 239</a>   have he0 := he.unique hx</span>
+<span id="L240"><a href="#L240"> 240</a>   rw [he0, map_zero] at hgr</span>
+<span id="L241"><a href="#L241"> 241</a>   rw [← ha&#x27;]</span>
+<span id="L242"><a href="#L242"> 242</a>   exact filtrationAtLeast_of_graded_eq_zero i.1 (i.2.1-i.1) i.2.2 a&#x27; hgr.symm</span>
+<span id="L243"><a href="#L243"> 243</a> </span>
+<span id="L244"><a href="#L244"> 244</a> public theorem detects_zero_filtration</span>
+<span id="L245"><a href="#L245"> 245</a>     {a : BiHom (i.2.1-i.1) i.2.2 X} (ha : Detects c i 0 a) :</span>
+<span id="L246"><a href="#L246"> 246</a>     FiltrationAtLeast P (i.1+1) a :=</span>
+<span id="L247"><a href="#L247"> 247</a>   detects_zero_infinity_filtration c i ha</span>
+<span id="L248"><a href="#L248"> 248</a>     (HasInfinityRepresentative.zero (F.obj X) 2 (by omega) i)</span>
+<span id="L249"><a href="#L249"> 249</a> </span>
+<span id="L250"><a href="#L250"> 250</a> /-- Equal leading labels determine a coset of the next filtration step. -/</span>
+<span id="L251"><a href="#L251"> 251</a> public theorem detects_sub_filtration {x : (F.obj X).E₂ i}</span>
+<span id="L252"><a href="#L252"> 252</a>     {a b : BiHom (i.2.1-i.1) i.2.2 X}</span>
+<span id="L253"><a href="#L253"> 253</a>     (ha : Detects c i x a) (hb : Detects c i x b) :</span>
+<span id="L254"><a href="#L254"> 254</a>     FiltrationAtLeast P (i.1+1) (a-b) := by</span>
+<span id="L255"><a href="#L255"> 255</a>   obtain ⟨e, he, a&#x27;, ha&#x27;, hga⟩ := ha</span>
+<span id="L256"><a href="#L256"> 256</a>   obtain ⟨e&#x27;, he&#x27;, b&#x27;, hb&#x27;, hgb⟩ := hb</span>
+<span id="L257"><a href="#L257"> 257</a>   have heq := he.unique he&#x27;</span>
+<span id="L258"><a href="#L258"> 258</a>   have hzero : (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) (a&#x27;-b&#x27;) = 0 := by</span>
+<span id="L259"><a href="#L259"> 259</a>     rw [map_sub, ← hga, ← hgb, heq, sub_self]</span>
+<span id="L260"><a href="#L260"> 260</a>   have h := filtrationAtLeast_of_graded_eq_zero i.1 (i.2.1-i.1) i.2.2 (a&#x27;-b&#x27;) hzero</span>
+<span id="L261"><a href="#L261"> 261</a>   simpa only [map_sub, ha&#x27;, hb&#x27;] using h</span>
+<span id="L262"><a href="#L262"> 262</a> end Synthetic</span>
+<span id="L263"><a href="#L263"> 263</a> end</span>
+<span id="L264"><a href="#L264"> 264</a> end KIP126.AdamsSynthetic</span></pre>

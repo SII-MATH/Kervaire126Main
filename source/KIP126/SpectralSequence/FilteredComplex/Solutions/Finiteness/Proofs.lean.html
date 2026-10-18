@@ -1,0 +1,36 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredComplex/Solutions/Finiteness/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredComplex/Solutions/Finiteness/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.Solutions.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! A strict solution is determined by its source representative. The target</span>
+<span id="L8"><a href="#L8">   8</a> representative is fixed by the differential and its subobject inclusion. -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory</span>
+<span id="L13"><a href="#L13">  13</a> universe u v</span>
+<span id="L14"><a href="#L14">  14</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L15"><a href="#L15">  15</a>   {FC : FilteredComplex C} {T : C} {r s k : ℤ}</span>
+<span id="L16"><a href="#L16">  16</a>   {x : T ⟶ FC.assocGraded s k} {y : T ⟶ FC.assocGraded (s + r) (k - 1)}</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> theorem source_ambient_injective :</span>
+<span id="L19"><a href="#L19">  19</a>     Function.Injective (fun a : Fiber FC r s k x y =&gt;</span>
+<span id="L20"><a href="#L20">  20</a>       a.val.1 ≫ (FC.fil s k).arrow) := by</span>
+<span id="L21"><a href="#L21">  21</a>   intro a b hab</span>
+<span id="L22"><a href="#L22">  22</a>   have hfirst : a.val.1 = b.val.1 := (cancel_mono _).mp hab</span>
+<span id="L23"><a href="#L23">  23</a>   have ha := ((mem_fiber_iff a.val).mp a.property).2.2</span>
+<span id="L24"><a href="#L24">  24</a>   have hb := ((mem_fiber_iff b.val).mp b.property).2.2</span>
+<span id="L25"><a href="#L25">  25</a>   have hsecond : a.val.2 = b.val.2 := by</span>
+<span id="L26"><a href="#L26">  26</a>     apply (cancel_mono (FC.fil (s + r) (k - 1)).arrow).mp</span>
+<span id="L27"><a href="#L27">  27</a>     rw [← ha, ← hb, hfirst]</span>
+<span id="L28"><a href="#L28">  28</a>   exact Subtype.ext (Prod.ext hfirst hsecond)</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> /-- Only the source ambient Hom needs to be finite. No target finiteness or</span>
+<span id="L31"><a href="#L31">  31</a> nonemptiness of the solution fiber is required. -/</span>
+<span id="L32"><a href="#L32">  32</a> theorem finite_of_finite_source_hom [Finite (T ⟶ FC.A k)] :</span>
+<span id="L33"><a href="#L33">  33</a>     Finite (Fiber FC r s k x y) :=</span>
+<span id="L34"><a href="#L34">  34</a>   Finite.of_injective _ source_ambient_injective</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> end KIP126.Core.SpectralSequence.FilteredComplex.Solutions</span></pre>

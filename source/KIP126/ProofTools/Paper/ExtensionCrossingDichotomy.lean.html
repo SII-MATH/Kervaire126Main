@@ -1,0 +1,494 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Paper.ExtensionIndeterminacy</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.ProofTools.Paper.ExtensionRepresentatives</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.Paper.ExtensionIndeterminacy</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.Paper.ExtensionRepresentatives</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.ConvergenceOperations</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.ProofTools.StretchingRepresentatives</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.ProofTools.GeneralizedLeibniz.Filtration</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.ProofTools.GeneralizedMahowald.QuotientShift</span>
+<span id="L11"><a href="#L11">  11</a> import all KIP126.ProofTools.Paper.ExtensionEssentialSource</span>
+<span id="L12"><a href="#L12">  12</a> </span>
+<span id="L13"><a href="#L13">  13</a> /-! A fixed-target nonliftable short extension, or a crossing in the same</span>
+<span id="L14"><a href="#L14">  14</a> later synthetic extension spectral sequence. -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> @[expose] section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 2000000</span>
+<span id="L19"><a href="#L19">  19</a> namespace KIP126.ProofTools.Paper</span>
+<span id="L20"><a href="#L20">  20</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.Kervaire.Route KIP126.AdamsSynthetic.Standard KIP126.Literature</span>
+<span id="L24"><a href="#L24">  24</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L25"><a href="#L25">  25</a> noncomputable section</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> /-- This is the cycle-set difference branch, retaining the specified original</span>
+<span id="L28"><a href="#L28">  28</a> target. It is separate from the classical crossing predicate of Definition 5.9. -/</span>
+<span id="L29"><a href="#L29">  29</a> @[expose] public def FiniteExtensionNonliftableShortTo (X Y : ClassicalObject)</span>
+<span id="L30"><a href="#L30">  30</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L31"><a href="#L31">  31</a>     (rEarlier rLater : ℕ) (n s t : ℤ) (x y)</span>
+<span id="L32"><a href="#L32">  32</a>     (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y) : Prop :=</span>
+<span id="L33"><a href="#L33">  33</a>   ∃ a : ℕ, 0 &lt; a ∧ (a:ℤ) ≤ n-normalizedExponent model.classicalTower f ∧</span>
+<span id="L34"><a href="#L34">  34</a>     ∃ x&#x27; : Ambient model X (s+a,(t-s)+(s+a)),</span>
+<span id="L35"><a href="#L35">  35</a>       x&#x27; ∈ cycles model X (((rEarlier-1:ℕ):ℤ)-a) (s+a,(t-s)+(s+a)) ∧</span>
+<span id="L36"><a href="#L36">  36</a>       x&#x27; ∉ cycles model X (((rLater-1:ℕ):ℤ)-a) (s+a,(t-s)+(s+a)) ∧</span>
+<span id="L37"><a href="#L37">  37</a>       ∃ z,</span>
+<span id="L38"><a href="#L38">  38</a>         HasInfinityRepresentative _ 2 _</span>
+<span id="L39"><a href="#L39">  39</a>           (finiteExtensionCorrectionLabel X Y f (rEarlier-1) s t a x&#x27;) z ∧</span>
+<span id="L40"><a href="#L40">  40</a>         TowerExtensionEquation (model.convergentMap</span>
+<span id="L41"><a href="#L41">  41</a>           (.quotient (rEarlier-1) (extensionSourceObject model X Y f))</span>
+<span id="L42"><a href="#L42">  42</a>           (.quotient (rEarlier-1) (.nu Y)) (finiteExtensionMap model X Y f (rEarlier-1)))</span>
+<span id="L43"><a href="#L43">  43</a>           (t-s,t+normalizedExponent model.classicalTower f) (s+a) (n-a) z</span>
+<span id="L44"><a href="#L44">  44</a>           ((eqToHom (congrArg (fun d =&gt;</span>
+<span id="L45"><a href="#L45">  45</a>             ((model.family.obj ((SyntheticObject.quotient (rEarlier-1) (.nu Y)).obj</span>
+<span id="L46"><a href="#L46">  46</a>               model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L47"><a href="#L47">  47</a>               (d,(t-s)+d,t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L48"><a href="#L48">  48</a>             (show s+n = (s+a)+(n-a) by omega))) Wearly.target)</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> /-- A leading source that lifts through the actual square cannot support an</span>
+<span id="L51"><a href="#L51">  51</a> essential short early extension when all late higher-source crossings vanish. -/</span>
+<span id="L52"><a href="#L52">  52</a> private theorem essential_short_source_not_in_range</span>
+<span id="L53"><a href="#L53">  53</a>     (Al Bl Ae Be : SyntheticObject)</span>
+<span id="L54"><a href="#L54">  54</a>     (gl : Al.obj model.nu model.auxiliary ⟶ Bl.obj model.nu model.auxiliary)</span>
+<span id="L55"><a href="#L55">  55</a>     (ge : Ae.obj model.nu model.auxiliary ⟶ Be.obj model.nu model.auxiliary)</span>
+<span id="L56"><a href="#L56">  56</a>     (ra : Al.obj model.nu model.auxiliary ⟶ Ae.obj model.nu model.auxiliary)</span>
+<span id="L57"><a href="#L57">  57</a>     (rb : Bl.obj model.nu model.auxiliary ⟶ Be.obj model.nu model.auxiliary)</span>
+<span id="L58"><a href="#L58">  58</a>     (hsquare : ra ≫ ge = gl ≫ rb) (p : ℤ × ℤ) (s n u d : ℤ)</span>
+<span id="L59"><a href="#L59">  59</a>     (hn : 0 ≤ n) (hu : s &lt; u) (htarget : u+d=s+n)</span>
+<span id="L60"><a href="#L60">  60</a>     (hcross : ExtensionNoCrossingRange (model.convergentMap Al Bl gl) p s n s)</span>
+<span id="L61"><a href="#L61">  61</a>     (xe : ((model.family.obj (Ae.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L62"><a href="#L62">  62</a>       (u,p.1+u,p.2)).eInfty)</span>
+<span id="L63"><a href="#L63">  63</a>     (ye : ((model.family.obj (Be.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L64"><a href="#L64">  64</a>       (u+d,p.1+(u+d),p.2)).eInfty)</span>
+<span id="L65"><a href="#L65">  65</a>     (he : TowerEssentialExtension (model.convergentMap Ae Be ge) p u d xe ye)</span>
+<span id="L66"><a href="#L66">  66</a>     (xl : ((model.family.obj (Al.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L67"><a href="#L67">  67</a>       (u,p.1+u,p.2)).eInfty)</span>
+<span id="L68"><a href="#L68">  68</a>     (hxl : (model.family.map ra).eInftyMap (u,p.1+u,p.2) xl = xe) : False := by</span>
+<span id="L69"><a href="#L69">  69</a>   let FL := model.syntheticTower.filtration (Al.obj model.nu model.auxiliary)</span>
+<span id="L70"><a href="#L70">  70</a>   let FE := model.syntheticTower.filtration (Ae.obj model.nu model.auxiliary)</span>
+<span id="L71"><a href="#L71">  71</a>   let GE := model.syntheticTower.filtration (Be.obj model.nu model.auxiliary)</span>
+<span id="L72"><a href="#L72">  72</a>   let IL := infinityGradedIso (model.convergence Al) p u</span>
+<span id="L73"><a href="#L73">  73</a>   let IE := infinityGradedIso (model.convergence Ae) p u</span>
+<span id="L74"><a href="#L74">  74</a>   haveI : Epi (FL.toAssociatedGraded u p) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L75"><a href="#L75">  75</a>   obtain ⟨ar,har⟩ := (ModuleCat.epi_iff_surjective (FL.toAssociatedGraded u p)).mp</span>
+<span id="L76"><a href="#L76">  76</a>     inferInstance (IL.hom xl)</span>
+<span id="L77"><a href="#L77">  77</a>   let α := (FL.F u p).arrow ar</span>
+<span id="L78"><a href="#L78">  78</a>   have hα : α ∈ model.syntheticTower.filtrationSubmodule (Al.obj model.nu model.auxiliary) u p := by</span>
+<span id="L79"><a href="#L79">  79</a>     have hm : α ∈ ModuleCat.subobjectModule _ (FL.F u p) := ⟨ar,rfl⟩</span>
+<span id="L80"><a href="#L80">  80</a>     simpa only [FL,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hm</span>
+<span id="L81"><a href="#L81">  81</a>   have hαnext := model.syntheticTower.filtrationSubmodule_antitone _ p</span>
+<span id="L82"><a href="#L82">  82</a>     (show s+1 ≤ u by omega) hα</span>
+<span id="L83"><a href="#L83">  83</a>   have hgl := image_correction_in_next (model.convergentMap Al Bl gl) p s n s</span>
+<span id="L84"><a href="#L84">  84</a>     (by omega) hcross α hαnext</span>
+<span id="L85"><a href="#L85">  85</a>     (map_preserves_filtration (model.convergentMap Al Bl gl) p s α</span>
+<span id="L86"><a href="#L86">  86</a>       (model.syntheticTower.filtrationSubmodule_antitone _ p (by omega) hα))</span>
+<span id="L87"><a href="#L87">  87</a>   have hαe := map_preserves_filtration (model.convergentMap Al Ae ra) p u α hα</span>
+<span id="L88"><a href="#L88">  88</a>   obtain ⟨ae,hae⟩ := filtration_representative_exists model.syntheticTower</span>
+<span id="L89"><a href="#L89">  89</a>     (Ae.obj model.nu model.auxiliary) p u (α≫ra) hαe</span>
+<span id="L90"><a href="#L90">  90</a>   have hg := representative_grade_naturality (model.convergentMap Al Ae ra) p u ar ae hae.symm</span>
+<span id="L91"><a href="#L91">  91</a>   rw [har] at hg</span>
+<span id="L92"><a href="#L92">  92</a>   have hc : IL.inv (IL.hom xl)=xl := IL.toLinearEquiv.symm_apply_apply xl</span>
+<span id="L93"><a href="#L93">  93</a>   rw [hc] at hg</span>
+<span id="L94"><a href="#L94">  94</a>   have hge : IE.inv (FE.toAssociatedGraded u p ae)=xe := hg.trans hxl</span>
+<span id="L95"><a href="#L95">  95</a>   have hax : FE.toAssociatedGraded u p ae = IE.hom xe :=</span>
+<span id="L96"><a href="#L96">  96</a>     (IE.toLinearEquiv.apply_symm_apply _).symm.trans (congrArg IE.hom hge)</span>
+<span id="L97"><a href="#L97">  97</a>   have hhigh : (α≫ra)≫ge ∈</span>
+<span id="L98"><a href="#L98">  98</a>       model.syntheticTower.filtrationSubmodule (Be.obj model.nu model.auxiliary) (u+d+1) p := by</span>
+<span id="L99"><a href="#L99">  99</a>     have hh := map_preserves_filtration (model.convergentMap Bl Be rb) p (s+n+1) (α≫gl) hgl</span>
+<span id="L100"><a href="#L100"> 100</a>     simpa only [Category.assoc,hsquare,htarget] using hh</span>
+<span id="L101"><a href="#L101"> 101</a>   have hlow := model.syntheticTower.filtrationSubmodule_antitone _ p</span>
+<span id="L102"><a href="#L102"> 102</a>     (show u+d ≤ u+d+1 by omega) hhigh</span>
+<span id="L103"><a href="#L103"> 103</a>   obtain ⟨be,hbe⟩ := filtration_representative_exists model.syntheticTower</span>
+<span id="L104"><a href="#L104"> 104</a>     (Be.obj model.nu model.auxiliary) p (u+d) ((α≫ra)≫ge) hlow</span>
+<span id="L105"><a href="#L105"> 105</a>   have hzero : GE.toAssociatedGraded (u+d) p be = 0 := by</span>
+<span id="L106"><a href="#L106"> 106</a>     have hh := (element_grade_equal_iff GE (u+d) p be 0).mpr (by</span>
+<span id="L107"><a href="#L107"> 107</a>       rw [hbe,map_zero,sub_zero]</span>
+<span id="L108"><a href="#L108"> 108</a>       simpa only [GE,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hhigh)</span>
+<span id="L109"><a href="#L109"> 109</a>     simpa only [map_zero] using hh</span>
+<span id="L110"><a href="#L110"> 110</a>   apply ((tower_essential_iff_no_zero _ _ _ _ _ _ he.1).mp he)</span>
+<span id="L111"><a href="#L111"> 111</a>   apply (tower_extension_iff (model.convergentMap Ae Be ge) p u d xe 0).mpr</span>
+<span id="L112"><a href="#L112"> 112</a>   refine ⟨((tower_extension_iff _ _ _ _ _ _).mp he.1).1,ae,be,?_,hax,?_⟩</span>
+<span id="L113"><a href="#L113"> 113</a>   · rw [hae,hbe]</span>
+<span id="L114"><a href="#L114"> 114</a>   · simpa only [map_zero] using hzero</span>
+<span id="L115"><a href="#L115"> 115</a> </span>
+<span id="L116"><a href="#L116"> 116</a> private theorem infinity_map_eq_of_homotopy_eq</span>
+<span id="L117"><a href="#L117"> 117</a>     (A B : SyntheticObject)</span>
+<span id="L118"><a href="#L118"> 118</a>     (f g : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary)</span>
+<span id="L119"><a href="#L119"> 119</a>     (p : ℤ × ℤ) (s : ℤ)</span>
+<span id="L120"><a href="#L120"> 120</a>     (hfg : ∀ a : BiHom p.1 p.2 (A.obj model.nu model.auxiliary), a≫f=a≫g)</span>
+<span id="L121"><a href="#L121"> 121</a>     (z : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L122"><a href="#L122"> 122</a>       (s,p.1+s,p.2)).eInfty) :</span>
+<span id="L123"><a href="#L123"> 123</a>     (model.family.map f).eInftyMap (s,p.1+s,p.2) z =</span>
+<span id="L124"><a href="#L124"> 124</a>       (model.family.map g).eInftyMap (s,p.1+s,p.2) z := by</span>
+<span id="L125"><a href="#L125"> 125</a>   let FA := model.syntheticTower.filtration (A.obj model.nu model.auxiliary)</span>
+<span id="L126"><a href="#L126"> 126</a>   let FB := model.syntheticTower.filtration (B.obj model.nu model.auxiliary)</span>
+<span id="L127"><a href="#L127"> 127</a>   let IA := infinityGradedIso (model.convergence A) p s</span>
+<span id="L128"><a href="#L128"> 128</a>   haveI : Epi (FA.toAssociatedGraded s p) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L129"><a href="#L129"> 129</a>   obtain ⟨ar,har⟩ := (ModuleCat.epi_iff_surjective (FA.toAssociatedGraded s p)).mp</span>
+<span id="L130"><a href="#L130"> 130</a>     inferInstance (IA.hom z)</span>
+<span id="L131"><a href="#L131"> 131</a>   let α := (FA.F s p).arrow ar</span>
+<span id="L132"><a href="#L132"> 132</a>   have hα : α ∈ model.syntheticTower.filtrationSubmodule (A.obj model.nu model.auxiliary) s p := by</span>
+<span id="L133"><a href="#L133"> 133</a>     have hh : α ∈ ModuleCat.subobjectModule _ (FA.F s p) := ⟨ar,rfl⟩</span>
+<span id="L134"><a href="#L134"> 134</a>     simpa only [FA,SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply] using hh</span>
+<span id="L135"><a href="#L135"> 135</a>   obtain ⟨br,hbr⟩ := filtration_representative_exists model.syntheticTower</span>
+<span id="L136"><a href="#L136"> 136</a>     (B.obj model.nu model.auxiliary) p s (α≫f)</span>
+<span id="L137"><a href="#L137"> 137</a>     (map_preserves_filtration (model.convergentMap A B f) p s α hα)</span>
+<span id="L138"><a href="#L138"> 138</a>   have hf := representative_grade_naturality (model.convergentMap A B f) p s ar br hbr.symm</span>
+<span id="L139"><a href="#L139"> 139</a>   have hg := representative_grade_naturality (model.convergentMap A B g) p s ar br</span>
+<span id="L140"><a href="#L140"> 140</a>     ((hfg α).symm.trans hbr.symm)</span>
+<span id="L141"><a href="#L141"> 141</a>   rw [har] at hf hg</span>
+<span id="L142"><a href="#L142"> 142</a>   have hc : IA.inv (IA.hom z)=z := IA.toLinearEquiv.symm_apply_apply z</span>
+<span id="L143"><a href="#L143"> 143</a>   rw [hc] at hf hg</span>
+<span id="L144"><a href="#L144"> 144</a>   exact hf.symm.trans hg</span>
+<span id="L145"><a href="#L145"> 145</a> </span>
+<span id="L146"><a href="#L146"> 146</a> private theorem correction_rho_square_infinity (X Y : ClassicalObject)</span>
+<span id="L147"><a href="#L147"> 147</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L148"><a href="#L148"> 148</a>     (i q : ℕ) (hi : 0 &lt; i) (hiq : i ≤ q) (p : ℤ × ℤ) (u : ℤ)</span>
+<span id="L149"><a href="#L149"> 149</a>     (z : ((model.family.obj ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj</span>
+<span id="L150"><a href="#L150"> 150</a>       model.nu model.auxiliary)).sequence.ssData (u,p.1+u,p.2)).eInfty) :</span>
+<span id="L151"><a href="#L151"> 151</a>     (model.family.map (correctionShiftIso X Y f i).hom).eInftyMap _</span>
+<span id="L152"><a href="#L152"> 152</a>       ((model.family.map ((model.quotients.tower ((extensionSourceObject model X Y f).obj</span>
+<span id="L153"><a href="#L153"> 153</a>         model.nu model.auxiliary)).rho i q hiq)).eInftyMap _ z) =</span>
+<span id="L154"><a href="#L154"> 154</a>     (model.family.map ((SyntheticCategory.biShift (0,(normalizedExponent model.classicalTower f : ℤ))).map</span>
+<span id="L155"><a href="#L155"> 155</a>       ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq))).eInftyMap _</span>
+<span id="L156"><a href="#L156"> 156</a>       ((model.family.map (correctionShiftIso X Y f q).hom).eInftyMap _ z) := by</span>
+<span id="L157"><a href="#L157"> 157</a>   let ra := (model.quotients.tower ((extensionSourceObject model X Y f).obj</span>
+<span id="L158"><a href="#L158"> 158</a>     model.nu model.auxiliary)).rho i q hiq</span>
+<span id="L159"><a href="#L159"> 159</a>   let rn := (model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq</span>
+<span id="L160"><a href="#L160"> 160</a>   have hh := infinity_map_eq_of_homotopy_eq</span>
+<span id="L161"><a href="#L161"> 161</a>     (.quotient q (extensionSourceObject model X Y f))</span>
+<span id="L162"><a href="#L162"> 162</a>     (.shift (0,(normalizedExponent model.classicalTower f : ℤ)) (.quotient i (.nu X)))</span>
+<span id="L163"><a href="#L163"> 163</a>     (ra≫(correctionShiftIso X Y f i).hom)</span>
+<span id="L164"><a href="#L164"> 164</a>     ((correctionShiftIso X Y f q).hom≫</span>
+<span id="L165"><a href="#L165"> 165</a>       (SyntheticCategory.biShift (0,(normalizedExponent model.classicalTower f : ℤ))).map rn)</span>
+<span id="L166"><a href="#L166"> 166</a>     p u (fun c =&gt; by</span>
+<span id="L167"><a href="#L167"> 167</a>       simpa only [ra,rn,extensionSourceObject,SyntheticObject.obj,Category.assoc] using</span>
+<span id="L168"><a href="#L168"> 168</a>         KIP126.ProofTools.Internal.Mahowald.quotient_shift_restriction_on_spheres X</span>
+<span id="L169"><a href="#L169"> 169</a>           (0,(normalizedExponent model.classicalTower f : ℤ)) i q hi hiq</span>
+<span id="L170"><a href="#L170"> 170</a>           (correctionShiftIso X Y f i) (correctionShiftIso X Y f q)</span>
+<span id="L171"><a href="#L171"> 171</a>           (correctionShiftIso_incl X Y f i) (correctionShiftIso_incl X Y f q) p.1 p.2 c) z</span>
+<span id="L172"><a href="#L172"> 172</a>   dsimp only [ra,rn] at hh</span>
+<span id="L173"><a href="#L173"> 173</a>   simp only [SyntheticAdamsFamily.map_comp,SpectralSequenceMorphism.eInftyMap_comp,</span>
+<span id="L174"><a href="#L174"> 174</a>     ModuleCat.comp_apply] at hh</span>
+<span id="L175"><a href="#L175"> 175</a>   exact hh</span>
+<span id="L176"><a href="#L176"> 176</a> </span>
+<span id="L177"><a href="#L177"> 177</a> private theorem correction_unshifted_label_rho (X : ClassicalObject)</span>
+<span id="L178"><a href="#L178"> 178</a>     (i q : ℕ) (hiq : i ≤ q) (u v : ℤ) (a : ℕ) (x : Ambient model X (u,v)) :</span>
+<span id="L179"><a href="#L179"> 179</a>     familyPageMap model.family</span>
+<span id="L180"><a href="#L180"> 180</a>       ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq)</span>
+<span id="L181"><a href="#L181"> 181</a>       2 (u,v,v-a) (finiteTargetLabel model X q u v a x) =</span>
+<span id="L182"><a href="#L182"> 182</a>       finiteTargetLabel model X i u v a x := by</span>
+<span id="L183"><a href="#L183"> 183</a>   unfold finiteTargetLabel</span>
+<span id="L184"><a href="#L184"> 184</a>   have hh := congrArg (fun g =&gt; familyPageMap model.family g 2 (u,v,v-a))</span>
+<span id="L185"><a href="#L185"> 185</a>     ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho_quotient hiq)</span>
+<span id="L186"><a href="#L186"> 186</a>   rw [←family_page_comp] at hh</span>
+<span id="L187"><a href="#L187"> 187</a>   exact ConcreteCategory.congr_hom hh (targetNuLabel model X u v a x)</span>
+<span id="L188"><a href="#L188"> 188</a> </span>
+<span id="L189"><a href="#L189"> 189</a> private theorem target_weight_label (X : ClassicalObject) (u v : ℤ) (a : ℕ)</span>
+<span id="L190"><a href="#L190"> 190</a>     (x : Ambient model X (u,v)) :</span>
+<span id="L191"><a href="#L191"> 191</a>     nuWeightLabel model X u v (v-a) (by omega) x = targetNuLabel model X u v a x := by</span>
+<span id="L192"><a href="#L192"> 192</a>   have hk : (v-(v-(a:ℤ))).toNat=a := by omega</span>
+<span id="L193"><a href="#L193"> 193</a>   have transport (b c : ℕ) (he : b=c) (hi : (u,v,v-b)=(u,v,v-c)) :</span>
+<span id="L194"><a href="#L194"> 194</a>       regradeE2 hi (targetNuLabel model X u v b x) = targetNuLabel model X u v c x := by</span>
+<span id="L195"><a href="#L195"> 195</a>     subst c</span>
+<span id="L196"><a href="#L196"> 196</a>     rfl</span>
+<span id="L197"><a href="#L197"> 197</a>   exact transport _ a hk _</span>
+<span id="L198"><a href="#L198"> 198</a> </span>
+<span id="L199"><a href="#L199"> 199</a> private theorem unshifted_label_infinity_exists (X : ClassicalObject)</span>
+<span id="L200"><a href="#L200"> 200</a>     (q : ℕ) (hq : 0 &lt; q) (u v : ℤ) (a : ℕ) (ha : a &lt; q)</span>
+<span id="L201"><a href="#L201"> 201</a>     (x : Ambient model X (u,v)) (hx : x∈cycles model X ((q:ℤ)-a) (u,v)) :</span>
+<span id="L202"><a href="#L202"> 202</a>     ∃ z : ((model.family.obj ((SyntheticObject.quotient q (.nu X)).obj</span>
+<span id="L203"><a href="#L203"> 203</a>       model.nu model.auxiliary)).sequence.ssData (u,v,v-a)).eInfty,</span>
+<span id="L204"><a href="#L204"> 204</a>       HasInfinityRepresentative _ 2 _ (finiteTargetLabel model X q u v a x) z := by</span>
+<span id="L205"><a href="#L205"> 205</a>   let P := KIP126.Literature.Standard.infinityFiniteWindow X q hq (u,v) (v-a)</span>
+<span id="L206"><a href="#L206"> 206</a>     (by constructor &lt;;&gt; omega)</span>
+<span id="L207"><a href="#L207"> 207</a>   have hx&#x27; : x∈cycles model X ((q:ℤ)-v+(v-a)) (u,v) := by convert hx using 1 &lt;;&gt; congr 1 &lt;;&gt; omega</span>
+<span id="L208"><a href="#L208"> 208</a>   let c := subquotientClass (cycles model X ((q:ℤ)-v+(v-a)) (u,v))</span>
+<span id="L209"><a href="#L209"> 209</a>     (boundaries model X (1+v-(v-a)) (u,v)) ⟨x,hx&#x27;⟩</span>
+<span id="L210"><a href="#L210"> 210</a>   let z := P.symm c</span>
+<span id="L211"><a href="#L211"> 211</a>   have he := (KIP126.Literature.Standard.eInfinity_finite_labels X q hq u v (v-a)</span>
+<span id="L212"><a href="#L212"> 212</a>     (by constructor &lt;;&gt; omega) x z).mpr ⟨hx&#x27;,P.apply_symm_apply c⟩</span>
+<span id="L213"><a href="#L213"> 213</a>   rw [target_weight_label] at he</span>
+<span id="L214"><a href="#L214"> 214</a>   exact ⟨z,he⟩</span>
+<span id="L215"><a href="#L215"> 215</a> </span>
+<span id="L216"><a href="#L216"> 216</a> private def correctionInfinity (X Y : ClassicalObject)</span>
+<span id="L217"><a href="#L217"> 217</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L218"><a href="#L218"> 218</a>     (q : ℕ) (s t : ℤ) (a : ℕ)</span>
+<span id="L219"><a href="#L219"> 219</a>     (z : ((model.family.obj ((SyntheticObject.quotient q (.nu X)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L220"><a href="#L220"> 220</a>       (s+a,(t-s)+(s+a),((t-s)+(s+a))-a)).eInfty) :</span>
+<span id="L221"><a href="#L221"> 221</a>     ((model.family.obj ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj</span>
+<span id="L222"><a href="#L222"> 222</a>       model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L223"><a href="#L223"> 223</a>       (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f)).eInfty := by</span>
+<span id="L224"><a href="#L224"> 224</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L225"><a href="#L225"> 225</a>   let u : ℤ := s+a</span>
+<span id="L226"><a href="#L226"> 226</a>   let p : ℤ × ℤ := (t-s,((t-s)+(s+a))-a)</span>
+<span id="L227"><a href="#L227"> 227</a>   let z0 : ((model.family.obj ((SyntheticObject.quotient q (.nu X)).obj</span>
+<span id="L228"><a href="#L228"> 228</a>       model.nu model.auxiliary)).sequence.ssData (u,p.1+u,p.2)).eInfty := z</span>
+<span id="L229"><a href="#L229"> 229</a>   let I := towerInfinityIso (F := model.family) (P := model.syntheticTower) (model.convergence (.quotient q (.nu X)))</span>
+<span id="L230"><a href="#L230"> 230</a>     (model.convergence (.shift (0,e) (.quotient q (.nu X))))</span>
+<span id="L231"><a href="#L231"> 231</a>     ((essShift (0,e)).filtered (.quotient q (.nu X)) p) u</span>
+<span id="L232"><a href="#L232"> 232</a>   let zs : ((model.family.obj ((SyntheticObject.shift (0,e) (.quotient q (.nu X))).obj</span>
+<span id="L233"><a href="#L233"> 233</a>       model.nu model.auxiliary)).sequence.ssData (u,(p+(0,e)).1+u,(p+(0,e)).2)).eInfty := I.hom z0</span>
+<span id="L234"><a href="#L234"> 234</a>   let hdeg : (u,(p+(0,e)).1+u,(p+(0,e)).2) =</span>
+<span id="L235"><a href="#L235"> 235</a>       (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f) := by</span>
+<span id="L236"><a href="#L236"> 236</a>     ext &lt;;&gt; dsimp [p,u,e] &lt;;&gt; omega</span>
+<span id="L237"><a href="#L237"> 237</a>   let zt := (eqToHom (congrArg (fun i =&gt; ((model.family.obj</span>
+<span id="L238"><a href="#L238"> 238</a>     ((SyntheticObject.shift (0,e) (.quotient q (.nu X))).obj</span>
+<span id="L239"><a href="#L239"> 239</a>       model.nu model.auxiliary)).sequence.ssData i).eInfty) hdeg)) zs</span>
+<span id="L240"><a href="#L240"> 240</a>   exact (model.family.map (correctionShiftIso X Y f q).inv).eInftyMap (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f) zt</span>
+<span id="L241"><a href="#L241"> 241</a> </span>
+<span id="L242"><a href="#L242"> 242</a> private theorem correctionInfinity_represents (X Y : ClassicalObject)</span>
+<span id="L243"><a href="#L243"> 243</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L244"><a href="#L244"> 244</a>     (q : ℕ) (s t : ℤ) (a : ℕ) (x : Ambient model X (s+a,(t-s)+(s+a)))</span>
+<span id="L245"><a href="#L245"> 245</a>     (z : ((model.family.obj ((SyntheticObject.quotient q (.nu X)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L246"><a href="#L246"> 246</a>       (s+a,(t-s)+(s+a),((t-s)+(s+a))-a)).eInfty)</span>
+<span id="L247"><a href="#L247"> 247</a>     (hz : HasInfinityRepresentative _ 2 _ (finiteTargetLabel model X q (s+a) ((t-s)+(s+a)) a x) z) :</span>
+<span id="L248"><a href="#L248"> 248</a>     HasInfinityRepresentative _ 2 _ (finiteExtensionCorrectionLabel X Y f q s t a x)</span>
+<span id="L249"><a href="#L249"> 249</a>       (correctionInfinity X Y f q s t a z) := by</span>
+<span id="L250"><a href="#L250"> 250</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L251"><a href="#L251"> 251</a>   let u : ℤ := s+a</span>
+<span id="L252"><a href="#L252"> 252</a>   let p : ℤ × ℤ := (t-s,((t-s)+(s+a))-a)</span>
+<span id="L253"><a href="#L253"> 253</a>   let I := towerInfinityIso (F := model.family) (P := model.syntheticTower)</span>
+<span id="L254"><a href="#L254"> 254</a>     (model.convergence (.quotient q (.nu X)))</span>
+<span id="L255"><a href="#L255"> 255</a>     (model.convergence (.shift (0,e) (.quotient q (.nu X))))</span>
+<span id="L256"><a href="#L256"> 256</a>     ((essShift (0,e)).filtered (.quotient q (.nu X)) p) u</span>
+<span id="L257"><a href="#L257"> 257</a>   let hdeg : (u,(p+(0,e)).1+u,(p+(0,e)).2) =</span>
+<span id="L258"><a href="#L258"> 258</a>       (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f) := by</span>
+<span id="L259"><a href="#L259"> 259</a>     ext &lt;;&gt; dsimp [p,u,e] &lt;;&gt; omega</span>
+<span id="L260"><a href="#L260"> 260</a>   let zt := (eqToHom (congrArg (fun i =&gt; ((model.family.obj</span>
+<span id="L261"><a href="#L261"> 261</a>     ((SyntheticObject.shift (0,e) (.quotient q (.nu X))).obj</span>
+<span id="L262"><a href="#L262"> 262</a>       model.nu model.auxiliary)).sequence.ssData i).eInfty) hdeg)) (I.hom z)</span>
+<span id="L263"><a href="#L263"> 263</a>   have hs := ((essShift (0,e)).representative_iff</span>
+<span id="L264"><a href="#L264"> 264</a>     (.quotient q (.nu X)) 2 (by decide) p u</span>
+<span id="L265"><a href="#L265"> 265</a>     (finiteTargetLabel model X q (s+a) ((t-s)+(s+a)) a x) z).mp hz</span>
+<span id="L266"><a href="#L266"> 266</a>   have hs&#x27; := infinity_representative_regrade hdeg _ _ hs</span>
+<span id="L267"><a href="#L267"> 267</a>   have hm := family_infinity_representative_map (correctionShiftIso X Y f q).inv</span>
+<span id="L268"><a href="#L268"> 268</a>     (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f) _ zt hs&#x27;</span>
+<span id="L269"><a href="#L269"> 269</a>   exact hm</span>
+<span id="L270"><a href="#L270"> 270</a> </span>
+<span id="L271"><a href="#L271"> 271</a> </span>
+<span id="L272"><a href="#L272"> 272</a> private theorem infinityGradedTransportComm</span>
+<span id="L273"><a href="#L273"> 273</a>     {A B A&#x27; B&#x27; : (ℤ × ℤ) → ModuleCat.{0} ℤ}</span>
+<span id="L274"><a href="#L274"> 274</a>     {F : Filtration A} {G : Filtration B} {F&#x27; : Filtration A&#x27;} {G&#x27; : Filtration B&#x27;}</span>
+<span id="L275"><a href="#L275"> 275</a>     {f : FilteredMorphism F G} {f&#x27; : FilteredMorphism F&#x27; G&#x27;}</span>
+<span id="L276"><a href="#L276"> 276</a>     {p q : ℤ × ℤ} (e : FilteredMapTransport f f&#x27; p q) (s : ℤ) :</span>
+<span id="L277"><a href="#L277"> 277</a>     f.inducedGrMap s p ≫ (e.target.gradedIso s).hom =</span>
+<span id="L278"><a href="#L278"> 278</a>       (e.source.gradedIso s).hom ≫ f&#x27;.inducedGrMap s q := by</span>
+<span id="L279"><a href="#L279"> 279</a>   have level_comm : (f.compat s p).choose ≫ (e.target.level s).hom =</span>
+<span id="L280"><a href="#L280"> 280</a>       (e.source.level s).hom ≫ (f&#x27;.compat s q).choose := by</span>
+<span id="L281"><a href="#L281"> 281</a>     apply (cancel_mono (G&#x27;.F s q).arrow).mp</span>
+<span id="L282"><a href="#L282"> 282</a>     simp only [Category.assoc]</span>
+<span id="L283"><a href="#L283"> 283</a>     rw [e.target.level_arrow, (f&#x27;.compat s q).choose_spec]</span>
+<span id="L284"><a href="#L284"> 284</a>     rw [← Category.assoc, (f.compat s p).choose_spec, Category.assoc,</span>
+<span id="L285"><a href="#L285"> 285</a>       ← e.map_comm]</span>
+<span id="L286"><a href="#L286"> 286</a>     simpa only [Category.assoc] using congrArg (fun a =&gt; a ≫ f&#x27;.map q)</span>
+<span id="L287"><a href="#L287"> 287</a>       (e.source.level_arrow s).symm</span>
+<span id="L288"><a href="#L288"> 288</a>   haveI : Epi (F.toAssociatedGraded s p) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L289"><a href="#L289"> 289</a>   apply (cancel_epi (F.toAssociatedGraded s p)).mp</span>
+<span id="L290"><a href="#L290"> 290</a>   rw [← Category.assoc, f.quotient_naturality, Category.assoc,</span>
+<span id="L291"><a href="#L291"> 291</a>     e.target.projection_comm, ← Category.assoc, level_comm]</span>
+<span id="L292"><a href="#L292"> 292</a>   rw [Category.assoc, ← f&#x27;.quotient_naturality, ← Category.assoc,</span>
+<span id="L293"><a href="#L293"> 293</a>     ← e.source.projection_comm]</span>
+<span id="L294"><a href="#L294"> 294</a>   simp only [Category.assoc]</span>
+<span id="L295"><a href="#L295"> 295</a> </span>
+<span id="L296"><a href="#L296"> 296</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L297"><a href="#L297"> 297</a> set_option maxHeartbeats 800000 in</span>
+<span id="L298"><a href="#L298"> 298</a> private theorem infinityTowerGradedNatural</span>
+<span id="L299"><a href="#L299"> 299</a>     {Syn : Type 1} [SyntheticCategory.{1,0} Syn]</span>
+<span id="L300"><a href="#L300"> 300</a>     [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L301"><a href="#L301"> 301</a>     {H : Syn} {unit : S_0_0 ⟶ H} {F : SyntheticAdamsFamily Syn}</span>
+<span id="L302"><a href="#L302"> 302</a>     {P : SyntheticTowerPresentation unit F} {X Y : Syn} {g : X ⟶ Y}</span>
+<span id="L303"><a href="#L303"> 303</a>     (cx : SyntheticTowerConvergence P X) (cy : SyntheticTowerConvergence P Y)</span>
+<span id="L304"><a href="#L304"> 304</a>     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)</span>
+<span id="L305"><a href="#L305"> 305</a>     (p : ℤ × ℤ) (s : ℤ) :</span>
+<span id="L306"><a href="#L306"> 306</a>     (F.map g).eInftyMap (s,p.1+s,p.2) ≫ (towerGradedIso cy p s).hom =</span>
+<span id="L307"><a href="#L307"> 307</a>       (towerGradedIso cx p s).hom ≫ M.filteredMap.inducedGrMap s p := by</span>
+<span id="L308"><a href="#L308"> 308</a>   simpa only [towerGradedIso, infinityGradedIso, SyntheticAdamsFamily.map, SyntheticTowerConvergence.filtration] using</span>
+<span id="L309"><a href="#L309"> 309</a>     (infinity_graded_naturality M p s).symm</span>
+<span id="L310"><a href="#L310"> 310</a> </span>
+<span id="L311"><a href="#L311"> 311</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L312"><a href="#L312"> 312</a> set_option maxHeartbeats 800000 in</span>
+<span id="L313"><a href="#L313"> 313</a> private theorem infinityTowerNatural</span>
+<span id="L314"><a href="#L314"> 314</a>     {C : Type 1} [StableHomotopyCategory.{1,0} C]</span>
+<span id="L315"><a href="#L315"> 315</a>     [HasFunctorialCofiber (C := C)]</span>
+<span id="L316"><a href="#L316"> 316</a>     {Syn : Type 1} [SyntheticCategory.{1,0} Syn]</span>
+<span id="L317"><a href="#L317"> 317</a>     [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L318"><a href="#L318"> 318</a>     (D : Model C Syn) (δ : ℤ × ℤ) (S : SyntheticESSShiftComparison D δ)</span>
+<span id="L319"><a href="#L319"> 319</a>     (X Y : SyntheticObject)</span>
+<span id="L320"><a href="#L320"> 320</a>     (f : X.obj D.nu D.auxiliary ⟶ Y.obj D.nu D.auxiliary)</span>
+<span id="L321"><a href="#L321"> 321</a>     (p : ℤ × ℤ) (s : ℤ) :</span>
+<span id="L322"><a href="#L322"> 322</a>     (D.family.map f).eInftyMap (s,p.1+s,p.2) ≫</span>
+<span id="L323"><a href="#L323"> 323</a>         (towerInfinityIso (D.convergence Y) (D.convergence (.shift δ Y))</span>
+<span id="L324"><a href="#L324"> 324</a>           (S.filtered Y p) s).hom =</span>
+<span id="L325"><a href="#L325"> 325</a>       (towerInfinityIso (D.convergence X) (D.convergence (.shift δ X))</span>
+<span id="L326"><a href="#L326"> 326</a>           (S.filtered X p) s).hom ≫</span>
+<span id="L327"><a href="#L327"> 327</a>         (D.family.map ((SyntheticCategory.biShift δ).map f)).eInftyMap</span>
+<span id="L328"><a href="#L328"> 328</a>           (s,(p+δ).1+s,(p+δ).2) := by</span>
+<span id="L329"><a href="#L329"> 329</a>   let M := D.convergentMap X Y f</span>
+<span id="L330"><a href="#L330"> 330</a>   let M&#x27; := D.convergentMap (.shift δ X) (.shift δ Y)</span>
+<span id="L331"><a href="#L331"> 331</a>     ((SyntheticCategory.biShift δ).map f)</span>
+<span id="L332"><a href="#L332"> 332</a>   have h := infinityGradedTransportComm (S.transport X Y f p) s</span>
+<span id="L333"><a href="#L333"> 333</a>   change M.filteredMap.inducedGrMap s p ≫ ((S.filtered Y p).gradedIso s).hom =</span>
+<span id="L334"><a href="#L334"> 334</a>     ((S.filtered X p).gradedIso s).hom ≫ M&#x27;.filteredMap.inducedGrMap s (p+δ) at h</span>
+<span id="L335"><a href="#L335"> 335</a>   have hM&#x27; : M&#x27;.filteredMap.inducedGrMap s (p+δ) =</span>
+<span id="L336"><a href="#L336"> 336</a>       (towerGradedIso (D.convergence (.shift δ X)) (p+δ) s).inv ≫</span>
+<span id="L337"><a href="#L337"> 337</a>         (D.family.map ((SyntheticCategory.biShift δ).map f)).eInftyMap</span>
+<span id="L338"><a href="#L338"> 338</a>           (s,(p+δ).1+s,(p+δ).2) ≫</span>
+<span id="L339"><a href="#L339"> 339</a>         (towerGradedIso (D.convergence (.shift δ Y)) (p+δ) s).hom := by</span>
+<span id="L340"><a href="#L340"> 340</a>     calc</span>
+<span id="L341"><a href="#L341"> 341</a>       _ = (towerGradedIso (D.convergence (.shift δ X)) (p+δ) s).inv ≫</span>
+<span id="L342"><a href="#L342"> 342</a>           ((towerGradedIso (D.convergence (.shift δ X)) (p+δ) s).hom ≫</span>
+<span id="L343"><a href="#L343"> 343</a>             M&#x27;.filteredMap.inducedGrMap s (p+δ)) := by</span>
+<span id="L344"><a href="#L344"> 344</a>         simp only [← Category.assoc, Iso.inv_hom_id, Category.id_comp]</span>
+<span id="L345"><a href="#L345"> 345</a>       _ = _ := by</span>
+<span id="L346"><a href="#L346"> 346</a>         rw [← infinityTowerGradedNatural (D.convergence (.shift δ X))</span>
+<span id="L347"><a href="#L347"> 347</a>           (D.convergence (.shift δ Y)) M&#x27; (p+δ) s]</span>
+<span id="L348"><a href="#L348"> 348</a>   apply (cancel_mono (towerGradedIso (D.convergence (.shift δ Y)) (p+δ) s).hom).mp</span>
+<span id="L349"><a href="#L349"> 349</a>   simp only [towerInfinityIso, Iso.trans_hom, Iso.symm_hom, Category.assoc,</span>
+<span id="L350"><a href="#L350"> 350</a>     Iso.inv_hom_id, Category.comp_id]</span>
+<span id="L351"><a href="#L351"> 351</a>   rw [← Category.assoc, infinityTowerGradedNatural (D.convergence X) (D.convergence Y) M]</span>
+<span id="L352"><a href="#L352"> 352</a>   rw [Category.assoc, h, hM&#x27;]</span>
+<span id="L353"><a href="#L353"> 353</a> </span>
+<span id="L354"><a href="#L354"> 354</a> private theorem infinity_map_regrade (A B : SyntheticObject)</span>
+<span id="L355"><a href="#L355"> 355</a>     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary)</span>
+<span id="L356"><a href="#L356"> 356</a>     {i j : Tridegree} (h : i=j)</span>
+<span id="L357"><a href="#L357"> 357</a>     (z : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData i).eInfty) :</span>
+<span id="L358"><a href="#L358"> 358</a>     (model.family.map f).eInftyMap j</span>
+<span id="L359"><a href="#L359"> 359</a>       ((eqToHom (congrArg (fun k =&gt; ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData k).eInfty) h)) z) =</span>
+<span id="L360"><a href="#L360"> 360</a>     (eqToHom (congrArg (fun k =&gt; ((model.family.obj (B.obj model.nu model.auxiliary)).sequence.ssData k).eInfty) h))</span>
+<span id="L361"><a href="#L361"> 361</a>       ((model.family.map f).eInftyMap i z) := by</span>
+<span id="L362"><a href="#L362"> 362</a>   subst j</span>
+<span id="L363"><a href="#L363"> 363</a>   rfl</span>
+<span id="L364"><a href="#L364"> 364</a> </span>
+<span id="L365"><a href="#L365"> 365</a> private theorem correctionInfinity_rho (X Y : ClassicalObject)</span>
+<span id="L366"><a href="#L366"> 366</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L367"><a href="#L367"> 367</a>     (i q : ℕ) (hi : 0 &lt; i) (hiq : i ≤ q) (s t : ℤ) (a : ℕ)</span>
+<span id="L368"><a href="#L368"> 368</a>     (z : ((model.family.obj ((SyntheticObject.quotient q (.nu X)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L369"><a href="#L369"> 369</a>       (s+a,(t-s)+(s+a),((t-s)+(s+a))-a)).eInfty) :</span>
+<span id="L370"><a href="#L370"> 370</a>     (model.family.map ((model.quotients.tower ((extensionSourceObject model X Y f).obj</span>
+<span id="L371"><a href="#L371"> 371</a>       model.nu model.auxiliary)).rho i q hiq)).eInftyMap _</span>
+<span id="L372"><a href="#L372"> 372</a>       (correctionInfinity X Y f q s t a z) =</span>
+<span id="L373"><a href="#L373"> 373</a>     correctionInfinity X Y f i s t a</span>
+<span id="L374"><a href="#L374"> 374</a>       ((model.family.map ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq)).eInftyMap _ z) := by</span>
+<span id="L375"><a href="#L375"> 375</a>   let e : ℤ := normalizedExponent model.classicalTower f</span>
+<span id="L376"><a href="#L376"> 376</a>   let δ : ℤ × ℤ := (0,e)</span>
+<span id="L377"><a href="#L377"> 377</a>   let u : ℤ := s+a</span>
+<span id="L378"><a href="#L378"> 378</a>   let p₀ : ℤ × ℤ := (t-s,((t-s)+(s+a))-a)</span>
+<span id="L379"><a href="#L379"> 379</a>   let p : ℤ × ℤ := (t-s,t+e)</span>
+<span id="L380"><a href="#L380"> 380</a>   let hdeg : (u,(p₀+δ).1+u,(p₀+δ).2)=(u,p.1+u,p.2) := by</span>
+<span id="L381"><a href="#L381"> 381</a>     ext &lt;;&gt; dsimp [δ,p₀,p,u,e] &lt;;&gt; omega</span>
+<span id="L382"><a href="#L382"> 382</a>   let ra := (model.quotients.tower ((extensionSourceObject model X Y f).obj</span>
+<span id="L383"><a href="#L383"> 383</a>     model.nu model.auxiliary)).rho i q hiq</span>
+<span id="L384"><a href="#L384"> 384</a>   let rn := (model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq</span>
+<span id="L385"><a href="#L385"> 385</a>   let srn := (SyntheticCategory.biShift δ).map rn</span>
+<span id="L386"><a href="#L386"> 386</a>   let IL := towerInfinityIso (model.convergence (.quotient q (.nu X)))</span>
+<span id="L387"><a href="#L387"> 387</a>     (model.convergence (.shift δ (.quotient q (.nu X))))</span>
+<span id="L388"><a href="#L388"> 388</a>     ((essShift δ).filtered (.quotient q (.nu X)) p₀) u</span>
+<span id="L389"><a href="#L389"> 389</a>   let IE := towerInfinityIso (model.convergence (.quotient i (.nu X)))</span>
+<span id="L390"><a href="#L390"> 390</a>     (model.convergence (.shift δ (.quotient i (.nu X))))</span>
+<span id="L391"><a href="#L391"> 391</a>     ((essShift δ).filtered (.quotient i (.nu X)) p₀) u</span>
+<span id="L392"><a href="#L392"> 392</a>   let castL := eqToHom (congrArg (fun k =&gt; ((model.family.obj</span>
+<span id="L393"><a href="#L393"> 393</a>     ((SyntheticObject.shift δ (.quotient q (.nu X))).obj model.nu model.auxiliary)).sequence.ssData k).eInfty) hdeg)</span>
+<span id="L394"><a href="#L394"> 394</a>   let castE := eqToHom (congrArg (fun k =&gt; ((model.family.obj</span>
+<span id="L395"><a href="#L395"> 395</a>     ((SyntheticObject.shift δ (.quotient i (.nu X))).obj model.nu model.auxiliary)).sequence.ssData k).eInfty) hdeg)</span>
+<span id="L396"><a href="#L396"> 396</a>   let zs := castL (IL.hom z)</span>
+<span id="L397"><a href="#L397"> 397</a>   let zl := correctionInfinity X Y f q s t a z</span>
+<span id="L398"><a href="#L398"> 398</a>   have hQ := correction_rho_square_infinity X Y f i q hi hiq p u zl</span>
+<span id="L399"><a href="#L399"> 399</a>   have hcancel : (model.family.map (correctionShiftIso X Y f q).hom).eInftyMap _ zl = zs := by</span>
+<span id="L400"><a href="#L400"> 400</a>     dsimp only [zl,correctionInfinity,zs,castL,IL,p₀,δ,u,e,hdeg]</span>
+<span id="L401"><a href="#L401"> 401</a>     simp only [←ModuleCat.comp_apply,Category.assoc,←SpectralSequenceMorphism.eInftyMap_comp,</span>
+<span id="L402"><a href="#L402"> 402</a>       ←SyntheticAdamsFamily.map_comp,Iso.inv_hom_id,SyntheticAdamsFamily.map_id,</span>
+<span id="L403"><a href="#L403"> 403</a>       SpectralSequenceMorphism.eInftyMap_id,Category.comp_id,ConcreteCategory.id_apply]</span>
+<span id="L404"><a href="#L404"> 404</a>     rfl</span>
+<span id="L405"><a href="#L405"> 405</a>   rw [hcancel] at hQ</span>
+<span id="L406"><a href="#L406"> 406</a>   have hNat := ConcreteCategory.congr_hom</span>
+<span id="L407"><a href="#L407"> 407</a>     (infinityTowerNatural model δ (essShift δ) (.quotient q (.nu X)) (.quotient i (.nu X)) rn p₀ u) z</span>
+<span id="L408"><a href="#L408"> 408</a>   have hshift : (model.family.map srn).eInftyMap (u,p.1+u,p.2) zs =</span>
+<span id="L409"><a href="#L409"> 409</a>       castE (IE.hom ((model.family.map rn).eInftyMap _ z)) := by</span>
+<span id="L410"><a href="#L410"> 410</a>     have hcast := infinity_map_regrade (.shift δ (.quotient q (.nu X)))</span>
+<span id="L411"><a href="#L411"> 411</a>       (.shift δ (.quotient i (.nu X))) srn hdeg (IL.hom z)</span>
+<span id="L412"><a href="#L412"> 412</a>     exact hcast.trans (congrArg castE hNat.symm)</span>
+<span id="L413"><a href="#L413"> 413</a>   have hh := congrArg ((model.family.map (correctionShiftIso X Y f i).inv).eInftyMap</span>
+<span id="L414"><a href="#L414"> 414</a>     (u,p.1+u,p.2)) (hQ.trans hshift)</span>
+<span id="L415"><a href="#L415"> 415</a>   have hleft : (model.family.map (correctionShiftIso X Y f i).inv).eInftyMap _</span>
+<span id="L416"><a href="#L416"> 416</a>       ((model.family.map (correctionShiftIso X Y f i).hom).eInftyMap _</span>
+<span id="L417"><a href="#L417"> 417</a>         ((model.family.map ra).eInftyMap _ zl)) = (model.family.map ra).eInftyMap _ zl := by</span>
+<span id="L418"><a href="#L418"> 418</a>     simp only [←ModuleCat.comp_apply,Category.assoc,←SpectralSequenceMorphism.eInftyMap_comp,</span>
+<span id="L419"><a href="#L419"> 419</a>       ←SyntheticAdamsFamily.map_comp,Iso.hom_inv_id,SyntheticAdamsFamily.map_id,</span>
+<span id="L420"><a href="#L420"> 420</a>       SpectralSequenceMorphism.eInftyMap_id,ConcreteCategory.id_apply]</span>
+<span id="L421"><a href="#L421"> 421</a>   rw [hleft] at hh</span>
+<span id="L422"><a href="#L422"> 422</a>   exact hh</span>
+<span id="L423"><a href="#L423"> 423</a> </span>
+<span id="L424"><a href="#L424"> 424</a> private theorem correction_source_lift_of_late_cycle (X Y : ClassicalObject)</span>
+<span id="L425"><a href="#L425"> 425</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L426"><a href="#L426"> 426</a>     (i q : ℕ) (hi : 0 &lt; i) (hiq : i ≤ q) (s t : ℤ) (a : ℕ) (ha : a &lt; i)</span>
+<span id="L427"><a href="#L427"> 427</a>     (x : Ambient model X (s+a,(t-s)+(s+a)))</span>
+<span id="L428"><a href="#L428"> 428</a>     (hx : x∈cycles model X ((q:ℤ)-a) (s+a,(t-s)+(s+a)))</span>
+<span id="L429"><a href="#L429"> 429</a>     (z : ((model.family.obj ((SyntheticObject.quotient i (extensionSourceObject model X Y f)).obj</span>
+<span id="L430"><a href="#L430"> 430</a>       model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L431"><a href="#L431"> 431</a>       (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L432"><a href="#L432"> 432</a>     (hz : HasInfinityRepresentative _ 2 _ (finiteExtensionCorrectionLabel X Y f i s t a x) z) :</span>
+<span id="L433"><a href="#L433"> 433</a>     ∃ zl : ((model.family.obj ((SyntheticObject.quotient q (extensionSourceObject model X Y f)).obj</span>
+<span id="L434"><a href="#L434"> 434</a>       model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L435"><a href="#L435"> 435</a>       (s+a,(t-s)+(s+a),t+normalizedExponent model.classicalTower f)).eInfty,</span>
+<span id="L436"><a href="#L436"> 436</a>       (model.family.map ((model.quotients.tower ((extensionSourceObject model X Y f).obj</span>
+<span id="L437"><a href="#L437"> 437</a>         model.nu model.auxiliary)).rho i q hiq)).eInftyMap _ zl = z := by</span>
+<span id="L438"><a href="#L438"> 438</a>   obtain ⟨zu,hzu⟩ := unshifted_label_infinity_exists X q (by omega) (s+a) ((t-s)+(s+a)) a</span>
+<span id="L439"><a href="#L439"> 439</a>     (by omega) x hx</span>
+<span id="L440"><a href="#L440"> 440</a>   let rn := (model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i q hiq</span>
+<span id="L441"><a href="#L441"> 441</a>   have he := family_infinity_representative_map rn _ _ zu hzu</span>
+<span id="L442"><a href="#L442"> 442</a>   rw [correction_unshifted_label_rho] at he</span>
+<span id="L443"><a href="#L443"> 443</a>   have he&#x27; := correctionInfinity_represents X Y f i s t a x _ he</span>
+<span id="L444"><a href="#L444"> 444</a>   exact ⟨correctionInfinity X Y f q s t a zu,</span>
+<span id="L445"><a href="#L445"> 445</a>     (correctionInfinity_rho X Y f i q hi hiq s t a zu).trans (he&#x27;.unique hz)⟩</span>
+<span id="L446"><a href="#L446"> 446</a> </span>
+<span id="L447"><a href="#L447"> 447</a> /-- Proposition 6.20 with the cycle-set difference retained: failure of</span>
+<span id="L448"><a href="#L448"> 448</a> essentiality after descent gives a fixed-target nonliftable short extension,</span>
+<span id="L449"><a href="#L449"> 449</a> or a crossing in the same later synthetic ESS. -/</span>
+<span id="L450"><a href="#L450"> 450</a> public theorem finiteExtension_nonliftableShort_or_lateCrossing (X Y : ClassicalObject)</span>
+<span id="L451"><a href="#L451"> 451</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L452"><a href="#L452"> 452</a>     (rEarlier rLater : ℕ) (n s t : ℤ) (x y)</span>
+<span id="L453"><a href="#L453"> 453</a>     (Wlater : FiniteExtensionWitness model X Y f rLater n s t x y)</span>
+<span id="L454"><a href="#L454"> 454</a>     (Wearly : FiniteExtensionWitness model X Y f rEarlier n s t x y)</span>
+<span id="L455"><a href="#L455"> 455</a>     (hle : rEarlier ≤ rLater) (hess : Wlater.Essential) (hne : ¬Wearly.Essential) :</span>
+<span id="L456"><a href="#L456"> 456</a>     FiniteExtensionNonliftableShortTo X Y f rEarlier rLater n s t x y Wearly ∨</span>
+<span id="L457"><a href="#L457"> 457</a>       ¬ ExtensionNoCrossingRange (model.convergentMap</span>
+<span id="L458"><a href="#L458"> 458</a>         (.quotient (rLater-1) (extensionSourceObject model X Y f))</span>
+<span id="L459"><a href="#L459"> 459</a>         (.quotient (rLater-1) (.nu Y)) (finiteExtensionMap model X Y f (rLater-1)))</span>
+<span id="L460"><a href="#L460"> 460</a>         (t-s,t+normalizedExponent model.classicalTower f) s n s := by</span>
+<span id="L461"><a href="#L461"> 461</a>   classical</span>
+<span id="L462"><a href="#L462"> 462</a>   by_cases hc : ExtensionNoCrossingRange (model.convergentMap</span>
+<span id="L463"><a href="#L463"> 463</a>       (.quotient (rLater-1) (extensionSourceObject model X Y f))</span>
+<span id="L464"><a href="#L464"> 464</a>       (.quotient (rLater-1) (.nu Y)) (finiteExtensionMap model X Y f (rLater-1)))</span>
+<span id="L465"><a href="#L465"> 465</a>       (t-s,t+normalizedExponent model.classicalTower f) s n s</span>
+<span id="L466"><a href="#L466"> 466</a>   · have hy := earlier_target_nonzero X Y f rEarlier rLater n s t x y Wlater Wearly hle hess</span>
+<span id="L467"><a href="#L467"> 467</a>     obtain ⟨a,ha,han,x&#x27;,hx&#x27;,z,hz,hs⟩ := finiteExtension_essential_shorter_source</span>
+<span id="L468"><a href="#L468"> 468</a>       X Y f rEarlier n s t x y Wearly hy hne</span>
+<span id="L469"><a href="#L469"> 469</a>     by_cases hxl : x&#x27;∈cycles model X (((rLater-1:ℕ):ℤ)-a) (s+a,(t-s)+(s+a))</span>
+<span id="L470"><a href="#L470"> 470</a>     · have hi : 0&lt;rEarlier-1 := by have := Wearly.page_ge_two; omega</span>
+<span id="L471"><a href="#L471"> 471</a>       have haq : a&lt;rEarlier-1 := by have := Wearly.length_upper; omega</span>
+<span id="L472"><a href="#L472"> 472</a>       obtain ⟨zl,hzl⟩ := correction_source_lift_of_late_cycle X Y f</span>
+<span id="L473"><a href="#L473"> 473</a>         (rEarlier-1) (rLater-1) hi (Nat.sub_le_sub_right hle 1) s t a haq x&#x27; hxl z hz</span>
+<span id="L474"><a href="#L474"> 474</a>       apply False.elim</span>
+<span id="L475"><a href="#L475"> 475</a>       exact essential_short_source_not_in_range</span>
+<span id="L476"><a href="#L476"> 476</a>         (.quotient (rLater-1) (extensionSourceObject model X Y f))</span>
+<span id="L477"><a href="#L477"> 477</a>         (.quotient (rLater-1) (.nu Y))</span>
+<span id="L478"><a href="#L478"> 478</a>         (.quotient (rEarlier-1) (extensionSourceObject model X Y f))</span>
+<span id="L479"><a href="#L479"> 479</a>         (.quotient (rEarlier-1) (.nu Y))</span>
+<span id="L480"><a href="#L480"> 480</a>         (finiteExtensionMap model X Y f (rLater-1))</span>
+<span id="L481"><a href="#L481"> 481</a>         (finiteExtensionMap model X Y f (rEarlier-1))</span>
+<span id="L482"><a href="#L482"> 482</a>         ((model.quotients.tower ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).rho</span>
+<span id="L483"><a href="#L483"> 483</a>           (rEarlier-1) (rLater-1) (Nat.sub_le_sub_right hle 1))</span>
+<span id="L484"><a href="#L484"> 484</a>         ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho</span>
+<span id="L485"><a href="#L485"> 485</a>           (rEarlier-1) (rLater-1) (Nat.sub_le_sub_right hle 1))</span>
+<span id="L486"><a href="#L486"> 486</a>         ((model.quotients.natural (model.normalizedMap X Y f).map).rho_naturality</span>
+<span id="L487"><a href="#L487"> 487</a>           (Nat.sub_le_sub_right hle 1))</span>
+<span id="L488"><a href="#L488"> 488</a>         (t-s,t+normalizedExponent model.classicalTower f) s n (s+a) (n-a)</span>
+<span id="L489"><a href="#L489"> 489</a>         (by have := Wearly.length_lower; omega) (by omega) (by omega) hc z _ hs zl hzl</span>
+<span id="L490"><a href="#L490"> 490</a>     · exact Or.inl ⟨a,ha,han,x&#x27;,hx&#x27;,hxl,z,hz,hs.1⟩</span>
+<span id="L491"><a href="#L491"> 491</a>   · exact Or.inr hc</span>
+<span id="L492"><a href="#L492"> 492</a> </span>
+<span id="L493"><a href="#L493"> 493</a> end</span>
+<span id="L494"><a href="#L494"> 494</a> end KIP126.ProofTools.Paper</span></pre>

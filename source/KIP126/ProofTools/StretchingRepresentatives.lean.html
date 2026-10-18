@@ -1,0 +1,520 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/StretchingRepresentatives.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/StretchingRepresentatives.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Internal representative transport in the finite stretching proof.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from the proved source at bbac1fc05843 (MIT; retained source LICENSE).</span>
+<span id="L7"><a href="#L7">   7</a> The selected Literature and AdamsSynthetic interfaces are used directly. -/</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools.Internal</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Functor</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory.Pretriangulated KIP126.StableHomotopy</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Kervaire.Route KIP126.AdamsSynthetic.Standard</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 1600000</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> set_option maxHeartbeats 1600000 in</span>
+<span id="L21"><a href="#L21">  21</a> set_option backward.isDefEq.respectTransparency false in</span>
+<span id="L22"><a href="#L22">  22</a> private theorem quotient_shift_exists (coh : BiShiftCoherence SyntheticSpectrum)</span>
+<span id="L23"><a href="#L23">  23</a>     (a : ℤ × ℤ) (q : ℕ) (X : SyntheticSpectrum)</span>
+<span id="L24"><a href="#L24">  24</a>     [cs : (SyntheticCategory.biShift (Syn := SyntheticSpectrum) a).CommShift ℤ]</span>
+<span id="L25"><a href="#L25">  25</a>     [(SyntheticCategory.biShift (Syn := SyntheticSpectrum) a).IsTriangulated] :</span>
+<span id="L26"><a href="#L26">  26</a>     ∃ e : XModLambdaN ((SyntheticCategory.biShift a).obj X) q ≅</span>
+<span id="L27"><a href="#L27">  27</a>       (SyntheticCategory.biShift a).obj (XModLambdaN X q),</span>
+<span id="L28"><a href="#L28">  28</a>       XModLambdaN.incl ((SyntheticCategory.biShift a).obj X) q ≫ e.hom =</span>
+<span id="L29"><a href="#L29">  29</a>         (SyntheticCategory.biShift a).map (XModLambdaN.incl X q) ∧</span>
+<span id="L30"><a href="#L30">  30</a>       ∃ e₁ : (SyntheticCategory.biShift (lambdaDegree q)).obj</span>
+<span id="L31"><a href="#L31">  31</a>           ((SyntheticCategory.biShift a).obj X) ≅</span>
+<span id="L32"><a href="#L32">  32</a>         (SyntheticCategory.biShift a).obj</span>
+<span id="L33"><a href="#L33">  33</a>           ((SyntheticCategory.biShift (lambdaDegree q)).obj X),</span>
+<span id="L34"><a href="#L34">  34</a>         lambdaPow q ((SyntheticCategory.biShift a).obj X) =</span>
+<span id="L35"><a href="#L35">  35</a>           e₁.hom ≫ (SyntheticCategory.biShift a).map (lambdaPow q X) ∧</span>
+<span id="L36"><a href="#L36">  36</a>         e.hom ≫ (SyntheticCategory.biShift a).map (XModLambdaN.proj X q) ≫</span>
+<span id="L37"><a href="#L37">  37</a>             ((SyntheticCategory.biShift a).commShiftIso (1 : ℤ)).hom.app _ =</span>
+<span id="L38"><a href="#L38">  38</a>           XModLambdaN.proj ((SyntheticCategory.biShift a).obj X) q ≫</span>
+<span id="L39"><a href="#L39">  39</a>             (shiftFunctor SyntheticSpectrum (1 : ℤ)).map e₁.hom := by</span>
+<span id="L40"><a href="#L40">  40</a>   let oneComm (a : ℤ × ℤ) :</span>
+<span id="L41"><a href="#L41">  41</a>       SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree 1) ≅</span>
+<span id="L42"><a href="#L42">  42</a>         SyntheticCategory.biShift (lambdaDegree 1) ⋙ SyntheticCategory.biShift a :=</span>
+<span id="L43"><a href="#L43">  43</a>     biShiftAddIso a (0,-1) (a+(0,-1)) rfl ≪≫</span>
+<span id="L44"><a href="#L44">  44</a>       (biShiftAddIso (0,-1) a (a+(0,-1)) (add_comm _ _)).symm</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a>   let powerComm (a : ℤ × ℤ) : (q : ℕ) →</span>
+<span id="L47"><a href="#L47">  47</a>       SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree q) ≅</span>
+<span id="L48"><a href="#L48">  48</a>         SyntheticCategory.biShift (lambdaDegree q) ⋙ SyntheticCategory.biShift a := fun q =&gt;</span>
+<span id="L49"><a href="#L49">  49</a>     Nat.rec (motive := fun q =&gt;</span>
+<span id="L50"><a href="#L50">  50</a>       SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree q) ≅</span>
+<span id="L51"><a href="#L51">  51</a>         SyntheticCategory.biShift (lambdaDegree q) ⋙ SyntheticCategory.biShift a)</span>
+<span id="L52"><a href="#L52">  52</a>       (isoWhiskerLeft _ SyntheticCategory.biShift_zero ≪≫</span>
+<span id="L53"><a href="#L53">  53</a>         Functor.rightUnitor _ ≪≫ (Functor.leftUnitor _).symm ≪≫</span>
+<span id="L54"><a href="#L54">  54</a>         (isoWhiskerRight SyntheticCategory.biShift_zero _).symm)</span>
+<span id="L55"><a href="#L55">  55</a>       (fun q ih =&gt;</span>
+<span id="L56"><a href="#L56">  56</a>         isoWhiskerLeft _ (lambdaShiftAddIso 1 q (q+1) (by omega)).symm ≪≫</span>
+<span id="L57"><a href="#L57">  57</a>         (Functor.associator _ _ _).symm ≪≫</span>
+<span id="L58"><a href="#L58">  58</a>         isoWhiskerRight (oneComm a) _ ≪≫ Functor.associator _ _ _ ≪≫</span>
+<span id="L59"><a href="#L59">  59</a>         isoWhiskerLeft _ ih ≪≫</span>
+<span id="L60"><a href="#L60">  60</a>         (Functor.associator _ _ _).symm ≪≫</span>
+<span id="L61"><a href="#L61">  61</a>         isoWhiskerRight (lambdaShiftAddIso 1 q (q+1) (by omega)) _) q</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a>   have powerComm_square (coh : BiShiftCoherence SyntheticSpectrum) (a : ℤ × ℤ)</span>
+<span id="L64"><a href="#L64">  64</a>       (q : ℕ) (X : SyntheticSpectrum) :</span>
+<span id="L65"><a href="#L65">  65</a>       lambdaPow q ((SyntheticCategory.biShift a).obj X) =</span>
+<span id="L66"><a href="#L66">  66</a>         (powerComm a q).hom.app X ≫ (SyntheticCategory.biShift a).map (lambdaPow q X) := by</span>
+<span id="L67"><a href="#L67">  67</a>     induction q generalizing X with</span>
+<span id="L68"><a href="#L68">  68</a>     | zero =&gt;</span>
+<span id="L69"><a href="#L69">  69</a>       simp [powerComm, lambdaPow, ← Functor.map_comp]</span>
+<span id="L70"><a href="#L70">  70</a>       exact (Category.comp_id _).symm</span>
+<span id="L71"><a href="#L71">  71</a>     | succ q ih =&gt;</span>
+<span id="L72"><a href="#L72">  72</a>       have h1 : (oneComm a).hom.app X ≫</span>
+<span id="L73"><a href="#L73">  73</a>           (SyntheticCategory.biShift a).map (SyntheticCategory.lam.app X) =</span>
+<span id="L74"><a href="#L74">  74</a>           SyntheticCategory.lam.app ((SyntheticCategory.biShift a).obj X) := by</span>
+<span id="L75"><a href="#L75">  75</a>         simpa [oneComm, Category.assoc] using (coh.lambda_comm a X).symm</span>
+<span id="L76"><a href="#L76">  76</a>       apply (cancel_epi ((lambdaShiftAddIso 1 q (q+1) (by omega)).hom.app</span>
+<span id="L77"><a href="#L77">  77</a>         ((SyntheticCategory.biShift a).obj X))).mp</span>
+<span id="L78"><a href="#L78">  78</a>       rw [lambdaPow_succ_comparison]</span>
+<span id="L79"><a href="#L79">  79</a>       simp only [powerComm, Iso.trans_hom, Iso.symm_hom, NatTrans.comp_app,</span>
+<span id="L80"><a href="#L80">  80</a>         isoWhiskerLeft_hom, isoWhiskerRight_hom, whiskerLeft_app, whiskerRight_app,</span>
+<span id="L81"><a href="#L81">  81</a>         Functor.associator_inv_app, Functor.associator_hom_app, Category.id_comp, Category.assoc]</span>
+<span id="L82"><a href="#L82">  82</a>       rw [Iso.hom_inv_id_app_assoc]</span>
+<span id="L83"><a href="#L83">  83</a>       rw [← Functor.map_comp, lambdaPow_succ_comparison, Functor.map_comp]</span>
+<span id="L84"><a href="#L84">  84</a>       have hn := (powerComm a q).hom.naturality (SyntheticCategory.lam.app X)</span>
+<span id="L85"><a href="#L85">  85</a>       have hn&#x27; := congrArg (fun h =&gt; h ≫ (SyntheticCategory.biShift a).map (lambdaPow q X)) hn</span>
+<span id="L86"><a href="#L86">  86</a>       simp only [Functor.comp_map, Category.assoc] at hn&#x27;</span>
+<span id="L87"><a href="#L87">  87</a>       dsimp only [KIP126.Synthetic.Context.lambdaDegree, Functor.id_obj] at hn&#x27; ⊢</span>
+<span id="L88"><a href="#L88">  88</a>       erw [← hn&#x27;]</span>
+<span id="L89"><a href="#L89">  89</a>       rw [← Category.assoc, ← Functor.map_comp, h1, ih]</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a>   let F := SyntheticCategory.biShift (Syn := SyntheticSpectrum) a</span>
+<span id="L92"><a href="#L92">  92</a>   let T := Triangle.mk (lambdaPow q X) (XModLambdaN.incl X q) (XModLambdaN.proj X q)</span>
+<span id="L93"><a href="#L93">  93</a>   let T&#x27; := Triangle.mk (lambdaPow q (F.obj X))</span>
+<span id="L94"><a href="#L94">  94</a>     (XModLambdaN.incl (F.obj X) q) (XModLambdaN.proj (F.obj X) q)</span>
+<span id="L95"><a href="#L95">  95</a>   have hT : T ∈ distTriang SyntheticSpectrum := HasFunctorialCofiber.cofib_distinguished _</span>
+<span id="L96"><a href="#L96">  96</a>   have hT&#x27; : T&#x27; ∈ distTriang SyntheticSpectrum := HasFunctorialCofiber.cofib_distinguished _</span>
+<span id="L97"><a href="#L97">  97</a>   let e := isoTriangleOfIso₁₂ T&#x27; (F.mapTriangle.obj T) hT&#x27;</span>
+<span id="L98"><a href="#L98">  98</a>     (F.map_distinguished T hT) ((powerComm a q).app X) (Iso.refl _) (by</span>
+<span id="L99"><a href="#L99">  99</a>       change lambdaPow q (F.obj X) ≫ 𝟙 _ =</span>
+<span id="L100"><a href="#L100"> 100</a>         (powerComm a q).hom.app X ≫ F.map (lambdaPow q X)</span>
+<span id="L101"><a href="#L101"> 101</a>       simpa only [Category.comp_id] using powerComm_square coh a q X)</span>
+<span id="L102"><a href="#L102"> 102</a>   refine ⟨Triangle.π₃.mapIso e, ?_, (powerComm a q).app X,</span>
+<span id="L103"><a href="#L103"> 103</a>     powerComm_square coh a q X, ?_⟩</span>
+<span id="L104"><a href="#L104"> 104</a>   · have h := e.hom.comm₂</span>
+<span id="L105"><a href="#L105"> 105</a>     change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =</span>
+<span id="L106"><a href="#L106"> 106</a>       e.hom.hom₂ ≫ F.map (XModLambdaN.incl X q) at h</span>
+<span id="L107"><a href="#L107"> 107</a>     change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =</span>
+<span id="L108"><a href="#L108"> 108</a>       F.map (XModLambdaN.incl X q)</span>
+<span id="L109"><a href="#L109"> 109</a>     simpa only [e, isoTriangleOfIso₁₂_hom_hom₂, Iso.refl_hom, Category.id_comp] using h</span>
+<span id="L110"><a href="#L110"> 110</a>   · have h := e.hom.comm₃</span>
+<span id="L111"><a href="#L111"> 111</a>     have h₁ : e.hom.hom₁ = ((powerComm a q).app X).hom := by</span>
+<span id="L112"><a href="#L112"> 112</a>       simp only [e, isoTriangleOfIso₁₂_hom_hom₁]</span>
+<span id="L113"><a href="#L113"> 113</a>     rw [h₁] at h</span>
+<span id="L114"><a href="#L114"> 114</a>     change XModLambdaN.proj (F.obj X) q ≫</span>
+<span id="L115"><a href="#L115"> 115</a>         (shiftFunctor SyntheticSpectrum (1 : ℤ)).map ((powerComm a q).app X).hom =</span>
+<span id="L116"><a href="#L116"> 116</a>       e.hom.hom₃ ≫ (F.map (XModLambdaN.proj X q) ≫</span>
+<span id="L117"><a href="#L117"> 117</a>         (F.commShiftIso (1 : ℤ)).hom.app _) at h</span>
+<span id="L118"><a href="#L118"> 118</a>     change e.hom.hom₃ ≫ F.map (XModLambdaN.proj X q) ≫</span>
+<span id="L119"><a href="#L119"> 119</a>         (F.commShiftIso (1 : ℤ)).hom.app _ = _</span>
+<span id="L120"><a href="#L120"> 120</a>     exact h.symm</span>
+<span id="L121"><a href="#L121"> 121</a> </span>
+<span id="L122"><a href="#L122"> 122</a> </span>
+<span id="L123"><a href="#L123"> 123</a> private def familyPageIso {X Y : SyntheticSpectrum} (e : X ≅ Y)</span>
+<span id="L124"><a href="#L124"> 124</a>     (r : ℤ) (i : Tridegree) : (model.family.obj X).Page r i ≅ (model.family.obj Y).Page r i where</span>
+<span id="L125"><a href="#L125"> 125</a>   hom := familyPageMap model.family e.hom r i</span>
+<span id="L126"><a href="#L126"> 126</a>   inv := familyPageMap model.family e.inv r i</span>
+<span id="L127"><a href="#L127"> 127</a>   hom_inv_id := by</span>
+<span id="L128"><a href="#L128"> 128</a>     change (model.family.map e.hom).pageMap r i ≫ (model.family.map e.inv).pageMap r i = _</span>
+<span id="L129"><a href="#L129"> 129</a>     rw [← SpectralSequenceMorphism.pageMap_comp, ← SyntheticAdamsFamily.map_comp,</span>
+<span id="L130"><a href="#L130"> 130</a>       e.hom_inv_id, SyntheticAdamsFamily.map_id, SpectralSequenceMorphism.pageMap_id]</span>
+<span id="L131"><a href="#L131"> 131</a>   inv_hom_id := by</span>
+<span id="L132"><a href="#L132"> 132</a>     change (model.family.map e.inv).pageMap r i ≫ (model.family.map e.hom).pageMap r i = _</span>
+<span id="L133"><a href="#L133"> 133</a>     rw [← SpectralSequenceMorphism.pageMap_comp, ← SyntheticAdamsFamily.map_comp,</span>
+<span id="L134"><a href="#L134"> 134</a>       e.inv_hom_id, SyntheticAdamsFamily.map_id, SpectralSequenceMorphism.pageMap_id]</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> private def shiftedPageIso (X : SyntheticObject) (a r s t w : ℤ) (hr : 2 ≤ r) :</span>
+<span id="L137"><a href="#L137"> 137</a>     (model.family.obj (X.obj model.nu model.auxiliary)).Page r (s,t,w-a) ≅</span>
+<span id="L138"><a href="#L138"> 138</a>       (model.family.obj ((SyntheticObject.shift (0,a) X).obj model.nu model.auxiliary)).Page r (s,t,w) := by</span>
+<span id="L139"><a href="#L139"> 139</a>   simpa using (essShift (0,a)).page X r hr (t-s,w-a) s</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> private def shiftedInfinityIso (X : SyntheticObject) (a s t w : ℤ) :</span>
+<span id="L142"><a href="#L142"> 142</a>     ((model.family.obj (X.obj model.nu model.auxiliary)).sequence.ssData (s,t,w-a)).eInfty ≅</span>
+<span id="L143"><a href="#L143"> 143</a>       ((model.family.obj ((SyntheticObject.shift (0,a) X).obj model.nu model.auxiliary)).sequence.ssData (s,t,w)).eInfty := by</span>
+<span id="L144"><a href="#L144"> 144</a>   simpa using towerInfinityIso (model.convergence X) (model.convergence (.shift (0,a) X))</span>
+<span id="L145"><a href="#L145"> 145</a>     ((essShift (0,a)).filtered X (t-s,w-a)) s</span>
+<span id="L146"><a href="#L146"> 146</a> </span>
+<span id="L147"><a href="#L147"> 147</a> private theorem shiftedFinitePageVanishing (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q)</span>
+<span id="L148"><a href="#L148"> 148</a>     (a r s t w : ℤ) (hr : 2 ≤ r) (hw : t &lt; w-a ∨ (q:ℤ) ≤ t-(w-a)) :</span>
+<span id="L149"><a href="#L149"> 149</a>     Subsingleton ((model.family.obj (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj</span>
+<span id="L150"><a href="#L150"> 150</a>       (model.nu.functor.obj (X.obj model.auxiliary))) q)).Page r (s,t,w)) := by</span>
+<span id="L151"><a href="#L151"> 151</a>   have hz := KIP126.Literature.Standard.finite_quotient_vanishing X q hq r hr s t (w-a)</span>
+<span id="L152"><a href="#L152"> 152</a>     (by rcases hw with hw | hw; exact Or.inl (by omega); exact Or.inr hw)</span>
+<span id="L153"><a href="#L153"> 153</a>   have hsub := ModuleCat.isZero_iff_subsingleton.mp hz</span>
+<span id="L154"><a href="#L154"> 154</a>   letI := model.exactness.shiftCommShift (0,a)</span>
+<span id="L155"><a href="#L155"> 155</a>   letI := model.exactness.shiftExact (0,a)</span>
+<span id="L156"><a href="#L156"> 156</a>   obtain ⟨e,_⟩ := quotient_shift_exists model.quotients.coherence (0,a) q</span>
+<span id="L157"><a href="#L157"> 157</a>     (model.nu.functor.obj (X.obj model.auxiliary))</span>
+<span id="L158"><a href="#L158"> 158</a>   let iso := (familyPageIso e r (s,t,w)) ≪≫ (shiftedPageIso (.quotient q (.nu X)) a r s t w hr).symm</span>
+<span id="L159"><a href="#L159"> 159</a>   refine ⟨fun x y =&gt; iso.toLinearEquiv.injective ?_⟩</span>
+<span id="L160"><a href="#L160"> 160</a>   exact @Subsingleton.elim _ hsub _ _</span>
+<span id="L161"><a href="#L161"> 161</a> </span>
+<span id="L162"><a href="#L162"> 162</a> private theorem shifted_quotient_eInfty_zero</span>
+<span id="L163"><a href="#L163"> 163</a>     (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q) (e s t w : ℤ)</span>
+<span id="L164"><a href="#L164"> 164</a>     (hwindow : ¬ (0 ≤ t-(w-e) ∧ t-(w-e) &lt; (q:ℤ))) :</span>
+<span id="L165"><a href="#L165"> 165</a>     IsZero (((model.family.obj (XModLambdaN</span>
+<span id="L166"><a href="#L166"> 166</a>       ((SyntheticCategory.biShift (0,e)).obj (model.nu.functor.obj (X.obj model.auxiliary))) q)).sequence.ssData</span>
+<span id="L167"><a href="#L167"> 167</a>         (s,t,w)).eInfty) := by</span>
+<span id="L168"><a href="#L168"> 168</a>   haveI : Subsingleton (KIP126.Literature.finiteEInftyModel model X q (s,t) (w-e)) := by</span>
+<span id="L169"><a href="#L169"> 169</a>     simp only [KIP126.Literature.finiteEInftyModel, hwindow, ite_false]</span>
+<span id="L170"><a href="#L170"> 170</a>     infer_instance</span>
+<span id="L171"><a href="#L171"> 171</a>   have hsub : Subsingleton (((model.family.obj (XModLambdaN</span>
+<span id="L172"><a href="#L172"> 172</a>       (model.nu.functor.obj (X.obj model.auxiliary)) q)).sequence.ssData (s,t,w-e)).eInfty) :=</span>
+<span id="L173"><a href="#L173"> 173</a>     (KIP126.Literature.Standard.eInfinity_finite X q hq (s,t) (w-e)).injective.subsingleton</span>
+<span id="L174"><a href="#L174"> 174</a>   haveI : Subsingleton (((model.family.obj ((SyntheticCategory.biShift (0,e)).obj (XModLambdaN</span>
+<span id="L175"><a href="#L175"> 175</a>       (model.nu.functor.obj (X.obj model.auxiliary)) q))).sequence.ssData (s,t,w)).eInfty) := by</span>
+<span id="L176"><a href="#L176"> 176</a>     refine ⟨fun x y =&gt; (shiftedInfinityIso (.quotient q (.nu X)) e s t w).symm.toLinearEquiv.injective ?_⟩</span>
+<span id="L177"><a href="#L177"> 177</a>     exact @Subsingleton.elim _ hsub _ _</span>
+<span id="L178"><a href="#L178"> 178</a>   have hz := ModuleCat.isZero_of_subsingleton (((model.family.obj</span>
+<span id="L179"><a href="#L179"> 179</a>     ((SyntheticCategory.biShift (0,e)).obj (XModLambdaN</span>
+<span id="L180"><a href="#L180"> 180</a>       (model.nu.functor.obj (X.obj model.auxiliary)) q))).sequence.ssData (s,t,w)).eInfty)</span>
+<span id="L181"><a href="#L181"> 181</a>   letI := model.exactness.shiftCommShift (0,e)</span>
+<span id="L182"><a href="#L182"> 182</a>   letI := model.exactness.shiftExact (0,e)</span>
+<span id="L183"><a href="#L183"> 183</a>   obtain ⟨Q,_⟩ := quotient_shift_exists model.quotients.coherence (0,e) q</span>
+<span id="L184"><a href="#L184"> 184</a>     (model.nu.functor.obj (X.obj model.auxiliary))</span>
+<span id="L185"><a href="#L185"> 185</a>   let eval : KIP126.Core.SpectralSequence (ModuleCat ℤ) Tridegree ⥤ ModuleCat ℤ := {</span>
+<span id="L186"><a href="#L186"> 186</a>     obj := fun E =&gt; (E.ssData (s,t,w)).eInfty</span>
+<span id="L187"><a href="#L187"> 187</a>     map := fun f =&gt; f.eInftyMap (s,t,w)</span>
+<span id="L188"><a href="#L188"> 188</a>     map_id := fun E =&gt; SpectralSequenceMorphism.eInftyMap_id E (s,t,w)</span>
+<span id="L189"><a href="#L189"> 189</a>     map_comp := fun f g =&gt; SpectralSequenceMorphism.eInftyMap_comp f g (s,t,w) }</span>
+<span id="L190"><a href="#L190"> 190</a>   exact hz.of_iso ((model.family.functor ⋙ eval).mapIso Q)</span>
+<span id="L191"><a href="#L191"> 191</a> </span>
+<span id="L192"><a href="#L192"> 192</a> private theorem subquotientMap_injective {R : Type*} [Ring R] {A : Type*} [AddCommGroup A] [Module R A]</span>
+<span id="L193"><a href="#L193"> 193</a>     {Z Z&#x27; B : Submodule R A} (hZ : Z ≤ Z&#x27;) :</span>
+<span id="L194"><a href="#L194"> 194</a>     Function.Injective (KIP126.Literature.subquotientMap hZ (le_rfl : B ≤ B)) := by</span>
+<span id="L195"><a href="#L195"> 195</a>   apply (LinearMap.ker_eq_bot).mp</span>
+<span id="L196"><a href="#L196"> 196</a>   apply le_antisymm</span>
+<span id="L197"><a href="#L197"> 197</a>   · intro x hx</span>
+<span id="L198"><a href="#L198"> 198</a>     obtain ⟨x,rfl⟩ := Submodule.Quotient.mk_surjective _ x</span>
+<span id="L199"><a href="#L199"> 199</a>     change KIP126.Literature.subquotientMap hZ (le_rfl : B ≤ B) (Submodule.Quotient.mk x) = 0 at hx</span>
+<span id="L200"><a href="#L200"> 200</a>     change Submodule.Quotient.mk (Submodule.inclusion hZ x) = 0 at hx</span>
+<span id="L201"><a href="#L201"> 201</a>     have hxB := (Submodule.Quotient.mk_eq_zero _).mp hx</span>
+<span id="L202"><a href="#L202"> 202</a>     change x.val ∈ B at hxB</span>
+<span id="L203"><a href="#L203"> 203</a>     change Submodule.Quotient.mk x = 0</span>
+<span id="L204"><a href="#L204"> 204</a>     exact (Submodule.Quotient.mk_eq_zero _).mpr hxB</span>
+<span id="L205"><a href="#L205"> 205</a>   · exact bot_le</span>
+<span id="L206"><a href="#L206"> 206</a> </span>
+<span id="L207"><a href="#L207"> 207</a> private theorem rho_infty_injective (Y : ClassicalObject) (i j : ℕ)</span>
+<span id="L208"><a href="#L208"> 208</a>     (hi : 0 &lt; i) (hij : i ≤ j) (s t w : ℤ) (hupper : t-w &lt; i) :</span>
+<span id="L209"><a href="#L209"> 209</a>     Function.Injective ((model.family.map</span>
+<span id="L210"><a href="#L210"> 210</a>       ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho i j hij)).eInftyMap (s,t,w)) := by</span>
+<span id="L211"><a href="#L211"> 211</a>   by_cases hlow : 0 ≤ t-w</span>
+<span id="L212"><a href="#L212"> 212</a>   · intro x y hxy</span>
+<span id="L213"><a href="#L213"> 213</a>     apply (KIP126.Literature.Standard.infinityFiniteWindow Y j (by omega) (s,t) w</span>
+<span id="L214"><a href="#L214"> 214</a>       (by constructor &lt;;&gt; omega)).injective</span>
+<span id="L215"><a href="#L215"> 215</a>     apply subquotientMap_injective (KIP126.Literature.cycles_antitone model Y (s,t)</span>
+<span id="L216"><a href="#L216"> 216</a>       (show (i:ℤ)-t+w ≤ (j:ℤ)-t+w by omega))</span>
+<span id="L217"><a href="#L217"> 217</a>     have hx := KIP126.Literature.Standard.eInfinity_rho_finite Y i j hi hij (s,t) w ⟨hlow,hupper⟩ x</span>
+<span id="L218"><a href="#L218"> 218</a>     have hy := KIP126.Literature.Standard.eInfinity_rho_finite Y i j hi hij (s,t) w ⟨hlow,hupper⟩ y</span>
+<span id="L219"><a href="#L219"> 219</a>     rw [hxy] at hx</span>
+<span id="L220"><a href="#L220"> 220</a>     exact hx.symm.trans hy</span>
+<span id="L221"><a href="#L221"> 221</a>   · haveI : Subsingleton (KIP126.Literature.finiteEInftyModel model Y j (s,t) w) := by</span>
+<span id="L222"><a href="#L222"> 222</a>       simp only [KIP126.Literature.finiteEInftyModel, show ¬ (0 ≤ t-w ∧ t-w &lt; (j:ℤ)) by omega, ite_false]</span>
+<span id="L223"><a href="#L223"> 223</a>       infer_instance</span>
+<span id="L224"><a href="#L224"> 224</a>     haveI : Subsingleton (((model.family.quotient (model.nu.functor.obj (Y.obj model.auxiliary)) j).sequence.ssData (s,t,w)).eInfty) :=</span>
+<span id="L225"><a href="#L225"> 225</a>       (KIP126.Literature.Standard.eInfinity_finite Y j (by omega) (s,t) w).injective.subsingleton</span>
+<span id="L226"><a href="#L226"> 226</a>     intro x y _</span>
+<span id="L227"><a href="#L227"> 227</a>     apply @Subsingleton.elim (((model.family.quotient (model.nu.functor.obj (Y.obj model.auxiliary)) j).sequence.ssData (s,t,w)).eInfty)</span>
+<span id="L228"><a href="#L228"> 228</a>       inferInstance x y</span>
+<span id="L229"><a href="#L229"> 229</a> </span>
+<span id="L230"><a href="#L230"> 230</a> private theorem syntheticRep_map {A B : SyntheticAdamsSS}</span>
+<span id="L231"><a href="#L231"> 231</a>     (f : A.sequence ⟶ B.sequence) {r : ℤ} {i : Tridegree}</span>
+<span id="L232"><a href="#L232"> 232</a>     {x : A.E₂ i} {xr : A.Page r i}</span>
+<span id="L233"><a href="#L233"> 233</a>     (hx : SyntheticRepresentsOnPage A r i x xr) :</span>
+<span id="L234"><a href="#L234"> 234</a>     SyntheticRepresentsOnPage B r i (f.pageMap 2 i x) (f.pageMap r i xr) := by</span>
+<span id="L235"><a href="#L235"> 235</a>   have hstart := f.r₀_eq</span>
+<span id="L236"><a href="#L236"> 236</a>   rcases A with ⟨⟨⟨r₀, D, δ, d⟩, dd, Zs, Bs⟩, hA, hDA⟩</span>
+<span id="L237"><a href="#L237"> 237</a>   rcases B with ⟨⟨⟨r₀&#x27;, D&#x27;, δ&#x27;, d&#x27;⟩, dd&#x27;, Zs&#x27;, Bs&#x27;⟩, hB, hDB⟩</span>
+<span id="L238"><a href="#L238"> 238</a>   dsimp at hstart</span>
+<span id="L239"><a href="#L239"> 239</a>   subst r₀&#x27;</span>
+<span id="L240"><a href="#L240"> 240</a>   obtain ⟨hr,z,hz,he⟩ := hx</span>
+<span id="L241"><a href="#L241"> 241</a>   let n : WithTop ℕ := ↑(2-r₀).toNat</span>
+<span id="L242"><a href="#L242"> 242</a>   let m : WithTop ℕ := ↑(r-r₀).toNat</span>
+<span id="L243"><a href="#L243"> 243</a>   let F := f.toSSDataMorphism</span>
+<span id="L244"><a href="#L244"> 244</a>   have hnm : n ≤ m := by</span>
+<span id="L245"><a href="#L245"> 245</a>     dsimp [n,m]</span>
+<span id="L246"><a href="#L246"> 246</a>     exact_mod_cast (show (2-r₀).toNat ≤ (r-r₀).toNat by omega)</span>
+<span id="L247"><a href="#L247"> 247</a>   refine ⟨hr,F.cycleMap i m z,?_,?_⟩</span>
+<span id="L248"><a href="#L248"> 248</a>   · have hs := F.cycleMap_ofLE_assoc i hnm ((D&#x27; i).pageπ n)</span>
+<span id="L249"><a href="#L249"> 249</a>     have hp := F.pageπ_pageMap i n</span>
+<span id="L250"><a href="#L250"> 250</a>     have eqn : (Subobject.ofLE ((D i).Z m) ((D i).Z n) ((D i).Z_anti hnm) ≫</span>
+<span id="L251"><a href="#L251"> 251</a>         (D i).pageπ n) ≫ F.pageMap i n =</span>
+<span id="L252"><a href="#L252"> 252</a>       F.cycleMap i m ≫ Subobject.ofLE ((D&#x27; i).Z m) ((D&#x27; i).Z n) ((D&#x27; i).Z_anti hnm) ≫ (D&#x27; i).pageπ n := by</span>
+<span id="L253"><a href="#L253"> 253</a>       rw [Category.assoc,hp]</span>
+<span id="L254"><a href="#L254"> 254</a>       exact hs</span>
+<span id="L255"><a href="#L255"> 255</a>     have hh := congrArg (fun a =&gt; a z) eqn</span>
+<span id="L256"><a href="#L256"> 256</a>     simpa only [ModuleCat.comp_apply, hz, SpectralSequenceMorphism.pageMap,</span>
+<span id="L257"><a href="#L257"> 257</a>       SpectralSequenceMorphism.toPreSSMorphism, PreSSMorphism.pageMap, SSDataMorphism.pageMapAt,</span>
+<span id="L258"><a href="#L258"> 258</a>       eqToHom_refl, Category.comp_id, n, m, F] using hh.symm</span>
+<span id="L259"><a href="#L259"> 259</a>   · have hh := congrArg (fun a =&gt; a z) (F.pageπ_pageMap i m)</span>
+<span id="L260"><a href="#L260"> 260</a>     simpa only [ModuleCat.comp_apply, he, SpectralSequenceMorphism.pageMap,</span>
+<span id="L261"><a href="#L261"> 261</a>       SpectralSequenceMorphism.toPreSSMorphism, PreSSMorphism.pageMap, SSDataMorphism.pageMapAt,</span>
+<span id="L262"><a href="#L262"> 262</a>       eqToHom_refl, Category.comp_id, n, m, F] using hh.symm</span>
+<span id="L263"><a href="#L263"> 263</a> </span>
+<span id="L264"><a href="#L264"> 264</a> private theorem family_infinity_representative_map {X Y : SyntheticSpectrum}</span>
+<span id="L265"><a href="#L265"> 265</a>     (f : X ⟶ Y) (i : Tridegree)</span>
+<span id="L266"><a href="#L266"> 266</a>     (x : (model.family.obj X).E₂ i) (e : ((model.family.obj X).sequence.ssData i).eInfty)</span>
+<span id="L267"><a href="#L267"> 267</a>     (hx : HasInfinityRepresentative (model.family.obj X) 2 i x e) :</span>
+<span id="L268"><a href="#L268"> 268</a>     HasInfinityRepresentative (model.family.obj Y) 2 i</span>
+<span id="L269"><a href="#L269"> 269</a>       (familyPageMap model.family f 2 i x) ((model.family.map f).eInftyMap i e) := by</span>
+<span id="L270"><a href="#L270"> 270</a>   have aux {A B : SyntheticAdamsSS} (f : A.sequence ⟶ B.sequence)</span>
+<span id="L271"><a href="#L271"> 271</a>       (x : A.E₂ i) (e : (A.sequence.ssData i).eInfty)</span>
+<span id="L272"><a href="#L272"> 272</a>       (hx : HasInfinityRepresentative A 2 i x e) :</span>
+<span id="L273"><a href="#L273"> 273</a>       HasInfinityRepresentative B 2 i (f.pageMap 2 i x) (f.eInftyMap i e) := by</span>
+<span id="L274"><a href="#L274"> 274</a>     have hstart := f.r₀_eq</span>
+<span id="L275"><a href="#L275"> 275</a>     rcases A with ⟨⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩,hA,hDA⟩</span>
+<span id="L276"><a href="#L276"> 276</a>     rcases B with ⟨⟨⟨r₀&#x27;,D&#x27;,δ&#x27;,d&#x27;⟩,dd&#x27;,Zs&#x27;,Bs&#x27;⟩,hB,hDB⟩</span>
+<span id="L277"><a href="#L277"> 277</a>     dsimp at hstart</span>
+<span id="L278"><a href="#L278"> 278</a>     subst r₀&#x27;</span>
+<span id="L279"><a href="#L279"> 279</a>     obtain ⟨hr,z,hz,he⟩ := hx</span>
+<span id="L280"><a href="#L280"> 280</a>     let n : WithTop ℕ := ↑(2-r₀).toNat</span>
+<span id="L281"><a href="#L281"> 281</a>     let F := f.toSSDataMorphism</span>
+<span id="L282"><a href="#L282"> 282</a>     refine ⟨hr,F.cycleMap i ⊤ z,?_,?_⟩</span>
+<span id="L283"><a href="#L283"> 283</a>     · have hs := F.cycleMap_ofLE_assoc i (show n ≤ ⊤ from le_top) ((D&#x27; i).pageπ n)</span>
+<span id="L284"><a href="#L284"> 284</a>       rw [← F.pageπ_pageMap] at hs</span>
+<span id="L285"><a href="#L285"> 285</a>       have hh := congrArg (fun a =&gt; a z) hs</span>
+<span id="L286"><a href="#L286"> 286</a>       change (D&#x27; i).pageπ n ((Subobject.ofLE ((D&#x27; i).Z ⊤) ((D&#x27; i).Z n) ((D&#x27; i).Z_anti le_top)) (F.cycleMap i ⊤ z)) =</span>
+<span id="L287"><a href="#L287"> 287</a>         F.pageMap i n x</span>
+<span id="L288"><a href="#L288"> 288</a>       change (D i).pageπ n ((Subobject.ofLE ((D i).Z ⊤) ((D i).Z n) ((D i).Z_anti le_top)) z) = x at hz</span>
+<span id="L289"><a href="#L289"> 289</a>       simpa only [ModuleCat.comp_apply, hz] using hh.symm</span>
+<span id="L290"><a href="#L290"> 290</a>     · change (D&#x27; i).pageπ ⊤ (F.cycleMap i ⊤ z) = F.pageMap i ⊤ e</span>
+<span id="L291"><a href="#L291"> 291</a>       exact (congrArg (fun a =&gt; a z) (F.pageπ_pageMap i ⊤)).symm.trans (by</span>
+<span id="L292"><a href="#L292"> 292</a>         change F.pageMap i ⊤ ((D i).pageπ ⊤ z) = _</span>
+<span id="L293"><a href="#L293"> 293</a>         rw [he])</span>
+<span id="L294"><a href="#L294"> 294</a>   exact aux (model.family.map f) x e hx</span>
+<span id="L295"><a href="#L295"> 295</a> </span>
+<span id="L296"><a href="#L296"> 296</a> private theorem syntheticRep_infty (A : SyntheticAdamsSS)</span>
+<span id="L297"><a href="#L297"> 297</a>     (r : ℤ) (i : Tridegree) (x : A.E₂ i) (xr : A.Page r i)</span>
+<span id="L298"><a href="#L298"> 298</a>     (hx : SyntheticRepresentsOnPage A r i x xr)</span>
+<span id="L299"><a href="#L299"> 299</a>     (hout : ∀ n : ℤ, r ≤ n → A.sequence.d n i = 0) :</span>
+<span id="L300"><a href="#L300"> 300</a>     ∃ e : (A.sequence.ssData i).eInfty, HasInfinityRepresentative A 2 i x e := by</span>
+<span id="L301"><a href="#L301"> 301</a>   obtain ⟨hr,z,hz,he⟩ := hx</span>
+<span id="L302"><a href="#L302"> 302</a>   have hZ := cycles_top_eq_of_d_eq_zero A.sequence r (by rw [A.firstPage]; exact hr) i hout</span>
+<span id="L303"><a href="#L303"> 303</a>   let zInf := (Subobject.ofLE _ _ hZ.ge) z</span>
+<span id="L304"><a href="#L304"> 304</a>   refine ⟨_,by norm_num,zInf,?_,rfl⟩</span>
+<span id="L305"><a href="#L305"> 305</a>   change (Subobject.ofLE _ _ _ ≫ (A.sequence.ssData i).pageπ _)</span>
+<span id="L306"><a href="#L306"> 306</a>     ((Subobject.ofLE _ _ hZ.ge) z)=x</span>
+<span id="L307"><a href="#L307"> 307</a>   rw [←CategoryTheory.comp_apply,←Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L308"><a href="#L308"> 308</a>   exact hz</span>
+<span id="L309"><a href="#L309"> 309</a> </span>
+<span id="L310"><a href="#L310"> 310</a> private theorem shifted_finite_source_exists</span>
+<span id="L311"><a href="#L311"> 311</a>     (X : ClassicalObject) (q : ℕ) (hq : 0 &lt; q)</span>
+<span id="L312"><a href="#L312"> 312</a>     (a s t : ℤ) (x : Ambient model X (s,t))</span>
+<span id="L313"><a href="#L313"> 313</a>     (hx : x ∈ KIP126.Literature.cycles model X q (s,t)) :</span>
+<span id="L314"><a href="#L314"> 314</a>     ∃ e : ((model.family.obj ((SyntheticObject.quotient q (.shift (0,a) (.nu X))).obj model.nu model.auxiliary)).sequence.ssData (s,t,t+a-(0:ℕ))).eInfty,</span>
+<span id="L315"><a href="#L315"> 315</a>       HasInfinityRepresentative _ 2 (s,t,t+a-(0:ℕ)) (finiteNuLabel model X q a s t 0 x) e := by</span>
+<span id="L316"><a href="#L316"> 316</a>   let E := model.classical.obj (X.obj model.auxiliary)</span>
+<span id="L317"><a href="#L317"> 317</a>   have hr : 2 ≤ q+1 := by omega</span>
+<span id="L318"><a href="#L318"> 318</a>   have hx&#x27; : ReachesPage E (q+1) (s,t) x := by</span>
+<span id="L319"><a href="#L319"> 319</a>     apply (isCycle_iff_reaches model X (q+1) (by omega) (s,t) x).mp</span>
+<span id="L320"><a href="#L320"> 320</a>     refine ⟨by omega,?_⟩</span>
+<span id="L321"><a href="#L321"> 321</a>     simpa using hx</span>
+<span id="L322"><a href="#L322"> 322</a>   obtain ⟨xr,hxr⟩ := hx&#x27;</span>
+<span id="L323"><a href="#L323"> 323</a>   have hd : (s,t) + E.diffDeg (q+1:ℕ) = (s+(q+1:ℕ),t+(q+1:ℕ)-1) := by</span>
+<span id="L324"><a href="#L324"> 324</a>     rw [model.classical.differentialDegree]</span>
+<span id="L325"><a href="#L325"> 325</a>     ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L326"><a href="#L326"> 326</a>   let yr := (E.d (q+1:ℕ) (s,t) ≫ eqToHom (congrArg (E.Page (q+1:ℕ)) hd)) xr</span>
+<span id="L327"><a href="#L327"> 327</a>   obtain ⟨y,hy⟩ := FinitePageCalculus.page_has_initial_representative (by omega : (2:ℤ)≤(q+1:ℕ)) yr</span>
+<span id="L328"><a href="#L328"> 328</a>   have hc : HasDifferential E (q+1:ℕ)</span>
+<span id="L329"><a href="#L329"> 329</a>       (s,t) (s+(q+1:ℕ),t+(q+1:ℕ)-1) x y := ⟨hd,xr,yr,hxr,hy,rfl⟩</span>
+<span id="L330"><a href="#L330"> 330</a>   have hs := (KIP126.Literature.Standard.bhs_differentials X a s t (q+1) 0 hr x y).mp hc</span>
+<span id="L331"><a href="#L331"> 331</a>   obtain ⟨_,xs,ys,hxs,hys,hds⟩ := hs</span>
+<span id="L332"><a href="#L332"> 332</a>   have hf := syntheticRep_map (model.family.map (XModLambdaN.incl _ q)) hxs</span>
+<span id="L333"><a href="#L333"> 333</a>   apply syntheticRep_infty _ (q+1:ℕ) (s,t,t+a-(0:ℕ)) _ _ hf</span>
+<span id="L334"><a href="#L334"> 334</a>   intro n hn</span>
+<span id="L335"><a href="#L335"> 335</a>   have hi : (s,t,t+a-(0:ℕ)) +</span>
+<span id="L336"><a href="#L336"> 336</a>       (model.family.functor.obj (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj</span>
+<span id="L337"><a href="#L337"> 337</a>         (model.nu.functor.obj (X.obj model.auxiliary))) q)).diffDeg n = (s+n,t+n-1,t+a) := by</span>
+<span id="L338"><a href="#L338"> 338</a>     rw [model.family.differentialDegree]</span>
+<span id="L339"><a href="#L339"> 339</a>     simp only [syntheticAdamsRawShift, Prod.mk_add_mk, Nat.cast_zero, sub_zero, add_zero]</span>
+<span id="L340"><a href="#L340"> 340</a>     ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L341"><a href="#L341"> 341</a>   have hsub := shiftedFinitePageVanishing X q hq a n (s+n) (t+n-1) (t+a)</span>
+<span id="L342"><a href="#L342"> 342</a>     (by omega) (Or.inr (by omega))</span>
+<span id="L343"><a href="#L343"> 343</a>   have hp : Subsingleton ((model.family.functor.obj (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj</span>
+<span id="L344"><a href="#L344"> 344</a>       (model.nu.functor.obj (X.obj model.auxiliary))) q)).Page n</span>
+<span id="L345"><a href="#L345"> 345</a>         ((s,t,t+a-(0:ℕ)) + (model.family.functor.obj (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj</span>
+<span id="L346"><a href="#L346"> 346</a>           (model.nu.functor.obj (X.obj model.auxiliary))) q)).diffDeg n)) := by</span>
+<span id="L347"><a href="#L347"> 347</a>     rw [hi]</span>
+<span id="L348"><a href="#L348"> 348</a>     exact hsub</span>
+<span id="L349"><a href="#L349"> 349</a>   ext z</span>
+<span id="L350"><a href="#L350"> 350</a>   exact @Subsingleton.elim _ hp _ _</span>
+<span id="L351"><a href="#L351"> 351</a> </span>
+<span id="L352"><a href="#L352"> 352</a> private theorem family_page_comp {X Y Z : SyntheticSpectrum}</span>
+<span id="L353"><a href="#L353"> 353</a>     (f : X ⟶ Y) (g : Y ⟶ Z) (r : ℤ) (i : Tridegree) :</span>
+<span id="L354"><a href="#L354"> 354</a>     familyPageMap model.family f r i ≫ familyPageMap model.family g r i =</span>
+<span id="L355"><a href="#L355"> 355</a>       familyPageMap model.family (f ≫ g) r i := by</span>
+<span id="L356"><a href="#L356"> 356</a>   change (model.family.map f).pageMap r i ≫ (model.family.map g).pageMap r i = _</span>
+<span id="L357"><a href="#L357"> 357</a>   rw [← SpectralSequenceMorphism.pageMap_comp, ← SyntheticAdamsFamily.map_comp]</span>
+<span id="L358"><a href="#L358"> 358</a>   rfl</span>
+<span id="L359"><a href="#L359"> 359</a> </span>
+<span id="L360"><a href="#L360"> 360</a> private theorem page_regrade {A B : SyntheticSpectrum} (f : A ⟶ B) {i j : Tridegree}</span>
+<span id="L361"><a href="#L361"> 361</a>     (h : i = j) (z : (model.family.obj A).E₂ i) :</span>
+<span id="L362"><a href="#L362"> 362</a>     regradeE2 h (familyPageMap model.family f 2 i z) =</span>
+<span id="L363"><a href="#L363"> 363</a>       familyPageMap model.family f 2 j (regradeE2 h z) := by</span>
+<span id="L364"><a href="#L364"> 364</a>   subst j</span>
+<span id="L365"><a href="#L365"> 365</a>   rfl</span>
+<span id="L366"><a href="#L366"> 366</a> </span>
+<span id="L367"><a href="#L367"> 367</a> private theorem finite_source_rho (X Y : ClassicalObject)</span>
+<span id="L368"><a href="#L368"> 368</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L369"><a href="#L369"> 369</a>     (i j : ℕ) (hij : i ≤ j) (s t : ℤ) (x : Ambient model X (s,t)) :</span>
+<span id="L370"><a href="#L370"> 370</a>     familyPageMap model.family</span>
+<span id="L371"><a href="#L371"> 371</a>       ((model.quotients.tower ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).rho i j hij) 2</span>
+<span id="L372"><a href="#L372"> 372</a>       (s, (t-s)+s, t+normalizedExponent model.classicalTower f)</span>
+<span id="L373"><a href="#L373"> 373</a>       (finiteSourceForExtension model X Y f j s t x) =</span>
+<span id="L374"><a href="#L374"> 374</a>         finiteSourceForExtension model X Y f i s t x := by</span>
+<span id="L375"><a href="#L375"> 375</a>   unfold finiteSourceForExtension</span>
+<span id="L376"><a href="#L376"> 376</a>   rw [← page_regrade]</span>
+<span id="L377"><a href="#L377"> 377</a>   congr 1</span>
+<span id="L378"><a href="#L378"> 378</a>   unfold finiteNuLabel</span>
+<span id="L379"><a href="#L379"> 379</a>   have hc := congrArg (fun g =&gt; familyPageMap model.family g 2</span>
+<span id="L380"><a href="#L380"> 380</a>     (s,t,t+(normalizedExponent model.classicalTower f : ℤ)-(0:ℕ)))</span>
+<span id="L381"><a href="#L381"> 381</a>     ((model.quotients.tower ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).rho_quotient hij)</span>
+<span id="L382"><a href="#L382"> 382</a>   rw [← family_page_comp] at hc</span>
+<span id="L383"><a href="#L383"> 383</a>   exact ConcreteCategory.congr_hom hc ((model.comparison.nuE2 X _ s t 0) x)</span>
+<span id="L384"><a href="#L384"> 384</a> </span>
+<span id="L385"><a href="#L385"> 385</a> private theorem finite_target_rho (X Y : ClassicalObject)</span>
+<span id="L386"><a href="#L386"> 386</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L387"><a href="#L387"> 387</a>     (i j : ℕ) (hij : i ≤ j) (n s t : ℤ)</span>
+<span id="L388"><a href="#L388"> 388</a>     (hn : (normalizedExponent model.classicalTower f : ℤ) ≤ n)</span>
+<span id="L389"><a href="#L389"> 389</a>     (y : Ambient model Y ((s+n),(t+n))) :</span>
+<span id="L390"><a href="#L390"> 390</a>     familyPageMap model.family ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho i j hij) 2</span>
+<span id="L391"><a href="#L391"> 391</a>       (s+n, (t-s)+(s+n), t+normalizedExponent model.classicalTower f)</span>
+<span id="L392"><a href="#L392"> 392</a>       (finiteTargetForExtension model X Y f j n s t hn y) =</span>
+<span id="L393"><a href="#L393"> 393</a>         finiteTargetForExtension model X Y f i n s t hn y := by</span>
+<span id="L394"><a href="#L394"> 394</a>   unfold finiteTargetForExtension</span>
+<span id="L395"><a href="#L395"> 395</a>   rw [← page_regrade]</span>
+<span id="L396"><a href="#L396"> 396</a>   congr 1</span>
+<span id="L397"><a href="#L397"> 397</a>   unfold finiteTargetLabel</span>
+<span id="L398"><a href="#L398"> 398</a>   have hc := congrArg (fun g =&gt; familyPageMap model.family g 2</span>
+<span id="L399"><a href="#L399"> 399</a>     (s+n,t+n,t+n-(n-normalizedExponent model.classicalTower f).toNat))</span>
+<span id="L400"><a href="#L400"> 400</a>     ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho_quotient hij)</span>
+<span id="L401"><a href="#L401"> 401</a>   rw [← family_page_comp] at hc</span>
+<span id="L402"><a href="#L402"> 402</a>   exact ConcreteCategory.congr_hom hc (targetNuLabel model Y (s+n) (t+n) _ y)</span>
+<span id="L403"><a href="#L403"> 403</a> </span>
+<span id="L404"><a href="#L404"> 404</a> </span>
+<span id="L405"><a href="#L405"> 405</a> private theorem infinity_representative_regrade</span>
+<span id="L406"><a href="#L406"> 406</a>     {A : SyntheticAdamsSS} {i j : Tridegree} (h : i = j)</span>
+<span id="L407"><a href="#L407"> 407</a>     (x : A.E₂ i) (e : (A.sequence.ssData i).eInfty)</span>
+<span id="L408"><a href="#L408"> 408</a>     (he : HasInfinityRepresentative A 2 i x e) :</span>
+<span id="L409"><a href="#L409"> 409</a>     HasInfinityRepresentative A 2 j (regradeE2 h x)</span>
+<span id="L410"><a href="#L410"> 410</a>       ((eqToHom (congrArg (fun p =&gt; (A.sequence.ssData p).eInfty) h)) e) := by</span>
+<span id="L411"><a href="#L411"> 411</a>   subst j</span>
+<span id="L412"><a href="#L412"> 412</a>   exact he</span>
+<span id="L413"><a href="#L413"> 413</a> </span>
+<span id="L414"><a href="#L414"> 414</a> private theorem finite_target_infinity_exists (X Y : ClassicalObject)</span>
+<span id="L415"><a href="#L415"> 415</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L416"><a href="#L416"> 416</a>     (q : ℕ) (hq : 0 &lt; q) (n s t : ℤ)</span>
+<span id="L417"><a href="#L417"> 417</a>     (hn : (normalizedExponent model.classicalTower f : ℤ) ≤ n)</span>
+<span id="L418"><a href="#L418"> 418</a>     (hk : n - normalizedExponent model.classicalTower f &lt; q)</span>
+<span id="L419"><a href="#L419"> 419</a>     (y : Ambient model Y ((s + n),(t + n)))</span>
+<span id="L420"><a href="#L420"> 420</a>     (hy : y ∈ KIP126.Literature.cycles model Y</span>
+<span id="L421"><a href="#L421"> 421</a>       ((q : ℤ) - n + normalizedExponent model.classicalTower f) (s + n, t + n)) :</span>
+<span id="L422"><a href="#L422"> 422</a>     ∃ e : ((model.family.obj ((SyntheticObject.quotient q (.nu Y)).obj</span>
+<span id="L423"><a href="#L423"> 423</a>         model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L424"><a href="#L424"> 424</a>           (s + n, (t - s) + (s + n), t + normalizedExponent model.classicalTower f)).eInfty,</span>
+<span id="L425"><a href="#L425"> 425</a>       HasInfinityRepresentative _ 2 _ (finiteTargetForExtension model X Y f q n s t hn y) e := by</span>
+<span id="L426"><a href="#L426"> 426</a>   let k := (n - normalizedExponent model.classicalTower f).toNat</span>
+<span id="L427"><a href="#L427"> 427</a>   have hkZ : (k : ℤ) = n - normalizedExponent model.classicalTower f := Int.toNat_of_nonneg (by omega)</span>
+<span id="L428"><a href="#L428"> 428</a>   let p : ℤ × ℤ := (s+n,t+n)</span>
+<span id="L429"><a href="#L429"> 429</a>   have hw : 0 ≤ p.2-(p.2-k) ∧ p.2-(p.2-k) &lt; q := by constructor &lt;;&gt; dsimp only [p] &lt;;&gt; omega</span>
+<span id="L430"><a href="#L430"> 430</a>   let P := KIP126.Literature.Standard.infinityFiniteWindow Y q hq p (p.2-k) hw</span>
+<span id="L431"><a href="#L431"> 431</a>   have hy&#x27; : y ∈ KIP126.Literature.cycles model Y (q-p.2+(p.2-k)) p := by</span>
+<span id="L432"><a href="#L432"> 432</a>     have hlvl : (q:ℤ)-p.2+(p.2-k) = (q:ℤ)-n+normalizedExponent model.classicalTower f := by omega</span>
+<span id="L433"><a href="#L433"> 433</a>     simpa only [hlvl] using hy</span>
+<span id="L434"><a href="#L434"> 434</a>   let c := KIP126.Literature.subquotientClass</span>
+<span id="L435"><a href="#L435"> 435</a>     (KIP126.Literature.cycles model Y (q-p.2+(p.2-k)) p)</span>
+<span id="L436"><a href="#L436"> 436</a>     (KIP126.Literature.boundaries model Y (1+p.2-(p.2-k)) p) ⟨y,hy&#x27;⟩</span>
+<span id="L437"><a href="#L437"> 437</a>   let e := P.symm c</span>
+<span id="L438"><a href="#L438"> 438</a>   have hlabel : nuWeightLabel model Y p.1 p.2 (p.2-k) (by omega) y =</span>
+<span id="L439"><a href="#L439"> 439</a>       targetNuLabel model Y p.1 p.2 k y := by</span>
+<span id="L440"><a href="#L440"> 440</a>     have hk : (p.2-(p.2-k)).toNat = k := by omega</span>
+<span id="L441"><a href="#L441"> 441</a>     have transport (a b : ℕ) (hab : a = b)</span>
+<span id="L442"><a href="#L442"> 442</a>         (h : (p.1,p.2,p.2-a) = (p.1,p.2,p.2-b)) :</span>
+<span id="L443"><a href="#L443"> 443</a>         regradeE2 h (targetNuLabel model Y p.1 p.2 a y) = targetNuLabel model Y p.1 p.2 b y := by</span>
+<span id="L444"><a href="#L444"> 444</a>       subst b</span>
+<span id="L445"><a href="#L445"> 445</a>       rfl</span>
+<span id="L446"><a href="#L446"> 446</a>     exact transport _ k hk _</span>
+<span id="L447"><a href="#L447"> 447</a>   have he : HasInfinityRepresentative (model.family.quotient</span>
+<span id="L448"><a href="#L448"> 448</a>       (model.nu.functor.obj (Y.obj model.auxiliary)) q) 2 (p.1,p.2,p.2-k)</span>
+<span id="L449"><a href="#L449"> 449</a>       (finiteTargetLabel model Y q p.1 p.2 k y) e := by</span>
+<span id="L450"><a href="#L450"> 450</a>     have hh := (KIP126.Literature.Standard.eInfinity_finite_labels Y q hq p.1 p.2</span>
+<span id="L451"><a href="#L451"> 451</a>       (p.2-k) hw y e).mpr ⟨hy&#x27;,P.apply_symm_apply c⟩</span>
+<span id="L452"><a href="#L452"> 452</a>     rw [hlabel] at hh</span>
+<span id="L453"><a href="#L453"> 453</a>     exact hh</span>
+<span id="L454"><a href="#L454"> 454</a>   have hi : (p.1,p.2,p.2-k) =</span>
+<span id="L455"><a href="#L455"> 455</a>       (s+n,(t-s)+(s+n),t+normalizedExponent model.classicalTower f) := by</span>
+<span id="L456"><a href="#L456"> 456</a>     dsimp only [p]</span>
+<span id="L457"><a href="#L457"> 457</a>     ext &lt;;&gt; dsimp &lt;;&gt; omega</span>
+<span id="L458"><a href="#L458"> 458</a>   refine ⟨(eqToHom (congrArg (fun p =&gt; ((model.family.quotient</span>
+<span id="L459"><a href="#L459"> 459</a>     (model.nu.functor.obj (Y.obj model.auxiliary)) q).sequence.ssData p).eInfty) hi)) e,?_⟩</span>
+<span id="L460"><a href="#L460"> 460</a>   exact infinity_representative_regrade hi _ _ he</span>
+<span id="L461"><a href="#L461"> 461</a> </span>
+<span id="L462"><a href="#L462"> 462</a> private theorem finite_representatives_lift (X Y : ClassicalObject)</span>
+<span id="L463"><a href="#L463"> 463</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L464"><a href="#L464"> 464</a>     (rEarlier rLater : ℕ) (n s t : ℤ)</span>
+<span id="L465"><a href="#L465"> 465</a>     (x : Ambient model X (s,t))</span>
+<span id="L466"><a href="#L466"> 466</a>     (y : Ambient model Y ((s+n),(t+n)))</span>
+<span id="L467"><a href="#L467"> 467</a>     (hr : 2 ≤ rEarlier) (hle : rEarlier ≤ rLater)</span>
+<span id="L468"><a href="#L468"> 468</a>     (hn : (normalizedExponent model.classicalTower f : ℤ) ≤ n)</span>
+<span id="L469"><a href="#L469"> 469</a>     (hnUpper : n ≤ (rEarlier:ℤ)-2+normalizedExponent model.classicalTower f)</span>
+<span id="L470"><a href="#L470"> 470</a>     (hx : IsCycle model X ((rLater:ℤ)-1) (s,t) x)</span>
+<span id="L471"><a href="#L471"> 471</a>     (hy : IsCycle model Y</span>
+<span id="L472"><a href="#L472"> 472</a>       ((rLater:ℤ)-1-n+normalizedExponent model.classicalTower f) (s+n,t+n) y)</span>
+<span id="L473"><a href="#L473"> 473</a>     (W : FiniteExtensionWitness model X Y f rEarlier n s t x y) :</span>
+<span id="L474"><a href="#L474"> 474</a>     ∃ (xx : ((model.family.obj ((SyntheticObject.quotient (rLater-1)</span>
+<span id="L475"><a href="#L475"> 475</a>         (extensionSourceObject model X Y f)).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L476"><a href="#L476"> 476</a>         (s,(t-s)+s,t+normalizedExponent model.classicalTower f)).eInfty)</span>
+<span id="L477"><a href="#L477"> 477</a>       (yy : ((model.family.obj ((SyntheticObject.quotient (rLater-1) (.nu Y)).obj</span>
+<span id="L478"><a href="#L478"> 478</a>         model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L479"><a href="#L479"> 479</a>         (s+n,(t-s)+(s+n),t+normalizedExponent model.classicalTower f)).eInfty),</span>
+<span id="L480"><a href="#L480"> 480</a>       HasInfinityRepresentative _ 2 _ (finiteSourceForExtension model X Y f (rLater-1) s t x) xx ∧</span>
+<span id="L481"><a href="#L481"> 481</a>       HasInfinityRepresentative _ 2 _ (finiteTargetForExtension model X Y f (rLater-1) n s t hn y) yy ∧</span>
+<span id="L482"><a href="#L482"> 482</a>       (model.family.functor.map ((model.quotients.tower ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).rho</span>
+<span id="L483"><a href="#L483"> 483</a>         (rEarlier-1) (rLater-1) (Nat.sub_le_sub_right hle 1))).eInftyMap</span>
+<span id="L484"><a href="#L484"> 484</a>         (s,(t-s)+s,t+normalizedExponent model.classicalTower f) xx = W.source ∧</span>
+<span id="L485"><a href="#L485"> 485</a>       (model.family.functor.map ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho</span>
+<span id="L486"><a href="#L486"> 486</a>         (rEarlier-1) (rLater-1) (Nat.sub_le_sub_right hle 1))).eInftyMap</span>
+<span id="L487"><a href="#L487"> 487</a>         (s+n,(t-s)+(s+n),t+normalizedExponent model.classicalTower f) yy = W.target := by</span>
+<span id="L488"><a href="#L488"> 488</a> </span>
+<span id="L489"><a href="#L489"> 489</a> </span>
+<span id="L490"><a href="#L490"> 490</a> </span>
+<span id="L491"><a href="#L491"> 491</a>   have hq : 0 &lt; rLater-1 := by omega</span>
+<span id="L492"><a href="#L492"> 492</a>   have hij : rEarlier-1 ≤ rLater-1 := Nat.sub_le_sub_right hle 1</span>
+<span id="L493"><a href="#L493"> 493</a>   obtain ⟨xs,hxs⟩ := shifted_finite_source_exists X (rLater-1) hq</span>
+<span id="L494"><a href="#L494"> 494</a>     (normalizedExponent model.classicalTower f) s t x (by</span>
+<span id="L495"><a href="#L495"> 495</a>       simpa only [Nat.cast_sub (show 1≤rLater by omega),Nat.cast_one] using hx.2)</span>
+<span id="L496"><a href="#L496"> 496</a>   have hsgrade : (s,t,t+(normalizedExponent model.classicalTower f:ℤ)-(0:ℕ)) =</span>
+<span id="L497"><a href="#L497"> 497</a>       (s,(t-s)+s,t+normalizedExponent model.classicalTower f) := by simp</span>
+<span id="L498"><a href="#L498"> 498</a>   let xx := (eqToHom (congrArg (fun p =&gt; ((model.family.obj ((SyntheticObject.quotient (rLater-1)</span>
+<span id="L499"><a href="#L499"> 499</a>     (extensionSourceObject model X Y f)).obj model.nu model.auxiliary)).sequence.ssData p).eInfty) hsgrade)) xs</span>
+<span id="L500"><a href="#L500"> 500</a>   have hxx : HasInfinityRepresentative _ 2 _</span>
+<span id="L501"><a href="#L501"> 501</a>       (finiteSourceForExtension model X Y f (rLater-1) s t x) xx :=</span>
+<span id="L502"><a href="#L502"> 502</a>     infinity_representative_regrade hsgrade _ xs hxs</span>
+<span id="L503"><a href="#L503"> 503</a>   obtain ⟨yy,hyy⟩ := finite_target_infinity_exists X Y f</span>
+<span id="L504"><a href="#L504"> 504</a>     (rLater-1) hq n s t hn (by omega) y (by</span>
+<span id="L505"><a href="#L505"> 505</a>       simpa only [Nat.cast_sub (show 1≤rLater by omega),Nat.cast_one] using hy.2)</span>
+<span id="L506"><a href="#L506"> 506</a>   refine ⟨xx,yy,hxx,hyy,?_,?_⟩</span>
+<span id="L507"><a href="#L507"> 507</a>   · have hh := family_infinity_representative_map</span>
+<span id="L508"><a href="#L508"> 508</a>       ((model.quotients.tower ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).rho</span>
+<span id="L509"><a href="#L509"> 509</a>         (rEarlier-1) (rLater-1) hij) _ _ xx hxx</span>
+<span id="L510"><a href="#L510"> 510</a>     rw [finite_source_rho] at hh</span>
+<span id="L511"><a href="#L511"> 511</a>     exact hh.unique W.source_rep</span>
+<span id="L512"><a href="#L512"> 512</a>   · have hh := family_infinity_representative_map</span>
+<span id="L513"><a href="#L513"> 513</a>       ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho</span>
+<span id="L514"><a href="#L514"> 514</a>         (rEarlier-1) (rLater-1) hij) _ _ yy hyy</span>
+<span id="L515"><a href="#L515"> 515</a>     rw [finite_target_rho] at hh</span>
+<span id="L516"><a href="#L516"> 516</a>     exact hh.unique W.target_rep</span>
+<span id="L517"><a href="#L517"> 517</a> </span>
+<span id="L518"><a href="#L518"> 518</a> </span>
+<span id="L519"><a href="#L519"> 519</a> end</span>
+<span id="L520"><a href="#L520"> 520</a> end KIP126.ProofTools.Internal</span></pre>

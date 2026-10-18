@@ -1,0 +1,97 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/NuNinth/Frames.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/NuNinth/Frames.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.Selected.NuErrorData</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.QuotientCalculus</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.PageCalculus</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.SectionSeven.NuTargetFiniteGap</span>
+<span id="L8"><a href="#L8">   8</a> /-! NuNinth:44–267,1695–1773, bbac1fc05843 (MIT). Reuses the same</span>
+<span id="L9"><a href="#L9">   9</a> proved cumulative-boundary and finite-frame operations. -/</span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Main.Internal.NuNinth</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.ProofTools</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.ProofTools.Operations KIP126.Main.Internal</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Main.Internal.Selected.NuError KIP126.Main.SectionSeven.Internal</span>
+<span id="L19"><a href="#L19">  19</a> noncomputable section</span>
+<span id="L20"><a href="#L20">  20</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L21"><a href="#L21">  21</a> set_option maxHeartbeats 1600000</span>
+<span id="L22"><a href="#L22">  22</a> set_option maxRecDepth 10000</span>
+<span id="L23"><a href="#L23">  23</a> private theorem nu9_not_boundary (X : ClassicalObject) (p : ℤ×ℤ)</span>
+<span id="L24"><a href="#L24">  24</a>     (x : Ambient model X p) (hx : x≠0)</span>
+<span id="L25"><a href="#L25">  25</a>     (b : ℤ) (hb : 1≤b)</span>
+<span id="L26"><a href="#L26">  26</a>     (hn : NeverHitOnWindow (model.classical.obj (X.obj model.auxiliary)) 2 b p x) : x∉boundaries model X b p := by</span>
+<span id="L27"><a href="#L27">  27</a>   intro h</span>
+<span id="L28"><a href="#L28">  28</a>   have hp : IsPermanentCycle (model.classical.obj (X.obj model.auxiliary)) p x := by</span>
+<span id="L29"><a href="#L29">  29</a>     apply (permanent_cycle_iff_mem X p x).mpr</span>
+<span id="L30"><a href="#L30">  30</a>     obtain ⟨y,hy⟩ := h</span>
+<span id="L31"><a href="#L31">  31</a>     let D := (model.classical.obj (X.obj model.auxiliary)).ssData p</span>
+<span id="L32"><a href="#L32">  32</a>     have le : D.B (↑(b-1).toNat)≤D.Z ⊤ := (D.B_mono le_top).trans (D.B_le_Z ⊤)</span>
+<span id="L33"><a href="#L33">  33</a>     refine ⟨(Subobject.ofLE _ _ le) y,?_⟩</span>
+<span id="L34"><a href="#L34">  34</a>     change (Subobject.ofLE _ _ le ≫ cycleLabel model X ⊤ p) y=x</span>
+<span id="L35"><a href="#L35">  35</a>     simpa only [cycleLabel,boundaryLabel,D,←Category.assoc,Subobject.ofLE_comp_ofLE] using hy</span>
+<span id="L36"><a href="#L36">  36</a>   have hs := permanent_survives_of_no_early_hit (by rw [model.classical.firstPage])</span>
+<span id="L37"><a href="#L37">  37</a>     (b+1).toNat (by omega) hp hx (fun r hr hlast =&gt; hn.2.2 r hr (by omega))</span>
+<span id="L38"><a href="#L38">  38</a>   have hnat : ((b+1).toNat:ℤ)=b+1 := by omega</span>
+<span id="L39"><a href="#L39">  39</a>   rw [hnat] at hs</span>
+<span id="L40"><a href="#L40">  40</a>   obtain ⟨v,hv,hvn⟩ := hs</span>
+<span id="L41"><a href="#L41">  41</a>   have hz : RepresentsOnPage (model.classical.obj (X.obj model.auxiliary)) (b+1) p x 0 :=</span>
+<span id="L42"><a href="#L42">  42</a>     representsOnPage_of_congruent model X (by omega) (RepresentsOnPage.zero (by omega))</span>
+<span id="L43"><a href="#L43">  43</a>       ⟨by omega,by simpa only [add_sub_cancel_right,sub_zero] using h⟩</span>
+<span id="L44"><a href="#L44">  44</a>   exact hvn (represents_unique hv hz)</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> private theorem sphere_finite_detection_exists_weak (q k : ℕ) (hq : 0&lt;q) (hk : k&lt;q)</span>
+<span id="L47"><a href="#L47">  47</a>     (s t : ℤ) (x : cycles model .sphere ((q:ℤ)-t+(t-k)) (s,t)) :</span>
+<span id="L48"><a href="#L48">  48</a>     ∃ a : BiHom (t-s) (t-k) (XModLambdaN (S_0_0:SyntheticSpectrum) q),</span>
+<span id="L49"><a href="#L49">  49</a>       Detects (model.convergence (.quotient q .sphere)) (s,t,t-k)</span>
+<span id="L50"><a href="#L50">  50</a>         (quotientLabel q s t k x.val) a := by</span>
+<span id="L51"><a href="#L51">  51</a>   let P := KIP126.Literature.Standard.infinityFiniteWindow .sphere q hq (s,t) (t-k)</span>
+<span id="L52"><a href="#L52">  52</a>     (by constructor &lt;;&gt; omega)</span>
+<span id="L53"><a href="#L53">  53</a>   let en := P.symm (subquotientClass _ _ x)</span>
+<span id="L54"><a href="#L54">  54</a>   have hn := (finite_target_label_iff .sphere q hq s t k hk x en).mpr (P.apply_symm_apply _)</span>
+<span id="L55"><a href="#L55">  55</a>   let f := XModLambdaN.map model.nu.unitIso.hom q</span>
+<span id="L56"><a href="#L56">  56</a>   let e := (model.family.map f).eInftyMap (s,t,t-k) en</span>
+<span id="L57"><a href="#L57">  57</a>   have he : HasInfinityRepresentative (model.family.quotient (S_0_0:SyntheticSpectrum) q) 2 (s,t,t-k)</span>
+<span id="L58"><a href="#L58">  58</a>       (quotientLabel q s t k x.val) e := by</span>
+<span id="L59"><a href="#L59">  59</a>     have hh := family_infinity_representative_map f (s,t,t-k) _ _ hn</span>
+<span id="L60"><a href="#L60">  60</a>     erw [sphere_quotient_label_from_nu q k s t x.val] at hh</span>
+<span id="L61"><a href="#L61">  61</a>     exact hh</span>
+<span id="L62"><a href="#L62">  62</a>   let F := model.syntheticTower.filtration (XModLambdaN (S_0_0:SyntheticSpectrum) q)</span>
+<span id="L63"><a href="#L63">  63</a>   haveI : Epi (F.toAssociatedGraded s (t-s,t-k)) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L64"><a href="#L64">  64</a>   obtain ⟨a,ha⟩ := (ModuleCat.epi_iff_surjective (F.toAssociatedGraded s (t-s,t-k))).mp</span>
+<span id="L65"><a href="#L65">  65</a>     inferInstance (((model.convergence (.quotient q .sphere)).identification (s,t,t-k)).hom e)</span>
+<span id="L66"><a href="#L66">  66</a>   exact ⟨(F.F s (t-s,t-k)).arrow a,e,he,a,rfl,ha.symm⟩</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> private theorem nu_nine_af12_gap (a : BiHom 125 130 (XModLambdaN (S_0_0:SyntheticSpectrum) 9)) :</span>
+<span id="L69"><a href="#L69">  69</a>     FiltrationAtLeast model.syntheticTower 12 a ↔ FiltrationAtLeast model.syntheticTower 13 a := by</span>
+<span id="L70"><a href="#L70">  70</a>   apply filtration_iff_of_infinity_zero (model.convergence (.quotient 9 .sphere))</span>
+<span id="L71"><a href="#L71">  71</a>     12 13 125 130 (by decide)</span>
+<span id="L72"><a href="#L72">  72</a>   intro j hj hj&#x27;</span>
+<span id="L73"><a href="#L73">  73</a>   have : j=12 := by omega</span>
+<span id="L74"><a href="#L74">  74</a>   subst j</span>
+<span id="L75"><a href="#L75">  75</a>   exact finite_sphere_zero_of_classical_quotient 9 (by decide) 12 137 130 (by norm_num)</span>
+<span id="L76"><a href="#L76">  76</a>     nu9_error_data.1</span>
+<span id="L77"><a href="#L77">  77</a> </span>
+<span id="L78"><a href="#L78">  78</a> private theorem nu_nine_af13_frame :</span>
+<span id="L79"><a href="#L79">  79</a>     ∀ e : ((model.family.quotient (S_0_0:SyntheticSpectrum) 9).sequence.ssData (13,138,130)).eInfty,</span>
+<span id="L80"><a href="#L80">  80</a>       e=0 ∨ HasInfinityRepresentative (model.family.quotient (S_0_0:SyntheticSpectrum) 9) 2 (13,138,130)</span>
+<span id="L81"><a href="#L81">  81</a>         (quotientLabel 9 13 138 8 (KIP126.Computation.Table.basis .sphere 13 138 1)) e := by</span>
+<span id="L82"><a href="#L82">  82</a>   have hc := nu9_error_data.2.1</span>
+<span id="L83"><a href="#L83">  83</a>   let x : cycles model .sphere ((9:ℤ)-138+(138-(8:ℕ))) (13,138) :=</span>
+<span id="L84"><a href="#L84">  84</a>     ⟨KIP126.Computation.Table.basis .sphere 13 138 1,</span>
+<span id="L85"><a href="#L85">  85</a>       cycles_antitone model .sphere (13,138) (by decide : (1:ℤ)≤2) hc⟩</span>
+<span id="L86"><a href="#L86">  86</a>   apply finite_sphere_frame 9 8 (by decide) (by decide) 13 138 x</span>
+<span id="L87"><a href="#L87">  87</a>   intro y</span>
+<span id="L88"><a href="#L88">  88</a>   obtain ⟨y,rfl⟩ := Quotient.exists_rep y</span>
+<span id="L89"><a href="#L89">  89</a>   rcases nu9_error_data.2.2 y.val with hy|hy</span>
+<span id="L90"><a href="#L90">  90</a>   · exact Or.inl ((subquotientClass_eq_zero_iff _ _ y).mpr hy)</span>
+<span id="L91"><a href="#L91">  91</a>   · right</span>
+<span id="L92"><a href="#L92">  92</a>     apply sub_eq_zero.mp</span>
+<span id="L93"><a href="#L93">  93</a>     change subquotientClass _ _ y-subquotientClass _ _ x=0</span>
+<span id="L94"><a href="#L94">  94</a>     exact (map_sub (subquotientClass _ _) y x).symm.trans</span>
+<span id="L95"><a href="#L95">  95</a>       ((subquotientClass_eq_zero_iff _ _ (y-x)).mpr hy)</span>
+<span id="L96"><a href="#L96">  96</a> end</span>
+<span id="L97"><a href="#L97">  97</a> end KIP126.Main.Internal.NuNinth</span></pre>

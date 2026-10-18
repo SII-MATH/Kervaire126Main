@@ -1,0 +1,120 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NuTargetFinite.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NuTargetFinite.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.E2Computation.Table.Values</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.LambdaZero</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.DetectionLabels</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.SectionSeven.NuTargetCosets</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.SectionSeven.NuTargetPeeling</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.SectionSeven.NuTargetFrame</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.SectionSeven.NuTargetDetection</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.SectionSeven.NuTargetLambda</span>
+<span id="L11"><a href="#L11">  11</a> /-! The P/Q alternative giving the actual target division, from</span>
+<span id="L12"><a href="#L12">  12</a> NuTargetHelpers.lean:1071–1103,1694–1764 (bbac1fc05843, MIT). -/</span>
+<span id="L13"><a href="#L13">  13</a> @[expose] section</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L16"><a href="#L16">  16</a> set_option maxHeartbeats 1000000</span>
+<span id="L17"><a href="#L17">  17</a> namespace KIP126.Main.SectionSeven.Internal</span>
+<span id="L18"><a href="#L18">  18</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.AdamsSynthetic.Standard KIP126.Main.Internal</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Computation.Standard KIP126.ProofTools.Operations</span>
+<span id="L23"><a href="#L23">  23</a> noncomputable section</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> theorem boundary_by_is_boundary {p : ℤ×ℤ}</span>
+<span id="L26"><a href="#L26">  26</a>     {x : model.classical.sphere.Page 2 p}</span>
+<span id="L27"><a href="#L27">  27</a>     (hx : IsBoundaryBy model.classical.sphere 2 p x) :</span>
+<span id="L28"><a href="#L28">  28</a>     x ∈ boundaries model .sphere 2 p := by</span>
+<span id="L29"><a href="#L29">  29</a>   exact represents_zero_mem_boundary model .sphere 3 p x</span>
+<span id="L30"><a href="#L30">  30</a>     (KIP126.Core.SpectralSequence.PageThree.boundary_represents_zero hx)</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> theorem nu_target_pq_boundaries :</span>
+<span id="L33"><a href="#L33">  33</a>     model.sphereAlgebra.product (1,4) (11,133) h2 P ∈ boundaries model .sphere 2 (12,137) ∧</span>
+<span id="L34"><a href="#L34">  34</a>     model.sphereAlgebra.product (1,4) (12,134) h2 Q ∈ boundaries model .sphere 2 (13,138) := by</span>
+<span id="L35"><a href="#L35">  35</a>   constructor</span>
+<span id="L36"><a href="#L36">  36</a>   · have h := boundary_by_is_boundary p_h2_boundary</span>
+<span id="L37"><a href="#L37">  37</a>     have hc := KIP126.Computation.Table.product_comm 1 4 11 133 (by decide) h2 P</span>
+<span id="L38"><a href="#L38">  38</a>     change product h2 P ∈ boundaries model .sphere 2 (12,137)</span>
+<span id="L39"><a href="#L39">  39</a>     rw [hc]</span>
+<span id="L40"><a href="#L40">  40</a>     exact h</span>
+<span id="L41"><a href="#L41">  41</a>   · have h := boundary_by_is_boundary q_h2_boundary</span>
+<span id="L42"><a href="#L42">  42</a>     have hc := KIP126.Computation.Table.product_comm 1 4 12 134 (by decide) h2 Q</span>
+<span id="L43"><a href="#L43">  43</a>     change product h2 Q ∈ boundaries model .sphere 2 (13,138)</span>
+<span id="L44"><a href="#L44">  44</a>     rw [hc]</span>
+<span id="L45"><a href="#L45">  45</a>     exact h</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> theorem nu_target_of_finite_nonzero</span>
+<span id="L48"><a href="#L48">  48</a>     (nu : BiHom 3 4 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L49"><a href="#L49">  49</a>     (hnu : (KIP126.Literature.sphereFirstQuotient model) 1 4 (quotientClass 1 nu) = h2)</span>
+<span id="L50"><a href="#L50">  50</a>     (hprod : ∀ x : model.classical.sphere.Page 2 (13,135),</span>
+<span id="L51"><a href="#L51">  51</a>       model.sphereAlgebra.product (1,4) (13,135) h2 x = 0)</span>
+<span id="L52"><a href="#L52">  52</a>     (a0 : BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L53"><a href="#L53">  53</a>     (ha0 : FiltrationAtLeast model.syntheticTower 11 a0)</span>
+<span id="L54"><a href="#L54">  54</a>     (hne : sphereAction nu a0 ≠ 0) : TargetNuDivisible T nu := by</span>
+<span id="L55"><a href="#L55">  55</a>   obtain ⟨p,q,bp,bq,hp,hq,hrem⟩ := pq_lift_peel p_cosets q_cosets a0 ha0</span>
+<span id="L56"><a href="#L56">  56</a>   let a : BiHom 122 132 (S_0_0 : SyntheticSpectrum) :=</span>
+<span id="L57"><a href="#L57">  57</a>     (if bp then (show BiHom 122 132 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 1 p) else 0)+</span>
+<span id="L58"><a href="#L58">  58</a>     (if bq then (show BiHom 122 132 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 2 q) else 0)</span>
+<span id="L59"><a href="#L59">  59</a>   let v : BiHom 125 135 (S_0_0 : SyntheticSpectrum) := sphereProduct (lambdaMultiply 1 nu) a</span>
+<span id="L60"><a href="#L60">  60</a>   let b : BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) := quotientClass 9 (lambdaMultiply 5 a)</span>
+<span id="L61"><a href="#L61">  61</a>   have hb : b=</span>
+<span id="L62"><a href="#L62">  62</a>       (if bp then (show BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from quotientClass 9 (lambdaMultiply 6 p)) else 0)+</span>
+<span id="L63"><a href="#L63">  63</a>       (if bq then (show BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from quotientClass 9 (lambdaMultiply 7 q)) else 0) := by</span>
+<span id="L64"><a href="#L64">  64</a>     let f : BiHom 122 132 (S_0_0 : SyntheticSpectrum) →+ BiHom 122 127 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) :=</span>
+<span id="L65"><a href="#L65">  65</a>       { toFun := fun c=&gt;quotientClass 9 (lambdaMultiply 5 c)</span>
+<span id="L66"><a href="#L66">  66</a>         map_zero&#x27; := by simp only [lambdaMultiply,quotientClass,CategoryTheory.Limits.comp_zero,CategoryTheory.Limits.zero_comp]</span>
+<span id="L67"><a href="#L67">  67</a>         map_add&#x27; := by intros; simp only [lambdaMultiply,quotientClass,Preadditive.comp_add,Preadditive.add_comp] }</span>
+<span id="L68"><a href="#L68">  68</a>     have hp5 : f (lambdaMultiply 1 p)=quotientClass 9 (lambdaMultiply 6 p) :=</span>
+<span id="L69"><a href="#L69">  69</a>       congrArg (quotientClass 9) (nu_target_five_one p)</span>
+<span id="L70"><a href="#L70">  70</a>     have hq5 : f (lambdaMultiply 2 q)=quotientClass 9 (lambdaMultiply 7 q) :=</span>
+<span id="L71"><a href="#L71">  71</a>       congrArg (quotientClass 9) (nu_target_five_two q)</span>
+<span id="L72"><a href="#L72">  72</a>     change f ((if bp then (show BiHom 122 132 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 1 p) else 0)+</span>
+<span id="L73"><a href="#L73">  73</a>       (if bq then (show BiHom 122 132 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 2 q) else 0))=_</span>
+<span id="L74"><a href="#L74">  74</a>     rw [map_add]</span>
+<span id="L75"><a href="#L75">  75</a>     cases bp &lt;;&gt; cases bq &lt;;&gt; simp only [Bool.false_eq_true,↓reduceIte,map_zero,hp5,hq5]</span>
+<span id="L76"><a href="#L76">  76</a>   rw [←hb] at hrem</span>
+<span id="L77"><a href="#L77">  77</a>   have hnud := model.sphereDetectionCompatible.homotopy_lambda 1 4 0 nu</span>
+<span id="L78"><a href="#L78">  78</a>   change Detects (model.convergence .sphere) (1,4,4)</span>
+<span id="L79"><a href="#L79">  79</a>     (sphereLabel 1 4 0 ((KIP126.Literature.sphereFirstQuotient model) 1 4 (quotientClass 1 nu))) (lambdaMultiply 0 nu) at hnud</span>
+<span id="L80"><a href="#L80">  80</a>   have hznu : lambdaMultiply 0 nu=nu := by</span>
+<span id="L81"><a href="#L81">  81</a>     exact KIP126.Main.Internal.lambda_zero_3_4 nu</span>
+<span id="L82"><a href="#L82">  82</a>   rw [hnu,hznu] at hnud</span>
+<span id="L83"><a href="#L83">  83</a>   have hr := nu_target_remainder_zero nu hnud hprod (a0-b) hrem</span>
+<span id="L84"><a href="#L84">  84</a>   have hab : sphereAction nu a0=sphereAction nu b := by</span>
+<span id="L85"><a href="#L85">  85</a>     change _ ≫ _ ≫ (a0-b)=0 at hr</span>
+<span id="L86"><a href="#L86">  86</a>     simp only [Preadditive.comp_sub,sub_eq_zero] at hr</span>
+<span id="L87"><a href="#L87">  87</a>     exact hr</span>
+<span id="L88"><a href="#L88">  88</a>   have hvq : quotientClass 9 (lambdaMultiply 4 v)=sphereAction nu b := by</span>
+<span id="L89"><a href="#L89">  89</a>     dsimp only [v,b]</span>
+<span id="L90"><a href="#L90">  90</a>     rw [nu_target_lambda_four_product]</span>
+<span id="L91"><a href="#L91">  91</a>     simp only [sphereProduct,sphereAction,quotientClass,Category.assoc,Nat.cast_ofNat,Int.reduceSub]</span>
+<span id="L92"><a href="#L92">  92</a>   have hvn : quotientClass 9 (lambdaMultiply 4 v)≠0 := by</span>
+<span id="L93"><a href="#L93">  93</a>     rw [hvq,←hab]</span>
+<span id="L94"><a href="#L94">  94</a>     exact hne</span>
+<span id="L95"><a href="#L95">  95</a>   obtain ⟨hpb,hqb⟩ := nu_target_pq_boundaries</span>
+<span id="L96"><a href="#L96">  96</a>   obtain ⟨hpf,hqf⟩ := nu_target_sphere_products_filtration nu hnu</span>
+<span id="L97"><a href="#L97">  97</a>     P Q hpb hqb p q hp hq</span>
+<span id="L98"><a href="#L98">  98</a>   have hvf : FiltrationAtLeast model.syntheticTower 14 v := by</span>
+<span id="L99"><a href="#L99">  99</a>     cases bp &lt;;&gt; cases bq</span>
+<span id="L100"><a href="#L100"> 100</a>     · change FiltrationAtLeast model.syntheticTower 14</span>
+<span id="L101"><a href="#L101"> 101</a>         (sphereProduct (lambdaMultiply 1 nu) ((0 : BiHom 122 132 (S_0_0 : SyntheticSpectrum))+0))</span>
+<span id="L102"><a href="#L102"> 102</a>       simp only [FiltrationAtLeast,add_zero,sphereProduct,comp_zero]</span>
+<span id="L103"><a href="#L103"> 103</a>       exact Submodule.zero_mem _</span>
+<span id="L104"><a href="#L104"> 104</a>     · simpa only [v,a,Bool.false_eq_true,↓reduceIte,zero_add] using hqf</span>
+<span id="L105"><a href="#L105"> 105</a>     · simpa only [v,a,Bool.false_eq_true,↓reduceIte,add_zero] using hpf</span>
+<span id="L106"><a href="#L106"> 106</a>     · have hh := (model.syntheticTower.filtrationSubmodule (S_0_0 : SyntheticSpectrum) 14 (125,135)).add_mem hpf hqf</span>
+<span id="L107"><a href="#L107"> 107</a>       simpa only [FiltrationAtLeast,v,a,↓reduceIte,sphereProduct,Preadditive.comp_add,Nat.cast_ofNat,Int.natCast_one,Int.reduceSub] using hh</span>
+<span id="L108"><a href="#L108"> 108</a>   have ht := KIP126.Computation.Standard.t_permanent_cycle</span>
+<span id="L109"><a href="#L109"> 109</a>   have hdet := nu_target_sphere_detected T ht target_page_six_frame v hvf hvn</span>
+<span id="L110"><a href="#L110"> 110</a>   obtain ⟨t,hlt,hltv⟩ := nu_target_sphere_four_split T ht v hdet</span>
+<span id="L111"><a href="#L111"> 111</a>   have htn : T≠0 := by</span>
+<span id="L112"><a href="#L112"> 112</a>     intro hz</span>
+<span id="L113"><a href="#L113"> 113</a>     apply KIP126.Computation.Standard.t_not_h0_multiple</span>
+<span id="L114"><a href="#L114"> 114</a>     refine ⟨0,?_⟩</span>
+<span id="L115"><a href="#L115"> 115</a>     rw [hz]</span>
+<span id="L116"><a href="#L116"> 116</a>     simp only [KIP126.Computation.Standard.product,map_zero]</span>
+<span id="L117"><a href="#L117"> 117</a>   exact ⟨t,a,target_first_label_nonzero_detection T htn t hlt,hltv.symm⟩</span>
+<span id="L118"><a href="#L118"> 118</a> </span>
+<span id="L119"><a href="#L119"> 119</a> end</span>
+<span id="L120"><a href="#L120"> 120</a> end KIP126.Main.SectionSeven.Internal</span></pre>

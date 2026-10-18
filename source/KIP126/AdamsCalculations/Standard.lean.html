@@ -1,0 +1,152 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsCalculations/Standard.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsCalculations/Standard.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.E2Computation.Standard</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Later Adams-page differentials, survival and boundary calculations.</span>
+<span id="L6"><a href="#L6">   6</a> The fixed classes and E₂ algebra are imported from E2Computation. -/</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> @[expose] section</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Computation.Standard</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> public theorem w_to_e6 : SurvivesTo model.classical.sphere 6 (8,134) W := by sorry</span>
+<span id="L17"><a href="#L17">  17</a> public theorem t_permanent_cycle : IsPermanentCycle model.classical.sphere (14,139) T := by sorry</span>
+<span id="L18"><a href="#L18">  18</a> /-- Complete incoming-page classification; it identifies actual differentials,</span>
+<span id="L19"><a href="#L19">  19</a> not an arbitrary choice of an E₂ lift. -/</span>
+<span id="L20"><a href="#L20">  20</a> public theorem t_only_incoming (r : ℤ) (h : HitOnPage model.classical.sphere r (14,139) T) :</span>
+<span id="L21"><a href="#L21">  21</a>     (r = 6 ∧ HasNonzeroDifferential model.classical.sphere 6 (8,134) (14,139) W T) ∨</span>
+<span id="L22"><a href="#L22">  22</a>     (r = 12 ∧ HasNonzeroDifferential model.classical.sphere 12 (2,128) (14,139) h6Square T) := by sorry</span>
+<span id="L23"><a href="#L23">  23</a> public theorem u_permanent : NonzeroSurvival model.classical.sphere (10,134) U := by sorry</span>
+<span id="L24"><a href="#L24">  24</a> /-- Exhaustion of the actual E₅ component, with its nonzero continuation. -/</span>
+<span id="L25"><a href="#L25">  25</a> public theorem high_e5 : ∃ y : model.classical.sphere.Page 5 (25,150),</span>
+<span id="L26"><a href="#L26">  26</a>     RepresentsOnPage model.classical.sphere 5 (25,150) highClass y ∧ y ≠ 0 ∧</span>
+<span id="L27"><a href="#L27">  27</a>     ∀ z : model.classical.sphere.Page 5 (25,150), z = 0 ∨ z = y := by sorry</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> public theorem v_to_e12 : SurvivesTo model.classical.sphere 12 (9,132) V := by sorry</span>
+<span id="L30"><a href="#L30">  30</a> </span>
+<span id="L31"><a href="#L31">  31</a> public theorem v_not_hit : NeverHit model.classical.sphere (9,132) V := by sorry</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> public theorem d2_x125_8 : HasNonzeroDifferential model.classical.sphere 2 (8,133) (10,134)</span>
+<span id="L34"><a href="#L34">  34</a>     (atom .x_125_8) d2Target := by sorry</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> public theorem y_to_e5 : SurvivesTo model.classical.sphere 5 (11,136) Y := by sorry</span>
+<span id="L37"><a href="#L37">  37</a> </span>
+<span id="L38"><a href="#L38">  38</a> public theorem y_not_hit : NeverHit model.classical.sphere (11,136) Y := by sorry</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> public theorem x_to_e6 : SurvivesTo model.classical.sphere 6 (8,130) X := by sorry</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> public theorem x_not_hit : NeverHit model.classical.sphere (8,130) X := by sorry</span>
+<span id="L43"><a href="#L43">  43</a> </span>
+<span id="L44"><a href="#L44">  44</a> public theorem d2_h0Six_h6 : HasNonzeroDifferential model.classical.sphere 2 (7,70) (9,71)</span>
+<span id="L45"><a href="#L45">  45</a>     (product h0Six h6) (product h0 (atom .b)) := by sorry</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> public theorem d3_h4_x109_12 : HasNonzeroDifferential model.classical.sphere 3 (13,137) (16,139)</span>
+<span id="L48"><a href="#L48">  48</a>     (product h4 (atom .x_109_12) (h := T._proof_1))</span>
+<span id="L49"><a href="#L49">  49</a>     (product h1 (atom .x_122_15_2)) := by sorry</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> public theorem d3_h0Square_x123_13_2 : HasNonzeroDifferential model.classical.sphere 3 (15,138) (18,140)</span>
+<span id="L52"><a href="#L52">  52</a>     (product h0Square (atom .x_123_13_2))</span>
+<span id="L53"><a href="#L53">  53</a>     (product h0Square (atom .x_122_16)) := by sorry</span>
+<span id="L54"><a href="#L54">  54</a> </span>
+<span id="L55"><a href="#L55">  55</a> public theorem d3_x126_4 : HasNonzeroDifferential model.classical.sphere 3 (4,130) (7,132)</span>
+<span id="L56"><a href="#L56">  56</a>     (atom .x_126_4) (product h0Square (atom .x_125_5)) := by sorry</span>
+<span id="L57"><a href="#L57">  57</a> </span>
+<span id="L58"><a href="#L58">  58</a> public theorem d7_source : HasNonzeroDifferential model.classical.sphere 7 (11,134) (18,140)</span>
+<span id="L59"><a href="#L59">  59</a>     d7Source (product h1 (atom .x_121_17)) := by sorry</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> public theorem d3_x126_6_candidates :</span>
+<span id="L62"><a href="#L62">  62</a>     HasNonzeroDifferential model.classical.sphere 3 (6,132) (9,134)</span>
+<span id="L63"><a href="#L63">  63</a>       (atom .x_126_6) d3Candidate ∨</span>
+<span id="L64"><a href="#L64">  64</a>     HasNonzeroDifferential model.classical.sphere 3 (6,132) (9,134)</span>
+<span id="L65"><a href="#L65">  65</a>       (atom .x_126_6) d3OtherCandidate := by sorry</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> public theorem w_d6_targets : DifferentialTargets model.classical.sphere 6 (8,134) W</span>
+<span id="L68"><a href="#L68">  68</a>     (by simpa only [ClassicalAdamsFamily.sphere, ClassicalAdamsFamily.obj, model.classical.differentialDegree,</span>
+<span id="L69"><a href="#L69">  69</a>       Prod.mk_add_mk, Int.reduceSub, Int.reduceAdd] using T) := by sorry</span>
+<span id="L70"><a href="#L70">  70</a> </span>
+<span id="L71"><a href="#L71">  71</a> public theorem correction_permanent : NonzeroSurvival model.classical.sphere (13,137) correction := by sorry</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> public theorem p_permanent : NonzeroSurvival model.classical.sphere (11,133) P := by sorry</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> public theorem q_permanent : NonzeroSurvival model.classical.sphere (12,134) Q := by sorry</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> public theorem p_h2_boundary : IsBoundaryBy model.classical.sphere 2 (12,137)</span>
+<span id="L78"><a href="#L78">  78</a>     (product P h2) := by sorry</span>
+<span id="L79"><a href="#L79">  79</a> </span>
+<span id="L80"><a href="#L80">  80</a> public theorem q_h2_boundary : IsBoundaryBy model.classical.sphere 2 (13,138)</span>
+<span id="L81"><a href="#L81">  81</a>     (product Q h2) := by sorry</span>
+<span id="L82"><a href="#L82">  82</a> </span>
+<span id="L83"><a href="#L83">  83</a> public theorem e5_stem124_af11 : Subsingleton (model.classical.sphere.Page 5 (11,135)) := by sorry</span>
+<span id="L84"><a href="#L84">  84</a> </span>
+<span id="L85"><a href="#L85">  85</a> public theorem e4_stem124_af12 : Subsingleton (model.classical.sphere.Page 4 (12,136)) := by sorry</span>
+<span id="L86"><a href="#L86">  86</a> </span>
+<span id="L87"><a href="#L87">  87</a> public theorem e4_stem125_af12 : Subsingleton (model.classical.sphere.Page 4 (12,137)) := by sorry</span>
+<span id="L88"><a href="#L88">  88</a> </span>
+<span id="L89"><a href="#L89">  89</a> public theorem e5_stem125_af13 : Subsingleton (model.classical.sphere.Page 5 (13,138)) := by sorry</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> public theorem p_permanent_cycle : IsPermanentCycle model.classical.sphere (11,133) P := by</span>
+<span id="L92"><a href="#L92">  92</a>   obtain ⟨z, hz, _⟩ := p_permanent</span>
+<span id="L93"><a href="#L93">  93</a>   exact ⟨z, hz⟩</span>
+<span id="L94"><a href="#L94">  94</a> public theorem q_permanent_cycle : IsPermanentCycle model.classical.sphere (12,134) Q := by</span>
+<span id="L95"><a href="#L95">  95</a>   obtain ⟨z, hz, _⟩ := q_permanent</span>
+<span id="L96"><a href="#L96">  96</a>   exact ⟨z, hz⟩</span>
+<span id="L97"><a href="#L97">  97</a> </span>
+<span id="L98"><a href="#L98">  98</a> public theorem table3 :</span>
+<span id="L99"><a href="#L99">  99</a>     SurvivesTo model.classical.sphere 12 (9,132) V ∧</span>
+<span id="L100"><a href="#L100"> 100</a>     NeverHit model.classical.sphere (9,132) V ∧</span>
+<span id="L101"><a href="#L101"> 101</a>     HasNonzeroDifferential model.classical.sphere 2 (8,133) (10,134) (atom .x_125_8) d2Target :=</span>
+<span id="L102"><a href="#L102"> 102</a>   ⟨v_to_e12, v_not_hit, d2_x125_8⟩</span>
+<span id="L103"><a href="#L103"> 103</a> public theorem table7 :</span>
+<span id="L104"><a href="#L104"> 104</a>     SurvivesTo model.classical.sphere 5 (11,136) Y ∧</span>
+<span id="L105"><a href="#L105"> 105</a>     NeverHit model.classical.sphere (11,136) Y := ⟨y_to_e5, y_not_hit⟩</span>
+<span id="L106"><a href="#L106"> 106</a> public theorem table2 :</span>
+<span id="L107"><a href="#L107"> 107</a>     (SurvivesTo model.classical.sphere 6 (8,130) X ∧ NeverHit model.classical.sphere (8,130) X) ∧</span>
+<span id="L108"><a href="#L108"> 108</a>     (IsPermanentCycle model.classical.sphere (11,133) P ∧</span>
+<span id="L109"><a href="#L109"> 109</a>       IsPermanentCycle model.classical.sphere (12,134) Q) :=</span>
+<span id="L110"><a href="#L110"> 110</a>   ⟨⟨x_to_e6, x_not_hit⟩, ⟨p_permanent_cycle, q_permanent_cycle⟩⟩</span>
+<span id="L111"><a href="#L111"> 111</a> public theorem table9 (r : ℤ) (_hr : 2 ≤ r) :</span>
+<span id="L112"><a href="#L112"> 112</a>     ¬ HasNonzeroDifferential model.classical.sphere r (6,132) (14,139) (atom .x_126_6) T := by</span>
+<span id="L113"><a href="#L113"> 113</a>   intro hd</span>
+<span id="L114"><a href="#L114"> 114</a>   have hp := congrArg Prod.fst hd.toHasDifferential.target_degree</span>
+<span id="L115"><a href="#L115"> 115</a>   have hdeg : (6 : ℤ) + r = 14 := by</span>
+<span id="L116"><a href="#L116"> 116</a>     simpa only [ClassicalAdamsFamily.sphere, ClassicalAdamsFamily.obj,</span>
+<span id="L117"><a href="#L117"> 117</a>       model.classical.differentialDegree, Prod.mk_add_mk, Prod.fst] using hp</span>
+<span id="L118"><a href="#L118"> 118</a>   rcases t_only_incoming r hd.hit_target with hh | hh</span>
+<span id="L119"><a href="#L119"> 119</a>   · omega</span>
+<span id="L120"><a href="#L120"> 120</a>   · omega</span>
+<span id="L121"><a href="#L121"> 121</a> public theorem no_other_incoming {r s t : ℤ} (_hr : 2 ≤ r) (h6 : r ≠ 6) (h12 : r ≠ 12)</span>
+<span id="L122"><a href="#L122"> 122</a>     (x : model.classical.sphere.Page 2 (s,t)) :</span>
+<span id="L123"><a href="#L123"> 123</a>     ¬ HasNonzeroDifferential model.classical.sphere r (s,t) (14,139) x T := by</span>
+<span id="L124"><a href="#L124"> 124</a>   intro hx</span>
+<span id="L125"><a href="#L125"> 125</a>   rcases t_only_incoming r hx.hit_target with hx | hx</span>
+<span id="L126"><a href="#L126"> 126</a>   · exact h6 hx.1</span>
+<span id="L127"><a href="#L127"> 127</a>   · exact h12 hx.1</span>
+<span id="L128"><a href="#L128"> 128</a> </span>
+<span id="L129"><a href="#L129"> 129</a> public theorem cofiber_d3 : HasNonzeroDifferential nuCofiberSequence 3 (8,134) (11,136)</span>
+<span id="L130"><a href="#L130"> 130</a>     cofiberSource (bottom 11 136 Y) := by sorry</span>
+<span id="L131"><a href="#L131"> 131</a> public theorem cofiber_target_to_e6 :</span>
+<span id="L132"><a href="#L132"> 132</a>     SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by sorry</span>
+<span id="L133"><a href="#L133"> 133</a> public theorem cofiber_target_not_hit_through5 :</span>
+<span id="L134"><a href="#L134"> 134</a>     NeverHitOnWindow nuCofiberSequence 2 5 (14,139) (bottom 14 139 T) := by sorry</span>
+<span id="L135"><a href="#L135"> 135</a> </span>
+<span id="L136"><a href="#L136"> 136</a> /-- Derived from the fixed literature result, rather than a duplicate assumption. -/</span>
+<span id="L137"><a href="#L137"> 137</a> public theorem d2_h6 : HasNonzeroDifferential model.classical.sphere 2 (1,64) (3,65)</span>
+<span id="L138"><a href="#L138"> 138</a>     h6 (product h0 h5Square) := by</span>
+<span id="L139"><a href="#L139"> 139</a>   have h := KIP126.Literature.Standard.adamsOneLine_d2 6 (by decide)</span>
+<span id="L140"><a href="#L140"> 140</a>   change HasNonzeroDifferential model.classical.sphere 2 (1,64) (3,65)</span>
+<span id="L141"><a href="#L141"> 141</a>     h6 (product h0 h5Square) at h</span>
+<span id="L142"><a href="#L142"> 142</a>   exact h</span>
+<span id="L143"><a href="#L143"> 143</a> </span>
+<span id="L144"><a href="#L144"> 144</a> /-- The actual detector differential uses the same source isomorphism and labels. -/</span>
+<span id="L145"><a href="#L145"> 145</a> public theorem detector_d3 :</span>
+<span id="L146"><a href="#L146"> 146</a>     HasDifferential (model.classical.obj model.auxiliary.detector) 3 (16,112) (19,114)</span>
+<span id="L147"><a href="#L147"> 147</a>       (detectorComparison 16 112 detector_v2_agrees._proof_1 detectorV2Sixteen)</span>
+<span id="L148"><a href="#L148"> 148</a>       (detectorComparison 19 114 detector_beta_agrees._proof_1 detectorBetaGFour) := by</span>
+<span id="L149"><a href="#L149"> 149</a>   rw [detector_v2_agrees, detector_beta_agrees]</span>
+<span id="L150"><a href="#L150"> 150</a>   exact KIP126.Literature.Standard.detector_d3</span>
+<span id="L151"><a href="#L151"> 151</a> </span>
+<span id="L152"><a href="#L152"> 152</a> end KIP126.Computation.Standard</span></pre>

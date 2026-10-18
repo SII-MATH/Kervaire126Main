@@ -1,0 +1,299 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/KernelTriangles.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/KernelTriangles.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.NoReturn</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.Coherence</span>
+<span id="L4"><a href="#L4">   4</a> /-! Proved successor quotient triangle comparisons, original Mahowald 1116–1420 (MIT). -/</span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L7"><a href="#L7">   7</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated</span>
+<span id="L8"><a href="#L8">   8</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L11"><a href="#L11">  11</a> noncomputable section</span>
+<span id="L12"><a href="#L12">  12</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L13"><a href="#L13">  13</a> set_option maxHeartbeats 2000000</span>
+<span id="L14"><a href="#L14">  14</a> theorem successor_cofiber_map_exists (A : SyntheticSpectrum) (d : ℕ) :</span>
+<span id="L15"><a href="#L15">  15</a>     let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L16"><a href="#L16">  16</a>     letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L17"><a href="#L17">  17</a>     ∃ c : F.obj (XModLambdaN A d) ⟶ XModLambdaN A (d+1),</span>
+<span id="L18"><a href="#L18">  18</a>       F.map (XModLambdaN.incl A d) ≫ c = lambdaPow 1 A ≫ XModLambdaN.incl A (d+1) ∧</span>
+<span id="L19"><a href="#L19">  19</a>       c ≫ XModLambdaN.proj A (d+1) =</span>
+<span id="L20"><a href="#L20">  20</a>         F.map (XModLambdaN.proj A d) ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L21"><a href="#L21">  21</a>           (shiftFunctor SyntheticSpectrum (1:ℤ)).map ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app A) := by</span>
+<span id="L22"><a href="#L22">  22</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L23"><a href="#L23">  23</a>   letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L24"><a href="#L24">  24</a>   letI := model.exactness.shiftExact (0,-1)</span>
+<span id="L25"><a href="#L25">  25</a>   let T := XModLambdaN.cofiberTriangle A d</span>
+<span id="L26"><a href="#L26">  26</a>   let U := XModLambdaN.cofiberTriangle A (d+1)</span>
+<span id="L27"><a href="#L27">  27</a>   have hs : F.map (lambdaPow d A) ≫ lambdaPow 1 A =</span>
+<span id="L28"><a href="#L28">  28</a>       (lambdaShiftAddIso d 1 (d+1) rfl).hom.app A ≫ lambdaPow (d+1) A :=</span>
+<span id="L29"><a href="#L29">  29</a>     (lambdaPow_add_comparison model.quotients.coherence d 1 (d+1) rfl A).symm</span>
+<span id="L30"><a href="#L30">  30</a>   obtain ⟨c,hc,hd⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L31"><a href="#L31">  31</a>     (F.mapTriangle.obj T) U</span>
+<span id="L32"><a href="#L32">  32</a>     (F.map_distinguished T (XModLambdaN.cofiberTriangle_distinguished A d))</span>
+<span id="L33"><a href="#L33">  33</a>     (XModLambdaN.cofiberTriangle_distinguished A (d+1))</span>
+<span id="L34"><a href="#L34">  34</a>     ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app A) (lambdaPow 1 A) hs</span>
+<span id="L35"><a href="#L35">  35</a>   refine ⟨c,hc,?_⟩</span>
+<span id="L36"><a href="#L36">  36</a>   change (F.map (XModLambdaN.proj A d) ≫ (F.commShiftIso (1:ℤ)).hom.app _) ≫</span>
+<span id="L37"><a href="#L37">  37</a>       (shiftFunctor SyntheticSpectrum (1:ℤ)).map ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app A) =</span>
+<span id="L38"><a href="#L38">  38</a>     c ≫ XModLambdaN.proj A (d+1) at hd</span>
+<span id="L39"><a href="#L39">  39</a>   simpa only [Category.assoc] using hd.symm</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> theorem successor_lambda_proj_evaluation </span>
+<span id="L42"><a href="#L42">  42</a>     (X : ClassicalObject) (d : ℕ)</span>
+<span id="L43"><a href="#L43">  43</a>     (l : (SyntheticCategory.biShift (0,-1)).obj</span>
+<span id="L44"><a href="#L44">  44</a>       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) d) ⟶</span>
+<span id="L45"><a href="#L45">  45</a>       XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (d+1))</span>
+<span id="L46"><a href="#L46">  46</a>     (hl : (SyntheticCategory.biShift (0,-1)).map</span>
+<span id="L47"><a href="#L47">  47</a>       (XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) d) ≫ l =</span>
+<span id="L48"><a href="#L48">  48</a>       lambdaPow 1 (model.nu.functor.obj (X.obj model.auxiliary)) ≫</span>
+<span id="L49"><a href="#L49">  49</a>         XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) (d+1))</span>
+<span id="L50"><a href="#L50">  50</a>     (m w : ℤ) (b : BiHom m w ((SyntheticCategory.biShift (0,-1)).obj</span>
+<span id="L51"><a href="#L51">  51</a>       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) d))) :</span>
+<span id="L52"><a href="#L52">  52</a>     let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L53"><a href="#L53">  53</a>     letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L54"><a href="#L54">  54</a>     b ≫ l ≫ XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) (d+1) =</span>
+<span id="L55"><a href="#L55">  55</a>       b ≫ F.map (XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) d) ≫</span>
+<span id="L56"><a href="#L56">  56</a>         (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L57"><a href="#L57">  57</a>           (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L58"><a href="#L58">  58</a>             ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app</span>
+<span id="L59"><a href="#L59">  59</a>               (model.nu.functor.obj (X.obj model.auxiliary))) := by</span>
+<span id="L60"><a href="#L60">  60</a>   letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L61"><a href="#L61">  61</a>   obtain ⟨c,hc,hp⟩ := successor_cofiber_map_exists</span>
+<span id="L62"><a href="#L62">  62</a>     (model.nu.functor.obj (X.obj model.auxiliary)) d</span>
+<span id="L63"><a href="#L63">  63</a>   have he := shift_minus_one_quotient_maps_equal_on_spheres</span>
+<span id="L64"><a href="#L64">  64</a>     X X d l c (hl.trans hc.symm) m w b</span>
+<span id="L65"><a href="#L65">  65</a>   rw [←Category.assoc,he,Category.assoc,hp]</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> theorem selected_delta_evaluation_eq_cofiber</span>
+<span id="L68"><a href="#L68">  68</a>     (X : ClassicalObject)</span>
+<span id="L69"><a href="#L69">  69</a>     (i j : ℕ)</span>
+<span id="L70"><a href="#L70">  70</a>     (T : LambdaRhoDeltaTriangle (model.nu.functor.obj (X.obj model.auxiliary)) i j)</span>
+<span id="L71"><a href="#L71">  71</a>     (m w : ℤ)</span>
+<span id="L72"><a href="#L72">  72</a>     (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) i)) :</span>
+<span id="L73"><a href="#L73">  73</a>     a ≫ T.delta = a ≫ XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) i ≫</span>
+<span id="L74"><a href="#L74">  74</a>       (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L75"><a href="#L75">  75</a>         ((SyntheticCategory.biShift (0,-(i:ℤ))).map</span>
+<span id="L76"><a href="#L76">  76</a>           (XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) (j-i))) := by</span>
+<span id="L77"><a href="#L77">  77</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L78"><a href="#L78">  78</a>   let base := XModLambdaN.cofiberTriangle A i</span>
+<span id="L79"><a href="#L79">  79</a>   obtain ⟨c,hc,hδ⟩ := complete_distinguished_triangle_morphism</span>
+<span id="L80"><a href="#L80">  80</a>     base (Triangle.mk T.lambdaMap T.rho T.delta)</span>
+<span id="L81"><a href="#L81">  81</a>     (XModLambdaN.cofiberTriangle_distinguished A i) T.distinguished</span>
+<span id="L82"><a href="#L82">  82</a>     ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i)))</span>
+<span id="L83"><a href="#L83">  83</a>     (XModLambdaN.incl A j) T.lambda_quotient.symm</span>
+<span id="L84"><a href="#L84">  84</a>   change XModLambdaN A i ⟶ XModLambdaN A i at c</span>
+<span id="L85"><a href="#L85">  85</a>   change XModLambdaN.incl A i ≫ c = XModLambdaN.incl A j ≫ T.rho at hc</span>
+<span id="L86"><a href="#L86">  86</a>   have hc&#x27; : XModLambdaN.incl A i ≫ c = XModLambdaN.incl A i ≫ 𝟙 _ := by</span>
+<span id="L87"><a href="#L87">  87</a>     rw [hc,T.rho_quotient,Category.comp_id]</span>
+<span id="L88"><a href="#L88">  88</a>   have hac : a ≫ c = a := by</span>
+<span id="L89"><a href="#L89">  89</a>     simpa only [Category.comp_id] using</span>
+<span id="L90"><a href="#L90">  90</a>       quotient_nu_maps_equal_on_spheres X X i T.i_pos c (𝟙 _) hc&#x27; m w a</span>
+<span id="L91"><a href="#L91">  91</a>   change XModLambdaN.proj A i ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L92"><a href="#L92">  92</a>       ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i))) =</span>
+<span id="L93"><a href="#L93">  93</a>     c ≫ T.delta at hδ</span>
+<span id="L94"><a href="#L94">  94</a>   calc</span>
+<span id="L95"><a href="#L95">  95</a>     a ≫ T.delta = (a ≫ c) ≫ T.delta := by rw [hac]</span>
+<span id="L96"><a href="#L96">  96</a>     _ = a ≫ XModLambdaN.proj A i ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L97"><a href="#L97">  97</a>         ((SyntheticCategory.biShift (0,-(i:ℤ))).map (XModLambdaN.incl A (j-i))) := by</span>
+<span id="L98"><a href="#L98">  98</a>       rw [Category.assoc,←hδ]</span>
+<span id="L99"><a href="#L99">  99</a> </span>
+<span id="L100"><a href="#L100"> 100</a> theorem shift_minus_one_preserves_sphere_evaluation {A B : SyntheticSpectrum}</span>
+<span id="L101"><a href="#L101"> 101</a>     (f g : A ⟶ B)</span>
+<span id="L102"><a href="#L102"> 102</a>     (h : ∀ (m w : ℤ) (a : BiHom m w A), a ≫ f = a ≫ g)</span>
+<span id="L103"><a href="#L103"> 103</a>     (m w : ℤ) (b : BiHom m w ((SyntheticCategory.biShift (0,-1)).obj A)) :</span>
+<span id="L104"><a href="#L104"> 104</a>     b ≫ (SyntheticCategory.biShift (0,-1)).map f =</span>
+<span id="L105"><a href="#L105"> 105</a>       b ≫ (SyntheticCategory.biShift (0,-1)).map g := by</span>
+<span id="L106"><a href="#L106"> 106</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L107"><a href="#L107"> 107</a>   let e : F.obj (Smn m (w+1)) ≅ Smn m w :=</span>
+<span id="L108"><a href="#L108"> 108</a>     (SyntheticCategory.biShift_comp (m,w+1) (0,-1)).app S_0_0 ≪≫</span>
+<span id="L109"><a href="#L109"> 109</a>       eqToIso (congrArg (fun p =&gt; (SyntheticCategory.biShift p).obj (S_0_0 : SyntheticSpectrum))</span>
+<span id="L110"><a href="#L110"> 110</a>         (show (m,w+1)+(0,-1)=(m,w) by ext &lt;;&gt; simp))</span>
+<span id="L111"><a href="#L111"> 111</a>   let a : BiHom m (w+1) A :=</span>
+<span id="L112"><a href="#L112"> 112</a>     (SyntheticCategory.biShift_fullyFaithful (0,-1)).preimage (e.hom ≫ b)</span>
+<span id="L113"><a href="#L113"> 113</a>   have ha : F.map a = e.hom ≫ b :=</span>
+<span id="L114"><a href="#L114"> 114</a>     (SyntheticCategory.biShift_fullyFaithful (0,-1)).map_preimage _</span>
+<span id="L115"><a href="#L115"> 115</a>   apply (cancel_epi e.hom).mp</span>
+<span id="L116"><a href="#L116"> 116</a>   change e.hom ≫ b ≫ F.map f = e.hom ≫ b ≫ F.map g</span>
+<span id="L117"><a href="#L117"> 117</a>   rw [←Category.assoc,←ha,←Functor.map_comp,h,Functor.map_comp,ha,Category.assoc]</span>
+<span id="L118"><a href="#L118"> 118</a> </span>
+<span id="L119"><a href="#L119"> 119</a> theorem successor_delta_lambda_evaluation </span>
+<span id="L120"><a href="#L120"> 120</a>     (X : ClassicalObject) (d q : ℕ)</span>
+<span id="L121"><a href="#L121"> 121</a>     (hd : 0&lt;d) (hq : 0&lt;q) (m w : ℤ) :</span>
+<span id="L122"><a href="#L122"> 122</a>     let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L123"><a href="#L123"> 123</a>     let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L124"><a href="#L124"> 124</a>     letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L125"><a href="#L125"> 125</a>     let l : F.obj (XModLambdaN A d) ⟶ XModLambdaN A (d+1) := by</span>
+<span id="L126"><a href="#L126"> 126</a>       simpa only [F,Nat.add_sub_cancel,Nat.cast_one] using</span>
+<span id="L127"><a href="#L127"> 127</a>         ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).lambdaMap</span>
+<span id="L128"><a href="#L128"> 128</a>     let δ0 : XModLambdaN A d ⟶</span>
+<span id="L129"><a href="#L129"> 129</a>         ((SyntheticCategory.biShift (0,-(d:ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L130"><a href="#L130"> 130</a>       simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L131"><a href="#L131"> 131</a>         ((model.quotients.tower A).triangle hd (show d&lt;d+q by omega)).delta</span>
+<span id="L132"><a href="#L132"> 132</a>     let δ1 : XModLambdaN A (d+1) ⟶</span>
+<span id="L133"><a href="#L133"> 133</a>         ((SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ))).obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L134"><a href="#L134"> 134</a>       simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L135"><a href="#L135"> 135</a>         ((model.quotients.tower A).triangle (by omega : 0&lt;d+1)</span>
+<span id="L136"><a href="#L136"> 136</a>           (show d+1&lt;d+1+q by omega)).delta</span>
+<span id="L137"><a href="#L137"> 137</a>     ∀ b : BiHom m w (F.obj (XModLambdaN A d)),</span>
+<span id="L138"><a href="#L138"> 138</a>       b ≫ l ≫ δ1 = b ≫ F.map δ0 ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L139"><a href="#L139"> 139</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L140"><a href="#L140"> 140</a>           ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app (XModLambdaN A q)) := by</span>
+<span id="L141"><a href="#L141"> 141</a>   dsimp only</span>
+<span id="L142"><a href="#L142"> 142</a>   intro b</span>
+<span id="L143"><a href="#L143"> 143</a>   let A := model.nu.functor.obj (X.obj model.auxiliary)</span>
+<span id="L144"><a href="#L144"> 144</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L145"><a href="#L145"> 145</a>   let G := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-(d:ℤ))</span>
+<span id="L146"><a href="#L146"> 146</a>   let J := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-((d+1:ℕ):ℤ))</span>
+<span id="L147"><a href="#L147"> 147</a>   letI := model.exactness.shiftCommShift (0,-1)</span>
+<span id="L148"><a href="#L148"> 148</a>   let l : F.obj (XModLambdaN A d) ⟶ XModLambdaN A (d+1) := by</span>
+<span id="L149"><a href="#L149"> 149</a>     simpa only [F,Nat.add_sub_cancel,Nat.cast_one] using</span>
+<span id="L150"><a href="#L150"> 150</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).lambdaMap</span>
+<span id="L151"><a href="#L151"> 151</a>   let δ0 : XModLambdaN A d ⟶ (G.obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L152"><a href="#L152"> 152</a>     simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L153"><a href="#L153"> 153</a>       ((model.quotients.tower A).triangle hd (show d&lt;d+q by omega)).delta</span>
+<span id="L154"><a href="#L154"> 154</a>   let δ1 : XModLambdaN A (d+1) ⟶ (J.obj (XModLambdaN A q))⟦(1:ℤ)⟧ := by</span>
+<span id="L155"><a href="#L155"> 155</a>     simpa only [Nat.add_sub_cancel_left] using</span>
+<span id="L156"><a href="#L156"> 156</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;d+1)</span>
+<span id="L157"><a href="#L157"> 157</a>         (show d+1&lt;d+1+q by omega)).delta</span>
+<span id="L158"><a href="#L158"> 158</a>   have source_transport {S T : SyntheticSpectrum} (Q : ℕ → SyntheticSpectrum) (f : ∀ k, S ⟶ Q k)</span>
+<span id="L159"><a href="#L159"> 159</a>       {k k&#x27; : ℕ} (h : k=k&#x27;) (g : Q k ⟶ T) (v : S ⟶ T)</span>
+<span id="L160"><a href="#L160"> 160</a>       (hv : f k ≫ g = v) :</span>
+<span id="L161"><a href="#L161"> 161</a>       f k&#x27; ≫ Eq.mp (congrArg (fun j =&gt; Q j ⟶ T) h) g = v := by</span>
+<span id="L162"><a href="#L162"> 162</a>     subst k&#x27;; exact hv</span>
+<span id="L163"><a href="#L163"> 163</a>   have target_transport {S T : SyntheticSpectrum} (Q : ℕ → SyntheticSpectrum) (a : S ⟶ T)</span>
+<span id="L164"><a href="#L164"> 164</a>       {k k&#x27; : ℕ} (h : k=k&#x27;) (g : T ⟶ Q k) (v : ∀ j, S ⟶ Q j)</span>
+<span id="L165"><a href="#L165"> 165</a>       (hv : a ≫ g = v k) :</span>
+<span id="L166"><a href="#L166"> 166</a>       a ≫ Eq.mp (congrArg (fun j =&gt; T ⟶ Q j) h) g = v k&#x27; := by</span>
+<span id="L167"><a href="#L167"> 167</a>     subst k&#x27;; exact hv</span>
+<span id="L168"><a href="#L168"> 168</a>   have hl : F.map (XModLambdaN.incl A d) ≫ l =</span>
+<span id="L169"><a href="#L169"> 169</a>       lambdaPow 1 A ≫ XModLambdaN.incl A (d+1) := by</span>
+<span id="L170"><a href="#L170"> 170</a>     exact source_transport (fun k =&gt; F.obj (XModLambdaN A k))</span>
+<span id="L171"><a href="#L171"> 171</a>       (fun k =&gt; F.map (XModLambdaN.incl A k)) (Nat.add_sub_cancel d 1)</span>
+<span id="L172"><a href="#L172"> 172</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).lambdaMap _</span>
+<span id="L173"><a href="#L173"> 173</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;1) (by omega : 1&lt;d+1)).lambda_quotient</span>
+<span id="L174"><a href="#L174"> 174</a>   have hδ0 : ∀ (m&#x27; w&#x27; : ℤ) (a : BiHom m&#x27; w&#x27; (XModLambdaN A d)),</span>
+<span id="L175"><a href="#L175"> 175</a>       a ≫ δ0 = a ≫ XModLambdaN.proj A d ≫</span>
+<span id="L176"><a href="#L176"> 176</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map (G.map (XModLambdaN.incl A q)) := by</span>
+<span id="L177"><a href="#L177"> 177</a>     intro m&#x27; w&#x27; a</span>
+<span id="L178"><a href="#L178"> 178</a>     exact target_transport (fun k =&gt; (G.obj (XModLambdaN A k))⟦(1:ℤ)⟧) a</span>
+<span id="L179"><a href="#L179"> 179</a>       (Nat.add_sub_cancel_left d q)</span>
+<span id="L180"><a href="#L180"> 180</a>       ((model.quotients.tower A).triangle hd (show d&lt;d+q by omega)).delta</span>
+<span id="L181"><a href="#L181"> 181</a>       (fun k =&gt; a ≫ XModLambdaN.proj A d ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map (G.map (XModLambdaN.incl A k)))</span>
+<span id="L182"><a href="#L182"> 182</a>       (selected_delta_evaluation_eq_cofiber X d (d+q)</span>
+<span id="L183"><a href="#L183"> 183</a>         ((model.quotients.tower A).triangle hd (show d&lt;d+q by omega)) m&#x27; w&#x27; a)</span>
+<span id="L184"><a href="#L184"> 184</a>   have hδ1 : (b ≫ l) ≫ δ1 = (b ≫ l) ≫ XModLambdaN.proj A (d+1) ≫</span>
+<span id="L185"><a href="#L185"> 185</a>       (shiftFunctor SyntheticSpectrum (1:ℤ)).map (J.map (XModLambdaN.incl A q)) := by</span>
+<span id="L186"><a href="#L186"> 186</a>     exact target_transport (fun k =&gt; (J.obj (XModLambdaN A k))⟦(1:ℤ)⟧) (b ≫ l)</span>
+<span id="L187"><a href="#L187"> 187</a>       (Nat.add_sub_cancel_left (d+1) q)</span>
+<span id="L188"><a href="#L188"> 188</a>       ((model.quotients.tower A).triangle (by omega : 0&lt;d+1) (show d+1&lt;d+1+q by omega)).delta</span>
+<span id="L189"><a href="#L189"> 189</a>       (fun k =&gt; (b ≫ l) ≫ XModLambdaN.proj A (d+1) ≫</span>
+<span id="L190"><a href="#L190"> 190</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map (J.map (XModLambdaN.incl A k)))</span>
+<span id="L191"><a href="#L191"> 191</a>       (selected_delta_evaluation_eq_cofiber X (d+1) (d+1+q)</span>
+<span id="L192"><a href="#L192"> 192</a>         ((model.quotients.tower A).triangle (by omega : 0&lt;d+1)</span>
+<span id="L193"><a href="#L193"> 193</a>           (show d+1&lt;d+1+q by omega)) m w (b ≫ l))</span>
+<span id="L194"><a href="#L194"> 194</a>   have hp := successor_lambda_proj_evaluation X d l hl m w b</span>
+<span id="L195"><a href="#L195"> 195</a>   have heval := shift_minus_one_preserves_sphere_evaluation δ0</span>
+<span id="L196"><a href="#L196"> 196</a>     (XModLambdaN.proj A d ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map (G.map (XModLambdaN.incl A q)))</span>
+<span id="L197"><a href="#L197"> 197</a>     hδ0 m w b</span>
+<span id="L198"><a href="#L198"> 198</a>   have hκ := (lambdaShiftAddIso d 1 (d+1) rfl).hom.naturality (XModLambdaN.incl A q)</span>
+<span id="L199"><a href="#L199"> 199</a>   change F.map (G.map (XModLambdaN.incl A q)) ≫</span>
+<span id="L200"><a href="#L200"> 200</a>       (lambdaShiftAddIso d 1 (d+1) rfl).hom.app (XModLambdaN A q) =</span>
+<span id="L201"><a href="#L201"> 201</a>     (lambdaShiftAddIso d 1 (d+1) rfl).hom.app A ≫ J.map (XModLambdaN.incl A q) at hκ</span>
+<span id="L202"><a href="#L202"> 202</a>   change b ≫ l ≫ δ1 = b ≫ F.map δ0 ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫ _</span>
+<span id="L203"><a href="#L203"> 203</a>   calc</span>
+<span id="L204"><a href="#L204"> 204</a>     _ = (b ≫ l ≫ XModLambdaN.proj A (d+1)) ≫</span>
+<span id="L205"><a href="#L205"> 205</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map (J.map (XModLambdaN.incl A q)) := by</span>
+<span id="L206"><a href="#L206"> 206</a>       simpa only [Category.assoc] using hδ1</span>
+<span id="L207"><a href="#L207"> 207</a>     _ = (b ≫ F.map (XModLambdaN.proj A d) ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L208"><a href="#L208"> 208</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app A)) ≫</span>
+<span id="L209"><a href="#L209"> 209</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map (J.map (XModLambdaN.incl A q)) :=</span>
+<span id="L210"><a href="#L210"> 210</a>       congrArg (fun z =&gt; z ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L211"><a href="#L211"> 211</a>         (J.map (XModLambdaN.incl A q))) hp</span>
+<span id="L212"><a href="#L212"> 212</a>     _ = b ≫ F.map δ0 ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L213"><a href="#L213"> 213</a>         (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L214"><a href="#L214"> 214</a>           ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app (XModLambdaN A q)) := by</span>
+<span id="L215"><a href="#L215"> 215</a>       simp only [Category.assoc]</span>
+<span id="L216"><a href="#L216"> 216</a>       rw [←Functor.map_comp,hκ.symm,Functor.map_comp]</span>
+<span id="L217"><a href="#L217"> 217</a>       rw [←Functor.commShiftIso_hom_naturality_assoc]</span>
+<span id="L218"><a href="#L218"> 218</a>       rw [←Functor.map_comp_assoc,←Category.assoc b,←heval]</span>
+<span id="L219"><a href="#L219"> 219</a>       simp only [Category.assoc,F]</span>
+<span id="L220"><a href="#L220"> 220</a> </span>
+<span id="L221"><a href="#L221"> 221</a> theorem successor_shifted_delta_preimage</span>
+<span id="L222"><a href="#L222"> 222</a>     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)).CommShift ℤ]</span>
+<span id="L223"><a href="#L223"> 223</a>     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)).IsTriangulated]</span>
+<span id="L224"><a href="#L224"> 224</a>     {A : SyntheticSpectrum} (d r : ℕ) (T : LambdaRhoDeltaTriangle A d r)</span>
+<span id="L225"><a href="#L225"> 225</a>     (n w : ℤ)</span>
+<span id="L226"><a href="#L226"> 226</a>     (c : BiHom (n-1) (w+((d+1:ℕ):ℤ)) (XModLambdaN A (r-d)))</span>
+<span id="L227"><a href="#L227"> 227</a>     (hc : (SyntheticCategory.biShift (0,-(d:ℤ))).map c ≫ T.lambdaMap = 0) :</span>
+<span id="L228"><a href="#L228"> 228</a>     ∃ a : BiHom n w ((SyntheticCategory.biShift (0,-1)).obj (XModLambdaN A d)),</span>
+<span id="L229"><a href="#L229"> 229</a>       a ≫ (SyntheticCategory.biShift (0,-1)).map T.delta ≫</span>
+<span id="L230"><a href="#L230"> 230</a>         ((SyntheticCategory.biShift (0,-1)).commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L231"><a href="#L231"> 231</a>           (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L232"><a href="#L232"> 232</a>             ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app (XModLambdaN A (r-d))) =</span>
+<span id="L233"><a href="#L233"> 233</a>         (biSuspensionHomEquiv n w ((d+1:ℕ):ℤ) (XModLambdaN A (r-d))).symm c := by</span>
+<span id="L234"><a href="#L234"> 234</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)</span>
+<span id="L235"><a href="#L235"> 235</a>   let Q := XModLambdaN A (r-d)</span>
+<span id="L236"><a href="#L236"> 236</a>   let κ : SyntheticCategory.biShift (0,-(d:ℤ)) ⋙ F ≅</span>
+<span id="L237"><a href="#L237"> 237</a>       SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ)) :=</span>
+<span id="L238"><a href="#L238"> 238</a>     lambdaShiftAddIso (Syn:=SyntheticSpectrum) d 1 (d+1) rfl</span>
+<span id="L239"><a href="#L239"> 239</a>   let ε : F.obj (((SyntheticCategory.biShift (0,-(d:ℤ))).obj Q)⟦(1:ℤ)⟧) ≅</span>
+<span id="L240"><a href="#L240"> 240</a>       ((SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ))).obj Q)⟦(1:ℤ)⟧ :=</span>
+<span id="L241"><a href="#L241"> 241</a>     (F.commShiftIso (1:ℤ)).app _ ≪≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).mapIso (κ.app Q)</span>
+<span id="L242"><a href="#L242"> 242</a>   let b := (biSuspensionHomEquiv n w ((d+1:ℕ):ℤ) Q).symm c</span>
+<span id="L243"><a href="#L243"> 243</a>   have hc&#x27; : (SyntheticCategory.biShift (0,-((d+1:ℕ):ℤ))).map c ≫</span>
+<span id="L244"><a href="#L244"> 244</a>       κ.inv.app Q ≫ F.map T.lambdaMap = 0 := by</span>
+<span id="L245"><a href="#L245"> 245</a>     rw [←Category.assoc,κ.inv.naturality c,Category.assoc]</span>
+<span id="L246"><a href="#L246"> 246</a>     change κ.inv.app (Smn (n-1) (w+((d+1:ℕ):ℤ))) ≫</span>
+<span id="L247"><a href="#L247"> 247</a>       F.map ((SyntheticCategory.biShift (0,-(d:ℤ))).map c) ≫ F.map T.lambdaMap = 0</span>
+<span id="L248"><a href="#L248"> 248</a>     rw [←Functor.map_comp,hc,Functor.map_zero,comp_zero]</span>
+<span id="L249"><a href="#L249"> 249</a>   have hb : b ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map (κ.inv.app Q ≫ F.map T.lambdaMap) = 0 :=</span>
+<span id="L250"><a href="#L250"> 250</a>     (shifted_representative_zero_iff n w ((d+1:ℕ):ℤ) Q _</span>
+<span id="L251"><a href="#L251"> 251</a>       (κ.inv.app Q ≫ F.map T.lambdaMap) c).mpr hc&#x27;</span>
+<span id="L252"><a href="#L252"> 252</a>   have hb&#x27; : (b ≫ ε.inv) ≫ F.map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map T.lambdaMap) = 0 := by</span>
+<span id="L253"><a href="#L253"> 253</a>     change (b ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map (κ.inv.app Q) ≫</span>
+<span id="L254"><a href="#L254"> 254</a>       (F.commShiftIso (1:ℤ)).inv.app _) ≫ F.map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map T.lambdaMap) = 0</span>
+<span id="L255"><a href="#L255"> 255</a>     rw [Category.assoc,Category.assoc,←F.commShiftIso_inv_naturality T.lambdaMap (1:ℤ)]</span>
+<span id="L256"><a href="#L256"> 256</a>     rw [←Category.assoc ((shiftFunctor SyntheticSpectrum (1:ℤ)).map (κ.inv.app Q)),←Functor.map_comp]</span>
+<span id="L257"><a href="#L257"> 257</a>     rw [←Category.assoc,hb,zero_comp]</span>
+<span id="L258"><a href="#L258"> 258</a>   let U := F.mapTriangle.obj (CategoryTheory.Pretriangulated.Triangle.mk T.lambdaMap T.rho T.delta)</span>
+<span id="L259"><a href="#L259"> 259</a>   have hU : U ∈ distTriang SyntheticSpectrum :=</span>
+<span id="L260"><a href="#L260"> 260</a>     F.map_distinguished _ T.distinguished</span>
+<span id="L261"><a href="#L261"> 261</a>   have hb&#x27;&#x27; : (b ≫ ε.inv) ≫ (F.commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L262"><a href="#L262"> 262</a>       (shiftFunctor SyntheticSpectrum (1:ℤ)).map (F.map T.lambdaMap) = 0 := by</span>
+<span id="L263"><a href="#L263"> 263</a>     rw [←F.commShiftIso_hom_naturality T.lambdaMap (1:ℤ),←Category.assoc,hb&#x27;,zero_comp]</span>
+<span id="L264"><a href="#L264"> 264</a>   have hz : ((b ≫ ε.inv) ≫ (F.commShiftIso (1:ℤ)).hom.app _) ≫ U.rotate.mor₃ = 0 := by</span>
+<span id="L265"><a href="#L265"> 265</a>     change ((b ≫ ε.inv) ≫ (F.commShiftIso (1:ℤ)).hom.app _) ≫</span>
+<span id="L266"><a href="#L266"> 266</a>       (-((shiftFunctor SyntheticSpectrum (1:ℤ)).map (F.map T.lambdaMap))) = 0</span>
+<span id="L267"><a href="#L267"> 267</a>     rw [Preadditive.comp_neg,Category.assoc,hb&#x27;&#x27;,neg_zero]</span>
+<span id="L268"><a href="#L268"> 268</a>   obtain ⟨a,ha⟩ := U.rotate.coyoneda_exact₃</span>
+<span id="L269"><a href="#L269"> 269</a>     (CategoryTheory.Pretriangulated.rot_of_distTriang U hU) _ hz</span>
+<span id="L270"><a href="#L270"> 270</a>   change (b ≫ ε.inv) ≫ (F.commShiftIso (1:ℤ)).hom.app _ =</span>
+<span id="L271"><a href="#L271"> 271</a>     a ≫ (F.map T.delta ≫ (F.commShiftIso (1:ℤ)).hom.app _) at ha</span>
+<span id="L272"><a href="#L272"> 272</a>   have ha&#x27; : a ≫ F.map T.delta = b ≫ ε.inv := by</span>
+<span id="L273"><a href="#L273"> 273</a>     apply (cancel_mono ((F.commShiftIso (1:ℤ)).hom.app _)).mp</span>
+<span id="L274"><a href="#L274"> 274</a>     simpa only [Category.assoc] using ha.symm</span>
+<span id="L275"><a href="#L275"> 275</a>   refine ⟨a,?_⟩</span>
+<span id="L276"><a href="#L276"> 276</a>   change a ≫ F.map T.delta ≫ ε.hom = b</span>
+<span id="L277"><a href="#L277"> 277</a>   rw [←Category.assoc,ha&#x27;,Category.assoc,ε.inv_hom_id,Category.comp_id]</span>
+<span id="L278"><a href="#L278"> 278</a> theorem successor_shifted_delta_preimage_reindex</span>
+<span id="L279"><a href="#L279"> 279</a>     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)).CommShift ℤ]</span>
+<span id="L280"><a href="#L280"> 280</a>     [(SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)).IsTriangulated]</span>
+<span id="L281"><a href="#L281"> 281</a>     {A : SyntheticSpectrum} (d r q : ℕ) (hq : r-d=q) (T : LambdaRhoDeltaTriangle A d r)</span>
+<span id="L282"><a href="#L282"> 282</a>     (n w : ℤ)</span>
+<span id="L283"><a href="#L283"> 283</a>     (c : BiHom (n-1) (w+((d+1:ℕ):ℤ)) (XModLambdaN A q))</span>
+<span id="L284"><a href="#L284"> 284</a>     (hc : (SyntheticCategory.biShift (0,-(d:ℤ))).map c ≫</span>
+<span id="L285"><a href="#L285"> 285</a>       Eq.mp (congrArg (fun j =&gt; (SyntheticCategory.biShift (0,-(d:ℤ))).obj</span>
+<span id="L286"><a href="#L286"> 286</a>         (XModLambdaN A j) ⟶ XModLambdaN A r) hq) T.lambdaMap = 0) :</span>
+<span id="L287"><a href="#L287"> 287</a>     ∃ a : BiHom n w ((SyntheticCategory.biShift (0,-1)).obj (XModLambdaN A d)),</span>
+<span id="L288"><a href="#L288"> 288</a>       a ≫ (SyntheticCategory.biShift (0,-1)).map</span>
+<span id="L289"><a href="#L289"> 289</a>         (Eq.mp (congrArg (fun j =&gt; XModLambdaN A d ⟶</span>
+<span id="L290"><a href="#L290"> 290</a>           ((SyntheticCategory.biShift (0,-(d:ℤ))).obj (XModLambdaN A j))⟦(1:ℤ)⟧) hq) T.delta) ≫</span>
+<span id="L291"><a href="#L291"> 291</a>         ((SyntheticCategory.biShift (0,-1)).commShiftIso (1:ℤ)).hom.app _ ≫</span>
+<span id="L292"><a href="#L292"> 292</a>           (shiftFunctor SyntheticSpectrum (1:ℤ)).map</span>
+<span id="L293"><a href="#L293"> 293</a>             ((lambdaShiftAddIso d 1 (d+1) rfl).hom.app (XModLambdaN A q)) =</span>
+<span id="L294"><a href="#L294"> 294</a>         (biSuspensionHomEquiv n w ((d+1:ℕ):ℤ) (XModLambdaN A q)).symm c := by</span>
+<span id="L295"><a href="#L295"> 295</a>   subst q</span>
+<span id="L296"><a href="#L296"> 296</a>   exact successor_shifted_delta_preimage d r T n w c hc</span>
+<span id="L297"><a href="#L297"> 297</a> </span>
+<span id="L298"><a href="#L298"> 298</a> end</span>
+<span id="L299"><a href="#L299"> 299</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

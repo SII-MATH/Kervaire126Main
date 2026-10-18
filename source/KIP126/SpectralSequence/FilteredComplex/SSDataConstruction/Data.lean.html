@@ -1,0 +1,67 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredComplex/SSDataConstruction/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredComplex/SSDataConstruction/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.SSData.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.FilteredDifferential.Data</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Nested-subobject spectral sequence of a filtered complex</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> This is the construction layer connecting KIP126&#x27;s canonical filtered complex</span>
+<span id="L12"><a href="#L12">  12</a> to the migrated `SSData`/`PreSS`/`SpectralSequence` API.  Its proof fields reuse</span>
+<span id="L13"><a href="#L13">  13</a> the already separated finite-page results; no property is postulated.</span>
+<span id="L14"><a href="#L14">  14</a> -/</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> universe u v</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> namespace FilteredComplex</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- The nested cycle/boundary data of a bounded filtered complex at `(s,k)`. -/</span>
+<span id="L27"><a href="#L27">  27</a> @[reducible] noncomputable def toSSData (FC : FilteredComplex C)</span>
+<span id="L28"><a href="#L28">  28</a>     (bnd : FC.IsBounded) (s k : ℤ) : SSData C where</span>
+<span id="L29"><a href="#L29">  29</a>   V := FC.assocGraded s k</span>
+<span id="L30"><a href="#L30">  30</a>   Z := FC.cycleSubobject s k</span>
+<span id="L31"><a href="#L31">  31</a>   B := FC.boundarySubobject s k</span>
+<span id="L32"><a href="#L32">  32</a>   Z_anti := FC.cycleSubobject_antitone s k</span>
+<span id="L33"><a href="#L33">  33</a>   B_mono := FC.boundarySubobject_monotone s k</span>
+<span id="L34"><a href="#L34">  34</a>   Z_zero := FC.cycleSubobject_zero s k</span>
+<span id="L35"><a href="#L35">  35</a>   B_le_Z := FC.B_le_Z_aux s k</span>
+<span id="L36"><a href="#L36">  36</a>   Z_top_greatest := FC.cycleSubobject_top_greatest</span>
+<span id="L37"><a href="#L37">  37</a>     bnd.toFiltration.toIsBoundedAbove s k</span>
+<span id="L38"><a href="#L38">  38</a>   B_top_least := FC.boundarySubobject_top_least</span>
+<span id="L39"><a href="#L39">  39</a>     bnd.toFiltration.toIsBoundedBelow s k</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> set_option maxHeartbeats 6400000 in</span>
+<span id="L42"><a href="#L42">  42</a> /-- The data-only pre-spectral sequence of a bounded filtered complex. -/</span>
+<span id="L43"><a href="#L43">  43</a> noncomputable def toPreSS (FC : FilteredComplex C)</span>
+<span id="L44"><a href="#L44">  44</a>     (bnd : FC.IsBounded) : PreSS C (ℤ × ℤ) where</span>
+<span id="L45"><a href="#L45">  45</a>   r₀ := 0</span>
+<span id="L46"><a href="#L46">  46</a>   ssData := fun ⟨s, k⟩ =&gt; FC.toSSData bnd s k</span>
+<span id="L47"><a href="#L47">  47</a>   diffDeg := fun r =&gt; (r, -1)</span>
+<span id="L48"><a href="#L48">  48</a>   d := fun r ⟨s, k⟩ =&gt;</span>
+<span id="L49"><a href="#L49">  49</a>     if hr : 0 ≤ r then</span>
+<span id="L50"><a href="#L50">  50</a>       eqToHom (by</span>
+<span id="L51"><a href="#L51">  51</a>         have hnat : (r - 0).toNat = r.toNat := by omega</span>
+<span id="L52"><a href="#L52">  52</a>         rw [hnat]</span>
+<span id="L53"><a href="#L53">  53</a>         simp [SSData.page, FilteredComplex.toSSData,</span>
+<span id="L54"><a href="#L54">  54</a>           FilteredComplex.pageObj]) ≫</span>
+<span id="L55"><a href="#L55">  55</a>         FC.pageDifferential s k r.toNat ≫</span>
+<span id="L56"><a href="#L56">  56</a>         eqToHom (by</span>
+<span id="L57"><a href="#L57">  57</a>           have hnat : (r - 0).toNat = r.toNat := by omega</span>
+<span id="L58"><a href="#L58">  58</a>           have hrnat : (r.toNat : ℤ) = r := Int.toNat_of_nonneg hr</span>
+<span id="L59"><a href="#L59">  59</a>           rw [hnat, hrnat]</span>
+<span id="L60"><a href="#L60">  60</a>           simp [SSData.page, FilteredComplex.toSSData,</span>
+<span id="L61"><a href="#L61">  61</a>             FilteredComplex.pageObj]</span>
+<span id="L62"><a href="#L62">  62</a>           rw [show k - 1 = k + -1 by omega])</span>
+<span id="L63"><a href="#L63">  63</a>     else 0</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> end FilteredComplex</span>
+<span id="L66"><a href="#L66">  66</a> </span>
+<span id="L67"><a href="#L67">  67</a> end KIP126.Core.SpectralSequence</span></pre>

@@ -1,0 +1,199 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Internal/Source/Sphere.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Internal/Source/Sphere.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> /-</span>
+<span id="L4"><a href="#L4">   4</a> Copyright (c) 2026 Jiashuo Zhang and KIP126 contributors.</span>
+<span id="L5"><a href="#L5">   5</a> Released under the MIT license; see LICENSE.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from SII-MATH/Kervaire126, commit</span>
+<span id="L7"><a href="#L7">   7</a> 8cb35dad5f75ecc095e474df6c765baec9b175bf.</span>
+<span id="L8"><a href="#L8">   8</a> -/</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.AdamsSynthetic.Internal.Source.Prespectrum</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> @[expose] section</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> /-!</span>
+<span id="L15"><a href="#L15">  15</a> # The concrete sphere and shifts in the sequential-prespectrum source</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> The zero sphere is the discrete based two-point space. Higher sphere levels</span>
+<span id="L18"><a href="#L18">  18</a> are the actual reduced suspension quotients, with bonding maps the quotient</span>
+<span id="L19"><a href="#L19">  19</a> projections. Suspension and desuspension are explicit operations on the same</span>
+<span id="L20"><a href="#L20">  20</a> prespectra; they are not unspecified object choices.</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> Adapted from `Implementation/PointSet.lean` and the padding desuspension in</span>
+<span id="L23"><a href="#L23">  23</a> `Implementation/Generators.lean`, SII-MATH/Kervaire126 develop commit</span>
+<span id="L24"><a href="#L24">  24</a> `8cb35dad5f75ecc095e474df6c765baec9b175bf`.</span>
+<span id="L25"><a href="#L25">  25</a> -/</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> namespace KIP126.AdamsSynthetic.Source</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> open CategoryTheory Topology</span>
+<span id="L30"><a href="#L30">  30</a> open scoped unitInterval</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> universe u</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> namespace BasedSpace</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> /-- The actual basepoint inclusion is closed and has the homotopy extension</span>
+<span id="L37"><a href="#L37">  37</a> property against continuous maps, the hypothesis needed for reduced suspension. -/</span>
+<span id="L38"><a href="#L38">  38</a> def IsWellBased (X : BasedSpace.{u}) : Prop :=</span>
+<span id="L39"><a href="#L39">  39</a>   IsClosed ({X.point} : Set X) ∧</span>
+<span id="L40"><a href="#L40">  40</a>     ∀ (Y : TopCat.{u}) (f : C(X,Y)) (p : C(I,Y)), p 0 = f X.point →</span>
+<span id="L41"><a href="#L41">  41</a>       ∃ H : C(X × I,Y), (∀ x, H (x,0) = f x) ∧ (∀ t, H (X.point,t) = p t)</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> def SuspensionCollapsed (X : BasedSpace.{u}) (p : X × I) : Prop :=</span>
+<span id="L44"><a href="#L44">  44</a>   p.1 = X.point ∨ p.2 = 0 ∨ p.2 = 1</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> def SuspensionRelation (X : BasedSpace.{u}) (p q : X × I) : Prop :=</span>
+<span id="L47"><a href="#L47">  47</a>   SuspensionCollapsed X p ∧ SuspensionCollapsed X q</span>
+<span id="L48"><a href="#L48">  48</a> </span>
+<span id="L49"><a href="#L49">  49</a> def suspension (X : BasedSpace.{u}) : BasedSpace.{u} where</span>
+<span id="L50"><a href="#L50">  50</a>   space := TopCat.of (Quot (SuspensionRelation X))</span>
+<span id="L51"><a href="#L51">  51</a>   point := Quot.mk _ (X.point, 0)</span>
+<span id="L52"><a href="#L52">  52</a> </span>
+<span id="L53"><a href="#L53">  53</a> def suspensionProjection (X : BasedSpace.{u}) : C(X × I, X.suspension) :=</span>
+<span id="L54"><a href="#L54">  54</a>   ⟨Quot.mk _, continuous_quot_mk⟩</span>
+<span id="L55"><a href="#L55">  55</a> </span>
+<span id="L56"><a href="#L56">  56</a> theorem suspensionProjection_collapsed (X : BasedSpace.{u}) (p : X × I)</span>
+<span id="L57"><a href="#L57">  57</a>     (h : SuspensionCollapsed X p) : suspensionProjection X p = X.suspension.point :=</span>
+<span id="L58"><a href="#L58">  58</a>   Quot.sound ⟨h, Or.inl rfl⟩</span>
+<span id="L59"><a href="#L59">  59</a> </span>
+<span id="L60"><a href="#L60">  60</a> /-- Pointwise suspension of a based continuous family of maps. -/</span>
+<span id="L61"><a href="#L61">  61</a> def suspensionFamily (X Y : BasedSpace.{u}) (f : C(X × I, Y))</span>
+<span id="L62"><a href="#L62">  62</a>     (hf : ∀ t, f (X.point,t) = Y.point) (p : X.suspension × I) : Y.suspension :=</span>
+<span id="L63"><a href="#L63">  63</a>   Quot.lift (fun q : X × I =&gt; suspensionProjection Y (f (q.1,p.2),q.2))</span>
+<span id="L64"><a href="#L64">  64</a>     (by</span>
+<span id="L65"><a href="#L65">  65</a>       intro a b hab</span>
+<span id="L66"><a href="#L66">  66</a>       apply Eq.trans _ (suspensionProjection_collapsed Y _ ?_).symm</span>
+<span id="L67"><a href="#L67">  67</a>       · apply suspensionProjection_collapsed</span>
+<span id="L68"><a href="#L68">  68</a>         rcases hab.1 with h | h | h</span>
+<span id="L69"><a href="#L69">  69</a>         · exact Or.inl (h ▸ hf p.2)</span>
+<span id="L70"><a href="#L70">  70</a>         · exact Or.inr (Or.inl h)</span>
+<span id="L71"><a href="#L71">  71</a>         · exact Or.inr (Or.inr h)</span>
+<span id="L72"><a href="#L72">  72</a>       · rcases hab.2 with h | h | h</span>
+<span id="L73"><a href="#L73">  73</a>         · exact Or.inl (h ▸ hf p.2)</span>
+<span id="L74"><a href="#L74">  74</a>         · exact Or.inr (Or.inl h)</span>
+<span id="L75"><a href="#L75">  75</a>         · exact Or.inr (Or.inr h)) p.1</span>
+<span id="L76"><a href="#L76">  76</a> </span>
+<span id="L77"><a href="#L77">  77</a> theorem continuous_suspensionFamily (X Y : BasedSpace.{u}) (f : C(X × I, Y))</span>
+<span id="L78"><a href="#L78">  78</a>     (hf : ∀ t, f (X.point,t) = Y.point) : Continuous (suspensionFamily X Y f hf) := by</span>
+<span id="L79"><a href="#L79">  79</a>   apply isQuotientMap_quot_mk.continuous_lift_prod_left</span>
+<span id="L80"><a href="#L80">  80</a>   exact (suspensionProjection Y).continuous.comp</span>
+<span id="L81"><a href="#L81">  81</a>     ((f.continuous.comp ((continuous_fst.fst).prodMk continuous_snd)).prodMk</span>
+<span id="L82"><a href="#L82">  82</a>       continuous_fst.snd)</span>
+<span id="L83"><a href="#L83">  83</a> </span>
+<span id="L84"><a href="#L84">  84</a> def suspensionMap (X Y : BasedSpace.{u}) (f : C(X,Y)) (hf : f X.point = Y.point) :</span>
+<span id="L85"><a href="#L85">  85</a>     C(X.suspension,Y.suspension) := by</span>
+<span id="L86"><a href="#L86">  86</a>   let raw : C(X × I,Y.suspension) :=</span>
+<span id="L87"><a href="#L87">  87</a>     (suspensionProjection Y).comp ⟨fun p =&gt; (f p.1,p.2),</span>
+<span id="L88"><a href="#L88">  88</a>       (f.continuous.comp continuous_fst).prodMk continuous_snd⟩</span>
+<span id="L89"><a href="#L89">  89</a>   have respects : ∀ a b, SuspensionRelation X a b → raw a = raw b := by</span>
+<span id="L90"><a href="#L90">  90</a>     intro a b hab</span>
+<span id="L91"><a href="#L91">  91</a>     have collapsed : ∀ p, SuspensionCollapsed X p → raw p = Y.suspension.point := by</span>
+<span id="L92"><a href="#L92">  92</a>       intro p hp</span>
+<span id="L93"><a href="#L93">  93</a>       apply suspensionProjection_collapsed</span>
+<span id="L94"><a href="#L94">  94</a>       rcases hp with h | h | h</span>
+<span id="L95"><a href="#L95">  95</a>       · left</span>
+<span id="L96"><a href="#L96">  96</a>         change f p.1 = Y.point</span>
+<span id="L97"><a href="#L97">  97</a>         rw [h]</span>
+<span id="L98"><a href="#L98">  98</a>         exact hf</span>
+<span id="L99"><a href="#L99">  99</a>       · exact Or.inr (Or.inl h)</span>
+<span id="L100"><a href="#L100"> 100</a>       · exact Or.inr (Or.inr h)</span>
+<span id="L101"><a href="#L101"> 101</a>     exact (collapsed a hab.1).trans (collapsed b hab.2).symm</span>
+<span id="L102"><a href="#L102"> 102</a>   exact ⟨Quot.lift raw respects, continuous_quot_lift respects raw.continuous⟩</span>
+<span id="L103"><a href="#L103"> 103</a> </span>
+<span id="L104"><a href="#L104"> 104</a> end BasedSpace</span>
+<span id="L105"><a href="#L105"> 105</a> </span>
+<span id="L106"><a href="#L106"> 106</a> namespace Prespectrum</span>
+<span id="L107"><a href="#L107"> 107</a> </span>
+<span id="L108"><a href="#L108"> 108</a> def IsWellBased (X : Prespectrum.{u}) : Prop := ∀ n, (X.level n).IsWellBased</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> /-- The sphere prespectrum has level Sⁿ, formed by iterated actual reduced</span>
+<span id="L111"><a href="#L111"> 111</a> suspension of the discrete based two-point space. -/</span>
+<span id="L112"><a href="#L112"> 112</a> def sphereLevel : ℕ → BasedSpace</span>
+<span id="L113"><a href="#L113"> 113</a>   | 0 =&gt; { space := TopCat.of (Fin 2), point := 0 }</span>
+<span id="L114"><a href="#L114"> 114</a>   | n + 1 =&gt; (sphereLevel n).suspension</span>
+<span id="L115"><a href="#L115"> 115</a> </span>
+<span id="L116"><a href="#L116"> 116</a> def sphere : Prespectrum where</span>
+<span id="L117"><a href="#L117"> 117</a>   level := sphereLevel</span>
+<span id="L118"><a href="#L118"> 118</a>   bond n := BasedSpace.suspensionProjection (sphereLevel n)</span>
+<span id="L119"><a href="#L119"> 119</a>   bond_point _n _t := BasedSpace.suspensionProjection_collapsed _ _ (Or.inl rfl)</span>
+<span id="L120"><a href="#L120"> 120</a>   bond_zero _n _x := BasedSpace.suspensionProjection_collapsed _ _ (Or.inr (Or.inl rfl))</span>
+<span id="L121"><a href="#L121"> 121</a>   bond_one _n _x := BasedSpace.suspensionProjection_collapsed _ _ (Or.inr (Or.inr rfl))</span>
+<span id="L122"><a href="#L122"> 122</a> </span>
+<span id="L123"><a href="#L123"> 123</a> /-- The positive generator of π₀ of the ordinary sphere: the non-basepoint</span>
+<span id="L124"><a href="#L124"> 124</a> of S⁰, viewed as a zero-dimensional cubical loop. -/</span>
+<span id="L125"><a href="#L125"> 125</a> def sphereGenerator : StableHomotopy sphere 0 :=</span>
+<span id="L126"><a href="#L126"> 126</a>   loopClass sphere 0 0 0 (by norm_num)</span>
+<span id="L127"><a href="#L127"> 127</a>     ⟨ContinuousMap.const _ (show sphere.level 0 from (1 : Fin 2)), by</span>
+<span id="L128"><a href="#L128"> 128</a>       intro t ht</span>
+<span id="L129"><a href="#L129"> 129</a>       obtain ⟨i, _⟩ := ht</span>
+<span id="L130"><a href="#L130"> 130</a>       exact Fin.elim0 i⟩</span>
+<span id="L131"><a href="#L131"> 131</a> </span>
+<span id="L132"><a href="#L132"> 132</a> /-- Levelwise reduced suspension with the displayed interchange of the two</span>
+<span id="L133"><a href="#L133"> 133</a> interval variables. This is not an independently selected shift operation. -/</span>
+<span id="L134"><a href="#L134"> 134</a> def suspension (X : Prespectrum.{u}) : Prespectrum.{u} where</span>
+<span id="L135"><a href="#L135"> 135</a>   level n := (X.level n).suspension</span>
+<span id="L136"><a href="#L136"> 136</a>   bond n := ⟨BasedSpace.suspensionFamily _ _ (X.bond n) (X.bond_point n),</span>
+<span id="L137"><a href="#L137"> 137</a>     BasedSpace.continuous_suspensionFamily _ _ (X.bond n) (X.bond_point n)⟩</span>
+<span id="L138"><a href="#L138"> 138</a>   bond_point := by</span>
+<span id="L139"><a href="#L139"> 139</a>     intro n t</span>
+<span id="L140"><a href="#L140"> 140</a>     exact BasedSpace.suspensionProjection_collapsed _ _ (Or.inr (Or.inl rfl))</span>
+<span id="L141"><a href="#L141"> 141</a>   bond_zero := by</span>
+<span id="L142"><a href="#L142"> 142</a>     intro n x</span>
+<span id="L143"><a href="#L143"> 143</a>     refine Quot.inductionOn x ?_</span>
+<span id="L144"><a href="#L144"> 144</a>     intro p</span>
+<span id="L145"><a href="#L145"> 145</a>     change BasedSpace.suspensionProjection _ (X.bond n (p.1,0),p.2) = _</span>
+<span id="L146"><a href="#L146"> 146</a>     exact BasedSpace.suspensionProjection_collapsed _ _ (Or.inl (X.bond_zero n _))</span>
+<span id="L147"><a href="#L147"> 147</a>   bond_one := by</span>
+<span id="L148"><a href="#L148"> 148</a>     intro n x</span>
+<span id="L149"><a href="#L149"> 149</a>     refine Quot.inductionOn x ?_</span>
+<span id="L150"><a href="#L150"> 150</a>     intro p</span>
+<span id="L151"><a href="#L151"> 151</a>     change BasedSpace.suspensionProjection _ (X.bond n (p.1,1),p.2) = _</span>
+<span id="L152"><a href="#L152"> 152</a>     exact BasedSpace.suspensionProjection_collapsed _ _ (Or.inl (X.bond_one n _))</span>
+<span id="L153"><a href="#L153"> 153</a> </span>
+<span id="L154"><a href="#L154"> 154</a> def suspensionMap {X Y : Prespectrum.{u}} (f : X ⟶ Y) : X.suspension ⟶ Y.suspension where</span>
+<span id="L155"><a href="#L155"> 155</a>   level n := BasedSpace.suspensionMap _ _ (f.level n) (f.point n)</span>
+<span id="L156"><a href="#L156"> 156</a>   point := by</span>
+<span id="L157"><a href="#L157"> 157</a>     intro n</span>
+<span id="L158"><a href="#L158"> 158</a>     change BasedSpace.suspensionProjection _ (f.level n (X.level n).point,0) = _</span>
+<span id="L159"><a href="#L159"> 159</a>     exact BasedSpace.suspensionProjection_collapsed _ _ (Or.inr (Or.inl rfl))</span>
+<span id="L160"><a href="#L160"> 160</a>   bond := by</span>
+<span id="L161"><a href="#L161"> 161</a>     intro n x t</span>
+<span id="L162"><a href="#L162"> 162</a>     refine Quot.inductionOn x ?_</span>
+<span id="L163"><a href="#L163"> 163</a>     intro p</span>
+<span id="L164"><a href="#L164"> 164</a>     change BasedSpace.suspensionProjection _ (f.level (n+1) (X.bond n (p.1,t)),p.2) =</span>
+<span id="L165"><a href="#L165"> 165</a>       BasedSpace.suspensionProjection _ (Y.bond n (f.level n p.1,t),p.2)</span>
+<span id="L166"><a href="#L166"> 166</a>     rw [f.bond]</span>
+<span id="L167"><a href="#L167"> 167</a> </span>
+<span id="L168"><a href="#L168"> 168</a> /-- Padding with one zero level gives an actual desuspension prespectrum. -/</span>
+<span id="L169"><a href="#L169"> 169</a> def desuspension (X : Prespectrum.{u}) : Prespectrum.{u} where</span>
+<span id="L170"><a href="#L170"> 170</a>   level</span>
+<span id="L171"><a href="#L171"> 171</a>     | 0 =&gt; { space := TopCat.of PUnit, point := PUnit.unit }</span>
+<span id="L172"><a href="#L172"> 172</a>     | n+1 =&gt; X.level n</span>
+<span id="L173"><a href="#L173"> 173</a>   bond</span>
+<span id="L174"><a href="#L174"> 174</a>     | 0 =&gt; ContinuousMap.const _ (X.level 0).point</span>
+<span id="L175"><a href="#L175"> 175</a>     | n+1 =&gt; X.bond n</span>
+<span id="L176"><a href="#L176"> 176</a>   bond_point := by intro n t; cases n &lt;;&gt; simp [X.bond_point]</span>
+<span id="L177"><a href="#L177"> 177</a>   bond_zero := by intro n x; cases n &lt;;&gt; simp [X.bond_zero]</span>
+<span id="L178"><a href="#L178"> 178</a>   bond_one := by intro n x; cases n &lt;;&gt; simp [X.bond_one]</span>
+<span id="L179"><a href="#L179"> 179</a> </span>
+<span id="L180"><a href="#L180"> 180</a> /-- The actual map on the padding desuspensions, with the unique zero-level map. -/</span>
+<span id="L181"><a href="#L181"> 181</a> def desuspensionMap {X Y : Prespectrum.{u}} (f : X ⟶ Y) :</span>
+<span id="L182"><a href="#L182"> 182</a>     X.desuspension ⟶ Y.desuspension where</span>
+<span id="L183"><a href="#L183"> 183</a>   level</span>
+<span id="L184"><a href="#L184"> 184</a>     | 0 =&gt; ContinuousMap.id _</span>
+<span id="L185"><a href="#L185"> 185</a>     | n + 1 =&gt; f.level n</span>
+<span id="L186"><a href="#L186"> 186</a>   point := by</span>
+<span id="L187"><a href="#L187"> 187</a>     intro n</span>
+<span id="L188"><a href="#L188"> 188</a>     cases n with</span>
+<span id="L189"><a href="#L189"> 189</a>     | zero =&gt; rfl</span>
+<span id="L190"><a href="#L190"> 190</a>     | succ n =&gt; exact f.point n</span>
+<span id="L191"><a href="#L191"> 191</a>   bond := by</span>
+<span id="L192"><a href="#L192"> 192</a>     intro n x t</span>
+<span id="L193"><a href="#L193"> 193</a>     cases n with</span>
+<span id="L194"><a href="#L194"> 194</a>     | zero =&gt; exact f.point 0</span>
+<span id="L195"><a href="#L195"> 195</a>     | succ n =&gt; exact f.bond n x t</span>
+<span id="L196"><a href="#L196"> 196</a> </span>
+<span id="L197"><a href="#L197"> 197</a> end Prespectrum</span>
+<span id="L198"><a href="#L198"> 198</a> </span>
+<span id="L199"><a href="#L199"> 199</a> end KIP126.AdamsSynthetic.Source</span></pre>

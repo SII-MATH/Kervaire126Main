@@ -1,0 +1,75 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/ModuleSubobject/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/ModuleSubobject/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import Mathlib.Algebra.Category.ModuleCat.Subobject</span>
+<span id="L4"><a href="#L4">   4</a> public import Mathlib.Algebra.Category.ModuleCat.Abelian</span>
+<span id="L5"><a href="#L5">   5</a> public import Mathlib.Algebra.Category.ModuleCat.Images</span>
+<span id="L6"><a href="#L6">   6</a> public import Mathlib.LinearAlgebra.Quotient.Basic</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> @[expose] section</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L13"><a href="#L13">  13</a> universe u v</span>
+<span id="L14"><a href="#L14">  14</a> variable {R : Type u} [Ring R] {M : ModuleCat.{v} R}</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> /-- The categorical inclusion of subobjects is the usual submodule inclusion</span>
+<span id="L17"><a href="#L17">  17</a> under the specified representative isomorphisms. -/</span>
+<span id="L18"><a href="#L18">  18</a> theorem submodule_ofLE_underlyingIso (B Z : Submodule R M) (h : B ≤ Z) :</span>
+<span id="L19"><a href="#L19">  19</a>     Subobject.ofLE ((ModuleCat.subobjectModule M).symm B)</span>
+<span id="L20"><a href="#L20">  20</a>       ((ModuleCat.subobjectModule M).symm Z)</span>
+<span id="L21"><a href="#L21">  21</a>       ((ModuleCat.subobjectModule _).symm.monotone h) ≫</span>
+<span id="L22"><a href="#L22">  22</a>         (Subobject.underlyingIso (ModuleCat.ofHom Z.subtype)).hom =</span>
+<span id="L23"><a href="#L23">  23</a>       (Subobject.underlyingIso (ModuleCat.ofHom B.subtype)).hom ≫</span>
+<span id="L24"><a href="#L24">  24</a>         ModuleCat.ofHom (Submodule.inclusion h) := by</span>
+<span id="L25"><a href="#L25">  25</a>   change Subobject.ofLE (Subobject.mk (ModuleCat.ofHom B.subtype))</span>
+<span id="L26"><a href="#L26">  26</a>     (Subobject.mk (ModuleCat.ofHom Z.subtype)) _ ≫ _ = _</span>
+<span id="L27"><a href="#L27">  27</a>   rw [Subobject.ofLE_mk_le_mk_of_comm</span>
+<span id="L28"><a href="#L28">  28</a>     (ModuleCat.ofHom (Submodule.inclusion h)) (by rfl)]</span>
+<span id="L29"><a href="#L29">  29</a>   simp</span>
+<span id="L30"><a href="#L30">  30</a> </span>
+<span id="L31"><a href="#L31">  31</a> /-- The categorical image has exactly the ordinary linear-map range. -/</span>
+<span id="L32"><a href="#L32">  32</a> public theorem subobjectModule_image {L : ModuleCat.{v} R} (f : L ⟶ M) :</span>
+<span id="L33"><a href="#L33">  33</a>     (ModuleCat.subobjectModule M) (imageSubobject f) = LinearMap.range f.hom := by</span>
+<span id="L34"><a href="#L34">  34</a>   have h : imageSubobject f =</span>
+<span id="L35"><a href="#L35">  35</a>       (ModuleCat.subobjectModule M).symm (LinearMap.range f.hom) :=</span>
+<span id="L36"><a href="#L36">  36</a>     Subobject.mk_eq_mk_of_comm _ _ (ModuleCat.imageIsoRange f)</span>
+<span id="L37"><a href="#L37">  37</a>       (ModuleCat.imageIsoRange_hom_subtype f)</span>
+<span id="L38"><a href="#L38">  38</a>   rw [h, OrderIso.apply_symm_apply]</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- The categorical kernel has exactly the ordinary linear-map kernel. -/</span>
+<span id="L41"><a href="#L41">  41</a> public theorem subobjectModule_kernel {N : ModuleCat.{v} R} (f : M ⟶ N) :</span>
+<span id="L42"><a href="#L42">  42</a>     (ModuleCat.subobjectModule M) (kernelSubobject f) = LinearMap.ker f.hom := by</span>
+<span id="L43"><a href="#L43">  43</a>   have h : kernelSubobject f =</span>
+<span id="L44"><a href="#L44">  44</a>       (ModuleCat.subobjectModule M).symm (LinearMap.ker f.hom) :=</span>
+<span id="L45"><a href="#L45">  45</a>     Subobject.mk_eq_mk_of_comm _ _ (ModuleCat.kernelIsoKer f) (by simp)</span>
+<span id="L46"><a href="#L46">  46</a>   rw [h, OrderIso.apply_symm_apply]</span>
+<span id="L47"><a href="#L47">  47</a> </span>
+<span id="L48"><a href="#L48">  48</a> /-- A categorical cokernel class is zero exactly on the ordinary range. -/</span>
+<span id="L49"><a href="#L49">  49</a> public theorem cokernel_π_eq_zero_iff_mem_range {L N : ModuleCat.{v} R}</span>
+<span id="L50"><a href="#L50">  50</a>     (f : L ⟶ N) (x : N) :</span>
+<span id="L51"><a href="#L51">  51</a>     cokernel.π f x = 0 ↔ x ∈ LinearMap.range f.hom := by</span>
+<span id="L52"><a href="#L52">  52</a>   rw [← (ModuleCat.cokernelIsoRangeQuotient f).toLinearEquiv.map_eq_zero_iff]</span>
+<span id="L53"><a href="#L53">  53</a>   change ((cokernel.π f ≫ (ModuleCat.cokernelIsoRangeQuotient f).hom) x = 0) ↔ _</span>
+<span id="L54"><a href="#L54">  54</a>   rw [ModuleCat.cokernel_π_cokernelIsoRangeQuotient_hom]</span>
+<span id="L55"><a href="#L55">  55</a>   exact Submodule.Quotient.mk_eq_zero _</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> /-- The class of a cycle is zero exactly when its ambient representative</span>
+<span id="L58"><a href="#L58">  58</a> belongs to the boundary subobject. -/</span>
+<span id="L59"><a href="#L59">  59</a> public theorem subobject_cokernel_π_eq_zero_iff (B Z : Subobject M) (h : B ≤ Z)</span>
+<span id="L60"><a href="#L60">  60</a>     (z : (Subobject.underlying.obj Z : ModuleCat R)) :</span>
+<span id="L61"><a href="#L61">  61</a>     cokernel.π (Subobject.ofLE B Z h) z = 0 ↔</span>
+<span id="L62"><a href="#L62">  62</a>       Z.arrow z ∈ (ModuleCat.subobjectModule M) B := by</span>
+<span id="L63"><a href="#L63">  63</a>   rw [cokernel_π_eq_zero_iff_mem_range]</span>
+<span id="L64"><a href="#L64">  64</a>   change (∃ b, (Subobject.ofLE B Z h).hom b = z) ↔</span>
+<span id="L65"><a href="#L65">  65</a>     ∃ b, B.arrow.hom b = Z.arrow z</span>
+<span id="L66"><a href="#L66">  66</a>   constructor</span>
+<span id="L67"><a href="#L67">  67</a>   · rintro ⟨b, rfl⟩</span>
+<span id="L68"><a href="#L68">  68</a>     exact ⟨b, (ConcreteCategory.congr_hom (Subobject.ofLE_arrow h) b).symm⟩</span>
+<span id="L69"><a href="#L69">  69</a>   · rintro ⟨b, hb⟩</span>
+<span id="L70"><a href="#L70">  70</a>     refine ⟨b, (ModuleCat.mono_iff_injective Z.arrow).mp inferInstance ?_⟩</span>
+<span id="L71"><a href="#L71">  71</a>     change (Subobject.ofLE B Z h ≫ Z.arrow) b = Z.arrow z</span>
+<span id="L72"><a href="#L72">  72</a>     rw [Subobject.ofLE_arrow]</span>
+<span id="L73"><a href="#L73">  73</a>     exact hb</span>
+<span id="L74"><a href="#L74">  74</a> </span>
+<span id="L75"><a href="#L75">  75</a> end KIP126.Core.SpectralSequence</span></pre>

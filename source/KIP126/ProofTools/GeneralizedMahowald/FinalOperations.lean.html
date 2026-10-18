@@ -1,0 +1,62 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/FinalOperations.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/FinalOperations.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.Filtration</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.DetectionOperations</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.ConvergenceOperations</span>
+<span id="L5"><a href="#L5">   5</a> /-! Strict representative preimages used in the Mahowald assembly, bbac1fc05843 (MIT). -/</span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L8"><a href="#L8">   8</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.AdamsSynthetic.Standard</span>
+<span id="L12"><a href="#L12">  12</a> noncomputable section</span>
+<span id="L13"><a href="#L13">  13</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L14"><a href="#L14">  14</a> set_option maxHeartbeats 1600000</span>
+<span id="L15"><a href="#L15">  15</a> theorem finite_top_extension_preimage</span>
+<span id="L16"><a href="#L16">  16</a>     (X Y : ClassicalObject)</span>
+<span id="L17"><a href="#L17">  17</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L18"><a href="#L18">  18</a>     (r : ℕ) (n s t : ℤ)</span>
+<span id="L19"><a href="#L19">  19</a>     (x : Ambient model X (s,t))</span>
+<span id="L20"><a href="#L20">  20</a>     (y : Ambient model Y (s+n,t+n))</span>
+<span id="L21"><a href="#L21">  21</a>     (W : FiniteExtensionWitness model X Y f r n s t x y)</span>
+<span id="L22"><a href="#L22">  22</a>     (htop : (r:ℤ)-1 ≤ n-normalizedExponent model.classicalTower f+1)</span>
+<span id="L23"><a href="#L23">  23</a>     (b : BiHom (t-s) (t+normalizedExponent model.classicalTower f)</span>
+<span id="L24"><a href="#L24">  24</a>       (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (r-1)))</span>
+<span id="L25"><a href="#L25">  25</a>     (hb : Detects (model.convergence (.quotient (r-1) (.nu Y)))</span>
+<span id="L26"><a href="#L26">  26</a>       (s+n,(t-s)+(s+n),t+normalizedExponent model.classicalTower f)</span>
+<span id="L27"><a href="#L27">  27</a>       (finiteTargetForExtension model X Y f (r-1) n s t W.length_lower y)</span>
+<span id="L28"><a href="#L28">  28</a>       (homotopyRegrade (by dsimp; omega) rfl b)) :</span>
+<span id="L29"><a href="#L29">  29</a>     ∃ a : BiHom (t-s) (t+normalizedExponent model.classicalTower f)</span>
+<span id="L30"><a href="#L30">  30</a>       ((SyntheticObject.quotient (r-1) (extensionSourceObject model X Y f)).obj model.nu model.auxiliary),</span>
+<span id="L31"><a href="#L31">  31</a>       a ≫ finiteExtensionMap model X Y f (r-1) = b ∧</span>
+<span id="L32"><a href="#L32">  32</a>       Detects (model.convergence (.quotient (r-1) (extensionSourceObject model X Y f)))</span>
+<span id="L33"><a href="#L33">  33</a>         (s,(t-s)+s,t+normalizedExponent model.classicalTower f)</span>
+<span id="L34"><a href="#L34">  34</a>         (finiteSourceForExtension model X Y f (r-1) s t x)</span>
+<span id="L35"><a href="#L35">  35</a>         (homotopyRegrade (by dsimp; omega) rfl a) := by</span>
+<span id="L36"><a href="#L36">  36</a>   let A := (SyntheticObject.quotient (r-1) (extensionSourceObject model X Y f)).obj model.nu model.auxiliary</span>
+<span id="L37"><a href="#L37">  37</a>   let B := XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (r-1)</span>
+<span id="L38"><a href="#L38">  38</a>   let p := (t-s,t+normalizedExponent model.classicalTower f)</span>
+<span id="L39"><a href="#L39">  39</a>   obtain ⟨_,a,b&#x27;,hab,hax,hby⟩ := (tower_extension_iff</span>
+<span id="L40"><a href="#L40">  40</a>     (model.convergentMap (.quotient (r-1) (extensionSourceObject model X Y f))</span>
+<span id="L41"><a href="#L41">  41</a>       (.quotient (r-1) (.nu Y)) (finiteExtensionMap model X Y f (r-1)))</span>
+<span id="L42"><a href="#L42">  42</a>     p s n W.source W.target).mp W.equation</span>
+<span id="L43"><a href="#L43">  43</a>   have ha := source_frame_detects</span>
+<span id="L44"><a href="#L44">  44</a>     (model.convergence (.quotient (r-1) (extensionSourceObject model X Y f))) p s W.source</span>
+<span id="L45"><a href="#L45">  45</a>     _ W.source_rep a hax</span>
+<span id="L46"><a href="#L46">  46</a>   have hb&#x27; := source_frame_detects</span>
+<span id="L47"><a href="#L47">  47</a>     (model.convergence (.quotient (r-1) (.nu Y))) p (s+n) W.target</span>
+<span id="L48"><a href="#L48">  48</a>     _ W.target_rep b&#x27; hby</span>
+<span id="L49"><a href="#L49">  49</a>   have hr := W.page_ge_two</span>
+<span id="L50"><a href="#L50">  50</a>   have heq := finite_top_detection_unique Y (r-1) (by omega)</span>
+<span id="L51"><a href="#L51">  51</a>     (s+n) ((t-s)+(s+n)) (t+normalizedExponent model.classicalTower f) (by omega)</span>
+<span id="L52"><a href="#L52">  52</a>     _ _ _ hb&#x27; hb</span>
+<span id="L53"><a href="#L53">  53</a>   have heq&#x27; : ((model.syntheticTower.filtration B).F (s+n) p).arrow b&#x27; = b := by</span>
+<span id="L54"><a href="#L54">  54</a>     have hinj (u v w : ℤ) (huv : u=v) :</span>
+<span id="L55"><a href="#L55">  55</a>         Function.Injective (homotopyRegrade huv (rfl : w=w) (X:=B)) := by</span>
+<span id="L56"><a href="#L56">  56</a>       subst v</span>
+<span id="L57"><a href="#L57">  57</a>       exact Function.injective_id</span>
+<span id="L58"><a href="#L58">  58</a>     exact hinj _ _ _ _ heq</span>
+<span id="L59"><a href="#L59">  59</a>   refine ⟨((model.syntheticTower.filtration A).F s p).arrow a, hab.trans heq&#x27;, ha⟩</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> end</span>
+<span id="L62"><a href="#L62">  62</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

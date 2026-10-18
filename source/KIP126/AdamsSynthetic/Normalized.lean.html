@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Normalized.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Normalized.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.Comparisons</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.AdamsSynthetic.Tower</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> namespace KIP126.AdamsSynthetic</span>
+<span id="L8"><a href="#L8">   8</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L9"><a href="#L9">   9</a> open KIP126.Classical.Adams</span>
+<span id="L10"><a href="#L10">  10</a> universe u v w</span>
+<span id="L11"><a href="#L11">  11</a> noncomputable section</span>
+<span id="L12"><a href="#L12">  12</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L13"><a href="#L13">  13</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L14"><a href="#L14">  14</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L15"><a href="#L15">  15</a>   {H : C} {unit : SphereSpectrum ⟶ H} {A : ClassicalAdamsFamily C}</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> /-- Actual factorization through the target tower of this system. -/</span>
+<span id="L18"><a href="#L18">  18</a> public def MapFiltrationAtLeast (P : ClassicalTowerPresentation unit A)</span>
+<span id="L19"><a href="#L19">  19</a>     {X Y : C} (f : X ⟶ Y) (k : ℕ) : Prop :=</span>
+<span id="L20"><a href="#L20">  20</a>   ∃ lift : X ⟶ (P.tower Y).stageAt k,</span>
+<span id="L21"><a href="#L21">  21</a>     lift ≫ (P.tower Y).projection k = f</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> /-- The paper&#x27;s normalization exponent, determined by the same target tower. -/</span>
+<span id="L24"><a href="#L24">  24</a> public def normalizedExponent (P : ClassicalTowerPresentation unit A)</span>
+<span id="L25"><a href="#L25">  25</a>     {X Y : C} (f : X ⟶ Y) : ℕ := by</span>
+<span id="L26"><a href="#L26">  26</a>   classical</span>
+<span id="L27"><a href="#L27">  27</a>   exact if MapFiltrationAtLeast P f 1 then 1 else 0</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> public theorem normalizedExponent_le_one (P : ClassicalTowerPresentation unit A)</span>
+<span id="L30"><a href="#L30">  30</a>     {X Y : C} (f : X ⟶ Y) : normalizedExponent P f ≤ 1 := by</span>
+<span id="L31"><a href="#L31">  31</a>   classical</span>
+<span id="L32"><a href="#L32">  32</a>   unfold normalizedExponent</span>
+<span id="L33"><a href="#L33">  33</a>   split &lt;;&gt; decide</span>
+<span id="L34"><a href="#L34">  34</a> </span>
+<span id="L35"><a href="#L35">  35</a> /-- Positive-target form of the actual λ power. -/</span>
+<span id="L36"><a href="#L36">  36</a> public def lambdaToPositivePow (k : ℕ) (X : Syn) :</span>
+<span id="L37"><a href="#L37">  37</a>     X ⟶ (SyntheticCategory.biShift (0, (k : ℤ))).obj X := by</span>
+<span id="L38"><a href="#L38">  38</a>   have h : ((0 : ℤ), (k : ℤ)) + ((0 : ℤ), -(k : ℤ)) = (0, 0) := by</span>
+<span id="L39"><a href="#L39">  39</a>     ext &lt;;&gt; simp</span>
+<span id="L40"><a href="#L40">  40</a>   exact SyntheticCategory.biShift_zero.inv.app X ≫</span>
+<span id="L41"><a href="#L41">  41</a>     eqToHom (congrArg (fun p =&gt; (SyntheticCategory.biShift p).obj X) h.symm) ≫</span>
+<span id="L42"><a href="#L42">  42</a>     (SyntheticCategory.biShift_comp (0, (k : ℤ)) (0, -(k : ℤ))).inv.app X ≫</span>
+<span id="L43"><a href="#L43">  43</a>     lambdaPow k ((SyntheticCategory.biShift (0, (k : ℤ))).obj X)</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> /-- A normalized lift of this very classical map, with its factorization.</span>
+<span id="L46"><a href="#L46">  46</a> Its existence remains an input, never an axiom or an automatically chosen map. -/</span>
+<span id="L47"><a href="#L47">  47</a> public structure NormalizedSyntheticMap (P : ClassicalTowerPresentation unit A)</span>
+<span id="L48"><a href="#L48">  48</a>     (N : NuFunctorData C Syn) {X Y : C} (f : X ⟶ Y) where</span>
+<span id="L49"><a href="#L49">  49</a>   map : (SyntheticCategory.biShift (0, (normalizedExponent P f : ℤ))).obj</span>
+<span id="L50"><a href="#L50">  50</a>     (N.functor.obj X) ⟶ N.functor.obj Y</span>
+<span id="L51"><a href="#L51">  51</a>   factorization : lambdaToPositivePow (normalizedExponent P f) (N.functor.obj X) ≫</span>
+<span id="L52"><a href="#L52">  52</a>     map = N.functor.map f</span>
+<span id="L53"><a href="#L53">  53</a> </span>
+<span id="L54"><a href="#L54">  54</a> end</span>
+<span id="L55"><a href="#L55">  55</a> end KIP126.AdamsSynthetic</span></pre>

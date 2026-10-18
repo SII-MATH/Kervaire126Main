@@ -1,0 +1,74 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/PageComparison/Raw/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/PageComparison/Raw/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Basic.Data</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Basic.Data</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Page isomorphisms compatible with the actual differentials</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> Two nested-subobject models can have different ambient objects and still</span>
+<span id="L12"><a href="#L12">  12</a> describe isomorphic admissible pages.  This comparison therefore asks only</span>
+<span id="L13"><a href="#L13">  13</a> for page isomorphisms, a common displayed page convention, and commuting</span>
+<span id="L14"><a href="#L14">  14</a> differential squares.  It does not assert an ambient or cycle-subobject</span>
+<span id="L15"><a href="#L15">  15</a> isomorphism.</span>
+<span id="L16"><a href="#L16">  16</a> -/</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> open CategoryTheory</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> universe u v w</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L25"><a href="#L25">  25</a>   {ι : Type w} [AddCommGroup ι] [DecidableEq ι]</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> /-- An isomorphism on each admissible page that commutes with the specified</span>
+<span id="L28"><a href="#L28">  28</a> differentials.  Successor-page compatibility is stated separately using the</span>
+<span id="L29"><a href="#L29">  29</a> homology map induced by these same isomorphisms. -/</span>
+<span id="L30"><a href="#L30">  30</a> structure PagewiseIso (E F : KIP126.Core.SpectralSequence C ι) where</span>
+<span id="L31"><a href="#L31">  31</a>   firstPage_eq : E.r₀ = F.r₀</span>
+<span id="L32"><a href="#L32">  32</a>   diffDeg_eq : E.diffDeg = F.diffDeg</span>
+<span id="L33"><a href="#L33">  33</a>   pageIso : ∀ (r : ℤ), E.r₀ ≤ r → ∀ k : ι, E.Page r k ≅ F.Page r k</span>
+<span id="L34"><a href="#L34">  34</a>   comm_d : ∀ (r : ℤ) (hr : E.r₀ ≤ r) (k : ι),</span>
+<span id="L35"><a href="#L35">  35</a>     (pageIso r hr k).hom ≫ F.d r k =</span>
+<span id="L36"><a href="#L36">  36</a>       E.d r k ≫ (pageIso r hr (k + E.diffDeg r)).hom ≫</span>
+<span id="L37"><a href="#L37">  37</a>         eqToHom (by rw [diffDeg_eq])</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> namespace PagewiseIso</span>
+<span id="L40"><a href="#L40">  40</a> </span>
+<span id="L41"><a href="#L41">  41</a> variable {E F : KIP126.Core.SpectralSequence C ι} (Q : PagewiseIso E F)</span>
+<span id="L42"><a href="#L42">  42</a> </span>
+<span id="L43"><a href="#L43">  43</a> /-- The actual comparison at the left vertex of the short complex centered</span>
+<span id="L44"><a href="#L44">  44</a> at `k`, including the change of displayed differential degree. -/</span>
+<span id="L45"><a href="#L45">  45</a> noncomputable def leftIso (r : ℤ) (hr : E.r₀ ≤ r) (k : ι) :</span>
+<span id="L46"><a href="#L46">  46</a>     (E.pageShortComplex r (k - E.diffDeg r)).X₁ ≅</span>
+<span id="L47"><a href="#L47">  47</a>       (F.pageShortComplex r (k - F.diffDeg r)).X₁ :=</span>
+<span id="L48"><a href="#L48">  48</a>   Q.pageIso r hr (k - E.diffDeg r) ≪≫ eqToIso (by</span>
+<span id="L49"><a href="#L49">  49</a>     change F.Page r (k - E.diffDeg r) = F.Page r (k - F.diffDeg r)</span>
+<span id="L50"><a href="#L50">  50</a>     rw [Q.diffDeg_eq])</span>
+<span id="L51"><a href="#L51">  51</a> </span>
+<span id="L52"><a href="#L52">  52</a> /-- The actual comparison at the middle vertex of the centered short complex.</span>
+<span id="L53"><a href="#L53">  53</a> The displayed indices retain the same explicit transports as `pageShortComplex`. -/</span>
+<span id="L54"><a href="#L54">  54</a> noncomputable def middleIso (r : ℤ) (hr : E.r₀ ≤ r) (k : ι) :</span>
+<span id="L55"><a href="#L55">  55</a>     (E.pageShortComplex r (k - E.diffDeg r)).X₂ ≅</span>
+<span id="L56"><a href="#L56">  56</a>       (F.pageShortComplex r (k - F.diffDeg r)).X₂ :=</span>
+<span id="L57"><a href="#L57">  57</a>   Q.pageIso r hr (k - E.diffDeg r + E.diffDeg r) ≪≫</span>
+<span id="L58"><a href="#L58">  58</a>     eqToIso (by</span>
+<span id="L59"><a href="#L59">  59</a>       change F.Page r (k - E.diffDeg r + E.diffDeg r) =</span>
+<span id="L60"><a href="#L60">  60</a>         F.Page r (k - F.diffDeg r + F.diffDeg r)</span>
+<span id="L61"><a href="#L61">  61</a>       rw [Q.diffDeg_eq])</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> /-- The actual comparison at the right vertex of the centered short complex. -/</span>
+<span id="L64"><a href="#L64">  64</a> noncomputable def rightIso (r : ℤ) (hr : E.r₀ ≤ r) (k : ι) :</span>
+<span id="L65"><a href="#L65">  65</a>     (E.pageShortComplex r (k - E.diffDeg r)).X₃ ≅</span>
+<span id="L66"><a href="#L66">  66</a>       (F.pageShortComplex r (k - F.diffDeg r)).X₃ :=</span>
+<span id="L67"><a href="#L67">  67</a>   Q.pageIso r hr (k - E.diffDeg r + E.diffDeg r + E.diffDeg r) ≪≫</span>
+<span id="L68"><a href="#L68">  68</a>     eqToIso (by</span>
+<span id="L69"><a href="#L69">  69</a>       change F.Page r (k - E.diffDeg r + E.diffDeg r + E.diffDeg r) =</span>
+<span id="L70"><a href="#L70">  70</a>         F.Page r (k - F.diffDeg r + F.diffDeg r + F.diffDeg r)</span>
+<span id="L71"><a href="#L71">  71</a>       rw [Q.diffDeg_eq])</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> end PagewiseIso</span>
+<span id="L74"><a href="#L74">  74</a> end KIP126.Core.SpectralSequence</span></pre>

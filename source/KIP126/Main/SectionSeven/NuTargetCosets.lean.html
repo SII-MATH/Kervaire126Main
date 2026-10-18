@@ -1,0 +1,91 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/SectionSeven/NuTargetCosets.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/SectionSeven/NuTargetCosets.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.E2Computation.Table.Values</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.ProofTools.Operations</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.SectionSeven.NuTargetLinear</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! The two P/Q coset computations from NuTargetHelpers.lean:151–275,</span>
+<span id="L8"><a href="#L8">   8</a> bbac1fc05843 (MIT), using the retained finite archive rows and coordinates. -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L11"><a href="#L11">  11</a> namespace KIP126.Main.SectionSeven.Internal</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Core.SpectralSequence.FinitePageCalculus KIP126.Literature</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard KIP126.ProofTools.Operations</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Computation.Table</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> private theorem p_cosets (x : model.classical.sphere.Page 2 (11,133)) :</span>
+<span id="L19"><a href="#L19">  19</a>     x ∈ boundaries model .sphere 3 (11,133) ∨</span>
+<span id="L20"><a href="#L20">  20</a>     x-KIP126.Computation.Standard.P ∈ boundaries model .sphere 3 (11,133) := by</span>
+<span id="L21"><a href="#L21">  21</a>   have hd : HasDifferential model.classical.sphere 3 (8,131) (11,133)</span>
+<span id="L22"><a href="#L22">  22</a>       (basis .sphere 8 131 0) (basis .sphere 11 133 0 + basis .sphere 11 133 1) := by</span>
+<span id="L23"><a href="#L23">  23</a>     have h := result ⟨.sphere,.equation,3,8,131,[0],11,133,[0,1],&quot;S0_AdamsE2_ss&quot;,2621⟩ (by</span>
+<span id="L24"><a href="#L24">  24</a>       exact List.mem_of_getElem? (l := Raw.claims) (i := 267) rfl)</span>
+<span id="L25"><a href="#L25">  25</a>     dsimp only [Statement] at h</span>
+<span id="L26"><a href="#L26">  26</a>     obtain ⟨x,hx,y,hy,hd⟩ := h</span>
+<span id="L27"><a href="#L27">  27</a>     have vx : Raw.coordinatesValid Raw.degrees .sphere 8 131 [0] = true := rfl</span>
+<span id="L28"><a href="#L28">  28</a>     have vy : Raw.coordinatesValid Raw.degrees .sphere 11 133 [0,1] = true := rfl</span>
+<span id="L29"><a href="#L29">  29</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,</span>
+<span id="L30"><a href="#L30">  30</a>       add_zero,Option.some.injEq] at hx hy</span>
+<span id="L31"><a href="#L31">  31</a>     rw [←hx,←hy] at hd</span>
+<span id="L32"><a href="#L32">  32</a>     exact hd</span>
+<span id="L33"><a href="#L33">  33</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,11,133,[&quot;371,1&quot;,&quot;69,1,79,1&quot;]⟩ (by</span>
+<span id="L34"><a href="#L34">  34</a>     exact List.mem_of_getElem? (l := Raw.degrees) (i := 189) rfl)</span>
+<span id="L35"><a href="#L35">  35</a>   change model.classical.sphere.Page 2 (11,133) ≃ₗ[ℤ] (Fin 2 →₀ ZMod 2) at e</span>
+<span id="L36"><a href="#L36">  36</a>   change ∀ i : Fin 2, e.symm (Finsupp.single i 1) = basis .sphere 11 133 i.val at he</span>
+<span id="L37"><a href="#L37">  37</a>   have hb : basis .sphere 11 133 0 + basis .sphere 11 133 1 ∈ boundaries model .sphere 3 (11,133) :=</span>
+<span id="L38"><a href="#L38">  38</a>     represents_zero_mem_boundary model .sphere 4 (11,133) _</span>
+<span id="L39"><a href="#L39">  39</a>       (differential_target_later_zero (by rw [model.classical.firstPage] &lt;;&gt; omega) (by decide) hd)</span>
+<span id="L40"><a href="#L40">  40</a>   have hb&#x27; : e.symm (Finsupp.single 0 1) + e.symm (Finsupp.single 1 1) ∈ boundaries model .sphere 3 (11,133) := by</span>
+<span id="L41"><a href="#L41">  41</a>     rw [he 0,he 1]</span>
+<span id="L42"><a href="#L42">  42</a>     exact hb</span>
+<span id="L43"><a href="#L43">  43</a>   have heP : e.symm (Finsupp.single (1:Fin 2) 1) = KIP126.Computation.Standard.P :=</span>
+<span id="L44"><a href="#L44">  44</a>     (he 1).trans basis_P</span>
+<span id="L45"><a href="#L45">  45</a>   simpa only [heP] using two_coordinate_cosets e _ hb&#x27; x</span>
+<span id="L46"><a href="#L46">  46</a> </span>
+<span id="L47"><a href="#L47">  47</a> private theorem q_cosets (x : model.classical.sphere.Page 2 (12,134)) :</span>
+<span id="L48"><a href="#L48">  48</a>     x ∈ boundaries model .sphere 3 (12,134) ∨</span>
+<span id="L49"><a href="#L49">  49</a>     x-KIP126.Computation.Standard.Q ∈ boundaries model .sphere 3 (12,134) := by</span>
+<span id="L50"><a href="#L50">  50</a>   have hd2 : HasDifferential model.classical.sphere 2 (10,133) (12,134)</span>
+<span id="L51"><a href="#L51">  51</a>       (basis .sphere 10 133 0) (basis .sphere 12 134 2) := by</span>
+<span id="L52"><a href="#L52">  52</a>     have h := result ⟨.sphere,.equation,2,10,133,[0],12,134,[2],&quot;S0_AdamsE2_ss&quot;,2682⟩ (by</span>
+<span id="L53"><a href="#L53">  53</a>       exact List.mem_of_getElem? (l := Raw.claims) (i := 294) rfl)</span>
+<span id="L54"><a href="#L54">  54</a>     dsimp only [Statement] at h</span>
+<span id="L55"><a href="#L55">  55</a>     obtain ⟨x,hx,y,hy,hd⟩ := h</span>
+<span id="L56"><a href="#L56">  56</a>     have vx : Raw.coordinatesValid Raw.degrees .sphere 10 133 [0] = true := rfl</span>
+<span id="L57"><a href="#L57">  57</a>     have vy : Raw.coordinatesValid Raw.degrees .sphere 12 134 [2] = true := rfl</span>
+<span id="L58"><a href="#L58">  58</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,</span>
+<span id="L59"><a href="#L59">  59</a>       add_zero,Option.some.injEq] at hx hy</span>
+<span id="L60"><a href="#L60">  60</a>     rw [←hx,←hy] at hd</span>
+<span id="L61"><a href="#L61">  61</a>     exact hd</span>
+<span id="L62"><a href="#L62">  62</a>   have hd3 : HasDifferential model.classical.sphere 3 (9,132) (12,134)</span>
+<span id="L63"><a href="#L63">  63</a>       (basis .sphere 9 132 0) (basis .sphere 12 134 1) := by</span>
+<span id="L64"><a href="#L64">  64</a>     have h := result ⟨.sphere,.equation,3,9,132,[0],12,134,[1],&quot;S0_AdamsE2_ss&quot;,2683⟩ (by</span>
+<span id="L65"><a href="#L65">  65</a>       exact List.mem_of_getElem? (l := Raw.claims) (i := 295) rfl)</span>
+<span id="L66"><a href="#L66">  66</a>     dsimp only [Statement] at h</span>
+<span id="L67"><a href="#L67">  67</a>     obtain ⟨x,hx,y,hy,hd⟩ := h</span>
+<span id="L68"><a href="#L68">  68</a>     have vx : Raw.coordinatesValid Raw.degrees .sphere 9 132 [0] = true := rfl</span>
+<span id="L69"><a href="#L69">  69</a>     have vy : Raw.coordinatesValid Raw.degrees .sphere 12 134 [1] = true := rfl</span>
+<span id="L70"><a href="#L70">  70</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,</span>
+<span id="L71"><a href="#L71">  71</a>       add_zero,Option.some.injEq] at hx hy</span>
+<span id="L72"><a href="#L72">  72</a>     rw [←hx,←hy] at hd</span>
+<span id="L73"><a href="#L73">  73</a>     exact hd</span>
+<span id="L74"><a href="#L74">  74</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,12,134,[&quot;18,1,188,1&quot;,&quot;0,1,371,1&quot;,&quot;0,1,69,1,79,1&quot;]⟩ (by</span>
+<span id="L75"><a href="#L75">  75</a>     exact List.mem_of_getElem? (l := Raw.degrees) (i := 198) rfl)</span>
+<span id="L76"><a href="#L76">  76</a>   change model.classical.sphere.Page 2 (12,134) ≃ₗ[ℤ] (Fin 3 →₀ ZMod 2) at e</span>
+<span id="L77"><a href="#L77">  77</a>   change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = basis .sphere 12 134 i.val at he</span>
+<span id="L78"><a href="#L78">  78</a>   have hb1 : e.symm (Finsupp.single 1 1) ∈ boundaries model .sphere 3 (12,134) := by</span>
+<span id="L79"><a href="#L79">  79</a>     rw [he 1]</span>
+<span id="L80"><a href="#L80">  80</a>     exact represents_zero_mem_boundary model .sphere 4 (12,134) _</span>
+<span id="L81"><a href="#L81">  81</a>       (differential_target_later_zero (by rw [model.classical.firstPage] &lt;;&gt; omega) (by decide) hd3)</span>
+<span id="L82"><a href="#L82">  82</a>   have hb2 : e.symm (Finsupp.single 2 1) ∈ boundaries model .sphere 3 (12,134) := by</span>
+<span id="L83"><a href="#L83">  83</a>     rw [he 2]</span>
+<span id="L84"><a href="#L84">  84</a>     exact represents_zero_mem_boundary model .sphere 4 (12,134) _</span>
+<span id="L85"><a href="#L85">  85</a>       (differential_target_later_zero (by rw [model.classical.firstPage] &lt;;&gt; omega) (by decide) hd2)</span>
+<span id="L86"><a href="#L86">  86</a>   have heQ : e.symm (Finsupp.single (0:Fin 3) 1) = KIP126.Computation.Standard.Q :=</span>
+<span id="L87"><a href="#L87">  87</a>     (he 0).trans basis_Q</span>
+<span id="L88"><a href="#L88">  88</a>   simpa only [heQ] using three_coordinate_cosets e _ hb1 hb2 x</span>
+<span id="L89"><a href="#L89">  89</a> </span>
+<span id="L90"><a href="#L90">  90</a> end</span>
+<span id="L91"><a href="#L91">  91</a> end KIP126.Main.SectionSeven.Internal</span></pre>

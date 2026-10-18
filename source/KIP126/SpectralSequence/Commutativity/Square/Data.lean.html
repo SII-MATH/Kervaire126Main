@@ -1,0 +1,79 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Commutativity/Square/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Commutativity/Square/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.BoundedExtension.Sequence.Proofs</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Convergence.Category.Data</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> /-!</span>
+<span id="L9"><a href="#L9">   9</a> # Commutative squares of convergent spectral sequences</span>
+<span id="L10"><a href="#L10">  10</a> -/</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> open CategoryTheory</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> universe u v w</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- A commutative square in the category of convergent spectral sequences. -/</span>
+<span id="L21"><a href="#L21">  21</a> structure ConvergingSSSquare {ω : Type w} [AddCommGroup ω] [DecidableEq ω]</span>
+<span id="L22"><a href="#L22">  22</a>     {ω&#x27; : Type w} where</span>
+<span id="L23"><a href="#L23">  23</a>   V₁ : ConvergingSS C ω ω&#x27;</span>
+<span id="L24"><a href="#L24">  24</a>   V₂ : ConvergingSS C ω ω&#x27;</span>
+<span id="L25"><a href="#L25">  25</a>   V₃ : ConvergingSS C ω ω&#x27;</span>
+<span id="L26"><a href="#L26">  26</a>   V₄ : ConvergingSS C ω ω&#x27;</span>
+<span id="L27"><a href="#L27">  27</a>   f : V₁ ⟶ V₂</span>
+<span id="L28"><a href="#L28">  28</a>   p : V₁ ⟶ V₃</span>
+<span id="L29"><a href="#L29">  29</a>   q : V₂ ⟶ V₄</span>
+<span id="L30"><a href="#L30">  30</a>   g : V₃ ⟶ V₄</span>
+<span id="L31"><a href="#L31">  31</a>   comm : f ≫ q = p ≫ g</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> /-- Historical componentwise presentation of a commutative square, including</span>
+<span id="L34"><a href="#L34">  34</a> bounded extension data on its four edges. -/</span>
+<span id="L35"><a href="#L35">  35</a> structure HomotopyCommSquare {ω : Type w} [AddCommGroup ω] [DecidableEq ω]</span>
+<span id="L36"><a href="#L36">  36</a>     {E₁ E₂ E₃ E₄ : SpectralSequence C ω} {ω&#x27; : Type w}</span>
+<span id="L37"><a href="#L37">  37</a>     {A₁ A₂ A₃ A₄ : ω&#x27; → C}</span>
+<span id="L38"><a href="#L38">  38</a>     {F₁ : Filtration A₁} {F₂ : Filtration A₂}</span>
+<span id="L39"><a href="#L39">  39</a>     {F₃ : Filtration A₃} {F₄ : Filtration A₄}</span>
+<span id="L40"><a href="#L40">  40</a>     (conv₁ : Convergence E₁ A₁ F₁) (conv₂ : Convergence E₂ A₂ F₂)</span>
+<span id="L41"><a href="#L41">  41</a>     (conv₃ : Convergence E₃ A₃ F₃) (conv₄ : Convergence E₄ A₄ F₄) where</span>
+<span id="L42"><a href="#L42">  42</a>   cmf : ConvergenceMorphism conv₁ conv₂</span>
+<span id="L43"><a href="#L43">  43</a>   cmp : ConvergenceMorphism conv₁ conv₃</span>
+<span id="L44"><a href="#L44">  44</a>   cmq : ConvergenceMorphism conv₂ conv₄</span>
+<span id="L45"><a href="#L45">  45</a>   cmg : ConvergenceMorphism conv₃ conv₄</span>
+<span id="L46"><a href="#L46">  46</a>   bnd₁ : F₁.IsBounded</span>
+<span id="L47"><a href="#L47">  47</a>   bnd₂ : F₂.IsBounded</span>
+<span id="L48"><a href="#L48">  48</a>   bnd₃ : F₃.IsBounded</span>
+<span id="L49"><a href="#L49">  49</a>   bnd₄ : F₄.IsBounded</span>
+<span id="L50"><a href="#L50">  50</a>   extf : BoundedExtensionSS conv₁ conv₂ cmf bnd₁ bnd₂</span>
+<span id="L51"><a href="#L51">  51</a>   extp : BoundedExtensionSS conv₁ conv₃ cmp bnd₁ bnd₃</span>
+<span id="L52"><a href="#L52">  52</a>   extq : BoundedExtensionSS conv₂ conv₄ cmq bnd₂ bnd₄</span>
+<span id="L53"><a href="#L53">  53</a>   extg : BoundedExtensionSS conv₃ conv₄ cmg bnd₃ bnd₄</span>
+<span id="L54"><a href="#L54">  54</a>   abutment_comm : ∀ k&#x27;, cmf.aMap k&#x27; ≫ cmq.aMap k&#x27; = cmp.aMap k&#x27; ≫ cmg.aMap k&#x27;</span>
+<span id="L55"><a href="#L55">  55</a>   eInfty_comm : ∀ k, cmf.eMap k ≫ cmq.eMap k = cmp.eMap k ≫ cmg.eMap k</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> /-- Convert the historical componentwise square to a categorical square. -/</span>
+<span id="L58"><a href="#L58">  58</a> def HomotopyCommSquare.toSquare {ω : Type w} [AddCommGroup ω] [DecidableEq ω]</span>
+<span id="L59"><a href="#L59">  59</a>     {E₁ E₂ E₃ E₄ : SpectralSequence C ω} {ω&#x27; : Type w}</span>
+<span id="L60"><a href="#L60">  60</a>     {A₁ A₂ A₃ A₄ : ω&#x27; → C}</span>
+<span id="L61"><a href="#L61">  61</a>     {F₁ : Filtration A₁} {F₂ : Filtration A₂}</span>
+<span id="L62"><a href="#L62">  62</a>     {F₃ : Filtration A₃} {F₄ : Filtration A₄}</span>
+<span id="L63"><a href="#L63">  63</a>     {conv₁ : Convergence E₁ A₁ F₁} {conv₂ : Convergence E₂ A₂ F₂}</span>
+<span id="L64"><a href="#L64">  64</a>     {conv₃ : Convergence E₃ A₃ F₃} {conv₄ : Convergence E₄ A₄ F₄}</span>
+<span id="L65"><a href="#L65">  65</a>     (sq : HomotopyCommSquare conv₁ conv₂ conv₃ conv₄) :</span>
+<span id="L66"><a href="#L66">  66</a>     ConvergingSSSquare (C := C) (ω := ω) (ω&#x27; := ω&#x27;) where</span>
+<span id="L67"><a href="#L67">  67</a>   V₁ := ⟨E₁, A₁, F₁, conv₁⟩</span>
+<span id="L68"><a href="#L68">  68</a>   V₂ := ⟨E₂, A₂, F₂, conv₂⟩</span>
+<span id="L69"><a href="#L69">  69</a>   V₃ := ⟨E₃, A₃, F₃, conv₃⟩</span>
+<span id="L70"><a href="#L70">  70</a>   V₄ := ⟨E₄, A₄, F₄, conv₄⟩</span>
+<span id="L71"><a href="#L71">  71</a>   f := sq.cmf</span>
+<span id="L72"><a href="#L72">  72</a>   p := sq.cmp</span>
+<span id="L73"><a href="#L73">  73</a>   q := sq.cmq</span>
+<span id="L74"><a href="#L74">  74</a>   g := sq.cmg</span>
+<span id="L75"><a href="#L75">  75</a>   comm := ConvergenceMorphism.ext</span>
+<span id="L76"><a href="#L76">  76</a>     (funext fun k =&gt; sq.eInfty_comm k)</span>
+<span id="L77"><a href="#L77">  77</a>     (funext fun k&#x27; =&gt; sq.abutment_comm k&#x27;)</span>
+<span id="L78"><a href="#L78">  78</a> </span>
+<span id="L79"><a href="#L79">  79</a> end KIP126.Core.SpectralSequence</span></pre>

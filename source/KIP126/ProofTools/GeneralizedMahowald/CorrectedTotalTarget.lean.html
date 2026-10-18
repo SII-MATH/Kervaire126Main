@@ -1,0 +1,89 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedMahowald/CorrectedTotalTarget.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedMahowald/CorrectedTotalTarget.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonEdgeNativeTarget</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedMahowald.FSourceTransport</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.ProofTools.GeneralizedMahowald.CommonTotalTarget</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.ProofTools.GeneralizedMahowald.TotalFTransport</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.ProofTools.GeneralizedMahowald.CorrectedCoordinates</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.ProofTools.GeneralizedMahowald.MinimalFinalAssembly</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated CategoryTheory.Functor</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard KIP126.Literature</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L19"><a href="#L19">  19</a> set_option maxHeartbeats 1000000</span>
+<span id="L20"><a href="#L20">  20</a> set_option Elab.async false</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> private theorem common_corrected_geometry_second_image</span>
+<span id="L23"><a href="#L23">  23</a>     {C D U V : SyntheticSpectrum} (i : ℕ) (M W : ℤ)</span>
+<span id="L24"><a href="#L24">  24</a>     (eC : C ≅ (SyntheticCategory.biShift (1,-(i:ℤ))).obj D)</span>
+<span id="L25"><a href="#L25">  25</a>     (eD : U ≅ (SyntheticCategory.biShift (1,-(i:ℤ))).obj V)</span>
+<span id="L26"><a href="#L26">  26</a>     (h : C ⟶ U) (c : BiHom (M-1) (W+i) D) :</span>
+<span id="L27"><a href="#L27">  27</a>     (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))).preimage</span>
+<span id="L28"><a href="#L28">  28</a>       ((biShiftAddIso (M-1,W+i) (1,-(i:ℤ)) (M,W)</span>
+<span id="L29"><a href="#L29">  29</a>         (by ext &lt;;&gt; dsimp; all_goals omega)).hom.app S_0_0 ≫</span>
+<span id="L30"><a href="#L30">  30</a>       commonCorrectedGeometry i M W eC c ≫ h ≫ eD.hom) =</span>
+<span id="L31"><a href="#L31">  31</a>     c ≫ (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))).preimage</span>
+<span id="L32"><a href="#L32">  32</a>       (eC.inv≫h≫eD.hom) := by</span>
+<span id="L33"><a href="#L33">  33</a>   apply (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))).map_injective</span>
+<span id="L34"><a href="#L34">  34</a>   simp only [Functor.FullyFaithful.map_preimage,Functor.map_comp,commonCorrectedGeometry,</span>
+<span id="L35"><a href="#L35">  35</a>     Category.assoc,Iso.hom_inv_id_app_assoc]</span>
+<span id="L36"><a href="#L36">  36</a> </span>
+<span id="L37"><a href="#L37">  37</a> private theorem common_corrected_total_native_detection</span>
+<span id="L38"><a href="#L38">  38</a>     (Y : ClassicalObject) (e : ℤ) (i q : ℕ) (hq : 0 &lt; q)</span>
+<span id="L39"><a href="#L39">  39</a>     (s t M W : ℤ) (hM : M-1=t-s) (hW : W+i=t+e) (y : Ambient model Y (s,t))</span>
+<span id="L40"><a href="#L40">  40</a>     (esusp : XModLambdaN (((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L41"><a href="#L41">  41</a>       (model.nu.functor.obj (Y.obj model.auxiliary)))⟦(1:ℤ)⟧) (i+q) ≅</span>
+<span id="L42"><a href="#L42">  42</a>       (XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L43"><a href="#L43">  43</a>         (model.nu.functor.obj (Y.obj model.auxiliary))) (i+q))⟦(1:ℤ)⟧)</span>
+<span id="L44"><a href="#L44">  44</a>     (eA : XModLambdaN ((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L45"><a href="#L45">  45</a>       (model.nu.functor.obj (Y.obj model.auxiliary))) (i+q) ≅</span>
+<span id="L46"><a href="#L46">  46</a>       (SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L47"><a href="#L47">  47</a>         (XModLambdaN (model.nu.functor.obj (Y.obj model.auxiliary)) (i+q)))</span>
+<span id="L48"><a href="#L48">  48</a>     (C D : SyntheticSpectrum)</span>
+<span id="L49"><a href="#L49">  49</a>     (eC : C ≅ (SyntheticCategory.biShift (1,-(i:ℤ))).obj D)</span>
+<span id="L50"><a href="#L50">  50</a>     (h : C ⟶ XModLambdaN (((SyntheticCategory.biShift (0,e)).obj</span>
+<span id="L51"><a href="#L51">  51</a>       (model.nu.functor.obj (Y.obj model.auxiliary)))⟦(1:ℤ)⟧) (i+q))</span>
+<span id="L52"><a href="#L52">  52</a>     (c : BiHom (M-1) (W+i) D)</span>
+<span id="L53"><a href="#L53">  53</a>     (hc : Detects (model.convergence (.quotient (i+q) (.nu Y))) (s,t,t-i)</span>
+<span id="L54"><a href="#L54">  54</a>       (finiteTargetLabel model Y (i+q) s t i y)</span>
+<span id="L55"><a href="#L55">  55</a>       (commonTargetUnshift (0,(i:ℤ)+e) (t-s,t-i) _</span>
+<span id="L56"><a href="#L56">  56</a>         (homotopyRegrade (by dsimp; omega) (by dsimp; omega)</span>
+<span id="L57"><a href="#L57">  57</a>           (c ≫ (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (1,-(i:ℤ))).preimage</span>
+<span id="L58"><a href="#L58">  58</a>             (eC.inv≫h≫(commonEdgeTargetFlatIso _ e i q esusp eA).hom))))) :</span>
+<span id="L59"><a href="#L59">  59</a>     Detects (model.convergence (.quotient (i+q) (.nu Y))) (s,t,t-i)</span>
+<span id="L60"><a href="#L60">  60</a>       (finiteTargetLabel model Y (i+q) s t i y)</span>
+<span id="L61"><a href="#L61">  61</a>       (quotientUnshift Y (1,e) (t-s,t-i) (i+q)</span>
+<span id="L62"><a href="#L62">  62</a>         (commonTotalQuotientIso _ e i q esusp eA)</span>
+<span id="L63"><a href="#L63">  63</a>         (homotopyRegrade (by dsimp; omega) (by dsimp; omega)</span>
+<span id="L64"><a href="#L64">  64</a>           (commonCorrectedGeometry i M W eC c≫h≫</span>
+<span id="L65"><a href="#L65">  65</a>             XModLambdaN.map ((commonTotalSuspensionTransport e i).hom.app _) (i+q)))) := by</span>
+<span id="L66"><a href="#L66">  66</a>   let V := model.nu.functor.obj (Y.obj model.auxiliary)</span>
+<span id="L67"><a href="#L67">  67</a>   let p : ℤ×ℤ := (t-s,t-i)</span>
+<span id="L68"><a href="#L68">  68</a>   let α : ℤ×ℤ := (0,(i:ℤ)+e)</span>
+<span id="L69"><a href="#L69">  69</a>   let β : ℤ×ℤ := (1,-(i:ℤ))</span>
+<span id="L70"><a href="#L70">  70</a>   let δ : ℤ×ℤ := (1,e)</span>
+<span id="L71"><a href="#L71">  71</a>   let Cα := (biShiftAddIso (Syn:=SyntheticSpectrum) p α (M-1,W+i)</span>
+<span id="L72"><a href="#L72">  72</a>     (by ext &lt;;&gt; dsimp [p,α]; all_goals omega)).app S_0_0</span>
+<span id="L73"><a href="#L73">  73</a>   let Cβ := (biShiftAddIso (Syn:=SyntheticSpectrum) (M-1,W+i) β (M,W)</span>
+<span id="L74"><a href="#L74">  74</a>     (by ext &lt;;&gt; dsimp [β]; all_goals omega)).app S_0_0</span>
+<span id="L75"><a href="#L75">  75</a>   let Cδ := (biShiftAddIso (Syn:=SyntheticSpectrum) p δ (M,W)</span>
+<span id="L76"><a href="#L76">  76</a>     (by ext &lt;;&gt; dsimp [p,δ]; all_goals omega)).app S_0_0</span>
+<span id="L77"><a href="#L77">  77</a>   have hn := common_total_native_detection Y e i q i (by omega) s t y esusp eA</span>
+<span id="L78"><a href="#L78">  78</a>     (Smn (M-1) (W+i)) (Smn M W) Cα Cβ Cδ</span>
+<span id="L79"><a href="#L79">  79</a>     (commonCorrectedGeometry i M W eC c≫h) (by</span>
+<span id="L80"><a href="#L80">  80</a>       dsimp only [Cβ,β]</span>
+<span id="L81"><a href="#L81">  81</a>       simp only [Iso.app_hom,Category.assoc]</span>
+<span id="L82"><a href="#L82">  82</a>       erw [common_corrected_geometry_second_image]</span>
+<span id="L83"><a href="#L83">  83</a>       simpa only [Cα,commonTargetUnshift,biShiftAddIso,Iso.app_hom,Iso.trans_hom,</span>
+<span id="L84"><a href="#L84">  84</a>         eqToIso.hom,eqToHom_app,regrade_precomp,Category.assoc,NatTrans.comp_app,p,α] using hc)</span>
+<span id="L85"><a href="#L85">  85</a>   simpa only [Cδ,quotientUnshift,biShiftAddIso,Iso.app_hom,Iso.trans_hom,NatTrans.comp_app,</span>
+<span id="L86"><a href="#L86">  86</a>     eqToIso.hom,eqToHom_app,regrade_precomp,Category.assoc,p,δ] using hn</span>
+<span id="L87"><a href="#L87">  87</a> </span>
+<span id="L88"><a href="#L88">  88</a> end</span>
+<span id="L89"><a href="#L89">  89</a> end KIP126.ProofTools.Internal.Mahowald</span></pre>

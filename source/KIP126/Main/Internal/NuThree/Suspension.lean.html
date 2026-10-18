@@ -1,0 +1,182 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/NuThree/Suspension.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/NuThree/Suspension.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.ProofTools.Representatives</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.ProofTools.Operations</span>
+<span id="L4"><a href="#L4">   4</a> /-! Desuspension preserves the same tower cycle representatives. The original</span>
+<span id="L5"><a href="#L5">   5</a> NuFifth:105–220 and StableHomotopy/Context/Suspension proofs at bbac1fc05843</span>
+<span id="L6"><a href="#L6">   6</a> (MIT) are expressed on the given abstract tower presentation. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.Internal.NuThree</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.Core.SpectralSequence KIP126.AdamsSynthetic KIP126.Literature</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.AdamsSynthetic.Standard (model Spectrum)</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.ProofTools KIP126.Kervaire.Route</span>
+<span id="L13"><a href="#L13">  13</a> noncomputable section</span>
+<span id="L14"><a href="#L14">  14</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L15"><a href="#L15">  15</a> set_option maxHeartbeats 1600000</span>
+<span id="L16"><a href="#L16">  16</a> set_option maxRecDepth 10000</span>
+<span id="L17"><a href="#L17">  17</a> universe u v</span>
+<span id="L18"><a href="#L18">  18</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L19"><a href="#L19">  19</a> private theorem desuspend_bijective (X : C) (n : ℤ) :</span>
+<span id="L20"><a href="#L20">  20</a>     Function.Bijective (AbstractAdamsTower.desuspend X n) := by</span>
+<span id="L21"><a href="#L21">  21</a>   let e := (shiftFunctorAdd&#x27; C n (-1) (n - 1) (by omega)).app SphereSpectrum</span>
+<span id="L22"><a href="#L22">  22</a>   let d := (shiftFunctorCompIsoId C 1 (-1) (by omega)).app X</span>
+<span id="L23"><a href="#L23">  23</a>   constructor</span>
+<span id="L24"><a href="#L24">  24</a>   · intro a b h</span>
+<span id="L25"><a href="#L25">  25</a>     change e.hom ≫ (shiftFunctor C (-1 : ℤ)).map a ≫ d.hom =</span>
+<span id="L26"><a href="#L26">  26</a>       e.hom ≫ (shiftFunctor C (-1 : ℤ)).map b ≫ d.hom at h</span>
+<span id="L27"><a href="#L27">  27</a>     apply (shiftFunctor C (-1 : ℤ)).map_injective</span>
+<span id="L28"><a href="#L28">  28</a>     apply (cancel_epi e.hom).mp</span>
+<span id="L29"><a href="#L29">  29</a>     apply (cancel_mono d.hom).mp</span>
+<span id="L30"><a href="#L30">  30</a>     simpa only [Category.assoc] using h</span>
+<span id="L31"><a href="#L31">  31</a>   · intro b</span>
+<span id="L32"><a href="#L32">  32</a>     refine ⟨(shiftFunctor C (-1 : ℤ)).preimage (e.inv ≫ b ≫ d.inv), ?_⟩</span>
+<span id="L33"><a href="#L33">  33</a>     change e.hom ≫ (shiftFunctor C (-1 : ℤ)).map</span>
+<span id="L34"><a href="#L34">  34</a>       ((shiftFunctor C (-1 : ℤ)).preimage _) ≫ d.hom = b</span>
+<span id="L35"><a href="#L35">  35</a>     rw [Functor.map_preimage]</span>
+<span id="L36"><a href="#L36">  36</a>     simp only [Category.assoc, Iso.inv_hom_id, Category.comp_id, Iso.hom_inv_id_assoc]</span>
+<span id="L37"><a href="#L37">  37</a> </span>
+<span id="L38"><a href="#L38">  38</a> /-- Desuspension commutes with the actual shifted target map. -/</span>
+<span id="L39"><a href="#L39">  39</a> private theorem desuspend_postcompose {X Y : C} (f : X ⟶ Y) (n : ℤ)</span>
+<span id="L40"><a href="#L40">  40</a>     (a : HomotopyGroup n (X⟦(1 : ℤ)⟧)) :</span>
+<span id="L41"><a href="#L41">  41</a>     AbstractAdamsTower.desuspend Y n (a ≫ f⟦(1 : ℤ)⟧&#x27;) = AbstractAdamsTower.desuspend X n a ≫ f := by</span>
+<span id="L42"><a href="#L42">  42</a>   change _ ≫ (shiftFunctor C (-1 : ℤ)).map (a ≫ f⟦(1 : ℤ)⟧&#x27;) ≫ _ = _</span>
+<span id="L43"><a href="#L43">  43</a>   rw [Functor.map_comp]</span>
+<span id="L44"><a href="#L44">  44</a>   have h := (shiftFunctorCompIsoId C 1 (-1) (by omega)).hom.naturality f</span>
+<span id="L45"><a href="#L45">  45</a>   change (shiftFunctor C (-1 : ℤ)).map (f⟦(1 : ℤ)⟧&#x27;) ≫ _ = _ ≫ f at h</span>
+<span id="L46"><a href="#L46">  46</a>   simp only [Category.assoc]</span>
+<span id="L47"><a href="#L47">  47</a>   rw [h]</span>
+<span id="L48"><a href="#L48">  48</a>   simp only [AbstractAdamsTower.desuspend, AddMonoidHom.coe_mk, ZeroHom.coe_mk, Category.assoc]</span>
+<span id="L49"><a href="#L49">  49</a> </span>
+<span id="L50"><a href="#L50">  50</a> private theorem raw_cycles_iff [HasFunctorialCofiber (C:=C)] {H : C} {unit : SphereSpectrum ⟶ H}</span>
+<span id="L51"><a href="#L51">  51</a>     {X : C} (T : AbstractAdamsTower unit X) (r : ℕ) (hr : 1≤r) (s t : ℤ)</span>
+<span id="L52"><a href="#L52">  52</a>     (a : T.FirstPage (s,t)) :</span>
+<span id="L53"><a href="#L53">  53</a>     a∈T.cycles r hr (s,t) ↔</span>
+<span id="L54"><a href="#L54">  54</a>     ∃ c : HomotopyGroup (t-s) ((T.stageAt (s+r))⟦(1:ℤ)⟧),</span>
+<span id="L55"><a href="#L55">  55</a>       c≫(T.mapAt (show s+1≤s+r by omega))⟦(1:ℤ)⟧&#x27; =</span>
+<span id="L56"><a href="#L56">  56</a>       a≫HasFunctorialCofiber.cofibδ (T.mapAt (show s≤s+1 by omega)) := by</span>
+<span id="L57"><a href="#L57">  57</a>   constructor</span>
+<span id="L58"><a href="#L58">  58</a>   · rintro ⟨b,hb⟩</span>
+<span id="L59"><a href="#L59">  59</a>     obtain ⟨c,hc⟩ := (desuspend_bijective (T.stageAt (s+r)) (t-s)).2 b</span>
+<span id="L60"><a href="#L60">  60</a>     refine ⟨c,?_⟩</span>
+<span id="L61"><a href="#L61">  61</a>     apply (desuspend_bijective (T.stageAt (s+1)) (t-s)).1</span>
+<span id="L62"><a href="#L62">  62</a>     rw [desuspend_postcompose,hc]</span>
+<span id="L63"><a href="#L63">  63</a>     exact hb</span>
+<span id="L64"><a href="#L64">  64</a>   · rintro ⟨c,hc⟩</span>
+<span id="L65"><a href="#L65">  65</a>     refine ⟨AbstractAdamsTower.desuspend (T.stageAt (s+r)) (t-s) c,?_⟩</span>
+<span id="L66"><a href="#L66">  66</a>     change _≫T.mapAt (show s+1≤s+r by omega)=</span>
+<span id="L67"><a href="#L67">  67</a>       AbstractAdamsTower.desuspend (T.stageAt (s+1)) (t-s)</span>
+<span id="L68"><a href="#L68">  68</a>         (a≫HasFunctorialCofiber.cofibδ (T.mapAt (show s≤s+1 by omega)))</span>
+<span id="L69"><a href="#L69">  69</a>     rw [←desuspend_postcompose,hc]</span>
+<span id="L70"><a href="#L70">  70</a> </span>
+<span id="L71"><a href="#L71">  71</a> private theorem desuspend_mem_raw_cycles (X : ClassicalObject)</span>
+<span id="L72"><a href="#L72">  72</a>     (r : ℕ) (hr : 1≤r) (s t : ℤ)</span>
+<span id="L73"><a href="#L73">  73</a>     (a : (model.classicalTower.tower ((X.obj model.auxiliary)⟦(1:ℤ)⟧)).FirstPage (s,t))</span>
+<span id="L74"><a href="#L74">  74</a>     (ha : a∈(model.classicalTower.tower ((X.obj model.auxiliary)⟦(1:ℤ)⟧)).cycles r hr (s,t)) :</span>
+<span id="L75"><a href="#L75">  75</a>     (model.classicalSuspension X).desuspendFirstPage s t a ∈</span>
+<span id="L76"><a href="#L76">  76</a>       (model.classicalTower.tower (X.obj model.auxiliary)).cycles r hr (s,t-1) := by</span>
+<span id="L77"><a href="#L77">  77</a>   let S := model.classicalSuspension X</span>
+<span id="L78"><a href="#L78">  78</a>   let T := model.classicalTower.tower (X.obj model.auxiliary)</span>
+<span id="L79"><a href="#L79">  79</a>   obtain ⟨c,hc⟩ := (raw_cycles_iff _ r hr s t a).mp ha</span>
+<span id="L80"><a href="#L80">  80</a>   let R := shiftFunctorComm Spectrum (1:ℤ) (1:ℤ)</span>
+<span id="L81"><a href="#L81">  81</a>   let e := c≫(S.tower (s+r)).hom⟦(1:ℤ)⟧&#x27;≫R.inv.app (T.stageAt (s+r))</span>
+<span id="L82"><a href="#L82">  82</a>   have he : e≫(T.mapAt (show s+1≤s+r by omega))⟦(1:ℤ)⟧&#x27;⟦(1:ℤ)⟧&#x27; =</span>
+<span id="L83"><a href="#L83">  83</a>       -(a≫(S.layer s).hom≫(HasFunctorialCofiber.cofibδ</span>
+<span id="L84"><a href="#L84">  84</a>         (T.mapAt (show s≤s+1 by omega)))⟦(1:ℤ)⟧&#x27;) := by</span>
+<span id="L85"><a href="#L85">  85</a>     dsimp only [e]</span>
+<span id="L86"><a href="#L86">  86</a>     simp only [Category.assoc]</span>
+<span id="L87"><a href="#L87">  87</a>     erw [←R.inv.naturality]</span>
+<span id="L88"><a href="#L88">  88</a>     simp only [Functor.comp_map]</span>
+<span id="L89"><a href="#L89">  89</a>     rw [←Functor.map_comp_assoc,S.tower_comm,Functor.map_comp]</span>
+<span id="L90"><a href="#L90">  90</a>     simp only [←Category.assoc]</span>
+<span id="L91"><a href="#L91">  91</a>     erw [hc]</span>
+<span id="L92"><a href="#L92">  92</a>     simp only [Category.assoc]</span>
+<span id="L93"><a href="#L93">  93</a>     have hs := S.layer_connecting s</span>
+<span id="L94"><a href="#L94">  94</a>     have hs&#x27; := congrArg (fun f=&gt;f≫R.inv.app (T.stageAt (s+1))) hs</span>
+<span id="L95"><a href="#L95">  95</a>     dsimp only [T,AbstractAdamsTower.layer] at hs&#x27;</span>
+<span id="L96"><a href="#L96">  96</a>     simp only [R,Category.assoc,Iso.hom_inv_id_app,Preadditive.neg_comp] at hs&#x27;</span>
+<span id="L97"><a href="#L97">  97</a>     erw [Category.comp_id] at hs&#x27;</span>
+<span id="L98"><a href="#L98">  98</a>     erw [hs&#x27;]</span>
+<span id="L99"><a href="#L99">  99</a>     simp only [Preadditive.comp_neg,neg_neg]</span>
+<span id="L100"><a href="#L100"> 100</a>     rfl</span>
+<span id="L101"><a href="#L101"> 101</a>   apply (raw_cycles_iff T r hr s (t-1) _).mpr</span>
+<span id="L102"><a href="#L102"> 102</a>   let j := eqToHom (congrArg (Sphere (C:=Spectrum)) (show (t-1)-s=(t-s)-1 by omega))</span>
+<span id="L103"><a href="#L103"> 103</a>   refine ⟨-(j≫AbstractAdamsTower.desuspend ((T.stageAt (s+r))⟦(1:ℤ)⟧) (t-s) e),?_⟩</span>
+<span id="L104"><a href="#L104"> 104</a>   rw [Preadditive.neg_comp,Category.assoc,←desuspend_postcompose,he,map_neg]</span>
+<span id="L105"><a href="#L105"> 105</a>   simp only [Preadditive.comp_neg,neg_neg]</span>
+<span id="L106"><a href="#L106"> 106</a>   rw [←Category.assoc a]</span>
+<span id="L107"><a href="#L107"> 107</a>   erw [desuspend_postcompose]</span>
+<span id="L108"><a href="#L108"> 108</a>   exact (Category.assoc _ _ _).symm</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> private theorem initial_class_cycle_iff (D : SSData (ModuleCat.{0} ℤ))</span>
+<span id="L111"><a href="#L111"> 111</a>     (n : WithTop ℕ) (z : (Subobject.underlying.obj (D.Z 0) : ModuleCat ℤ)) :</span>
+<span id="L112"><a href="#L112"> 112</a>     (∃ v : (Subobject.underlying.obj (D.Z n) : ModuleCat ℤ),</span>
+<span id="L113"><a href="#L113"> 113</a>       (Subobject.ofLE (D.Z n) (D.Z 0) (D.Z_anti bot_le) ≫ D.pageπ 0) v=D.pageπ 0 z) ↔</span>
+<span id="L114"><a href="#L114"> 114</a>       (D.Z 0).arrow z∈(ModuleCat.subobjectModule D.V) (D.Z n) := by</span>
+<span id="L115"><a href="#L115"> 115</a>   let i := Subobject.ofLE (D.Z n) (D.Z 0) (D.Z_anti bot_le)</span>
+<span id="L116"><a href="#L116"> 116</a>   constructor</span>
+<span id="L117"><a href="#L117"> 117</a>   · rintro ⟨v,hv⟩</span>
+<span id="L118"><a href="#L118"> 118</a>     have hz : D.pageπ 0 (z-i v)=0 := by</span>
+<span id="L119"><a href="#L119"> 119</a>       rw [map_sub]</span>
+<span id="L120"><a href="#L120"> 120</a>       exact sub_eq_zero.mpr hv.symm</span>
+<span id="L121"><a href="#L121"> 121</a>     have hb := (subobject_cokernel_π_eq_zero_iff (D.B 0) (D.Z 0) (D.B_le_Z 0) _).mp hz</span>
+<span id="L122"><a href="#L122"> 122</a>     have hb&#x27; : (D.Z 0).arrow (z-i v)∈(ModuleCat.subobjectModule D.V) (D.Z n) := (ModuleCat.subobjectModule D.V).monotone</span>
+<span id="L123"><a href="#L123"> 123</a>       ((D.B_mono le_top).trans ((D.B_le_Z ⊤).trans (D.Z_anti le_top))) hb</span>
+<span id="L124"><a href="#L124"> 124</a>     have hv&#x27; : (D.Z 0).arrow (i v)∈(ModuleCat.subobjectModule D.V) (D.Z n) := by</span>
+<span id="L125"><a href="#L125"> 125</a>       change (i≫(D.Z 0).arrow) v∈_</span>
+<span id="L126"><a href="#L126"> 126</a>       rw [Subobject.ofLE_arrow]</span>
+<span id="L127"><a href="#L127"> 127</a>       exact ⟨v,rfl⟩</span>
+<span id="L128"><a href="#L128"> 128</a>     have h := ((ModuleCat.subobjectModule D.V) (D.Z n)).add_mem hb&#x27; hv&#x27;</span>
+<span id="L129"><a href="#L129"> 129</a>     rw [map_sub,sub_add_cancel] at h</span>
+<span id="L130"><a href="#L130"> 130</a>     exact h</span>
+<span id="L131"><a href="#L131"> 131</a>   · rintro ⟨v,hv⟩</span>
+<span id="L132"><a href="#L132"> 132</a>     refine ⟨v,?_⟩</span>
+<span id="L133"><a href="#L133"> 133</a>     have he : i v=z := by</span>
+<span id="L134"><a href="#L134"> 134</a>       apply (ModuleCat.mono_iff_injective (D.Z 0).arrow).mp inferInstance</span>
+<span id="L135"><a href="#L135"> 135</a>       change (i≫(D.Z 0).arrow) v=(D.Z 0).arrow z</span>
+<span id="L136"><a href="#L136"> 136</a>       rw [Subobject.ofLE_arrow]</span>
+<span id="L137"><a href="#L137"> 137</a>       exact hv</span>
+<span id="L138"><a href="#L138"> 138</a>     change D.pageπ 0 (i v)=D.pageπ 0 z</span>
+<span id="L139"><a href="#L139"> 139</a>     rw [he]</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> private theorem class_cycle_iff (X : ClassicalObject)</span>
+<span id="L142"><a href="#L142"> 142</a>     (c : ℤ) (p : ℤ×ℤ)</span>
+<span id="L143"><a href="#L143"> 143</a>     (z : (Subobject.underlying.obj (((model.classical.obj (X.obj model.auxiliary)).ssData p).Z 0) : ModuleCat ℤ)) :</span>
+<span id="L144"><a href="#L144"> 144</a>     cycleLabel model X 0 p z∈cycles model X c p ↔</span>
+<span id="L145"><a href="#L145"> 145</a>       ((((model.classicalTower.sequence (X.obj model.auxiliary)).ambient p).hom</span>
+<span id="L146"><a href="#L146"> 146</a>         ((((model.classical.obj (X.obj model.auxiliary)).ssData p).Z 0).arrow z)).val)∈</span>
+<span id="L147"><a href="#L147"> 147</a>           (model.classicalTower.tower (X.obj model.auxiliary)).cycles ((c-1).toNat+2) (by omega) p := by</span>
+<span id="L148"><a href="#L148"> 148</a>   let D := (model.classical.obj (X.obj model.auxiliary)).ssData p</span>
+<span id="L149"><a href="#L149"> 149</a>   rw [←(model.classicalTower.sequence (X.obj model.auxiliary)).cycles p (c-1).toNat]</span>
+<span id="L150"><a href="#L150"> 150</a>   rw [←initial_class_cycle_iff D (↑(c-1).toNat) z]</span>
+<span id="L151"><a href="#L151"> 151</a>   change (∃v, cycleLabel model X (↑(c-1).toNat) p v=cycleLabel model X 0 p z) ↔ _</span>
+<span id="L152"><a href="#L152"> 152</a>   simp only [cycleLabel,Subobject.ofLE_refl,Category.id_comp]</span>
+<span id="L153"><a href="#L153"> 153</a>   constructor</span>
+<span id="L154"><a href="#L154"> 154</a>   · rintro ⟨v,hv⟩</span>
+<span id="L155"><a href="#L155"> 155</a>     refine ⟨v,?_⟩</span>
+<span id="L156"><a href="#L156"> 156</a>     apply (ModuleCat.mono_iff_injective (eqToHom _)).mp inferInstance</span>
+<span id="L157"><a href="#L157"> 157</a>     exact hv</span>
+<span id="L158"><a href="#L158"> 158</a>   · rintro ⟨v,hv⟩</span>
+<span id="L159"><a href="#L159"> 159</a>     refine ⟨v,?_⟩</span>
+<span id="L160"><a href="#L160"> 160</a>     exact congrArg (fun a=&gt;(eqToHom _ : D.page 0 ⟶ (model.classical.obj (X.obj model.auxiliary)).Page 2 p) a) hv</span>
+<span id="L161"><a href="#L161"> 161</a> </span>
+<span id="L162"><a href="#L162"> 162</a> private theorem desuspendsClass_isCycle (X : ClassicalObject)</span>
+<span id="L163"><a href="#L163"> 163</a>     (level s t : ℤ)</span>
+<span id="L164"><a href="#L164"> 164</a>     (sx : (model.classical.obj ((X.obj model.auxiliary)⟦(1:ℤ)⟧)).Page 2 (s,t))</span>
+<span id="L165"><a href="#L165"> 165</a>     (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t-1))</span>
+<span id="L166"><a href="#L166"> 166</a>     (h : (model.classicalSuspension X).DesuspendsClass s t sx x)</span>
+<span id="L167"><a href="#L167"> 167</a>     (hc : IsCycle model (.shift 1 X) level (s,t) sx) :</span>
+<span id="L168"><a href="#L168"> 168</a>     IsCycle model X level (s,t-1) x := by</span>
+<span id="L169"><a href="#L169"> 169</a>   obtain ⟨a,b,ha,hb,hab⟩ := h</span>
+<span id="L170"><a href="#L170"> 170</a>   refine ⟨hc.1,?_⟩</span>
+<span id="L171"><a href="#L171"> 171</a>   have ha&#x27; : cycleLabel model (.shift 1 X) 0 (s,t) a=sx := by</span>
+<span id="L172"><a href="#L172"> 172</a>     simpa only [cycleLabel,Subobject.ofLE_refl,Category.id_comp,ClassicalObject.obj] using ha</span>
+<span id="L173"><a href="#L173"> 173</a>   have hb&#x27; : cycleLabel model X 0 (s,t-1) b=x := by</span>
+<span id="L174"><a href="#L174"> 174</a>     simpa only [cycleLabel,Subobject.ofLE_refl,Category.id_comp] using hb</span>
+<span id="L175"><a href="#L175"> 175</a>   rw [←hb&#x27;]</span>
+<span id="L176"><a href="#L176"> 176</a>   apply (class_cycle_iff X level (s,t-1) b).mpr</span>
+<span id="L177"><a href="#L177"> 177</a>   rw [←hab]</span>
+<span id="L178"><a href="#L178"> 178</a>   exact desuspend_mem_raw_cycles X ((level-1).toNat+2) (by omega) s t _</span>
+<span id="L179"><a href="#L179"> 179</a>     ((class_cycle_iff (.shift 1 X) level (s,t) a).mp (ha&#x27;.symm ▸ hc.2))</span>
+<span id="L180"><a href="#L180"> 180</a> </span>
+<span id="L181"><a href="#L181"> 181</a> end</span>
+<span id="L182"><a href="#L182"> 182</a> end KIP126.Main.Internal.NuThree</span></pre>

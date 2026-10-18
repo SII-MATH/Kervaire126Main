@@ -1,0 +1,69 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/AlphaOne/PageConsequences.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/AlphaOne/PageConsequences.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.AlphaOne.LastDifferential</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! All finite-differential and rho-target consequences in</span>
+<span id="L6"><a href="#L6">   6</a> AlphaOne.lean:75–168, bbac1fc05843 (MIT), on the fixed actual quotients. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.Internal.AlphaOne</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Core.SpectralSequence KIP126.Main.SectionSeven KIP126.Kervaire.Route</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Computation.Standard</span>
+<span id="L14"><a href="#L14">  14</a> noncomputable section</span>
+<span id="L15"><a href="#L15">  15</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L16"><a href="#L16">  16</a> set_option maxRecDepth 10000</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> private theorem ninth_quotient_error_d3 :</span>
+<span id="L19"><a href="#L19">  19</a>     FiniteNonzeroDifferential 9 3 13 137 16 139 6 8</span>
+<span id="L20"><a href="#L20">  20</a>       (product h4 (atom .x_109_12)) (product h1 (atom .x_122_15_2)) :=</span>
+<span id="L21"><a href="#L21">  21</a>   finite_last_nonzero 9 3 6 (by decide) (by decide) 13 137 _ _ d3_h4_x109_12</span>
+<span id="L22"><a href="#L22">  22</a> </span>
+<span id="L23"><a href="#L23">  23</a> private theorem eleventh_quotient_candidate_d7 :</span>
+<span id="L24"><a href="#L24">  24</a>     FiniteNonzeroDifferential 11 7 11 134 18 140 4 10</span>
+<span id="L25"><a href="#L25">  25</a>       d7Source (product h1 (atom .x_121_17)) :=</span>
+<span id="L26"><a href="#L26">  26</a>   finite_last_nonzero 11 7 4 (by decide) (by decide) 11 134 _ _ d7_source</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> private theorem eleventh_quotient_candidate_d3 :</span>
+<span id="L29"><a href="#L29">  29</a>     FiniteNonzeroDifferential 11 3 15 138 18 140 8 10</span>
+<span id="L30"><a href="#L30">  30</a>       (product h0Square (atom .x_123_13_2)) (product h0Square (atom .x_122_16)) :=</span>
+<span id="L31"><a href="#L31">  31</a>   finite_last_nonzero 11 3 8 (by decide) (by decide) 15 138 _ _ d3_h0Square_x123_13_2</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> private theorem sphere_quotient_page_zero (q : ℕ) (hq : 0&lt;q)</span>
+<span id="L34"><a href="#L34">  34</a>     (r s t w : ℤ) (hr : 2≤r) (hwindow : t&lt;w ∨ (q:ℤ)≤t-w) :</span>
+<span id="L35"><a href="#L35">  35</a>     Subsingleton ((model.family.quotient (S_0_0 : SyntheticSpectrum) q).Page r (s,t,w)) := by</span>
+<span id="L36"><a href="#L36">  36</a>   let Q := model.quotients.functoriality.functor q</span>
+<span id="L37"><a href="#L37">  37</a>   let e := model.family.functor.mapIso (Q.mapIso model.nu.unitIso)</span>
+<span id="L38"><a href="#L38">  38</a>   have hz := KIP126.Literature.Standard.finite_quotient_vanishing .sphere q hq r hr s t w (by omega)</span>
+<span id="L39"><a href="#L39">  39</a>   let i := e.inv.pageMap r (s,t,w)</span>
+<span id="L40"><a href="#L40">  40</a>   let j := e.hom.pageMap r (s,t,w)</span>
+<span id="L41"><a href="#L41">  41</a>   have hij : i ≫ j=𝟙 _ := by</span>
+<span id="L42"><a href="#L42">  42</a>     dsimp only [i,j]</span>
+<span id="L43"><a href="#L43">  43</a>     rw [←SpectralSequenceMorphism.pageMap_comp,e.inv_hom_id,SpectralSequenceMorphism.pageMap_id]</span>
+<span id="L44"><a href="#L44">  44</a>   have hi : Function.Injective i := by</span>
+<span id="L45"><a href="#L45">  45</a>     intro x y hxy</span>
+<span id="L46"><a href="#L46">  46</a>     have h := congrArg j hxy</span>
+<span id="L47"><a href="#L47">  47</a>     simpa only [←CategoryTheory.comp_apply,hij,ModuleCat.id_apply] using h</span>
+<span id="L48"><a href="#L48">  48</a>   have hs : Subsingleton (((model.family.functor.obj</span>
+<span id="L49"><a href="#L49">  49</a>       (XModLambdaN (model.nu.functor.obj SphereSpectrum) q)).Page r (s,t,w)) : ModuleCat ℤ) := by</span>
+<span id="L50"><a href="#L50">  50</a>     have hh := ModuleCat.isZero_iff_subsingleton.mp hz</span>
+<span id="L51"><a href="#L51">  51</a>     simpa only [Page,model.family.firstPage,SyntheticAdamsFamily.quotient,</span>
+<span id="L52"><a href="#L52">  52</a>       SyntheticAdamsFamily.obj,SyntheticAdamsSS.Page,ClassicalObject.obj] using hh</span>
+<span id="L53"><a href="#L53">  53</a>   have ht : Subsingleton (((model.family.functor.obj</span>
+<span id="L54"><a href="#L54">  54</a>       (XModLambdaN (S_0_0 : SyntheticSpectrum) q)).Page r (s,t,w)) : ModuleCat ℤ) :=</span>
+<span id="L55"><a href="#L55">  55</a>     ⟨fun x y =&gt; hi (hs.elim _ _)⟩</span>
+<span id="L56"><a href="#L56">  56</a>   simpa only [Page,model.family.firstPage,SyntheticAdamsFamily.quotient,</span>
+<span id="L57"><a href="#L57">  57</a>     SyntheticAdamsFamily.obj,SyntheticAdamsSS.Page,ClassicalObject.obj] using ht</span>
+<span id="L58"><a href="#L58">  58</a> </span>
+<span id="L59"><a href="#L59">  59</a> private theorem ninth_quotient_candidate_target_zero (r : ℤ) (hr : 2≤r) :</span>
+<span id="L60"><a href="#L60">  60</a>     Subsingleton ((model.family.quotient (S_0_0 : SyntheticSpectrum) 9).Page r (18,140,130)) :=</span>
+<span id="L61"><a href="#L61">  61</a>   sphere_quotient_page_zero 9 (by decide) r 18 140 130 hr (Or.inr (by decide))</span>
+<span id="L62"><a href="#L62">  62</a> </span>
+<span id="L63"><a href="#L63">  63</a> private theorem rho_to_ninth_kills_candidate_target (r : ℤ) (hr : 2≤r)</span>
+<span id="L64"><a href="#L64">  64</a>     (y : (model.family.quotient (S_0_0 : SyntheticSpectrum) 11).Page r (18,140,130)) :</span>
+<span id="L65"><a href="#L65">  65</a>     familyPageMap model.family ((model.quotients.tower S_0_0).rho 9 11 (by decide)) r (18,140,130) y=0 :=</span>
+<span id="L66"><a href="#L66">  66</a>   (ninth_quotient_candidate_target_zero r hr).elim _ _</span>
+<span id="L67"><a href="#L67">  67</a> end</span>
+<span id="L68"><a href="#L68">  68</a> end KIP126.Main.Internal.AlphaOne</span>
+<span id="L69"><a href="#L69">  69</a> end</span></pre>

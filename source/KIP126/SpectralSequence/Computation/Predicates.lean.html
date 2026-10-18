@@ -1,0 +1,103 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/Computation/Predicates.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/Computation/Predicates.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.SpectralSequence.Permanence.Predicates</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.SpectralSequence.Permanence.Predicates</span>
+<span id="L5"><a href="#L5">   5</a> </span>
+<span id="L6"><a href="#L6">   6</a> @[expose] section</span>
+<span id="L7"><a href="#L7">   7</a> </span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Core.SpectralSequence</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory</span>
+<span id="L10"><a href="#L10">  10</a> universe u v</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-- Kernel membership for an actual page element, with no survival claim. -/</span>
+<span id="L13"><a href="#L13">  13</a> public def IsPageCycle {R : Type u} [Ring R]</span>
+<span id="L14"><a href="#L14">  14</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L15"><a href="#L15">  15</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page r p) : Prop := E.d r p x = 0</span>
+<span id="L16"><a href="#L16">  16</a> </span>
+<span id="L17"><a href="#L17">  17</a> /-- Membership in the image of the actual page differential with source</span>
+<span id="L18"><a href="#L18">  18</a> degree `p`. The target degree is `p + E.diffDeg r`. Zero is allowed: this is</span>
+<span id="L19"><a href="#L19">  19</a> boundary membership, not the assertion of a nonzero incoming hit. -/</span>
+<span id="L20"><a href="#L20">  20</a> public def IsPageBoundary {R : Type u} [Ring R]</span>
+<span id="L21"><a href="#L21">  21</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L22"><a href="#L22">  22</a>     (r : ℤ) (p : ℤ × ℤ) (y : E.Page r (p + E.diffDeg r)) : Prop :=</span>
+<span id="L23"><a href="#L23">  23</a>   ∃ x : E.Page r p, E.d r p x = y</span>
+<span id="L24"><a href="#L24">  24</a> </span>
+<span id="L25"><a href="#L25">  25</a> /-- A later-page class represented by the given E₂ class. This is not a map</span>
+<span id="L26"><a href="#L26">  26</a> from all of E₂ to Eᵣ. A common cycle representative is required. -/</span>
+<span id="L27"><a href="#L27">  27</a> public def RepresentsOnPage {R : Type u} [Ring R]</span>
+<span id="L28"><a href="#L28">  28</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L29"><a href="#L29">  29</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) (y : E.Page r p) : Prop :=</span>
+<span id="L30"><a href="#L30">  30</a>   ∃ hr : 2 ≤ r,</span>
+<span id="L31"><a href="#L31">  31</a>     let D := E.ssData p</span>
+<span id="L32"><a href="#L32">  32</a>     let n : WithTop ℕ := ↑(2 - E.r₀).toNat</span>
+<span id="L33"><a href="#L33">  33</a>     let m : WithTop ℕ := ↑(r - E.r₀).toNat</span>
+<span id="L34"><a href="#L34">  34</a>     ∃ z : (Subobject.underlying.obj (D.Z m) : ModuleCat R),</span>
+<span id="L35"><a href="#L35">  35</a>       (Subobject.ofLE (D.Z m) (D.Z n) (D.Z_anti (by</span>
+<span id="L36"><a href="#L36">  36</a>         change (↑(2 - E.r₀).toNat : WithTop ℕ) ≤ ↑(r - E.r₀).toNat</span>
+<span id="L37"><a href="#L37">  37</a>         exact_mod_cast (show (2 - E.r₀).toNat ≤ (r - E.r₀).toNat by omega))) ≫</span>
+<span id="L38"><a href="#L38">  38</a>         D.pageπ n) z = x ∧ D.pageπ m z = y</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> /-- Survival *to* Eᵣ means a nonzero class there, not that dᵣ vanishes. -/</span>
+<span id="L41"><a href="#L41">  41</a> public def SurvivesTo {R : Type u} [Ring R]</span>
+<span id="L42"><a href="#L42">  42</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L43"><a href="#L43">  43</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=</span>
+<span id="L44"><a href="#L44">  44</a>   ∃ y : E.Page r p, RepresentsOnPage E r p x y ∧ y ≠ 0</span>
+<span id="L45"><a href="#L45">  45</a> </span>
+<span id="L46"><a href="#L46">  46</a> /-- No nonzero continuation is an incoming differential target. This alone</span>
+<span id="L47"><a href="#L47">  47</a> does not exclude an outgoing differential on x. -/</span>
+<span id="L48"><a href="#L48">  48</a> public def NeverHit {R : Type u} [Ring R]</span>
+<span id="L49"><a href="#L49">  49</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L50"><a href="#L50">  50</a>     (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=</span>
+<span id="L51"><a href="#L51">  51</a>   ∀ (r : ℤ) (_ : 2 ≤ r) (q : ℤ × ℤ) (h : q + E.diffDeg r = p)</span>
+<span id="L52"><a href="#L52">  52</a>     (y : E.Page r p), RepresentsOnPage E r p x y → y ≠ 0 →</span>
+<span id="L53"><a href="#L53">  53</a>     ∀ z : E.Page r q, (E.d r q ≫ eqToHom (congrArg (E.Page r) h)) z ≠ y</span>
+<span id="L54"><a href="#L54">  54</a> </span>
+<span id="L55"><a href="#L55">  55</a> /-- Vanishing on all continuations of a fixed E₂ class on one page.</span>
+<span id="L56"><a href="#L56">  56</a> This predicate alone does not assert that any continuation exists. -/</span>
+<span id="L57"><a href="#L57">  57</a> public def DifferentialVanishesOn {R : Type u} [Ring R]</span>
+<span id="L58"><a href="#L58">  58</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L59"><a href="#L59">  59</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=</span>
+<span id="L60"><a href="#L60">  60</a>   ∀ xr : E.Page r p, RepresentsOnPage E r p x xr → E.d r p xr = 0</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> /-- Every differential on a continuation is zero or represented by the</span>
+<span id="L63"><a href="#L63">  63</a> specified target. The nonzero alternative is not assumed to occur. -/</span>
+<span id="L64"><a href="#L64">  64</a> public def DifferentialTargets {R : Type u} [Ring R]</span>
+<span id="L65"><a href="#L65">  65</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L66"><a href="#L66">  66</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p)</span>
+<span id="L67"><a href="#L67">  67</a>     (y : E.Page 2 (p + E.diffDeg r)) : Prop :=</span>
+<span id="L68"><a href="#L68">  68</a>   ∀ xr : E.Page r p, RepresentsOnPage E r p x xr →</span>
+<span id="L69"><a href="#L69">  69</a>     E.d r p xr = 0 ∨</span>
+<span id="L70"><a href="#L70">  70</a>       ∃ yr : E.Page r (p + E.diffDeg r),</span>
+<span id="L71"><a href="#L71">  71</a>         RepresentsOnPage E r (p + E.diffDeg r) y yr ∧ E.d r p xr = yr</span>
+<span id="L72"><a href="#L72">  72</a> </span>
+<span id="L73"><a href="#L73">  73</a> /-- An equation for the existing differential between specified E₂ labels.</span>
+<span id="L74"><a href="#L74">  74</a> Both labels must admit a common-cycle representative on page r. Zero targets</span>
+<span id="L75"><a href="#L75">  75</a> are allowed; later-page nonvanishing is the stronger predicate below.</span>
+<span id="L76"><a href="#L76">  76</a> Ported from the useful local-differential interface in KIPBase. -/</span>
+<span id="L77"><a href="#L77">  77</a> public def HasDifferential {R : Type u} [Ring R]</span>
+<span id="L78"><a href="#L78">  78</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L79"><a href="#L79">  79</a>     (r : ℤ) (p q : ℤ × ℤ) (x : E.Page 2 p) (y : E.Page 2 q) : Prop :=</span>
+<span id="L80"><a href="#L80">  80</a>   ∃ h : p + E.diffDeg r = q,</span>
+<span id="L81"><a href="#L81">  81</a>     ∃ (xr : E.Page r p) (yr : E.Page r q),</span>
+<span id="L82"><a href="#L82">  82</a>       RepresentsOnPage E r p x xr ∧ RepresentsOnPage E r q y yr ∧</span>
+<span id="L83"><a href="#L83">  83</a>         (E.d r p ≫ eqToHom (congrArg (E.Page r) h)) xr = yr</span>
+<span id="L84"><a href="#L84">  84</a> </span>
+<span id="L85"><a href="#L85">  85</a> /-- A nonzero differential between specified E₂ representatives, with both</span>
+<span id="L86"><a href="#L86">  86</a> classes lifted to the actual r-th page and the degree transport made explicit. -/</span>
+<span id="L87"><a href="#L87">  87</a> public def HasNonzeroDifferential {R : Type u} [Ring R]</span>
+<span id="L88"><a href="#L88">  88</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L89"><a href="#L89">  89</a>     (r : ℤ) (p q : ℤ × ℤ) (x : E.Page 2 p) (y : E.Page 2 q) : Prop :=</span>
+<span id="L90"><a href="#L90">  90</a>   ∃ h : p + E.diffDeg r = q,</span>
+<span id="L91"><a href="#L91">  91</a>     ∃ (xr : E.Page r p) (yr : E.Page r q),</span>
+<span id="L92"><a href="#L92">  92</a>       RepresentsOnPage E r p x xr ∧ RepresentsOnPage E r q y yr ∧</span>
+<span id="L93"><a href="#L93">  93</a>         (E.d r p ≫ eqToHom (congrArg (E.Page r) h)) xr = yr ∧ yr ≠ 0</span>
+<span id="L94"><a href="#L94">  94</a> </span>
+<span id="L95"><a href="#L95">  95</a> /-- Some differential hits a nonzero r-page continuation of x. -/</span>
+<span id="L96"><a href="#L96">  96</a> public def HitOnPage {R : Type u} [Ring R]</span>
+<span id="L97"><a href="#L97">  97</a>     (E : SpectralSequence (ModuleCat.{v} R) (ℤ × ℤ))</span>
+<span id="L98"><a href="#L98">  98</a>     (r : ℤ) (p : ℤ × ℤ) (x : E.Page 2 p) : Prop :=</span>
+<span id="L99"><a href="#L99">  99</a>   ∃ (q : ℤ × ℤ) (h : q + E.diffDeg r = p) (z : E.Page r q)</span>
+<span id="L100"><a href="#L100"> 100</a>     (y : E.Page r p), RepresentsOnPage E r p x y ∧ y ≠ 0 ∧</span>
+<span id="L101"><a href="#L101"> 101</a>       (E.d r q ≫ eqToHom (congrArg (E.Page r) h)) z = y</span>
+<span id="L102"><a href="#L102"> 102</a> </span>
+<span id="L103"><a href="#L103"> 103</a> end KIP126.Core.SpectralSequence</span></pre>

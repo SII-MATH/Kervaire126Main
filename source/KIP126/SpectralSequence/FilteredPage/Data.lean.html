@@ -1,0 +1,33 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredPage/Data.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredPage/Data.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.Data</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-!</span>
+<span id="L8"><a href="#L8">   8</a> # Quotient pages of a filtered complex</span>
+<span id="L9"><a href="#L9">   9</a> </span>
+<span id="L10"><a href="#L10">  10</a> The cycle and boundary subobjects determine these objects directly. This</span>
+<span id="L11"><a href="#L11">  11</a> module adds no alternative spectral-sequence structure.</span>
+<span id="L12"><a href="#L12">  12</a> -/</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> namespace KIP126.Core.SpectralSequence.FilteredComplex</span>
+<span id="L15"><a href="#L15">  15</a> </span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L17"><a href="#L17">  17</a> </span>
+<span id="L18"><a href="#L18">  18</a> universe u v</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L21"><a href="#L21">  21</a> </span>
+<span id="L22"><a href="#L22">  22</a> /-- The quotient of page cycles by page boundaries, including the infinity page. -/</span>
+<span id="L23"><a href="#L23">  23</a> noncomputable def pageObj (FC : FilteredComplex C) (s k : ℤ) (r : WithTop ℕ) : C :=</span>
+<span id="L24"><a href="#L24">  24</a>   cokernel (Subobject.ofLE (FC.boundarySubobject s k r)</span>
+<span id="L25"><a href="#L25">  25</a>     (FC.cycleSubobject s k r) (FC.B_le_Z_aux s k r))</span>
+<span id="L26"><a href="#L26">  26</a> </span>
+<span id="L27"><a href="#L27">  27</a> /-- Projection from the cycle subobject to its quotient page. -/</span>
+<span id="L28"><a href="#L28">  28</a> noncomputable def pageπ (FC : FilteredComplex C) (s k : ℤ) (r : WithTop ℕ) :</span>
+<span id="L29"><a href="#L29">  29</a>     Subobject.underlying.obj (FC.cycleSubobject s k r) ⟶ FC.pageObj s k r :=</span>
+<span id="L30"><a href="#L30">  30</a>   cokernel.π (Subobject.ofLE (FC.boundarySubobject s k r)</span>
+<span id="L31"><a href="#L31">  31</a>     (FC.cycleSubobject s k r) (FC.B_le_Z_aux s k r))</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> end KIP126.Core.SpectralSequence.FilteredComplex</span></pre>

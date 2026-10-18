@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsCalculations/AdamsTwoLine.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsCalculations/AdamsTwoLine.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.E2Computation</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! The d₂-stage analysis, adapted from the first step of the proof of</span>
+<span id="L6"><a href="#L6">   6</a> AimPaper Corollary 1.5 using Adams&#x27;s one-line differentials, Lin&#x27;s Ext⁴</span>
+<span id="L7"><a href="#L7">   7</a> calculation, and Leibniz. Squares have no upper index cutoff at this stage;</span>
+<span id="L8"><a href="#L8">   8</a> HHR is a separate later-page input. -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.AdamsCalculations</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.Classical.Adams KIP126.Core.SpectralSequence</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L13"><a href="#L13">  13</a> </span>
+<span id="L14"><a href="#L14">  14</a> public def TwoLineD2Candidate (i j : ℕ) : Prop :=</span>
+<span id="L15"><a href="#L15">  15</a>   (i = 0 ∧ j = 2) ∨ (i = 0 ∧ j = 3) ∨ (i = 2 ∧ j = 4) ∨</span>
+<span id="L16"><a href="#L16">  16</a>   (i = 1 ∧ 3 ≤ j) ∨ i = j ∨</span>
+<span id="L17"><a href="#L17">  17</a>   (i = 2 ∧ j = 5) ∨ (i = 3 ∧ j = 5) ∨ (i = 3 ∧ j = 6) ∨</span>
+<span id="L18"><a href="#L18">  18</a>   (i = 0 ∧ j = 4)</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- Only E₃ reachability is assumed, with E₂ nonzero and ordered indices.</span>
+<span id="L21"><a href="#L21">  21</a> This contains neither the later excluding differentials nor HHR&#x27;s cutoff. -/</span>
+<span id="L22"><a href="#L22">  22</a> public theorem two_line_d2_candidates (i j : ℕ) (hij : i ≤ j)</span>
+<span id="L23"><a href="#L23">  23</a>     (hne : KIP126.Literature.Standard.hiProduct i j ≠ 0)</span>
+<span id="L24"><a href="#L24">  24</a>     (hreach : ReachesPage model.classical.sphere 3 (hiDegree i + hiDegree j)</span>
+<span id="L25"><a href="#L25">  25</a>       (KIP126.Literature.Standard.hiProduct i j)) : TwoLineD2Candidate i j := by</span>
+<span id="L26"><a href="#L26">  26</a>   sorry</span>
+<span id="L27"><a href="#L27">  27</a> </span>
+<span id="L28"><a href="#L28">  28</a> end KIP126.AdamsCalculations</span></pre>

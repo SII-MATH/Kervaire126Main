@@ -1,0 +1,31 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/SpectralSequence/FilteredComplex/Solutions/Obstruction/Proofs.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/SpectralSequence/FilteredComplex/Solutions/Obstruction/Proofs.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.SpectralSequence.FilteredComplex.Solutions.Obstruction.Data</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> namespace KIP126.Core.SpectralSequence.FilteredComplex.Solutions</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory</span>
+<span id="L10"><a href="#L10">  10</a> universe u v</span>
+<span id="L11"><a href="#L11">  11</a> variable {C : Type u} [Category.{v} C] [Abelian C]</span>
+<span id="L12"><a href="#L12">  12</a>   {FC GD : FilteredComplex C} {T : C} {r s k : ℤ}</span>
+<span id="L13"><a href="#L13">  13</a>   {x : T ⟶ FC.assocGraded s k} {y : T ⟶ FC.assocGraded (s + r) (k - 1)}</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> /-- Exactness at the actual earlier solution fiber, with no nonemptiness</span>
+<span id="L16"><a href="#L16">  16</a> assumption on the later fiber. This is not yet a crossing/loss certificate. -/</span>
+<span id="L17"><a href="#L17">  17</a> theorem obstruction_eq_zero_iff (f : Morphism FC GD)</span>
+<span id="L18"><a href="#L18">  18</a>     (a : Fiber GD r s k (x ≫ f.associatedGradedMap s k)</span>
+<span id="L19"><a href="#L19">  19</a>       (y ≫ f.associatedGradedMap (s + r) (k - 1))) :</span>
+<span id="L20"><a href="#L20">  20</a>     obstruction f x y a = 0 ↔ ∃ b : Fiber FC r s k x y, restrict f b = a := by</span>
+<span id="L21"><a href="#L21">  21</a>   change QuotientAddGroup.mk ((x, y, 0), a.val) = 0 ↔ _</span>
+<span id="L22"><a href="#L22">  22</a>   erw [QuotientAddGroup.eq_zero_iff]</span>
+<span id="L23"><a href="#L23">  23</a>   constructor</span>
+<span id="L24"><a href="#L24">  24</a>   · rintro ⟨z, hz⟩</span>
+<span id="L25"><a href="#L25">  25</a>     have he : equation FC T r s k z = (x, y, 0) := congrArg Prod.fst hz</span>
+<span id="L26"><a href="#L26">  26</a>     have hm : representativesMap f T r s k z = a.val := congrArg Prod.snd hz</span>
+<span id="L27"><a href="#L27">  27</a>     exact ⟨⟨z, he⟩, Subtype.ext hm⟩</span>
+<span id="L28"><a href="#L28">  28</a>   · rintro ⟨b, hb⟩</span>
+<span id="L29"><a href="#L29">  29</a>     exact ⟨b.val, Prod.ext b.property (congrArg Subtype.val hb)⟩</span>
+<span id="L30"><a href="#L30">  30</a> </span>
+<span id="L31"><a href="#L31">  31</a> end KIP126.Core.SpectralSequence.FilteredComplex.Solutions</span></pre>

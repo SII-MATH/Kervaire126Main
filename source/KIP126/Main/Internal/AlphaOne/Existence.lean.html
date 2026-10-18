@@ -1,0 +1,95 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/AlphaOne/Existence.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/AlphaOne/Existence.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.Predicates</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.SectionSeven.AlphaOne</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.AlphaOne.Layers</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.AlphaOne.Filtration</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.AlphaOne.Corrections</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.AlphaOne.ErrorFiltration</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.AlphaOne.Classical</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.Internal.Selected.ThetaFrames</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> /-! The original constructive assembly for Lemma x1239,</span>
+<span id="L12"><a href="#L12">  12</a> AlphaOne/Existence.lean:2162–2245 and AlphaOne.lean:225–304,</span>
+<span id="L13"><a href="#L13">  13</a> bbac1fc05843 (MIT). All source computations and external results are called</span>
+<span id="L14"><a href="#L14">  14</a> on the same fixed system. No new paper premise is introduced. -/</span>
+<span id="L15"><a href="#L15">  15</a> @[expose] section</span>
+<span id="L16"><a href="#L16">  16</a> namespace KIP126.Main.Internal.AlphaOne</span>
+<span id="L17"><a href="#L17">  17</a> open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Core.SpectralSequence KIP126.Main.SectionSeven KIP126.Kervaire.Route</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.ProofTools.Operations KIP126.Main.Internal</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Computation.Standard (U V correction)</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.Literature.Standard (eta syntheticH0)</span>
+<span id="L24"><a href="#L24">  24</a> noncomputable section</span>
+<span id="L25"><a href="#L25">  25</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L26"><a href="#L26">  26</a> set_option maxRecDepth 10000</span>
+<span id="L27"><a href="#L27">  27</a> set_option maxHeartbeats 800000</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> private theorem theta5_square_filtration_ten</span>
+<span id="L30"><a href="#L30">  30</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L31"><a href="#L31">  31</a>     FiltrationAtLeast model.syntheticTower 10 (sphereProduct theta theta) :=</span>
+<span id="L32"><a href="#L32">  32</a>   Selected.stem124_weight128_filtration_ten _</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> private theorem theta5_square_three_cases</span>
+<span id="L35"><a href="#L35">  35</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :</span>
+<span id="L36"><a href="#L36">  36</a>     Theta5SquareNonzeroDetectionAt theta ∨ SphereDetected 13 137 9 correction (sphereProduct theta theta) ∨</span>
+<span id="L37"><a href="#L37">  37</a>       ∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum), lambdaMultiply 10 a=sphereProduct theta theta :=</span>
+<span id="L38"><a href="#L38">  38</a>   Selected.theta_three_cases theta</span>
+<span id="L39"><a href="#L39">  39</a> </span>
+<span id="L40"><a href="#L40">  40</a> private theorem ninth_quotient_stem123_weight130_filtration16_zero</span>
+<span id="L41"><a href="#L41">  41</a>     (a : BiHom 123 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))</span>
+<span id="L42"><a href="#L42">  42</a>     (ha : FiltrationAtLeast model.syntheticTower 16 a) : a=0 :=</span>
+<span id="L43"><a href="#L43">  43</a>   sphere_quotient_high_filtration_zero 9 (by decide) 123 130 16 (by decide) a ha</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> private theorem alpha_one_h0_filtration_seventeen</span>
+<span id="L46"><a href="#L46">  46</a>     (a : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))</span>
+<span id="L47"><a href="#L47">  47</a>     (ha : FiniteDetected 11 (by decide) 9 132 0 V a) :</span>
+<span id="L48"><a href="#L48">  48</a>     FiltrationAtLeast model.syntheticTower 17 (lambdaMultiply 3 (sphereAction syntheticH0 a)) :=</span>
+<span id="L49"><a href="#L49">  49</a>   alpha_h0_filtration_from_finite_window syntheticH0 V a ha</span>
+<span id="L50"><a href="#L50">  50</a> </span>
+<span id="L51"><a href="#L51">  51</a> private theorem alpha_one_exists :</span>
+<span id="L52"><a href="#L52">  52</a>     ∃ a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11), AlphaOneProperties a11 := by</span>
+<span id="L53"><a href="#L53">  53</a>   obtain ⟨a,ha11,ha9⟩ := alpha_one_detected_pair V KIP126.Computation.Standard.v_to_e12</span>
+<span id="L54"><a href="#L54">  54</a>   have hpc : IsPermanentCycle model.classical.sphere (13,137) correction := by</span>
+<span id="L55"><a href="#L55">  55</a>     obtain ⟨z,hz,_⟩ := KIP126.Computation.Standard.correction_permanent</span>
+<span id="L56"><a href="#L56">  56</a>     exact ⟨z,hz⟩</span>
+<span id="L57"><a href="#L57">  57</a>   obtain ⟨hp14,hp15⟩ := full_staircase_high_cycles</span>
+<span id="L58"><a href="#L58">  58</a>   obtain ⟨c13,hc13⟩ := sphere_permanent_first_quotient_lift 13 137 correction hpc</span>
+<span id="L59"><a href="#L59">  59</a>   obtain ⟨c14,hc14⟩ := sphere_permanent_first_quotient_lift 14 138 _ hp14</span>
+<span id="L60"><a href="#L60">  60</a>   obtain ⟨c15,hc15⟩ := sphere_permanent_first_quotient_lift 15 139 _ hp15</span>
+<span id="L61"><a href="#L61">  61</a>   obtain ⟨b,hb⟩ := eta_correction_lambda_divisible eta c13 correction</span>
+<span id="L62"><a href="#L62">  62</a>     KIP126.Literature.Standard.eta_label hc13 KIP126.Computation.Standard.h1_correction_zero</span>
+<span id="L63"><a href="#L63">  63</a>   have hU : U∈KIP126.Literature.cycles model .sphere 8 (10,134) := by</span>
+<span id="L64"><a href="#L64">  64</a>     apply KIP126.Literature.permanentCycles_le_cycles model .sphere (10,134) 8</span>
+<span id="L65"><a href="#L65">  65</a>     apply (permanent_cycle_iff_mem .sphere (10,134) U).mp</span>
+<span id="L66"><a href="#L66">  66</a>     obtain ⟨z,hz,_⟩ := KIP126.Computation.Standard.u_permanent</span>
+<span id="L67"><a href="#L67">  67</a>     exact ⟨z,hz⟩</span>
+<span id="L68"><a href="#L68">  68</a>   have hd := KIP126.Computation.Standard.d2_x125_8.toHasDifferential</span>
+<span id="L69"><a href="#L69">  69</a>   change HasDifferential model.classical.sphere 2 (8,133) (10,134) _</span>
+<span id="L70"><a href="#L70">  70</a>     (KIP126.Computation.Standard.product (r := (10,134)) KIP126.Computation.Standard.h1 V+U) at hd</span>
+<span id="L71"><a href="#L71">  71</a>   refine ⟨a,ha11,ha9,?_,?_⟩</span>
+<span id="L72"><a href="#L72">  72</a>   · intro u hu</span>
+<span id="L73"><a href="#L73">  73</a>     have herr := alpha_error_filtration_thirteen U V _ hU hd</span>
+<span id="L74"><a href="#L74">  74</a>       KIP126.Computation.Standard.e5_stem124_af11 KIP126.Computation.Standard.e4_stem124_af12 a ha11 u hu</span>
+<span id="L75"><a href="#L75">  75</a>     obtain ⟨b13,b14,b15,hbits⟩ := alpha_three_layer_restriction c13 hc13 c14 hc14 c15 hc15 _ herr</span>
+<span id="L76"><a href="#L76">  76</a>     obtain ⟨a2,a3,hs,heta⟩ := alpha_correction_sum eta c13 c14 c15 b hb b13 b14 b15</span>
+<span id="L77"><a href="#L77">  77</a>     refine ⟨a2,a3,?_,heta⟩</span>
+<span id="L78"><a href="#L78">  78</a>     have he := hbits.trans hs</span>
+<span id="L79"><a href="#L79">  79</a>     have hrho :</span>
+<span id="L80"><a href="#L80">  80</a>         ((show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11) from lambdaMultiply 3 (sphereAction eta a))-</span>
+<span id="L81"><a href="#L81">  81</a>           (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11) from lambdaMultiply 3 (quotientClass 11 u))) ≫</span>
+<span id="L82"><a href="#L82">  82</a>             (model.quotients.tower S_0_0).rho 9 11 (by decide) =</span>
+<span id="L83"><a href="#L83">  83</a>         (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from lambdaMultiply 3</span>
+<span id="L84"><a href="#L84">  84</a>           (sphereAction eta (a ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide))))-</span>
+<span id="L85"><a href="#L85">  85</a>           (show BiHom 124 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) from lambdaMultiply 3 (quotientClass 9 u)) := by</span>
+<span id="L86"><a href="#L86">  86</a>       simp only [Preadditive.sub_comp,lambdaMultiply,sphereAction,quotientClass,Category.assoc,</span>
+<span id="L87"><a href="#L87">  87</a>         FiniteLambdaQuotientTower.rho_quotient]</span>
+<span id="L88"><a href="#L88">  88</a>     rw [hrho] at he</span>
+<span id="L89"><a href="#L89">  89</a>     exact sub_eq_iff_eq_add&#x27;.mp he</span>
+<span id="L90"><a href="#L90">  90</a>   · exact alpha_h0_rho_zero ninth_quotient_stem123_weight130_filtration16_zero syntheticH0 a</span>
+<span id="L91"><a href="#L91">  91</a>       (alpha_one_h0_filtration_seventeen a ha11)</span>
+<span id="L92"><a href="#L92">  92</a> </span>
+<span id="L93"><a href="#L93">  93</a> end</span>
+<span id="L94"><a href="#L94">  94</a> end KIP126.Main.Internal.AlphaOne</span>
+<span id="L95"><a href="#L95">  95</a> end</span></pre>

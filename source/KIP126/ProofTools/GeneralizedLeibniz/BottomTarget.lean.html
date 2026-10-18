@@ -1,0 +1,315 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/GeneralizedLeibniz/BottomTarget.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/GeneralizedLeibniz/BottomTarget.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.ProofTools.GeneralizedLeibniz.WitnessSquare</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.ProofTools.GeneralizedLeibniz.Boundary</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! AimPaper Theorem 6.1, bottom edge after multiplication by lambda.</span>
+<span id="L6"><a href="#L6">   6</a> The actual filtered shift and lambda maps preserve the prescribed nu target</span>
+<span id="L7"><a href="#L7">   7</a> label, including exponent zero. The final wrapper transports that same</span>
+<span id="L8"><a href="#L8">   8</a> infinity class to the GL square&#x27;s coordinates; its remaining HEq parameter</span>
+<span id="L9"><a href="#L9">   9</a> is only arithmetic reindexing of the given classical target label. -/</span>
+<span id="L10"><a href="#L10">  10</a> </span>
+<span id="L11"><a href="#L11">  11</a> @[expose] section</span>
+<span id="L12"><a href="#L12">  12</a> namespace KIP126.ProofTools.Internal.Leibniz</span>
+<span id="L13"><a href="#L13">  13</a> open CategoryTheory CategoryTheory.Limits</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence</span>
+<span id="L15"><a href="#L15">  15</a> open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence</span>
+<span id="L16"><a href="#L16">  16</a> open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald</span>
+<span id="L18"><a href="#L18">  18</a> noncomputable section</span>
+<span id="L19"><a href="#L19">  19</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L20"><a href="#L20">  20</a> set_option backward.defeqAttrib.useBackward false</span>
+<span id="L21"><a href="#L21">  21</a> set_option maxHeartbeats 600000</span>
+<span id="L22"><a href="#L22">  22</a> set_option Elab.async false</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> private theorem nu_lambda_representative (Y : ClassicalObject) (k : ℕ)</span>
+<span id="L25"><a href="#L25">  25</a>     (s t w : ℤ) (hw : w ≤ t) (y : Ambient model Y (s,t))</span>
+<span id="L26"><a href="#L26">  26</a>     (e : ((model.family.obj (model.nu.functor.obj (Y.obj model.auxiliary))).sequence.ssData (s,t,w)).eInfty)</span>
+<span id="L27"><a href="#L27">  27</a>     (he : HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model Y s t w hw y) e) :</span>
+<span id="L28"><a href="#L28">  28</a>     HasInfinityRepresentative _ 2 (s,t,w-k) (nuWeightLabel model Y s t (w-k) (by omega) y)</span>
+<span id="L29"><a href="#L29">  29</a>       (KIP126.Literature.Standard.infinityLambda (.nu Y) k (s,t) w e) := by</span>
+<span id="L30"><a href="#L30">  30</a>   obtain ⟨hy,heq⟩ := (KIP126.Literature.Standard.eInfinity_nu_labels Y s t w hw y e).mp he</span>
+<span id="L31"><a href="#L31">  31</a>   apply (KIP126.Literature.Standard.eInfinity_nu_labels Y s t (w-k) (by omega) y _).mpr</span>
+<span id="L32"><a href="#L32">  32</a>   refine ⟨hy,?_⟩</span>
+<span id="L33"><a href="#L33">  33</a>   rw [KIP126.Literature.Standard.eInfinity_lambda_nu Y k (s,t) w hw,heq]</span>
+<span id="L34"><a href="#L34">  34</a>   rfl</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> private def lambdaRawInfinity (A : SyntheticObject) (k : ℕ)</span>
+<span id="L37"><a href="#L37">  37</a>     (p : ℤ × ℤ) (s : ℤ)</span>
+<span id="L38"><a href="#L38">  38</a>     (x : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L39"><a href="#L39">  39</a>       (s,p.1+s,p.2)).eInfty) :</span>
+<span id="L40"><a href="#L40">  40</a>     ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L41"><a href="#L41">  41</a>       (s,(p+(0,-(k:ℤ))).1+s,(p+(0,-(k:ℤ))).2)).eInfty := by</span>
+<span id="L42"><a href="#L42">  42</a>   let p&#x27; : ℤ×ℤ := p+(0,-(k:ℤ))</span>
+<span id="L43"><a href="#L43">  43</a>   let I : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L44"><a href="#L44">  44</a>       (s,p.1+s,p.2)).eInfty ≅</span>
+<span id="L45"><a href="#L45">  45</a>       ((model.family.obj ((SyntheticObject.shift (0,-(k:ℤ)) A).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L46"><a href="#L46">  46</a>       (s,p&#x27;.1+s,p&#x27;.2)).eInfty :=</span>
+<span id="L47"><a href="#L47">  47</a>     towerInfinityIso (model.convergence A) (model.convergence (.shift (0,-(k:ℤ)) A))</span>
+<span id="L48"><a href="#L48">  48</a>       ((essShift (0,-(k:ℤ))).filtered A p) s</span>
+<span id="L49"><a href="#L49">  49</a>   let L : ((model.family.obj ((SyntheticObject.shift (0,-(k:ℤ)) A).obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L50"><a href="#L50">  50</a>       (s,p&#x27;.1+s,p&#x27;.2)).eInfty ⟶</span>
+<span id="L51"><a href="#L51">  51</a>       ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData</span>
+<span id="L52"><a href="#L52">  52</a>       (s,p&#x27;.1+s,p&#x27;.2)).eInfty :=</span>
+<span id="L53"><a href="#L53">  53</a>     (model.family.map (lambdaPow k (A.obj model.nu model.auxiliary))).eInftyMap</span>
+<span id="L54"><a href="#L54">  54</a>       (s,p&#x27;.1+s,p&#x27;.2)</span>
+<span id="L55"><a href="#L55">  55</a>   exact L (I.hom x)</span>
+<span id="L56"><a href="#L56">  56</a> </span>
+<span id="L57"><a href="#L57">  57</a> private theorem eqToHom_apply_heq {U V : ModuleCat ℤ} (h : U=V) (x : U) :</span>
+<span id="L58"><a href="#L58">  58</a>     HEq ((eqToHom h) x) x := by</span>
+<span id="L59"><a href="#L59">  59</a>   subst V</span>
+<span id="L60"><a href="#L60">  60</a>   rfl</span>
+<span id="L61"><a href="#L61">  61</a> </span>
+<span id="L62"><a href="#L62">  62</a> private theorem infinityShift_stem_heq (A : SyntheticObject) (k : ℕ) (m w s : ℤ)</span>
+<span id="L63"><a href="#L63">  63</a>     (x : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,m+s,w)).eInfty) :</span>
+<span id="L64"><a href="#L64">  64</a>     HEq ((KIP126.Literature.infinityShift model</span>
+<span id="L65"><a href="#L65">  65</a>       KIP126.Literature.Standard.infinityShift_comparison A k (s,m+s) w).hom x)</span>
+<span id="L66"><a href="#L66">  66</a>       ((towerInfinityIso (model.convergence A) (model.convergence (.shift (0,-(k:ℤ)) A))</span>
+<span id="L67"><a href="#L67">  67</a>         ((essShift (0,-(k:ℤ))).filtered A (m,w)) s).hom x) := by</span>
+<span id="L68"><a href="#L68">  68</a>   have hiso (p p&#x27; : ℤ×ℤ) (hp : p=p&#x27;)</span>
+<span id="L69"><a href="#L69">  69</a>       (a : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L70"><a href="#L70">  70</a>       (b : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,p&#x27;.1+s,p&#x27;.2)).eInfty)</span>
+<span id="L71"><a href="#L71">  71</a>       (hab : HEq a b) :</span>
+<span id="L72"><a href="#L72">  72</a>       HEq ((towerInfinityIso (model.convergence A) (model.convergence (.shift (0,-(k:ℤ)) A))</span>
+<span id="L73"><a href="#L73">  73</a>         ((essShift (0,-(k:ℤ))).filtered A p) s).hom a)</span>
+<span id="L74"><a href="#L74">  74</a>       ((towerInfinityIso (model.convergence A) (model.convergence (.shift (0,-(k:ℤ)) A))</span>
+<span id="L75"><a href="#L75">  75</a>         ((essShift (0,-(k:ℤ))).filtered A p&#x27;) s).hom b) := by</span>
+<span id="L76"><a href="#L76">  76</a>     subst p&#x27;</span>
+<span id="L77"><a href="#L77">  77</a>     cases hab</span>
+<span id="L78"><a href="#L78">  78</a>     rfl</span>
+<span id="L79"><a href="#L79">  79</a>   let p : ℤ×ℤ := (m+s-s,w)</span>
+<span id="L80"><a href="#L80">  80</a>   let U (i : Tridegree) := ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData i).eInfty</span>
+<span id="L81"><a href="#L81">  81</a>   let V (i : Tridegree) := ((model.family.obj ((SyntheticObject.shift (0,-(k:ℤ)) A).obj model.nu model.auxiliary)).sequence.ssData i).eInfty</span>
+<span id="L82"><a href="#L82">  82</a>   have hi : (s,m+s,w)=(s,p.1+s,p.2) := by simp [p]</span>
+<span id="L83"><a href="#L83">  83</a>   have hj : (s,(p+(0,-(k:ℤ))).1+s,(p+(0,-(k:ℤ))).2)=(s,m+s,w-k) := by simp [p,sub_eq_add_neg]</span>
+<span id="L84"><a href="#L84">  84</a>   let a := (eqToHom (congrArg U hi)) x</span>
+<span id="L85"><a href="#L85">  85</a>   let I := towerInfinityIso (model.convergence A) (model.convergence (.shift (0,-(k:ℤ)) A))</span>
+<span id="L86"><a href="#L86">  86</a>     ((essShift (0,-(k:ℤ))).filtered A p) s</span>
+<span id="L87"><a href="#L87">  87</a>   change HEq ((eqToHom (congrArg V hj)) (I.hom a)) _</span>
+<span id="L88"><a href="#L88">  88</a>   exact (eqToHom_apply_heq (congrArg V hj) (I.hom a)).trans</span>
+<span id="L89"><a href="#L89">  89</a>     (hiso p (m,w) (by simp [p]) a x (eqToHom_apply_heq (congrArg U hi) x))</span>
+<span id="L90"><a href="#L90">  90</a> </span>
+<span id="L91"><a href="#L91">  91</a> private theorem lambdaRawInfinity_pos (A : SyntheticObject) (k : ℕ) (hk : 0&lt;k)</span>
+<span id="L92"><a href="#L92">  92</a>     (p : ℤ×ℤ) (s : ℤ)</span>
+<span id="L93"><a href="#L93">  93</a>     (e : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty) :</span>
+<span id="L94"><a href="#L94">  94</a>     HEq (lambdaRawInfinity A k p s e)</span>
+<span id="L95"><a href="#L95">  95</a>       (KIP126.Literature.Standard.infinityLambda A k (s,p.1+s) p.2 e) := by</span>
+<span id="L96"><a href="#L96">  96</a>   have hmap {U V : SyntheticSpectrum} (f : U⟶V) (i j : Tridegree) (hij : i=j)</span>
+<span id="L97"><a href="#L97">  97</a>       (a : ((model.family.obj U).sequence.ssData i).eInfty)</span>
+<span id="L98"><a href="#L98">  98</a>       (b : ((model.family.obj U).sequence.ssData j).eInfty) (hab : HEq a b) :</span>
+<span id="L99"><a href="#L99">  99</a>       HEq ((model.family.functor.map f).eInftyMap i a)</span>
+<span id="L100"><a href="#L100"> 100</a>         ((model.family.functor.map f).eInftyMap j b) := by</span>
+<span id="L101"><a href="#L101"> 101</a>     subst j</span>
+<span id="L102"><a href="#L102"> 102</a>     cases hab</span>
+<span id="L103"><a href="#L103"> 103</a>     rfl</span>
+<span id="L104"><a href="#L104"> 104</a>   rcases p with ⟨m,w⟩</span>
+<span id="L105"><a href="#L105"> 105</a>   simp only [lambdaRawInfinity,KIP126.Literature.Standard.infinityLambda,</span>
+<span id="L106"><a href="#L106"> 106</a>     KIP126.Literature.InfinityShiftCoordinates.lambdaMap,show k ≠ 0 by omega,↓reduceDIte,ModuleCat.comp_apply]</span>
+<span id="L107"><a href="#L107"> 107</a>   exact hmap _ _ _ (by ext &lt;;&gt; dsimp &lt;;&gt; omega) _ _ (infinityShift_stem_heq A k m w s e).symm</span>
+<span id="L108"><a href="#L108"> 108</a> private theorem shift_zero_lambda (A : SyntheticSpectrum) (p : ℤ×ℤ)</span>
+<span id="L109"><a href="#L109"> 109</a>     (a : BiHom p.1 p.2 A) :</span>
+<span id="L110"><a href="#L110"> 110</a>     homotopyRegrade (by simp) (by simp) (shiftHomotopyClass (0,0) p a) ≫ lambdaPow 0 A = a := by</span>
+<span id="L111"><a href="#L111"> 111</a>   rw [regrade_precomp]</span>
+<span id="L112"><a href="#L112"> 112</a>   simp only [shiftHomotopyClass,lambdaPow,Category.assoc]</span>
+<span id="L113"><a href="#L113"> 113</a>   rw [←Category.assoc,←Category.assoc]</span>
+<span id="L114"><a href="#L114"> 114</a>   have hu := model.quotients.coherence.right_unit p (S_0_0 : SyntheticSpectrum)</span>
+<span id="L115"><a href="#L115"> 115</a>   simp only [biShiftAddIso,Iso.trans_hom,eqToIso.hom,NatTrans.comp_app] at hu</span>
+<span id="L116"><a href="#L116"> 116</a>   have hn := SyntheticCategory.biShift_zero.hom.naturality a</span>
+<span id="L117"><a href="#L117"> 117</a>   dsimp only [Functor.id_map,Functor.id_obj] at hn</span>
+<span id="L118"><a href="#L118"> 118</a>   rw [Category.assoc,Category.assoc,hn,←Category.assoc]</span>
+<span id="L119"><a href="#L119"> 119</a>   erw [←hu]</span>
+<span id="L120"><a href="#L120"> 120</a>   simp only [Category.assoc]</span>
+<span id="L121"><a href="#L121"> 121</a>   erw [Iso.inv_hom_id_app_assoc]</span>
+<span id="L122"><a href="#L122"> 122</a>   simp only [eqToHom_app,←Category.assoc,eqToHom_trans,eqToHom_refl,Category.id_comp]</span>
+<span id="L123"><a href="#L123"> 123</a> </span>
+<span id="L124"><a href="#L124"> 124</a> private theorem lambdaRawInfinity_zero (A : SyntheticObject) (p : ℤ×ℤ) (s : ℤ)</span>
+<span id="L125"><a href="#L125"> 125</a>     (e : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty) :</span>
+<span id="L126"><a href="#L126"> 126</a>     HEq (lambdaRawInfinity A 0 p s e) e := by</span>
+<span id="L127"><a href="#L127"> 127</a>   let F := model.syntheticTower.filtration (A.obj model.nu model.auxiliary)</span>
+<span id="L128"><a href="#L128"> 128</a>   haveI : Epi (F.toAssociatedGraded s p) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L129"><a href="#L129"> 129</a>   obtain ⟨ar,har⟩ := (ModuleCat.epi_iff_surjective (F.toAssociatedGraded s p)).mp</span>
+<span id="L130"><a href="#L130"> 130</a>     inferInstance ((infinityGradedIso (model.convergence A) p s).hom e)</span>
+<span id="L131"><a href="#L131"> 131</a>   obtain ⟨br,hbr,hgbr⟩ := shift_frame A (0,0) p s e ar har</span>
+<span id="L132"><a href="#L132"> 132</a>   obtain ⟨cr,hcr,hgcr⟩ := tower_map_frame</span>
+<span id="L133"><a href="#L133"> 133</a>     (model.convergentMap (.shift (0,0) A) A (lambdaPow 0 (A.obj model.nu model.auxiliary)))</span>
+<span id="L134"><a href="#L134"> 134</a>     (p+(0,0)) s _ br hgbr</span>
+<span id="L135"><a href="#L135"> 135</a>   have hactual := shift_zero_lambda (A.obj model.nu model.auxiliary) p ((F.F s p).arrow ar)</span>
+<span id="L136"><a href="#L136"> 136</a>   rw [hbr] at hcr</span>
+<span id="L137"><a href="#L137"> 137</a>   have hh : homotopyRegrade (by simp) (by simp)</span>
+<span id="L138"><a href="#L138"> 138</a>       (((model.syntheticTower.filtration (A.obj model.nu model.auxiliary)).F s (p+(0,0))).arrow cr) =</span>
+<span id="L139"><a href="#L139"> 139</a>       (F.F s p).arrow ar := by</span>
+<span id="L140"><a href="#L140"> 140</a>     rw [←hcr,regrade_comp]</span>
+<span id="L141"><a href="#L141"> 141</a>     exact hactual</span>
+<span id="L142"><a href="#L142"> 142</a>   have transport_frame (p q : ℤ×ℤ) (h : p=q)</span>
+<span id="L143"><a href="#L143"> 143</a>       (a : (Subobject.underlying.obj (F.F s p) : ModuleCat ℤ))</span>
+<span id="L144"><a href="#L144"> 144</a>       (b : (Subobject.underlying.obj (F.F s q) : ModuleCat ℤ))</span>
+<span id="L145"><a href="#L145"> 145</a>       (ha : homotopyRegrade (congrArg Prod.fst h.symm) (congrArg Prod.snd h.symm)</span>
+<span id="L146"><a href="#L146"> 146</a>         ((F.F s q).arrow b) = (F.F s p).arrow a) :</span>
+<span id="L147"><a href="#L147"> 147</a>       HEq (F.toAssociatedGraded s q b) (F.toAssociatedGraded s p a) := by</span>
+<span id="L148"><a href="#L148"> 148</a>     subst q</span>
+<span id="L149"><a href="#L149"> 149</a>     have hb : b=a := (ModuleCat.mono_iff_injective (F.F s p).arrow).mp inferInstance ha</span>
+<span id="L150"><a href="#L150"> 150</a>     subst b</span>
+<span id="L151"><a href="#L151"> 151</a>     rfl</span>
+<span id="L152"><a href="#L152"> 152</a>   have hgr := transport_frame p (p+(0,0)) (by simp) ar cr hh</span>
+<span id="L153"><a href="#L153"> 153</a>   rw [har,hgcr] at hgr</span>
+<span id="L154"><a href="#L154"> 154</a>   have transport_grade (p q : ℤ×ℤ) (h : p=q)</span>
+<span id="L155"><a href="#L155"> 155</a>       (z : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L156"><a href="#L156"> 156</a>       (z&#x27; : ((model.family.obj (A.obj model.nu model.auxiliary)).sequence.ssData (s,q.1+s,q.2)).eInfty)</span>
+<span id="L157"><a href="#L157"> 157</a>       (hz : HEq ((infinityGradedIso (model.convergence A) q s).hom z&#x27;)</span>
+<span id="L158"><a href="#L158"> 158</a>         ((infinityGradedIso (model.convergence A) p s).hom z)) : HEq z&#x27; z := by</span>
+<span id="L159"><a href="#L159"> 159</a>     subst q</span>
+<span id="L160"><a href="#L160"> 160</a>     exact heq_of_eq ((infinityGradedIso (model.convergence A) p s).toLinearEquiv.injective (eq_of_heq hz))</span>
+<span id="L161"><a href="#L161"> 161</a>   exact transport_grade p (p+(0,0)) (by simp) e _ hgr</span>
+<span id="L162"><a href="#L162"> 162</a> </span>
+<span id="L163"><a href="#L163"> 163</a> private theorem representative_heq_transport (A : SyntheticAdamsSS)</span>
+<span id="L164"><a href="#L164"> 164</a>     (i j : Tridegree) (hij : i=j) (x : A.E₂ i) (y : A.E₂ j)</span>
+<span id="L165"><a href="#L165"> 165</a>     (e : (A.sequence.ssData i).eInfty) (e&#x27; : (A.sequence.ssData j).eInfty)</span>
+<span id="L166"><a href="#L166"> 166</a>     (hxy : HEq x y) (hee : HEq e e&#x27;)</span>
+<span id="L167"><a href="#L167"> 167</a>     (he : HasInfinityRepresentative A 2 i x e) :</span>
+<span id="L168"><a href="#L168"> 168</a>     HasInfinityRepresentative A 2 j y e&#x27; := by</span>
+<span id="L169"><a href="#L169"> 169</a>   subst j</span>
+<span id="L170"><a href="#L170"> 170</a>   cases hxy</span>
+<span id="L171"><a href="#L171"> 171</a>   cases hee</span>
+<span id="L172"><a href="#L172"> 172</a>   exact he</span>
+<span id="L173"><a href="#L173"> 173</a> </span>
+<span id="L174"><a href="#L174"> 174</a> private theorem regradeE2_heq {A : SyntheticAdamsSS} {i j : Tridegree} (h : i=j) (x : A.E₂ i) :</span>
+<span id="L175"><a href="#L175"> 175</a>     HEq (regradeE2 h x) x := by</span>
+<span id="L176"><a href="#L176"> 176</a>   subst j</span>
+<span id="L177"><a href="#L177"> 177</a>   rfl</span>
+<span id="L178"><a href="#L178"> 178</a> </span>
+<span id="L179"><a href="#L179"> 179</a> private theorem infinite_target_nuWeight_heq (X Y : ClassicalObject)</span>
+<span id="L180"><a href="#L180"> 180</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L181"><a href="#L181"> 181</a>     (n s t : ℤ) (hn : normalizedExponent model.classicalTower f ≤ n)</span>
+<span id="L182"><a href="#L182"> 182</a>     (y : Ambient model Y (s+n,t+n)) :</span>
+<span id="L183"><a href="#L183"> 183</a>     HEq (infiniteTargetForExtension model X Y f n s t hn y)</span>
+<span id="L184"><a href="#L184"> 184</a>       (nuWeightLabel model Y (s+n) (t+n) (t+normalizedExponent model.classicalTower f) (by omega) y) := by</span>
+<span id="L185"><a href="#L185"> 185</a>   unfold infiniteTargetForExtension nuWeightLabel</span>
+<span id="L186"><a href="#L186"> 186</a>   apply (regradeE2_heq _ _).trans</span>
+<span id="L187"><a href="#L187"> 187</a>   apply HEq.trans _ (regradeE2_heq _ _).symm</span>
+<span id="L188"><a href="#L188"> 188</a>   have h : (t+n-(t+normalizedExponent model.classicalTower f)).toNat =</span>
+<span id="L189"><a href="#L189"> 189</a>       (n-normalizedExponent model.classicalTower f).toNat := by congr 1; omega</span>
+<span id="L190"><a href="#L190"> 190</a>   rw [h]</span>
+<span id="L191"><a href="#L191"> 191</a> </span>
+<span id="L192"><a href="#L192"> 192</a> private theorem lambdaRawInfinity_nu_representative (Y : ClassicalObject) (k : ℕ)</span>
+<span id="L193"><a href="#L193"> 193</a>     (p : ℤ×ℤ) (s : ℤ) (hw : p.2≤p.1+s) (y : Ambient model Y (s,p.1+s))</span>
+<span id="L194"><a href="#L194"> 194</a>     (e : ((model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L195"><a href="#L195"> 195</a>     (he : HasInfinityRepresentative (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)) 2 (s,p.1+s,p.2) (nuWeightLabel model Y s (p.1+s) p.2 hw y) e)</span>
+<span id="L196"><a href="#L196"> 196</a>     (i : Tridegree) (hi : i=(s,p.1+s,p.2-k))</span>
+<span id="L197"><a href="#L197"> 197</a>     (target : (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).E₂ i)</span>
+<span id="L198"><a href="#L198"> 198</a>     (htarget : HEq target (nuWeightLabel model Y s (p.1+s) (p.2-k) (by omega) y))</span>
+<span id="L199"><a href="#L199"> 199</a>     (eRaw : ((model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).sequence.ssData i).eInfty)</span>
+<span id="L200"><a href="#L200"> 200</a>     (hRaw : HEq eRaw (lambdaRawInfinity (.nu Y) k p s e)) :</span>
+<span id="L201"><a href="#L201"> 201</a>     HasInfinityRepresentative (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)) 2 i target eRaw := by</span>
+<span id="L202"><a href="#L202"> 202</a>   have h := nu_lambda_representative Y k s (p.1+s) p.2 hw y e he</span>
+<span id="L203"><a href="#L203"> 203</a>   apply representative_heq_transport _ _ _ hi.symm _ _ _ _ htarget.symm _ h</span>
+<span id="L204"><a href="#L204"> 204</a>   apply HEq.trans _ hRaw.symm</span>
+<span id="L205"><a href="#L205"> 205</a>   by_cases hk : k=0</span>
+<span id="L206"><a href="#L206"> 206</a>   · subst k</span>
+<span id="L207"><a href="#L207"> 207</a>     have hz : HEq (KIP126.Literature.Standard.infinityLambda (.nu Y) 0 (s,p.1+s) p.2 e) e := by</span>
+<span id="L208"><a href="#L208"> 208</a>       simpa only [KIP126.Literature.Standard.infinityLambda,</span>
+<span id="L209"><a href="#L209"> 209</a>         InfinityShiftCoordinates.lambdaMap, ↓reduceDIte] using</span>
+<span id="L210"><a href="#L210"> 210</a>         (eqToHom_apply_heq (by simp) e)</span>
+<span id="L211"><a href="#L211"> 211</a>     exact hz.trans (lambdaRawInfinity_zero (.nu Y) p s e).symm</span>
+<span id="L212"><a href="#L212"> 212</a>   · exact (lambdaRawInfinity_pos (.nu Y) k (by omega) p s e).symm</span>
+<span id="L213"><a href="#L213"> 213</a> </span>
+<span id="L214"><a href="#L214"> 214</a> private theorem nuWeight_label_heq (Y : ClassicalObject) (s t w s&#x27; t&#x27; w&#x27; : ℤ)</span>
+<span id="L215"><a href="#L215"> 215</a>     (hs : s=s&#x27;) (ht : t=t&#x27;) (hw : w=w&#x27;) (hwt : w≤t) (hwt&#x27; : w&#x27;≤t&#x27;)</span>
+<span id="L216"><a href="#L216"> 216</a>     (x : Ambient model Y (s,t)) (x&#x27; : Ambient model Y (s&#x27;,t&#x27;)) (hx : HEq x x&#x27;) :</span>
+<span id="L217"><a href="#L217"> 217</a>     HEq (nuWeightLabel model Y s t w hwt x) (nuWeightLabel model Y s&#x27; t&#x27; w&#x27; hwt&#x27; x&#x27;) := by</span>
+<span id="L218"><a href="#L218"> 218</a>   subst s&#x27;; subst t&#x27;; subst w&#x27;</span>
+<span id="L219"><a href="#L219"> 219</a>   cases hx</span>
+<span id="L220"><a href="#L220"> 220</a>   rfl</span>
+<span id="L221"><a href="#L221"> 221</a> </span>
+<span id="L222"><a href="#L222"> 222</a> private theorem lambdaRawInfinity_nu_representative_regraded (Y : ClassicalObject) (k : ℕ)</span>
+<span id="L223"><a href="#L223"> 223</a>     (p : ℤ×ℤ) (s t : ℤ) (ht : p.1+s=t) (hw : p.2≤t) (y : Ambient model Y (s,t))</span>
+<span id="L224"><a href="#L224"> 224</a>     (source : (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).E₂ (s,p.1+s,p.2))</span>
+<span id="L225"><a href="#L225"> 225</a>     (hsource : HEq source (nuWeightLabel model Y s t p.2 hw y))</span>
+<span id="L226"><a href="#L226"> 226</a>     (e : ((model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).sequence.ssData (s,p.1+s,p.2)).eInfty)</span>
+<span id="L227"><a href="#L227"> 227</a>     (he : HasInfinityRepresentative (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)) 2 (s,p.1+s,p.2) source e)</span>
+<span id="L228"><a href="#L228"> 228</a>     (i : Tridegree) (hi : i=(s,t,p.2-k))</span>
+<span id="L229"><a href="#L229"> 229</a>     (target : (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).E₂ i)</span>
+<span id="L230"><a href="#L230"> 230</a>     (htarget : HEq target (nuWeightLabel model Y s t (p.2-k) (by omega) y))</span>
+<span id="L231"><a href="#L231"> 231</a>     (eRaw : ((model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).sequence.ssData i).eInfty)</span>
+<span id="L232"><a href="#L232"> 232</a>     (hRaw : HEq eRaw (lambdaRawInfinity (.nu Y) k p s e)) :</span>
+<span id="L233"><a href="#L233"> 233</a>     HasInfinityRepresentative (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)) 2 i target eRaw := by</span>
+<span id="L234"><a href="#L234"> 234</a>   subst t</span>
+<span id="L235"><a href="#L235"> 235</a>   have hs := eq_of_heq hsource</span>
+<span id="L236"><a href="#L236"> 236</a>   rw [hs] at he</span>
+<span id="L237"><a href="#L237"> 237</a>   exact lambdaRawInfinity_nu_representative Y k p s hw y e he i hi target htarget eRaw hRaw</span>
+<span id="L238"><a href="#L238"> 238</a> </span>
+<span id="L239"><a href="#L239"> 239</a> private theorem gl_bottom_target_representative (X Y : ClassicalObject)</span>
+<span id="L240"><a href="#L240"> 240</a>     (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)</span>
+<span id="L241"><a href="#L241"> 241</a>     (page : ℕ) (r l s t : ℤ) (hpage : 2≤page) (hpr : (page:ℤ)≤r)</span>
+<span id="L242"><a href="#L242"> 242</a>     {xInfinity : Ambient model X (s+r,t+r-1)}</span>
+<span id="L243"><a href="#L243"> 243</a>     {yInfinity : Ambient model Y (s+r+l,t+r-1+l)}</span>
+<span id="L244"><a href="#L244"> 244</a>     (W : InfiniteExtensionWitness model X Y f l (s+r) (t+r-1) xInfinity yInfinity)</span>
+<span id="L245"><a href="#L245"> 245</a>     (target : (model.family.nu model.nu (Y.obj model.auxiliary)).E₂</span>
+<span id="L246"><a href="#L246"> 246</a>       (s+r+l,(t-s)-1+(s+r+l),t+normalizedExponent model.classicalTower f+(page-1:ℕ)))</span>
+<span id="L247"><a href="#L247"> 247</a>     (htarget : HEq target (nuWeightLabel model Y (s+r+l) (t+r-1+l)</span>
+<span id="L248"><a href="#L248"> 248</a>       (t+normalizedExponent model.classicalTower f+(page-1:ℕ))</span>
+<span id="L249"><a href="#L249"> 249</a>       (by have := W.length_lower; omega) yInfinity)) :</span>
+<span id="L250"><a href="#L250"> 250</a>     HasInfinityRepresentative _ 2</span>
+<span id="L251"><a href="#L251"> 251</a>       (s+r+l,(t-s)+(s+r+l),t+normalizedExponent model.classicalTower f)</span>
+<span id="L252"><a href="#L252"> 252</a>       (regradeE2 (by ext &lt;;&gt; dsimp &lt;;&gt; omega)</span>
+<span id="L253"><a href="#L253"> 253</a>         (((essShift (1,-((page-1:ℕ):ℤ))).page (.nu Y) 2 (by decide)</span>
+<span id="L254"><a href="#L254"> 254</a>           ((t-s)-1,t+normalizedExponent model.classicalTower f+(page-1:ℕ)) (s+r+l)).hom target))</span>
+<span id="L255"><a href="#L255"> 255</a>       (glBottomTarget X Y f page r l s t hpage hpr W) := by</span>
+<span id="L256"><a href="#L256"> 256</a>   let e := normalizedExponent model.classicalTower f</span>
+<span id="L257"><a href="#L257"> 257</a>   let k := (r-page).toNat</span>
+<span id="L258"><a href="#L258"> 258</a>   let q := page-1</span>
+<span id="L259"><a href="#L259"> 259</a>   let p : ℤ×ℤ := ((t+r-1)-(s+r),(t+r-1)+e)</span>
+<span id="L260"><a href="#L260"> 260</a>   let p&#x27; : ℤ×ℤ := ((t-s)-1,t+e+(q:ℤ))</span>
+<span id="L261"><a href="#L261"> 261</a>   have hk : (k:ℤ)=r-page := Int.toNat_of_nonneg (by omega)</span>
+<span id="L262"><a href="#L262"> 262</a>   have hq : (q:ℤ)=(page:ℤ)-1 := by dsimp [q]; omega</span>
+<span id="L263"><a href="#L263"> 263</a>   have hp : p+(0,-(k:ℤ))=p&#x27; := by ext &lt;;&gt; dsimp [p,p&#x27;] &lt;;&gt; omega</span>
+<span id="L264"><a href="#L264"> 264</a>   let targetRaw : (model.family.obj (model.nu.functor.obj (Y.obj model.auxiliary))).E₂</span>
+<span id="L265"><a href="#L265"> 265</a>       (s+r+l,(p+(0,-(k:ℤ))).1+(s+r+l),(p+(0,-(k:ℤ))).2) :=</span>
+<span id="L266"><a href="#L266"> 266</a>     regradeE2 (by ext &lt;;&gt; dsimp [p,e,q] &lt;;&gt; omega) target</span>
+<span id="L267"><a href="#L267"> 267</a>   have htargetRaw : HEq targetRaw</span>
+<span id="L268"><a href="#L268"> 268</a>       (nuWeightLabel model Y (s+r+l) (t+r-1+l) (p.2-k) (by have := W.length_lower; dsimp [p,e]; omega) yInfinity) := by</span>
+<span id="L269"><a href="#L269"> 269</a>     apply (regradeE2_heq _ target).trans</span>
+<span id="L270"><a href="#L270"> 270</a>     apply htarget.trans</span>
+<span id="L271"><a href="#L271"> 271</a>     exact nuWeight_label_heq Y _ _ _ _ _ _ rfl rfl (by dsimp [p,e,q]; omega) _ _ _ _ (HEq.rfl)</span>
+<span id="L272"><a href="#L272"> 272</a>   have hsource := infinite_target_nuWeight_heq X Y f l (s+r) (t+r-1) W.length_lower yInfinity</span>
+<span id="L273"><a href="#L273"> 273</a>   let iRaw : Tridegree := (s+r+l,(p+(0,-(k:ℤ))).1+(s+r+l),(p+(0,-(k:ℤ))).2)</span>
+<span id="L274"><a href="#L274"> 274</a>   let eRaw : ((model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)).sequence.ssData iRaw).eInfty :=</span>
+<span id="L275"><a href="#L275"> 275</a>     lambdaRawInfinity (.nu Y) k p (s+r+l) W.target</span>
+<span id="L276"><a href="#L276"> 276</a>   have hRaw : HEq eRaw (lambdaRawInfinity (.nu Y) k p (s+r+l) W.target) := HEq.rfl</span>
+<span id="L277"><a href="#L277"> 277</a>   have hiRaw : iRaw=(s+r+l,t+r-1+l,p.2-k) := by ext &lt;;&gt; dsimp [iRaw,p] &lt;;&gt; omega</span>
+<span id="L278"><a href="#L278"> 278</a>   have hraw : HasInfinityRepresentative</span>
+<span id="L279"><a href="#L279"> 279</a>       (model.family.obj ((SyntheticObject.nu Y).obj model.nu model.auxiliary)) 2 iRaw targetRaw eRaw := by</span>
+<span id="L280"><a href="#L280"> 280</a>     exact lambdaRawInfinity_nu_representative_regraded Y k p (s+r+l) (t+r-1+l)</span>
+<span id="L281"><a href="#L281"> 281</a>       (by dsimp [p]; omega) (by dsimp [p,e]; have := W.length_lower; omega) yInfinity</span>
+<span id="L282"><a href="#L282"> 282</a>       (infiniteTargetForExtension model X Y f l (s+r) (t+r-1) W.length_lower yInfinity)</span>
+<span id="L283"><a href="#L283"> 283</a>       hsource W.target W.target_rep iRaw hiRaw targetRaw htargetRaw eRaw hRaw</span>
+<span id="L284"><a href="#L284"> 284</a>   have hbound := ((essShift (1,-(q:ℤ))).representative_iff (.nu Y) 2 (by decide)</span>
+<span id="L285"><a href="#L285"> 285</a>     (p+(0,-(k:ℤ))) (s+r+l) targetRaw (lambdaRawInfinity (.nu Y) k p (s+r+l) W.target)).mp hraw</span>
+<span id="L286"><a href="#L286"> 286</a>   have hpoint : (s+r+l,(lambdaBoundaryPoint k q p).1+(s+r+l),(lambdaBoundaryPoint k q p).2) =</span>
+<span id="L287"><a href="#L287"> 287</a>       (s+r+l,(t-s)+(s+r+l),t+e) := by</span>
+<span id="L288"><a href="#L288"> 288</a>     have h := gl_bottom_point page r s t e hpage hpr</span>
+<span id="L289"><a href="#L289"> 289</a>     exact congrArg (fun v : ℤ×ℤ =&gt; (s+r+l,v.1+(s+r+l),v.2)) h</span>
+<span id="L290"><a href="#L290"> 290</a>   have hbound := representative_transport hpoint _ _ hbound</span>
+<span id="L291"><a href="#L291"> 291</a>   have hshift (a b : ℤ×ℤ) (hab : a=b)</span>
+<span id="L292"><a href="#L292"> 292</a>       (x : (model.family.nu model.nu (Y.obj model.auxiliary)).E₂ (s+r+l,a.1+(s+r+l),a.2))</span>
+<span id="L293"><a href="#L293"> 293</a>       (y : (model.family.nu model.nu (Y.obj model.auxiliary)).E₂ (s+r+l,b.1+(s+r+l),b.2)) (hxy : HEq x y) :</span>
+<span id="L294"><a href="#L294"> 294</a>       HEq (((essShift (1,-(q:ℤ))).page (.nu Y) 2 (by decide) a (s+r+l)).hom x)</span>
+<span id="L295"><a href="#L295"> 295</a>         (((essShift (1,-(q:ℤ))).page (.nu Y) 2 (by decide) b (s+r+l)).hom y) := by</span>
+<span id="L296"><a href="#L296"> 296</a>     subst b</span>
+<span id="L297"><a href="#L297"> 297</a>     cases hxy</span>
+<span id="L298"><a href="#L298"> 298</a>     rfl</span>
+<span id="L299"><a href="#L299"> 299</a>   let labelA := ((essShift (1,-(q:ℤ))).page (.nu Y) 2 (by decide) (p+(0,-(k:ℤ))) (s+r+l)).hom targetRaw</span>
+<span id="L300"><a href="#L300"> 300</a>   let labelB := ((essShift (1,-(q:ℤ))).page (.nu Y) 2 (by decide) p&#x27; (s+r+l)).hom target</span>
+<span id="L301"><a href="#L301"> 301</a>   have hshiftxy := hshift (p+(0,-(k:ℤ))) p&#x27; hp targetRaw target (regradeE2_heq _ target)</span>
+<span id="L302"><a href="#L302"> 302</a>   have hlabel := (regradeE2_heq hpoint labelA).trans hshiftxy</span>
+<span id="L303"><a href="#L303"> 303</a>   have hcan : (s+r+l,(p&#x27;+(1,-(q:ℤ))).1+(s+r+l),(p&#x27;+(1,-(q:ℤ))).2) =</span>
+<span id="L304"><a href="#L304"> 304</a>       (s+r+l,(t-s)+(s+r+l),t+e) := by ext &lt;;&gt; dsimp [p&#x27;] &lt;;&gt; omega</span>
+<span id="L305"><a href="#L305"> 305</a>   let finalLabel : (model.family.obj ((SyntheticObject.shift (1,-(q:ℤ)) (.nu Y)).obj</span>
+<span id="L306"><a href="#L306"> 306</a>       model.nu model.auxiliary)).E₂ (s+r+l,(t-s)+(s+r+l),t+e) :=</span>
+<span id="L307"><a href="#L307"> 307</a>     regradeE2 hcan labelB</span>
+<span id="L308"><a href="#L308"> 308</a>   have hfinal : HEq finalLabel labelB := regradeE2_heq hcan labelB</span>
+<span id="L309"><a href="#L309"> 309</a>   have hlabel&#x27; := hlabel.trans hfinal.symm</span>
+<span id="L310"><a href="#L310"> 310</a>   have hlabelEq := eq_of_heq hlabel&#x27;</span>
+<span id="L311"><a href="#L311"> 311</a>   rw [hlabelEq] at hbound</span>
+<span id="L312"><a href="#L312"> 312</a>   exact hbound</span>
+<span id="L313"><a href="#L313"> 313</a> </span>
+<span id="L314"><a href="#L314"> 314</a> end</span>
+<span id="L315"><a href="#L315"> 315</a> end KIP126.ProofTools.Internal.Leibniz</span></pre>

@@ -1,0 +1,55 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/AdamsSynthetic/Weight.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/AdamsSynthetic/Weight.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsSynthetic.ExtensionLabels</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> @[expose] section</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Weight lowering at E∞ belongs to the specified ν-family. The maps,</span>
+<span id="L8"><a href="#L8">   8</a> composition and naturality are structural data; surjectivity is a separate</span>
+<span id="L9"><a href="#L9">   9</a> literature result and is not asserted here. -/</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.AdamsSynthetic</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.Synthetic.SpectralSequence KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Kervaire.Route</span>
+<span id="L14"><a href="#L14">  14</a> universe u v w</span>
+<span id="L15"><a href="#L15">  15</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L16"><a href="#L16">  16</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L17"><a href="#L17">  17</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L18"><a href="#L18">  18</a>   [HasFunctorialCofiber (C := Syn)]</span>
+<span id="L19"><a href="#L19">  19</a> </span>
+<span id="L20"><a href="#L20">  20</a> /-- The given comparison evaluated at an actual weight. The nonnegative</span>
+<span id="L21"><a href="#L21">  21</a> λ exponent is forced by `w ≤ t`; no new choice of standard class is made. -/</span>
+<span id="L22"><a href="#L22">  22</a> public noncomputable def nuWeightLabel (D : Model C Syn) (X : ClassicalObject)</span>
+<span id="L23"><a href="#L23">  23</a>     (s t w : ℤ) (hw : w ≤ t)</span>
+<span id="L24"><a href="#L24">  24</a>     (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t)) :</span>
+<span id="L25"><a href="#L25">  25</a>     (D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).E₂ (s,t,w) :=</span>
+<span id="L26"><a href="#L26">  26</a>   regradeE2 (by</span>
+<span id="L27"><a href="#L27">  27</a>     ext &lt;;&gt; simp [Int.toNat_of_nonneg (sub_nonneg.mpr hw)])</span>
+<span id="L28"><a href="#L28">  28</a>     (targetNuLabel D X s t (t-w).toNat x)</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> /-- A coherent weight map on the actual ν(X) infinity pages. Compatibility</span>
+<span id="L31"><a href="#L31">  31</a> with the specified E₂ labels identifies this map as the weight comparison,</span>
+<span id="L32"><a href="#L32">  32</a> rather than an arbitrary map between unrelated page objects. -/</span>
+<span id="L33"><a href="#L33">  33</a> public structure NuInfinityWeightMaps (D : Model C Syn) where</span>
+<span id="L34"><a href="#L34">  34</a>   map : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ) (_hw : w₁ ≤ w₂) (_ht : w₂ ≤ t),</span>
+<span id="L35"><a href="#L35">  35</a>     ((D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).sequence.ssData (s,t,w₂)).eInfty ⟶</span>
+<span id="L36"><a href="#L36">  36</a>       ((D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).sequence.ssData (s,t,w₁)).eInfty</span>
+<span id="L37"><a href="#L37">  37</a>   map_self : ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t),</span>
+<span id="L38"><a href="#L38">  38</a>     map X s t w w le_rfl hw = 𝟙 _</span>
+<span id="L39"><a href="#L39">  39</a>   map_comp : ∀ (X : ClassicalObject) (s t w₁ w₂ w₃ : ℤ)</span>
+<span id="L40"><a href="#L40">  40</a>       (h₁₂ : w₁ ≤ w₂) (h₂₃ : w₂ ≤ w₃) (h₃ : w₃ ≤ t),</span>
+<span id="L41"><a href="#L41">  41</a>     map X s t w₂ w₃ h₂₃ h₃ ≫ map X s t w₁ w₂ h₁₂ (h₂₃.trans h₃) =</span>
+<span id="L42"><a href="#L42">  42</a>       map X s t w₁ w₃ (h₁₂.trans h₂₃) h₃</span>
+<span id="L43"><a href="#L43">  43</a>   naturality : ∀ (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)</span>
+<span id="L44"><a href="#L44">  44</a>       (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t),</span>
+<span id="L45"><a href="#L45">  45</a>     (D.family.map (D.nu.functor.map f)).eInftyMap (s,t,w₂) ≫ map Y s t w₁ w₂ hw ht =</span>
+<span id="L46"><a href="#L46">  46</a>       map X s t w₁ w₂ hw ht ≫ (D.family.map (D.nu.functor.map f)).eInftyMap (s,t,w₁)</span>
+<span id="L47"><a href="#L47">  47</a>   representative : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ)</span>
+<span id="L48"><a href="#L48">  48</a>       (hw : w₁ ≤ w₂) (ht : w₂ ≤ t)</span>
+<span id="L49"><a href="#L49">  49</a>       (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t))</span>
+<span id="L50"><a href="#L50">  50</a>       (z : ((D.family.obj (D.nu.functor.obj (X.obj D.auxiliary))).sequence.ssData (s,t,w₂)).eInfty),</span>
+<span id="L51"><a href="#L51">  51</a>     HasInfinityRepresentative _ 2 (s,t,w₂) (nuWeightLabel D X s t w₂ ht x) z →</span>
+<span id="L52"><a href="#L52">  52</a>       HasInfinityRepresentative _ 2 (s,t,w₁) (nuWeightLabel D X s t w₁ (hw.trans ht) x)</span>
+<span id="L53"><a href="#L53">  53</a>         (map X s t w₁ w₂ hw ht z)</span>
+<span id="L54"><a href="#L54">  54</a> </span>
+<span id="L55"><a href="#L55">  55</a> end KIP126.AdamsSynthetic</span></pre>

@@ -1,0 +1,111 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Theta/TodaExistence.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Theta/TodaExistence.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Standard.QuotientAlgebra</span>
+<span id="L4"><a href="#L4">   4</a> public import KIP126.Literature.Standard.Filtration</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.E2Computation.Table.Values</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Main.Internal.NuThree.Shift</span>
+<span id="L7"><a href="#L7">   7</a> import all KIP126.Main.Internal.Choice.OrderTwo</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Main.Internal.Theta.OrderTwo</span>
+<span id="L9"><a href="#L9">   9</a> import all KIP126.Main.Internal.Theta.Shuffle</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Main.Internal.LowEta</span>
+<span id="L11"><a href="#L11">  11</a> </span>
+<span id="L12"><a href="#L12">  12</a> /-! Original bracket existence, ThetaToda.lean:1023–1058,</span>
+<span id="L13"><a href="#L13">  13</a> and fixed shuffle wrapper, ThetaShuffle.lean:637–653, bbac1fc05843 (MIT). The entire cofiber argument is retained. -/</span>
+<span id="L14"><a href="#L14">  14</a> @[expose] section</span>
+<span id="L15"><a href="#L15">  15</a> namespace KIP126.Main.Internal.Theta</span>
+<span id="L16"><a href="#L16">  16</a> open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated CategoryTheory.MonoidalCategory</span>
+<span id="L17"><a href="#L17">  17</a> open KIP126.StableHomotopy KIP126.StableHomotopy.Toda</span>
+<span id="L18"><a href="#L18">  18</a> open KIP126.Core.SpectralSequence KIP126.Core.Algebra</span>
+<span id="L19"><a href="#L19">  19</a> open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic</span>
+<span id="L20"><a href="#L20">  20</a> open KIP126.Kervaire.Route KIP126.Literature.Route</span>
+<span id="L21"><a href="#L21">  21</a> open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)</span>
+<span id="L22"><a href="#L22">  22</a> open KIP126.Literature.Standard (quotientSyntheticSymmetric quotientAlgebra quotientAlgebraProduct quotientAlgebra_commutative quotientAlgebra_unit quotientAlgebra_sphere_action quotientAlgebra_first_quotient)</span>
+<span id="L23"><a href="#L23">  23</a> open KIP126.Computation.Standard (product h0 h6 h5Square atom_h0 atom_h5 atom_h6)</span>
+<span id="L24"><a href="#L24">  24</a> open KIP126.Computation.Table</span>
+<span id="L25"><a href="#L25">  25</a> noncomputable section</span>
+<span id="L26"><a href="#L26">  26</a> local instance shiftAdditive (p : ℤ × ℤ) :</span>
+<span id="L27"><a href="#L27">  27</a>     (SyntheticCategory.biShift (Syn := SyntheticSpectrum) p).Additive := model.exactness.shiftAdditive p</span>
+<span id="L28"><a href="#L28">  28</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L29"><a href="#L29">  29</a> set_option backward.defeqAttrib.useBackward true</span>
+<span id="L30"><a href="#L30">  30</a> set_option maxHeartbeats 2000000</span>
+<span id="L31"><a href="#L31">  31</a> set_option maxRecDepth 10000</span>
+<span id="L32"><a href="#L32">  32</a> </span>
+<span id="L33"><a href="#L33">  33</a> private theorem synthetic_theta_b_bracket_nonempty</span>
+<span id="L34"><a href="#L34">  34</a>     (coh : BiShiftCoherence SyntheticSpectrum)</span>
+<span id="L35"><a href="#L35">  35</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L36"><a href="#L36">  36</a>     (htheta : theta+theta=0) (hb : b+b=0) :</span>
+<span id="L37"><a href="#L37">  37</a>     ∃ z : BiHom 125 134 (S_0_0 : SyntheticSpectrum), TripleToda theta syntheticTwo b z := by</span>
+<span id="L38"><a href="#L38">  38</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)</span>
+<span id="L39"><a href="#L39">  39</a>   let f := F.map theta</span>
+<span id="L40"><a href="#L40">  40</a>   let g := (SyntheticCategory.biShift_comp (0,0) (62,70)).inv.app (S_0_0:SyntheticSpectrum) ≫ F.map syntheticTwo</span>
+<span id="L41"><a href="#L41">  41</a>   have hg : g=2 • 𝟙 (Smn 62 70 : SyntheticSpectrum) := by</span>
+<span id="L42"><a href="#L42">  42</a>     have hc := coh.left_unit (62,70) (S_0_0:SyntheticSpectrum)</span>
+<span id="L43"><a href="#L43">  43</a>     change (biShiftAddIso (0,0) (62,70) (62,70) (by decide)).hom.app _=_ at hc</span>
+<span id="L44"><a href="#L44">  44</a>     have he : (SyntheticCategory.biShift_comp (0,0) (62,70)).hom.app (S_0_0:SyntheticSpectrum)=</span>
+<span id="L45"><a href="#L45">  45</a>         F.map (SyntheticCategory.biShift_zero.hom.app (S_0_0:SyntheticSpectrum)) := by</span>
+<span id="L46"><a href="#L46">  46</a>       simpa only [biShiftAddIso,Iso.trans_hom,NatTrans.comp_app,eqToIso.hom,</span>
+<span id="L47"><a href="#L47">  47</a>         eqToHom_app,eqToHom_refl,Category.comp_id,F] using hc</span>
+<span id="L48"><a href="#L48">  48</a>     dsimp only [g,syntheticTwo]</span>
+<span id="L49"><a href="#L49">  49</a>     rw [Functor.map_comp,←he,←Category.assoc,Iso.inv_hom_id_app,Category.id_comp]</span>
+<span id="L50"><a href="#L50">  50</a>     simp only [Functor.map_nsmul]</span>
+<span id="L51"><a href="#L51">  51</a>     change 2 • F.map (𝟙 (S_0_0 : SyntheticSpectrum)) = 2 • 𝟙 (F.obj (S_0_0 : SyntheticSpectrum))</span>
+<span id="L52"><a href="#L52">  52</a>     rw [CategoryTheory.Functor.map_id]</span>
+<span id="L53"><a href="#L53">  53</a>   have hfg : f≫g=0 := by</span>
+<span id="L54"><a href="#L54">  54</a>     rw [hg]</span>
+<span id="L55"><a href="#L55">  55</a>     simp only [two_smul,Preadditive.comp_add]</span>
+<span id="L56"><a href="#L56">  56</a>     erw [Category.comp_id]</span>
+<span id="L57"><a href="#L57">  57</a>     change F.map theta+F.map theta=0</span>
+<span id="L58"><a href="#L58">  58</a>     rw [←Functor.map_add,htheta,Functor.map_zero]</span>
+<span id="L59"><a href="#L59">  59</a>   have hgb : g≫b=0 := by</span>
+<span id="L60"><a href="#L60">  60</a>     rw [hg]</span>
+<span id="L61"><a href="#L61">  61</a>     simp only [two_smul,Preadditive.add_comp]</span>
+<span id="L62"><a href="#L62">  62</a>     erw [Category.id_comp]</span>
+<span id="L63"><a href="#L63">  63</a>     exact hb</span>
+<span id="L64"><a href="#L64">  64</a>   obtain ⟨v,hv⟩ := Toda.exists_relation f g b hfg hgb</span>
+<span id="L65"><a href="#L65">  65</a>   refine ⟨(tripleTodaSource 62 64 0 0 62 70).hom≫v,?_⟩</span>
+<span id="L66"><a href="#L66">  66</a>   unfold TripleToda</span>
+<span id="L67"><a href="#L67">  67</a>   rw [Iso.inv_hom_id_assoc]</span>
+<span id="L68"><a href="#L68">  68</a>   exact hv</span>
+<span id="L69"><a href="#L69">  69</a> </span>
+<span id="L70"><a href="#L70">  70</a> private theorem tripleToda_right_order_two</span>
+<span id="L71"><a href="#L71">  71</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L72"><a href="#L72">  72</a>     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L73"><a href="#L73">  73</a>     (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L74"><a href="#L74">  74</a>     (hz : TripleToda theta syntheticTwo b z) : b+b=0 := by</span>
+<span id="L75"><a href="#L75">  75</a>   let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (62,70)</span>
+<span id="L76"><a href="#L76">  76</a>   let g := (SyntheticCategory.biShift_comp (0,0) (62,70)).inv.app (S_0_0:SyntheticSpectrum) ≫ F.map syntheticTwo</span>
+<span id="L77"><a href="#L77">  77</a>   have hg : g=2 • 𝟙 (Smn 62 70 : SyntheticSpectrum) := by</span>
+<span id="L78"><a href="#L78">  78</a>     have hc := model.quotients.coherence.left_unit (62,70) (S_0_0:SyntheticSpectrum)</span>
+<span id="L79"><a href="#L79">  79</a>     change (biShiftAddIso (0,0) (62,70) (62,70) (by decide)).hom.app _=_ at hc</span>
+<span id="L80"><a href="#L80">  80</a>     have he : (SyntheticCategory.biShift_comp (0,0) (62,70)).hom.app (S_0_0:SyntheticSpectrum)=</span>
+<span id="L81"><a href="#L81">  81</a>         F.map (SyntheticCategory.biShift_zero.hom.app (S_0_0:SyntheticSpectrum)) := by</span>
+<span id="L82"><a href="#L82">  82</a>       simpa only [biShiftAddIso,Iso.trans_hom,NatTrans.comp_app,eqToIso.hom,</span>
+<span id="L83"><a href="#L83">  83</a>         eqToHom_app,eqToHom_refl,Category.comp_id,F] using hc</span>
+<span id="L84"><a href="#L84">  84</a>     dsimp only [g,syntheticTwo]</span>
+<span id="L85"><a href="#L85">  85</a>     rw [Functor.map_comp,←he,←Category.assoc,Iso.inv_hom_id_app,Category.id_comp]</span>
+<span id="L86"><a href="#L86">  86</a>     simp only [Functor.map_nsmul]</span>
+<span id="L87"><a href="#L87">  87</a>     change 2 • F.map (𝟙 (S_0_0 : SyntheticSpectrum)) = 2 • 𝟙 (F.obj (S_0_0 : SyntheticSpectrum))</span>
+<span id="L88"><a href="#L88">  88</a>     rw [CategoryTheory.Functor.map_id]</span>
+<span id="L89"><a href="#L89">  89</a>   have hb := (Toda.composable hz).2</span>
+<span id="L90"><a href="#L90">  90</a>   change g ≫ b=0 at hb</span>
+<span id="L91"><a href="#L91">  91</a>   rw [hg] at hb</span>
+<span id="L92"><a href="#L92">  92</a>   simp only [two_smul,Preadditive.add_comp] at hb</span>
+<span id="L93"><a href="#L93">  93</a>   erw [Category.id_comp] at hb</span>
+<span id="L94"><a href="#L94">  94</a>   exact hb</span>
+<span id="L95"><a href="#L95">  95</a> </span>
+<span id="L96"><a href="#L96">  96</a> private theorem theta_b_multiplied_shuffle</span>
+<span id="L97"><a href="#L97">  97</a>     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta)</span>
+<span id="L98"><a href="#L98">  98</a>     (htheta2 : theta+theta=0)</span>
+<span id="L99"><a href="#L99">  99</a>     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L100"><a href="#L100"> 100</a>     (z : BiHom 125 134 (S_0_0 : SyntheticSpectrum))</span>
+<span id="L101"><a href="#L101"> 101</a>     (hz : TripleToda theta syntheticTwo b z) :</span>
+<span id="L102"><a href="#L102"> 102</a>     quotientClass 9 (lambdaMultiply 2 (sphereProduct KIP126.Literature.Standard.syntheticH0 z)) =</span>
+<span id="L103"><a href="#L103"> 103</a>       quotientClass 9 (lambdaMultiply 3 (sphereProduct KIP126.Literature.Standard.eta (sphereProduct theta b))) := by</span>
+<span id="L104"><a href="#L104"> 104</a>   exact theta_b_shuffle_from_low_degrees</span>
+<span id="L105"><a href="#L105"> 105</a>     KIP126.Literature.Standard.syntheticH0 KIP126.Literature.Standard.eta</span>
+<span id="L106"><a href="#L106"> 106</a>     KIP126.Literature.Standard.toda_lambda_h0 theta b htheta2</span>
+<span id="L107"><a href="#L107"> 107</a>     (tripleToda_right_order_two theta b z hz) z hz</span>
+<span id="L108"><a href="#L108"> 108</a>     (KIP126.Literature.Standard.toda_symmetric theta htheta2)</span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> end</span>
+<span id="L111"><a href="#L111"> 111</a> end KIP126.Main.Internal.Theta</span></pre>

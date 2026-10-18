@@ -1,0 +1,81 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Literature/Delivery.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Literature/Delivery.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature.Classical</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Literature.Classical</span>
+<span id="L5"><a href="#L5">   5</a> public import KIP126.Literature.Rigidity</span>
+<span id="L6"><a href="#L6">   6</a> import all KIP126.Literature.Rigidity</span>
+<span id="L7"><a href="#L7">   7</a> public import KIP126.Literature.Triangles</span>
+<span id="L8"><a href="#L8">   8</a> import all KIP126.Literature.Triangles</span>
+<span id="L9"><a href="#L9">   9</a> public import KIP126.Literature.Lift</span>
+<span id="L10"><a href="#L10">  10</a> import all KIP126.Literature.Lift</span>
+<span id="L11"><a href="#L11">  11</a> public import KIP126.Literature.EInfinity</span>
+<span id="L12"><a href="#L12">  12</a> import all KIP126.Literature.EInfinity</span>
+<span id="L13"><a href="#L13">  13</a> public import KIP126.Literature.BHS</span>
+<span id="L14"><a href="#L14">  14</a> import all KIP126.Literature.BHS</span>
+<span id="L15"><a href="#L15">  15</a> public import KIP126.Literature.RealizationTransport</span>
+<span id="L16"><a href="#L16">  16</a> import all KIP126.Literature.RealizationTransport</span>
+<span id="L17"><a href="#L17">  17</a> public import KIP126.Literature.ClassicalRange</span>
+<span id="L18"><a href="#L18">  18</a> import all KIP126.Literature.ClassicalRange</span>
+<span id="L19"><a href="#L19">  19</a> public import KIP126.Literature.BX</span>
+<span id="L20"><a href="#L20">  20</a> import all KIP126.Literature.BX</span>
+<span id="L21"><a href="#L21">  21</a> public import KIP126.Literature.Secondary</span>
+<span id="L22"><a href="#L22">  22</a> import all KIP126.Literature.Secondary</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> /-! Correlated literature delivery, retaining the bindings/results/interface</span>
+<span id="L25"><a href="#L25">  25</a> architecture of Interface/Challenge/Literature/Delivery at bbac1fc05843.</span>
+<span id="L26"><a href="#L26">  26</a> The concrete producer is deliberately absent: its former `sorry` obligations</span>
+<span id="L27"><a href="#L27">  27</a> are not imported or converted into globally available axioms. -/</span>
+<span id="L28"><a href="#L28">  28</a> </span>
+<span id="L29"><a href="#L29">  29</a> @[expose] section</span>
+<span id="L30"><a href="#L30">  30</a> set_option autoImplicit false</span>
+<span id="L31"><a href="#L31">  31</a> namespace KIP126.Literature</span>
+<span id="L32"><a href="#L32">  32</a> open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Kervaire.Route</span>
+<span id="L33"><a href="#L33">  33</a> universe u v w</span>
+<span id="L34"><a href="#L34">  34</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L35"><a href="#L35">  35</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L36"><a href="#L36">  36</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L37"><a href="#L37">  37</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L38"><a href="#L38">  38</a> </span>
+<span id="L39"><a href="#L39">  39</a> /-- Sources, their fixed coordinates, and comparison witnesses. -/</span>
+<span id="L40"><a href="#L40">  40</a> private structure LiteratureBindings extends ClassicalBindings D where</span>
+<span id="L41"><a href="#L41">  41</a>   rigidity : RigidityBindings D</span>
+<span id="L42"><a href="#L42">  42</a>   eInfinity : EInfinityPresentation D</span>
+<span id="L43"><a href="#L43">  43</a>   infinityShift : InfinityShiftCoordinates D</span>
+<span id="L44"><a href="#L44">  44</a>   weights_lambda : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ)</span>
+<span id="L45"><a href="#L45">  45</a>     (hw : w₁ ≤ w₂) (ht : w₂ ≤ t),</span>
+<span id="L46"><a href="#L46">  46</a>     rigidity.weights.map X s t w₁ w₂ hw ht = infinityShift.weightMap D X s t w₁ w₂ hw</span>
+<span id="L47"><a href="#L47">  47</a>   tmfSource : TmfSourceData D tmf</span>
+<span id="L48"><a href="#L48">  48</a>   secondary : SecondaryBindings D</span>
+<span id="L49"><a href="#L49">  49</a>   nuCofiber : NuCofiberApplicability D</span>
+<span id="L50"><a href="#L50">  50</a>   realizationTransport : BHSSelectedRealizationComparisons D realization</span>
+<span id="L51"><a href="#L51">  51</a> </span>
+<span id="L52"><a href="#L52">  52</a> /-- Mathematical results use exactly the selected sources and background.</span>
+<span id="L53"><a href="#L53">  53</a> Internal arbitrary-choice θ₅ transport remains a separate theorem parameter. -/</span>
+<span id="L54"><a href="#L54">  54</a> private structure LiteratureResults (B : LiteratureBindings D) where</span>
+<span id="L55"><a href="#L55">  55</a>   foundation : ClassicalFoundationResults D</span>
+<span id="L56"><a href="#L56">  56</a>   classical : ClassicalResults D B.toClassicalBindings</span>
+<span id="L57"><a href="#L57">  57</a>   classicalRange : ClassicalRangeResults D</span>
+<span id="L58"><a href="#L58">  58</a>   rigidity : RigidityResults D B.rigidity</span>
+<span id="L59"><a href="#L59">  59</a>   triangles : NormalizedTriangleResults D</span>
+<span id="L60"><a href="#L60">  60</a>   lifts : LiftSourceResults D</span>
+<span id="L61"><a href="#L61">  61</a>   eInfinity : EInfinityCompatibility D B.eInfinity B.infinityShift</span>
+<span id="L62"><a href="#L62">  62</a>   bhs : BHSResults D</span>
+<span id="L63"><a href="#L63">  63</a>   selectedComparisons : BHSSelectedComparisons D</span>
+<span id="L64"><a href="#L64">  64</a>   realization : BHSRealizationResults D B.realization</span>
+<span id="L65"><a href="#L65">  65</a>   tmf : TmfSourceResults D B.tmfSource</span>
+<span id="L66"><a href="#L66">  66</a>   bx : BXDistinguishedInput D B.eta</span>
+<span id="L67"><a href="#L67">  67</a>   secondary : SecondaryResults D B.toClassicalBindings B.secondary</span>
+<span id="L68"><a href="#L68">  68</a> </span>
+<span id="L69"><a href="#L69">  69</a> /-- A consumer supplies one correlated delivery on its given model. -/</span>
+<span id="L70"><a href="#L70">  70</a> private structure LiteratureInterface where</span>
+<span id="L71"><a href="#L71">  71</a>   bindings : LiteratureBindings D</span>
+<span id="L72"><a href="#L72">  72</a>   results : LiteratureResults D bindings</span>
+<span id="L73"><a href="#L73">  73</a> </span>
+<span id="L74"><a href="#L74">  74</a> /-- The corrected weight map is epi by the same actual λ/quotient formula. -/</span>
+<span id="L75"><a href="#L75">  75</a> private theorem LiteratureInterface.weight_epi (L : LiteratureInterface D)</span>
+<span id="L76"><a href="#L76">  76</a>     (X : ClassicalObject) (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t) :</span>
+<span id="L77"><a href="#L77">  77</a>     CategoryTheory.Epi (L.bindings.rigidity.weights.map X s t w₁ w₂ hw ht) := by</span>
+<span id="L78"><a href="#L78">  78</a>   rw [L.bindings.weights_lambda]</span>
+<span id="L79"><a href="#L79">  79</a>   exact L.results.eInfinity.weight_epi D X s t w₁ w₂ hw ht</span>
+<span id="L80"><a href="#L80">  80</a> </span>
+<span id="L81"><a href="#L81">  81</a> end KIP126.Literature</span></pre>

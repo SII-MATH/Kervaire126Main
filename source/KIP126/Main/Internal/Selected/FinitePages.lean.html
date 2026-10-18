@@ -1,0 +1,740 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Selected/FinitePages.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Selected/FinitePages.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> public import KIP126.Main.Conditions</span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.AdamsCalculations.Table</span>
+<span id="L4"><a href="#L4">   4</a> import all KIP126.Main.Internal.PageCalculus</span>
+<span id="L5"><a href="#L5">   5</a> import all KIP126.Main.Internal.Selected.NormalizedTable</span>
+<span id="L6"><a href="#L6">   6</a> </span>
+<span id="L7"><a href="#L7">   7</a> /-! Complete finite-page stem-124 calculations from Selected/ThetaData:33–741</span>
+<span id="L8"><a href="#L8">   8</a> at bbac1fc05843 (MIT), using the fixed actual table. -/</span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.Main.Internal.Selected</span>
+<span id="L11"><a href="#L11">  11</a> open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra</span>
+<span id="L12"><a href="#L12">  12</a> open KIP126.StableHomotopy KIP126.Core.SpectralSequence</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L15"><a href="#L15">  15</a> open Normalized</span>
+<span id="L16"><a href="#L16">  16</a> noncomputable section</span>
+<span id="L17"><a href="#L17">  17</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L18"><a href="#L18">  18</a> set_option maxHeartbeats 1600000</span>
+<span id="L19"><a href="#L19">  19</a> set_option maxRecDepth 10000</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> private theorem page_subsingleton_of_le (r t s u : ℤ) (hr : 2≤r) (hrt : r≤t)</span>
+<span id="L22"><a href="#L22">  22</a>     (hp : Subsingleton (Normalized.sphere.Page r (s,u))) :</span>
+<span id="L23"><a href="#L23">  23</a>     Subsingleton (Normalized.sphere.Page t (s,u)) := by</span>
+<span id="L24"><a href="#L24">  24</a>   have hall (a : Normalized.sphere.Page t (s,u)) : a=0 := by</span>
+<span id="L25"><a href="#L25">  25</a>     obtain ⟨x,hx⟩ := page_has_initial_representative (by omega) a</span>
+<span id="L26"><a href="#L26">  26</a>     obtain ⟨xr,hxr⟩ := KIP126.Main.Internal.reaches_before hr hrt ⟨a,hx⟩</span>
+<span id="L27"><a href="#L27">  27</a>     have hz : xr=0 := hp.elim _ _</span>
+<span id="L28"><a href="#L28">  28</a>     rw [hz] at hxr</span>
+<span id="L29"><a href="#L29">  29</a>     exact represents_later_zero hrt hxr hx</span>
+<span id="L30"><a href="#L30">  30</a>   exact ⟨fun a b =&gt; (hall a).trans (hall b).symm⟩</span>
+<span id="L31"><a href="#L31">  31</a> </span>
+<span id="L32"><a href="#L32">  32</a> private theorem stem124_finite_pages_low124_d2_10  : (Normalized.sphere).d 2 (10,134) = 0 := by</span>
+<span id="L33"><a href="#L33">  33</a>   classical</span>
+<span id="L34"><a href="#L34">  34</a>   let E := Normalized.sphere</span>
+<span id="L35"><a href="#L35">  35</a>   have hrep2 {p : ℤ × ℤ} (x : E.Page 2 p) : RepresentsOnPage E 2 p x x := by</span>
+<span id="L36"><a href="#L36">  36</a>     exact represents_two_self _</span>
+<span id="L37"><a href="#L37">  37</a>   have h171 : HasDifferential E 4 (6,131) (10,134)</span>
+<span id="L38"><a href="#L38">  38</a>       (basis .sphere 6 131 0) (basis .sphere 10 134 0 + basis .sphere 10 134 3) := by</span>
+<span id="L39"><a href="#L39">  39</a>     have hrow := result ⟨.sphere,.equation,4,6,131,[0],10,134,[0, 3],&quot;S0_AdamsE2_ss&quot;,2492⟩ (by</span>
+<span id="L40"><a href="#L40">  40</a>       exact List.mem_of_getElem? (i := 171) (by rfl))</span>
+<span id="L41"><a href="#L41">  41</a>     dsimp only [Statement] at hrow</span>
+<span id="L42"><a href="#L42">  42</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L43"><a href="#L43">  43</a>     change HasDifferential E 4 (6,131) (10,134) a b at h</span>
+<span id="L44"><a href="#L44">  44</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 6 131 [0] = true := rfl</span>
+<span id="L45"><a href="#L45">  45</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 134 [0, 3] = true := rfl</span>
+<span id="L46"><a href="#L46">  46</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L47"><a href="#L47">  47</a>     rw [← ha,← hb] at h</span>
+<span id="L48"><a href="#L48">  48</a>     simpa only [add_assoc] using h</span>
+<span id="L49"><a href="#L49">  49</a>   have h172 : HasDifferential E 4 (6,131) (10,134)</span>
+<span id="L50"><a href="#L50">  50</a>       (basis .sphere 6 131 1) (basis .sphere 10 134 0 + basis .sphere 10 134 1 + basis .sphere 10 134 3 + basis .sphere 10 134 4) := by</span>
+<span id="L51"><a href="#L51">  51</a>     have hrow := result ⟨.sphere,.equation,4,6,131,[1],10,134,[0, 1, 3, 4],&quot;S0_AdamsE2_ss&quot;,2493⟩ (by</span>
+<span id="L52"><a href="#L52">  52</a>       exact List.mem_of_getElem? (i := 172) (by rfl))</span>
+<span id="L53"><a href="#L53">  53</a>     dsimp only [Statement] at hrow</span>
+<span id="L54"><a href="#L54">  54</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L55"><a href="#L55">  55</a>     change HasDifferential E 4 (6,131) (10,134) a b at h</span>
+<span id="L56"><a href="#L56">  56</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 6 131 [1] = true := rfl</span>
+<span id="L57"><a href="#L57">  57</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 134 [0, 1, 3, 4] = true := rfl</span>
+<span id="L58"><a href="#L58">  58</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L59"><a href="#L59">  59</a>     rw [← ha,← hb] at h</span>
+<span id="L60"><a href="#L60">  60</a>     simpa only [add_assoc] using h</span>
+<span id="L61"><a href="#L61">  61</a>   have h201 : HasDifferential E 2 (8,133) (10,134)</span>
+<span id="L62"><a href="#L62">  62</a>       (basis .sphere 8 133 1) (basis .sphere 10 134 2 + basis .sphere 10 134 4) := by</span>
+<span id="L63"><a href="#L63">  63</a>     have hrow := result ⟨.sphere,.equation,2,8,133,[1],10,134,[2, 4],&quot;S0_AdamsE2_ss&quot;,2630⟩ (by</span>
+<span id="L64"><a href="#L64">  64</a>       exact List.mem_of_getElem? (i := 201) (by rfl))</span>
+<span id="L65"><a href="#L65">  65</a>     dsimp only [Statement] at hrow</span>
+<span id="L66"><a href="#L66">  66</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L67"><a href="#L67">  67</a>     change HasDifferential E 2 (8,133) (10,134) a b at h</span>
+<span id="L68"><a href="#L68">  68</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 8 133 [1] = true := rfl</span>
+<span id="L69"><a href="#L69">  69</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 134 [2, 4] = true := rfl</span>
+<span id="L70"><a href="#L70">  70</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L71"><a href="#L71">  71</a>     rw [← ha,← hb] at h</span>
+<span id="L72"><a href="#L72">  72</a>     simpa only [add_assoc] using h</span>
+<span id="L73"><a href="#L73">  73</a>   have h250 : HasDifferential E 5 (10,134) (15,138)</span>
+<span id="L74"><a href="#L74">  74</a>       (basis .sphere 10 134 3) (basis .sphere 15 138 1) := by</span>
+<span id="L75"><a href="#L75">  75</a>     have hrow := result ⟨.sphere,.equation,5,10,134,[3],15,138,[1],&quot;S0_AdamsE2_ss&quot;,2694⟩ (by</span>
+<span id="L76"><a href="#L76">  76</a>       exact List.mem_of_getElem? (i := 250) (by rfl))</span>
+<span id="L77"><a href="#L77">  77</a>     dsimp only [Statement] at hrow</span>
+<span id="L78"><a href="#L78">  78</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L79"><a href="#L79">  79</a>     change HasDifferential E 5 (10,134) (15,138) a b at h</span>
+<span id="L80"><a href="#L80">  80</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 134 [3] = true := rfl</span>
+<span id="L81"><a href="#L81">  81</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 15 138 [1] = true := rfl</span>
+<span id="L82"><a href="#L82">  82</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L83"><a href="#L83">  83</a>     rw [← ha,← hb] at h</span>
+<span id="L84"><a href="#L84">  84</a>     simpa only [add_assoc] using h</span>
+<span id="L85"><a href="#L85">  85</a>   have h249 : ReachesPage E 1000 (10,134) (basis .sphere 10 134 4) := by</span>
+<span id="L86"><a href="#L86">  86</a>     have hrow := result ⟨.sphere,.reaches,1000,10,134,[4],10,134,[],&quot;S0_AdamsE2_ss&quot;,2693⟩ (by</span>
+<span id="L87"><a href="#L87">  87</a>       exact List.mem_of_getElem? (i := 249) (by rfl))</span>
+<span id="L88"><a href="#L88">  88</a>     dsimp only [Statement] at hrow</span>
+<span id="L89"><a href="#L89">  89</a>     obtain ⟨a,ha,h⟩ := hrow</span>
+<span id="L90"><a href="#L90">  90</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 134 [4] = true := rfl</span>
+<span id="L91"><a href="#L91">  91</a>     simp only [decode,vx,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha</span>
+<span id="L92"><a href="#L92">  92</a>     rw [← ha] at h</span>
+<span id="L93"><a href="#L93">  93</a>     exact h</span>
+<span id="L94"><a href="#L94">  94</a>   have d03 := represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4)</span>
+<span id="L95"><a href="#L95">  95</a>     (hrep2 _) (show ReachesPage E 4 (10,134) _ from ⟨h171.choose_spec.choose_spec.choose, h171.choose_spec.choose_spec.choose_spec.2.1⟩)</span>
+<span id="L96"><a href="#L96">  96</a>   have d0134 : E.d 2 (10,134) (basis .sphere 10 134 0 + basis .sphere 10 134 1 + basis .sphere 10 134 3 + basis .sphere 10 134 4) = 0 := by</span>
+<span id="L97"><a href="#L97">  97</a>     obtain ⟨_,xr,yr,hxr,hyr,_⟩ := h172</span>
+<span id="L98"><a href="#L98">  98</a>     exact represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;4) (hrep2 _) ⟨yr,hyr⟩</span>
+<span id="L99"><a href="#L99">  99</a>   have d24 : E.d 2 (10,134) (basis .sphere 10 134 2 + basis .sphere 10 134 4) = 0 := by</span>
+<span id="L100"><a href="#L100"> 100</a>     obtain ⟨_,hd⟩ := h201.eq_on_page_two</span>
+<span id="L101"><a href="#L101"> 101</a>     change E.d 2 (8,133) (basis .sphere 8 133 1) = _ at hd</span>
+<span id="L102"><a href="#L102"> 102</a>     rw [← hd]</span>
+<span id="L103"><a href="#L103"> 103</a>     exact congrArg (fun f =&gt; f (basis .sphere 8 133 1)) (E.d_comp_d 2 (8,133))</span>
+<span id="L104"><a href="#L104"> 104</a>   have d4 := represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;1000) (hrep2 _) h249</span>
+<span id="L105"><a href="#L105"> 105</a>   have d3 : E.d 2 (10,134) (basis .sphere 10 134 3) = 0 := by</span>
+<span id="L106"><a href="#L106"> 106</a>     obtain ⟨_,xr,yr,hxr,hyr,_⟩ := h250</span>
+<span id="L107"><a href="#L107"> 107</a>     exact represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;5) (hrep2 _) ⟨xr,hxr⟩</span>
+<span id="L108"><a href="#L108"> 108</a>   have d0 : E.d 2 (10,134) (basis .sphere 10 134 0) = 0 := by simpa only [map_add,d3,add_zero] using d03</span>
+<span id="L109"><a href="#L109"> 109</a>   have d1 : E.d 2 (10,134) (basis .sphere 10 134 1) = 0 := by simpa only [map_add,d0,d3,d4,zero_add,add_zero] using d0134</span>
+<span id="L110"><a href="#L110"> 110</a>   have d2 : E.d 2 (10,134) (basis .sphere 10 134 2) = 0 := by simpa only [map_add,d4,add_zero] using d24</span>
+<span id="L111"><a href="#L111"> 111</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,10,134,[&quot;389,1&quot;,&quot;388,1&quot;,&quot;1,1,366,1&quot;,&quot;0,1,373,1&quot;,&quot;0,2,367,1&quot;]⟩ (by</span>
+<span id="L112"><a href="#L112"> 112</a>     exact List.mem_of_getElem? (i := 181) (by rfl))</span>
+<span id="L113"><a href="#L113"> 113</a>   change E.Page 2 (10,134) ≃ₗ[ℤ] (Fin 5 →₀ KIP126.Core.Algebra.F2) at e</span>
+<span id="L114"><a href="#L114"> 114</a>   change ∀i : Fin 5, e.symm (Finsupp.single i 1) = basis .sphere 10 134 i.val at he</span>
+<span id="L115"><a href="#L115"> 115</a>   have hone (i : Fin 5) : E.d 2 (10,134) (e.symm (Finsupp.single i 1)) = 0 := by</span>
+<span id="L116"><a href="#L116"> 116</a>     rw [he]</span>
+<span id="L117"><a href="#L117"> 117</a>     fin_cases i</span>
+<span id="L118"><a href="#L118"> 118</a>     · exact d0</span>
+<span id="L119"><a href="#L119"> 119</a>     · exact d1</span>
+<span id="L120"><a href="#L120"> 120</a>     · exact d2</span>
+<span id="L121"><a href="#L121"> 121</a>     · exact d3</span>
+<span id="L122"><a href="#L122"> 122</a>     · exact d4</span>
+<span id="L123"><a href="#L123"> 123</a>   have hall (f : Fin 5 →₀ KIP126.Core.Algebra.F2) : E.d 2 (10,134) (e.symm f) = 0 := by</span>
+<span id="L124"><a href="#L124"> 124</a>     induction f using Finsupp.induction with</span>
+<span id="L125"><a href="#L125"> 125</a>     | zero =&gt; simp</span>
+<span id="L126"><a href="#L126"> 126</a>     | @single_add i a f hi ha ih =&gt;</span>
+<span id="L127"><a href="#L127"> 127</a>       rw [map_add,map_add,ih,add_zero]</span>
+<span id="L128"><a href="#L128"> 128</a>       fin_cases a</span>
+<span id="L129"><a href="#L129"> 129</a>       · simp</span>
+<span id="L130"><a href="#L130"> 130</a>       · exact hone i</span>
+<span id="L131"><a href="#L131"> 131</a>   ext x</span>
+<span id="L132"><a href="#L132"> 132</a>   simpa only [LinearEquiv.symm_apply_apply,ModuleCat.hom_zero,LinearMap.zero_apply] using hall (e x)</span>
+<span id="L133"><a href="#L133"> 133</a> </span>
+<span id="L134"><a href="#L134"> 134</a> </span>
+<span id="L135"><a href="#L135"> 135</a> private theorem stem124_finite_pages_f2_three (f : Fin 3 →₀ F2) :</span>
+<span id="L136"><a href="#L136"> 136</a>     f = 0 ∨ f = Finsupp.single 0 1 ∨ f = Finsupp.single 1 1 ∨</span>
+<span id="L137"><a href="#L137"> 137</a>     f = Finsupp.single 2 1 ∨ f = Finsupp.single 0 1 + Finsupp.single 1 1 ∨</span>
+<span id="L138"><a href="#L138"> 138</a>     f = Finsupp.single 0 1 + Finsupp.single 2 1 ∨</span>
+<span id="L139"><a href="#L139"> 139</a>     f = Finsupp.single 1 1 + Finsupp.single 2 1 ∨</span>
+<span id="L140"><a href="#L140"> 140</a>     f = Finsupp.single 0 1 + Finsupp.single 1 1 + Finsupp.single 2 1 := by</span>
+<span id="L141"><a href="#L141"> 141</a>   classical</span>
+<span id="L142"><a href="#L142"> 142</a>   have hf : f = Finsupp.single 0 (f 0) + Finsupp.single 1 (f 1) + Finsupp.single 2 (f 2) := by</span>
+<span id="L143"><a href="#L143"> 143</a>     ext i</span>
+<span id="L144"><a href="#L144"> 144</a>     fin_cases i &lt;;&gt; simp</span>
+<span id="L145"><a href="#L145"> 145</a>   generalize h0 : f 0 = a at hf</span>
+<span id="L146"><a href="#L146"> 146</a>   generalize h1 : f 1 = b at hf</span>
+<span id="L147"><a href="#L147"> 147</a>   generalize h2 : f 2 = c at hf</span>
+<span id="L148"><a href="#L148"> 148</a>   fin_cases a &lt;;&gt; fin_cases b &lt;;&gt; fin_cases c</span>
+<span id="L149"><a href="#L149"> 149</a>   all_goals simp only [show (⟨0,by decide⟩ : F2) = 0 from rfl, show (⟨1,by decide⟩ : F2) = 1 from rfl, Finsupp.single_zero, zero_add, add_zero] at hf</span>
+<span id="L150"><a href="#L150"> 150</a>   all_goals subst f; tauto</span>
+<span id="L151"><a href="#L151"> 151</a> </span>
+<span id="L152"><a href="#L152"> 152</a> </span>
+<span id="L153"><a href="#L153"> 153</a> private theorem stem124_finite_pages_low124_af9_four  :</span>
+<span id="L154"><a href="#L154"> 154</a>     Subsingleton ((Normalized.sphere).Page 4 (9,133)) ∧</span>
+<span id="L155"><a href="#L155"> 155</a>     (∀ y : (Normalized.sphere).Page 4 (12,135),</span>
+<span id="L156"><a href="#L156"> 156</a>       RepresentsOnPage (Normalized.sphere) 4 (12,135) (basis .sphere 12 135 2) y → y ≠ 0) ∧</span>
+<span id="L157"><a href="#L157"> 157</a>     ∀ x : (Normalized.sphere).Page 2 (9,133), (Normalized.sphere).d 2 (9,133) x = 0 ∨</span>
+<span id="L158"><a href="#L158"> 158</a>       (Normalized.sphere).d 2 (9,133) x = basis .sphere 11 134 4 := by</span>
+<span id="L159"><a href="#L159"> 159</a>   classical</span>
+<span id="L160"><a href="#L160"> 160</a>   let E := Normalized.sphere</span>
+<span id="L161"><a href="#L161"> 161</a>   have hrep2 {p : ℤ × ℤ} (x : E.Page 2 p) : RepresentsOnPage E 2 p x x := by</span>
+<span id="L162"><a href="#L162"> 162</a>     exact represents_two_self _</span>
+<span id="L163"><a href="#L163"> 163</a>   have hadd {r : ℤ} {p : ℤ × ℤ} {x y : E.Page 2 p} {xr yr : E.Page r p}</span>
+<span id="L164"><a href="#L164"> 164</a>       (hx : RepresentsOnPage E r p x xr) (hy : RepresentsOnPage E r p y yr) :</span>
+<span id="L165"><a href="#L165"> 165</a>       RepresentsOnPage E r p (x+y) (xr+yr) := by</span>
+<span id="L166"><a href="#L166"> 166</a>     exact represents_add_tail (by assumption) (by assumption)</span>
+<span id="L167"><a href="#L167"> 167</a>   have h221 : HasDifferential E 3 (9,133) (12,135)</span>
+<span id="L168"><a href="#L168"> 168</a>       (basis .sphere 9 133 1 + basis .sphere 9 133 2) (basis .sphere 12 135 0) := by</span>
+<span id="L169"><a href="#L169"> 169</a>     have hrow := result ⟨.sphere,.equation,3,9,133,[1, 2],12,135,[0],&quot;S0_AdamsE2_ss&quot;,2626⟩ (by</span>
+<span id="L170"><a href="#L170"> 170</a>       exact List.mem_of_getElem? (i := 221) (by rfl))</span>
+<span id="L171"><a href="#L171"> 171</a>     dsimp only [Statement] at hrow</span>
+<span id="L172"><a href="#L172"> 172</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L173"><a href="#L173"> 173</a>     change HasDifferential E 3 (9,133) (12,135) a b at h</span>
+<span id="L174"><a href="#L174"> 174</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 133 [1, 2] = true := rfl</span>
+<span id="L175"><a href="#L175"> 175</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 135 [0] = true := rfl</span>
+<span id="L176"><a href="#L176"> 176</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L177"><a href="#L177"> 177</a>     rw [← ha,← hb] at h</span>
+<span id="L178"><a href="#L178"> 178</a>     simpa only [add_assoc] using h</span>
+<span id="L179"><a href="#L179"> 179</a>   have h222 : HasDifferential E 3 (9,133) (12,135)</span>
+<span id="L180"><a href="#L180"> 180</a>       (basis .sphere 9 133 0 + basis .sphere 9 133 2) (basis .sphere 12 135 1 + basis .sphere 12 135 2) := by</span>
+<span id="L181"><a href="#L181"> 181</a>     have hrow := result ⟨.sphere,.equation,3,9,133,[0, 2],12,135,[1, 2],&quot;S0_AdamsE2_ss&quot;,2627⟩ (by</span>
+<span id="L182"><a href="#L182"> 182</a>       exact List.mem_of_getElem? (i := 222) (by rfl))</span>
+<span id="L183"><a href="#L183"> 183</a>     dsimp only [Statement] at hrow</span>
+<span id="L184"><a href="#L184"> 184</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L185"><a href="#L185"> 185</a>     change HasDifferential E 3 (9,133) (12,135) a b at h</span>
+<span id="L186"><a href="#L186"> 186</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 133 [0, 2] = true := rfl</span>
+<span id="L187"><a href="#L187"> 187</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 135 [1, 2] = true := rfl</span>
+<span id="L188"><a href="#L188"> 188</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L189"><a href="#L189"> 189</a>     rw [← ha,← hb] at h</span>
+<span id="L190"><a href="#L190"> 190</a>     simpa only [add_assoc] using h</span>
+<span id="L191"><a href="#L191"> 191</a>   have h223 : HasDifferential E 2 (9,133) (11,134)</span>
+<span id="L192"><a href="#L192"> 192</a>       (basis .sphere 9 133 2) (basis .sphere 11 134 4) := by</span>
+<span id="L193"><a href="#L193"> 193</a>     have hrow := result ⟨.sphere,.equation,2,9,133,[2],11,134,[4],&quot;S0_AdamsE2_ss&quot;,2628⟩ (by</span>
+<span id="L194"><a href="#L194"> 194</a>       exact List.mem_of_getElem? (i := 223) (by rfl))</span>
+<span id="L195"><a href="#L195"> 195</a>     dsimp only [Statement] at hrow</span>
+<span id="L196"><a href="#L196"> 196</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L197"><a href="#L197"> 197</a>     change HasDifferential E 2 (9,133) (11,134) a b at h</span>
+<span id="L198"><a href="#L198"> 198</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 9 133 [2] = true := rfl</span>
+<span id="L199"><a href="#L199"> 199</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 11 134 [4] = true := rfl</span>
+<span id="L200"><a href="#L200"> 200</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L201"><a href="#L201"> 201</a>     rw [← ha,← hb] at h</span>
+<span id="L202"><a href="#L202"> 202</a>     simpa only [add_assoc] using h</span>
+<span id="L203"><a href="#L203"> 203</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,9,133,[&quot;374,1&quot;, &quot;373,1&quot;, &quot;0,1,367,1&quot;]⟩ (by</span>
+<span id="L204"><a href="#L204"> 204</a>     exact List.mem_of_getElem? (i := 172) (by rfl))</span>
+<span id="L205"><a href="#L205"> 205</a>   change E.Page 2 (9,133) ≃ₗ[ℤ] (Fin 3 →₀ F2) at e</span>
+<span id="L206"><a href="#L206"> 206</a>   change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = basis .sphere 9 133 i.val at he</span>
+<span id="L207"><a href="#L207"> 207</a>   obtain ⟨f,hf⟩ := basis_correct ⟨.sphere,11,134,[&quot;387,1&quot;, &quot;386,1&quot;, &quot;18,1,189,1&quot;, &quot;0,1,69,1,80,1&quot;, &quot;0,2,366,1&quot;]⟩ (by</span>
+<span id="L208"><a href="#L208"> 208</a>     exact List.mem_of_getElem? (i := 190) (by rfl))</span>
+<span id="L209"><a href="#L209"> 209</a>   change E.Page 2 (11,134) ≃ₗ[ℤ] (Fin 5 →₀ F2) at f</span>
+<span id="L210"><a href="#L210"> 210</a>   change ∀ i : Fin 5, f.symm (Finsupp.single i 1) = basis .sphere 11 134 i.val at hf</span>
+<span id="L211"><a href="#L211"> 211</a>   obtain ⟨g,hg⟩ := basis_correct ⟨.sphere,12,135,[&quot;408,1&quot;, &quot;0,1,386,1&quot;, &quot;0,2,69,1,80,1&quot;]⟩ (by</span>
+<span id="L212"><a href="#L212"> 212</a>     exact List.mem_of_getElem? (i := 199) (by rfl))</span>
+<span id="L213"><a href="#L213"> 213</a>   change E.Page 2 (12,135) ≃ₗ[ℤ] (Fin 3 →₀ F2) at g</span>
+<span id="L214"><a href="#L214"> 214</a>   change ∀ i : Fin 3, g.symm (Finsupp.single i 1) = basis .sphere 12 135 i.val at hg</span>
+<span id="L215"><a href="#L215"> 215</a>   have e0 : e.symm (Finsupp.single 0 1) = basis .sphere 9 133 0 := he 0</span>
+<span id="L216"><a href="#L216"> 216</a>   have e1 : e.symm (Finsupp.single 1 1) = basis .sphere 9 133 1 := he 1</span>
+<span id="L217"><a href="#L217"> 217</a>   have e2 : e.symm (Finsupp.single 2 1) = basis .sphere 9 133 2 := he 2</span>
+<span id="L218"><a href="#L218"> 218</a>   have f4 : f.symm (Finsupp.single 4 1) = basis .sphere 11 134 4 := hf 4</span>
+<span id="L219"><a href="#L219"> 219</a>   have g0 : g.symm (Finsupp.single 0 1) = basis .sphere 12 135 0 := hg 0</span>
+<span id="L220"><a href="#L220"> 220</a>   have g1 : g.symm (Finsupp.single 1 1) = basis .sphere 12 135 1 := hg 1</span>
+<span id="L221"><a href="#L221"> 221</a>   have g2 : g.symm (Finsupp.single 2 1) = basis .sphere 12 135 2 := hg 2</span>
+<span id="L222"><a href="#L222"> 222</a>   have ht2 : basis .sphere 11 134 4 + basis .sphere 11 134 4 = 0 := by</span>
+<span id="L223"><a href="#L223"> 223</a>     rw [← f4,← f.symm.map_add,← Finsupp.single_add,show (1:F2)+1=0 from rfl,Finsupp.single_zero,map_zero]</span>
+<span id="L224"><a href="#L224"> 224</a>   have he22 : basis .sphere 9 133 2 + basis .sphere 9 133 2 = 0 := by</span>
+<span id="L225"><a href="#L225"> 225</a>     rw [← e2,← e.symm.map_add,← Finsupp.single_add,show (1:F2)+1=0 from rfl,Finsupp.single_zero,map_zero]</span>
+<span id="L226"><a href="#L226"> 226</a>   have htne : basis .sphere 11 134 4 ≠ 0 := by</span>
+<span id="L227"><a href="#L227"> 227</a>     intro h</span>
+<span id="L228"><a href="#L228"> 228</a>     have hh := congrArg (fun x =&gt; f x 4) h</span>
+<span id="L229"><a href="#L229"> 229</a>     rw [← f4,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L230"><a href="#L230"> 230</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L231"><a href="#L231"> 231</a>   obtain ⟨_,v,a,hv,ha,dv⟩ := h221</span>
+<span id="L232"><a href="#L232"> 232</a>   obtain ⟨_,w,b,hw,hb,dw⟩ := h222</span>
+<span id="L233"><a href="#L233"> 233</a>   have d2v := represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;3) (hrep2 _) ⟨v,hv⟩</span>
+<span id="L234"><a href="#L234"> 234</a>   have d2w := represents_d_zero_of_later (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;3) (hrep2 _) ⟨w,hw⟩</span>
+<span id="L235"><a href="#L235"> 235</a>   have d22 : E.d 2 (9,133) (basis .sphere 9 133 2) = basis .sphere 11 134 4 := by</span>
+<span id="L236"><a href="#L236"> 236</a>     obtain ⟨_,hd⟩ := h223.eq_on_page_two</span>
+<span id="L237"><a href="#L237"> 237</a>     exact hd</span>
+<span id="L238"><a href="#L238"> 238</a>   have d20 : E.d 2 (9,133) (basis .sphere 9 133 0) = basis .sphere 11 134 4 := by</span>
+<span id="L239"><a href="#L239"> 239</a>     have hh := congrArg (fun z =&gt; z + basis .sphere 11 134 4) d2w</span>
+<span id="L240"><a href="#L240"> 240</a>     simpa only [map_add,d22,add_assoc,ht2,add_zero,zero_add] using hh</span>
+<span id="L241"><a href="#L241"> 241</a>   have d21 : E.d 2 (9,133) (basis .sphere 9 133 1) = basis .sphere 11 134 4 := by</span>
+<span id="L242"><a href="#L242"> 242</a>     have hh := congrArg (fun z =&gt; z + basis .sphere 11 134 4) d2v</span>
+<span id="L243"><a href="#L243"> 243</a>     simpa only [map_add,d22,add_assoc,ht2,add_zero,zero_add] using hh</span>
+<span id="L244"><a href="#L244"> 244</a>   have hker2 (x : E.Page 2 (9,133)) (hx : E.d 2 (9,133) x = 0) :</span>
+<span id="L245"><a href="#L245"> 245</a>       x = 0 ∨ x = basis .sphere 9 133 1 + basis .sphere 9 133 2 ∨</span>
+<span id="L246"><a href="#L246"> 246</a>       x = basis .sphere 9 133 0 + basis .sphere 9 133 2 ∨</span>
+<span id="L247"><a href="#L247"> 247</a>       x = (basis .sphere 9 133 1 + basis .sphere 9 133 2) +</span>
+<span id="L248"><a href="#L248"> 248</a>         (basis .sphere 9 133 0 + basis .sphere 9 133 2) := by</span>
+<span id="L249"><a href="#L249"> 249</a>     rcases stem124_finite_pages_f2_three (e x) with h|h|h|h|h|h|h|h</span>
+<span id="L250"><a href="#L250"> 250</a>     all_goals have hh := congrArg e.symm h</span>
+<span id="L251"><a href="#L251"> 251</a>     all_goals simp only [LinearEquiv.symm_apply_apply,map_zero,map_add,e0,e1,e2] at hh</span>
+<span id="L252"><a href="#L252"> 252</a>     · exact Or.inl hh</span>
+<span id="L253"><a href="#L253"> 253</a>     · exact (htne (by simpa only [hh,d20] using hx)).elim</span>
+<span id="L254"><a href="#L254"> 254</a>     · exact (htne (by simpa only [hh,d21] using hx)).elim</span>
+<span id="L255"><a href="#L255"> 255</a>     · exact (htne (by simpa only [hh,d22] using hx)).elim</span>
+<span id="L256"><a href="#L256"> 256</a>     · right; right; right</span>
+<span id="L257"><a href="#L257"> 257</a>       rw [hh]</span>
+<span id="L258"><a href="#L258"> 258</a>       calc</span>
+<span id="L259"><a href="#L259"> 259</a>         _ = (basis .sphere 9 133 0 + basis .sphere 9 133 1) +</span>
+<span id="L260"><a href="#L260"> 260</a>           (basis .sphere 9 133 2 + basis .sphere 9 133 2) := by rw [he22,add_zero]</span>
+<span id="L261"><a href="#L261"> 261</a>         _ = _ := by abel</span>
+<span id="L262"><a href="#L262"> 262</a>     · exact Or.inr (Or.inr (Or.inl hh))</span>
+<span id="L263"><a href="#L263"> 263</a>     · exact Or.inr (Or.inl hh)</span>
+<span id="L264"><a href="#L264"> 264</a>     · exact (htne (by simpa only [hh,map_add,d20,d21,d22,ht2,zero_add] using hx)).elim</span>
+<span id="L265"><a href="#L265"> 265</a>   have frame (x : E.Page 3 (9,133)) : x=0 ∨ x=v ∨ x=w ∨ x=v+w := by</span>
+<span id="L266"><a href="#L266"> 266</a>     let A := E.ssData (9,133)</span>
+<span id="L267"><a href="#L267"> 267</a>     haveI : Epi (A.pageπ 1) := inferInstanceAs (Epi (cokernel.π _))</span>
+<span id="L268"><a href="#L268"> 268</a>     obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective (A.pageπ 1)).mp inferInstance x</span>
+<span id="L269"><a href="#L269"> 269</a>     let x0 : E.Page 2 (9,133) := (Subobject.ofLE (A.Z 1) (A.Z 0) (A.Z_anti (by decide)) ≫ A.pageπ 0) z</span>
+<span id="L270"><a href="#L270"> 270</a>     have hr : RepresentsOnPage E 3 (9,133) x0 x := ⟨by decide,z,rfl,hz⟩</span>
+<span id="L271"><a href="#L271"> 271</a>     have hd0 : E.d 2 (9,133) x0 = 0 := by</span>
+<span id="L272"><a href="#L272"> 272</a>       change x0 ∈ LinearMap.ker (E.d 2 (9,133)).hom</span>
+<span id="L273"><a href="#L273"> 273</a>       rw [← subobjectModule_kernel,E.Z_succ 2 (9,133) (by change (2:ℤ)≤2; omega),subobjectModule_image]</span>
+<span id="L274"><a href="#L274"> 274</a>       exact ⟨z,rfl⟩</span>
+<span id="L275"><a href="#L275"> 275</a>     rcases hker2 x0 hd0 with h0|h0|h0|h0</span>
+<span id="L276"><a href="#L276"> 276</a>     · exact Or.inl (represents_unique (E := E) (h0 ▸ hr) (RepresentsOnPage.zero (by decide)))</span>
+<span id="L277"><a href="#L277"> 277</a>     · exact Or.inr (Or.inl (represents_unique (E := E) (h0 ▸ hr) hv))</span>
+<span id="L278"><a href="#L278"> 278</a>     · exact Or.inr (Or.inr (Or.inl (represents_unique (E := E) (h0 ▸ hr) hw)))</span>
+<span id="L279"><a href="#L279"> 279</a>     · exact Or.inr (Or.inr (Or.inr (represents_unique (E := E) (h0 ▸ hr) (hadd hv hw))))</span>
+<span id="L280"><a href="#L280"> 280</a>   have reflect {x : E.Page 2 (12,135)} {y : E.Page 3 (12,135)}</span>
+<span id="L281"><a href="#L281"> 281</a>       (h : RepresentsOnPage E 3 (12,135) x y) (hy : y=0) : x=0 := by</span>
+<span id="L282"><a href="#L282"> 282</a>     obtain ⟨_,z,hx,hz⟩ := h</span>
+<span id="L283"><a href="#L283"> 283</a>     have hp := (next_projection_zero_iff_incoming E 2 (by change (2:ℤ)≤2; omega) (10,134) z).mp (hz.trans hy)</span>
+<span id="L284"><a href="#L284"> 284</a>     change (Subobject.ofLE _ _ ((E.ssData (12,135)).Z_anti bot_le) ≫ (E.ssData (12,135)).pageπ 0) z ∈ LinearMap.range (E.d 2 (10,134)).hom at hp</span>
+<span id="L285"><a href="#L285"> 285</a>     change (Subobject.ofLE _ _ ((E.ssData (12,135)).Z_anti bot_le) ≫ (E.ssData (12,135)).pageπ 0) z = x at hx</span>
+<span id="L286"><a href="#L286"> 286</a>     rw [hx] at hp</span>
+<span id="L287"><a href="#L287"> 287</a>     obtain ⟨u,hu⟩ := hp</span>
+<span id="L288"><a href="#L288"> 288</a>     rw [stem124_finite_pages_low124_d2_10] at hu</span>
+<span id="L289"><a href="#L289"> 289</a>     exact hu.symm</span>
+<span id="L290"><a href="#L290"> 290</a>   have ane : a ≠ 0 := by</span>
+<span id="L291"><a href="#L291"> 291</a>     intro hz</span>
+<span id="L292"><a href="#L292"> 292</a>     have hh := congrArg (fun x =&gt; g x 0) (reflect ha hz)</span>
+<span id="L293"><a href="#L293"> 293</a>     rw [← g0,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L294"><a href="#L294"> 294</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L295"><a href="#L295"> 295</a>   have bne : b ≠ 0 := by</span>
+<span id="L296"><a href="#L296"> 296</a>     intro hz</span>
+<span id="L297"><a href="#L297"> 297</a>     have hh := congrArg (fun x =&gt; g x 1) (reflect hb hz)</span>
+<span id="L298"><a href="#L298"> 298</a>     rw [← g1,← g2,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L299"><a href="#L299"> 299</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L300"><a href="#L300"> 300</a>   have abne : a+b ≠ 0 := by</span>
+<span id="L301"><a href="#L301"> 301</a>     intro hz</span>
+<span id="L302"><a href="#L302"> 302</a>     have hh := congrArg (fun x =&gt; g x 0) (reflect (hadd ha hb) hz)</span>
+<span id="L303"><a href="#L303"> 303</a>     rw [← g0,← g1,← g2,map_add,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L304"><a href="#L304"> 304</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L305"><a href="#L305"> 305</a>   have dv&#x27; : E.d 3 (9,133) v = a := dv</span>
+<span id="L306"><a href="#L306"> 306</a>   have dw&#x27; : E.d 3 (9,133) w = b := dw</span>
+<span id="L307"><a href="#L307"> 307</a>   have hker3 (x : E.Page 3 (9,133)) (hx : E.d 3 (9,133) x=0) : x=0 := by</span>
+<span id="L308"><a href="#L308"> 308</a>     rcases frame x with h|h|h|h</span>
+<span id="L309"><a href="#L309"> 309</a>     · exact h</span>
+<span id="L310"><a href="#L310"> 310</a>     · exact (ane (by simpa only [h,dv&#x27;] using hx)).elim</span>
+<span id="L311"><a href="#L311"> 311</a>     · exact (bne (by simpa only [h,dw&#x27;] using hx)).elim</span>
+<span id="L312"><a href="#L312"> 312</a>     · exact (abne (by simpa only [h,map_add,dv&#x27;,dw&#x27;] using hx)).elim</span>
+<span id="L313"><a href="#L313"> 313</a>   let S := E.pageShortComplex 3 ((9,133)-E.diffDeg 3)</span>
+<span id="L314"><a href="#L314"> 314</a>   have hs : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L315"><a href="#L315"> 315</a>     intro x hx</span>
+<span id="L316"><a href="#L316"> 316</a>     exact ⟨0,by rw [hker3 x hx,map_zero]⟩)</span>
+<span id="L317"><a href="#L317"> 317</a>   refine ⟨ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 3 (9,133)</span>
+<span id="L318"><a href="#L318"> 318</a>     (by change (2:ℤ)≤3; omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hs)), ?_, ?_⟩</span>
+<span id="L319"><a href="#L319"> 319</a>   intro y hrep hy</span>
+<span id="L320"><a href="#L320"> 320</a>   obtain ⟨_,z,hx,hz⟩ := hrep</span>
+<span id="L321"><a href="#L321"> 321</a>   let A := E.ssData (12,135)</span>
+<span id="L322"><a href="#L322"> 322</a>   let z1 := (Subobject.ofLE (A.Z 2) (A.Z 1) (A.Z_anti (by decide))) z</span>
+<span id="L323"><a href="#L323"> 323</a>   have hr3 : RepresentsOnPage E 3 (12,135) (basis .sphere 12 135 2) (A.pageπ 1 z1) := by</span>
+<span id="L324"><a href="#L324"> 324</a>     refine ⟨by decide,z1,?_,rfl⟩</span>
+<span id="L325"><a href="#L325"> 325</a>     change (Subobject.ofLE (A.Z 1) (A.Z 0) (A.Z_anti bot_le) ≫ A.pageπ 0) z1 = _</span>
+<span id="L326"><a href="#L326"> 326</a>     dsimp only [z1]</span>
+<span id="L327"><a href="#L327"> 327</a>     rw [← CategoryTheory.comp_apply,← Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L328"><a href="#L328"> 328</a>     exact hx</span>
+<span id="L329"><a href="#L329"> 329</a>   have hi := (next_projection_zero_iff_incoming E 3 (by change (2:ℤ)≤3; omega) (9,133) z).mp (hz.trans hy)</span>
+<span id="L330"><a href="#L330"> 330</a>   change ∃ u, E.d 3 (9,133) u = A.pageπ 1 z1 at hi</span>
+<span id="L331"><a href="#L331"> 331</a>   obtain ⟨u,hu⟩ := hi</span>
+<span id="L332"><a href="#L332"> 332</a>   have hsub {x x&#x27; : E.Page 2 (12,135)} {a a&#x27; : E.Page 3 (12,135)}</span>
+<span id="L333"><a href="#L333"> 333</a>       (hx : RepresentsOnPage E 3 (12,135) x a) (hx&#x27; : RepresentsOnPage E 3 (12,135) x&#x27; a&#x27;) :</span>
+<span id="L334"><a href="#L334"> 334</a>       RepresentsOnPage E 3 (12,135) (x-x&#x27;) (a-a&#x27;) := by</span>
+<span id="L335"><a href="#L335"> 335</a>     exact represents_sub_tail (by assumption) (by assumption)</span>
+<span id="L336"><a href="#L336"> 336</a>   rcases frame u with hu0|hu0|hu0|hu0</span>
+<span id="L337"><a href="#L337"> 337</a>   · have hn := reflect hr3 (by rw [← hu,hu0,map_zero])</span>
+<span id="L338"><a href="#L338"> 338</a>     have hh := congrArg (fun x =&gt; g x 2) hn</span>
+<span id="L339"><a href="#L339"> 339</a>     rw [← g2,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L340"><a href="#L340"> 340</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L341"><a href="#L341"> 341</a>   · have hn := reflect (hsub hr3 ha) (sub_eq_zero.mpr (by rw [← hu,hu0,dv&#x27;]))</span>
+<span id="L342"><a href="#L342"> 342</a>     have hh := congrArg (fun x =&gt; g x 2) hn</span>
+<span id="L343"><a href="#L343"> 343</a>     rw [← g2,← g0,map_sub,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L344"><a href="#L344"> 344</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L345"><a href="#L345"> 345</a>   · have hn := reflect (hsub hr3 hb) (sub_eq_zero.mpr (by rw [← hu,hu0,dw&#x27;]))</span>
+<span id="L346"><a href="#L346"> 346</a>     have hh := congrArg (fun x =&gt; g x 1) hn</span>
+<span id="L347"><a href="#L347"> 347</a>     rw [← g2,← g1,map_sub,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L348"><a href="#L348"> 348</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L349"><a href="#L349"> 349</a>   · have hn := reflect (hsub hr3 (hadd ha hb)) (sub_eq_zero.mpr (by rw [← hu,hu0,map_add,dv&#x27;,dw&#x27;]))</span>
+<span id="L350"><a href="#L350"> 350</a>     have hh := congrArg (fun x =&gt; g x 0) hn</span>
+<span id="L351"><a href="#L351"> 351</a>     rw [← g2,← g1,← g0,map_sub,map_add,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L352"><a href="#L352"> 352</a>     norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L353"><a href="#L353"> 353</a>   intro x</span>
+<span id="L354"><a href="#L354"> 354</a>   change E.d 2 (9,133) x = 0 ∨ E.d 2 (9,133) x = basis .sphere 11 134 4</span>
+<span id="L355"><a href="#L355"> 355</a>   rcases stem124_finite_pages_f2_three (e x) with h|h|h|h|h|h|h|h</span>
+<span id="L356"><a href="#L356"> 356</a>   all_goals have hh := congrArg e.symm h</span>
+<span id="L357"><a href="#L357"> 357</a>   all_goals simp only [LinearEquiv.symm_apply_apply,map_zero,map_add,e0,e1,e2] at hh</span>
+<span id="L358"><a href="#L358"> 358</a>   all_goals simp only [hh,map_zero,map_add,d20,d21,d22,ht2,zero_add]; tauto</span>
+<span id="L359"><a href="#L359"> 359</a> </span>
+<span id="L360"><a href="#L360"> 360</a> </span>
+<span id="L361"><a href="#L361"> 361</a> private theorem stem124_finite_pages_s8_d2  :</span>
+<span id="L362"><a href="#L362"> 362</a>     (Normalized.sphere).d 2 (8,132) (basis .sphere 8 132 0) =</span>
+<span id="L363"><a href="#L363"> 363</a>       basis .sphere 10 133 2 := by</span>
+<span id="L364"><a href="#L364"> 364</a>   classical</span>
+<span id="L365"><a href="#L365"> 365</a>   let E := Normalized.sphere</span>
+<span id="L366"><a href="#L366"> 366</a>   have hrow := result</span>
+<span id="L367"><a href="#L367"> 367</a>     ⟨.sphere, .equation, 2, 8, 132, [0], 10, 133, [2], &quot;S0_AdamsE2_ss&quot;, 2571⟩ (by</span>
+<span id="L368"><a href="#L368"> 368</a>       exact List.mem_of_getElem? (i := 199) (by rfl))</span>
+<span id="L369"><a href="#L369"> 369</a>   dsimp only [Statement] at hrow</span>
+<span id="L370"><a href="#L370"> 370</a>   obtain ⟨x, hx, y, hy, h⟩ := hrow</span>
+<span id="L371"><a href="#L371"> 371</a>   change decode .sphere 8 132 [0] = some x at hx</span>
+<span id="L372"><a href="#L372"> 372</a>   change decode .sphere 10 133 [2] = some y at hy</span>
+<span id="L373"><a href="#L373"> 373</a>   change HasDifferential E 2 (8,132) (10,133) x y at h</span>
+<span id="L374"><a href="#L374"> 374</a>   have hx&#x27; : x = basis .sphere 8 132 0 := by</span>
+<span id="L375"><a href="#L375"> 375</a>     have hv : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 8 132 [0] = true := by decide</span>
+<span id="L376"><a href="#L376"> 376</a>     exact Option.some.inj (hx.symm.trans (by simp [decode, hv]))</span>
+<span id="L377"><a href="#L377"> 377</a>   have hy&#x27; : y = basis .sphere 10 133 2 := by</span>
+<span id="L378"><a href="#L378"> 378</a>     have hv : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 133 [2] = true := by decide</span>
+<span id="L379"><a href="#L379"> 379</a>     exact Option.some.inj (hy.symm.trans (by simp [decode, hv]))</span>
+<span id="L380"><a href="#L380"> 380</a>   have hd : E.d 2 (8,132) (basis .sphere 8 132 0) =</span>
+<span id="L381"><a href="#L381"> 381</a>       basis .sphere 10 133 2 := by</span>
+<span id="L382"><a href="#L382"> 382</a>     obtain ⟨_, hd⟩ := h.eq_on_page_two</span>
+<span id="L383"><a href="#L383"> 383</a>     have hd&#x27; : E.d 2 (8,132) x = y := by exact hd</span>
+<span id="L384"><a href="#L384"> 384</a>     rw [hx&#x27;, hy&#x27;] at hd&#x27;</span>
+<span id="L385"><a href="#L385"> 385</a>     exact hd&#x27;</span>
+<span id="L386"><a href="#L386"> 386</a>   exact hd</span>
+<span id="L387"><a href="#L387"> 387</a> </span>
+<span id="L388"><a href="#L388"> 388</a> </span>
+<span id="L389"><a href="#L389"> 389</a> private theorem stem124_finite_pages_s8_basis  : ∃ e : (Normalized.sphere).Page 2 (8,132) ≃ₗ[ℤ] (Fin 1 →₀ KIP126.Core.Algebra.F2), ∀i, e.symm (Finsupp.single i 1) = basis .sphere 8 132 i.val := by</span>
+<span id="L390"><a href="#L390"> 390</a>   classical</span>
+<span id="L391"><a href="#L391"> 391</a>   let E := Normalized.sphere</span>
+<span id="L392"><a href="#L392"> 392</a>   obtain ⟨e, he⟩ := basis_correct ⟨.sphere, 8, 132, [&quot;367,1&quot;]⟩ (by</span>
+<span id="L393"><a href="#L393"> 393</a>       exact List.mem_of_getElem? (i := 160) (by rfl))</span>
+<span id="L394"><a href="#L394"> 394</a>   change E.Page 2 (8,132) ≃ₗ[ℤ] (Fin 1 →₀ KIP126.Core.Algebra.F2) at e</span>
+<span id="L395"><a href="#L395"> 395</a>   change ∀ i : Fin 1, e.symm (Finsupp.single i 1) = basis .sphere 8 132 i.val at he</span>
+<span id="L396"><a href="#L396"> 396</a>   exact ⟨e,he⟩</span>
+<span id="L397"><a href="#L397"> 397</a> </span>
+<span id="L398"><a href="#L398"> 398</a> </span>
+<span id="L399"><a href="#L399"> 399</a> private theorem stem124_finite_pages_s10_basis  : ∃ f : (Normalized.sphere).Page 2 (10,133) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2), ∀i, f.symm (Finsupp.single i 1) = basis .sphere 10 133 i.val := by</span>
+<span id="L400"><a href="#L400"> 400</a>   classical</span>
+<span id="L401"><a href="#L401"> 401</a>   let E := Normalized.sphere</span>
+<span id="L402"><a href="#L402"> 402</a>   obtain ⟨f, hf⟩ := basis_correct ⟨.sphere, 10, 133, [&quot;372,1&quot;, &quot;69,1,80,1&quot;, &quot;0,1,366,1&quot;]⟩ (by</span>
+<span id="L403"><a href="#L403"> 403</a>       exact List.mem_of_getElem? (i := 180) (by rfl))</span>
+<span id="L404"><a href="#L404"> 404</a>   change E.Page 2 (10,133) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2) at f</span>
+<span id="L405"><a href="#L405"> 405</a>   change ∀ i : Fin 3, f.symm (Finsupp.single i 1) = basis .sphere 10 133 i.val at hf</span>
+<span id="L406"><a href="#L406"> 406</a>   exact ⟨f,hf⟩</span>
+<span id="L407"><a href="#L407"> 407</a> </span>
+<span id="L408"><a href="#L408"> 408</a> </span>
+<span id="L409"><a href="#L409"> 409</a> private theorem stem124_finite_pages_low124_af8_three  : Subsingleton ((Normalized.sphere).Page 3 (8,132)) := by</span>
+<span id="L410"><a href="#L410"> 410</a>   classical</span>
+<span id="L411"><a href="#L411"> 411</a>   let E := Normalized.sphere</span>
+<span id="L412"><a href="#L412"> 412</a>   have hd := stem124_finite_pages_s8_d2</span>
+<span id="L413"><a href="#L413"> 413</a>   obtain ⟨e, he⟩ := stem124_finite_pages_s8_basis</span>
+<span id="L414"><a href="#L414"> 414</a>   obtain ⟨f,hf⟩ := stem124_finite_pages_s10_basis</span>
+<span id="L415"><a href="#L415"> 415</a>   have hf2 : f.symm (Finsupp.single 2 1) = basis .sphere 10 133 2 := hf 2</span>
+<span id="L416"><a href="#L416"> 416</a>   have he0 : e.symm (Finsupp.single 0 1) = basis .sphere 8 132 0 := he 0</span>
+<span id="L417"><a href="#L417"> 417</a>   have hn : basis .sphere 10 133 2 ≠ 0 := by</span>
+<span id="L418"><a href="#L418"> 418</a>     rw [← hf2]</span>
+<span id="L419"><a href="#L419"> 419</a>     intro hzero</span>
+<span id="L420"><a href="#L420"> 420</a>     have hz := congrArg (fun y =&gt; f y 2) hzero</span>
+<span id="L421"><a href="#L421"> 421</a>     simp at hz</span>
+<span id="L422"><a href="#L422"> 422</a>   have hde : ∀ z, E.d 2 (8,132) (e.symm z) = 0 → z = 0 := by</span>
+<span id="L423"><a href="#L423"> 423</a>     intro z hz</span>
+<span id="L424"><a href="#L424"> 424</a>     have hzrepr : z = Finsupp.single 0 (z 0) := by</span>
+<span id="L425"><a href="#L425"> 425</a>       apply Finsupp.ext</span>
+<span id="L426"><a href="#L426"> 426</a>       intro i</span>
+<span id="L427"><a href="#L427"> 427</a>       fin_cases i</span>
+<span id="L428"><a href="#L428"> 428</a>       simp</span>
+<span id="L429"><a href="#L429"> 429</a>     rw [hzrepr] at hz</span>
+<span id="L430"><a href="#L430"> 430</a>     have hc : z 0 = 0 ∨ z 0 = 1 := by generalize z 0 = a; fin_cases a &lt;;&gt; simp</span>
+<span id="L431"><a href="#L431"> 431</a>     rcases hc with hc | hc</span>
+<span id="L432"><a href="#L432"> 432</a>     · rw [hzrepr, hc, Finsupp.single_zero]</span>
+<span id="L433"><a href="#L433"> 433</a>     · rw [hc, he0, hd] at hz</span>
+<span id="L434"><a href="#L434"> 434</a>       exact (hn hz).elim</span>
+<span id="L435"><a href="#L435"> 435</a>   have hinj : Function.Injective (E.d 2 (8,132)) := by</span>
+<span id="L436"><a href="#L436"> 436</a>     apply (injective_iff_map_eq_zero _).mpr</span>
+<span id="L437"><a href="#L437"> 437</a>     intro z hz</span>
+<span id="L438"><a href="#L438"> 438</a>     apply e.injective</span>
+<span id="L439"><a href="#L439"> 439</a>     simpa using hde (e z) (by simpa using hz)</span>
+<span id="L440"><a href="#L440"> 440</a>   let S := E.pageShortComplex 2 ((8,132)-E.diffDeg 2)</span>
+<span id="L441"><a href="#L441"> 441</a>   have hs : Function.Injective S.g := hinj</span>
+<span id="L442"><a href="#L442"> 442</a>   have hsex : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L443"><a href="#L443"> 443</a>     intro z hz</span>
+<span id="L444"><a href="#L444"> 444</a>     have hz0 : z = 0 := hs (hz.trans (map_zero _).symm)</span>
+<span id="L445"><a href="#L445"> 445</a>     exact ⟨0, by simp [hz0]⟩)</span>
+<span id="L446"><a href="#L446"> 446</a>   have hzero := (S.exact_iff_isZero_homology).mp hsex</span>
+<span id="L447"><a href="#L447"> 447</a>   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 2 (8,132)</span>
+<span id="L448"><a href="#L448"> 448</a>     (by change (2:ℤ)≤2; omega)).isZero_iff.mpr hzero)</span>
+<span id="L449"><a href="#L449"> 449</a> </span>
+<span id="L450"><a href="#L450"> 450</a> </span>
+<span id="L451"><a href="#L451"> 451</a> private theorem stem124_finite_pages_low124_s7_four  :</span>
+<span id="L452"><a href="#L452"> 452</a>     ∃ b : (Normalized.sphere).Page 4 (7,131),</span>
+<span id="L453"><a href="#L453"> 453</a>       RepresentsOnPage (Normalized.sphere) 4 (7,131) (basis .sphere 7 131 1) b ∧</span>
+<span id="L454"><a href="#L454"> 454</a>       (∀ a : (Normalized.sphere).Page 4 (7,131), a=0 ∨ a=b) ∧</span>
+<span id="L455"><a href="#L455"> 455</a>       (Normalized.sphere).d 4 (7,131) = 0 := by</span>
+<span id="L456"><a href="#L456"> 456</a>   classical</span>
+<span id="L457"><a href="#L457"> 457</a>   let E := Normalized.sphere</span>
+<span id="L458"><a href="#L458"> 458</a>   have h163 : HasDifferential E 2 (5,130) (7,131)</span>
+<span id="L459"><a href="#L459"> 459</a>       (basis .sphere 5 130 0) (basis .sphere 7 131 2) := by</span>
+<span id="L460"><a href="#L460"> 460</a>     have hrow := result ⟨.sphere,.equation,2,5,130,[0],7,131,[2],&quot;S0_AdamsE2_ss&quot;,2435⟩ (by</span>
+<span id="L461"><a href="#L461"> 461</a>       exact List.mem_of_getElem? (i := 163) (by rfl))</span>
+<span id="L462"><a href="#L462"> 462</a>     dsimp only [Statement] at hrow</span>
+<span id="L463"><a href="#L463"> 463</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L464"><a href="#L464"> 464</a>     change HasDifferential E 2 (5,130) (7,131) a b at h</span>
+<span id="L465"><a href="#L465"> 465</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 5 130 [0] = true := rfl</span>
+<span id="L466"><a href="#L466"> 466</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 7 131 [2] = true := rfl</span>
+<span id="L467"><a href="#L467"> 467</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L468"><a href="#L468"> 468</a>     rw [← ha,← hb] at h</span>
+<span id="L469"><a href="#L469"> 469</a>     simpa only [add_assoc] using h</span>
+<span id="L470"><a href="#L470"> 470</a>   have h182 : HasDifferential E 5 (7,131) (12,135)</span>
+<span id="L471"><a href="#L471"> 471</a>       (basis .sphere 7 131 1) (basis .sphere 12 135 2) := by</span>
+<span id="L472"><a href="#L472"> 472</a>     have hrow := result ⟨.sphere,.equation,5,7,131,[1],12,135,[2],&quot;S0_AdamsE2_ss&quot;,2490⟩ (by</span>
+<span id="L473"><a href="#L473"> 473</a>       exact List.mem_of_getElem? (i := 182) (by rfl))</span>
+<span id="L474"><a href="#L474"> 474</a>     dsimp only [Statement] at hrow</span>
+<span id="L475"><a href="#L475"> 475</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L476"><a href="#L476"> 476</a>     change HasDifferential E 5 (7,131) (12,135) a b at h</span>
+<span id="L477"><a href="#L477"> 477</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 7 131 [1] = true := rfl</span>
+<span id="L478"><a href="#L478"> 478</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 135 [2] = true := rfl</span>
+<span id="L479"><a href="#L479"> 479</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L480"><a href="#L480"> 480</a>     rw [← ha,← hb] at h</span>
+<span id="L481"><a href="#L481"> 481</a>     simpa only [add_assoc] using h</span>
+<span id="L482"><a href="#L482"> 482</a>   have h183 : HasDifferential E 3 (7,131) (10,133)</span>
+<span id="L483"><a href="#L483"> 483</a>       (basis .sphere 7 131 0) (basis .sphere 10 133 0 + basis .sphere 10 133 1) := by</span>
+<span id="L484"><a href="#L484"> 484</a>     have hrow := result ⟨.sphere,.equation,3,7,131,[0],10,133,[0, 1],&quot;S0_AdamsE2_ss&quot;,2491⟩ (by</span>
+<span id="L485"><a href="#L485"> 485</a>       exact List.mem_of_getElem? (i := 183) (by rfl))</span>
+<span id="L486"><a href="#L486"> 486</a>     dsimp only [Statement] at hrow</span>
+<span id="L487"><a href="#L487"> 487</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L488"><a href="#L488"> 488</a>     change HasDifferential E 3 (7,131) (10,133) a b at h</span>
+<span id="L489"><a href="#L489"> 489</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 7 131 [0] = true := rfl</span>
+<span id="L490"><a href="#L490"> 490</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 10 133 [0, 1] = true := rfl</span>
+<span id="L491"><a href="#L491"> 491</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L492"><a href="#L492"> 492</a>     rw [← ha,← hb] at h</span>
+<span id="L493"><a href="#L493"> 493</a>     simpa only [add_assoc] using h</span>
+<span id="L494"><a href="#L494"> 494</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,7,131,[&quot;353,1&quot;, &quot;69,1,75,1&quot;, &quot;0,1,339,1&quot;]⟩ (by</span>
+<span id="L495"><a href="#L495"> 495</a>     exact List.mem_of_getElem? (i := 148) (by rfl))</span>
+<span id="L496"><a href="#L496"> 496</a>   change E.Page 2 (7,131) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2) at e</span>
+<span id="L497"><a href="#L497"> 497</a>   change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = basis .sphere 7 131 i.val at he</span>
+<span id="L498"><a href="#L498"> 498</a>   obtain ⟨f,hf⟩ := stem124_finite_pages_s8_basis</span>
+<span id="L499"><a href="#L499"> 499</a>   obtain ⟨g,hg⟩ := stem124_finite_pages_s10_basis</span>
+<span id="L500"><a href="#L500"> 500</a>   have g0 : g.symm (Finsupp.single 0 1) = basis .sphere 10 133 0 := hg 0</span>
+<span id="L501"><a href="#L501"> 501</a>   have g1 : g.symm (Finsupp.single 1 1) = basis .sphere 10 133 1 := hg 1</span>
+<span id="L502"><a href="#L502"> 502</a>   have g2 : g.symm (Finsupp.single 2 1) = basis .sphere 10 133 2 := hg 2</span>
+<span id="L503"><a href="#L503"> 503</a>   obtain ⟨_,a,c,ha,hc,hd⟩ := h183</span>
+<span id="L504"><a href="#L504"> 504</a>   obtain ⟨_,b5,z5,hb5,hz5,hd5⟩ := h182</span>
+<span id="L505"><a href="#L505"> 505</a>   obtain ⟨b,hb⟩ := represents_before (by decide : (2:ℤ)≤3) (by decide : (3:ℤ)≤5) hb5</span>
+<span id="L506"><a href="#L506"> 506</a>   have htzero : RepresentsOnPage E 3 (7,131) (basis .sphere 7 131 2) 0 :=</span>
+<span id="L507"><a href="#L507"> 507</a>     differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)&lt;3) h163</span>
+<span id="L508"><a href="#L508"> 508</a>   have hcn : c ≠ 0 := by</span>
+<span id="L509"><a href="#L509"> 509</a>     intro hc0</span>
+<span id="L510"><a href="#L510"> 510</a>     obtain ⟨_,z,hx,hz⟩ := hc</span>
+<span id="L511"><a href="#L511"> 511</a>     have hin := (next_projection_zero_iff_incoming E 2 (by change (2:ℤ)≤2; omega) (8,132) z).mp (hz.trans hc0)</span>
+<span id="L512"><a href="#L512"> 512</a>     change ∃ u, E.d 2 (8,132) u = (Subobject.ofLE _ _ ((E.ssData (10,133)).Z_anti bot_le) ≫ (E.ssData (10,133)).pageπ 0) z at hin</span>
+<span id="L513"><a href="#L513"> 513</a>     change (Subobject.ofLE _ _ ((E.ssData (10,133)).Z_anti bot_le) ≫ (E.ssData (10,133)).pageπ 0) z = _ at hx</span>
+<span id="L514"><a href="#L514"> 514</a>     rw [hx] at hin</span>
+<span id="L515"><a href="#L515"> 515</a>     obtain ⟨u,hu⟩ := hin</span>
+<span id="L516"><a href="#L516"> 516</a>     have hrepr : f u = Finsupp.single 0 ((f u) 0) := by</span>
+<span id="L517"><a href="#L517"> 517</a>       apply Finsupp.ext</span>
+<span id="L518"><a href="#L518"> 518</a>       intro i</span>
+<span id="L519"><a href="#L519"> 519</a>       fin_cases i</span>
+<span id="L520"><a href="#L520"> 520</a>       simp</span>
+<span id="L521"><a href="#L521"> 521</a>     have hu0 : u = f.symm (Finsupp.single 0 ((f u) 0)) := by</span>
+<span id="L522"><a href="#L522"> 522</a>       rw [← hrepr,LinearEquiv.symm_apply_apply]</span>
+<span id="L523"><a href="#L523"> 523</a>     rw [hu0] at hu</span>
+<span id="L524"><a href="#L524"> 524</a>     generalize hcoef : (f u) 0 = v at hu</span>
+<span id="L525"><a href="#L525"> 525</a>     fin_cases v</span>
+<span id="L526"><a href="#L526"> 526</a>     · simp only [show (⟨0,by decide⟩ : KIP126.Core.Algebra.F2)=0 from rfl,Finsupp.single_zero,map_zero] at hu</span>
+<span id="L527"><a href="#L527"> 527</a>       have hh := congrArg (fun q =&gt; g q 0) hu</span>
+<span id="L528"><a href="#L528"> 528</a>       rw [← g0,← g1,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L529"><a href="#L529"> 529</a>       norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L530"><a href="#L530"> 530</a>     · change E.d 2 (8,132) (f.symm (Finsupp.single 0 1)) = _ at hu</span>
+<span id="L531"><a href="#L531"> 531</a>       have f0 : f.symm (Finsupp.single 0 1) = basis .sphere 8 132 0 := hf 0</span>
+<span id="L532"><a href="#L532"> 532</a>       have hs8 : E.d 2 (8,132) (basis .sphere 8 132 0) = basis .sphere 10 133 2 := stem124_finite_pages_s8_d2</span>
+<span id="L533"><a href="#L533"> 533</a>       rw [f0,hs8] at hu</span>
+<span id="L534"><a href="#L534"> 534</a>       have hh := congrArg (fun q =&gt; g q 0) hu</span>
+<span id="L535"><a href="#L535"> 535</a>       rw [← g0,← g1,← g2,map_add,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L536"><a href="#L536"> 536</a>       norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L537"><a href="#L537"> 537</a>   have frame3 (x : E.Page 3 (7,131)) : x=0 ∨ x=a ∨ x=b ∨ x=a+b := by</span>
+<span id="L538"><a href="#L538"> 538</a>     let v : Fin 3 → E.Page 3 (7,131) := ![a,b,0]</span>
+<span id="L539"><a href="#L539"> 539</a>     have hv (i : Fin 3) : RepresentsOnPage E 3 (7,131) (e.symm (Finsupp.single i 1)) (v i) := by</span>
+<span id="L540"><a href="#L540"> 540</a>       rw [he i]</span>
+<span id="L541"><a href="#L541"> 541</a>       fin_cases i</span>
+<span id="L542"><a href="#L542"> 542</a>       · exact ha</span>
+<span id="L543"><a href="#L543"> 543</a>       · exact hb</span>
+<span id="L544"><a href="#L544"> 544</a>       · exact htzero</span>
+<span id="L545"><a href="#L545"> 545</a>     obtain ⟨coeff,hcoeff⟩ := page_generated_from_representatives (by decide : (2:ℤ)≤3) e v hv x</span>
+<span id="L546"><a href="#L546"> 546</a>     simp only [Fin.sum_univ_three] at hcoeff</span>
+<span id="L547"><a href="#L547"> 547</a>     change x = (if coeff 0=0 then 0 else a) + (if coeff 1=0 then 0 else b) + (if coeff 2=0 then 0 else 0) at hcoeff</span>
+<span id="L548"><a href="#L548"> 548</a>     by_cases h0 : coeff 0 = 0 &lt;;&gt; by_cases h1 : coeff 1 = 0</span>
+<span id="L549"><a href="#L549"> 549</a>     all_goals simp only [h0,h1,ite_true,ite_false,ite_self,add_zero,zero_add] at hcoeff</span>
+<span id="L550"><a href="#L550"> 550</a>     · exact Or.inl hcoeff</span>
+<span id="L551"><a href="#L551"> 551</a>     · exact Or.inr (Or.inr (Or.inl hcoeff))</span>
+<span id="L552"><a href="#L552"> 552</a>     · exact Or.inr (Or.inl hcoeff)</span>
+<span id="L553"><a href="#L553"> 553</a>     · exact Or.inr (Or.inr (Or.inr hcoeff))</span>
+<span id="L554"><a href="#L554"> 554</a>   have hda : E.d 3 (7,131) a = c := hd</span>
+<span id="L555"><a href="#L555"> 555</a>   have hdb : E.d 3 (7,131) b = 0 :=</span>
+<span id="L556"><a href="#L556"> 556</a>     represents_d_zero_of_later (by change (2:ℤ)≤3; omega) (by decide : (3:ℤ)&lt;5) hb ⟨b5,hb5⟩</span>
+<span id="L557"><a href="#L557"> 557</a>   have ker3 (x : E.Page 3 (7,131)) (hx : E.d 3 (7,131) x=0) : x=0 ∨ x=b := by</span>
+<span id="L558"><a href="#L558"> 558</a>     rcases frame3 x with h|h|h|h</span>
+<span id="L559"><a href="#L559"> 559</a>     · exact Or.inl h</span>
+<span id="L560"><a href="#L560"> 560</a>     · exact (hcn (by simpa only [h,hda] using hx)).elim</span>
+<span id="L561"><a href="#L561"> 561</a>     · exact Or.inr h</span>
+<span id="L562"><a href="#L562"> 562</a>     · exact (hcn (by simpa only [h,map_add,hda,hdb,add_zero] using hx)).elim</span>
+<span id="L563"><a href="#L563"> 563</a>   obtain ⟨b4,hb4⟩ := represents_before (by decide : (2:ℤ)≤4) (by decide : (4:ℤ)≤5) hb5</span>
+<span id="L564"><a href="#L564"> 564</a>   have hb4save := hb4</span>
+<span id="L565"><a href="#L565"> 565</a>   obtain ⟨_,z,hz,hzb⟩ := hb4</span>
+<span id="L566"><a href="#L566"> 566</a>   have hz3 : RepresentsOnPage E 3 (7,131) (basis .sphere 7 131 1)</span>
+<span id="L567"><a href="#L567"> 567</a>       ((Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (1:WithTop ℕ)≤2)) ≫ (E.ssData (7,131)).pageπ 1) z) := by</span>
+<span id="L568"><a href="#L568"> 568</a>     refine ⟨by decide, (Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (1:WithTop ℕ)≤2))) z, ?_,rfl⟩</span>
+<span id="L569"><a href="#L569"> 569</a>     change ((Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (1:WithTop ℕ)≤2))) ≫ Subobject.ofLE _ _ _ ≫ (E.ssData (7,131)).pageπ 0) z = _</span>
+<span id="L570"><a href="#L570"> 570</a>     rw [← Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L571"><a href="#L571"> 571</a>     exact hz</span>
+<span id="L572"><a href="#L572"> 572</a>   have frame4 (x : E.Page 4 (7,131)) : x=0 ∨ x=b4 := by</span>
+<span id="L573"><a href="#L573"> 573</a>     have h := next_page_two_of_kernel E 3 (by change (2:ℤ)≤3; omega) (7,131) z (by</span>
+<span id="L574"><a href="#L574"> 574</a>       intro q hq</span>
+<span id="L575"><a href="#L575"> 575</a>       have hk := ker3 q hq</span>
+<span id="L576"><a href="#L576"> 576</a>       rwa [represents_unique (E := E) hb hz3] at hk) x</span>
+<span id="L577"><a href="#L577"> 577</a>     change x=0 ∨ x=(E.ssData (7,131)).pageπ 2 z at h</span>
+<span id="L578"><a href="#L578"> 578</a>     change (E.ssData (7,131)).pageπ 2 z=b4 at hzb</span>
+<span id="L579"><a href="#L579"> 579</a>     rwa [hzb] at h</span>
+<span id="L580"><a href="#L580"> 580</a>   refine ⟨b4,hb4save,frame4,?_⟩</span>
+<span id="L581"><a href="#L581"> 581</a>   apply ModuleCat.hom_ext</span>
+<span id="L582"><a href="#L582"> 582</a>   apply LinearMap.ext</span>
+<span id="L583"><a href="#L583"> 583</a>   intro x</span>
+<span id="L584"><a href="#L584"> 584</a>   rcases frame4 x with hx|hx</span>
+<span id="L585"><a href="#L585"> 585</a>   · simp only [hx,map_zero]</span>
+<span id="L586"><a href="#L586"> 586</a>   · rw [hx]</span>
+<span id="L587"><a href="#L587"> 587</a>     exact represents_d_zero_of_later (by change (2:ℤ)≤4; omega) (by decide : (4:ℤ)&lt;5) hb4save ⟨b5,hb5⟩</span>
+<span id="L588"><a href="#L588"> 588</a> </span>
+<span id="L589"><a href="#L589"> 589</a> </span>
+<span id="L590"><a href="#L590"> 590</a> private theorem stem124_finite_pages_low124_s7_six</span>
+<span id="L591"><a href="#L591"> 591</a>     (h8 : Subsingleton ((Normalized.sphere).Page 4 (8,132)))</span>
+<span id="L592"><a href="#L592"> 592</a>     (htarget : ∀ y : (Normalized.sphere).Page 4 (12,135),</span>
+<span id="L593"><a href="#L593"> 593</a>       RepresentsOnPage (Normalized.sphere) 4 (12,135) (basis .sphere 12 135 2) y → y ≠ 0) :</span>
+<span id="L594"><a href="#L594"> 594</a>     Subsingleton ((Normalized.sphere).Page 6 (7,131)) := by</span>
+<span id="L595"><a href="#L595"> 595</a>   classical</span>
+<span id="L596"><a href="#L596"> 596</a>   let E := Normalized.sphere</span>
+<span id="L597"><a href="#L597"> 597</a>   obtain ⟨b4,hb4,frame4,hd4⟩ := stem124_finite_pages_low124_s7_four</span>
+<span id="L598"><a href="#L598"> 598</a>   have h182 : HasDifferential E 5 (7,131) (12,135)</span>
+<span id="L599"><a href="#L599"> 599</a>       (basis .sphere 7 131 1) (basis .sphere 12 135 2) := by</span>
+<span id="L600"><a href="#L600"> 600</a>     have hrow := result ⟨.sphere,.equation,5,7,131,[1],12,135,[2],&quot;S0_AdamsE2_ss&quot;,2490⟩ (by</span>
+<span id="L601"><a href="#L601"> 601</a>       exact List.mem_of_getElem? (i := 182) (by rfl))</span>
+<span id="L602"><a href="#L602"> 602</a>     dsimp only [Statement] at hrow</span>
+<span id="L603"><a href="#L603"> 603</a>     obtain ⟨a,ha,b,hb,h⟩ := hrow</span>
+<span id="L604"><a href="#L604"> 604</a>     change HasDifferential E 5 (7,131) (12,135) a b at h</span>
+<span id="L605"><a href="#L605"> 605</a>     have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 7 131 [1] = true := rfl</span>
+<span id="L606"><a href="#L606"> 606</a>     have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 12 135 [2] = true := rfl</span>
+<span id="L607"><a href="#L607"> 607</a>     simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at ha hb</span>
+<span id="L608"><a href="#L608"> 608</a>     rw [← ha,← hb] at h</span>
+<span id="L609"><a href="#L609"> 609</a>     simpa only [add_assoc] using h</span>
+<span id="L610"><a href="#L610"> 610</a>   obtain ⟨_,b5,c5,hb5,hc5,hd5⟩ := h182</span>
+<span id="L611"><a href="#L611"> 611</a>   obtain ⟨c4,hc4⟩ := represents_before (by decide : (2:ℤ)≤4) (by decide : (4:ℤ)≤5) hc5</span>
+<span id="L612"><a href="#L612"> 612</a>   have hc4n : c4 ≠ 0 := htarget c4 hc4</span>
+<span id="L613"><a href="#L613"> 613</a>   have hin : E.d 4 ((12,135)-E.diffDeg 4) = 0 := by</span>
+<span id="L614"><a href="#L614"> 614</a>     apply ModuleCat.hom_ext</span>
+<span id="L615"><a href="#L615"> 615</a>     apply LinearMap.ext</span>
+<span id="L616"><a href="#L616"> 616</a>     intro x</span>
+<span id="L617"><a href="#L617"> 617</a>     change E.d 4 (8,132) x = 0</span>
+<span id="L618"><a href="#L618"> 618</a>     rw [h8.elim x 0,map_zero]</span>
+<span id="L619"><a href="#L619"> 619</a>   have hc5n : c5 ≠ 0 := represents_next_nonzero_of_incoming_zero</span>
+<span id="L620"><a href="#L620"> 620</a>     (by change (2:ℤ)≤4; omega) (by decide : (2:ℤ)≤4) hin hc5 hc4 hc4n</span>
+<span id="L621"><a href="#L621"> 621</a>   have hb5save := hb5</span>
+<span id="L622"><a href="#L622"> 622</a>   obtain ⟨_,z,hz,hzb⟩ := hb5</span>
+<span id="L623"><a href="#L623"> 623</a>   have hz4 : RepresentsOnPage E 4 (7,131) (basis .sphere 7 131 1)</span>
+<span id="L624"><a href="#L624"> 624</a>       ((Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (2:WithTop ℕ)≤3)) ≫ (E.ssData (7,131)).pageπ 2) z) := by</span>
+<span id="L625"><a href="#L625"> 625</a>     refine ⟨by decide, (Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (2:WithTop ℕ)≤3))) z, ?_,rfl⟩</span>
+<span id="L626"><a href="#L626"> 626</a>     change ((Subobject.ofLE _ _ ((E.ssData (7,131)).Z_anti (by decide : (2:WithTop ℕ)≤3))) ≫ Subobject.ofLE _ _ _ ≫ (E.ssData (7,131)).pageπ 0) z = _</span>
+<span id="L627"><a href="#L627"> 627</a>     rw [← Category.assoc,Subobject.ofLE_comp_ofLE]</span>
+<span id="L628"><a href="#L628"> 628</a>     exact hz</span>
+<span id="L629"><a href="#L629"> 629</a>   have frame5 (x : E.Page 5 (7,131)) : x=0 ∨ x=b5 := by</span>
+<span id="L630"><a href="#L630"> 630</a>     have h := next_page_two_of_kernel E 4 (by change (2:ℤ)≤4; omega) (7,131) z (by</span>
+<span id="L631"><a href="#L631"> 631</a>       intro q hq</span>
+<span id="L632"><a href="#L632"> 632</a>       have hk := frame4 q</span>
+<span id="L633"><a href="#L633"> 633</a>       rwa [represents_unique (E := E) hb4 hz4] at hk) x</span>
+<span id="L634"><a href="#L634"> 634</a>     change x=0 ∨ x=(E.ssData (7,131)).pageπ 3 z at h</span>
+<span id="L635"><a href="#L635"> 635</a>     change (E.ssData (7,131)).pageπ 3 z=b5 at hzb</span>
+<span id="L636"><a href="#L636"> 636</a>     rwa [hzb] at h</span>
+<span id="L637"><a href="#L637"> 637</a>   have hd5&#x27; : E.d 5 (7,131) b5=c5 := hd5</span>
+<span id="L638"><a href="#L638"> 638</a>   have ker5 (x : E.Page 5 (7,131)) (hx : E.d 5 (7,131) x=0) : x=0 := by</span>
+<span id="L639"><a href="#L639"> 639</a>     rcases frame5 x with hx0|hxb</span>
+<span id="L640"><a href="#L640"> 640</a>     · exact hx0</span>
+<span id="L641"><a href="#L641"> 641</a>     · exact (hc5n (by simpa only [hxb,hd5&#x27;] using hx)).elim</span>
+<span id="L642"><a href="#L642"> 642</a>   let S := E.pageShortComplex 5 ((7,131)-E.diffDeg 5)</span>
+<span id="L643"><a href="#L643"> 643</a>   have hex : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L644"><a href="#L644"> 644</a>     intro x hx</span>
+<span id="L645"><a href="#L645"> 645</a>     exact ⟨0,by rw [ker5 x hx,map_zero]⟩)</span>
+<span id="L646"><a href="#L646"> 646</a>   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 5 (7,131)</span>
+<span id="L647"><a href="#L647"> 647</a>     (by change (2:ℤ)≤5; omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hex))</span>
+<span id="L648"><a href="#L648"> 648</a> </span>
+<span id="L649"><a href="#L649"> 649</a> </span>
+<span id="L650"><a href="#L650"> 650</a> private theorem stem124_finite_pages_low124_af6_six</span>
+<span id="L651"><a href="#L651"> 651</a>     (h74 : (Normalized.sphere).d 4 (7,131) = 0) : Subsingleton ((Normalized.sphere).Page 6 (6,130)) := by</span>
+<span id="L652"><a href="#L652"> 652</a>   classical</span>
+<span id="L653"><a href="#L653"> 653</a>   let E := Normalized.sphere</span>
+<span id="L654"><a href="#L654"> 654</a>   have hrow := result ⟨.sphere,.equation,5,6,130,[0],11,134,[2],&quot;S0_AdamsE2_ss&quot;,2434⟩ (by</span>
+<span id="L655"><a href="#L655"> 655</a>     exact List.mem_of_getElem? (i := 170) (by rfl))</span>
+<span id="L656"><a href="#L656"> 656</a>   dsimp only [Statement] at hrow</span>
+<span id="L657"><a href="#L657"> 657</a>   obtain ⟨x,hx,y,hy,h⟩ := hrow</span>
+<span id="L658"><a href="#L658"> 658</a>   change HasDifferential E 5 (6,130) (11,134) x y at h</span>
+<span id="L659"><a href="#L659"> 659</a>   have vx : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 6 130 [0] = true := rfl</span>
+<span id="L660"><a href="#L660"> 660</a>   have vy : KIP126.Computation.Table.Raw.coordinatesValid KIP126.Computation.Table.Raw.degrees .sphere 11 134 [2] = true := rfl</span>
+<span id="L661"><a href="#L661"> 661</a>   simp only [decode,vx,vy,if_true,List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero,Option.some.injEq] at hx hy</span>
+<span id="L662"><a href="#L662"> 662</a>   rw [← hx,← hy] at h</span>
+<span id="L663"><a href="#L663"> 663</a>   obtain ⟨_,x5,y5,hx5,hy5,hd5⟩ := h</span>
+<span id="L664"><a href="#L664"> 664</a>   obtain ⟨e,he⟩ := basis_correct ⟨.sphere,6,130,[&quot;339,1&quot;]⟩ (by</span>
+<span id="L665"><a href="#L665"> 665</a>     exact List.mem_of_getElem? (i := 136) (by rfl))</span>
+<span id="L666"><a href="#L666"> 666</a>   change E.Page 2 (6,130) ≃ₗ[ℤ] (Fin 1 →₀ F2) at e</span>
+<span id="L667"><a href="#L667"> 667</a>   change ∀ i : Fin 1, e.symm (Finsupp.single i 1) = basis .sphere 6 130 i.val at he</span>
+<span id="L668"><a href="#L668"> 668</a>   obtain ⟨f,hf⟩ := basis_correct ⟨.sphere,11,134,[&quot;387,1&quot;, &quot;386,1&quot;, &quot;18,1,189,1&quot;, &quot;0,1,69,1,80,1&quot;, &quot;0,2,366,1&quot;]⟩ (by</span>
+<span id="L669"><a href="#L669"> 669</a>     exact List.mem_of_getElem? (i := 190) (by rfl))</span>
+<span id="L670"><a href="#L670"> 670</a>   change E.Page 2 (11,134) ≃ₗ[ℤ] (Fin 5 →₀ F2) at f</span>
+<span id="L671"><a href="#L671"> 671</a>   change ∀ i : Fin 5, f.symm (Finsupp.single i 1) = basis .sphere 11 134 i.val at hf</span>
+<span id="L672"><a href="#L672"> 672</a>   have f2 : f.symm (Finsupp.single 2 1) = basis .sphere 11 134 2 := hf 2</span>
+<span id="L673"><a href="#L673"> 673</a>   have f4 : f.symm (Finsupp.single 4 1) = basis .sphere 11 134 4 := hf 4</span>
+<span id="L674"><a href="#L674"> 674</a>   have target3 (z3 : E.Page 3 (11,134))</span>
+<span id="L675"><a href="#L675"> 675</a>       (h3 : RepresentsOnPage E 3 (11,134) (basis .sphere 11 134 2) z3) : z3 ≠ 0 := by</span>
+<span id="L676"><a href="#L676"> 676</a>     intro hz3</span>
+<span id="L677"><a href="#L677"> 677</a>     obtain ⟨_,z,hz,hzp⟩ := h3</span>
+<span id="L678"><a href="#L678"> 678</a>     have hi := (next_projection_zero_iff_incoming E 2 (by change (2:ℤ)≤2; omega) (9,133) z).mp (hzp.trans hz3)</span>
+<span id="L679"><a href="#L679"> 679</a>     change ∃ u, E.d 2 (9,133) u = (Subobject.ofLE _ _ ((E.ssData (11,134)).Z_anti bot_le) ≫ (E.ssData (11,134)).pageπ 0) z at hi</span>
+<span id="L680"><a href="#L680"> 680</a>     obtain ⟨u,hu⟩ := hi</span>
+<span id="L681"><a href="#L681"> 681</a>     have hlabel : E.d 2 (9,133) u = basis .sphere 11 134 2 := hu.trans hz</span>
+<span id="L682"><a href="#L682"> 682</a>     rcases (stem124_finite_pages_low124_af9_four).2.2 u with hu0|hu4</span>
+<span id="L683"><a href="#L683"> 683</a>     · have hh := congrArg (fun x =&gt; f x 2) (hu0.symm.trans hlabel)</span>
+<span id="L684"><a href="#L684"> 684</a>       rw [← f2,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L685"><a href="#L685"> 685</a>       norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L686"><a href="#L686"> 686</a>     · have hh := congrArg (fun x =&gt; f x 2) (hu4.symm.trans hlabel)</span>
+<span id="L687"><a href="#L687"> 687</a>       rw [← f2,← f4,LinearEquiv.apply_symm_apply,LinearEquiv.apply_symm_apply] at hh</span>
+<span id="L688"><a href="#L688"> 688</a>       norm_num [Finsupp.single_apply,Fin.ext_iff] at hh</span>
+<span id="L689"><a href="#L689"> 689</a>   obtain ⟨y3,hy3⟩ := represents_before (by decide : (2:ℤ)≤3) (by decide : (3:ℤ)≤5) hy5</span>
+<span id="L690"><a href="#L690"> 690</a>   obtain ⟨y4,hy4⟩ := represents_before (by decide : (2:ℤ)≤4) (by decide : (4:ℤ)≤5) hy5</span>
+<span id="L691"><a href="#L691"> 691</a>   have hin3 : E.d 3 ((11,134)-E.diffDeg 3) = 0 := by</span>
+<span id="L692"><a href="#L692"> 692</a>     ext z</span>
+<span id="L693"><a href="#L693"> 693</a>     change E.d 3 (8,132) z = 0</span>
+<span id="L694"><a href="#L694"> 694</a>     rw [(stem124_finite_pages_low124_af8_three).elim z 0,map_zero]</span>
+<span id="L695"><a href="#L695"> 695</a>   have hy4ne := represents_next_nonzero_of_incoming_zero (by change (2:ℤ)≤3; omega)</span>
+<span id="L696"><a href="#L696"> 696</a>     (by decide : (2:ℤ)≤3) hin3 hy4 hy3 (target3 y3 hy3)</span>
+<span id="L697"><a href="#L697"> 697</a>   have hin4 : E.d 4 ((11,134)-E.diffDeg 4) = 0 := h74</span>
+<span id="L698"><a href="#L698"> 698</a>   have hy5ne := represents_next_nonzero_of_incoming_zero (by change (2:ℤ)≤4; omega)</span>
+<span id="L699"><a href="#L699"> 699</a>     (by decide : (2:ℤ)≤4) hin4 hy5 hy4 hy4ne</span>
+<span id="L700"><a href="#L700"> 700</a>   have he0 : e.symm (Finsupp.single 0 1) = basis .sphere 6 130 0 := he 0</span>
+<span id="L701"><a href="#L701"> 701</a>   have hbas (i : Fin 1) : RepresentsOnPage E 5 (6,130) (e.symm (Finsupp.single i 1)) x5 := by</span>
+<span id="L702"><a href="#L702"> 702</a>     have hi : i=0 := Fin.eq_zero i</span>
+<span id="L703"><a href="#L703"> 703</a>     subst i</span>
+<span id="L704"><a href="#L704"> 704</a>     exact he0.symm ▸ hx5</span>
+<span id="L705"><a href="#L705"> 705</a>   have frame (z : E.Page 5 (6,130)) : z=0 ∨ z=x5 := by</span>
+<span id="L706"><a href="#L706"> 706</a>     obtain ⟨c,hc⟩ := page_generated_from_representatives (E := E) (r := 5) (p := (6,130))</span>
+<span id="L707"><a href="#L707"> 707</a>       (by decide) e (fun _ =&gt; x5) hbas z</span>
+<span id="L708"><a href="#L708"> 708</a>     simp only [Fin.sum_univ_one] at hc</span>
+<span id="L709"><a href="#L709"> 709</a>     split_ifs at hc &lt;;&gt; tauto</span>
+<span id="L710"><a href="#L710"> 710</a>   have hd5&#x27; : E.d 5 (6,130) x5 = y5 := hd5</span>
+<span id="L711"><a href="#L711"> 711</a>   have hker5 (z : E.Page 5 (6,130)) (hz : E.d 5 (6,130) z=0) : z=0 := by</span>
+<span id="L712"><a href="#L712"> 712</a>     rcases frame z with hz0|hzx</span>
+<span id="L713"><a href="#L713"> 713</a>     · exact hz0</span>
+<span id="L714"><a href="#L714"> 714</a>     · exact (hy5ne (by simpa only [hzx,hd5&#x27;] using hz)).elim</span>
+<span id="L715"><a href="#L715"> 715</a>   let S := E.pageShortComplex 5 ((6,130)-E.diffDeg 5)</span>
+<span id="L716"><a href="#L716"> 716</a>   have hs : S.Exact := S.moduleCat_exact_iff.mpr (by</span>
+<span id="L717"><a href="#L717"> 717</a>     intro z hz</span>
+<span id="L718"><a href="#L718"> 718</a>     exact ⟨0,by rw [hker5 z hz,map_zero]⟩)</span>
+<span id="L719"><a href="#L719"> 719</a>   exact ModuleCat.subsingleton_of_isZero ((pageHomologyIso E 5 (6,130)</span>
+<span id="L720"><a href="#L720"> 720</a>     (by change (2:ℤ)≤5; omega)).isZero_iff.mpr ((S.exact_iff_isZero_homology).mp hs))</span>
+<span id="L721"><a href="#L721"> 721</a> </span>
+<span id="L722"><a href="#L722"> 722</a> </span>
+<span id="L723"><a href="#L723"> 723</a> private theorem stem124_finite_pages</span>
+<span id="L724"><a href="#L724"> 724</a>  :</span>
+<span id="L725"><a href="#L725"> 725</a>     Subsingleton ((Normalized.sphere).Page 6 (6,130)) ∧</span>
+<span id="L726"><a href="#L726"> 726</a>     Subsingleton ((Normalized.sphere).Page 6 (7,131)) ∧</span>
+<span id="L727"><a href="#L727"> 727</a>     Subsingleton ((Normalized.sphere).Page 3 (8,132)) ∧</span>
+<span id="L728"><a href="#L728"> 728</a>     Subsingleton ((Normalized.sphere).Page 4 (9,133)) := by</span>
+<span id="L729"><a href="#L729"> 729</a>   classical</span>
+<span id="L730"><a href="#L730"> 730</a>   classical</span>
+<span id="L731"><a href="#L731"> 731</a>   obtain ⟨b,hb,hcases,h74⟩ := stem124_finite_pages_low124_s7_four</span>
+<span id="L732"><a href="#L732"> 732</a>   have h8 := stem124_finite_pages_low124_af8_three</span>
+<span id="L733"><a href="#L733"> 733</a>   have h9 := stem124_finite_pages_low124_af9_four</span>
+<span id="L734"><a href="#L734"> 734</a>   have h8four := page_subsingleton_of_le 3 4 8 132</span>
+<span id="L735"><a href="#L735"> 735</a>     (by omega) (by omega) h8</span>
+<span id="L736"><a href="#L736"> 736</a>   exact ⟨stem124_finite_pages_low124_af6_six h74, stem124_finite_pages_low124_s7_six h8four h9.2.1, h8, h9.1⟩</span>
+<span id="L737"><a href="#L737"> 737</a> </span>
+<span id="L738"><a href="#L738"> 738</a> </span>
+<span id="L739"><a href="#L739"> 739</a> end</span>
+<span id="L740"><a href="#L740"> 740</a> end KIP126.Main.Internal.Selected</span></pre>

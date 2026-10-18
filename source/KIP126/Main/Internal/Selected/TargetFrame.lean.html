@@ -1,0 +1,46 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/Main/Internal/Selected/TargetFrame.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/Main/Internal/Selected/TargetFrame.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> import all KIP126.Main.SectionSeven.NuTargetFrame</span>
+<span id="L3"><a href="#L3">   3</a> import all KIP126.Main.Internal.Selected.Classical</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! The later-page frame argument from Selected/ClassicalData:264–311,</span>
+<span id="L6"><a href="#L6">   6</a> sharing the complete E₆ finite calculation with Section Seven. -/</span>
+<span id="L7"><a href="#L7">   7</a> @[expose] section</span>
+<span id="L8"><a href="#L8">   8</a> namespace KIP126.Main.Internal.Selected</span>
+<span id="L9"><a href="#L9">   9</a> open CategoryTheory KIP126.Core.SpectralSequence</span>
+<span id="L10"><a href="#L10">  10</a> open KIP126.Core.SpectralSequence.FinitePageCalculus</span>
+<span id="L11"><a href="#L11">  11</a> open KIP126.AdamsSynthetic.Standard (model)</span>
+<span id="L12"><a href="#L12">  12</a> noncomputable section</span>
+<span id="L13"><a href="#L13">  13</a> set_option backward.isDefEq.respectTransparency false</span>
+<span id="L14"><a href="#L14">  14</a> </span>
+<span id="L15"><a href="#L15">  15</a> private theorem later_page_frame_of_earlier</span>
+<span id="L16"><a href="#L16">  16</a>     {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ×ℤ)}</span>
+<span id="L17"><a href="#L17">  17</a>     {r t : ℤ} {p : ℤ×ℤ} {x : E.Page 2 p} (hr : 2≤r) (hrt : r≤t)</span>
+<span id="L18"><a href="#L18">  18</a>     (hframe : ∃ a : E.Page r p, RepresentsOnPage E r p x a ∧ ∀ y:E.Page r p,y=0∨y=a)</span>
+<span id="L19"><a href="#L19">  19</a>     (ht : ReachesPage E t p x) :</span>
+<span id="L20"><a href="#L20">  20</a>     ∃ a : E.Page t p, RepresentsOnPage E t p x a ∧ ∀ y:E.Page t p,y=0∨y=a := by</span>
+<span id="L21"><a href="#L21">  21</a>   obtain ⟨a,ha,hall⟩ := hframe</span>
+<span id="L22"><a href="#L22">  22</a>   obtain ⟨b,hb⟩ := ht</span>
+<span id="L23"><a href="#L23">  23</a>   refine ⟨b,hb,?_⟩</span>
+<span id="L24"><a href="#L24">  24</a>   intro y</span>
+<span id="L25"><a href="#L25">  25</a>   obtain ⟨x&#x27;,hy⟩ := page_has_initial_representative (by omega : 2≤t) y</span>
+<span id="L26"><a href="#L26">  26</a>   obtain ⟨a&#x27;,ha&#x27;⟩ := reaches_before hr hrt ⟨y,hy⟩</span>
+<span id="L27"><a href="#L27">  27</a>   rcases hall a&#x27; with h0|h1</span>
+<span id="L28"><a href="#L28">  28</a>   · left</span>
+<span id="L29"><a href="#L29">  29</a>     rw [h0] at ha&#x27;</span>
+<span id="L30"><a href="#L30">  30</a>     exact represents_later_zero hrt ha&#x27; hy</span>
+<span id="L31"><a href="#L31">  31</a>   · right</span>
+<span id="L32"><a href="#L32">  32</a>     have hs := represents_sub ha&#x27; ha</span>
+<span id="L33"><a href="#L33">  33</a>     rw [h1,sub_self] at hs</span>
+<span id="L34"><a href="#L34">  34</a>     exact sub_eq_zero.mp (represents_later_zero hrt hs (represents_sub hy hb))</span>
+<span id="L35"><a href="#L35">  35</a> </span>
+<span id="L36"><a href="#L36">  36</a> private theorem target_page_twelve_frame :</span>
+<span id="L37"><a href="#L37">  37</a>     ∃ a : model.classical.sphere.Page 12 (14,139),</span>
+<span id="L38"><a href="#L38">  38</a>       RepresentsOnPage model.classical.sphere 12 (14,139) KIP126.Computation.Standard.T a ∧</span>
+<span id="L39"><a href="#L39">  39</a>       ∀ y : model.classical.sphere.Page 12 (14,139), y=0 ∨ y=a := by</span>
+<span id="L40"><a href="#L40">  40</a>   apply later_page_frame_of_earlier (by decide : (2:ℤ)≤6) (by decide : (6:ℤ)≤12)</span>
+<span id="L41"><a href="#L41">  41</a>     KIP126.Main.SectionSeven.Internal.target_page_six_frame</span>
+<span id="L42"><a href="#L42">  42</a>   exact permanent_reaches .sphere 12 (by decide) (14,139) _</span>
+<span id="L43"><a href="#L43">  43</a>     ((permanent_cycle_iff_mem .sphere (14,139) _).mp KIP126.Computation.Standard.t_permanent_cycle)</span>
+<span id="L44"><a href="#L44">  44</a> </span>
+<span id="L45"><a href="#L45">  45</a> end</span>
+<span id="L46"><a href="#L46">  46</a> end KIP126.Main.Internal.Selected</span></pre>

@@ -1,0 +1,143 @@
+<!doctype html><meta charset="utf-8"><title>KIP126/ProofTools/Language.lean</title><style>body{margin:24px;background:#fbfaf7;color:#222}pre{line-height:1.6}pre>span{display:block}pre>span:target{background:#fff0a8}a{color:#888;text-decoration:none}</style><h1>KIP126/ProofTools/Language.lean</h1><pre><span id="L1"><a href="#L1">   1</a> module</span>
+<span id="L2"><a href="#L2">   2</a> </span>
+<span id="L3"><a href="#L3">   3</a> public import KIP126.Literature</span>
+<span id="L4"><a href="#L4">   4</a> </span>
+<span id="L5"><a href="#L5">   5</a> /-! Actual page labels and crossing predicates for the paper&#x27;s reusable tools.</span>
+<span id="L6"><a href="#L6">   6</a> Adapted from PageRepresentatives/Predicates and Route/Extensions at</span>
+<span id="L7"><a href="#L7">   7</a> bbac1fc05843 (MIT; see the retained source LICENSE); all operations refer to the same given model. -/</span>
+<span id="L8"><a href="#L8">   8</a> </span>
+<span id="L9"><a href="#L9">   9</a> @[expose] section</span>
+<span id="L10"><a href="#L10">  10</a> namespace KIP126.ProofTools</span>
+<span id="L11"><a href="#L11">  11</a> noncomputable section</span>
+<span id="L12"><a href="#L12">  12</a> open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context</span>
+<span id="L13"><a href="#L13">  13</a> open KIP126.Synthetic.SpectralSequence KIP126.Classical.Adams KIP126.AdamsSynthetic</span>
+<span id="L14"><a href="#L14">  14</a> open KIP126.Core.SpectralSequence KIP126.Kervaire.Route</span>
+<span id="L15"><a href="#L15">  15</a> universe u v w</span>
+<span id="L16"><a href="#L16">  16</a> variable {C : Type u} [StableHomotopyCategory.{u,v} C]</span>
+<span id="L17"><a href="#L17">  17</a>   [HasFunctorialCofiber (C := C)]</span>
+<span id="L18"><a href="#L18">  18</a>   {Syn : Type w} [SyntheticCategory.{w,v} Syn]</span>
+<span id="L19"><a href="#L19">  19</a>   [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)</span>
+<span id="L20"><a href="#L20">  20</a> </span>
+<span id="L21"><a href="#L21">  21</a> public abbrev Ambient (X : ClassicalObject) (p : ℤ × ℤ) :=</span>
+<span id="L22"><a href="#L22">  22</a>   (D.classical.obj (X.obj D.auxiliary)).Page 2 p</span>
+<span id="L23"><a href="#L23">  23</a> </span>
+<span id="L24"><a href="#L24">  24</a> variable (X : ClassicalObject)</span>
+<span id="L25"><a href="#L25">  25</a> </span>
+<span id="L26"><a href="#L26">  26</a> /-- Membership in paper Z_c, with its valid index range explicit. -/</span>
+<span id="L27"><a href="#L27">  27</a> public def IsCycle (level : ℤ) (p : ℤ × ℤ) (x : Ambient D X p) : Prop :=</span>
+<span id="L28"><a href="#L28">  28</a>   1 ≤ level ∧ x ∈ KIP126.Literature.cycles D X level p</span>
+<span id="L29"><a href="#L29">  29</a> </span>
+<span id="L30"><a href="#L30">  30</a> /-- Membership in paper B_c; this does not assert a nonzero incoming hit. -/</span>
+<span id="L31"><a href="#L31">  31</a> public def IsBoundary (level : ℤ) (p : ℤ × ℤ) (x : Ambient D X p) : Prop :=</span>
+<span id="L32"><a href="#L32">  32</a>   1 ≤ level ∧ x ∈ KIP126.Literature.boundaries D X level p</span>
+<span id="L33"><a href="#L33">  33</a> </span>
+<span id="L34"><a href="#L34">  34</a> /-- A common infinite-cycle representative, allowing the zero class. -/</span>
+<span id="L35"><a href="#L35">  35</a> public def IsPermanent (p : ℤ × ℤ) (x : Ambient D X p) : Prop :=</span>
+<span id="L36"><a href="#L36">  36</a>   x ∈ KIP126.Literature.permanentCycles D X p</span>
+<span id="L37"><a href="#L37">  37</a> </span>
+<span id="L38"><a href="#L38">  38</a> /-- Equality modulo the actual paper boundary submodule. -/</span>
+<span id="L39"><a href="#L39">  39</a> public def Congruent (level : ℤ) (p : ℤ × ℤ) (x y : Ambient D X p) : Prop :=</span>
+<span id="L40"><a href="#L40">  40</a>   IsBoundary D X level p (x - y)</span>
+<span id="L41"><a href="#L41">  41</a> </span>
+<span id="L42"><a href="#L42">  42</a> /-- The actual Adams differential on common E₂ labels, with the degree</span>
+<span id="L43"><a href="#L43">  43</a> transport checked by `HasDifferential`. It is never a freely chosen operation. -/</span>
+<span id="L44"><a href="#L44">  44</a> public def DifferentialAt (r : ℤ) (p q : ℤ × ℤ)</span>
+<span id="L45"><a href="#L45">  45</a>     (x : Ambient D X p) (y : Ambient D X q) : Prop :=</span>
+<span id="L46"><a href="#L46">  46</a>   2 ≤ r ∧ KIP126.Core.SpectralSequence.HasDifferential</span>
+<span id="L47"><a href="#L47">  47</a>     (D.classical.obj (X.obj D.auxiliary)) r p q x y</span>
+<span id="L48"><a href="#L48">  48</a> </span>
+<span id="L49"><a href="#L49">  49</a> /-- MainPaper Definition `classicalcrossdiff`: a crossing of a length-r</span>
+<span id="L50"><a href="#L50">  50</a> Adams differential beginning at p, viewed on page `page`. Its witness is an</span>
+<span id="L51"><a href="#L51">  51</a> essential differential in the actual Adams sequence, with the same stems.</span>
+<span id="L52"><a href="#L52">  52</a> This is distinct from the direction used in Moss&#x27;s theorem. -/</span>
+<span id="L53"><a href="#L53">  53</a> public def HasCrossingOn (r page : ℤ) (p : ℤ × ℤ) : Prop :=</span>
+<span id="L54"><a href="#L54">  54</a>   ∃ a b : ℤ, 0 &lt; a ∧ a ≤ page - 2 ∧ 0 ≤ b ∧ b ≤ r - page ∧</span>
+<span id="L55"><a href="#L55">  55</a>     ∃ (x : Ambient D X (p.1 + a, p.2 + a))</span>
+<span id="L56"><a href="#L56">  56</a>       (y : Ambient D X (p.1 + r - b, p.2 + r - b - 1)),</span>
+<span id="L57"><a href="#L57">  57</a>       KIP126.Core.SpectralSequence.HasNonzeroDifferential</span>
+<span id="L58"><a href="#L58">  58</a>         (D.classical.obj (X.obj D.auxiliary)) (r - a - b)</span>
+<span id="L59"><a href="#L59">  59</a>         (p.1 + a, p.2 + a) (p.1 + r - b, p.2 + r - b - 1) x y</span>
+<span id="L60"><a href="#L60">  60</a> </span>
+<span id="L61"><a href="#L61">  61</a> /-- Absence of paper-direction crossings in the stated, valid page range. -/</span>
+<span id="L62"><a href="#L62">  62</a> public def NoCrossingOn (r page : ℤ) (p : ℤ × ℤ) : Prop :=</span>
+<span id="L63"><a href="#L63">  63</a>   2 ≤ page ∧ page ≤ r ∧ ¬ HasCrossingOn D X r page p</span>
+<span id="L64"><a href="#L64">  64</a> </span>
+<span id="L65"><a href="#L65">  65</a> </span>
+<span id="L66"><a href="#L66">  66</a> variable (X Y : ClassicalObject) (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)</span>
+<span id="L67"><a href="#L67">  67</a> </span>
+<span id="L68"><a href="#L68">  68</a> /-- A crossing in the finite page-extension position `(r,n,s,t)`.</span>
+<span id="L69"><a href="#L69">  69</a> The target degree is written as the actual shorter witness&#x27;s target;</span>
+<span id="L70"><a href="#L70">  70</a> it is `(s+n-b,t+n-b)`. Its source and target cycle conditions are supplied</span>
+<span id="L71"><a href="#L71">  71</a> by that same witness, on page r-a and of length n-a-b. -/</span>
+<span id="L72"><a href="#L72">  72</a> public def FiniteHasCrossing</span>
+<span id="L73"><a href="#L73">  73</a>     (r : ℕ) (n s t : ℤ) : Prop :=</span>
+<span id="L74"><a href="#L74">  74</a>   ∃ a b : ℕ, 0 &lt; a ∧ a ≤ r - 2 ∧</span>
+<span id="L75"><a href="#L75">  75</a>     (b : ℤ) ≤ n - a - normalizedExponent D.classicalTower f ∧</span>
+<span id="L76"><a href="#L76">  76</a>     ∃ (x&#x27; : Ambient D X (s + a, t + a))</span>
+<span id="L77"><a href="#L77">  77</a>       (y&#x27; : Ambient D Y</span>
+<span id="L78"><a href="#L78">  78</a>         (s + a + (n - a - b), t + a + (n - a - b))),</span>
+<span id="L79"><a href="#L79">  79</a>       ∃ W&#x27; : FiniteExtensionWitness D X Y f (r - a) (n - a - b) (s + a) (t + a) x&#x27; y&#x27;,</span>
+<span id="L80"><a href="#L80">  80</a>         W&#x27;.Essential ∧ y&#x27; ∉ KIP126.Literature.boundaries D Y</span>
+<span id="L81"><a href="#L81">  81</a>           (1 + n - b - normalizedExponent D.classicalTower f)</span>
+<span id="L82"><a href="#L82">  82</a>           (s + a + (n - a - b), t + a + (n - a - b))</span>
+<span id="L83"><a href="#L83">  83</a> </span>
+<span id="L84"><a href="#L84">  84</a> /-- Absence of crossings in this finite position. Applied to an actual</span>
+<span id="L85"><a href="#L85">  85</a> extension witness, its page and length validity are already supplied. -/</span>
+<span id="L86"><a href="#L86">  86</a> public def FiniteNoCrossing</span>
+<span id="L87"><a href="#L87">  87</a>     (r : ℕ) (n s t : ℤ) : Prop :=</span>
+<span id="L88"><a href="#L88">  88</a>   ¬ FiniteHasCrossing D X Y f r n s t</span>
+<span id="L89"><a href="#L89">  89</a> </span>
+<span id="L90"><a href="#L90">  90</a> /-- The infinite clause uses the same untruncated normalized map and actual</span>
+<span id="L91"><a href="#L91">  91</a> permanent representatives. The bound a≤n-e follows from the length range,</span>
+<span id="L92"><a href="#L92">  92</a> and is recorded explicitly; there is no finite-page upper bound on a. -/</span>
+<span id="L93"><a href="#L93">  93</a> public def InfiniteHasCrossing</span>
+<span id="L94"><a href="#L94">  94</a>     (n s t : ℤ) : Prop :=</span>
+<span id="L95"><a href="#L95">  95</a>   ∃ a b : ℕ, 0 &lt; a ∧ (a : ℤ) ≤ n - normalizedExponent D.classicalTower f ∧</span>
+<span id="L96"><a href="#L96">  96</a>     (b : ℤ) ≤ n - a - normalizedExponent D.classicalTower f ∧</span>
+<span id="L97"><a href="#L97">  97</a>     ∃ (x&#x27; : Ambient D X (s + a, t + a))</span>
+<span id="L98"><a href="#L98">  98</a>       (y&#x27; : Ambient D Y</span>
+<span id="L99"><a href="#L99">  99</a>         (s + a + (n - a - b), t + a + (n - a - b))),</span>
+<span id="L100"><a href="#L100"> 100</a>       ∃ W&#x27; : InfiniteExtensionWitness D X Y f (n - a - b) (s + a) (t + a) x&#x27; y&#x27;,</span>
+<span id="L101"><a href="#L101"> 101</a>         W&#x27;.Essential ∧ y&#x27; ∉ KIP126.Literature.boundaries D Y</span>
+<span id="L102"><a href="#L102"> 102</a>           (1 + n - b - normalizedExponent D.classicalTower f)</span>
+<span id="L103"><a href="#L103"> 103</a>           (s + a + (n - a - b), t + a + (n - a - b))</span>
+<span id="L104"><a href="#L104"> 104</a> </span>
+<span id="L105"><a href="#L105"> 105</a> public def InfiniteNoCrossing</span>
+<span id="L106"><a href="#L106"> 106</a>     (n s t : ℤ) : Prop :=</span>
+<span id="L107"><a href="#L107"> 107</a>   ¬ InfiniteHasCrossing D X Y f n s t</span>
+<span id="L108"><a href="#L108"> 108</a> </span>
+<span id="L109"><a href="#L109"> 109</a> </span>
+<span id="L110"><a href="#L110"> 110</a> /-- 有限 stretching 的障碍候选，直接在同一个早期 λ 商的实际 ESS 中定义。</span>
+<span id="L111"><a href="#L111"> 111</a> 源和靶的 synthetic weight 固定为原 extension 的 `t + e(f)`，而源的</span>
+<span id="L112"><a href="#L112"> 112</a> filtration 提高 `a`。源必须不在后期商到早期商的实际 `ρ` 所诱导的</span>
+<span id="L113"><a href="#L113"> 113</a> `E∞` 映射像中；这与某个普通 Adams 代表元不属于后页 cycle 层不同。</span>
+<span id="L114"><a href="#L114"> 114</a> 允许 `b = 0` 及长度 `n - a - b = 0` 的 synthetic extension，包括</span>
+<span id="L115"><a href="#L115"> 115</a> `e(f) = 1` 的情形。要求同商中实际 extension equation 的靶非零，不要求</span>
+<span id="L116"><a href="#L116"> 116</a> essential 性，不换成较小 λ 商的 extension，也不额外施加普通 Adams</span>
+<span id="L117"><a href="#L117"> 117</a> boundary 排除条件。排除这些候选强于仅排除 essential crossings；这是</span>
+<span id="L118"><a href="#L118"> 118</a> 修复后的充分条件，不声称与原普通 Adams 代表元谓词等价。 -/</span>
+<span id="L119"><a href="#L119"> 119</a> public def FiniteExtensionNonliftableCrossing</span>
+<span id="L120"><a href="#L120"> 120</a>     (rEarlier rLater : ℕ) (n s t : ℤ) : Prop :=</span>
+<span id="L121"><a href="#L121"> 121</a>   ∃ hle : rEarlier ≤ rLater, ∃ a b : ℕ,</span>
+<span id="L122"><a href="#L122"> 122</a>     0 &lt; a ∧ a ≤ rEarlier - 2 ∧ (a : ℤ) + b ≤ n ∧</span>
+<span id="L123"><a href="#L123"> 123</a>     ∃ (source : ((D.family.obj ((SyntheticObject.quotient (rEarlier - 1)</span>
+<span id="L124"><a href="#L124"> 124</a>           (extensionSourceObject D X Y f)).obj D.nu D.auxiliary)).sequence.ssData</span>
+<span id="L125"><a href="#L125"> 125</a>           (s + a, (t - s) + (s + a), t + normalizedExponent D.classicalTower f)).eInfty)</span>
+<span id="L126"><a href="#L126"> 126</a>       (target : ((D.family.obj ((SyntheticObject.quotient (rEarlier - 1)</span>
+<span id="L127"><a href="#L127"> 127</a>           (.nu Y)).obj D.nu D.auxiliary)).sequence.ssData</span>
+<span id="L128"><a href="#L128"> 128</a>           (s + a + (n - a - b), (t - s) + (s + a + (n - a - b)),</span>
+<span id="L129"><a href="#L129"> 129</a>             t + normalizedExponent D.classicalTower f)).eInfty),</span>
+<span id="L130"><a href="#L130"> 130</a>       source ∉ Set.range (((D.family.functor.map</span>
+<span id="L131"><a href="#L131"> 131</a>         ((D.quotients.tower ((extensionSourceObject D X Y f).obj D.nu D.auxiliary)).rho</span>
+<span id="L132"><a href="#L132"> 132</a>           (rEarlier - 1) (rLater - 1) (Nat.sub_le_sub_right hle 1))).eInftyMap</span>
+<span id="L133"><a href="#L133"> 133</a>             (s + a, (t - s) + (s + a), t + normalizedExponent D.classicalTower f)).hom) ∧</span>
+<span id="L134"><a href="#L134"> 134</a>       TowerExtensionEquation (D.convergentMap</span>
+<span id="L135"><a href="#L135"> 135</a>         (.quotient (rEarlier - 1) (extensionSourceObject D X Y f))</span>
+<span id="L136"><a href="#L136"> 136</a>         (.quotient (rEarlier - 1) (.nu Y))</span>
+<span id="L137"><a href="#L137"> 137</a>         (finiteExtensionMap D X Y f (rEarlier - 1)))</span>
+<span id="L138"><a href="#L138"> 138</a>         (t - s, t + normalizedExponent D.classicalTower f) (s + a) (n - a - b) source target ∧</span>
+<span id="L139"><a href="#L139"> 139</a>       target ≠ 0</span>
+<span id="L140"><a href="#L140"> 140</a> </span>
+<span id="L141"><a href="#L141"> 141</a> </span>
+<span id="L142"><a href="#L142"> 142</a> end</span>
+<span id="L143"><a href="#L143"> 143</a> end KIP126.ProofTools</span></pre>
