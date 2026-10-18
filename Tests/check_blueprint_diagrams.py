@@ -29,20 +29,30 @@ def main():
                 label = 'paper:' + svg.stem.rsplit('-', 1)[0]
                 page.goto(args.url.rstrip('/') + '/#/Kervaire126#' + label, wait_until='domcontentloaded')
                 statement = page.locator('#stmt-' + node_id('bp', label))
-                link = statement.locator('a.tex-link[href="paper/diagrams/' + svg.name + '"]')
+                selector = '#stmt-' + node_id('bp', label) + ' .sbody a.tex-link[href="paper/diagrams/' + svg.name + '"]'
+                link = page.locator(selector)
                 link.wait_for(state='visible')
                 link.evaluate("el => el.scrollIntoView({block:'center'})")
-                report = link.evaluate('''async el => {
+                report = page.wait_for_function('''selector => {
+                    const el = document.querySelector(selector);
+                    const body = el?.closest('.sbody');
+                    if (!el?.isConnected || !body) return false;
                     const style = getComputedStyle(el);
-                    const image = new Image();
-                    image.src = el.href;
-                    await image.decode();
                     const box = el.getBoundingClientRect();
-                    const column = el.closest('.sbody').getBoundingClientRect();
+                    const column = body.getBoundingClientRect();
+                    if (!box.width || !box.height) return false;
                     return {width:box.width, height:box.height, column:column.width,
                         background:style.backgroundImage, display:style.display,
-                        loaded:image.naturalWidth > 0};
-                }''')
+                        href:el.href};
+                }''', arg=selector).json_value()
+                # Native reading-position updates may replace a statement while
+                # the image loads. Keep the synchronous DOM measurement separate.
+                report['loaded'] = page.evaluate('''async href => {
+                    const image = new Image();
+                    image.src = href;
+                    await image.decode();
+                    return image.naturalWidth > 0;
+                }''', report['href'])
                 assert report['loaded'] and svg.name in report['background'], report
                 assert report['display'] == 'block' and report['height'] >= 60, report
                 assert report['width'] <= report['column'] + 1, report
