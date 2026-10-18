@@ -195,7 +195,7 @@ private theorem weighted_absolute_boundary_closed (X : ClassicalObject)
 /-- The actual absolute λ-boundary, with the fixed bigraded suspension. -/
 @[expose] public def syntheticAbsoluteBoundary (X : ClassicalObject) (n : ℕ) :=
   XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) n ≫
-    (Operations.biSuspensionIso n (model.nu.functor.obj (X.obj model.auxiliary))).inv
+    (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso n (model.nu.functor.obj (X.obj model.auxiliary))).inv
 
 /-- The λ^a x label in the actual n-th quotient, indexed by its stem. -/
 @[expose] public def syntheticDeltaSourceLabel (X : ClassicalObject) (n : ℕ) (s t : ℤ)
@@ -276,7 +276,7 @@ public theorem syntheticDeltaExtension_absolute (X : ClassicalObject)
       (syntheticAbsoluteBoundary X n)) (t-s,t-a) s (k+1) (by omega)
       (syntheticDeltaSourceLabel X n s t a x) _ b (b≫syntheticAbsoluteBoundary X n)
       (by exact hb') (by
-          simpa only [syntheticAbsoluteBoundary, absoluteBoundary,Operations.biSuspensionIso,
+          simpa only [syntheticAbsoluteBoundary, absoluteBoundary,
             SyntheticObject.obj] using hδ') rfl
   exact he
 
@@ -284,7 +284,7 @@ public theorem syntheticDeltaExtension_absolute (X : ClassicalObject)
 @[expose] public def syntheticFiniteBoundary (X : ClassicalObject) (n m : ℕ)
     (hn : 0<n) (hnm : n<m) :=
   ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).triangle hn hnm).delta ≫
-    (Operations.biSuspensionIso n
+    (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso n
       (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) (m-n))).inv
 
 private theorem finite_boundary_evaluation (X : ClassicalObject) (n m : ℕ)
@@ -295,9 +295,9 @@ private theorem finite_boundary_evaluation (X : ClassicalObject) (n m : ℕ)
         (XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) (m-n)) := by
   let A := model.nu.functor.obj (X.obj model.auxiliary)
   apply (cancel_mono (biSuspensionIso n (XModLambdaN A (m-n))).hom).mp
-  simp only [A,syntheticFiniteBoundary,syntheticAbsoluteBoundary,Operations.biSuspensionIso,
+  simp only [A,syntheticFiniteBoundary,syntheticAbsoluteBoundary,
     Category.assoc,Iso.inv_hom_id,Category.comp_id]
-  rw [biSuspensionIso_natural]
+  erw [biSuspensionIso_natural]
   simp only [Iso.inv_hom_id_assoc]
   exact selected_delta_evaluation_eq_cofiber X n m _ v w b
 
@@ -349,7 +349,7 @@ public theorem syntheticDeltaExtension_finite (X : ClassicalObject)
     rw [heval]
     convert hδf using 1
     · rfl
-    · simp only [g,syntheticAbsoluteBoundary,absoluteBoundary,Operations.biSuspensionIso,
+    · simp only [g,syntheticAbsoluteBoundary,absoluteBoundary,
         SyntheticObject.obj,regrade_precomp,Category.assoc]
   exact extension_equation_of_detected_pair
     (model.convergentMap (.quotient n (.nu X))

@@ -6,12 +6,14 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.573361+00:00'
+updated: '2026-10-18T14:34:09.110767+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 628-630](paper/main.tex.html#L628). Apply the square corollary inductively to obtain commuting maps on every page of the extension spectral sequences.
 
-**Formal scope:** no public counterpart identified.
-
-No public theorem constructing a morphism from the $f$-extension spectral sequence to the $g$-extension spectral sequence from the first differentials for $p$ and $q$ has been identified. `FilteredMapTransport` instead transports an already available filtered-map isomorphism.
+**Formal scope:** fixed original representative-form statement proved.
 
 Original statement and context: paper/main.tex.html#L617; paper/2412.10879.pdf.
+
+Original-statement interface: `KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism`. The public statement is proved without changing its type or premises.
+
+Finite induction on the preceding vanishing extension relations proves a filtration shift by $r$. The unique degree-$r$ extension values form additive maps whose exact graphs are the $p$- and $q$-relations; the same homotopy representative and square preserve every $f$-extension relation. This proves the fixed statement in its full representative presentation; the separate construction of a classical ESS remains scoped in Definition 2.1.

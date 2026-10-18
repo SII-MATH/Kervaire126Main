@@ -1,5 +1,6 @@
 module
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
+import all KIP126.ProofTools.Paper.OriginalStatements
 import all KIP126.ProofTools.Paper.ExtensionDescent
 import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
 import all KIP126.ProofTools.Paper.ExtensionEssentialSource
@@ -163,15 +164,26 @@ run_cmd do
     checked := checked + 1
   unless holes.qsort (· < ·) == expectedNames.qsort (· < ·) do
     throwError "Proof obligation registry has stale or missing declarations: {holes}"
-  let originalGapDeclarations := #[
+  let permittedGapDeclarations := #[
     "KIP126.ProofTools.Standard.generalizedLeibniz",
-    "KIP126.ProofTools.Standard.generalizedMahowald"]
-  unless holes.qsort (· < ·) == originalGapDeclarations.qsort (· < ·) do
-    throwError "ProofTools permits only the remaining GL1/GL2 and MH2 declarations: {holes}"
+    "KIP126.ProofTools.Standard.generalizedMahowald",
+    "KIP126.ProofTools.Paper.extensionBoundary_of_exact",
+    "KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing",
+    "KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension"]
+  unless holes.qsort (· < ·) == permittedGapDeclarations.qsort (· < ·) do
+    throwError "ProofTools pending declarations differ from the two existing laws and three remaining original statements: {holes}"
   -- These completed tools may use fixed upstream obligations, but must not
-  -- depend on either unfinished local paper theorem. In particular, the
+  -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift cannot silently use MH2 or generalizedLeibniz.
   let provedTools := #[
+    `KIP126.ProofTools.Paper.adamsFiltrationVanishing,
+    `KIP126.ProofTools.Paper.extensionSquare,
+    `KIP126.ProofTools.Paper.noCrossingExtensionSquare,
+    `KIP126.ProofTools.Paper.extensionTriangle,
+    `KIP126.ProofTools.Paper.extensionComposition,
+    `KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism,
+    `KIP126.ProofTools.Paper.permanentCycle_of_nullComposite,
+
     `KIP126.ProofTools.Standard.finitePageExtensionStretching,
     `KIP126.ProofTools.Standard.generalizedLeibnizAtLevel,
     `KIP126.ProofTools.Standard.finiteExtensionAtLevelZero,
@@ -599,7 +611,6 @@ run_cmd do
     `KIP126.ProofTools.Internal.Mahowald.ZeroLayerDetectedPair,
     `KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere,
     `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer,
-    `KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer,
     `KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel,
     `KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter,
     `KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo,

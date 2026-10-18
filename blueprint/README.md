@@ -17,6 +17,8 @@ The only repository additions to native graph semantics are the two retained bou
 
 These boundaries inspect authored bindings and dependencies. They do not generate edges, add declarations, or change proof states. The native map is enabled by `site.map: true` and consumes the native project payload directly; no separate map graph or map dependency validator is generated.
 
+ProofTools binds its representative, filtration, shift and zero-layer results directly to their actual public declarations. Some retain an `Internal` namespace from their source organization; the explicit `public` modifier and interface lock, not the namespace spelling, determine whether they are public. Their publication is justified by the mathematical statements in this Blueprint as well as downstream use. Local proof steps remain private. No alias parser adapter or manual proof-state override is used.
+
 ## Authoring and provenance
 
 - `blueprint/content.tex` and `blueprint/chapters/` define the eight-chapter reading order.

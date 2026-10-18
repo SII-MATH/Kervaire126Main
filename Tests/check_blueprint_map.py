@@ -68,7 +68,7 @@ def main():
         assert frame.locator('.node-card:not(.dim)').count() == 1
         frame.locator('#map-search').fill('')
         frame.locator('#map-status').select_option('empty')
-        assert frame.locator('.node-card:not(.dim)').count() == data['stats']['statuses']['empty']
+        assert frame.locator('.node-card:not(.dim)').count() == data['stats']['statuses'].get('empty', 0)
         frame.locator('#map-status').select_option('all')
         frame.locator('#map-chapter').select_option(data['chapters'][-1]['title'])
         expected = sum(block.get('t') == 'stmt' for block in data['chapters'][-1]['blocks'])

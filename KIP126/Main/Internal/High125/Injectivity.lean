@@ -161,7 +161,7 @@ theorem detector_injective_filtration15
       simp only [b,Category.assoc]
       exact congrArg (fun h => b0 ≫ h) (XModLambdaN.incl_naturality f 1)
     rw [hc,hb0]
-    exact KIP126.ProofTools.Operations.sphere_first_quotient_label 25 150 _
+    exact KIP126.ProofTools.Internal.Mahowald.sphere_first_quotient_label 25 150 _
   have h25 := synthetic_filtration_fifteen_to_twentyfive a ha
   rcases theta_detection_step (25,150,130) _ high_frame a h25 with hd|h26
   · have hbdet := model.sphereDetectionCompatible.homotopy_lambda 25 150 20 b

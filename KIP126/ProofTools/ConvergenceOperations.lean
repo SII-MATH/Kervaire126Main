@@ -22,7 +22,7 @@ variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]
   {P : SyntheticTowerPresentation unit F} {X Y : Syn} {g : X ⟶ Y}
   {cx : SyntheticTowerConvergence P X} {cy : SyntheticTowerConvergence P Y}
 
-def infinityGradedIso (c : SyntheticTowerConvergence P X) (p : ℤ × ℤ) (s : ℤ) :
+public def infinityGradedIso (c : SyntheticTowerConvergence P X) (p : ℤ × ℤ) (s : ℤ) :
     ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty ≅
       (P.filtration X).associatedGraded s p :=
   c.identification (s,p.1+s,p.2) ≪≫ eqToIso (by simp)
@@ -40,7 +40,7 @@ theorem toGraded_element (c : SyntheticTowerConvergence P X) (p : ℤ × ℤ) (s
   rw [elementMap_comp]
   rfl
 
-theorem tower_extension_iff
+public theorem tower_extension_iff
     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
     (p : ℤ × ℤ) (s n : ℤ)
     (x : ((F.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)
@@ -67,7 +67,7 @@ theorem tower_extension_iff
     · rw [← Category.assoc,← elementMap_comp,← elementMap_comp,← elementMap_comp]
       exact congrArg elementMap he
 
-theorem filtration_representative_exists (P : SyntheticTowerPresentation unit F)
+public theorem filtration_representative_exists (P : SyntheticTowerPresentation unit F)
     (A : Syn) (p : ℤ × ℤ) (s : ℤ) (a : BiHom p.1 p.2 A)
     (ha : a ∈ P.filtrationSubmodule A s p) :
     ∃ a' : (Subobject.underlying.obj ((P.filtration A).F s p) : ModuleCat.{v} ℤ),
@@ -76,7 +76,7 @@ theorem filtration_representative_exists (P : SyntheticTowerPresentation unit F)
     simpa [SyntheticTowerPresentation.filtration, syntheticHomotopy] using ha
   exact hm
 
-theorem map_preserves_filtration
+public theorem map_preserves_filtration
     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
     (p : ℤ × ℤ) (s : ℤ) (a : BiHom p.1 p.2 X)
     (ha : a ∈ P.filtrationSubmodule X s p) :
@@ -152,7 +152,7 @@ theorem infinity_image_iff_lift
     OrderIso.apply_symm_apply]
   rfl
 
-theorem next_filtration_of_infinity_injective
+public theorem next_filtration_of_infinity_injective
     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
     (p : ℤ × ℤ) (s : ℤ)
     (hf : Function.Injective ((F.functor.map g).eInftyMap (s,p.1+s,p.2)).hom)
@@ -211,7 +211,7 @@ theorem representative_grade_naturality
     ((P.filtration Y).toAssociatedGraded s p b)
   exact hB.trans (hp.symm.trans ((congrArg (M.filteredMap.inducedGrMap s p) hA.symm).trans he))
 
-theorem grade_difference
+public theorem grade_difference
     (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
     (p : ℤ × ℤ) (s : ℤ)
     (a : (Subobject.underlying.obj ((P.filtration X).F s p) : ModuleCat.{v} ℤ))

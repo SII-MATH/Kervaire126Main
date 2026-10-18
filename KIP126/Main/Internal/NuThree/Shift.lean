@@ -7,7 +7,7 @@ reusing the already proved lambda/shift coherence. -/
 namespace KIP126.Main.Internal.NuThree
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic
-open KIP126.Main.Internal.AlphaOne KIP126.ProofTools.Operations
+open KIP126.Main.Internal.AlphaOne KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false

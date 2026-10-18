@@ -23,7 +23,7 @@ open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 open KIP126.Main.Internal.Selected
 open KIP126.Literature.Standard (eta)
 open KIP126.Computation.Standard (correction)
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.Main.Internal.Selected.Normalized
 noncomputable section
 set_option backward.isDefEq.respectTransparency false

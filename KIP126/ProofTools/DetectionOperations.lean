@@ -20,7 +20,7 @@ open KIP126.Core.SpectralSequence KIP126.Kervaire.Route
 open KIP126.AdamsSynthetic.Standard
 noncomputable section
 
-theorem grade_natural (A B : SyntheticObject)
+public theorem grade_natural (A B : SyntheticObject)
     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)
     (a : (Subobject.underlying.obj ((model.syntheticTower.filtration
       (A.obj model.nu model.auxiliary)).F i.1 (i.2.1-i.1,i.2.2)) : ModuleCat ℤ))
@@ -66,7 +66,7 @@ theorem grade_natural (A B : SyntheticObject)
   exact hB.trans (hp.symm.trans
     ((congrArg (M.filteredMap.inducedGrMap i.1 p) hA.symm).trans hn))
 
-theorem detects_map (A B : SyntheticObject)
+public theorem detects_map (A B : SyntheticObject)
     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)
     (x : (model.family.obj (A.obj model.nu model.auxiliary)).E₂ i)
     (a : BiHom (i.2.1-i.1) i.2.2 (A.obj model.nu model.auxiliary))
@@ -96,7 +96,7 @@ theorem detects_map (A B : SyntheticObject)
   exact (congrArg ((model.convergence B).identification i).hom h).symm.trans
     (((model.convergence B).identification i).toLinearEquiv.apply_symm_apply _)
 
-theorem detects_reflect (A B : SyntheticObject)
+public theorem detects_reflect (A B : SyntheticObject)
     (f : A.obj model.nu model.auxiliary ⟶ B.obj model.nu model.auxiliary) (i : Tridegree)
     (hf : Function.Injective ((model.family.map f).eInftyMap i).hom)
     (x : (model.family.obj (A.obj model.nu model.auxiliary)).E₂ i)

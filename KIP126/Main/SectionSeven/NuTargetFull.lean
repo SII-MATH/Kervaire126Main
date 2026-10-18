@@ -26,7 +26,7 @@ open CategoryTheory CategoryTheory.Limits KIP126.StableHomotopy
 open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic
 open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature
 open KIP126.AdamsSynthetic.Standard KIP126.Main.Internal KIP126.Main.Internal.Selected
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 
 theorem lambda_zero_0_1 (a : BiHom 0 1 (S_0_0 : SyntheticSpectrum)) :

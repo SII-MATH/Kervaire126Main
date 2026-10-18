@@ -45,6 +45,8 @@ run_cmd do
     unless (`KIP126.ProofTools).isPrefixOf env.header.moduleNames[idx.toNat]! do continue
     unless (exported.find? name).isSome do continue
     if isPrivateName name then continue
+    if (`KIP126.ProofTools.Operations).isPrefixOf name then
+      throwError "Redundant operation facade was reintroduced: {name}"
     actualExports := actualExports.push name.toString
     let axioms ← collectAxioms name
     let unexpected := axioms.filter fun n =>
@@ -78,7 +80,8 @@ run_cmd do
   let env ← getEnv
   let exported := env.setExporting true
   for (name, info) in env.constants.toList do
-    unless (`KIP126.ProofTools.Standard).isPrefixOf name do continue
+    unless (`KIP126.ProofTools.Standard).isPrefixOf name ||
+        name == `KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer do continue
     unless (exported.find? name).isSome do continue
     liftTermElabM <| Meta.forallTelescope info.type fun args _ => do
       for arg in args do
@@ -95,7 +98,7 @@ run_cmd do
 
 #check_failure KIP126.ProofTools.Standard.lambda_target_class
 #check_failure KIP126.ProofTools.Internal.finite_representatives_lift
-#check_failure KIP126.ProofTools.Internal.grade_difference
+#check_failure KIP126.ProofTools.Operations.grade_difference
 #check_failure KIP126.ProofTools.Internal.Mahowald.actual_rho_kernel_correction
 
 #check_failure KIP126.ProofTools.Internal.Mahowald.finite_lambda_detects
@@ -224,7 +227,7 @@ run_cmd do
 -- The only new public bridge is the exact zero-layer nu-cofiber instance.
 -- Its representative construction and generic zero-layer proof stay private.
 #check_failure KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere
-#check_failure KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer
+#check_failure KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer
 
 section NuCofiberZeroLayerConsumer
 open CategoryTheory KIP126.StableHomotopy KIP126.AdamsSynthetic KIP126.Kervaire.Route
@@ -255,7 +258,7 @@ example
       ∃ y' : Ambient model .sphere (11,136),
         FiniteExtension model (.shift 3 .sphere) .sphere model.auxiliary.nuMap
           4 3 8 133 x y' ∧ Congruent model .sphere 3 (11,136) y' y := by
-  exact KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer
+  exact KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer
     x y xBar yBar suspendedX hx hy hxBar hyBar hsusp hh hd hcross hg
 
 end NuCofiberZeroLayerConsumer

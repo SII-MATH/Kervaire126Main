@@ -17,7 +17,10 @@ class MemoPresentationTests(unittest.TestCase):
     def test_all_authored_sections_are_present_without_claiming_global_completion(self):
         records = memo.read_corrections(ROOT / 'corrections.yaml')
         page = memo.render_memo(ROOT)
-        self.assertEqual(len(records), 8)
+        self.assertEqual(len(records), 9)
+        typing = next(r for r in records if r['id'] == 'original-statement-typing')
+        self.assertEqual(typing['original']['statements'], ['2.17', '5.14'])
+        self.assertEqual(typing['status']['kind'], 'partial')
         for record in records:
             for key in memo.TEXT_FIELDS:
                 self.assertIn(memo.markdown(record.get(key, '')), page)
@@ -56,7 +59,7 @@ class MemoPresentationTests(unittest.TestCase):
     def test_originals_include_every_hypothesis_and_conclusion_from_actual_source(self):
         originals, refs = memo.original_statements(ROOT)
         page = memo.render_memo(ROOT)
-        for number in ('6.12', '6.20', '5.10', '6.1', '1.5', '7.9', '7.16', '7.18'):
+        for number in ('6.12', '6.20', '5.10', '6.1', '1.5', '2.17', '5.14', '7.9', '7.16', '7.18'):
             self.assertIn(memo.original_html(originals[number]['raw'], refs), page)
         self.assertIn('the differential in (3) has no crossing.', page)
         self.assertIn('for some $b', page)
@@ -93,7 +96,7 @@ class MemoPresentationTests(unittest.TestCase):
             (out / 'memo/MEMO.md').write_text('Obsolete download')
             (out / 'memo/MEMO.md.gz').write_bytes(b'obsolete')
             result = memo.export_memo(ROOT, out)
-            self.assertEqual(result['records'], 8)
+            self.assertEqual(result['records'], 9)
             self.assertEqual(result['content_source'], 'corrections.yaml')
             self.assertFalse((out / 'memo/MEMO.md').exists())
             self.assertFalse((out / 'memo/MEMO.md.gz').exists())

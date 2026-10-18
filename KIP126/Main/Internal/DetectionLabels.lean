@@ -17,7 +17,7 @@ open CategoryTheory CategoryTheory.Limits
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route
 open KIP126.AdamsSynthetic.Standard KIP126.Literature
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 
 abbrev sphereLabel (s t : ℤ) (k : ℕ) (x : model.classical.sphere.Page 2 (s,t)) :=

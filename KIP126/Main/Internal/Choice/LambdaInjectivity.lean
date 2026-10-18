@@ -14,7 +14,7 @@ open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculu
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.Kervaire.Route KIP126.Literature
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option backward.defeqAttrib.useBackward true
@@ -180,7 +180,7 @@ private theorem lambda_shifted_finite_high_filtration_zero
     simpa only [SyntheticTowerConvergence.filtration,
       SyntheticTowerPresentation.filtration,OrderIso.apply_symm_apply,
       FiltrationAtLeast] using hm
-  have hz := KIP126.ProofTools.Operations.finite_high_filtration_zero X q hq p.1 p.2 s hs
+  have hz := KIP126.ProofTools.Internal.Mahowald.finite_high_filtration_zero X q hq p.1 p.2 s hs
     (e.ambient.inv a) hb
   apply (ModuleCat.mono_iff_injective e.ambient.inv).mp inferInstance
   simpa only [map_zero] using hz
@@ -236,7 +236,7 @@ private theorem lambda_quotient_maps_equal_on_spheres
     rw [Preadditive.comp_sub,hfg,sub_self]
   obtain ⟨z,hz⟩ := (XModLambdaN.cofiberTriangle Y q).yoneda_exact₃
     (XModLambdaN.cofiberTriangle_distinguished Y q) (f-g) hzero
-  let e := (KIP126.ProofTools.Operations.biSuspensionIso (q:ℤ) Y).symm
+  let e := (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso (q:ℤ) Y).symm
   have hn := lambda_boundary_no_return X q hq m w
     ((c ≫ XModLambdaN.proj Y q) ≫ e.hom) (e.inv ≫ z)
   have hn' : (c ≫ XModLambdaN.proj Y q) ≫ z = 0 := by

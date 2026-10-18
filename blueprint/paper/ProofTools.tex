@@ -16,9 +16,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public theorem asserting that $\operatorname{AF}(f)=k$ forces every $d_i^f$ with $i<k$ to vanish has been identified. The result \texttt{action\_filtration} provides related support but does not state this conclusion.
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L327; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.adamsFiltrationVanishing}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proof lifts the map along the actual target Adams tower and proves that filtration adds under composition. Every shorter extension target has zero associated grade.
+\lean{KIP126.ProofTools.Paper.adamsFiltrationVanishing}
 \end{corollary}
 
 % AimPaper: 2.7 definition 344 352
@@ -116,11 +118,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: partial; no direct public binding.
-% Blueprint note: The existing theorem \texttt{square\_frames} works in one convergent synthetic tower, using actual representatives on the four edges and no-crossing synchronization. It covers the special case in which the target edge also has no crossing. The general chase under the weaker $k$-range condition of the paper, and the comparison with a general classical $f$-extension spectral sequence, remain unavailable.
-\sketch
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L461; paper/2412.10879.pdf.
-% Blueprint note: The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionSquare}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proved finite-filtration representative criterion synchronizes the two source edges. The zero $q$-extension puts the same representative above $s+n+k$; only the stated threshold no-crossing condition for $g$ is then used.
+\lean{KIP126.ProofTools.Paper.extensionSquare}
 \end{theorem}
 
 % AimPaper: 2.15 corollary 555 574
@@ -155,11 +157,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: partial; no direct public binding.
-% Blueprint note: The private theorem \texttt{square\_frames} supplies a commutative four-edge square with synchronized representatives; its conclusion identifies the image along the right edge with the lower-right representative. The present model uses \texttt{TowerExtensionEquation} and \texttt{TowerNoCrossing} in a convergent synthetic tower. The bridge to the general classical $f$-extension spectral sequence of the paper remains a separate obligation.
-\sketch
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
-% Blueprint note: The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.noCrossingExtensionSquare}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proved filtered-group no-crossing criterion is specialized directly to the actual classical Adams tower. It synchronizes a common source representative and the lower target, and the same commutative square gives the right extension. No synthetic-to-classical comparison or additional premise is needed.
+\lean{KIP126.ProofTools.Paper.noCrossingExtensionSquare}
 \end{corollary}
 
 % AimPaper: 2.16 corollary 576 591
@@ -190,9 +192,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public interface for the triangular-diagram consequence deriving the third extension from two extensions with a common source has been identified.
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L576; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionTriangle}. The public statement is proved without changing its type or premises.
+% Blueprint note: The common-source representative criterion proves the third extension directly. The conclusion keeps length $m-n$, including the signed-length cases of the fixed statement.
+\lean{KIP126.ProofTools.Paper.extensionTriangle}
 \end{corollary}
 
 % AimPaper: 2.17 corollary 597 611
@@ -222,9 +226,12 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public interface for the consequence deriving a composite extension from two consecutive extensions and a no-crossing hypothesis has been identified.
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L597; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionComposition}. The public statement is proved without changing its type or premises.
+% Blueprint note: The printed occurrence of $Y$ for $z$ is read as $Z$, as forced by the diagram; the unused $n$ and the printed $n,m\ge0$ are retained without adding $l\ge0$. See the statement-typing correction record.
+% Blueprint note: Apply the lower no-crossing criterion to the actual image of a source representative, then use the composite equality. No additional condition $l\ge0$ is imposed.
+\lean{KIP126.ProofTools.Paper.extensionComposition}
 \end{corollary}
 
 \section{Functoriality and exactness of extension spectral sequences}
@@ -251,9 +258,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public theorem constructing a morphism from the $f$-extension spectral sequence to the $g$-extension spectral sequence from the first differentials for $p$ and $q$ has been identified. \texttt{FilteredMapTransport} instead transports an already available filtered-map isomorphism.
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L617; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism}. The public statement is proved without changing its type or premises.
+% Blueprint note: Finite induction on the preceding vanishing extension relations proves a filtration shift by $r$. The unique degree-$r$ extension values form additive maps whose exact graphs are the $p$- and $q$-relations; the same homotopy representative and square preserve every $f$-extension relation. This proves the fixed statement in its full representative presentation; the separate construction of a classical ESS remains scoped in Definition 2.1.
+\lean{KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism}
 \end{corollary}
 
 % AimPaper: 2.19 corollary 632 635
@@ -272,9 +281,11 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public theorem deriving permanence of the target of an $f$-extension in the $g$-extension spectral sequence from $g\circ f=0$ has been identified.
+% Correspondence: fixed original representative-form statement proved.
 % Blueprint note: Original statement and context: paper/main.tex.html#L632; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.permanentCycle\_of\_nullComposite}. The public statement is proved without changing its type or premises.
+% Blueprint note: The original extension supplies a single representative in the actual image of $f$. Its composite with $g$ is zero, so that same representative witnesses every zero outgoing extension.
+\lean{KIP126.ProofTools.Paper.permanentCycle_of_nullComposite}
 \end{corollary}
 
 % AimPaper: 2.20 proposition 648 654
@@ -296,9 +307,12 @@ If the Adams filtration of $f$ is $k$, then
 
 
 
-% Correspondence: no public counterpart identified.
-% Blueprint note: No public theorem deriving that every permanent cycle in the $g$-extension spectral sequence is a boundary in the $f$-extension spectral sequence from exactness on homotopy groups has been identified.
+% Correspondence: original statement registered; proof pending.
+% Blueprint note: The missing bridge is ESS convergence: the current permanence predicate allows a different homotopy representative on each page, whereas the homotopy exactness argument needs one representative killed by $g$. No completeness, separatedness or extra lift premise has been inserted into the fixed statement.
 % Blueprint note: Original statement and context: paper/main.tex.html#L648; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionBoundary\_of\_exact}. The statement is public; its proof and any required comparison remain pending.
+\lean{KIP126.ProofTools.Paper.extensionBoundary_of_exact}
+\sketch
 \end{proposition}
 
 \section{Synthetic boundary maps and extension differentials}
@@ -535,16 +549,18 @@ As a result, these $d_0$'s have no crossings.
 \uses{paper:5.9,paper:2.7,paper:3.12,paper:4.2,paper:2.15}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
 
-% Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. This paper proposition therefore has no direct formal binding; its partial scope and the implementation audit remain visible.
+% Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. The direct formal binding below is a statement-only theorem with a registered pending proof; the local supporting results do not discharge it.
 
 
-% Correspondence: partial.
-% Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved; these local steps do not establish the full equivalence.
+% Correspondence: original statement registered; proof pending.
+% Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved. The available division theorem additionally requires target $\lambda$-kernel no-crossing and is specialized to the standard model; it does not prove this original equivalence with its fixed premises.
 
 
 \sketch
 % Blueprint note: The original article number is 5.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1515}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.finiteCrossing\_iff\_syntheticCrossing}. The statement is public; its proof and any required comparison remain pending.
+\lean{KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing}
 \end{proposition}
 
 % AimPaper: 5.14 proposition 1581 1587
@@ -565,10 +581,14 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
 
 
 
-% Correspondence: no public counterpart yet.
-% Blueprint note: There is no public theorem identifying a normalized $f$-extension on the $E_\infty$ page with an extension in the classical $f$-extension spectral sequence. The existing definitions on the two sides do not supply this bridge.
+% Correspondence: original statement registered; proof pending.
+% Blueprint note: The missing bridge is a detection comparison for the same normalized map and homotopy representative in a general fixed model $D$. Available standard-model results and nonzero-survival comparisons do not cover the zero or inessential cases allowed by this statement; its proof remains pending.
 % Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.infiniteExtension\_to\_classicalExtension}. The statement is public; its proof and any required comparison remain pending.
+% Blueprint note: The printed boundary group on $Y$ has index $(s,t)$ although $y$ has degree $(s+n,t+n)$. The typed conclusion uses the latter degree and keeps zero and inessential extensions. See the statement-typing correction record.
+\lean{KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension}
+\sketch
 \end{proposition}
 
 \section{The generalized Leibniz rule and Mahowald trick}

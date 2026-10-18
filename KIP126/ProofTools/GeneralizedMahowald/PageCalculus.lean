@@ -26,7 +26,7 @@ private theorem normalizeInitialProjection
   subst n
   simp only [eqToHom_refl, Category.comp_id]
 
-theorem initialProjection_eq_cycleLabel (X : ClassicalObject) (r : ℤ)
+public theorem initialProjection_eq_cycleLabel (X : ClassicalObject) (r : ℤ)
     (hr : 2 ≤ r) (p : ℤ × ℤ) :
     let E := D.classical.obj (X.obj D.auxiliary)
     let P := E.ssData p
@@ -43,7 +43,7 @@ theorem initialProjection_eq_cycleLabel (X : ClassicalObject) (r : ℤ)
       (r-(D.classical.obj (X.obj D.auxiliary)).r₀).toNat by omega))
 
 
-theorem boundaries_le_cycles (X : ClassicalObject) (p : Bidegree) (b c : ℤ) :
+public theorem boundaries_le_cycles (X : ClassicalObject) (p : Bidegree) (b c : ℤ) :
     KIP126.Literature.boundaries D X b p ≤ KIP126.Literature.cycles D X c p := by
   rintro x ⟨z,rfl⟩
   let P := (D.classical.obj (X.obj D.auxiliary)).ssData p
@@ -54,7 +54,7 @@ theorem boundaries_le_cycles (X : ClassicalObject) (p : Bidegree) (b c : ℤ) :
   simp only [KIP126.Literature.cycleLabel, KIP126.Literature.boundaryLabel, P,
     ←Category.assoc, Subobject.ofLE_comp_ofLE]
 
-theorem boundaries_one (X : ClassicalObject) (p : Bidegree) :
+public theorem boundaries_one (X : ClassicalObject) (p : Bidegree) :
     KIP126.Literature.boundaries D X 1 p = ⊥ := by
   apply le_antisymm
   · rintro x ⟨z,rfl⟩
@@ -73,7 +73,7 @@ theorem boundaries_one (X : ClassicalObject) (p : Bidegree) :
     rfl
   · exact bot_le
 
-theorem represents_zero_mem_boundary (X : ClassicalObject) (r : ℤ) (p : Bidegree)
+public theorem represents_zero_mem_boundary (X : ClassicalObject) (r : ℤ) (p : Bidegree)
     (y : Ambient D X p)
     (hy : RepresentsOnPage (D.classical.obj (X.obj D.auxiliary)) r p y 0) :
     y ∈ KIP126.Literature.boundaries D X (r-1) p := by

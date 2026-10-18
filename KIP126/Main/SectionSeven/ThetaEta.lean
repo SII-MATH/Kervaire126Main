@@ -14,7 +14,7 @@ open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynt
 open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 open KIP126.Main.Internal KIP126.Main.Internal.Selected KIP126.Main.Internal.Choice
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.Computation.Standard (correction)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false

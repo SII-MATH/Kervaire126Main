@@ -16,7 +16,7 @@ open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynt
 open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
 open KIP126.Main.SectionSeven KIP126.Kervaire.Route
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.ProofTools.Operations KIP126.Main.Internal KIP126.Main.Internal.Selected
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald KIP126.Main.Internal KIP126.Main.Internal.Selected
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxRecDepth 10000

@@ -1,9 +1,23 @@
 module
 
+-- The original interfaces keep their fixed types. Completed proofs and the
+-- three remaining comparison obligations are audited separately.
+
 import KIP126.ProofTools
 
 /-! The fixed tools preserve genuine page, cycle, extension, triangle and
 crossing hypotheses; their callers never supply upstream result packages. -/
+#check KIP126.ProofTools.Paper.adamsFiltrationVanishing
+#check KIP126.ProofTools.Paper.extensionSquare
+#check KIP126.ProofTools.Paper.noCrossingExtensionSquare
+#check KIP126.ProofTools.Paper.extensionTriangle
+#check KIP126.ProofTools.Paper.extensionComposition
+#check KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism
+#check KIP126.ProofTools.Paper.permanentCycle_of_nullComposite
+#check KIP126.ProofTools.Paper.extensionBoundary_of_exact
+#check KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing
+#check KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension
+
 namespace Tests.ProofTools
 open CategoryTheory KIP126.StableHomotopy
 open KIP126.Kervaire.Route KIP126.ProofTools
@@ -230,7 +244,7 @@ example (X Y : ClassicalObject)
         (.shift (1,-((page+level-1:ℕ):ℤ)) (extensionSourceObject model X Y f))
         (XModLambdaN.proj ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)
           (page+level-1) ≫
-          (KIP126.ProofTools.Operations.biSuspensionIso (page+level-1:ℕ)
+          (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso (page+level-1:ℕ)
             ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).inv))
       (t-s,t+normalizedExponent model.classicalTower f-level) u (v-u) source target ) := Iff.rfl
 

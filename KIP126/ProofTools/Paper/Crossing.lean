@@ -167,7 +167,7 @@ The essentiality and all source and target grades are taken in that one ESS. -/
     TowerEssentialExtension (model.convergentMap
       (.quotient (page-1) (.nu X)) (.shift (1,-((page-1:ℕ):ℤ)) (.nu X))
       (XModLambdaN.proj (model.nu.functor.obj (X.obj model.auxiliary)) (page-1) ≫
-        (Operations.biSuspensionIso (page-1:ℕ)
+        (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso (page-1:ℕ)
           (model.nu.functor.obj (X.obj model.auxiliary))).inv))
       (t-s,t) u (v-u) x y
 
@@ -211,14 +211,14 @@ public theorem classical_crossing_iff_delta_crossing
     constructor
     · rintro ⟨u,v,hu,huv,hv,x,y,hess⟩ hn
       exact hn u v hu huv hv x y
-        (by simpa only [Operations.biSuspensionIso,absoluteBoundary] using hess)
+        (by simpa only [absoluteBoundary] using hess)
     · intro hn
       by_contra hnot
       apply hn
       intro u v hu huv hv x y hess
       apply hnot
       exact ⟨u,v,hu,huv,hv,x,y,
-        by simpa only [Operations.biSuspensionIso,absoluteBoundary] using hess⟩
+        by simpa only [absoluteBoundary] using hess⟩
   rw [hdef]
   constructor
   · intro hcross hnc

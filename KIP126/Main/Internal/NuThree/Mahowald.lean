@@ -12,7 +12,7 @@ namespace KIP126.Main.Internal.NuThree
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
 open KIP126.StableHomotopy KIP126.AdamsSynthetic KIP126.Kervaire.Route
 open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
-open KIP126.Literature KIP126.ProofTools KIP126.ProofTools.Operations
+open KIP126.Literature KIP126.ProofTools KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.AdamsSynthetic.Standard (model)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
@@ -92,7 +92,7 @@ private theorem cnu_mahowald_finite :
     finite_zero_extension_11 .sphere .nuCofiber
       (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)
       KIP126.Literature.Standard.nuCofiber_bottom_exponent y hycycle.2
-  have hresult := KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer a3 y xb yb sx
+  have hresult := KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer a3 y xb yb sx
   have hnc : FiniteNoCrossing model .nuCofiber (.shift 1 (.shift 3 .sphere))
       (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap) 3 0 8 134 := by
     rintro ⟨a,b,ha,_,hb,_⟩

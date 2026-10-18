@@ -2,6 +2,31 @@
 version: 1
 scope: 局部修正不表示原论文已整体形式化，也不消除已登记的上游待补责任。AimPaper/main.tex 保留原文；原文与修正版分别由 AimPaper 和 Blueprint 节点维护。
 corrections:
+- id: original-statement-typing
+  title: 复合延拓与无穷页比较中的对象及下标排印
+  reference: COROLLARY 2.17 / PROPOSITION 5.14
+  status:
+    kind: partial
+    label: 2.17 原命题已证，5.14 比较待补
+  original:
+    statements:
+    - '2.17'
+    - '5.14'
+    source_line: 597
+  revision:
+    nodes: []
+    note: 没有另行提出加强或减弱数学前提的修正版；原文逐字保留，公开陈述只采用其图及元素次数所要求的类型。2.17 的原命题已在此类型下完成证明；5.14 的比较证明仍待补。
+  problem: |-
+    Corollary 2.17 的图为 X → Z → W，但元素 z 的对象被印为未在该图声明的 Y。Lean 类型依图使用 Z。原文另写 n,m≥0，却使用长度 m,l；本次保留未使用的 n 与原写的 n,m≥0，没有新增 l≥0 假设。
+
+    Proposition 5.14 中 y 的次数为 (s+n,t+n)，但结论的目标边界群下标印为 (s,t)。为了使商类有类型，目标使用 y 自身次数 (s+n,t+n) 的无限边界群。源次数、映射 f、扩张长度及允许 inessential 扩张的范围均保留。
+  progress: |-
+    用户明确授权将剩余十项写为公开 theorem 并登记待补证明。对应声明位于 ProofTools/Paper/OriginalStatements.lean；这两项使用原文的经典同伦代表元／E∞ 类，未以 synthetic 特例替代，也未加入额外的 crossing 或有界性条件。随后保持陈述不变补完了 2.17；5.14 仍缺一般模型中的同一代表元检测比较，保留待补责任。
+  links:
+  - node: paper:2.17
+    title: Corollary 2.17 · 复合延拓原文
+  - node: paper:5.14
+    title: Proposition 5.14 · 无穷页到经典延拓原文
 - id: mahowald
   title: 广义 Mahowald trick 不能直接消去 λ 层
   reference: THEOREM 6.12

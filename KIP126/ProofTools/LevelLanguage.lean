@@ -84,7 +84,7 @@ public def LevelBoundaryNoCrossing (X Y : ClassicalObject)
         (.shift (1,-((page+level-1:ℕ):ℤ)) (extensionSourceObject model X Y f))
         (XModLambdaN.proj ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)
           (page+level-1) ≫
-          (KIP126.ProofTools.Operations.biSuspensionIso (page+level-1:ℕ)
+          (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso (page+level-1:ℕ)
             ((extensionSourceObject model X Y f).obj model.nu model.auxiliary)).inv))
       (t-s,t+normalizedExponent model.classicalTower f-level) u (v-u) source target
 
