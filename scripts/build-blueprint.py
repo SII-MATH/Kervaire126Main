@@ -74,7 +74,7 @@ def site_inputs():
     paths.extend([ROOT / 'corrections.yaml', ROOT / 'site/memo.html', ROOT / 'site/memo.css',
                   ROOT / 'scripts/blueprint_memo.py', ROOT / 'scripts/preview-memo.py', ROOT / 'Tests/test_blueprint_memo.py',
                   ROOT / 'scripts/blueprint_map.py', ROOT / 'Tests/test_blueprint_map.py',
-                  ROOT / 'Tests/check_blueprint_map.py'])
+                  ROOT / 'Tests/check_blueprint_map.py', ROOT / 'Tests/check_blueprint_diagrams.py'])
     paths.extend(ROOT / 'AimPaper' / p for p in ('main.tex', '112.tex', 'main.bib', 'algtop.sty', '2412.10879.pdf'))
     return {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
             for p in sorted(paths)}

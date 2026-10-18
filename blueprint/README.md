@@ -69,7 +69,7 @@ Logs and capture evidence are in `.lake/blueprint/`. The exported `_site/validat
 .lake/blueprint-env/bin/python scripts/publish-blueprint.py
 ```
 
-Publication is separate from the complete repository build. This entry point reuses verified declaration evidence, publishes the current mathematical authoring and citations, and independently builds and captures newly required support modules. An unrelated whole-project build failure does not prevent publication. Changed or unverifiable source declarations receive an explicit unverified state; a lexical scan that finds no `sorry` cannot make them complete. Initial publication requires a previously verified declaration snapshot.
+Publication is separate from the complete repository build. This entry point reuses verified declaration evidence, publishes the current mathematical authoring and citations, and independently builds and captures newly required support modules. If a previously captured mathematical source has changed, it automatically recompiles and captures all mathematical modules before deriving the dependency-based frontier groups; unchanged consumers can also acquire different compiled dependencies. It never repairs a stale-evidence mismatch by changing mathematical statements or suppressing binding checks. An unrelated whole-project build failure does not prevent publication. Changed or unverifiable source declarations receive an explicit unverified state; a lexical scan that finds no `sorry` cannot make them complete. Initial publication requires a previously verified declaration snapshot.
 
 Machine-readable validation evidence distinguishes reused evidence, scoped verification and the latest full-build result. Publication does not claim that the current entire repository builds. A completed full build can update only the build evidence in `validation.json` without changing mathematical data or the Blueprint map:
 
@@ -98,9 +98,10 @@ python3 scripts/check-source-inventory.py
 lake build
 .lake/blueprint-env/bin/python Tests/check_blueprint_formulae.py --url http://127.0.0.1:18726/
 .lake/blueprint-env/bin/python Tests/check_blueprint_map.py --url http://127.0.0.1:18726/
+.lake/blueprint-env/bin/python Tests/check_blueprint_diagrams.py --url http://127.0.0.1:18726/
 ```
 
-The formula check needs Playwright and Chromium; `--chromium` selects an installed browser. It strictly rerenders all paper formulas with the frontend's actual KaTeX bundle and checks red unknown commands as well as rendering errors. LaTeX with the article's packages and `dvisvgm` are needed to export its seven original XY diagrams. Display compatibility is applied to a generated TeX copy, leaving the checked original statement blocks unchanged.
+The formula check needs Playwright and Chromium; `--chromium` selects an installed browser. It strictly rerenders all paper formulas with the frontend's actual KaTeX bundle and checks red unknown commands as well as rendering errors. LaTeX with the article's packages and `dvisvgm` are needed to export its seven original XY diagrams. Diagrams appear at their original positions in the reading view and statement details, scaled to the surrounding text and constrained to the column width. The export styles native SVG links through a generated `paper/diagrams/inline.css`, preserving the pinned hgraph runtime. Link labels remain readable without CSS and available to assistive technology; clicking optionally opens the original vector image. The older standalone diagram pages remain available for existing links. Display compatibility is applied to a generated TeX copy, leaving the checked original statement blocks unchanged.
 
 Native CLI queries remain available from the repository root:
 
