@@ -213,6 +213,62 @@ class ExtractionTests(unittest.TestCase):
             self.assertEqual((old / 'progress').read_text(), 'retained')
 
 
+class ReleaseDiscoveryTests(unittest.TestCase):
+    def tag(self, commit):
+        return f'build-cache-{commit}-{ci.platform.system().lower()}-{ci.platform.machine()}'
+
+    def test_queue_uses_raw_shallow_parents_before_any_release_listing(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            def git(*args, data=None):
+                return subprocess.check_output(['git', '-C', str(root), *args], input=data).decode().strip()
+            git('init', '-q')
+            git('config', 'user.name', 'Cache test')
+            git('config', 'user.email', 'cache-test@example.invalid')
+            tree = git('mktree', data=b'')
+            base = git('commit-tree', tree, '-m', 'base')
+            head = git('commit-tree', tree, '-p', base, '-m', 'incoming')
+            merge = git('commit-tree', tree, '-p', base, '-p', head, '-m', 'queue')
+            git('update-ref', 'HEAD', merge)
+            # Match actions/checkout's depth-one history boundary.
+            (root / '.git/shallow').write_text(merge + '\n')
+            self.assertEqual(git('show', '-s', '--format=%P', 'HEAD'), '')
+            original_run = ci.run
+            with patch.dict(os.environ, {'GITHUB_SHA': merge}), \
+                    patch.object(ci, 'run', side_effect=lambda *args: original_run(*args, cwd=root)), \
+                    patch.object(ci, 'api') as lookup:
+                tags = ci.release_tags('owner/repo')
+                self.assertEqual([next(tags), next(tags), next(tags)],
+                                 [self.tag(merge), self.tag(head), self.tag(base)])
+                lookup.assert_not_called()
+
+    def test_paginated_lookup_passes_old_cutoffs_and_orders_by_publication(self):
+        rows = [{'tag_name': self.tag(f'{i:040x}'), 'published_at': f'2026-01-01T00:{i:02d}:00Z'}
+                for i in range(31)]
+        first_page = rows + [{'tag_name': f'unrelated-{i}'} for i in range(69)]
+        older = {'tag_name': self.tag('e' * 40), 'published_at': '2025-01-01T00:00:00Z'}
+        newest = {'tag_name': self.tag('f' * 40), 'published_at': '2026-10-18T00:00:00Z'}
+        with patch.dict(os.environ, {'GITHUB_SHA': ''}), \
+                patch.object(ci, 'api', side_effect=[first_page, [older, newest, rows[0]]]) as lookup:
+            tags = list(ci.release_tags('owner/repo'))
+        self.assertEqual(tags[0], rows[-1]['tag_name'])
+        self.assertEqual(tags[31:], [newest['tag_name'], older['tag_name']])
+        self.assertEqual(len(tags), 33)
+        self.assertEqual([c.args[0] for c in lookup.call_args_list],
+                         ['repos/owner/repo/releases?per_page=100&page=1',
+                          'repos/owner/repo/releases?per_page=100&page=2'])
+
+    def test_discovery_deadline_and_api_failure_are_cache_misses(self):
+        with patch.dict(os.environ, {'GITHUB_SHA': ''}), \
+                patch.object(ci.time, 'monotonic', side_effect=[0, 91]), \
+                patch.object(ci, 'api') as lookup:
+            self.assertEqual(list(ci.release_tags('owner/repo')), [])
+            lookup.assert_not_called()
+        with patch.dict(os.environ, {'GITHUB_SHA': ''}), \
+                patch.object(ci, 'api', side_effect=subprocess.CalledProcessError(1, 'gh')):
+            self.assertEqual(list(ci.release_tags('owner/repo')), [])
+
+
 class ReleaseTests(unittest.TestCase):
     def fixture(self, root, split=False, manifest_list=False):
         assets = root / 'assets'; assets.mkdir()
@@ -238,21 +294,55 @@ class ReleaseTests(unittest.TestCase):
         (assets / 'SHA256SUMS').write_text(''.join(f'{ci.sha256(p.read_bytes())}  {p.name}\n' for p in assets.iterdir()))
         return assets, inputs, metadata
 
-    def restore(self, root, assets, inputs):
+    def restore(self, root, assets, inputs, releases=None, source_commit=''):
         checkout = root / 'checkout'; checkout.mkdir(); (checkout / '.lake/build').mkdir(parents=True)
         (checkout / '.lake/build/old').write_text('existing cache')
         (checkout / 'lean-toolchain').write_text('lean-test\n'); (checkout / 'lake-manifest.json').write_bytes(b'lock')
         requests = []
         def download(repo, tag, filename, directory):
             requests.append(filename)
+            if tag != expected_tag:
+                # A real, valid older snapshot must fail compatibility before
+                # any large archive download, while search continues.
+                self.assertEqual(filename, 'metadata.json')
+                metadata = json.loads((assets / filename).read_text())
+                metadata['build_inputs']['fingerprint_sha256'] = 'd' * 64
+                path = directory / filename; path.write_text(json.dumps(metadata))
+                return path
             return Path(shutil.copyfile(assets / filename, directory / filename))
         tag = f'build-cache-{"a" * 40}-{ci.platform.system().lower()}-{ci.platform.machine()}'
+        expected_tag = tag
         with patch.object(ci, 'ROOT', checkout), patch.object(ci, 'build_inputs', return_value=inputs), \
-                patch.object(ci, 'api', return_value=[{'tag_name': tag}]), patch.object(ci, 'download', side_effect=download), \
+                patch.object(ci, 'api', return_value=releases if releases is not None else [{'tag_name': tag}]) as lookup, \
+                patch.object(ci, 'download', side_effect=download), \
                 patch.object(ci, 'active_build', return_value=False), patch.dict(os.environ, {
-                    'GITHUB_ACTIONS': 'true', 'GITHUB_WORKSPACE': str(checkout), 'GITHUB_REPOSITORY': 'owner/repo'}):
+                    'GITHUB_ACTIONS': 'true', 'GITHUB_WORKSPACE': str(checkout), 'GITHUB_REPOSITORY': 'owner/repo',
+                    'GITHUB_SHA': source_commit}):
             ci.restore_release()
+            if source_commit:
+                lookup.assert_not_called()
         return checkout, requests
+
+    def test_queue_restores_parent_cache_without_listing_releases(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); assets, inputs, _ = self.fixture(root)
+            headers = f'tree {"d" * 40}\nparent {"b" * 40}\nparent {"a" * 40}\n\nqueue'
+            with patch.object(ci, 'run', return_value=headers.encode()):
+                checkout, requests = self.restore(root, assets, inputs, source_commit='c' * 40)
+            self.assertEqual(requests.count('metadata.json'), 2)
+            self.assertEqual(requests.count('project-build.tar.zst'), 1)
+            self.assertEqual((checkout / '.lake/build/A.olean').read_bytes(), b'checked')
+
+    def test_restore_finds_matching_cache_tenth_in_api_order(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); assets, inputs, _ = self.fixture(root)
+            suffix = f'-{ci.platform.system().lower()}-{ci.platform.machine()}'
+            releases = [{'tag_name': f'build-cache-{i:040x}{suffix}'} for i in range(9)]
+            releases.append({'tag_name': f'build-cache-{"a" * 40}{suffix}'})
+            checkout, requests = self.restore(root, assets, inputs, releases)
+            self.assertEqual(requests.count('metadata.json'), 10)
+            self.assertEqual(requests.count('project-build.tar.zst'), 1)
+            self.assertEqual((checkout / '.lake/build/A.olean').read_bytes(), b'checked')
 
     def test_matching_single_and_split_archives_restore(self):
         for split in [False, True]:
