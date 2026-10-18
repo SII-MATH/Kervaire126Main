@@ -490,7 +490,7 @@ class AimPaperBoundaryTests(unittest.TestCase):
             partial = next(r for r in records if r['number'] == '2.1')
             self.assertEqual(len(partial['lean']), 1)
             self.assertTrue(partial['sketch'])
-            self.assertEqual(stats['bound_statements'], 42)
+            self.assertEqual(stats['bound_statements'], 47)
             self.assertNotIn('% Blueprint note:', partial['body'])
             self.assertNotIn('% Correspondence:', partial['body'])
             path, _ = self.paper_source(root, 'paper:2.1')

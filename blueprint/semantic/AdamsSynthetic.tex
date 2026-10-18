@@ -11,13 +11,6 @@ Let $\mathrm{Sp}$ and $\mathrm{Syn}$ be the classical and synthetic stable categ
 \lean{KIP126.AdamsSynthetic.Standard.Spectrum,KIP126.AdamsSynthetic.Standard.SyntheticSpectrum,KIP126.AdamsSynthetic.Standard.spectrumCategory,KIP126.AdamsSynthetic.Standard.syntheticCategory,KIP126.AdamsSynthetic.Standard.spectrumCofiber,KIP126.AdamsSynthetic.Standard.syntheticCofiber,KIP126.AdamsSynthetic.Standard.coefficients,KIP126.AdamsSynthetic.Standard.closedBackground}
 \end{definition}
 
-\begin{definition}[Point-set realizations of the fixed categories]
-\label{sem:AdamsSynthetic:realizations}
-\level{coarse}
-The classical and synthetic point-set stable categories admit localizations equivalent to $\mathrm{Sp}$ and $\mathrm{Syn}$, respectively. These equivalences identify the localization functors with the passage from point-set spectra to their homotopy classes.
-\lean{KIP126.AdamsSynthetic.Standard.spectrumRealization,KIP126.AdamsSynthetic.Standard.spectrumHomotopyEquivalence,KIP126.AdamsSynthetic.Standard.spectrumLocalizationComparison,KIP126.AdamsSynthetic.Standard.syntheticRealization,KIP126.AdamsSynthetic.Standard.syntheticHomotopyEquivalence,KIP126.AdamsSynthetic.Standard.syntheticLocalizationComparison}
-\end{definition}
-
 \begin{definition}[The synthetic analogue functor]
 \label{sem:AdamsSynthetic:nu}
 \level{coarse}
@@ -46,13 +39,6 @@ Let $X\to Y\to Z\to\Sigma X$ be a distinguished triangle in $\mathrm{Sp}$. If it
 \lean{KIP126.AdamsSynthetic.Standard.nu_preserves_triangle}
 \end{theorem}
 
-\begin{theorem}[The sign of the sphere twist]
-\label{sem:AdamsSynthetic:sphere-sign}
-\level{coarse}
-For integers $r,s$, the braiding $S^r\wedge S^s\to S^s\wedge S^r$ is multiplication by $(-1)^{rs}$ under the sphere-smash identifications with $S^{r+s}$ and the identification $r+s=s+r$.
-\lean{KIP126.AdamsSynthetic.Standard.sphere_twist}
-\end{theorem}
-
 \section{Adams towers, convergence, and finite filtration}
 
 \begin{definition}[The classical and synthetic Adams systems]
@@ -60,6 +46,7 @@ For integers $r,s$, the braiding $S^r\wedge S^s\to S^s\wedge S^r$ is multiplicat
 \level{coarse}
 The coefficient units determine functorial classical and synthetic Adams towers. Write $E_r^{s,t}(X)$ for the resulting classical bidegree spectral sequence, and use the synthetic tridegree spectral sequence for objects of $\mathrm{Syn}$.
 \lean{KIP126.AdamsSynthetic.Standard.classical,KIP126.AdamsSynthetic.Standard.family,KIP126.AdamsSynthetic.Standard.classicalTower,KIP126.AdamsSynthetic.Standard.syntheticTower}
+% Blueprint note: The generic coefficient-tower quotient differential, its square-zero law, its next-cycle kernel and its next-boundary image have been proved internally, adapted from \cite{KIPSource8cb35dad5f75}, ClassicalAdams/TowerDifferential and TowerSSData. Per-map tower maps and their spectral-sequence naturality have also been constructed internally. These private results do not yet construct the fixed classical or synthetic functors, their strict identity/composition laws, or the selected tower comparisons. They have no separate formal bindings and do not discharge any Milnor comparison or foundation.
 \end{definition}
 
 \begin{theorem}[The classical page and differential conventions]
@@ -90,13 +77,6 @@ Let $f\colon X\to Y$ be a map between finite spectra. If $f$ lies in every integ
 \lean{KIP126.AdamsSynthetic.Standard.finite_map_separation,KIP126.AdamsSynthetic.Standard.separated_factorization,KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd}
 \end{theorem}
 
-\begin{theorem}[Bounded filtration in a fixed homotopy degree]
-\label{sem:AdamsSynthetic:bounded-filtration}
-\level{coarse}
-Let $X$ be finite, rationally acyclic, and homotopy two-local. For every $i\in\mathbb Z$, there is an integer $N$ such that $F^s\pi_i(X)=0$ for all $s\geq N$, where $F$ is the coefficient-tower Adams filtration.
-\lean{KIP126.AdamsSynthetic.Standard.adams_filtration_bounded,KIP126.AdamsSynthetic.Standard.filtration_excludes_nonzero}
-\end{theorem}
-
 \begin{theorem}[Low-filtration support and sphere separation]
 \label{sem:AdamsSynthetic:classical-vanishing}
 \level{coarse}
@@ -118,128 +98,17 @@ For $X\in\mathcal S_0$ and every finite exponent $n\geq0$, the synthetic Adams f
 \lean{KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated}
 \end{theorem}
 
-\section{Source recognition and standard sphere classes}
-
-\begin{definition}[Recognition of the classical source]
-\label{sem:AdamsSynthetic:source-recognition}
-\level{coarse}
-The equivalence from the classical point-set homotopy category to $\mathrm{Sp}$ identifies the sphere, integer homotopy groups, the mod-two coefficient object, its coordinate, and its normalized unit. It also identifies mapping-cone inclusions and boundaries with their cofiber counterparts in $\mathrm{Sp}$.
-\lean{KIP126.AdamsSynthetic.Standard.sourceRecognition,KIP126.AdamsSynthetic.Standard.sourceCofiberRecognition}
-\end{definition}
-
-\begin{definition}[Recognition of the derived smash product]
-\label{sem:AdamsSynthetic:source-smash}
-\level{coarse}
-Choose a levelwise good point-set replacement naturally stably equivalent to the identity. After replacement, diagonal smash preserves stable equivalences. The generator and derived-smash comparisons identify this derived smash with the tensor product in $\mathrm{Sp}$ on the source objects for which these comparisons are defined.
-\lean{KIP126.AdamsSynthetic.Standard.sourceReplacement,KIP126.AdamsSynthetic.Standard.sourceReplacement_flat,KIP126.AdamsSynthetic.Standard.sourceGeneratorTensorRecognition,KIP126.AdamsSynthetic.Standard.sourceDerivedSmashRecognition}
-\end{definition}
-
-\begin{definition}[The canonical coefficient-unit Adams tower]
-\label{sem:AdamsSynthetic:canonical-tower}
-\level{coarse}
-For $X\in\mathrm{Sp}$, define its canonical Adams tower recursively by taking fibers of the coefficient-unit maps. Its spectral sequence has the tower cycles and boundaries as cycle and boundary subgroups, with limiting cycles given by their intersection and limiting boundaries by their union.
-\lean{KIP126.AdamsSynthetic.Standard.canonicalAdamsTower,KIP126.AdamsSynthetic.Standard.canonicalAdamsSequence,KIP126.AdamsSynthetic.Standard.canonicalSphereSequence}
-\end{definition}
-
-\begin{theorem}[Comparison with the canonical tower sequence]
-\label{sem:AdamsSynthetic:canonical-comparison}
-\level{coarse}
-For every $X\in\mathrm{Sp}$, its classical Adams sequence is isomorphic to the canonical coefficient-tower sequence. This isomorphism identifies ambient groups, finite pages, differentials, infinite cycles, and infinite boundaries. For sphere classes it preserves and reflects nonzero permanent survival.
-\lean{KIP126.AdamsSynthetic.Standard.classical_canonicalIso,KIP126.AdamsSynthetic.Standard.classicalSphere_sourceIso,KIP126.AdamsSynthetic.Standard.nonzeroSurvival_source_iff}
-\end{theorem}
-
-\begin{definition}[The mod-two-localized classical sequence]
-\label{sem:AdamsSynthetic:hf2-localization}
-\level{coarse}
-The classical Adams functor sends mod-two homology equivalences to isomorphisms and hence factors through localization at these equivalences. The resulting localized sphere sequence is isomorphic to the ordinary classical sphere sequence; let the localized $h_6^2$ be the class corresponding to $h_6^2$ under this isomorphism.
-\lean{KIP126.AdamsSynthetic.Standard.sourceClassical,KIP126.AdamsSynthetic.Standard.sourceClassical_inverts_hf2,KIP126.AdamsSynthetic.Standard.localizedClassical,KIP126.AdamsSynthetic.Standard.sourceLocalizationAdamsIso,KIP126.AdamsSynthetic.Standard.localizedSphereSequence,KIP126.AdamsSynthetic.Standard.localizedSphere_classicalIso,KIP126.AdamsSynthetic.Standard.localizedH6Square}
-\end{definition}
-
-\begin{theorem}[Survival across the localization comparison]
-\label{sem:AdamsSynthetic:localized-survival}
-\level{coarse}
-A sphere $E_2$ class survives nontrivially if and only if its image under the localized-sphere comparison survives nontrivially. The two classes correspond through a common infinite-cycle representative.
-\lean{KIP126.AdamsSynthetic.Standard.nonzeroSurvival_localized_iff}
-\end{theorem}
-
-\begin{definition}[Milnor coordinates of the first page]
-\label{sem:AdamsSynthetic:milnor-coordinates}
-\level{coarse}
-The first differential of the canonical coefficient tower is induced by its connecting maps. Milnor coordinates identify its first-page groups with the normalized Milnor cochains. A tower cycle determines its canonical second-page class by passage to the cycle quotient.
-\lean{KIP126.AdamsSynthetic.Standard.canonicalFirstDifferential,KIP126.AdamsSynthetic.Standard.milnorCoordinates,KIP126.AdamsSynthetic.Standard.canonicalE2ClassOfCycle}
-\end{definition}
-
-\begin{theorem}[The coordinate differential and second-page quotient]
-\label{sem:AdamsSynthetic:milnor-differential}
-\level{coarse}
-Under Milnor coordinates, the first tower differential is the polynomial differential, so second-page tower cycles correspond exactly to cocycles. Passing to the cycle quotient and then applying the source comparison gives the sphere $E_2$ equivalence with Milnor cohomology.
-\lean{KIP126.AdamsSynthetic.Standard.milnorCoordinates_differential,KIP126.AdamsSynthetic.Standard.milnorCoordinates_cycle,KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv,KIP126.AdamsSynthetic.Standard.sphereE2_milnor_classOfCycle}
-\end{theorem}
-
-\begin{theorem}[The sphere product in Milnor cohomology]
-\label{sem:AdamsSynthetic:milnor-products}
-\level{coarse}
-The Milnor equivalence identifies the sphere $E_2$ product with the normalized cobar cup product and sends the sphere unit to the cohomology unit. The sphere product satisfies the corresponding commutativity law.
-\lean{KIP126.AdamsSynthetic.Standard.sphereProduct_milnor,KIP126.AdamsSynthetic.Standard.sphereUnit_milnor,KIP126.AdamsSynthetic.Standard.sphereProductCommutative}
-\end{theorem}
+\section{Standard sphere classes}
 
 \begin{definition}[The standard sphere classes]
 \label{sem:AdamsSynthetic:standard-classes}
 \level{coarse}
-Let $h_i\in E_2^{1,2^i}(S)$ be the classes of the standard Milnor cocycles. Define $h_6^2\in E_2^{2,128}(S)$ as the product of $h_6$ with itself. Under the Milnor equivalence, $h_6^2$ is the cup square of the cocycle class defining $h_6$.
-\lean{KIP126.AdamsSynthetic.Standard.standardClasses,KIP126.AdamsSynthetic.Standard.standardHi,KIP126.AdamsSynthetic.Standard.standardHi_milnor,KIP126.AdamsSynthetic.Standard.standardH6,KIP126.AdamsSynthetic.Standard.standardH6Square,KIP126.AdamsSynthetic.Standard.standardH6Square_eq_product,KIP126.AdamsSynthetic.Standard.standardH6Square_milnor}
+Let $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$ be the fixed comparison. Define $h_i=\Phi_{1,2^i}^{-1}[\xi_1^{2^i}]$ and define $h_6^2\in E_2^{2,128}(S)$ as the product of $h_6$ with itself.
+\lean{KIP126.AdamsSynthetic.Standard.standardClasses,KIP126.AdamsSynthetic.Standard.standardHi,KIP126.AdamsSynthetic.Standard.standardH6,KIP126.AdamsSynthetic.Standard.standardH6Square,KIP126.AdamsSynthetic.Standard.standardH6Square_eq_product}
+% Blueprint note: The standardHi definition is completed by pullback along the existing fixed comparison. Construction of that comparison and its representative-level source recognition remain separate registered obligations; the polynomial square-zero foundation is also unfinished. This local definition does not close those dependencies or discharge standardHi_milnor or the product-recognition theorems.
 \end{definition}
 
-\section{Mapping spectra, products, and enrichment}
-
-\begin{definition}[Adams sequences of finite mapping spectra]
-\label{sem:AdamsSynthetic:mapping-spectra}
-\level{coarse}
-For finite spectra $X,Y$, let $F(X,Y)$ be the internal hom in $\mathrm{Sp}$. Its coefficient-unit tower and convergence to its homotopy filtration define the mapping-spectrum Adams sequence.
-\lean{KIP126.AdamsSynthetic.Standard.mappingConvergence,KIP126.AdamsSynthetic.Standard.mappingSystem}
-\end{definition}
-
-\begin{theorem}[Detection of maps in the mapping spectral sequence]
-\label{sem:AdamsSynthetic:mapping-detection}
-\level{coarse}
-For finite spectra $X,Y$, the Adams filtration of $f\colon X\to Y$ equals that of its class in $\pi_0F(X,Y)$. Exact filtration is detected by the convergence quotient comparison. If $f$ is not odd torsion, it has a nonzero $E_\infty$ detector represented by a common infinite cycle.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_filtration_iff,KIP126.AdamsSynthetic.Standard.mapping_detects_exact,KIP126.AdamsSynthetic.Standard.mapping_detect_non_odd}
-\end{theorem}
-
-\begin{definition}[Composition pairings of mapping sequences]
-\label{sem:AdamsSynthetic:mapping-pairing}
-\level{coarse}
-For finite spectra $X,Y,Z$, composition induces a converging pairing from the Adams sequences of $F(X,Y)$ and $F(Y,Z)$ to that of $F(X,Z)$. Its parity is the Adams stem parity, and its abutment pairing is shifted composition in $\mathrm{Sp}$.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_pairing,KIP126.AdamsSynthetic.Standard.mapping_parity,KIP126.AdamsSynthetic.Standard.mapping_abutment_compatible,KIP126.AdamsSynthetic.Standard.mappingComposition}
-\end{definition}
-
-\begin{theorem}[Associativity and units for mapping composition]
-\label{sem:AdamsSynthetic:mapping-laws}
-\level{coarse}
-The finite-page mapping pairings are associative under the degree identifications and have compatible left and right units. Each unit is represented by a common infinite cycle whose abutment is the identity map.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_page_associative,KIP126.AdamsSynthetic.Standard.mapping_identity,KIP126.AdamsSynthetic.Standard.mapping_identity_actual,KIP126.AdamsSynthetic.Standard.mapping_page_left_unital,KIP126.AdamsSynthetic.Standard.mapping_page_right_unital}
-\end{theorem}
-
-\begin{theorem}[The sphere specialization of mapping composition]
-\label{sem:AdamsSynthetic:mapping-sphere}
-\level{coarse}
-Under the closed-unit identification of the sphere mapping sequence with the sphere Adams sequence, composition and identity correspond to the sphere $E_2$ product and unit.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_sphere_product,KIP126.AdamsSynthetic.Standard.mapping_sphere_unit}
-\end{theorem}
-
-\begin{definition}[Enrichment by converging spectral sequences]
-\label{sem:AdamsSynthetic:mapping-enrichment}
-\level{coarse}
-The finite spectra form a category enriched in the monoidal category of converging spectral sequences. Its hom objects are the mapping-spectrum Adams sequences, with the composition pairings and identity units above.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_enriched,KIP126.AdamsSynthetic.Standard.mappingEnriched_hom_eq,KIP126.AdamsSynthetic.Standard.mappingEnrichment}
-\end{definition}
-
-\begin{theorem}[Enriched composition agrees on all three layers]
-\label{sem:AdamsSynthetic:enriched-composition}
-\level{coarse}
-On elementary products, enriched composition agrees with the mapping composition pairing on every finite page, on $E_\infty$, and on the abutment. The enriched identities agree with the mapping units on each of these three levels.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page,KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_eInfty,KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment,KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_page,KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_eInfty,KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_abutment}
-\end{theorem}
+\section{Weight-graded hom groups and products}
 
 \begin{definition}[Weight-graded synthetic hom groups]
 \label{sem:AdamsSynthetic:graded-hom}
@@ -283,20 +152,6 @@ For a map $f$ between objects of $\mathcal C_0$, its normalized synthetic lift i
 \level{coarse}
 The bidegree-shift comparison satisfies associativity and both unit laws. It commutes with $\lambda$ under the sum-degree identifications, and the bidegree-shift functors are additive.
 \lean{KIP126.AdamsSynthetic.Standard.biShift_associativity,KIP126.AdamsSynthetic.Standard.biShift_left_unit,KIP126.AdamsSynthetic.Standard.biShift_right_unit,KIP126.AdamsSynthetic.Standard.biShift_lambda_comm,KIP126.AdamsSynthetic.Standard.graded_shiftAdditive}
-\end{theorem}
-
-\begin{definition}[Maps which lower synthetic weight]
-\label{sem:AdamsSynthetic:weight-maps}
-\level{coarse}
-Let $X\in\mathcal C_0$ and $w_1\leq w_2\leq t$. The weight-lowering map on $E_\infty$ sends weight $w_2$ to weight $w_1$. It carries representatives of a classical class at weight $w_2$ to representatives of the same class at weight $w_1$.
-\lean{KIP126.AdamsSynthetic.Standard.weightMaps,KIP126.AdamsSynthetic.Standard.weight_map,KIP126.AdamsSynthetic.Standard.weight_representative}
-\end{definition}
-
-\begin{theorem}[Functoriality and naturality of weight maps]
-\label{sem:AdamsSynthetic:weight-functoriality}
-\level{coarse}
-Weight-lowering maps are identities at equal weights and compose along ordered weights. For $w_1\leq w_2\leq t$, they commute with the $E_\infty$ maps induced by $\nu(f)$.
-\lean{KIP126.AdamsSynthetic.Standard.weight_map_self,KIP126.AdamsSynthetic.Standard.weight_map_comp,KIP126.AdamsSynthetic.Standard.weight_naturality}
 \end{theorem}
 
 \begin{definition}[Shift comparisons for synthetic extensions]

@@ -214,11 +214,12 @@ class ExtractionTests(unittest.TestCase):
 
 
 class ReleaseTests(unittest.TestCase):
-    def fixture(self, root, split=False):
+    def fixture(self, root, split=False, manifest_list=False):
         assets = root / 'assets'; assets.mkdir()
         archive = compressed_tar(assets, [('.lake/build/A.olean', 'file')])
-        inputs = {'algorithm': 'sha256', 'fingerprint': 'c' * 64, 'files': []}
-        (assets / 'build-inputs.json').write_text(json.dumps(inputs))
+        inputs = {'algorithm': 'sha256', 'fingerprint': 'c' * 64,
+                  'files': [{'path': 'A.lean', 'mode': '100644', 'sha256': ci.sha256(b'source')}]}
+        (assets / 'build-inputs.json').write_text(json.dumps(inputs['files'] if manifest_list else inputs))
         parts = [archive.name]
         if split:
             raw = archive.read_bytes(); parts = [archive.name + '.part0', archive.name + '.part1']
@@ -255,10 +256,26 @@ class ReleaseTests(unittest.TestCase):
 
     def test_matching_single_and_split_archives_restore(self):
         for split in [False, True]:
-            with self.subTest(split=split), tempfile.TemporaryDirectory() as temporary:
-                root = Path(temporary); assets, inputs, _ = self.fixture(root, split)
-                checkout, _ = self.restore(root, assets, inputs)
-                self.assertEqual((checkout / '.lake/build/A.olean').read_bytes(), b'checked')
+            for manifest_list in [False, True]:
+                with self.subTest(split=split, manifest_list=manifest_list), tempfile.TemporaryDirectory() as temporary:
+                    root = Path(temporary); assets, inputs, _ = self.fixture(root, split, manifest_list)
+                    checkout, _ = self.restore(root, assets, inputs)
+                    self.assertEqual((checkout / '.lake/build/A.olean').read_bytes(), b'checked')
+
+    def test_validly_checksummed_different_file_list_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); assets, inputs, metadata = self.fixture(root, manifest_list=True)
+            different = [{**inputs['files'][0], 'mode': '100755'}]
+            manifest = assets / 'build-inputs.json'
+            manifest.write_text(json.dumps(different))
+            metadata['build_inputs']['manifest_sha256'] = ci.sha256(manifest.read_bytes())
+            (assets / 'metadata.json').write_text(json.dumps(metadata))
+            (assets / 'SHA256SUMS').write_text(''.join(
+                f'{ci.sha256(p.read_bytes())}  {p.name}\n'
+                for p in assets.iterdir() if p.name != 'SHA256SUMS'))
+            checkout, requests = self.restore(root, assets, inputs)
+            self.assertNotIn('project-build.tar.zst', requests)
+            self.assertTrue((checkout / '.lake/build/old').exists())
 
     def test_incompatible_metadata_does_not_download_archive_or_replace_cache(self):
         for field in ['repository', 'os', 'arch', 'lean_toolchain', 'lake_manifest_sha256']:

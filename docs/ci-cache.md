@@ -58,8 +58,10 @@ and [merge-group events](https://docs.github.com/en/actions/reference/workflows-
 
 The old combined `v1` caches are left alone and expire normally. The first `v2`
 run in a scope obtains the pinned imported Mathlib cache and seeds the split
-caches. Dependency retrieval is governed by the dependency-cache result, not
-the project-cache result. Every selected event still invokes full `lake build`.
+caches. Every run incrementally fetches the currently imported Mathlib roots,
+even after a dependency-cache hit: the environment key stays unchanged when a
+new module imports additional libraries. Existing cached files are reused.
+Every selected event still invokes full `lake build`.
 
 ## Cross-branch Release reuse
 
@@ -70,6 +72,9 @@ a passed, clean build with the same repository, OS/architecture, toolchain,
 manifest hash, and exact build-input manifest. This uses the existing Release
 schema: tracked Lean files, dependency locks, metadata JSON and scripts,
 including Git file modes and SHA-256 file contents.
+Both the original sorted-file-list manifest and the fingerprint-envelope
+manifest are accepted. In either format the complete file list must match the
+checkout exactly, in addition to the metadata fingerprint and checksum checks.
 
 Only an exact input match can replace an Actions incremental baseline. Missing,
 incompatible, expired or corrupt releases leave that baseline intact and fall

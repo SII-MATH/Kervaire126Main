@@ -21,6 +21,7 @@ MODULES = [
     ('proof-tools', 'ProofTools', 'KIP126.ProofTools'),
     ('adams-calculations', 'AdamsCalculations', 'KIP126.AdamsCalculations'),
     ('main', 'Main', 'KIP126.Main'),
+    ('geometry', 'Geometry', 'KIP126.Geometry'),
 ]
 API_FIELDS = ('name', 'type_fingerprint', 'universes', 'axioms')
 HOLE_FIELDS = ('name', 'module', 'type_fingerprint', 'body_fingerprint', 'status')

@@ -6,6 +6,7 @@ import all KIP126.E2Computation.InternalAudit
 import all KIP126.ProofTools.InternalAudit
 import all KIP126.AdamsCalculations.InternalAudit
 import all KIP126.Main.InternalAudit
+import all KIP126.Geometry.InternalAudit
 import Lean
 
 /- Read-only export of the current compiled environment, including private and
@@ -22,7 +23,7 @@ run_cmd do
     let mod := env.header.moduleNames[idx.toNat]!
     unless #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic, `KIP126.Literature,
       `KIP126.E2Computation, `KIP126.ProofTools, `KIP126.AdamsCalculations,
-      `KIP126.Main].any (·.isPrefixOf mod) do continue
+      `KIP126.Main, `KIP126.Geometry].any (·.isPrefixOf mod) do continue
     let body := info.value? (allowOpaque := true)
     let mut deps := info.type.getUsedConstants
     if let some value := body then deps := deps ++ value.getUsedConstants

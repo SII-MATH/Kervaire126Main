@@ -322,17 +322,6 @@ For $0<i\le j$ and $0\le t-w<i$, restriction $\nu X/\lambda^j\to\nu X/\lambda^i$
 % Blueprint note: Detailed source attribution: (Adapted from \cite{BHS}, Corollary A.11 and its proof, and \cite{LWX126}, Remark 3.14.)
 \end{proposition}
 
-\begin{theorem}[Weight maps are the actual lambda maps]
-\label{sem:Literature:weight-epimorphisms}
-\level{coarse}
-(Adapted from \cite{BHS}, Cor. A.9.)\par{}
-
-For $w_1\le w_2\le t$, the weight map from $w_2$ to $w_1$ on $E_\infty(\nu X)$ is induced by $\lambda^{w_2-w_1}$. In quotient coordinates it preserves the permanent representative and enlarges the boundary subgroup. This map is an epimorphism. Thus multiplication by $\lambda^k$ on $E_\infty(\nu X)$ is an epimorphism whenever the source weight is at most $t$.
-\lean{KIP126.Literature.Standard.infinityLambda_epi,KIP126.Literature.Standard.infinityWeightMap_epi,KIP126.Literature.Standard.weights_lambda,KIP126.Literature.Standard.weight_epi}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Cite Corollary A.9, not the stronger homotopy-filtration Corollary A.19: this entry is only about infinity pages and needs no untruncated strong-convergence assertion. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.9(1)-(4), including its final surjectivity sentence; pages arXiv PDF pp. 72-73; published pp. 307-308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [LWX126](https://arxiv.org/html/2412.10879v2#S3): Proposition 3.11; pages local PDF p. 17; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked
-% Blueprint note: Detailed source attribution: (Adapted from \cite{BHS}, Corollary A.9, especially its final surjectivity statement; grading as in \cite{LWX126}, Proposition 3.11.)
-\end{theorem}
-
 \section{Cofibers, filtered lifts, and normalized triangles}
 
 \begin{theorem}[Synthetic cofibers and full lifts of maps]
@@ -539,51 +528,6 @@ For two cofiber triangles in the May tensor context, their tensor-product diagra
 % Blueprint note: Detailed source attribution: (Adapted from \cite{May01}, Axiom TC3 and Lemma 4.6; see \cite{LWX126}, Lemma 6.11.)
 \end{theorem}
 
-\begin{definition}[Mapping spectra and actual composition]
-\label{sem:Literature:mapping-system}
-\level{coarse}
-(Project construction; cf.\ \cite{Moss}, §1.)\par{}
-
-Fix the closed tensor structure on the classical category and mapping spectra between objects in the chosen sphere family. Their Adams systems have composition pairings, common cycle products, units, and filtered abutment products. On spheres, composition agrees with sphere multiplication and its unit.
-\lean{KIP126.Literature.Standard.closedTensor,KIP126.Literature.Standard.finiteMappingObject,KIP126.Literature.Standard.mapping,KIP126.Literature.Standard.mappingComposition,KIP126.Literature.Standard.mappingSphereCompatibility}
-% Blueprint note: Source verification (2026-10-18): Project choice or construction. The exported mapping family has scope X = SphereSpectrum, and hence is narrower than arbitrary finite spectra. The closed tensor background, mapping objects and composition package are project constructions using the fixed AdamsSynthetic interfaces. Moss Section 1 gives the stable-homotopy setting and composition pairings; Theorem 1.2 alone does not construct this entire package. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047
-% Blueprint note: Detailed source attribution: (Project construction in the setting of \cite{Moss}, Section 1, pp. 283--284.)
-\end{definition}
-
-\begin{proposition}[Multiplicative detection in the mapping system]
-\label{sem:Literature:moss-detection}
-\level{coarse}
-(Adapted from \cite{Moss}, §1; \cite{BelmontKong2024}, Def. 2.3.)\par{}
-
-The composite of two detected stable maps is detected by the product of their common infinite-cycle representatives. The filtered abutment product is stable composition. The mapping Adams towers in the chosen sphere family are weakly convergent.
-\lean{KIP126.Literature.Standard.moss_detection,KIP126.Literature.Standard.moss_weak_convergence}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Moss p.285 gives weak convergence for the mod-p cohomology Adams system when the source is finite and target cohomology is finitely generated degreewise; spheres satisfy those conditions. The project expresses this as residual injectivity on its chosen tower, matching Belmont--Kong Definition 2.3. Composition detection is derived here from the fixed mapping pairing and its abutment compatibility; it is not a separate conclusion of Moss Theorem 1.2. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [BelmontKong2024](https://arxiv.org/pdf/2112.08689v2): Definitions 2.3–2.4; Theorem 4.10 and Assumptions 3.14, 3.17; pages 5, 12–13, 16–17; arXiv:2112.08689v2, 16 August 2024 (not a different published numbering)
-% Blueprint note: Detailed source attribution: (Adapted from \cite{Moss}, Section 1, pp. 283--285; the tower formulation follows \cite{BelmontKong2024}, Definition 2.3.)
-\end{proposition}
-
-\begin{theorem}[The full Massey indeterminacy coset]
-\label{sem:Literature:moss-indeterminacy}
-\level{coarse}
-(Adapted from \cite{Moss}, §1.)\par{}
-
-Let $r\ge3$ and let $a,b,c$ be composable labels in the mapping Adams system. If $x_0$ is a value of their page-$r$ Massey relation, then $x$ is another value if and only if $x-x_0$ belongs to the full Massey indeterminacy subgroup. All values have the page-$r$ Massey degree of $a,b,c$.
-\lean{KIP126.Literature.Standard.moss_indeterminacy}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. This is the ordinary triple Massey product in homology of the page-(r-1) differential, with r >= 3; it does not claim the distinct r = 2 cobar construction. Moss p.284 gives exactly this distinction and the quotient by both product summands. The project degree i+j+k-(r-1,r-2) equals Moss (p,q+1), where p=sum(s)-r+1 and q=sum(t)-r+1. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [MayMatric1969](https://www.math.uchicago.edu/~may/PAPERS/8.pdf): Definition 1.2 and Proposition 2.3 (ordinary triple-product case); pages 538, 543–544; Original J. Algebra 12 (1969), 533–568, author-hosted scan
-% Blueprint note: Detailed source attribution: (Adapted from \cite{Moss}, Section 1, p. 284; see also \cite{MayMatric1969}, Definition 1.2 and Proposition 2.3.)
-\end{theorem}
-
-\begin{theorem}[Moss convergence with both crossing conditions]
-\label{sem:Literature:moss-convergence}
-\level{coarse}
-(Adapted from \cite{Moss}, Thm. 1.2.)\par{}
-
-Let $W,X,Y,Z$ belong to the chosen sphere mapping family, and let $r\ge3$. Suppose the composable page-$r$ labels $a,b,c$ detect stable maps $\alpha,\beta,\gamma$, their adjacent page products vanish, and the corresponding stable composites vanish. Assume weak convergence of the two product towers and both of Moss's no-crossing conditions. There is a permanent member of the page-$r$ Massey relation detecting a stable class whose associated map belongs to the Toda relation of $\alpha,\beta,\gamma$. The Massey relation includes a defining system on page $r-1$.
-% Blueprint note: Moss's crossing convention differs from the paper's extension-crossing convention.
-\lean{KIP126.Literature.Standard.moss_convergence,KIP126.Literature.Standard.moss_at}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Moss Theorem 1.2 assumes weak convergence of all five input/product Adams systems, not only the two product systems. For this fixed sphere mapping family, the separately bound global moss_weak_convergence statement supplies all five; the displayed StatementAt lists only the two product-tower premises. For each product degree u, put n=q in source condition (1.3): 0<=q<=u_1-r becomes 0<=q<u_1-(r-1), and an outgoing page m satisfies u_1<q+m (hence m>r). The source model is Boardman stable homotopy with Adams systems for a cohomology functor. Identification of the chosen project mapping system, the shifted stable maps and sign conventions remains a comparison obligation; this is not a theorem about arbitrary triangulated categories. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [BelmontKong2024](https://arxiv.org/pdf/2112.08689v2): Definitions 2.3–2.4; Theorem 4.10 and Assumptions 3.14, 3.17; pages 5, 12–13, 16–17; arXiv:2112.08689v2, 16 August 2024 (not a different published numbering)
-% Blueprint note: Detailed source attribution: (Adapted from \cite{Moss}, Theorem 1.2 and conditions (1.3), with the global weak-convergence hypothesis from Section 1.)
-\end{theorem}
-
 \begin{definition}[Toda witnesses and their indeterminacy]
 \label{sem:Literature:toda-relations}
 \level{coarse}
@@ -729,3 +673,43 @@ There is a nonzero $d_3$ from $H_{0,4}$ at $(2,17)$ to degree $(5,19)$.
 % Blueprint note: Clause 9 detailed source attribution: \cite{IWX}, Table 6, p.~222, first row (15,2,8), gives motivic d3(h0 h4)=h0 d0. Corollary 1.2, p.~111, and the authors' original classical data \cite{IWXCharts}, Adams-classical-E3.csv, physical rows 29 and 27 including the header, directly confirm the nonzero classical source and target. This is the separately authorized additional input needed to correct the omitted E3 candidate h0 h4; it does not assert that this class is a d2 boundary.
 % Blueprint note: Source scope (2026-10-18): All nine statements concern the actual fixed standard classes and actual spectral sequence. Nonzero survival requires a common permanent representative and nonzero E-infinity image. The four differentials quantify over actual E2 target labels and require nonzero page targets; no arbitrary label is substituted. HHR Theorem 1.1 does not specify a differential length or target. Mahowald Theorem 1', p.~249, including the nonboundary argument following Theorem 2, and HHR Theorem 1.1, p.~2, were checked directly. The primary-source references and qualifications above replace indirect AimPaper-only attribution, but all nine source-to-fixed-model Lean proofs remain separately registered upstream obligations. The original 57 AimPaper statement blocks and bibliography are unchanged.
 \end{theorem}
+
+\section{Framed manifolds and the Kervaire invariant}
+
+\begin{definition}[Closed smooth manifolds and stable framings]
+\label{sem:Literature:closed-framed-manifolds}
+\level{coarse}
+\textit{(Geometric conventions of \cite{LWX126}, Introduction, and \cite{Browder}, Sections 1--3.)}
+A closed smooth $n$-manifold is a compact Hausdorff second-countable smooth
+manifold without boundary, modelled on $\mathbb R^n$. A stable tangent
+framing of such a manifold $M$ consists of a nonnegative integer $r$ and a
+smooth global frame of $TM\oplus\varepsilon^r$: at each point the $n+r$
+sections form a basis. A closed stably framed manifold is a pair of a
+closed smooth manifold and a specified stable tangent framing.
+No connectedness or unstabilized parallelizability is imposed.
+\lean{KIP126.Literature.Geometry.ClosedSmoothManifold,KIP126.Literature.Geometry.StableFraming,KIP126.Literature.Geometry.ClosedStablyFramedManifold}
+% Blueprint note: These are actual mathlib manifold and smooth vector-bundle data, with no construction holes. Their representations are module-private: ordinary imports expose the three geometric object types without changing the analytic instance environment of the older modules. A full-body representation audit verifies the actual compactness, smoothness and frame data and their independence from project spectral objects. The stable tangent/normal comparison needed by the literature theorem belongs to the pending Browder input.
+\end{definition}
+
+\begin{definition}[The framing-dependent Kervaire invariant]
+\label{sem:Literature:kervaire-invariant}
+\level{coarse}
+\textit{(From \cite{Browder}, Section 3, especially Theorem 3.2, pp.~166--168; see also \cite{LWX126}, Introduction.)}
+For a closed smooth stably framed $(4k+2)$-manifold $(M,F)$, write
+$\operatorname{KI}(M,F)\in\mathbb F_2$ for the Arf invariant of the
+quadratic refinement of the middle-dimensional mod-two intersection pairing
+induced by the specified framing. The invariant depends on the framed
+manifold, not just its dimension.
+\lean{KIP126.Literature.Geometry.kervaireInvariant}
+% Blueprint note: Pending construction, explicitly authorized on 2026-10-18: construct the middle-dimensional pairing, its framing-induced quadratic refinement and its Arf invariant on the actual manifold model. This function remains a registered construction hole. Its type fixes the manifold and framing inputs and mod-two output, but the intended geometric construction is not yet implemented. It must not be filled by a dimension test or an Adams-survival predicate.
+\end{definition}
+
+\begin{definition}[Existence of a framed manifold of Kervaire invariant one]
+\label{sem:Literature:kervaire-existence}
+\level{coarse}
+For a natural number $n$, let $G(n)$ mean that there is a natural number
+$k$ with $n=4k+2$ and a closed smooth stably framed $(4k+2)$-manifold
+$(M,F)$ satisfying $\operatorname{KI}(M,F)=1$.
+\lean{KIP126.Literature.Geometry.KervaireInvariantOneExists}
+% Blueprint note: This is an existential definition over actual geometric data; it does not define existence by Browder's criterion. Its local definition is complete, but it depends on the pending invariant construction.
+\end{definition}

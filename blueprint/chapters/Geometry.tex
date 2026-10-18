@@ -1,3 +1,23 @@
 \chapter{Geometry --- Framed Manifolds of Kervaire Invariant One}
-Browder's theorem relates the existence of framed manifolds of Kervaire invariant one to the survival of the classes $h_j^2$ in the Adams spectral sequence. In these statements from \cite{LWX126}, spectra are assumed to be 2-completed, connective, and of finite type. The three statements in this chapter have not yet been formalized.
+Browder's theorem relates the existence of framed manifolds of Kervaire invariant one to the survival of the classes $h_j^2$ in the Adams spectral sequence. In these statements from \cite{LWX126}, spectra are assumed to be 2-completed, connective, and of finite type. The geometric objects are closed smooth manifolds with a stable framing, and the Kervaire invariant is the Arf invariant of the quadratic refinement determined by that framing. The geometric objects and the two deductions below have Lean definitions and proofs. The Kervaire invariant construction and Browder's comparison with the fixed Adams model are separately registered pending inputs in the Literature chapter; the geometric conclusions therefore remain transitively incomplete.
+
+The dimension convention is the $4k+2$ convention in the introduction of
+\cite{LWX126}. Thus the index in Browder's geometric criterion is a positive
+integer: $j\geq 1$. This restriction matters when translating the statement
+to natural-number indices, since $h_0^2$ also survives but lies in stem zero.
+Survival here means that the specified standard square has a common infinite
+cycle representative with nonzero image on the $E_\infty$-page of the fixed
+sphere Adams spectral sequence.
+
+The deduction of Theorem~\ref{paper:1.1} applies Browder's criterion to
+$j=6$, using $2^{6+1}-2=126$ and Theorem~\ref{paper:1.4}.
+For Corollary~\ref{paper:1.2}, the low squares $1\leq j\leq 3$ survive by
+\cite{MayThesis1964}, the squares at $j=4$ and $j=5$ survive by
+\cite{MahowaldTangora,BJMtheta5}, and the new theorem supplies $j=6$.
+The exclusion for $j\geq 7$ is the input from \cite{HHR}.
+Consequently Browder's criterion reduces existence precisely to
+$n=2^{j+1}-2$ with $1\leq j\leq 6$; evaluating these six values gives the
+dimension list. This deduction uses neither an order-two representative
+for $\theta_6$ nor a claim that $\theta_5^2=0$.
+Browder's criterion is stated in the Literature chapter as Theorem~\ref{paper:1.3}; the geometric objects and invariant are defined in Definitions~\ref{sem:Literature:closed-framed-manifolds} and~\ref{sem:Literature:kervaire-invariant}.
 \input{../paper/Geometry.tex}

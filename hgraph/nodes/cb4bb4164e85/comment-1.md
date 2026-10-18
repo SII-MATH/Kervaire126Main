@@ -6,10 +6,10 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.547995+00:00'
+updated: '2026-10-18T11:19:44.112248+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 113-123](paper/main.tex.html#L113). Browder's geometric criterion applied to the permanence theorem gives the framed 126-dimensional manifold.
 
-**Formal scope:** Not formalized: geometric endpoint.
+**Formal scope:** public correspondence; local deduction proved, geometric upstream obligations pending.
 
-Existence of a framed 126-dimensional manifold of Kervaire invariant one is not yet formalized. The current formal endpoint is nonzero permanence of the standard $h_6^2$ class.
+The geometric existence predicate retains an actual closed smooth stably framed manifold and its invariant. The local deduction is complete; the invariant construction and Browder comparison remain separately registered Literature obligations.

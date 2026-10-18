@@ -3,7 +3,7 @@ module
 import KIP126
 import Lean
 
-/-! The ordinary root import exposes all seven mathematical modules and the
+/-! The ordinary root import exposes all eight mathematical modules and the
 fixed standard target. Module-specific consumers retain their own checks;
 Tests.Integration separately checks consumption without importing Main. -/
 
@@ -13,12 +13,15 @@ open KIP126.AdamsSynthetic.Standard (model)
 example : NonzeroSurvival model.classical.sphere (2, 128)
     model.standardClasses.standardH6Square := KIP126.Main.h6_sq_permanent
 
+example : KIP126.Literature.Geometry.KervaireInvariantOneExists 126 :=
+  KIP126.Geometry.kervaire_invariant_one_126
+
 open Lean Elab Command in
 run_cmd do
   let env ← getEnv
   let entries := #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic,
     `KIP126.Literature, `KIP126.E2Computation, `KIP126.ProofTools,
-    `KIP126.AdamsCalculations, `KIP126.Main]
+    `KIP126.AdamsCalculations, `KIP126.Main, `KIP126.Geometry]
   for entry in entries do
     unless env.header.moduleNames.contains entry do
       throwError "Root import is missing a public module: {entry}"
@@ -51,4 +54,4 @@ run_cmd do
     pending := pending ++ dependency.type.getUsedConstants
     if let some value := dependency.value? (allowOpaque := true) then
       pending := pending ++ value.getUsedConstants
-  logInfo "Architecture: seven mathematical modules; fixed standard target uses only its upstream objects"
+  logInfo "Architecture: eight mathematical modules; fixed standard target uses only its upstream objects"

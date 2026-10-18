@@ -40,7 +40,7 @@ from hgraph.sync import (parse_lean, parse_blueprint, read_blueprint,
 ROOT = Path(__file__).resolve().parent.parent
 STATE = ROOT / '.lake/blueprint'
 MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature',
-           'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main')
+           'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main', 'Geometry')
 HGRAPH_REPOSITORY = 'https://github.com/SII-MATH/hgraph'
 PIN = '6dce6022de98ffda2cde18cc7441526c4577efa7'
 RUNTIME_SHA256 = '0f75d03ee9f345276c173dc34d632d2bc9d4f4b4fc5672791fbaa52898238ada'
@@ -627,7 +627,7 @@ def main():
     dependencies = project_dependencies(rows, sources)
     obligations = {r['name']: r for r in json.loads((ROOT / 'metadata/proof-obligations.json').read_text())['obligations']}
     open_nodes = validate_kernel(rows, sources, dependencies, obligations)
-    phase(f'3/7 Generating seven mathematical chapters and the geometry reference chapter ({len(sources)} source declarations)…')
+    phase(f'3/7 Generating eight mathematical chapters ({len(sources)} source declarations)…')
     paper_records, paper_stats = load_paper(ROOT, {s['label']: s for s in sources.values()})
     generate_blueprint(sources, dependencies, obligations, paper_records)
     projection = semantic.prepare(ROOT, sources, dependencies, obligations, paper_records)

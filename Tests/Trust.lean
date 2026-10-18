@@ -16,7 +16,11 @@ import all Tests.E2Computation.SourceExpression
 import all Tests.E2Computation.Consumers
 import all Tests.E2Computation.Interface
 import all Tests.Integration
+import all Tests.Geometry.Interface
+import all Tests.Geometry.Consumers
 import all Tests.Literature.Consumers
+import all Tests.Literature.Geometry
+import all Tests.Literature.GeometryObjects
 import all Tests.Literature.Interface
 import all Tests.Literature.Lift
 import all Tests.Literature.RouteConsumers

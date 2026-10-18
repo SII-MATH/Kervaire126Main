@@ -54,6 +54,7 @@ import all KIP126.AdamsSynthetic.Internal.SphereBHS.Milnor
 import all KIP126.AdamsSynthetic.Internal.SphereBHS.Tower
 import all KIP126.AdamsSynthetic.Internal.Source.AdamsSequence
 import all KIP126.AdamsSynthetic.Internal.Source.AdamsTower
+import all KIP126.AdamsSynthetic.Internal.Source.AdamsNaturality
 import all KIP126.AdamsSynthetic.Internal.Source.Completion
 import all KIP126.AdamsSynthetic.Internal.Source.DerivedSmash
 import all KIP126.AdamsSynthetic.Internal.Source.MilnorComparison
@@ -109,6 +110,26 @@ run_cmd do
     unless unexpected.isEmpty do
       throwError "Unexpected axiom dependency in {name}: {unexpected}"
     checked := checked + 1
+  -- These generic tower proofs are independent of the fixed background and
+  -- must not delegate their responsibility to another registered placeholder.
+  let towerRoots : Array Name := #[
+    `KIP126.AdamsSynthetic.Internal.Source.towerDifferential_exists,
+    `KIP126.AdamsSynthetic.Internal.Source.towerD_comp,
+    `KIP126.AdamsSynthetic.Internal.Source.towerD_kernel,
+    `KIP126.AdamsSynthetic.Internal.Source.towerD_image,
+    `KIP126.AdamsSynthetic.Internal.Source.canonicalTowerMap,
+    `KIP126.AdamsSynthetic.Internal.Source.towerSSDataMap,
+    `KIP126.AdamsSynthetic.Internal.Source.towerSequenceMap,
+    `KIP126.AdamsSynthetic.Internal.Source.canonicalSequenceMap]
+  for target in towerRoots do
+    let candidates := env.constants.toList.filter fun (name, _) =>
+      ((privateToUserName? name).getD name) == target
+    unless candidates.length == 1 do
+      throwError "Expected one private tower proof: {target}"
+    let name := candidates.head!.1
+    let axioms ← collectAxioms name
+    unless axioms.all (fun n => n == `propext || n == `Classical.choice || n == `Quot.sound) do
+      throwError "Generic tower proof has an unfinished dependency: {name}: {axioms}"
   unless holes.qsort (· < ·) == expectedNames.qsort (· < ·) do
     throwError "Proof obligation registry has stale or missing declarations: {holes}"
   logInfo m!"AdamsSynthetic trust audit: {checked} declarations; {holes.size} individually registered pending proofs/constructions; no project axioms"
