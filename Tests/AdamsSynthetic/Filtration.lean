@@ -35,6 +35,26 @@ example {X Y : Spectrum} (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y)
         (mappingClass closedBackground f s)) :=
   mapping_detect_non_odd hX hY f hf
 
+-- Generic detection requires only the mapping-filtration equivalence and
+-- convergence: no ghost-factorization comparison or fixed model is needed.
+section GenericDetection
+universe u v
+variable {C : Type u} [StableHomotopyCategory.{u,v} C] [HasFunctorialCofiber (C := C)]
+  {H : ModTwoCoefficients C} {A : KIP126.Classical.Adams.ClassicalAdamsFamily C}
+  {P : ClassicalTowerPresentation H.unit A} {B : ClosedSymmetricTensorTriangulated C}
+  (S : MappingSpectrumSystem B P (IsFiniteSpectrum (C := C)))
+  (comparison : ∀ {X Y : C}, IsFiniteSpectrum X → IsFiniteSpectrum Y →
+    ∀ (f : X ⟶ Y) (s : ℤ), MapAdamsFiltration P f s ↔
+      (mappingHomotopyZeroEquiv B X Y).symm f ∈
+        (P.tower (mappingSpectrum B X Y)).filtrationSubmodule s 0)
+
+example {X Y : C} (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y)
+    (f : X ⟶ Y) (s : ℤ) (hs : ExactMapAdamsFiltration P f s) :
+    Nonempty (NonzeroClassicalDetection (S.convergence X Y hX hY) (s,s)
+      (mappingClass B f s)) :=
+  nonzeroClassicalDetection_of_exact_map (S := S) comparison hX hY f s hs
+end GenericDetection
+
 -- Nonzeroness cannot replace the genuine non-odd-torsion premise.
 example {X Y : Spectrum} (f : X ⟶ Y) (_hf : f ≠ 0) : True := by
   fail_if_success have : ¬ IsOddTorsionMap f := _hf

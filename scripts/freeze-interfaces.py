@@ -21,7 +21,6 @@ MODULES = [
     ('proof-tools', 'ProofTools', 'KIP126.ProofTools'),
     ('adams-calculations', 'AdamsCalculations', 'KIP126.AdamsCalculations'),
     ('main', 'Main', 'KIP126.Main'),
-    ('computation', 'Computation', 'KIP126.Computation'),
 ]
 API_FIELDS = ('name', 'type_fingerprint', 'universes', 'axioms')
 HOLE_FIELDS = ('name', 'module', 'type_fingerprint', 'body_fingerprint', 'status')
@@ -175,14 +174,6 @@ def prepare():
     Path('.lake').mkdir(exist_ok=True)
     for stem,module,entry in MODULES:
         capture = template.replace('KIP126.AdamsSynthetic', entry).replace('adams-synthetic', stem)
-        if module == 'Computation':
-            # The historical facade owns no definitions. Preserve its exact
-            # original lock by capturing both actual defining-module owners.
-            capture = capture.replace(
-                'unless (`KIP126.Computation).isPrefixOf mod do continue',
-                'unless (`KIP126.Computation).isPrefixOf mod || '
-                '(`KIP126.E2Computation).isPrefixOf mod || '
-                '(`KIP126.AdamsCalculations).isPrefixOf mod do continue')
         Path('.lake/Capture' + module + '.lean').write_text(capture)
     path=Path('scripts/CaptureTrust.lean')
     body=path.read_text(); body=body[body.index('import Lean'):]

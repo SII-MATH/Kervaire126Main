@@ -66,12 +66,6 @@ public def ExactMapAdamsFiltration (P : ClassicalTowerPresentation H.unit A)
     {X Y : C} (f : X ⟶ Y) (s : ℤ) : Prop :=
   MapAdamsFiltration P f s ∧ ¬ MapAdamsFiltration P f (s + 1)
 
-/-- The comparison is an explicit obligation for the chosen coefficient tower. -/
-public structure FactorizationFiltrationComparison
-    (P : ClassicalTowerPresentation H.unit A) : Prop where
-  agrees : ∀ {X Y : C} (f : X ⟶ Y) (s : ℤ),
-    FactorizationFiltration H f s ↔ MapAdamsFiltration P f s
-
 public theorem mapAdamsFiltration_zero (P : ClassicalTowerPresentation H.unit A)
     {X Y : C} (f : X ⟶ Y) : MapAdamsFiltration P f 0 := by
   refine ⟨f ≫ (P.tower Y).zeroIso.inv, ?_⟩
@@ -100,10 +94,12 @@ public def FiniteMapSeparation (P : ClassicalTowerPresentation H.unit A) : Prop 
     ∀ f : X ⟶ Y, (∀ s : ℤ, MapAdamsFiltration P f s) → IsOddTorsionMap f
 
 public theorem separated_factorization (P : ClassicalTowerPresentation H.unit A)
-    (comparison : FactorizationFiltrationComparison P) (separation : FiniteMapSeparation P)
+    (comparison : ∀ {X Y : C} (f : X ⟶ Y) (s : ℤ),
+      FactorizationFiltration H f s ↔ MapAdamsFiltration P f s)
+    (separation : FiniteMapSeparation P)
     {X Y : C} (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) (f : X ⟶ Y)
     (hf : ∀ s : ℤ, FactorizationFiltration H f s) : IsOddTorsionMap f :=
-  separation hX hY f (fun s => (comparison.agrees f s).mp (hf s))
+  separation hX hY f (fun s => (comparison f s).mp (hf s))
 
 /-- Finite exact filtration is derived, with the finite-spectrum and
 non-odd-torsion conditions that the old unqualified statement omitted. -/
@@ -144,18 +140,16 @@ public def HomotopyTwoLocal (X : C) : Prop :=
   ∀ n : ℤ, ∀ k : ℕ, Odd k →
     Function.Bijective (fun x : HomotopyGroup n X => k • x)
 
-/-- A corrected boundedness input. A producer must justify this assertion
-on finite, rationally acyclic, two-local spectra in its chosen system. -/
-public structure AdamsBoundednessInput (P : ClassicalTowerPresentation H.unit A) : Prop where
-  bounded : ∀ X : C, IsFiniteSpectrum X → RationallyAcyclic X → HomotopyTwoLocal X →
-    ∀ i : ℤ, ∃ N : ℤ, ∀ s : ℤ, N < s → (P.tower X).filtrationSubmodule s i = ⊥
-
-public theorem AdamsBoundednessInput.excludes_nonzero
-    {P : ClassicalTowerPresentation H.unit A} (B : AdamsBoundednessInput P)
+/-- A proved filtration bound excludes nonzero elements, with the same
+finiteness, rational acyclicity and two-locality conditions. -/
+public theorem filtration_excludes_nonzero_of_bounded
+    {P : ClassicalTowerPresentation H.unit A}
+    (bounded : ∀ X : C, IsFiniteSpectrum X → RationallyAcyclic X → HomotopyTwoLocal X →
+      ∀ i : ℤ, ∃ N : ℤ, ∀ s : ℤ, N < s → (P.tower X).filtrationSubmodule s i = ⊥)
     (X : C) (hX : IsFiniteSpectrum X) (hr : RationallyAcyclic X) (hl : HomotopyTwoLocal X)
     (i : ℤ) : ∃ N : ℤ, ∀ s : ℤ, N < s → ∀ x : HomotopyGroup i X,
       x ≠ 0 → x ∉ (P.tower X).filtrationSubmodule s i := by
-  obtain ⟨N,hN⟩ := B.bounded X hX hr hl i
+  obtain ⟨N,hN⟩ := bounded X hX hr hl i
   refine ⟨N, fun s hs x hx hmem => ?_⟩
   rw [hN s hs] at hmem
   exact hx hmem

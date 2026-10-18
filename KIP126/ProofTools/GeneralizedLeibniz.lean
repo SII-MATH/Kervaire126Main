@@ -11,9 +11,12 @@ import all KIP126.ProofTools.GeneralizedLeibniz.WitnessSquare
 import all KIP126.ProofTools.GeneralizedLeibniz.BottomTarget
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingShift
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite
+import all KIP126.ProofTools.GeneralizedLeibniz.LeftEdge
+import all KIP126.ProofTools.GeneralizedLeibniz.MinimalBottom
 
-/-! AimPaper Theorem 6.1. The original GL1 and GL2 geometric proof debts
-are retained in place; the representative and Bockstein assembly is proved.
+/-! AimPaper Theorem 6.1. The original GL1 and GL2 crossing proof debts
+are retained in place; the left edge, minimal bottom case, representative
+and Bockstein assembly are proved.
 Upstream comparisons are used directly from the fixed Literature interface. -/
 
 @[expose] section
@@ -82,6 +85,24 @@ public theorem generalizedLeibniz
       (.shift (1,-((page-1:ℕ):ℤ)) (.nu Y))
       ((SyntheticCategory.biShift (1,-((page-1:ℕ):ℤ))).map (model.normalizedMap X Y f).map))
     (t-s,t+normalizedExponent model.classicalTower f) (s+r) l
+  have hleftReady : LeftEdge :=
+    Internal.Leibniz.gl_left_edge X Y f page r m l s t
+      hpage hpr hdx.2 hxInfinity WFinite WInfinity
+  have hgeometryMinimal
+      (hs : NoCrossingOn model X r page (s,t) ∨
+        m ≤ normalizedExponent model.classicalTower f)
+      (hl0 : l ≤ normalizedExponent model.classicalTower f) :
+      LeftEdge ∧ SourceNoCrossing ∧ BottomNoCrossing := by
+    refine ⟨hleftReady, ?_,
+      Internal.Leibniz.minimal_length_bottom_tower_no_crossing
+        X Y f page r l s t hl0⟩
+    rcases hs with hδ | hm0
+    · exact Or.inl
+        (Internal.Leibniz.classical_noCrossing_shifted_absolute_boundary X page
+          (normalizedExponent model.classicalTower f) r s t hδ)
+    · exact Or.inr
+        (Internal.Leibniz.minimal_length_finite_tower_no_crossing X Y f
+          (page-1) (by omega) s t m hm0)
   have hsourceReady : SourceNoCrossing ∨ FiniteNoCrossing model X Y f page m s t := by
     rcases hsourceCrossing with hδcross | hfcross
     · exact Or.inl (Or.inl
@@ -163,11 +184,12 @@ public theorem generalizedLeibniz
         simp only [Internal.Mahowald.regrade_precomp, ←Category.assoc, eqToHom_trans]
       · rw [boundary_regrade]
         exact (Internal.Leibniz.regrade_filtration_iff _ _ _ _).mpr hboundary
-    -- GL1: match the finite source to the propagated infinite source along
-    -- the actual left boundary, then finish the two no-crossing conversions.
+    -- GL1: the specified left edge is proved. The remaining obligation is
+    -- the two no-crossing inputs in the strict bottom-length case.
     -- hsourceReady already handles the classical-delta and minimal-f cases.
     -- The witness square now constructs the common right representative;
     -- its high boundary feeds the proved survival argument above.
+    refine ⟨hleftReady, ?_⟩
     sorry
   let q : ℕ := (r + l - m - 1).toNat
   have hq : 0 < q := by dsimp only [q]; omega
@@ -297,11 +319,18 @@ public theorem generalizedLeibniz
           exact (cancel hpTarget _).symm
         · rw [boundary_regrade]
           simp only [Internal.Mahowald.regrade_precomp, ←Category.assoc, eqToHom_trans]
-    -- GL2: supply the same left-edge matching and crossing conversions.
+    -- GL2: the minimal bottom case closes with either a classical boundary
+    -- no-crossing input or a minimal finite length. The remaining branch
+    -- needs the original crossing conditions converted to the actual edges.
     -- The propagated bottom target already has the prescribed classical label.
     -- The witness square now produces one aRight with both detections;
     -- weighted reverse performs rho lifting, lambda division and B_q readout.
-    sorry
+    by_cases hminimal : (NoCrossingOn model X r page (s,t) ∨
+        m ≤ normalizedExponent model.classicalTower f) ∧
+        l ≤ normalizedExponent model.classicalTower f
+    · exact hgeometryMinimal hminimal.1 hminimal.2
+    · refine ⟨hleftReady, ?_⟩
+      sorry
   have hchosen : DifferentialAt model Y ((q : ℤ) + 1)
       (s + m, t + m) (s + m + (q : ℤ) + 1, t + m + (q : ℤ))
       y (KIP126.Literature.bocksteinLabel model Y q hq (s + m) (t + m) a) := ⟨by omega, hda⟩

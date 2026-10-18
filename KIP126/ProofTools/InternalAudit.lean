@@ -17,6 +17,19 @@ import all KIP126.ProofTools.GeneralizedLeibniz.Boundary
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDivision
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDelta
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite
+import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLift
+import all KIP126.ProofTools.GeneralizedLeibniz.LeftEdge
+import all KIP126.ProofTools.GeneralizedLeibniz.MinimalBottom
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelSource
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelBoundary
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelLanguage
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelLeftEdge
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelGL
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelZero
+import all KIP126.ProofTools.LevelLanguage
+import all KIP126.ProofTools.GeneralizedLeibnizAtLevel
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelDivision
+import all KIP126.ProofTools.LambdaDivision
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingShift
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLabels
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingRange
@@ -160,6 +173,11 @@ run_cmd do
   -- general MH1 boundary lift cannot silently use MH2 or generalizedLeibniz.
   let provedTools := #[
     `KIP126.ProofTools.Standard.finitePageExtensionStretching,
+    `KIP126.ProofTools.Standard.generalizedLeibnizAtLevel,
+    `KIP126.ProofTools.Standard.finiteExtensionAtLevelZero,
+    `KIP126.ProofTools.Standard.finiteLambdaDivision,
+    `KIP126.ProofTools.Internal.Leibniz.tower_image_filtration_of_kernel_no_crossing,
+    `KIP126.ProofTools.Internal.Leibniz.finite_essential_division_of_kernel_no_crossing,
     `KIP126.ProofTools.Internal.Mahowald.finite_lambda_detects,
     `KIP126.ProofTools.Internal.Mahowald.selected_boundary_nonadjacent,
     `KIP126.ProofTools.Internal.Mahowald.selected_mahowald_case,
@@ -169,8 +187,27 @@ run_cmd do
     `KIP126.ProofTools.Internal.Leibniz.absolute_boundary_square_high_filtration,
     `KIP126.ProofTools.Internal.Leibniz.gl_witness_square_high_filtration,
     `KIP126.ProofTools.Internal.Leibniz.gl_witness_square_detects,
+    `KIP126.ProofTools.Internal.Leibniz.gl_left_edge,
+    `KIP126.ProofTools.Internal.Leibniz.minimal_length_bottom_tower_no_crossing,
+    `KIP126.ProofTools.Internal.Leibniz.differential_absolute_boundary_level,
+    `KIP126.ProofTools.Internal.Leibniz.level_gl_left_edge,
+    `KIP126.ProofTools.Internal.Leibniz.generalizedLeibniz_at_level,
+    `KIP126.ProofTools.Internal.Leibniz.level_finite_extension_of_zero,
     `KIP126.ProofTools.Internal.Leibniz.gl_bottom_target_representative,
     `KIP126.ProofTools.Internal.Leibniz.tower_extension_map,
+    `KIP126.ProofTools.Internal.Leibniz.tower_essential_of_mapped_extension,
+    `KIP126.ProofTools.Internal.Leibniz.tower_essential_of_mapped_source,
+    `KIP126.ProofTools.Internal.Leibniz.normalized_finite_source_image_division,
+    `KIP126.ProofTools.Internal.Leibniz.finiteLambdaInfinity,
+    `KIP126.ProofTools.Internal.Leibniz.finite_lambda_infinity_nu_heq,
+    `KIP126.ProofTools.Internal.Leibniz.finite_lambda_infinity_nonzero_iff_boundary,
+    `KIP126.ProofTools.Internal.Leibniz.finite_extension_essential_of_lambda_source,
+    `KIP126.ProofTools.Internal.Leibniz.finite_weight_label_heq,
+    `KIP126.ProofTools.Internal.Leibniz.finite_witness_lambda_target_nonzero_iff,
+    `KIP126.ProofTools.Internal.Leibniz.finite_crossing_of_lifted_witness,
+    `KIP126.ProofTools.Internal.Leibniz.finite_witness_of_filtered_source_image,
+    `KIP126.ProofTools.Internal.Leibniz.finite_weighted_lambda_high_iff_boundary,
+    `KIP126.ProofTools.Internal.Leibniz.nu_lambda_high_iff_boundary,
     `KIP126.ProofTools.Internal.CrossingLabels.lambda_nu_label_nonzero,
     `KIP126.ProofTools.Internal.CrossingLabels.lambda_finite_label_nonzero,
     `KIP126.ProofTools.Internal.Leibniz.page_two_tower_no_crossing,

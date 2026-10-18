@@ -360,6 +360,65 @@ private theorem tower_extension_map
   refine ⟨hn,ar',br',?_,ha',hb'⟩
   rw [←haa,Category.assoc,←hcomm,←Category.assoc,hab,hbb]
 
+/-- Essentiality of the image extension reflects through a commuting
+square. Only the extension equation is pushed forward: preservation of
+essentiality in the opposite direction would require additional arguments. -/
+private theorem tower_essential_of_mapped_extension
+    {X' Y' : Syn}
+    {cx' : SyntheticTowerConvergence P X'} {cy' : SyntheticTowerConvergence P Y'}
+    {g' : X' ⟶ Y'} {a : X ⟶ X'} {b : Y ⟶ Y'}
+    (M : ConvergentMap E g cx.toConvergence cy.toConvergence)
+    (M' : ConvergentMap E g' cx'.toConvergence cy'.toConvergence)
+    (Ma : ConvergentMap E a cx.toConvergence cx'.toConvergence)
+    (Mb : ConvergentMap E b cy.toConvergence cy'.toConvergence)
+    (hcomm : g ≫ b = a ≫ g')
+    (p : ℤ × ℤ) (s n : ℤ)
+    (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)
+    (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)
+    (he : TowerExtensionEquation M p s n x y)
+    (hess : TowerEssentialExtension M' p s n
+      ((E.functor.map a).eInftyMap (s,p.1+s,p.2) x)
+      ((E.functor.map b).eInftyMap (s+n,p.1+(s+n),p.2) y)) :
+    TowerEssentialExtension M p s n x y := by
+  apply (tower_essential_iff_no_zero M p s n x y he).mpr
+  intro hz
+  have hz' := tower_extension_map M M' Ma Mb hcomm p s n x 0 hz
+  simp only [map_zero] at hz'
+  exact ((tower_essential_iff_no_zero M' p s n _ _ hess.1).mp hess) hz'
+
+/-- An essential extension from the mapped source both makes a known
+preimage extension essential and prevents its mapped target from vanishing.
+The essential extension's target need not be identified in advance. -/
+private theorem tower_essential_of_mapped_source
+    {X' Y' : Syn}
+    {cx' : SyntheticTowerConvergence P X'} {cy' : SyntheticTowerConvergence P Y'}
+    {g' : X' ⟶ Y'} {a : X ⟶ X'} {b : Y ⟶ Y'}
+    (M : ConvergentMap E g cx.toConvergence cy.toConvergence)
+    (M' : ConvergentMap E g' cx'.toConvergence cy'.toConvergence)
+    (Ma : ConvergentMap E a cx.toConvergence cx'.toConvergence)
+    (Mb : ConvergentMap E b cy.toConvergence cy'.toConvergence)
+    (hcomm : g ≫ b = a ≫ g')
+    (p : ℤ × ℤ) (s n : ℤ)
+    (x : ((E.obj X).sequence.ssData (s,p.1+s,p.2)).eInfty)
+    (y : ((E.obj Y).sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)
+    (y' : ((E.obj Y').sequence.ssData (s+n,p.1+(s+n),p.2)).eInfty)
+    (he : TowerExtensionEquation M p s n x y)
+    (hess : TowerEssentialExtension M' p s n
+      ((E.functor.map a).eInftyMap (s,p.1+s,p.2) x) y') :
+    TowerEssentialExtension M p s n x y ∧
+      ((E.functor.map b).eInftyMap (s+n,p.1+(s+n),p.2) y) ≠ 0 := by
+  have hnot := (tower_essential_iff_no_zero M' p s n _ _ hess.1).mp hess
+  constructor
+  · apply (tower_essential_iff_no_zero M p s n x y he).mpr
+    intro hz
+    have hz' := tower_extension_map M M' Ma Mb hcomm p s n x 0 hz
+    simp only [map_zero] at hz'
+    exact hnot hz'
+  · intro hz
+    have hm := tower_extension_map M M' Ma Mb hcomm p s n x y he
+    rw [hz] at hm
+    exact hnot hm
+
 end Tower
 end
 end KIP126.ProofTools.Internal.Leibniz

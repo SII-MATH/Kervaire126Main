@@ -29,9 +29,6 @@ public theorem sphere_twist (r s : ℤ) :
 public theorem factorization_filtration_iff {X Y : Spectrum} (f : X ⟶ Y) (s : ℤ) :
     FactorizationFiltration coefficients f s ↔ MapAdamsFiltration classicalTower f s := by sorry
 
-private theorem factorizationComparison : FactorizationFiltrationComparison classicalTower :=
-  ⟨factorization_filtration_iff⟩
-
 /-- This remains an unfinished foundational proof, now owned by its upstream module. -/
 public theorem finite_map_separation {X Y : Spectrum}
     (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) (f : X ⟶ Y)
@@ -40,7 +37,7 @@ public theorem finite_map_separation {X Y : Spectrum}
 public theorem separated_factorization {X Y : Spectrum}
     (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) (f : X ⟶ Y)
     (hf : ∀ s : ℤ, FactorizationFiltration coefficients f s) : IsOddTorsionMap f :=
-  KIP126.AdamsSynthetic.separated_factorization classicalTower factorizationComparison
+  KIP126.AdamsSynthetic.separated_factorization classicalTower factorization_filtration_iff
     finite_map_separation hX hY f hf
 
 public theorem finite_filtration_of_not_odd {X Y : Spectrum}
@@ -53,13 +50,11 @@ public theorem adams_filtration_bounded (X : Spectrum) (hX : IsFiniteSpectrum X)
     (hr : RationallyAcyclic X) (hl : HomotopyTwoLocal X) (i : ℤ) :
     ∃ N : ℤ, ∀ s : ℤ, N < s → (classicalTower.tower X).filtrationSubmodule s i = ⊥ := by sorry
 
-private theorem boundedness : AdamsBoundednessInput classicalTower := ⟨adams_filtration_bounded⟩
-
 public theorem filtration_excludes_nonzero (X : Spectrum) (hX : IsFiniteSpectrum X)
     (hr : RationallyAcyclic X) (hl : HomotopyTwoLocal X) (i : ℤ) :
     ∃ N : ℤ, ∀ s : ℤ, N < s → ∀ x : HomotopyGroup i X,
       x ≠ 0 → x ∉ (classicalTower.tower X).filtrationSubmodule s i :=
-  boundedness.excludes_nonzero X hX hr hl i
+  filtration_excludes_nonzero_of_bounded adams_filtration_bounded X hX hr hl i
 
 public def homologyShift (X : Spectrum) :
     coefficients.object ⊗ X⟦(1 : ℤ)⟧ ≅ (coefficients.object ⊗ X)⟦(1 : ℤ)⟧ := by
@@ -160,15 +155,12 @@ public theorem mapping_filtration_iff {X Y : Spectrum}
         (classicalTower.tower (mappingSpectrum closedBackground X Y)).filtrationSubmodule s 0 := by
   sorry
 
-private theorem mappingDetection : MappingDetectionInput closedBackground classicalTower mappingSystem :=
-  ⟨factorizationComparison, ⟨mapping_filtration_iff⟩⟩
-
 public theorem mapping_detects_exact {X Y : Spectrum}
     (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) (f : X ⟶ Y)
     (s : ℤ) (hs : ExactMapAdamsFiltration classicalTower f s) :
     Nonempty (NonzeroClassicalDetection (mappingConvergence X Y hX hY) (s,s)
       (mappingClass closedBackground f s)) :=
-  mappingDetection.detects_exact hX hY f s hs
+  nonzeroClassicalDetection_of_exact_map (S := mappingSystem) mapping_filtration_iff hX hY f s hs
 
 public theorem mapping_detect_non_odd {X Y : Spectrum}
     (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) (f : X ⟶ Y)
@@ -176,7 +168,8 @@ public theorem mapping_detect_non_odd {X Y : Spectrum}
     ∃ s : ℤ, ExactMapAdamsFiltration classicalTower f s ∧
       Nonempty (NonzeroClassicalDetection (mappingConvergence X Y hX hY) (s,s)
         (mappingClass closedBackground f s)) :=
-  mappingDetection.detect_non_odd finite_map_separation hX hY f hf
+  nonzeroClassicalDetection_of_not_odd_map (S := mappingSystem)
+    mapping_filtration_iff finite_map_separation hX hY f hf
 
 end
 end KIP126.AdamsSynthetic.Standard

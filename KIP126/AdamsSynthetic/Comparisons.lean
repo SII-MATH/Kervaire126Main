@@ -58,17 +58,4 @@ public def HomologyShortExact (H : ModTwoCoefficients C)
       (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n) ∧
     Function.Surjective (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n)
 
-/-- The same ν preserves this distinguished triangle under the complete
-homology short-exactness premise. This intentionally corrects the historical
-signature that omitted injectivity and surjectivity. The converse criterion
-is a separate literature result on the same coefficients and ν. -/
-public structure NuExactTriangleInput (H : ModTwoCoefficients C) (N : NuFunctorData C Syn) where
-  preserves : ∀ (T : CategoryTheory.Pretriangulated.Triangle C),
-    T ∈ distTriang C →
-    HomologyShortExact H T →
-    ∃ h : N.functor.obj T.obj₃ ⟶ (shiftFunctor Syn (1 : ℤ)).obj (N.functor.obj T.obj₁),
-      CategoryTheory.Pretriangulated.Triangle.mk
-        (N.functor.map T.mor₁) (N.functor.map T.mor₂) h ∈
-          distTriang Syn
-
 end KIP126.AdamsSynthetic

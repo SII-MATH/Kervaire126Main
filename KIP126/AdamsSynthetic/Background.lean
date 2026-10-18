@@ -56,15 +56,4 @@ public noncomputable def smashSpheres
 
 end ClosedSymmetricTensorTriangulated
 
-/-- The stable Koszul sign for the actual braiding and the sphere product
-comparisons supplied by `B`. It is a separate proof input, since symmetry
-alone does not imply the stable sign convention. -/
-public structure SphereTwistSign (B : ClosedSymmetricTensorTriangulated C) : Prop where
-  twist : letI := B.symmetric
-    ∀ r s : ℤ,
-      (β_ (Sphere r : C) (Sphere s)).hom ≫ (B.smashSpheres s r).hom ≫
-        eqToHom (congrArg (Sphere (C := C)) (add_comm s r)) =
-      if Even (r * s) then (B.smashSpheres r s).hom
-      else -(B.smashSpheres r s).hom
-
 end KIP126.StableHomotopy

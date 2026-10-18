@@ -72,20 +72,6 @@ import all KIP126.AdamsSynthetic.System
 import all KIP126.AdamsSynthetic.Tower
 import all KIP126.AdamsSynthetic.Weight
 import all KIP126.AdamsSynthetic
-import all KIP126.Computation.Basis
-import all KIP126.Computation.Source
-import all KIP126.Computation.Standard
-import all KIP126.Computation.Table.Archive
-import all KIP126.Computation.Table.Data
-import all KIP126.Computation.Table.Dimensions
-import all KIP126.Computation.Table.Internal.SourceExpression
-import all KIP126.Computation.Table.Internal.ZeroDimension
-import all KIP126.Computation.Table.Relations
-import all KIP126.Computation.Table.Syntax
-import all KIP126.Computation.Table.ThetaRelations
-import all KIP126.Computation.Table.Values
-import all KIP126.Computation.Table
-import all KIP126.Computation
 import all KIP126.E2Computation.AdamsTwoLine
 import all KIP126.E2Computation.Basis
 import all KIP126.E2Computation.Source
@@ -270,10 +256,20 @@ import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDelta
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingDivision
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingFinite
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLabels
+import all KIP126.ProofTools.GeneralizedLeibniz.CrossingLift
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingRange
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingShift
 import all KIP126.ProofTools.GeneralizedLeibniz.DivisionLabels
 import all KIP126.ProofTools.GeneralizedLeibniz.Filtration
+import all KIP126.ProofTools.GeneralizedLeibniz.LeftEdge
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelBoundary
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelDivision
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelGL
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelLanguage
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelLeftEdge
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelSource
+import all KIP126.ProofTools.GeneralizedLeibniz.LevelZero
+import all KIP126.ProofTools.GeneralizedLeibniz.MinimalBottom
 import all KIP126.ProofTools.GeneralizedLeibniz.Propagation
 import all KIP126.ProofTools.GeneralizedLeibniz.Reverse
 import all KIP126.ProofTools.GeneralizedLeibniz.RightEdge
@@ -284,6 +280,7 @@ import all KIP126.ProofTools.GeneralizedLeibniz.Survival
 import all KIP126.ProofTools.GeneralizedLeibniz.WeightedReverse
 import all KIP126.ProofTools.GeneralizedLeibniz.WitnessSquare
 import all KIP126.ProofTools.GeneralizedLeibniz
+import all KIP126.ProofTools.GeneralizedLeibnizAtLevel
 import all KIP126.ProofTools.GeneralizedMahowald.Adjacent
 import all KIP126.ProofTools.GeneralizedMahowald.BottomNuInjection
 import all KIP126.ProofTools.GeneralizedMahowald.BoundaryDetection
@@ -348,8 +345,10 @@ import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerAssembly
 import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerSpecial
 import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerTarget
 import all KIP126.ProofTools.GeneralizedMahowald
+import all KIP126.ProofTools.LambdaDivision
 import all KIP126.ProofTools.Language
 import all KIP126.ProofTools.Laws
+import all KIP126.ProofTools.LevelLanguage
 import all KIP126.ProofTools.Operations
 import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
@@ -513,7 +512,7 @@ run_cmd do
     let mod := env.header.moduleNames[idx.toNat]!
     unless #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic, `KIP126.Literature,
       `KIP126.E2Computation, `KIP126.ProofTools, `KIP126.AdamsCalculations,
-      `KIP126.Computation, `KIP126.Main].any (·.isPrefixOf mod) do continue
+      `KIP126.Main].any (·.isPrefixOf mod) do continue
     let body := info.value? (allowOpaque := true)
     let direct := info.type.hasSorry || body.any (·.hasSorry)
     let synthetic := info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry)
