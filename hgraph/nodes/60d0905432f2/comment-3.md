@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:52:27.263022+00:00'
+updated: '2026-10-18T08:57:07.096432+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1995-2070](paper/main.tex.html#L1995). Restriction induces a morphism of ESSs; quotient coordinates and higher-source crossings describe the loss of essentiality.
 
