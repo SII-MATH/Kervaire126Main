@@ -1,6 +1,6 @@
 module
 
-import KIP126.Computation
+import KIP126.AdamsCalculations
 import Lean
 
 open KIP126.Core.SpectralSequence

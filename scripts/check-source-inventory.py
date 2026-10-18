@@ -15,9 +15,7 @@ mathematical_entries = {
     'AdamsCalculations': 'KIP126.AdamsCalculations',
     'Main': 'KIP126.Main',
 }
-# Historical source paths only re-export the two new computation layers.
-# They are audited, but no mathematical module may use this wide facade.
-entries = {**mathematical_entries, 'Computation': 'KIP126.Computation'}
+entries = mathematical_entries
 allowed_dependencies = {
     'SpectralSequence': {'SpectralSequence'},
     'AdamsSynthetic': {'SpectralSequence', 'AdamsSynthetic'},
@@ -28,7 +26,6 @@ allowed_dependencies = {
     'AdamsCalculations': {'SpectralSequence', 'AdamsSynthetic', 'Literature',
                           'E2Computation', 'ProofTools', 'AdamsCalculations'},
     'Main': set(mathematical_entries),
-    'Computation': {'Computation', 'E2Computation', 'AdamsCalculations'},
 }
 
 
@@ -96,38 +93,31 @@ def imports(path):
     return result
 
 
-# The new public entries partition the reviewed compatibility interface. Moving
-# a declaration to a different source module does not authorize a new type,
-# universe parameter, trust dependency, or generated export.
-legacy_api_path = root / 'metadata/computation-api.json'
-if legacy_api_path.is_file():
-    legacy_api = json.loads(legacy_api_path.read_text())
-    legacy_rows = {row['name']: (category, row)
-                   for category in ('declarations', 'generated_declarations')
-                   for row in legacy_api[category]}
-    partition_names = []
-    for stem, module in (('e2-computation', 'E2Computation'),
-                         ('adams-calculations', 'AdamsCalculations')):
-        path = root / f'metadata/{stem}-api.json'
-        if not path.is_file():
-            errors.append('Missing computation partition baseline: ' + str(path.relative_to(root)))
-            continue
-        partition = json.loads(path.read_text())
-        if partition.get('module') != module or partition.get('entry_module') != entries[module]:
-            errors.append('Wrong computation partition owner: ' + str(path.relative_to(root)))
-        names = []
-        for category in ('declarations', 'generated_declarations'):
-            for row in partition[category]:
-                names.append(row['name'])
-                if legacy_rows.get(row['name']) != (category, row):
-                    errors.append('Computation partition changed a reviewed interface: ' + row['name'])
-        if len(set(names)) != len(names) or sorted(names) != sorted(partition['exports']):
-            errors.append('Computation partition export mismatch: ' + str(path.relative_to(root)))
-        partition_names.extend(names)
-    if (len(set(partition_names)) != len(partition_names) or
-            sorted(partition_names) != sorted(legacy_api['exports'])):
-        errors.append('E2 and Adams calculation interfaces are not an exact disjoint partition '
-                      'of the preserved Computation interface')
+# Each mathematical module has its own reviewed lock. Public declarations,
+# including generated exports, must have a unique source-module owner.
+locked_owners = {}
+locked_modules = set()
+for path in sorted((root / 'metadata').glob('*-api.json')):
+    api = json.loads(path.read_text())
+    module = api['module']
+    if module not in entries or api['entry_module'] != entries[module]:
+        errors.append('Unowned interface baseline: ' + str(path.relative_to(root)))
+        continue
+    if module in locked_modules:
+        errors.append('Duplicate module interface baseline: ' + module)
+    locked_modules.add(module)
+    names = [row['name'] for category in ('declarations', 'generated_declarations')
+             for row in api[category]]
+    if len(set(names)) != len(names) or sorted(names) != sorted(api['exports']):
+        errors.append('Interface export mismatch: ' + str(path.relative_to(root)))
+    for name in names:
+        if name in locked_owners:
+            errors.append(f'Public interface has multiple owners: {name}: '
+                          f'{locked_owners[name]}, {module}')
+        locked_owners[name] = module
+
+if locked_modules != set(entries):
+    errors.append('Missing module interface baselines: ' + str(sorted(set(entries) - locked_modules)))
 
 
 # Keep the individually reviewed mathematical names from the upstream cleanup.
@@ -168,16 +158,6 @@ if actual_project - expected_project:
 
 for path in actual_project:
     source_owner = owner(lean_name(path))
-    if source_owner == 'Computation' and path.name != 'InternalAudit.lean':
-        # Compatibility paths must not hide a new mathematical owner. In
-        # particular a declaration's historical namespace is not its owner.
-        for line in code_only(path.read_text()).splitlines():
-            line = line.strip()
-            if line and line != 'module' and not re.fullmatch(
-                    r'(?:(?:public|private|meta)\s+)*import\s+(?:all\s+)?[\w.\s]+', line):
-                errors.append('Compatibility module contains non-import code: ' +
-                              str(path.relative_to(root)))
-                break
     for all_, imported in imports(path):
         imported_owner = owner(imported)
         if imported == 'KIPBase' or imported.startswith(('KIPBase.', 'Interface.', 'LinProgram.')):
