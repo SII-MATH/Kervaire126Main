@@ -14,7 +14,7 @@ namespace KIP126.Main.Internal.Rigidity
 open CategoryTheory CategoryTheory.Limits
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.AdamsSynthetic.Standard KIP126.Core.SpectralSequence
-open KIP126.Kervaire.Route KIP126.Literature KIP126.ProofTools.Operations
+open KIP126.Kervaire.Route KIP126.Literature KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.Main.Internal KIP126.Main.Internal.Selected
 noncomputable section
 set_option backward.isDefEq.respectTransparency false

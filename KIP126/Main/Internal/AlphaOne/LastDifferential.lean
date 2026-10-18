@@ -14,7 +14,7 @@ open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSeq
 open KIP126.AdamsSynthetic KIP126.Classical.Adams KIP126.Literature KIP126.Kervaire.Route
 open KIP126.Core KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.Main.SectionSeven (FiniteNonzeroDifferential)
 noncomputable section
 universe u v

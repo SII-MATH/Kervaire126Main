@@ -106,7 +106,7 @@ private theorem tower_inessential_iff_higher_source_same_target
         ((P.filtration X).F (s+1) p).arrow a ≫ g =
           ((P.filtration Y).F (s+n) p).arrow b ∧
         (P.filtration Y).toAssociatedGraded (s+n) p b =
-          (KIP126.ProofTools.Operations.infinityGradedIso cy p (s+n)).hom y := by
+          (KIP126.ProofTools.Internal.infinityGradedIso cy p (s+n)).hom y := by
   have hrel : FilteredMapExtension.Relation M.filteredMap p s n
       (toGraded cx.toConvergence (by simp [SyntheticTowerConvergence.toConvergence])
         (elementMap x))

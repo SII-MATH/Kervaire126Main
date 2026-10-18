@@ -15,7 +15,7 @@ namespace KIP126.Main.Paper.Internal
 open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
 open KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic
-open KIP126.Core.SpectralSequence KIP126.ProofTools.Operations
+open KIP126.Core.SpectralSequence KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
 open KIP126.Literature.Standard (eta syntheticH0)
 open KIP126.Literature.Route

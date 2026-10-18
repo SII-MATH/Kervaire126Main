@@ -361,6 +361,7 @@ import all KIP126.ProofTools.Paper.ExtensionDescent
 import all KIP126.ProofTools.Paper.ExtensionEssentialSource
 import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
+import all KIP126.ProofTools.Paper.OriginalStatements
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
 import all KIP126.ProofTools.Representatives

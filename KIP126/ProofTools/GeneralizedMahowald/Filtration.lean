@@ -27,7 +27,7 @@ theorem filtration_at_zero (P : SyntheticTowerPresentation unit F)
   simp only [AbstractAdamsTower.projection, Int.toNat_zero, (P.tower X).map_self]
   erw [Category.assoc, Category.id_comp, Iso.inv_hom_id, Category.comp_id]
 
-theorem filtration_iff_of_infinity_zero (c : SyntheticTowerConvergence P X)
+public theorem filtration_iff_of_infinity_zero (c : SyntheticTowerConvergence P X)
     (s t m w : ℤ) (hst : s ≤ t)
     (hz : ∀ j, s ≤ j → j < t → IsZero (((F.obj X).sequence.ssData (j,m+j,w)).eInfty))
     (a : BiHom m w X) : FiltrationAtLeast P s a ↔ FiltrationAtLeast P t a := by
@@ -92,7 +92,7 @@ private theorem shifted_quotient_homotopy_separated
   homotopySeparated_shift model (.quotient q X) δ (essShift δ)
     (synthetic_homotopy_separated X q)
 
-theorem finite_infinity_zero_outside (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+public theorem finite_infinity_zero_outside (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
     (s t w : ℤ) (hw : ¬ (0 ≤ t-w ∧ t-w < q)) :
     IsZero (((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData
       (s,t,w)).eInfty) := by
@@ -104,7 +104,7 @@ theorem finite_infinity_zero_outside (X : ClassicalObject) (q : ℕ) (hq : 0 < q
     (KIP126.Literature.Standard.eInfinity_finite X q hq (s,t) w).injective.subsingleton
   exact ModuleCat.isZero_of_subsingleton _
 
-theorem finite_high_filtration_zero (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+public theorem finite_high_filtration_zero (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
     (m w s : ℤ) (hs : (q:ℤ) ≤ m+s-w)
     (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))
     (ha : FiltrationAtLeast model.syntheticTower s a) : a = 0 := by
@@ -125,7 +125,7 @@ theorem finite_top_detection_unique (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
   exact finite_high_filtration_zero X q hq (t-s) w (s+1) (by omega) (a-b)
     (detects_sub_filtration (model.convergence (.quotient q (.nu X))) (s,t,w) ha hb)
 
-theorem finite_bottom_filtration (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+public theorem finite_bottom_filtration (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
     (s t : ℤ)
     (a : BiHom (t-s) t (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q)) :
     FiltrationAtLeast model.syntheticTower s a := by

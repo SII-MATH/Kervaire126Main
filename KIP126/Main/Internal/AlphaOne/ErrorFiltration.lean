@@ -18,7 +18,7 @@ open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynt
 open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
 open KIP126.Main.SectionSeven KIP126.Kervaire.Route
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.ProofTools.Operations KIP126.Main.Internal
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald KIP126.Main.Internal
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxRecDepth 10000
@@ -187,7 +187,7 @@ private theorem alpha_error_filtration_thirteen
     exact KIP126.Literature.boundaries_monotone model .sphere (10,134) (by decide : (2:ℤ)≤4) hbound
   have hprod : KIP126.Computation.Standard.product (r := (10,134)) (KIP126.Computation.Standard.h1) V∈
       KIP126.Literature.cycles model .sphere 8 (10,134) := by
-    have hb := KIP126.ProofTools.Operations.boundaries_le_cycles model .sphere (10,134) 4 8 hbound4
+    have hb := KIP126.ProofTools.Internal.Mahowald.boundaries_le_cycles model .sphere (10,134) 4 8 hbound4
     have hh := (KIP126.Literature.cycles model .sphere 8 (10,134)).add_mem hb hU
     simpa only [sub_add_cancel] using hh
   apply (alpha_error_filtration_gap h11 h12 _).mp

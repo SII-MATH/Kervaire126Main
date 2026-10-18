@@ -45,7 +45,7 @@ theorem nu_target_h0_af13_image_boundary_two :
     exact hd
   let B := KIP126.Literature.boundaries model .sphere 2 (14,139)
   have hbt : basis .sphere 14 139 2 ∈ B :=
-    KIP126.ProofTools.Operations.represents_zero_mem_boundary model .sphere 3 (14,139) _
+    KIP126.ProofTools.Internal.Mahowald.represents_zero_mem_boundary model .sphere 3 (14,139) _
       (KIP126.Core.SpectralSequence.FinitePageCalculus.differential_target_later_zero
         (by rw [model.classical.firstPage]) (by decide) hd)
   have hb (i : Fin 5) : product (r := (14,139)) h0 (basis .sphere 13 138 i.val) ∈ B := by

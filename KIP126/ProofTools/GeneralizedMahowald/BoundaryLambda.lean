@@ -1,4 +1,5 @@
 module
+public import KIP126.ProofTools.Laws
 import all KIP126.ProofTools.GeneralizedMahowald.Coherence
 import all KIP126.ProofTools.GeneralizedMahowald.Filtration
 import all KIP126.ProofTools.DetectionOperations
@@ -23,7 +24,7 @@ theorem quotient_map_class_eq_zero {R : Type*} [Ring R] {V : Type*}
     subquotientMap hZ hB (subquotientClass Z B y) = 0 := by
   exact (Submodule.Quotient.mk_eq_zero _).mpr hy
 
-theorem finite_target_label_iff (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+public theorem finite_target_label_iff (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
     (s t : ℤ) (k : ℕ) (hk : k < q)
     (y : cycles model X ((q:ℤ)-t+(t-k)) (s,t))
     (e : ((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData

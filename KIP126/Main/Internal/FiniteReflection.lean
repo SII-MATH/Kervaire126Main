@@ -11,7 +11,7 @@ open KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence KIP126.AdamsSynt
 open KIP126.Core.SpectralSequence KIP126.Kervaire.Route KIP126.Literature
 open KIP126.Main.SectionSeven KIP126.Main.Internal KIP126.Main.Internal.Selected
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
@@ -26,7 +26,7 @@ theorem detects_reflect
     (ha : FiltrationAtLeast (model.syntheticTower) i.1 a)
     (hf : DetectsNonzero (model.convergence Y) i (familyPageMap model.family f 2 i x) (a≫f)) :
     DetectsNonzero (model.convergence X) i x a := by
-  refine ⟨KIP126.ProofTools.Operations.detects_reflect X Y f i hi x e he a ha hf.1,e,he,?_⟩
+  refine ⟨KIP126.ProofTools.Internal.detects_reflect X Y f i hi x e he a ha hf.1,e,he,?_⟩
   intro he0
   obtain ⟨en,hen,hn⟩ := hf.2
   have hh := hen.unique (family_infinity_representative_map f i x e he)

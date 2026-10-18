@@ -11,7 +11,7 @@ set_option backward.isDefEq.respectTransparency false
 namespace KIP126.Main.SectionSeven.Internal
 open CategoryTheory KIP126.Core.SpectralSequence
 open KIP126.Core.SpectralSequence.FinitePageCalculus KIP126.Literature
-open KIP126.AdamsSynthetic.Standard KIP126.ProofTools.Operations
+open KIP126.AdamsSynthetic.Standard KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 open KIP126.Computation.Table
 noncomputable section
 

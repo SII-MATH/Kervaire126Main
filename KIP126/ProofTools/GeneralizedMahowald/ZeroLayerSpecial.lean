@@ -1,5 +1,5 @@
 module
-import KIP126.ProofTools.Laws
+public import KIP126.ProofTools.Laws
 import all KIP126.ProofTools.GeneralizedMahowald.NoReturn
 import all KIP126.ProofTools.GeneralizedMahowald.Geometry
 import all KIP126.ProofTools.GeneralizedMahowald.OctahedralPullback
@@ -782,7 +782,7 @@ private theorem generalized_mahowald_zero_layer_sphere
     equation := heq }⟩
 
 /-- The exact numerical MH2 instance consumed in Main's NuThree argument. -/
-private theorem main_nu_mahowald_zero_layer
+public theorem main_nu_mahowald_zero_layer
     (x : Ambient model (.shift 3 .sphere) (8,133))
     (y : Ambient model .sphere (11,136))
     (xBar : Ambient model .nuCofiber (8,134))

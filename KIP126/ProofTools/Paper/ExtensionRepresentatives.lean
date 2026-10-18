@@ -12,7 +12,7 @@ namespace KIP126.ProofTools.Paper
 open CategoryTheory CategoryTheory.Limits
 open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
 open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 2000000

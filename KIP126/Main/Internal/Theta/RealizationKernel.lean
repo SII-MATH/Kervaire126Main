@@ -15,7 +15,7 @@ open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra
 open KIP126.Core.SpectralSequence KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic KIP126.Literature KIP126.Kervaire.Route
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 local instance shiftAdditive (p : ℤ × ℤ) :
     (SyntheticCategory.biShift (Syn := SyntheticSpectrum) p).Additive :=
@@ -195,7 +195,7 @@ private theorem lambda_kernel_zero_from_filtration9
   let G := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,-1)
   have hfil : FiltrationAtLeast model.syntheticTower 9
       (a ≫ G.map (XModLambdaN.incl V 1)) :=
-    KIP126.ProofTools.Operations.map_preserves_filtration
+    KIP126.ProofTools.Internal.map_preserves_filtration
       (model.convergentMap (.shift (0,-1) (.nu .sphere))
         (.shift (0,-1) (.quotient 1 (.nu .sphere))) (G.map (XModLambdaN.incl V 1)))
       (62,w) 9 a ha

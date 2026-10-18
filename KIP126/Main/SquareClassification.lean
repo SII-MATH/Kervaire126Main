@@ -147,7 +147,7 @@ private theorem correction_choice_exists :
   obtain ⟨e,he,_⟩ := hd
   refine ⟨e,he,?_⟩
   let f := XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 1
-  have hf := KIP126.ProofTools.Operations.family_infinity_representative_map f (13,137,137-0) _ _ he
+  have hf := KIP126.ProofTools.Internal.family_infinity_representative_map f (13,137,137-0) _ _ he
   have hfn := finite_sphere_infinity_nonzero 1 (by decide) 13 137 correction hne _ hf
   intro he0
   apply hfn

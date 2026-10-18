@@ -35,3 +35,25 @@ lake build
 ## Geometry 接入（2026-10-18）
 
 用户已授权有限扩展 Literature 并新增 Geometry。新增 `geometry-api.json` 锁定两个几何结论；既有七个模块的接口归属保持不变。Literature 新增实际闭光滑流形、稳定切标架与带标架流形的数据定义，以及不变量和几何存在性接口。仅登记 `KIP126.Literature.Geometry.kervaireInvariant`（`pending-construction`）和 `KIP126.Literature.Geometry.browder_iff`（`pending-proof`）两个新增责任。前者保留配对、标架诱导二次细化及 Arf 不变量的构造责任；后者保留 Browder 定理及到固定模型的比较责任。Geometry 本地与私有证明均不许可证明洞，传递依赖仍完整审计。数学陈述、原始出处和责任范围由 Blueprint 维护。
+
+## ProofTools 直接公开实际声明（2026-10-18）
+
+用户已授权依据 Blueprint／AimPaper 对应及下游用途整理公开接口。原 `Operations` 的 23 个别名与 4 个重复包装，以及 `Standard.nuCofiberMahowaldZeroLayer` 的别名，改为在原定义处直接公开相应的 28 个实际声明；保留其 `Internal`／`Internal.Mahowald` 源名称。`Operations.lean` 只汇集普通公共导入，不再声明第二套名称。调用处、Blueprint 绑定和接口锁同步使用实际声明；没有下游调用不构成取消 Blueprint 正式数学接口的理由。
+
+实际数学陈述和证明正文保持不变；原论文条目、局部对应范围、广义 Leibniz／Mahowald 的待补责任均保留。公开类型中的定义引用随去掉包装而更新，接口锁须从编译结果捕获并核验公理依赖。Main／ProofTools 的审计边界同步迁移到实际声明，完整导出、公共消费、私有辅助隐藏及递归信任检查继续执行；不加入 hgraph 兼容补丁或网页状态改写。
+
+编译核对确认 28 个新旧入口的类型全部定义等价，原有公开声明的公理依赖不变，全部 309 项许可证明洞的名称、归属、类型和待补状态不变。`generalizedMahowald` 的源文件逐字未改；内部声明由私有名改为公开名后，仅迁移其编译证明体指纹。Lean 自动生成的 `homotopyRegrade.congr_simp` 现在实际定义于 ProofTools，故从 Main 的生成声明锁移至 ProofTools；Main 的精确边界另纳入它与 `lambdaMultiply.eq_1`，共 34 项，由 ProofTools 完整证明体审计继续核验。
+
+## ProofTools 原文陈述登记（2026-10-18）
+
+用户随后明确选择“写公开 theorem，并登记待补证明”。据此，`Paper/OriginalStatements.lean` 为 AimPaper 2.6、2.12、2.15、2.16、2.17、2.18、2.19、2.20、5.10、5.14 各登记一个公开待补定理。经典部分直接使用实际 Adams E∞ 群、其收敛比较与同伦代表元，未添加有界性或 synthetic-to-classical 比较前提；5.10 保留原文 crossing 条件，未把额外的 λ 核条件混入原命题。用于表达这些公开类型的经典延拓、crossing、永久循环和全页态射语言也直接公开；证明辅助构造保持私有。
+
+十项均只有陈述，没有声称证明完成。原有 GL1／GL2／MH2 的三个源码证明洞位置与两个声明保留；精确源码检查与编译审计另许可这十个经授权的新声明。既有 Main 根、34 项 Main／ProofTools 边界及已完成工具的递归无本地证明洞检查继续执行，新增待补定理不得进入该证明链。新增责任以编译后的名称、类型和证明体指纹逐项登记；原 309 项责任保留。2.17 的对象及 5.14 的商群次数排印差异只在 `corrections.yaml` 维护，AimPaper 原文不改。
+
+## ProofTools 原文定理补证（2026-10-18）
+
+本轮保持全部 179 项公开导出、类型和宇宙参数不变，补完 AimPaper 2.6、2.12、2.15、2.16、2.17、2.18、2.19。2.15 将现有通用滤过群代表元准则接到实际经典 Adams 塔；2.12 保留原弱阈值，2.16／2.17 保留有符号长度。2.6 通过实际塔的逐阶提升证明滤过相加；2.18 通过有限归纳构造长度 r 的唯一可加扩张映射，并用同一代表元验证全部扩张关系。辅助引理均为私有，七项仅依赖 `propext`、`Classical.choice`、`Quot.sound`，不借用其他待补原文定理。
+
+相应移除七项直接待补责任，总数从 319 减为 312；其余责任与精确 Main 边界保留。仍缺桥接的 2.20、5.10、5.14 不改陈述、不加前提、不转移待补归属。2.20 缺逐页代表元到同一个核代表元的收敛桥；5.10 不能删除现有 λ 除法所需的核 no-crossing 条件后套用；5.14 缺覆盖零与 inessential 情形的一般模型检测比较。源码精确检查、许可洞清单和递归无本地证明洞审计同步收紧；Blueprint 只按源码原生更新状态。
+
+插入私有证明引理改变了同文件剩余三项 `sorry` 的编译诊断标签：`extensionBoundary_of_exact`、`finiteCrossing_iff_syntheticCrossing`、`infiniteExtension_to_classicalExtension`。已逐项核对其公开类型、归属、原始 `by sorry` 证明体和待补状态完全不变，仅迁移这三项编译证明体指纹；其他 309 项原有责任的指纹不变。检查仍逐声明比较精确类型和证明体，不放宽许可规则。

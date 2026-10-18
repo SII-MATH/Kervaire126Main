@@ -7,11 +7,47 @@ from unittest.mock import patch
 
 from hgraph.analysis import Analysis
 from hgraph.graph import Graph, node_id
+from hgraph.sync import parse_lean, parse_blueprint, read_blueprint, _tex_lean_status
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('native_blueprint_builder', ROOT / 'scripts/build-blueprint.py')
 builder = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(builder)
+
+
+class ProofToolsBindingTests(unittest.TestCase):
+    def test_public_bindings_resolve_to_actual_declarations_with_native_status(self):
+        declarations = {
+            d['fqname']: d
+            for path in (ROOT / 'KIP126/ProofTools').rglob('*.lean')
+            for d in parse_lean(path.read_text())
+        }
+        states = {name: 'sorry' if d['sorry'] else 'lean_ok'
+                  for name, d in declarations.items()}
+        rows, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))
+        rows = [r for r in rows if r['chapter'].startswith('ProofTools')]
+        self.assertTrue(rows)
+        for row in rows:
+            for name in row['lean']:
+                with self.subTest(label=row['label'], declaration=name):
+                    self.assertIn(name, declarations)
+                    self.assertFalse(declarations[name]['private'])
+                    self.assertIn('public ', declarations[name]['body'].splitlines()[0])
+                    self.assertNotIn('.Operations.', name)
+            if row['lean']:
+                self.assertNotEqual(_tex_lean_status(row, states)[0], 'empty')
+        # Completed original statements acquire native source-local evidence;
+        # the remaining comparison bridges and general laws stay pending.
+        by_label = {r['label']: r for r in rows}
+        for label in ('paper:6.1', 'paper:6.12', 'frontier:ProofTools:003e9deb7ec5'):
+            self.assertEqual(_tex_lean_status(by_label[label], states)[0], 'sorry')
+        original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite', '2.20': 'extensionBoundary_of_exact', '5.10': 'finiteCrossing_iff_syntheticCrossing', '5.14': 'infiniteExtension_to_classicalExtension'}
+        pending = {'2.20', '5.10', '5.14'}
+        for number, name in original_statements.items():
+            row = by_label['paper:' + number]
+            self.assertEqual(row['lean'], ['KIP126.ProofTools.Paper.' + name])
+            self.assertEqual(_tex_lean_status(row, states)[0],
+                             'sorry' if number in pending else 'lean_ok')
 
 
 class NativeDependencyTests(unittest.TestCase):

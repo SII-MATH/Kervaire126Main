@@ -204,7 +204,7 @@ private theorem subquotientMap_injective {R : Type*} [Ring R] {A : Type*} [AddCo
     exact (Submodule.Quotient.mk_eq_zero _).mpr hxB
   · exact bot_le
 
-private theorem rho_infty_injective (Y : ClassicalObject) (i j : ℕ)
+public theorem rho_infty_injective (Y : ClassicalObject) (i j : ℕ)
     (hi : 0 < i) (hij : i ≤ j) (s t w : ℤ) (hupper : t-w < i) :
     Function.Injective ((model.family.map
       ((model.quotients.tower (model.nu.functor.obj (Y.obj model.auxiliary))).rho i j hij)).eInftyMap (s,t,w)) := by
@@ -261,7 +261,7 @@ private theorem syntheticRep_map {A B : SyntheticAdamsSS}
       SpectralSequenceMorphism.toPreSSMorphism, PreSSMorphism.pageMap, SSDataMorphism.pageMapAt,
       eqToHom_refl, Category.comp_id, n, m, F] using hh.symm
 
-private theorem family_infinity_representative_map {X Y : SyntheticSpectrum}
+public theorem family_infinity_representative_map {X Y : SyntheticSpectrum}
     (f : X ⟶ Y) (i : Tridegree)
     (x : (model.family.obj X).E₂ i) (e : ((model.family.obj X).sequence.ssData i).eInfty)
     (hx : HasInfinityRepresentative (model.family.obj X) 2 i x e) :
@@ -349,7 +349,7 @@ private theorem shifted_finite_source_exists
   ext z
   exact @Subsingleton.elim _ hp _ _
 
-private theorem family_page_comp {X Y Z : SyntheticSpectrum}
+public theorem family_page_comp {X Y Z : SyntheticSpectrum}
     (f : X ⟶ Y) (g : Y ⟶ Z) (r : ℤ) (i : Tridegree) :
     familyPageMap model.family f r i ≫ familyPageMap model.family g r i =
       familyPageMap model.family (f ≫ g) r i := by

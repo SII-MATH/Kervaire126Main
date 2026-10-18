@@ -11,3 +11,4 @@ public import KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 public import KIP126.ProofTools.Paper.Crossing
 public import KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 public import KIP126.ProofTools.Paper.SyntheticExtensions
+public import KIP126.ProofTools.Paper.OriginalStatements

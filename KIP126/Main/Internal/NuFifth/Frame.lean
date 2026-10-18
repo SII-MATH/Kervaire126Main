@@ -9,7 +9,7 @@ open CategoryTheory CategoryTheory.Limits KIP126.Core.Algebra
 open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
 open KIP126.AdamsSynthetic.Standard (model)
 open KIP126.Literature KIP126.Kervaire.Route KIP126.Main.Internal.Selected
-open KIP126.ProofTools.Operations
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 4000000

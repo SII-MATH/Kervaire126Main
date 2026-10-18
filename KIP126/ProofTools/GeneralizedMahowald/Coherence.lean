@@ -15,7 +15,7 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 /-- Compare the combined bigraded shift with the ordinary suspension of the
 specified vertical shift, using the existing composition and compatibility. -/
-noncomputable def biSuspensionIso (q : ℤ) (Q : Syn) :
+public noncomputable def biSuspensionIso (q : ℤ) (Q : Syn) :
     (SyntheticCategory.biShift (1, -q)).obj Q ≅
       ((SyntheticCategory.biShift (0, -q)).obj Q)⟦(1 : ℤ)⟧ := by
   have h : ((0 : ℤ), -q) + (1, 0) = (1, -q) := by
@@ -56,7 +56,7 @@ theorem biShift_additive (p : ℤ × ℤ) :
 attribute [instance] biShift_additive
 
 /-- Additivity of the already defined suspension-invariance function. -/
-theorem susp_invariance_add (m n k l : ℤ) (X : Syn)
+public theorem susp_invariance_add (m n k l : ℤ) (X : Syn)
     (f g : BiHom m n X) :
     susp_invariance m n k l X (f + g) =
       susp_invariance m n k l X f + susp_invariance m n k l X g := by
@@ -198,7 +198,7 @@ theorem shifted_composite_zero_of_conjugate
   · intro hz
     rw [hz,Functor.map_zero,zero_comp]
 
-theorem inverse_associativity (coh : BiShiftCoherence Syn)
+public theorem inverse_associativity (coh : BiShiftCoherence Syn)
     (a b c ab bc total : ℤ×ℤ) (hab : a+b=ab) (hbc : b+c=bc)
     (ht : ab+c=total) (ht' : a+bc=total) (X : Syn) :
     (biShiftAddIso a bc total ht').inv.app X ≫
@@ -214,7 +214,7 @@ theorem inverse_associativity (coh : BiShiftCoherence Syn)
   have h := congrArg Iso.inv he
   simpa only [Iso.trans_inv,Functor.mapIso_inv,Iso.app_inv] using h.symm
 
-theorem shift_hom_associativity (coh : BiShiftCoherence Syn)
+public theorem shift_hom_associativity (coh : BiShiftCoherence Syn)
     (a b c ab bc total : ℤ×ℤ) (hab : a+b=ab) (hbc : b+c=bc)
     (ht : ab+c=total) (ht' : a+bc=total) {A : Syn}
     (α : (SyntheticCategory.biShift a).obj (S_0_0 : Syn) ⟶ A) :

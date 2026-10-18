@@ -32,7 +32,7 @@ private theorem detected_target_bottom_lambda_four_nonzero
   have hd := model.sphereDetectionCompatible.homotopy_lambda 14 139 4 t
   dsimp only [KIP126.Literature.sphereFirstQuotient] at hlabel
   rw [hlabel] at hd
-  have hm := KIP126.ProofTools.Operations.detects_map .sphere (.nu .nuCofiber) nuBottom
+  have hm := KIP126.ProofTools.Internal.detects_map .sphere (.nu .nuCofiber) nuBottom
     (14,139,135) (model.comparison.sphereE2 14 139 4 T) (lambdaMultiply 4 t) hd
   have hl := Internal.Rigidity.sphere_to_nu_label .nuCofiber
     (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) T

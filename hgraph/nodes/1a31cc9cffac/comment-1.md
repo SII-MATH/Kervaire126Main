@@ -6,14 +6,14 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.571095+00:00'
+updated: '2026-10-18T14:34:09.107373+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 555-574](paper/main.tex.html#L555). Specialize the square theorem to the full no-crossing hypothesis on the lower extension.
 
-**Formal scope:** partial; no direct public binding.
-
-The private theorem `square\_frames` supplies a commutative four-edge square with synchronized representatives; its conclusion identifies the image along the right edge with the lower-right representative. The present model uses `TowerExtensionEquation` and `TowerNoCrossing` in a convergent synthetic tower. The bridge to the general classical $f$-extension spectral sequence of the paper remains a separate obligation.
+**Formal scope:** fixed original representative-form statement proved.
 
 Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
 
-The private representative-frame lemma is an internal proof step, not a direct public counterpart of this statement. It remains in the Lean source; this paper entry has no Lean binding.
+Original-statement interface: `KIP126.ProofTools.Paper.noCrossingExtensionSquare`. The public statement is proved without changing its type or premises.
+
+The proved filtered-group no-crossing criterion is specialized directly to the actual classical Adams tower. It synchronizes a common source representative and the lower target, and the same commutative square gives the right extension. No synthetic-to-classical comparison or additional premise is needed.

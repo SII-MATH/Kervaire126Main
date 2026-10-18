@@ -24,7 +24,7 @@ open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated KIP126.
 open KIP126.Classical.Adams KIP126.Core.SpectralSequence KIP126.Synthetic.Context
 open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic KIP126.Kervaire.Route
 open KIP126.Literature KIP126.Main.Internal.Selected KIP126.Main.Internal.Choice
-open KIP126.ProofTools.Operations KIP126.Main.Internal
+open KIP126.ProofTools.Internal KIP126.ProofTools.Internal.Mahowald KIP126.Main.Internal
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum Spectrum)
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
@@ -307,7 +307,7 @@ private theorem prescribed_sphere_lift (s t : ℤ)
       simp only [b,Category.assoc]
       exact congrArg (fun h => b0 ≫ h) (XModLambdaN.incl_naturality f 1)
     rw [hc,hb0]
-    exact KIP126.ProofTools.Operations.sphere_first_quotient_label s t _
+    exact KIP126.ProofTools.Internal.Mahowald.sphere_first_quotient_label s t _
   · exact (bridge_realize_lift b0).trans hr0
 private def lambdaAt (m : ℤ) (n : ℕ) (w v : ℤ)
     (h : (m,w)+(0,-(n:ℤ))=(m,v))
@@ -670,7 +670,7 @@ private theorem nu_infinite_filtration_lambda_torsion_zero
     apply KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated (.nu X) n m w
       (quotientClass n a)
     intro s
-    exact KIP126.ProofTools.Operations.map_preserves_filtration
+    exact KIP126.ProofTools.Internal.map_preserves_filtration
       (model.convergentMap (.nu X) (.quotient n (.nu X)) (XModLambdaN.incl V n))
       (m,w) s a (ha s)
   have hbQ (n : ℕ) : quotientClass n b=0 := by
@@ -694,7 +694,7 @@ private theorem sphere_infinite_filtration_lambda_torsion_zero
     (ht : ∃ k : ℕ, lambdaMultiply k a=0) : a=0 := by
   let b := a ≫ model.nu.unitIso.inv
   have hbF (s : ℕ) : FiltrationAtLeast model.syntheticTower s b :=
-    KIP126.ProofTools.Operations.map_preserves_filtration
+    KIP126.ProofTools.Internal.map_preserves_filtration
       (model.convergentMap .sphere (.nu .sphere) model.nu.unitIso.inv) (m,w) s a (ha s)
   have hbT : ∃ k : ℕ, lambdaMultiply k b=0 := by
     obtain ⟨k,hk⟩ := ht

@@ -22,7 +22,7 @@ open KIP126.Classical.Adams KIP126.AdamsSynthetic KIP126.Core.SpectralSequence
 open KIP126.Kervaire.Route KIP126.Literature KIP126.AdamsSynthetic.Standard
 noncomputable section
 
-private theorem sphere_first_quotient_label  (s t : ℤ)
+public theorem sphere_first_quotient_label  (s t : ℤ)
     (y : Ambient model .sphere (s,t)) :
     (sphereFirstQuotient model.nu model.quotients.functoriality model.firstQuotient) s t
       (firstLabel model .sphere s t y ≫ XModLambdaN.map
@@ -48,7 +48,7 @@ private theorem sphere_first_quotient_label  (s t : ℤ)
     exact cast_symm (t+0) t (Int.add_zero t) (model.firstQuotient .sphere 0 s t) y
   rw [hc,LinearEquiv.apply_symm_apply]
 
-private theorem sphere_finite_lambda_detects 
+public theorem sphere_finite_lambda_detects
     (q : ℕ) (_hq : 0 < q) (s t : ℤ) (k : ℕ)
     (y : Ambient model .sphere (s,t))
     (α : BiHom (t-s) t (model.nu.functor.obj SphereSpectrum))
