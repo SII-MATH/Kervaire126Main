@@ -244,7 +244,11 @@ def restore_release():
                 manifest = metadata['build_inputs']
                 recorded = download(repository, tag, manifest['manifest'], directory)
                 verify_file(recorded, manifest['manifest_sha256'])
-                if json.loads(recorded.read_text()) != inputs:
+                recorded_inputs = json.loads(recorded.read_text())
+                # Existing Release publishers store the sorted file list;
+                # newer consumers can also use the fingerprint envelope.
+                expected_inputs = inputs['files'] if isinstance(recorded_inputs, list) else inputs
+                if recorded_inputs != expected_inputs:
                     raise ValueError('Release input manifest differs from the checkout')
                 archive_meta = metadata['archive']
                 if (archive_meta['root'] != '.lake/build' or archive_meta['format'] != 'tar.zst' or
