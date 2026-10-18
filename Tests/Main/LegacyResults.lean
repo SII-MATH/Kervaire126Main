@@ -2,33 +2,50 @@ module
 
 import KIP126.Main
 
-/-! Ordinary public consumers of the mathematical replacements for the old
-Main axioms. All objects belong to the same fixed sphere and comparison. -/
-
+/-! Selected paper results remain usable through the ordinary public entry.
+Representative construction details are checked in Main.InternalAudit. -/
 namespace Tests.Main
 open KIP126.Main KIP126.Synthetic.Context KIP126.AdamsSynthetic
 open KIP126.AdamsSynthetic.Standard (model SyntheticSpectrum)
-open KIP126.Literature.Standard (eta bxTheta5)
 
-example : ∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u :=
-  u_choice_exists
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
+    KIP126.Literature.deltaH6Square model =
+      KIP126.Literature.Standard.lambdaEtaThetaSquare theta :=
+  delta_h6_square_eq_lambda_eta_theta_square theta htheta
 
-example (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :
-    ∃ y : BiHom 125 139 (S_0_0 : SyntheticSpectrum),
-      lambdaMultiply 3 (sphereProduct eta u) = lambdaMultiply 6 y :=
-  lambda_three_eta_u_eq_lambda_six u hu
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
+    H6SquarePermanent ↔ KIP126.Literature.Standard.lambdaEtaThetaSquare theta = 0 :=
+  (any_choice_criterion theta htheta).2
 
-example (u v : BiHom 124 134 (S_0_0 : SyntheticSpectrum))
-    (hu : UChoice u) (hv : UChoice v) :
-    FiltrationAtLeast model.syntheticTower 14
-      (lambdaMultiply 3 (sphereProduct eta u) -
-        lambdaMultiply 3 (sphereProduct eta v)) :=
-  lambda_three_eta_u_difference_filtration_fourteen u v hu hv
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta)
+    (r : ℕ) :
+    KIP126.Core.SpectralSequence.SurvivesTo model.classical.sphere ((r : ℤ)+3) (2,128)
+      model.standardClasses.standardH6Square ↔
+    quotientClass (r+1) (KIP126.Literature.Standard.lambdaEtaThetaSquare theta) = 0 :=
+  (any_choice_criterion theta htheta).1 r
 
-example (hc3 : C3) (h : ∀ u, UChoice u → C5At u) : False := table1 hc3 h
+-- The first quotient gives the newly covered r=0 endpoint through a normal import.
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
+    KIP126.Core.SpectralSequence.SurvivesTo model.classical.sphere 3 (2,128)
+      model.standardClasses.standardH6Square ↔
+    quotientClass 1 (KIP126.Literature.Standard.lambdaEtaThetaSquare theta) = 0 :=
+  (any_choice_criterion theta htheta).1 0
 
--- Recover the former three-possibility shape with actual representatives.
-example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (_htheta : ThetaChoice theta) :
+-- Positive r retains the original page/exponent indexing.
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
+    KIP126.Core.SpectralSequence.SurvivesTo model.classical.sphere 4 (2,128)
+      model.standardClasses.standardH6Square ↔
+    quotientClass 2 (KIP126.Literature.Standard.lambdaEtaThetaSquare theta) = 0 :=
+  (any_choice_criterion theta htheta).1 1
+
+example : Theta5SquareNonzeroDetection ↔
+    ∀ theta, ThetaChoice theta → Theta5SquareNonzeroDetectionAt theta :=
+  theta5_square_nonzero_detection_choice_equivalence
+
+example : EtaExtensionDetection ↔ ∀ u, UChoice u → EtaExtensionDetectionAt u :=
+  eta_extension_detection_choice_equivalence
+
+example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
     (∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u ∧
       sphereProduct theta theta = lambdaMultiply 6 u) ∨
     (∃ c : BiHom 124 137 (S_0_0 : SyntheticSpectrum),
@@ -40,14 +57,5 @@ example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (_htheta : ThetaChoice
   · obtain ⟨c, _, hc⟩ := h9
     exact Or.inr (Or.inl ⟨c, hc⟩)
   · exact Or.inr (Or.inr h10)
-
-example : KIP126.Literature.deltaH6Square model =
-    KIP126.Literature.Standard.lambdaEtaThetaSquare bxTheta5 :=
-  delta_h6_square_bx
-
-example (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
-    KIP126.Literature.deltaH6Square model =
-      KIP126.Literature.Standard.lambdaEtaThetaSquare theta :=
-  delta_h6_square_eq_lambda_eta_theta_square theta htheta
 
 end Tests.Main

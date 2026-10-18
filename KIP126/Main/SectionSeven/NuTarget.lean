@@ -1,11 +1,12 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.Conditions
-public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Main.SectionSeven.NormalizedNu
+import all KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.NormalizedNu
 public import KIP126.Main.SectionSeven.Indeterminacy
 import all KIP126.Main.Internal.NuNinth.Assembly
 import all KIP126.Main.SectionSeven.ThetaToda
-public import KIP126.Main.SectionSeven.TodaNonempty
+import all KIP126.Main.SectionSeven.TodaNonempty
 import all KIP126.Main.Internal.AlphaOne.Existence
 import all KIP126.Main.SectionSeven.AnyYTarget
 import all KIP126.Main.SectionSeven.WeakRepresentative
@@ -29,8 +30,8 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
 /-- The P and Q branches give the exact λν divisibility equation for the
-fixed target class, under the genuine C3 and C5 hypotheses. -/
-public theorem target_nu_divisible (hc3 : C3) (hc5 : C5) :
+fixed target class, under the genuine Stem126D6Vanishes and EtaExtensionDetection hypotheses. -/
+private theorem target_nu_divisible (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
     TargetNuDivisible T hopfNu := by
   obtain ⟨a11,ha⟩ := AlphaOne.alpha_one_exists
   obtain ⟨z,hz⟩ := module_toda_nonempty_of_alpha a11 ha
@@ -38,9 +39,9 @@ public theorem target_nu_divisible (hc3 : C3) (hc5 : C5) :
   have hzn := weak_initial_twice_h0_nonzero hc3 syntheticH0 z t ht he
   let theta := KIP126.Literature.Standard.bxTheta5
   have htheta : ThetaChoice theta := KIP126.Literature.Standard.bx_theta_label
-  obtain ⟨b,zTheta,hb,hzTheta,hToda⟩ := synthetic_theta_b_toda theta htheta
+  obtain ⟨b,zTheta,hb,hzTheta,hToda⟩ := synthetic_theta_b_toda theta htheta KIP126.Literature.Standard.bx_order_two
   obtain ⟨y,hf,hn⟩ := main_weak_high_representative eta KIP126.Literature.Standard.eta_label
-    syntheticH0 theta htheta b hb zTheta hzTheta (theta_b_multiplied_shuffle theta htheta b zTheta hToda) z hzn
+    syntheticH0 theta htheta b hb zTheta hzTheta (theta_b_multiplied_shuffle theta htheta KIP126.Literature.Standard.bx_order_two b zTheta hToda) z hzn
   have hd := model.sphereDetectionCompatible.homotopy_lambda 1 1 0 syntheticH0
   change Detects (model.convergence .sphere) (1,1,1)
     (sphereLabel 1 1 0 (KIP126.Literature.sphereFirstQuotient model 1 1 (quotientClass 1 syntheticH0)))

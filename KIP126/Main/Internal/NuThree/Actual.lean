@@ -1,5 +1,6 @@
 module
-public import KIP126.Def.ProofTools.Operations
+import all KIP126.Main.SectionSeven.Predicates
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.NuThree.Mahowald
 import all KIP126.Main.Internal.NuThree.ActualOperations
 import all KIP126.Main.Internal.NuThree.Finite

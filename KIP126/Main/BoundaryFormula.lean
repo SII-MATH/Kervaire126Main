@@ -1,7 +1,8 @@
 module
 
-public import KIP126.Main.ChoiceIndependence
+public import KIP126.Main.Conditions
 
+import all KIP126.Main.ChoiceIndependence
 /-! The connecting-map formula on the actual first-quotient h6 square.
 The fixed BX choice is supplied by Literature. Passing to another detected
 theta uses the separately registered Main choice-independence obligation. -/
@@ -14,7 +15,7 @@ noncomputable section
 
 /-- The connecting map is applied to the actual first-quotient class whose
 comparison is the standard h6 square, at the fixed BX choice. -/
-public theorem delta_h6_square_bx :
+private theorem delta_h6_square_bx :
     KIP126.Literature.deltaH6Square model =
       KIP126.Literature.Standard.lambdaEtaThetaSquare
         KIP126.Literature.Standard.bxTheta5 := by

@@ -1,7 +1,6 @@
 module
 
-public import KIP126.Main.SectionSeven.Predicates
-
+import all KIP126.Main.SectionSeven.Predicates
 /-! The multiplied Toda indeterminacy calculation from
 Kervaire126 bbac1fc05843, Main/Solution/Route/Section7/Indeterminacy.lean
 (MIT; see the retained source LICENSE). The actual order-two hypotheses are retained; no
@@ -61,7 +60,7 @@ private theorem lambda_h0_of_two_torsion (m n : ℤ) (x : BiHom m n S)
   rw [lambdaPow_add graded_coherence 1 1 2 rfl]
   simp only [Category.assoc, hraw, Limits.comp_zero]
 
-public theorem multiplied_indeterminacy_of_two_torsion
+private theorem multiplied_indeterminacy_of_two_torsion
     (theta : BiHom 62 64 S) (htheta : theta + theta = 0)
     (b : BiHom 62 70 S) (hb : b + b = 0) :
     ThetaBMultipliedIndeterminacy h₀ theta b ∧ SymmetricTwoMultipliedIndeterminacy b := by

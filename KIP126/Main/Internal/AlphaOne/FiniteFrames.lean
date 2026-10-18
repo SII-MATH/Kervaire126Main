@@ -19,7 +19,7 @@ universe v
 set_option backward.isDefEq.respectTransparency false
 set_option maxRecDepth 10000
 set_option maxHeartbeats 1000000
-private theorem alpha_all_finite_frames_h366_0  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)
+private theorem alpha_all_finite_frames_d2_s14_t138_basis1  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)
     (Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 1 + Normalized.basis .sphere 16 139 2) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,14,138,[1],16,139,[1, 2],"S0_AdamsE2_ss",3072⟩ (by
@@ -34,7 +34,7 @@ private theorem alpha_all_finite_frames_h366_0  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h367_1  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)
+private theorem alpha_all_finite_frames_d2_s14_t138_basis0_add_basis1  : HasDifferential (Normalized.sphere) 2 (14,138) (16,139)
     (Normalized.basis .sphere 14 138 0 + Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 2) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,14,138,[0, 1],16,139,[2],"S0_AdamsE2_ss",3073⟩ (by
@@ -49,7 +49,7 @@ private theorem alpha_all_finite_frames_h367_1  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h308_2  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)
+private theorem alpha_all_finite_frames_d2_s12_t137_basis1  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)
     (Normalized.basis .sphere 12 137 1) (Normalized.basis .sphere 14 138 4) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[1],14,138,[4],"S0_AdamsE2_ss",2921⟩ (by
@@ -64,7 +64,7 @@ private theorem alpha_all_finite_frames_h308_2  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h309_3  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)
+private theorem alpha_all_finite_frames_d2_s12_t137_basis0  : HasDifferential (Normalized.sphere) 2 (12,137) (14,138)
     (Normalized.basis .sphere 12 137 0) (Normalized.basis .sphere 14 138 3) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,12,137,[0],14,138,[3],"S0_AdamsE2_ss",2922⟩ (by
@@ -79,7 +79,7 @@ private theorem alpha_all_finite_frames_h309_3  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h382_4  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)
+private theorem alpha_all_finite_frames_d2_s15_t139_basis3  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)
     (Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 2 + Normalized.basis .sphere 17 140 3) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,15,139,[3],17,140,[2, 3],"S0_AdamsE2_ss",3141⟩ (by
@@ -94,7 +94,7 @@ private theorem alpha_all_finite_frames_h382_4  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h383_5  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)
+private theorem alpha_all_finite_frames_d2_s15_t139_basis2_add_basis3  : HasDifferential (Normalized.sphere) 2 (15,139) (17,140)
     (Normalized.basis .sphere 15 139 2 + Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 3) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,15,139,[2, 3],17,140,[3],"S0_AdamsE2_ss",3142⟩ (by
@@ -109,7 +109,7 @@ private theorem alpha_all_finite_frames_h383_5  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h282_6  : HasDifferential (Normalized.sphere) 4 (11,136) (15,139)
+private theorem alpha_all_finite_frames_d4_s11_t136_basis0  : HasDifferential (Normalized.sphere) 4 (11,136) (15,139)
     (Normalized.basis .sphere 11 136 0) (Normalized.basis .sphere 15 139 0) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,4,11,136,[0],15,139,[0],"S0_AdamsE2_ss",2853⟩ (by
@@ -124,7 +124,7 @@ private theorem alpha_all_finite_frames_h282_6  : HasDifferential (Normalized.sp
   rw [←hx,←hy] at hd
   simpa only [add_assoc] using hd
 
-private theorem alpha_all_finite_frames_h321_7  : HasDifferential (Normalized.sphere) 2 (11,136) (13,137)
+private theorem alpha_all_finite_frames_d2_s11_t136_basis4  : HasDifferential (Normalized.sphere) 2 (11,136) (13,137)
     (Normalized.basis .sphere 11 136 4) (Normalized.basis .sphere 13 137 3) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,2,11,136,[4],13,137,[3],"S0_AdamsE2_ss",2914⟩ (by
@@ -138,7 +138,7 @@ private theorem alpha_all_finite_frames_h321_7  : HasDifferential (Normalized.sp
   rw [←ha,←hb] at h
   exact h
 
-private theorem alpha_all_finite_frames_h322_8  : HasDifferential (Normalized.sphere) 3 (10,135) (13,137)
+private theorem alpha_all_finite_frames_d3_s10_t135_basis0  : HasDifferential (Normalized.sphere) 3 (10,135) (13,137)
     (Normalized.basis .sphere 10 135 0) (Normalized.basis .sphere 13 137 0) := by
   classical
   have hrow := Normalized.result ⟨.sphere,.equation,3,10,135,[0],13,137,[0],"S0_AdamsE2_ss",2915⟩ (by
@@ -221,13 +221,13 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_14
   classical
   let E := Normalized.sphere
   have h366 : HasDifferential E 2 (14,138) (16,139)
-      (Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 1 + Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_h366_0
+      (Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 1 + Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_d2_s14_t138_basis1
   have h367 : HasDifferential E 2 (14,138) (16,139)
-      (Normalized.basis .sphere 14 138 0 + Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_h367_1
+      (Normalized.basis .sphere 14 138 0 + Normalized.basis .sphere 14 138 1) (Normalized.basis .sphere 16 139 2) := alpha_all_finite_frames_d2_s14_t138_basis0_add_basis1
   have h308 : HasDifferential E 2 (12,137) (14,138)
-      (Normalized.basis .sphere 12 137 1) (Normalized.basis .sphere 14 138 4) := alpha_all_finite_frames_h308_2
+      (Normalized.basis .sphere 12 137 1) (Normalized.basis .sphere 14 138 4) := alpha_all_finite_frames_d2_s12_t137_basis1
   have h309 : HasDifferential E 2 (12,137) (14,138)
-      (Normalized.basis .sphere 12 137 0) (Normalized.basis .sphere 14 138 3) := alpha_all_finite_frames_h309_3
+      (Normalized.basis .sphere 12 137 0) (Normalized.basis .sphere 14 138 3) := alpha_all_finite_frames_d2_s12_t137_basis0
   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,14,138,["440,1", "439,1", "23,1,190,1", "1,1,418,1", "1,1,417,1"]⟩ (by
     exact List.mem_of_getElem? (i := 216) (by rfl))
   change E.Page 2 (14,138) ≃ₗ[ℤ] (Fin 5 →₀ F2) at e
@@ -505,11 +505,11 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_15
   classical
   let E := Normalized.sphere
   have h382 : HasDifferential E 2 (15,139) (17,140)
-      (Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 2 + Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_h382_4
+      (Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 2 + Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_d2_s15_t139_basis3
   have h383 : HasDifferential E 2 (15,139) (17,140)
-      (Normalized.basis .sphere 15 139 2 + Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_h383_5
+      (Normalized.basis .sphere 15 139 2 + Normalized.basis .sphere 15 139 3) (Normalized.basis .sphere 17 140 3) := alpha_all_finite_frames_d2_s15_t139_basis2_add_basis3
   have h282 : HasDifferential E 4 (11,136) (15,139)
-      (Normalized.basis .sphere 11 136 0) (Normalized.basis .sphere 15 139 0) := alpha_all_finite_frames_h282_6
+      (Normalized.basis .sphere 11 136 0) (Normalized.basis .sphere 15 139 0) := alpha_all_finite_frames_d4_s11_t136_basis0
   obtain ⟨e,he⟩ := Normalized.basis_correct ⟨.sphere,15,139,["448,1", "3,2,287,1", "0,1,440,1", "0,1,439,1"]⟩ (by
     exact List.mem_of_getElem? (i := 223) (by rfl))
   change E.Page 2 (15,139) ≃ₗ[ℤ] (Fin 4 →₀ F2) at e
@@ -679,9 +679,9 @@ private theorem alpha_all_finite_frames_alpha_finite_frame_13   :
   change (Subobject.ofLE (A.Z ⊤) (A.Z 0) (A.Z_anti le_top) ≫ A.pageπ 0) z = _ at hz
   change A.pageπ ⊤ z ≠ 0 at hzn
   have h321 : HasDifferential E 2 (11,136) (13,137)
-      (Normalized.basis .sphere 11 136 4) (Normalized.basis .sphere 13 137 3) := alpha_all_finite_frames_h321_7
+      (Normalized.basis .sphere 11 136 4) (Normalized.basis .sphere 13 137 3) := alpha_all_finite_frames_d2_s11_t136_basis4
   have h322 : HasDifferential E 3 (10,135) (13,137)
-      (Normalized.basis .sphere 10 135 0) (Normalized.basis .sphere 13 137 0) := alpha_all_finite_frames_h322_8
+      (Normalized.basis .sphere 10 135 0) (Normalized.basis .sphere 13 137 0) := alpha_all_finite_frames_d3_s10_t135_basis0
   obtain ⟨_,incoming,a,hincoming,ha,hda⟩ := h322
   have hd2 := Normalized.d3_h4_x109
   change HasNonzeroDifferential E 3 (13,137) (16,139)

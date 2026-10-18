@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.ProofTools.Representatives
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
+public import KIP126.ProofTools.Operations
 /-! Desuspension preserves the same tower cycle representatives. The original
 NuFifth:105–220 and StableHomotopy/Context/Suspension proofs at bbac1fc05843
 (MIT) are expressed on the given abstract tower presentation. -/

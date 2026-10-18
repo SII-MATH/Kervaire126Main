@@ -1,7 +1,7 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.Internal.Selected.NuErrorData
 /-! Original WeakYDetection finite calculations, bbac1fc05843 (MIT),
 lines 786–986 and 2019–2249. Shared AF12/AF13 calculations reuse NuErrorData. -/

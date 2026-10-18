@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.Literature
+import KIP126.Literature
 
 open CategoryTheory CategoryTheory.Limits
 open KIP126.StableHomotopy KIP126.Synthetic.Context

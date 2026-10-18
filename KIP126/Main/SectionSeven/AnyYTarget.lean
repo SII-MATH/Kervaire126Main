@@ -1,4 +1,7 @@
 module
+import all KIP126.Main.ClassicalReduction
+import all KIP126.Main.SectionSeven.AlphaOne
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.SectionSeven.AnyYPeeling
 import all KIP126.Main.SectionSeven.AnyYSplit
 import all KIP126.Main.SectionSeven.WeakInitialNonzero
@@ -18,7 +21,7 @@ set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1000000
 
 theorem anyy_bracket_exact_target
-    (hc3:C3) (hc5:C5)
+    (hc3:Stem126D6Vanishes) (hc5:EtaExtensionDetection)
     (a11:BiHom 123 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 11))
     (ha:AlphaOneProperties a11)
     (z:BiHom 125 132 (XModLambdaN (S_0_0:SyntheticSpectrum) 9))
@@ -42,7 +45,7 @@ theorem anyy_bracket_exact_target
     · exact permanentCycles_le_cycles model .sphere (14,139) _ ((permanent_cycle_iff_mem .sphere (14,139) T).mp hp)
     · intro hb
       exact survives_twelve_not_boundary_eleven .sphere (14,139) T
-        (KIP126.Main.c3_iff_target_survives_twelve.mp hc3)
+        (KIP126.Main.d6_vanishes_iff_target_survives_twelve.mp hc3)
         (boundaries_monotone model .sphere (14,139) (by decide) hb)
   obtain ⟨a3,hformula⟩ := anyy_toda_h0_error_formula a11 ha u hu z hz
   have heq : sphereAction syntheticH0 z=lambdaMultiply 6 (quotientClass 9 t) := by

@@ -1,6 +1,7 @@
 module
-public import KIP126.Def.Literature.Standard.Filtration
-public import KIP126.Def.Computation.Table.Values
+import all KIP126.Main.SectionSeven.Predicates
+public import KIP126.Literature.Standard.Filtration
+public import KIP126.E2Computation.Table.Values
 import all KIP126.Main.Internal.NuFifth.Frame
 import all KIP126.Main.Internal.NuThree.Finite
 import all KIP126.Main.Internal.FiniteReflection

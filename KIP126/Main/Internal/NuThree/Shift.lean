@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.AlphaOne.Coherence
 /-! The quotient/shift transport of NuFifth:1850–1903, bbac1fc05843 (MIT),
 reusing the already proved lambda/shift coherence. -/

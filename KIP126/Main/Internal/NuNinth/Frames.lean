@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.ProofTools.Representatives
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.Internal.Selected.NuErrorData
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.QuotientCalculus
@@ -22,8 +22,8 @@ set_option maxHeartbeats 1600000
 set_option maxRecDepth 10000
 private theorem nu9_not_boundary (X : ClassicalObject) (p : ℤ×ℤ)
     (x : Ambient model X p) (hx : x≠0)
-    (hn : NeverHit (model.classical.obj (X.obj model.auxiliary)) p x)
-    (b : ℤ) (hb : 1≤b) : x∉boundaries model X b p := by
+    (b : ℤ) (hb : 1≤b)
+    (hn : NeverHitOnWindow (model.classical.obj (X.obj model.auxiliary)) 2 b p x) : x∉boundaries model X b p := by
   intro h
   have hp : IsPermanentCycle (model.classical.obj (X.obj model.auxiliary)) p x := by
     apply (permanent_cycle_iff_mem X p x).mpr
@@ -34,7 +34,7 @@ private theorem nu9_not_boundary (X : ClassicalObject) (p : ℤ×ℤ)
     change (Subobject.ofLE _ _ le ≫ cycleLabel model X ⊤ p) y=x
     simpa only [cycleLabel,boundaryLabel,D,←Category.assoc,Subobject.ofLE_comp_ofLE] using hy
   have hs := permanent_survives_of_no_early_hit (by rw [model.classical.firstPage])
-    (b+1).toNat (by omega) hp hx (fun r hr _=>hn.not_hit hr)
+    (b+1).toNat (by omega) hp hx (fun r hr hlast => hn.2.2 r hr (by omega))
   have hnat : ((b+1).toNat:ℤ)=b+1 := by omega
   rw [hnat] at hs
   obtain ⟨v,hv,hvn⟩ := hs

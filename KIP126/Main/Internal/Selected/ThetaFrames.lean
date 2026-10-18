@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.AdamsSynthetic.Standard.ClassicalSupport
+public import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Selected.Exhaustion
 import all KIP126.Main.Internal.Selected.InfinityFrames
 import all KIP126.Main.Internal.Selected.ProductDetection
@@ -226,7 +226,7 @@ private theorem stem124_weight128_filtration_ten (a : BiHom 124 128 (S_0_0 : Syn
     exact hfg.symm.trans (by rw [hnu.eq_of_src f 0,comp_zero])
 
 private theorem theta_three_cases (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
-    C4At theta ∨
+    Theta5SquareNonzeroDetectionAt theta ∨
       DetectsNonzero (model.convergence .sphere) (13,137,128)
         (model.comparison.sphereE2 13 137 9 KIP126.Computation.Standard.correction) (sphereProduct theta theta) ∨
       ∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum), lambdaMultiply 10 a=sphereProduct theta theta := by

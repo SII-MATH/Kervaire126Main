@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.Computation.Table.Relations
+public import KIP126.E2Computation.Table.Relations
 import all KIP126.Main.SectionSeven.NuTargetE2Calculus
 import all KIP126.Main.SectionSeven.NuTargetLinear
 /-! The finite linear calculation in NuTargetHelpers.lean:1956–2085,

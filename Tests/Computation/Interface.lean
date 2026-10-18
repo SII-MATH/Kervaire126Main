@@ -1,17 +1,18 @@
 module
 
-public import KIP126.Def.Computation
+public import KIP126.Computation
 import Lean
 
 open Lean Elab Command
 
 set_option maxHeartbeats 0
 
--- A normal consumer imports only the public entry point. The contract locks
+-- A normal compatibility consumer imports only the historical public entry point.
+-- The original contract locks
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 -- Direct sorry obligations are locked separately by the internal trust audits.
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../computation-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../metadata/computation-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let declarations := named ++ generated
@@ -20,10 +21,13 @@ run_cmd do
   let exported := env.setExporting true
   for mod in env.header.moduleNames do
     if (`KIP126).isPrefixOf mod &&
-        !(`KIP126.Def.SpectralSequence).isPrefixOf mod &&
-        !(`KIP126.Def.AdamsSynthetic).isPrefixOf mod &&
-        !(`KIP126.Def.Literature).isPrefixOf mod &&
-        !(`KIP126.Def.Computation).isPrefixOf mod then
+        !(`KIP126.SpectralSequence).isPrefixOf mod &&
+        !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
+        !(`KIP126.Literature).isPrefixOf mod &&
+        !(`KIP126.E2Computation).isPrefixOf mod &&
+        !(`KIP126.ProofTools).isPrefixOf mod &&
+        !(`KIP126.AdamsCalculations).isPrefixOf mod &&
+        !(`KIP126.Computation).isPrefixOf mod then
       throwError "Computation crossed its dependency boundary: {mod}"
   for decl in declarations do
     let name ← ofExcept <| decl.getObjValAs? String "name"
@@ -41,7 +45,10 @@ run_cmd do
   let mut actualExports : Array String := #[]
   for (name, _) in env.constants.toList do
     let some idx := env.getModuleIdxFor? name | continue
-    unless (`KIP126.Def.Computation).isPrefixOf env.header.moduleNames[idx.toNat]! do continue
+    let sourceModule := env.header.moduleNames[idx.toNat]!
+    unless (`KIP126.Computation).isPrefixOf sourceModule ||
+        (`KIP126.E2Computation).isPrefixOf sourceModule ||
+        (`KIP126.AdamsCalculations).isPrefixOf sourceModule do continue
     unless (exported.find? name).isSome do continue
     if isPrivateName name then continue
     actualExports := actualExports.push name.toString

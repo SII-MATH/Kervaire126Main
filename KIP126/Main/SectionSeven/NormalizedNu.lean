@@ -17,10 +17,10 @@ open KIP126.Literature
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
-public def hopfNu : BiHom 3 4 (S_0_0 : SyntheticSpectrum) :=
+private def hopfNu : BiHom 3 4 (S_0_0 : SyntheticSpectrum) :=
   normalizedNu model Standard.nuCofiber_nu_exponent
 
-public def nuBottom : (S_0_0 : SyntheticSpectrum) ⟶
+private def nuBottom : (S_0_0 : SyntheticSpectrum) ⟶
     model.nu.functor.obj (HasFunctorialCofiber.cofib model.auxiliary.nuMap) :=
   model.nu.unitIso.inv ≫
     model.nu.functor.map (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)
@@ -42,7 +42,7 @@ private theorem negative_lift_zero_factorization {X Y : SyntheticSpectrum}
   erw [SyntheticCategory.biShift_zero.hom.naturality]
   rfl
 
-public theorem normalized_nu_bottom_zero : hopfNu ≫ nuBottom = 0 := by
+private theorem normalized_nu_bottom_zero : hopfNu ≫ nuBottom = 0 := by
   have hz := comp_distTriang_mor_zero₁₂ _
     (Standard.nuCofiber_triangle Standard.nuCofiber_exponent_sum)
   change (model.normalizedMap (.shift 3 .sphere) .sphere model.auxiliary.nuMap).map ≫
@@ -61,7 +61,7 @@ public theorem normalized_nu_bottom_zero : hopfNu ≫ nuBottom = 0 := by
   simp only [Category.assoc, Iso.hom_inv_id_assoc]
   rw [hzero, comp_zero]
 
-public theorem lambda_nu_multiple_bottom_zero
+private theorem lambda_nu_multiple_bottom_zero
     (a : BiHom 122 132 (S_0_0 : SyntheticSpectrum)) :
     sphereProduct (lambdaMultiply 1 hopfNu) a ≫ nuBottom = 0 := by
   have hlam : lambdaMultiply 1 hopfNu ≫ nuBottom = 0 := by

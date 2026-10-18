@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Def.Computation.Table.Archive
+public import KIP126.AdamsCalculations.Table.Archive
 import all KIP126.Main.Internal.AlphaOne.PageVanishing
 
 /-! The two finite staircase records and their permanent-cycle deduction,

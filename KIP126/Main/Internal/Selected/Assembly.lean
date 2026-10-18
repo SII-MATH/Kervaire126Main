@@ -1,5 +1,6 @@
 module
-public import KIP126.Main.ChoiceIndependence
+import all KIP126.Main.ClassicalReduction
+import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.Internal.Selected.ThetaFrames
 import all KIP126.Main.Internal.Selected.TargetFrame
 import all KIP126.Main.Internal.Selected.ProductZero
@@ -32,10 +33,10 @@ private theorem permanent_of_filtration_fifteen
 
 private theorem selected_dichotomy
     (hzero : FiltrationAtLeast model.syntheticTower 15 bxEtaSquare → bxEtaSquare=0) :
-    H6SquarePermanent ∨ D12 := by
+    H6SquarePermanent ∨ H6SquareSupportsD12 := by
   have hf14 : FiltrationAtLeast model.syntheticTower 14 bxEtaSquare := by
     rcases theta_three_cases bxTheta5 with h4|hbranch
-    · exact c4_eta_filtration_fourteen h1_u_zero bxTheta5 h4
+    · exact theta5_square_eta_filtration_fourteen h1_u_zero bxTheta5 h4
     · exact model.syntheticTower.filtrationSubmodule_antitone _ (125,130) (by decide : (14:ℤ)≤15)
         (eta_weight128_branches_filtration_fifteen (sphereProduct bxTheta5 bxTheta5) hbranch)
   by_cases hf15 : FiltrationAtLeast model.syntheticTower 15 bxEtaSquare
@@ -46,10 +47,10 @@ private theorem selected_dichotomy
 
 private theorem selected_forward
     (hzero : FiltrationAtLeast model.syntheticTower 15 bxEtaSquare → bxEtaSquare=0)
-    (hd : D12) : C4∧C5 := by
+    (hd : H6SquareSupportsD12) : Theta5SquareNonzeroDetection∧EtaExtensionDetection := by
   have impossible (hf : FiltrationAtLeast model.syntheticTower 15 bxEtaSquare) : False :=
     (d12_necessary hd).1 (permanent_of_filtration_fifteen hzero hf)
-  have h4 : C4At bxTheta5 := by
+  have h4 : Theta5SquareNonzeroDetectionAt bxTheta5 := by
     rcases theta_three_cases bxTheta5 with h4|hbranch
     · exact h4
     · exact False.elim (impossible
@@ -73,15 +74,15 @@ private theorem selected_forward
     have hh := (model.syntheticTower.filtrationSubmodule (S_0_0 : SyntheticSpectrum) 15 (125,130)).add_mem he hl
     simpa only [sub_add_cancel,FiltrationAtLeast,Int.reduceAdd] using hh
 
-private theorem selected_reverse (hc3 : C3) (hc4 : C4) (hc5 : C5) : D12 := by
+private theorem selected_reverse (hc3 : Stem126D6Vanishes) (hc4 : Theta5SquareNonzeroDetection) (hc5 : EtaExtensionDetection) : H6SquareSupportsD12 := by
   obtain ⟨theta,htheta,h4⟩ := hc4
   obtain ⟨u,hu,h5⟩ := hc5
-  have h4' := c4_choice_invariant bxTheta5 theta KIP126.Literature.Standard.bx_theta_label htheta h4
+  have h4' := theta5_square_nonzero_detection_choice_invariant bxTheta5 theta KIP126.Literature.Standard.bx_theta_label htheta h4
   have hf13 := theta_sphere_frame 13 137 9 (by decide) (by decide) _ correction_infinity_generated
-  have hdetect := c4_c5_eta_target_detected hf13 bxTheta5 h4' u hu h5
-  have hn := target_detected_not_filtration_fifteen T (c3_iff_target_survives_twelve.mp hc3) _ hdetect
+  have hdetect := theta5_square_eta_extension_target_detected hf13 bxTheta5 h4' u hu h5
+  have hn := target_detected_not_filtration_fifteen T (d6_vanishes_iff_target_survives_twelve.mp hc3) _ hdetect
   exact bx_lambda_nine_not_ten_d12 target_page_twelve_frame
-    ((lambda_9_iff_filtration_14 bxEtaSquare).mpr (c4_eta_filtration_fourteen h1_u_zero bxTheta5 h4'))
+    ((lambda_9_iff_filtration_14 bxEtaSquare).mpr (theta5_square_eta_filtration_fourteen h1_u_zero bxTheta5 h4'))
     (fun h => hn ((lambda_10_iff_filtration_15 bxEtaSquare).mp h))
 
 end

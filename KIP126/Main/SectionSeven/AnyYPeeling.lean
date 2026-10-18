@@ -21,7 +21,7 @@ theorem anyy_af15_source_boundary : cycles model .sphere 8 (15,140) ≤ boundari
   have hx' : Normalized.label (15,140) x ∈ NuError.nCycles 8 (15,140) := by
     change NuError.denormalize (15,140) (Normalized.label (15,140) x) ∈ cycles model .sphere 8 (15,140)
     rw [NuError.denormalize_label]; exact hx
-  have h := AnyYFinite.anyexact0_anyy_af15_source_boundary hx'
+  have h := AnyYFinite.y_detection_page_af15_source_boundary hx'
   change NuError.denormalize (15,140) (Normalized.label (15,140) x) ∈ boundaries model .sphere 4 (15,140) at h
   rwa [NuError.denormalize_label] at h
 
@@ -30,7 +30,7 @@ theorem anyy_af16_source_boundary : cycles model .sphere 7 (16,141) ≤ boundari
   have hx' : Normalized.label (16,141) x ∈ NuError.nCycles 7 (16,141) := by
     change NuError.denormalize (16,141) (Normalized.label (16,141) x) ∈ cycles model .sphere 7 (16,141)
     rw [NuError.denormalize_label]; exact hx
-  have h := AnyYFinite.anyexact0_anyy_af16_source_boundary hx'
+  have h := AnyYFinite.y_detection_page_af16_source_boundary hx'
   change NuError.denormalize (16,141) (Normalized.label (16,141) x) ∈ boundaries model .sphere 4 (16,141) at h
   rwa [NuError.denormalize_label] at h
 
@@ -92,7 +92,7 @@ theorem anyy_seventh_error_zero (a : BiHom 125 140 (XModLambdaN (S_0_0 : Synthet
   have hf := finite_sphere_bottom_filtration 9 (by decide) 15 140 a
   have hf' := lambda_filtration_preserved 1 15 a hf
   have hz := anyy_lambda_six_filtration_fifteen_zero (lambdaMultiply 1 a) hf'
-  rw [anyexact1_main_lambda_six_one] at hz
+  rw [y_detection_toda_main_lambda_six_one] at hz
   exact hz
 end
 end KIP126.Main.SectionSeven.Internal

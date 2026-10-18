@@ -1,6 +1,6 @@
 module
-public import KIP126.Def.ProofTools.GeneralizedMahowald
-public import KIP126.Def.Computation
+public import KIP126.ProofTools.Standard
+public import KIP126.AdamsCalculations
 import all KIP126.Main.Internal.NuThree.ZeroExtensions
 import all KIP126.Main.Internal.NuThree.Suspension
 import all KIP126.Main.Internal.NuThree.ClassicalZero
@@ -92,22 +92,14 @@ private theorem cnu_mahowald_finite :
     finite_zero_extension_11 .sphere .nuCofiber
       (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)
       KIP126.Literature.Standard.nuCofiber_bottom_exponent y hycycle.2
-  have hresult := KIP126.ProofTools.Standard.generalizedMahowald model.auxiliary.nuRouteTriangle
-    KIP126.Literature.Standard.nuCofiber_exponent_sum
-    (KIP126.Literature.Standard.nuCofiber_triangle _) 3 0 0 8 134 a3 y xb yb sx
-  have hf := KIP126.Literature.Standard.nuCofiber_nu_exponent
-  have hb := KIP126.Literature.Standard.nuCofiber_bottom_exponent
-  have ht := KIP126.Literature.Standard.nuCofiber_top_exponent
-  change normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.f=1 at hf
-  simp only [hf,hb,ht,Nat.cast_zero,Nat.cast_one,Int.reduceAdd,Int.reduceSub,
-    Int.reduceToNat,add_zero,sub_zero] at hresult
+  have hresult := KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer a3 y xb yb sx
   have hnc : FiniteNoCrossing model .nuCofiber (.shift 1 (.shift 3 .sphere))
       (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap) 3 0 8 134 := by
     rintro ⟨a,b,ha,_,hb,_⟩
     have hnonneg : 0≤(normalizedExponent model.classicalTower
       (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap):ℤ) := Nat.cast_nonneg _
     omega
-  obtain ⟨_,yy,hyy,hcong⟩ := hresult (by decide) (by decide) (by decide)
+  obtain ⟨_,yy,hyy,hcong⟩ := hresult
     ha3 hycycle hxbcycle hybper hdesc' top hd (Or.inl hnc) bot
   exact ⟨a3,yy,hyy,hcong⟩
 end

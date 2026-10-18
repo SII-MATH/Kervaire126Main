@@ -1,7 +1,8 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.Literature.Standard.Filtration
+public import KIP126.ProofTools.Operations
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.AlphaOne.FiniteWindow
 
 /-! AlphaOne/Filtration.lean:44–124, pinned bbac1fc05843 (MIT).

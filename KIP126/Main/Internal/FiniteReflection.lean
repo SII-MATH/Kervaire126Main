@@ -1,5 +1,5 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.Selected.DetectionOperations
 /-! Reflection through finite quotient restriction, from the original

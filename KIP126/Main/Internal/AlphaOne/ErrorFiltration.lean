@@ -1,8 +1,9 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.ProofTools.Representatives
-public import KIP126.Def.Literature.Standard.Filtration
+public import KIP126.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.AlphaOne.Detection
 import all KIP126.Main.Internal.AlphaOne.Coherence
 import all KIP126.Main.Internal.Selected.SphereDetection

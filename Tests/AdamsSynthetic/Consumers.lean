@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.AdamsSynthetic
+import KIP126.AdamsSynthetic
 
 /-! Ordinary-import consumers of the fixed project background.
 Only actual objects, maps, classes and mathematical hypotheses are parameters. -/

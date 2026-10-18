@@ -1,7 +1,8 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Def.ProofTools.Representatives
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.QuotientCalculus
 

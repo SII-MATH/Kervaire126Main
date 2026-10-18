@@ -1,5 +1,5 @@
 module
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.NuNinth.Shift
 import all KIP126.Main.Internal.DetectionLabels
 /-! NuNinth:1198–1458, bbac1fc05843 (MIT): the actual λ⁴ inclusion,

@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.SectionSeven.Predicates
-public import KIP126.Def.Literature.Standard.QuotientAlgebra
+public import KIP126.Literature.Standard.QuotientAlgebra
 import all KIP126.Main.Internal.DetectionLabels
 /-! The original Main Q3 action-versus-actual-map proof, NuFifth:1983–2294,
 bbac1fc05843 (MIT). The quotient algebras are the same fixed upstream objects. -/

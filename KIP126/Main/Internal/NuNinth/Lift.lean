@@ -1,5 +1,6 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
+import all KIP126.Main.Internal.NuNinth.Incoming
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.NuNinth.Fourth
 import all KIP126.Main.Internal.NuNinth.Unit
 import all KIP126.Main.Internal.NuNinth.Frames
@@ -156,9 +157,10 @@ private theorem nu_ninth_of_fifth_complete
     rw [hh] at hy5
     exact hy5n (represents_unique hy5 (RepresentsOnPage.zero (by decide)))
   have hXb : X∉boundaries model .sphere 5 (8,130) :=
-    nu9_not_boundary .sphere (8,130) X hXn KIP126.Computation.Standard.x_not_hit 5 (by decide)
+    nu9_not_boundary .sphere (8,130) X hXn 5 (by decide)
+      ⟨by decide, by decide, fun r hr _ => KIP126.Computation.Standard.x_not_hit.not_hit hr⟩
   have hYb : Y∉boundaries model .sphere 6 (11,136) :=
-    nu9_not_boundary .sphere (11,136) Y hYn KIP126.Computation.Standard.y_not_hit 6 (by decide)
+    nu9_not_boundary .sphere (11,136) Y hYn 6 (by decide) y_not_hit_through_six
   refine ⟨x,y,?_,?_,hxy⟩
   · exact sphere_finite_detection_nonzero 9 4 (by decide) (by decide) 8 130 X hX hXb x hx
   · exact sphere_finite_detection_nonzero 9 5 (by decide) (by decide) 11 136 Y hY hYb y hy

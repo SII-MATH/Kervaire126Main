@@ -1,4 +1,5 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.SectionSeven.WeakStrip
 import all KIP126.Main.Internal.Selected.LambdaOperations
 import all KIP126.Main.Internal.Selected.DetectionOperations
@@ -83,13 +84,19 @@ private theorem main_af9_correction_killed
      (h0 : BiHom 0 1 (S_0_0:SyntheticSpectrum))
     (z : BiHom 125 134 (S_0_0:SyntheticSpectrum))
     (p : BiHom 125 136 (S_0_0:SyntheticSpectrum))
-    (hz : lambdaMultiply 2 (sphereAction h0 z)=lambdaMultiply 3 p)
+    (hz : quotientClass 9 (lambdaMultiply 2 (sphereAction h0 z))=
+      quotientClass 9 (lambdaMultiply 3 p))
     (hp : quotientClass 9 (lambdaMultiply 5 p)=0) :
     lambdaMultiply 2 (sphereAction h0 (quotientClass 9 (lambdaMultiply 2 z)))=0 := by
-  have hh : lambdaMultiply 2 (sphereAction h0 (lambdaMultiply 2 z))=lambdaMultiply 5 p := by
-    rw [main_h0_right_two_134,hz,main_lambda_two_three_136]
-  have hq := congrArg (fun a => a≫XModLambdaN.incl (S_0_0:SyntheticSpectrum) 9) hh
-  change _=quotientClass 9 (lambdaMultiply 5 p) at hq
+  have hq : quotientClass 9 (lambdaMultiply 2 (sphereAction h0 (lambdaMultiply 2 z))) =
+      quotientClass 9 (lambdaMultiply 5 p) := by
+    rw [main_h0_right_two_134]
+    have hq' : quotientClass 9 (lambdaMultiply 2 (lambdaMultiply 2 (sphereAction h0 z))) =
+        quotientClass 9 (lambdaMultiply 2 (lambdaMultiply 3 p)) := by
+      simpa only [quotientClass,lambdaMultiply,Category.assoc,
+        Nat.cast_ofNat,Int.reduceAdd,Int.reduceSub] using congrArg (lambdaMultiply 2) hz
+    rw [main_lambda_two_three_136] at hq'
+    exact hq'
   rw [hp] at hq
   simpa only [lambdaMultiply,sphereAction,quotientClass,Category.assoc] using hq
 private theorem sphere_zero_weight_label_9_134
@@ -165,7 +172,8 @@ private theorem main_strip_preserving_nonzero
     (hzTheta : SphereDetected 9 134 0 (KIP126.Computation.Standard.product (r := (9,134))
       KIP126.Computation.Standard.h6 (KIP126.Computation.Standard.atom .b)) zTheta)
     (p : BiHom 125 136 (S_0_0 : SyntheticSpectrum))
-    (hshuffle : lambdaMultiply 2 (sphereAction h0 zTheta)=lambdaMultiply 3 p)
+    (hshuffle : quotientClass 9 (lambdaMultiply 2 (sphereAction h0 zTheta))=
+      quotientClass 9 (lambdaMultiply 3 p))
     (hp : quotientClass 9 (lambdaMultiply 5 p)=0)
     (z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (hzn : lambdaMultiply 2 (sphereAction h0 z)≠0) :
@@ -194,8 +202,8 @@ theorem main_weak_high_representative
     (zTheta : BiHom 125 134 (S_0_0 : SyntheticSpectrum))
     (hzTheta : SphereDetected 9 134 0 (KIP126.Computation.Standard.product (r := (9,134))
       KIP126.Computation.Standard.h6 (KIP126.Computation.Standard.atom .b)) zTheta)
-    (hshuffle : lambdaMultiply 2 (sphereProduct h0 zTheta)=
-      lambdaMultiply 3 (sphereProduct eta (sphereProduct theta b)))
+    (hshuffle : quotientClass 9 (lambdaMultiply 2 (sphereProduct h0 zTheta))=
+      quotientClass 9 (lambdaMultiply 3 (sphereProduct eta (sphereProduct theta b))))
     (z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (hzn : lambdaMultiply 2 (sphereAction h0 z)≠0) :
     ∃ y : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),

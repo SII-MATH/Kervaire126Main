@@ -1,7 +1,7 @@
 module
+import all KIP126.Main.SectionSeven.Predicates
 
-public import KIP126.Main.SectionSeven.AlphaOne
-
+import all KIP126.Main.SectionSeven.AlphaOne
 /-! Existence of the module Toda bracket from the actual annihilation
 relation, ported from Kervaire126 bbac1fc05843,
 Main/Solution/Route/Section7/TodaNonempty.lean (MIT; see the retained source LICENSE).
@@ -24,7 +24,7 @@ local instance shiftAdditive (p : ℤ × ℤ) :
 local notation "eta" => KIP126.Literature.Standard.eta
 local notation "h0" => KIP126.Literature.Standard.syntheticH0
 
-public theorem module_toda_nonempty {X : SyntheticSpectrum}
+private theorem module_toda_nonempty {X : SyntheticSpectrum}
     (a : BiHom 123 132 X) (ha : lambdaMultiply 3 (sphereAction h0 a) = 0) :
     ∃ z : BiHom 125 132 X, ModuleTripleToda (lambdaMultiply 3 a) h0 eta z := by
   have shift_assoc_inv (coh : BiShiftCoherence SyntheticSpectrum)
@@ -90,7 +90,7 @@ public theorem module_toda_nonempty {X : SyntheticSpectrum}
 
 /-- The compatible alpha₁ supplies the annihilation relation needed for
 this actual Q9 bracket; no bracket value is selected in advance. -/
-public theorem module_toda_nonempty_of_alpha
+private theorem module_toda_nonempty_of_alpha
     (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11))
     (ha : AlphaOneProperties a11) :
     let a9 := a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)

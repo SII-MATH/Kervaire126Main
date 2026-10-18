@@ -1,5 +1,6 @@
 module
 
+import all Tests.Architecture
 import all Tests.AdamsSynthetic.Background
 import all Tests.AdamsSynthetic.Consumers
 import all Tests.AdamsSynthetic.Detection
@@ -8,8 +9,13 @@ import all Tests.AdamsSynthetic.Interface
 import all Tests.AdamsSynthetic.Mapping
 import all Tests.AdamsSynthetic.Structural
 import all Tests.AdamsSynthetic.System
+import all Tests.AdamsCalculations.Consumers
+import all Tests.AdamsCalculations.Interface
 import all Tests.Computation.Consumers
 import all Tests.Computation.Interface
+import all Tests.Computation.SourceExpression
+import all Tests.E2Computation.Consumers
+import all Tests.E2Computation.Interface
 import all Tests.Integration
 import all Tests.Literature.Consumers
 import all Tests.Literature.Interface

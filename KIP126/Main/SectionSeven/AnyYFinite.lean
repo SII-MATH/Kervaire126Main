@@ -15,7 +15,7 @@ noncomputable section
 set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 2000000
 set_option maxRecDepth 10000
-private theorem anyexact0_anyy_af16_source_frame
+private theorem y_detection_page_af16_source_frame
     (x : (Normalized.sphere).Page 2 (16,141))
     (hc : x ∈ nCycles 7 (16,141)) :
     x=0 ∨ x=Normalized.basis .sphere 16 141 1 ∨ x=Normalized.basis .sphere 16 141 2 ∨ x=Normalized.basis .sphere 16 141 1+Normalized.basis .sphere 16 141 2 := by
@@ -227,7 +227,7 @@ private theorem anyexact0_anyy_af16_source_frame
     simp only [map_add,map_zero,←hf0, ←hf1,LinearEquiv.apply_symm_apply,Finsupp.add_apply,Finsupp.zero_apply] at hval
     norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
 
-private theorem anyexact0_anyy_af15_source_frame
+private theorem y_detection_page_af15_source_frame
     (x : (Normalized.sphere).Page 2 (15,140))
     (hc : x ∈ nCycles 8 (15,140)) :
     x=0 ∨ x=Normalized.basis .sphere 15 140 1 ∨ x=Normalized.basis .sphere 15 140 4 ∨ x=Normalized.basis .sphere 15 140 1+Normalized.basis .sphere 15 140 4 := by
@@ -569,7 +569,7 @@ private theorem anyexact0_anyy_af15_source_frame
     norm_num [Finsupp.single_apply,Fin.ext_iff] at hval
 
 
-private theorem anyexact0_anyy_af15_source_boundary  :
+private theorem y_detection_page_af15_source_boundary  :
     nCycles 8 (15,140) ≤ nBoundaries 4 (15,140) := by
   intro x hx
   let E := Normalized.sphere
@@ -605,12 +605,12 @@ private theorem anyexact0_anyy_af15_source_boundary  :
   have hb4 : Normalized.basis .sphere 15 140 4 ∈ nBoundaries 4 (15,140) :=
     boundary_of_zero_representative (r:=5) (p:=(15,140))
       (differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)<5) h354)
-  rcases anyexact0_anyy_af15_source_frame x hx with rfl|rfl|rfl|rfl
+  rcases y_detection_page_af15_source_frame x hx with rfl|rfl|rfl|rfl
   · exact Submodule.zero_mem _
   · exact hb1
   · exact hb4
   · exact Submodule.add_mem _ hb1 hb4
-private theorem anyexact0_anyy_af16_source_boundary  :
+private theorem y_detection_page_af16_source_boundary  :
     nCycles 7 (16,141) ≤ nBoundaries 4 (16,141) := by
   intro x hx
   let E := Normalized.sphere
@@ -646,7 +646,7 @@ private theorem anyexact0_anyy_af16_source_boundary  :
   have hb2 : Normalized.basis .sphere 16 141 2 ∈ nBoundaries 4 (16,141) :=
     boundary_of_zero_representative (r:=5) (p:=(16,141))
       (differential_target_later_zero (by change (2:ℤ)≤2; omega) (by decide : (2:ℤ)<5) h369)
-  rcases anyexact0_anyy_af16_source_frame x hx with rfl|rfl|rfl|rfl
+  rcases y_detection_page_af16_source_frame x hx with rfl|rfl|rfl|rfl
   · exact Submodule.zero_mem _
   · exact hb1
   · exact hb2

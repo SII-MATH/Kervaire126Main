@@ -1,4 +1,6 @@
 module
+import all KIP126.Main.SectionSeven.NormalizedNu
+import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.Internal.NuThree.Assembly
 import all KIP126.Main.Internal.NuNinth.Lift
 /-! The final fixed ν₉ interface, NuNinth:1944–1961 at

@@ -51,7 +51,7 @@ theorem anyy_sphere_exact_target_split
     rw [ht0,hq,map_zero,add_zero]
   · let c7 : BiHom 125 133 (S_0_0 : SyntheticSpectrum) := lambdaMultiply 7 c
     have he1 : (show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 6 lc)=c7 :=
-      anyexact1_main_lambda_six_one c
+      y_detection_toda_main_lambda_six_one c
     have he : (show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 6 (t0+lc))=a0+c7 := by
       calc
         _ = a0+(show BiHom 125 133 (S_0_0 : SyntheticSpectrum) from lambdaMultiply 6 lc) := by

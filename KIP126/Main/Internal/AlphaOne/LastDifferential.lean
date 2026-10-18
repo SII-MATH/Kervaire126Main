@@ -1,7 +1,7 @@
 module
-public import KIP126.Main.SectionSeven.AlphaOne
-public import KIP126.Def.ProofTools.Operations
-public import KIP126.Def.ProofTools.Representatives
+import all KIP126.Main.SectionSeven.AlphaOne
+public import KIP126.ProofTools.Operations
+public import KIP126.ProofTools.Representatives
 import all KIP126.Main.Internal.DetectionLabels
 
 /-! The last finite differential argument from AlphaOne/ThetaFrames:339–823

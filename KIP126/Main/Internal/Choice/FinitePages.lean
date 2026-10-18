@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Def.Computation.Table
+public import KIP126.AdamsCalculations.Table
 import all KIP126.Main.Internal.PageCalculus
 import all KIP126.Main.Internal.Choice.PageFrames
 

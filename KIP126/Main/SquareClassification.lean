@@ -1,6 +1,8 @@
 module
 
-public import KIP126.Main.RepresentativeResults
+public import KIP126.Main.Conditions
+
+import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.Internal.Selected.ThetaFrames
 import all KIP126.Main.Internal.Selected.SphereDetection
 import all KIP126.Main.Internal.Selected.LambdaOperations
@@ -151,8 +153,8 @@ private theorem correction_choice_exists :
   apply hfn
   rw [he0,map_zero]
 
-private theorem c4_exact_representative
-    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : C4At theta) :
+private theorem theta5_square_nonzero_detection_exact_representative
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : Theta5SquareNonzeroDetectionAt theta) :
     ∃ u : BiHom 124 134 (S_0_0 : SyntheticSpectrum), UChoice u ∧
       sphereProduct theta theta=lambdaMultiply 6 u := by
   obtain ⟨u0,hu0⟩ := KIP126.Main.u_choice_exists
@@ -222,9 +224,9 @@ private theorem correction_exact_representative
 
 /-- Detection form of the stem-124 classification, from the proved finite-page
 analysis. It holds for every element in the theta degree. -/
-public theorem theta_square_detection_cases
+private theorem theta_square_detection_cases
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) :
-    C4At theta ∨
+    Theta5SquareNonzeroDetectionAt theta ∨
       DetectsNonzero (model.convergence .sphere) (13,137,128)
         (model.comparison.sphereE2 13 137 9 correction) (sphereProduct theta theta) ∨
       ∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum),
@@ -244,7 +246,7 @@ public theorem theta_square_three_possibilities
     (∃ a : BiHom 124 138 (S_0_0 : SyntheticSpectrum),
       sphereProduct theta theta=lambdaMultiply 10 a) := by
   rcases theta_square_detection_cases theta with hfirst|hsecond|hthird
-  · exact Or.inl (c4_exact_representative theta hfirst)
+  · exact Or.inl (theta5_square_nonzero_detection_exact_representative theta hfirst)
   · exact Or.inr (Or.inl (correction_exact_representative _ hsecond))
   · exact Or.inr (Or.inr (by obtain ⟨a,ha⟩ := hthird; exact ⟨a,ha.symm⟩))
 

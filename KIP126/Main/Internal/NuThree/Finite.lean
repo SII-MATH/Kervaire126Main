@@ -1,6 +1,7 @@
 module
-public import KIP126.Def.Computation.Table.Values
-public import KIP126.Def.ProofTools.Operations
+import all KIP126.Main.SectionSeven.Predicates
+public import KIP126.E2Computation.Table.Values
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.AlphaOne.Detection
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.QuotientCalculus

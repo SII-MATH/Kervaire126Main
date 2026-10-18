@@ -1,7 +1,7 @@
 module
 
-public import KIP126.Def.Computation
-public import KIP126.Def.Literature
+public import KIP126.AdamsCalculations
+public import KIP126.Literature
 
 /-! Paper-specific language adapted from Kervaire126
 `KIP126/Def/Kervaire/Route/Section7/Predicates.lean` at
@@ -19,7 +19,7 @@ noncomputable section
 
 /-- Nonzero detection of lambda^k x in the specified finite quotient.
 The E2 label is induced by the actual sphere quotient map, not chosen anew. -/
-public def FiniteDetected (n : ℕ) (_hn : 0 < n) (s t : ℤ) (k : ℕ)
+private def FiniteDetected (n : ℕ) (_hn : 0 < n) (s t : ℤ) (k : ℕ)
     (x : sphereSequence.Page 2 (s,t))
     (a : BiHom (t-s) (t-k) (XModLambdaN (S_0_0 : SyntheticSpectrum) n)) : Prop :=
   DetectsNonzero (model.convergence (.quotient n .sphere)) (s,t,t-k)
@@ -27,7 +27,7 @@ public def FiniteDetected (n : ℕ) (_hn : 0 < n) (s t : ℤ) (k : ℕ)
 
 /-- Nonzero detection in the untruncated synthetic sphere, with all
 higher-filtration ambiguity still present. -/
-public def SphereDetected (s t : ℤ) (k : ℕ) (x : sphereSequence.Page 2 (s,t))
+private def SphereDetected (s t : ℤ) (k : ℕ) (x : sphereSequence.Page 2 (s,t))
     (a : BiHom (t-s) (t-k) (S_0_0 : SyntheticSpectrum)) : Prop :=
   DetectsNonzero (model.convergence .sphere) (s,t,t-k) (comparison.sphereE2 s t k x) a
 
@@ -40,7 +40,7 @@ For <lambda^3 alpha1,h0,eta>, the two indeterminacy images are
 lambda^3 alpha1 * pi_(2,3)(sphere) and pi_(124,130)(Q9) * eta.
 The source has degree (124,132), and its Toda suspension (1,0) gives
 the required (125,132). All cofiber and extension choices are retained. -/
-public def ModuleTripleToda {X : SyntheticSpectrum} {a aw b bw c cw : ℤ}
+private def ModuleTripleToda {X : SyntheticSpectrum} {a aw b bw c cw : ℤ}
     (x : BiHom a aw X) (y : BiHom b bw (S_0_0 : SyntheticSpectrum))
     (z : BiHom c cw (S_0_0 : SyntheticSpectrum))
     (value : BiHom (a+(b+c)+1) (aw+(bw+cw)) X) : Prop :=
@@ -53,7 +53,7 @@ public def ModuleTripleToda {X : SyntheticSpectrum} {a aw b bw c cw : ℤ}
 /-- Only the lambda^2 h0 image of the indeterminacy of <theta,2,b>
 vanishes. The two summands have degree (125,134), and the image has
 degree (125,133). This does not assert that the original bracket is a singleton. -/
-public def ThetaBMultipliedIndeterminacy
+private def ThetaBMultipliedIndeterminacy
     (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum)) (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum))
     (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∀ (a : BiHom 63 70 (S_0_0 : SyntheticSpectrum)) (c : BiHom 63 64 (S_0_0 : SyntheticSpectrum)),
@@ -63,7 +63,7 @@ public def ThetaBMultipliedIndeterminacy
 
 /-- Only the lambda-and-b image of the indeterminacy of <2,theta,2>
 vanishes. Both unmultiplied summands lie in degree (63,64). -/
-public def SymmetricTwoMultipliedIndeterminacy (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum)) : Prop :=
+private def SymmetricTwoMultipliedIndeterminacy (b : BiHom 62 70 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∀ a c : BiHom 63 64 (S_0_0 : SyntheticSpectrum),
     lambdaMultiply 1 (sphereProduct
       ((show BiHom 63 64 (S_0_0 : SyntheticSpectrum) from sphereProduct syntheticTwo a) +
@@ -71,7 +71,7 @@ public def SymmetricTwoMultipliedIndeterminacy (b : BiHom 62 70 (S_0_0 : Synthet
 
 /-- The exact quotient relation in Lemma `lem:nuext125`, with existential
 representatives. It is not an assertion about every representative of X. -/
-public def NuExtension9 (X : sphereSequence.Page 2 (8,130))
+private def NuExtension9 (X : sphereSequence.Page 2 (8,130))
     (Y : sphereSequence.Page 2 (11,136)) (h2 : BiHom 3 4 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∃ (x : BiHom 122 126 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9))
     (y : BiHom 125 131 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9)),
@@ -81,7 +81,7 @@ public def NuExtension9 (X : sphereSequence.Page 2 (8,130))
 
 /-- The Q3 relation must be lifted to actual Q5 representatives; existence
 of an E4 extension alone does not provide this exact equality. -/
-public def NuExtension5 (X : sphereSequence.Page 2 (8,130))
+private def NuExtension5 (X : sphereSequence.Page 2 (8,130))
     (Y : sphereSequence.Page 2 (11,136)) (h2 : BiHom 3 4 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∃ (x : BiHom 122 130 (XModLambdaN (S_0_0 : SyntheticSpectrum) 5))
     (y : BiHom 125 134 (XModLambdaN (S_0_0 : SyntheticSpectrum) 5)),
@@ -92,7 +92,7 @@ public def NuExtension5 (X : sphereSequence.Page 2 (8,130))
 /-- Corollary `cor:2ext125`: forall source representatives, there is a
 target representative depending on that source. No fixed target is chosen.
 Both representatives live in the same actual Q9, as in the corollary. -/
-public def AnyYH0Extension (Y : sphereSequence.Page 2 (11,136))
+private def AnyYH0Extension (Y : sphereSequence.Page 2 (11,136))
     (T : sphereSequence.Page 2 (14,139)) (h0 : BiHom 0 1 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∀ y : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
     FiniteDetected 9 (by decide) 11 136 4 Y y →
@@ -103,7 +103,7 @@ public def AnyYH0Extension (Y : sphereSequence.Page 2 (11,136))
 /-- The common untruncated conclusion of the P and Q branches in
 `prop:state5false`. The preimage and detected T representative must both
 be produced. Their degrees explicitly express divisibility by lambda h2. -/
-public def TargetNuDivisible (T : sphereSequence.Page 2 (14,139))
+private def TargetNuDivisible (T : sphereSequence.Page 2 (14,139))
     (h2 : BiHom 3 4 (S_0_0 : SyntheticSpectrum)) : Prop :=
   ∃ (t : BiHom 125 139 (S_0_0 : SyntheticSpectrum)) (a : BiHom 122 132 (S_0_0 : SyntheticSpectrum)),
     SphereDetected 14 139 0 T t ∧

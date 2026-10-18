@@ -1,6 +1,6 @@
 module
 
-import KIP126.Def.AdamsSynthetic
+import KIP126.AdamsSynthetic
 
 /-! Fixed categories, closed structure, recovery and point-set localization. -/
 open CategoryTheory CategoryTheory.Limits MonoidalCategory Pretriangulated

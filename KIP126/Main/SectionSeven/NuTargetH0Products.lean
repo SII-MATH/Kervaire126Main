@@ -1,8 +1,8 @@
 module
-public import KIP126.Def.Computation.Table.Relations
+public import KIP126.E2Computation.Table.Relations
 import all KIP126.Main.SectionSeven.NuTargetE2Calculus
 import all KIP126.Main.SectionSeven.NuTargetLinear
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 /-! The finite linear calculation in NuTargetHelpers.lean:1766–1955,
 bbac1fc05843 (MIT). Only the original primitive polynomial relations are
 consumed; the universal AF13 conclusion is proved here. -/

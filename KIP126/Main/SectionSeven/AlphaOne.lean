@@ -1,7 +1,6 @@
 module
 
-public import KIP126.Main.SectionSeven.Predicates
-
+import all KIP126.Main.SectionSeven.Predicates
 /-! The compatible alpha₁ language in the paper's Section 7.
 Adapted from Kervaire126 bbac1fc05843,
 Def/Kervaire/Route/Section7/AlphaOne.lean (MIT; see the retained source LICENSE).
@@ -18,7 +17,7 @@ noncomputable section
 
 /-- One common infinite representative generates the entire nonzero
 classical E∞ component. The specified E₂ class is retained. -/
-public def ClassicalInfinityGenerated (s t : ℤ)
+private def ClassicalInfinityGenerated (s t : ℤ)
     (x : sphereSequence.Page 2 (s,t)) : Prop :=
   let P := sphereSequence.ssData (s,t)
   let n : WithTop ℕ := ↑(2-sphereSequence.r₀).toNat
@@ -28,7 +27,7 @@ public def ClassicalInfinityGenerated (s t : ℤ)
 
 /-- An actual finite-quotient differential with common representatives and
 nonzero target on the stated page, not just nonzero E₂ coordinates. -/
-public def FiniteNonzeroDifferential (q : ℕ) (r s t s' t' : ℤ) (k k' : ℕ)
+private def FiniteNonzeroDifferential (q : ℕ) (r s t s' t' : ℤ) (k k' : ℕ)
     (x : sphereSequence.Page 2 (s,t)) (y : sphereSequence.Page 2 (s',t')) : Prop :=
   let A := family.quotient syntheticSphere q
   ∃ h : (s,t,t-k) + A.sequence.diffDeg r = (s',t',t'-k'),
@@ -43,7 +42,7 @@ public def FiniteNonzeroDifferential (q : ℕ) (r s t s' t' : ℤ) (k k' : ℕ)
 
 /-- One Q11 representative and its actual Q9 image; correction choices may
 vary with the untruncated U representative. The final relation is exact. -/
-public def AlphaOneProperties
+private def AlphaOneProperties
     (a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11)) : Prop :=
   let a9 := a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)
   FiniteDetected 11 (by decide) 9 132 0 KIP126.Computation.Standard.V a11 ∧

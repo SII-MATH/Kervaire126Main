@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-public import KIP126.Def.ProofTools.Operations
+public import KIP126.ProofTools.Operations
 import all KIP126.Main.Internal.Selected.LambdaOperations
 import all KIP126.Main.Internal.Selected.DetectionOperations
 import all KIP126.Main.Internal.Selected.SphereDetection
@@ -32,10 +32,10 @@ private theorem eta_detected : Detects (model.convergence .sphere) (1,2,2)
   rw [hl] at h
   exact h
 
-private theorem c4_eta_filtration_fourteen
+private theorem theta5_square_eta_filtration_fourteen
     (hp : KIP126.Computation.Standard.product (r := (11,136))
       KIP126.Computation.Standard.h1 U=0)
-    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : C4At theta) :
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : Theta5SquareNonzeroDetectionAt theta) :
     FiltrationAtLeast model.syntheticTower 14 (sphereProduct eta (sphereProduct theta theta)) := by
   have hd := model.multiplicationCompatible 1 2 10 134 0 6
     (model.standardClasses.standardHi 1) U eta (sphereProduct theta theta) eta_detected hc4.1
@@ -129,7 +129,7 @@ private theorem theta_u_eta_filtration_error
     (hframe : ∀ e : (model.family.sphere.sequence.ssData (13,137,128)).eInfty,
       e=0 ∨ HasInfinityRepresentative model.family.sphere 2 (13,137,128)
         (model.comparison.sphereE2 13 137 9 correction) e)
-    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : C4At theta)
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : Theta5SquareNonzeroDetectionAt theta)
     (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) :
     FiltrationAtLeast model.syntheticTower 15
       ((show BiHom 125 130 (S_0_0 : SyntheticSpectrum) from sphereProduct eta (sphereProduct theta theta))-
@@ -149,12 +149,12 @@ private theorem theta_u_eta_filtration_error
   rw [he,eta_lambda6_right eta u,←lambda_three_3_136 (sphereProduct eta u)] at heta
   exact heta
 
-private theorem c4_c5_eta_target_detected
+private theorem theta5_square_eta_extension_target_detected
     (hframe : ∀ e : (model.family.sphere.sequence.ssData (13,137,128)).eInfty,
       e=0 ∨ HasInfinityRepresentative model.family.sphere 2 (13,137,128)
         (model.comparison.sphereE2 13 137 9 correction) e)
-    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : C4At theta)
-    (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) (hc5 : C5At u) :
+    (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (hc4 : Theta5SquareNonzeroDetectionAt theta)
+    (u : BiHom 124 134 (S_0_0 : SyntheticSpectrum)) (hu : UChoice u) (hc5 : EtaExtensionDetectionAt u) :
     Detects (model.convergence .sphere) (14,139,130) (model.comparison.sphereE2 14 139 9 T)
       (sphereProduct eta (sphereProduct theta theta)) := by
   have hlow := target_detection_lambda_three T KIP126.Computation.Standard.t_permanent_cycle _ hc5

@@ -1,13 +1,13 @@
 module
-public import KIP126.Main.SectionSeven.Predicates
-public import KIP126.Def.Literature.Standard.Filtration
+import all KIP126.Main.SectionSeven.Predicates
+public import KIP126.Literature.Standard.Filtration
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.LambdaZero
 import all KIP126.Main.Internal.QuotientCalculus
 import all KIP126.Main.Internal.Selected.InfinityFrames
 import all KIP126.Main.Internal.Selected.SphereDetection
 import all KIP126.Main.SectionSeven.NuTargetWindows
-public import KIP126.Def.Computation.Table
+public import KIP126.AdamsCalculations.Table
 import all KIP126.Main.SectionSeven.NuTargetFinite
 import all KIP126.Main.SectionSeven.NuTargetProducts
 import all KIP126.Main.SectionSeven.NuTargetH0Products
