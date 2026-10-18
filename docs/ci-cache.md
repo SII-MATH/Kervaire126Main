@@ -58,8 +58,10 @@ and [merge-group events](https://docs.github.com/en/actions/reference/workflows-
 
 The old combined `v1` caches are left alone and expire normally. The first `v2`
 run in a scope obtains the pinned imported Mathlib cache and seeds the split
-caches. Dependency retrieval is governed by the dependency-cache result, not
-the project-cache result. Every selected event still invokes full `lake build`.
+caches. Every run incrementally fetches the currently imported Mathlib roots,
+even after a dependency-cache hit: the environment key stays unchanged when a
+new module imports additional libraries. Existing cached files are reused.
+Every selected event still invokes full `lake build`.
 
 ## Cross-branch Release reuse
 

@@ -91,7 +91,8 @@ jobs:
           use-github-cache: false
 
       - name: Fetch only imported Mathlib dependencies
-        if: steps.dependencies.outputs.cache-hit != 'true'
+        # The environment-keyed cache can predate newly imported modules.
+        # Cache get fills missing imports and reuses files already present.
         run: |
           lake env python3 scripts/mathlib-cache-roots.py > "$RUNNER_TEMP/mathlib-roots.txt"
           mapfile -t mathlib_roots < "$RUNNER_TEMP/mathlib-roots.txt"
