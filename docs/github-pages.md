@@ -32,6 +32,8 @@ rewrite baseline commit IDs, hashes or recorded build results to match a newer
 publication commit. A successful Pages run does not assert that the complete
 repository built, nor discharge any pending mathematical proof obligation.
 
+When the declared source inventory has changed since the fixed evidence seed, refresh the seed from a successful full `scripts/build-blueprint.py` run using `scripts/blueprint-pages.py pack-seed --output blueprint-evidence.tar.gz`. Publish that immutable archive with its SHA-256 checksum and update the workflow pin. The packer requires matching current mathematical inputs, kernel capture, interface/obligation coverage and a successful preceding full-build log. Preserve the original seed and its recorded source commit; do not relax declaration-coverage checks to consume an obsolete seed.
+
 For local authoring and publication commands, see the
 [Blueprint README](../blueprint/README.md). Inspect the Pages Actions run and the
 published verification report when checking an update; a successful source push
