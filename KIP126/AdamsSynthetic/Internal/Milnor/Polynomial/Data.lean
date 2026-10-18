@@ -7,9 +7,9 @@ Adapted from SII-MATH/Kervaire126, commit
 8cb35dad5f75ecc095e474df6c765baec9b175bf.
 -/
 
-import Mathlib.Algebra.Field.ZMod
-import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
-import Mathlib.Algebra.MvPolynomial.Rename
+public import Mathlib.Algebra.Field.ZMod
+public import Mathlib.RingTheory.MvPolynomial.WeightedHomogeneous
+public import Mathlib.Algebra.MvPolynomial.Rename
 
 @[expose] section
 
@@ -22,7 +22,7 @@ or computation data as input. -/
 namespace KIP126.AdamsSynthetic.Milnor
 
 /-- The coefficient field of this fixed cobar construction. -/
-abbrev F2 := ZMod 2
+public abbrev F2 := ZMod 2
 
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Polynomial/Data.lean. -/
 noncomputable section
@@ -32,7 +32,7 @@ open scoped BigOperators
 
 /-- The `s`fold tensor power of the polynomial dual Steenrod algebra.
 The generator `(slot,j)` denotes `ξ_(j+1)` in that slot. -/
-abbrev TensorPower (s : ℕ) := MvPolynomial (Fin s × ℕ) F2
+public abbrev TensorPower (s : ℕ) := MvPolynomial (Fin s × ℕ) F2
 
 /-- Milnor's grading, independent of the tensor slot. -/
 def weight {s : ℕ} (a : Fin s × ℕ) : ℕ := 2 ^ (a.2 + 1) - 1
@@ -66,7 +66,7 @@ def augmentSlot {s : ℕ} (slot : Fin s) : TensorPower s →ₐ[F2] TensorPower 
   MvPolynomial.aeval fun a => if a.1 = slot then 0 else MvPolynomial.X a
 
 /-- Homogeneous normalized cobar cochains. -/
-def cochains (s t : ℕ) : Submodule F2 (TensorPower s) :=
+@[no_expose] public def cochains (s t : ℕ) : Submodule F2 (TensorPower s) :=
   MvPolynomial.weightedHomogeneousSubmodule F2 weight t ⊓
     ⨅ slot : Fin s, LinearMap.ker (augmentSlot slot).toLinearMap
 

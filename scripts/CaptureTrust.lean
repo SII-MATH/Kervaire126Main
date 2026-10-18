@@ -32,6 +32,7 @@ import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Grading
 import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Multiplication
 import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Normalization
 import all KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Preservation
+import all KIP126.AdamsSynthetic.Internal.Source.AdamsNaturality
 import all KIP126.AdamsSynthetic.Internal.Source.AdamsSequence
 import all KIP126.AdamsSynthetic.Internal.Source.AdamsTower
 import all KIP126.AdamsSynthetic.Internal.Source.Completion
@@ -86,6 +87,8 @@ import all KIP126.E2Computation.Table.ThetaRelations
 import all KIP126.E2Computation.Table.Values
 import all KIP126.E2Computation.Table
 import all KIP126.E2Computation
+import all KIP126.Geometry.Kervaire
+import all KIP126.Geometry
 import all KIP126.Literature.Applicability
 import all KIP126.Literature.BHS
 import all KIP126.Literature.BX
@@ -93,11 +96,9 @@ import all KIP126.Literature.Classical
 import all KIP126.Literature.ClassicalRange
 import all KIP126.Literature.Delivery
 import all KIP126.Literature.EInfinity
-import all KIP126.Literature.Geometry.Manifolds
-import all KIP126.Literature.Geometry.KervaireInvariant
 import all KIP126.Literature.Geometry.Browder
-import all KIP126.Geometry
-import all KIP126.Geometry.Kervaire
+import all KIP126.Literature.Geometry.KervaireInvariant
+import all KIP126.Literature.Geometry.Manifolds
 import all KIP126.Literature.Lift
 import all KIP126.Literature.May
 import all KIP126.Literature.Moss
@@ -203,7 +204,10 @@ import all KIP126.Main.Internal.Theta.TodaCofiber
 import all KIP126.Main.Internal.Theta.TodaExistence
 import all KIP126.Main.Internal.Theta.TodaIndeterminacy
 import all KIP126.Main.Internal.Theta.ZeroDegree
+import all KIP126.Main.PaperResults.AnyYExtension
+import all KIP126.Main.PaperResults.TodaDetection
 import all KIP126.Main.PaperResults.TodaFiltration
+import all KIP126.Main.PaperResults.TodaSmallQuotient
 import all KIP126.Main.PaperResults
 import all KIP126.Main.RepresentativeResults
 import all KIP126.Main.SectionSeven.AlphaOne

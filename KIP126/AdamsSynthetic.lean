@@ -1,5 +1,6 @@
 module
 
+public import KIP126.AdamsSynthetic.Internal.Milnor.Complex
 public import KIP126.AdamsSynthetic.Standard
 public import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 public import KIP126.AdamsSynthetic.Standard.Source

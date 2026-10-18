@@ -7,7 +7,7 @@ Adapted from SII-MATH/Kervaire126, commit
 8cb35dad5f75ecc095e474df6c765baec9b175bf.
 -/
 
-import all KIP126.AdamsSynthetic.Internal.Milnor.Cobar
+public import KIP126.AdamsSynthetic.Internal.Milnor.Cobar
 
 @[expose] section
 
@@ -23,7 +23,7 @@ namespace KIP126.AdamsSynthetic.Milnor
 
 /-- The fixed Milnor cobar differential squares to zero.  This is the remaining
 pure algebra obligation; no Adams tower or freely chosen cooperation is input. -/
-theorem differential_squared (s t : ℕ) (x : cochains s t) :
+public theorem differential_squared (s t : ℕ) (x : cochains s t) :
     differential (s + 1) t (differential s t x) = 0 := by
   sorry
 

@@ -53,12 +53,14 @@ run_cmd do
     let missing := expectedExports.filter (!actualExports.contains ·)
     throwError "Public exports changed; added: {added}; missing: {missing}"
 
--- Prespectrum, concrete towers, Milnor/cobar and program rows are not part
--- of this ordinary consumer import.
+-- Concrete implementation helpers remain hidden. The fixed Milnor cochain
+-- space, differential and square-zero statement are public type support.
 #check_failure KIP126.StableHomotopy.Implementation.FoundationInput
 #check_failure KIP126.Classical.Adams.MilnorCooperations
 #check_failure KIP126.Core.SpectralSequence.FilteredComplex
 #check_failure KIP126.Core.SpectralSequence.submoduleCokernelIso
+#check_failure KIP126.AdamsSynthetic.Milnor.differentialPolynomial
+#check_failure KIP126.AdamsSynthetic.Milnor.coproductGenerator
 
 -- Redundant proof records stay retired; their mathematical premises are
 -- passed directly to generic results and fixed producers remain callable.

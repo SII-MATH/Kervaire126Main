@@ -36,6 +36,7 @@ For $c\geq1$, $B_c\subseteq Z_c$, and $B_1=0$. If a common label represents zero
 \begin{theorem}[Composition and infinite representatives]
 \label{sem:ProofTools:page-naturality}
 \level{coarse}
+\uses{sem:AdamsSynthetic:families,sem:SpectralSequence:permanent}
 For composable synthetic maps $f$ and $g$, their induced page maps satisfy $(g\circ f)_r=g_r\circ f_r$. If $x$ represents an infinite-page class $e$, then $f_2(x)$ represents $f_\infty(e)$.
 \lean{KIP126.ProofTools.Internal.family_page_comp,KIP126.ProofTools.Internal.family_infinity_representative_map}
 \end{theorem}
@@ -77,6 +78,7 @@ Let $E_k$ be subgroups of an abelian group and let $N\in\mathbb N$. If $b\in E_s
 \begin{definition}[The infinite-page graded identification]
 \label{sem:ProofTools:infinity-graded}
 \level{coarse}
+\uses{sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration}
 For a convergent synthetic Adams tower on $X$, let
 \[E_\infty^{s,m+s,w}(X)\cong\operatorname{gr}^s\pi_{m,w}X\]
 be its convergence isomorphism.
@@ -86,6 +88,7 @@ be its convergence isomorphism.
 \begin{theorem}[Filtration representatives and preservation]
 \label{sem:ProofTools:filtration-representatives}
 \level{coarse}
+\uses{sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration}
 Every element of $F^s\pi_{m,w}X$ has a representative in the filtration subobject $F^sX$. If $g:X\to Y$ is a map of convergent towers, then
 \[g_*\bigl(F^s\pi_{m,w}X\bigr)\subseteq F^s\pi_{m,w}Y.\]
 \lean{KIP126.ProofTools.Internal.filtration_representative_exists,KIP126.ProofTools.Internal.map_preserves_filtration}
@@ -94,6 +97,7 @@ Every element of $F^s\pi_{m,w}X$ has a representative in the filtration subobjec
 \begin{theorem}[Representatives for a tower extension equation]
 \label{sem:ProofTools:extension-representatives}
 \level{coarse}
+\uses{sem:ProofTools:infinity-graded,sem:ProofTools:filtration-representatives,paper:2.3}
 Let $g:X\to Y$ be a map of convergent towers. Fix $(m,w)$ and classes $x\in E_\infty^{s,m+s,w}(X)$ and $y\in E_\infty^{s+n,m+s+n,w}(Y)$. An extension equation of length $n$ from $x$ to $y$ holds if and only if $n\geq0$ and there are representatives
 \[a\in F^s\pi_{m,w}X,\qquad b\in F^{s+n}\pi_{m,w}Y,\qquad g_*(a)=b\]
 whose associated-graded classes correspond to $x$ and $y$ under the convergence isomorphisms.
@@ -103,6 +107,7 @@ whose associated-graded classes correspond to $x$ and $y$ under the convergence 
 \begin{theorem}[Naturality and the next-filtration ambiguity]
 \label{sem:ProofTools:grade-naturality}
 \level{coarse}
+\uses{sem:ProofTools:infinity-graded,sem:ProofTools:filtration-representatives}
 Let $g:X\to Y$ be a map of convergent towers, $a\in F^s\pi_{m,w}X$ and $b\in F^s\pi_{m,w}Y$. If $g_*(a)=b$, their associated-graded classes satisfy $g_\infty([a])=[b]$. Conversely, this graded equality implies
 \[b-g_*(a)\in F^{s+1}\pi_{m,w}Y.\]
 If $g_\infty$ is injective in this degree and $g_*(a)\in F^{s+1}\pi_{m,w}Y$, then $a\in F^{s+1}\pi_{m,w}X$.
@@ -112,6 +117,7 @@ If $g_\infty$ is injective in this degree and $g_*(a)\in F^{s+1}\pi_{m,w}Y$, the
 \begin{theorem}[Transport and reflection of detection]
 \label{sem:ProofTools:detection-transport}
 \level{coarse}
+\uses{sem:ProofTools:page-naturality,sem:ProofTools:grade-naturality,sem:SpectralSequence:detection}
 Let $g:X\to Y$ be a map of convergent towers. If $x$ detects $\alpha$ on $X$, then $g_2(x)$ detects $g_*(\alpha)$ on $Y$. Conversely, suppose that $g_\infty$ is injective in filtration $s$, that $x$ represents an infinite-page class, and that $\alpha\in F^s\pi_{m,w}X$. If $g_2(x)$ detects $g_*(\alpha)$, then $x$ detects $\alpha$.
 \lean{KIP126.ProofTools.Internal.detects_map,KIP126.ProofTools.Internal.detects_reflect}
 \end{theorem}
@@ -119,6 +125,7 @@ Let $g:X\to Y$ be a map of convergent towers. If $x$ detects $\alpha$ on $X$, th
 \begin{theorem}[A vanishing strip identifies filtration bounds]
 \label{sem:ProofTools:filtration-gap}
 \level{coarse}
+\uses{sem:ProofTools:infinity-graded}
 Fix a convergent synthetic Adams tower on $X$, and let $s\leq t$. If every infinite-page component $(j,m+j,w)$ vanishes for $s\leq j<t$, then for every $\alpha\in\pi_{m,w}X$,
 \[\operatorname{fil}(\alpha)\geq s\quad\Longleftrightarrow\quad\operatorname{fil}(\alpha)\geq t.\]
 
@@ -132,6 +139,7 @@ Fix a convergent synthetic Adams tower on $X$, and let $s\leq t$. If every infin
 \begin{theorem}[The finite quotient strip]
 \label{sem:ProofTools:finite-strip}
 \level{coarse}
+\uses{sem:Literature:infinite-finite-window,sem:AdamsSynthetic:finite-quotient-separation,sem:ProofTools:filtration-gap}
 For $q>0$, the infinite page of $\nu X/\lambda^q$ vanishes outside $0\leq t-w<q$. Every $\alpha\in\pi_{t-s,t}(\nu X/\lambda^q)$ has filtration at least $s$. If $q\leq m+s-w$, an element of $\pi_{m,w}(\nu X/\lambda^q)$ in filtration at least $s$ is zero.
 \lean{KIP126.ProofTools.Internal.Mahowald.finite_infinity_zero_outside,KIP126.ProofTools.Internal.Mahowald.finite_bottom_filtration,KIP126.ProofTools.Internal.Mahowald.finite_high_filtration_zero}
 \end{theorem}
@@ -139,6 +147,7 @@ For $q>0$, the infinite page of $\nu X/\lambda^q$ vanishes outside $0\leq t-w<q$
 \begin{theorem}[Injectivity of quotient reduction in the retained strip]
 \label{sem:ProofTools:rho-injectivity}
 \level{coarse}
+\uses{sem:Literature:infinite-restriction,sem:Literature:infinite-finite-window}
 For $0<i\leq j$ and $t-w<i$, the quotient reduction $\rho:\nu X/\lambda^j\to\nu X/\lambda^i$ induces an injective map on the infinite-page component in tridegree $(s,t,w)$.
 % Blueprint note: The range bound refers to the smaller quotient.
 \lean{KIP126.ProofTools.Internal.rho_infty_injective}
@@ -147,6 +156,7 @@ For $0<i\leq j$ and $t-w<i$, the quotient reduction $\rho:\nu X/\lambda^j\to\nu 
 \begin{theorem}[Finite target labels]
 \label{sem:ProofTools:finite-target-label}
 \level{coarse}
+\uses{sem:Literature:infinite-finite-window,sem:AdamsSynthetic:shift-representatives}
 For $q>0$ and $0\leq k<q$, let $y\in Z_{q-k}^{s,t}(X)$. Its finite target label at weight $t-k$ represents $e\in E_\infty^{s,t,t-k}(\nu X/\lambda^q)$ if and only if the finite-window comparison carries $e$ to the class of $y$ in
 \[Z_{q-k}^{s,t}(X)/B_{1+k}^{s,t}(X).\]
 \lean{KIP126.ProofTools.Internal.Mahowald.finite_target_label_iff}
@@ -155,6 +165,7 @@ For $q>0$ and $0\leq k<q$, let $y\in Z_{q-k}^{s,t}(X)$. Its finite target label 
 \begin{theorem}[Sphere labels and finite lambda detection]
 \label{sem:ProofTools:sphere-label-detection}
 \level{coarse}
+\uses{sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,sem:Literature:infinite-lambda,sem:ProofTools:finite-target-label,sem:ProofTools:detection-transport}
 The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ to $y$. Let $\alpha\in\pi_{t-s,t}(\nu S^0)$ have first-quotient image equal to this label, using the canonical zero-shift identification. For $q>0$ and $k\geq0$, the finite target label of $y$ in tridegree $(s,t,t-k)$ detects the image of $\lambda^k\alpha$ in $\nu S^0/\lambda^q$.
 \lean{KIP126.ProofTools.Internal.Mahowald.sphere_first_quotient_label,KIP126.ProofTools.Internal.Mahowald.sphere_finite_lambda_detects}
 \end{theorem}
@@ -162,6 +173,7 @@ The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ t
 \begin{theorem}[Suspension and composition coherence]
 \label{sem:ProofTools:shift-coherence}
 \level{coarse}
+\uses{sem:AdamsSynthetic:shift-coherence,sem:AdamsSynthetic:ess-shifts}
 Assume that suspension and bigraded shifts are coherent with the homotopy functors. The canonical isomorphism
 \[\Sigma^{1,-q}Q\cong\Sigma(\Sigma^{0,-q}Q)\]
 identifies the induced suspension and bigraded-shift maps. The inverse and composition isomorphisms for shifts induce the corresponding inverse and composition maps on homotopy groups.
@@ -225,6 +237,7 @@ and there is no nonliftable obstruction as above, then
 \begin{theorem}[The zero-layer nu-cofiber Mahowald instance]
 \label{sem:ProofTools:nu-zero-layer}
 \level{coarse}
+\uses{sem:Literature:nu-cofiber,sem:Literature:connected-homology,sem:ProofTools:boundary-calculus,sem:ProofTools:finite-target-label,sem:ProofTools:finite-strip,sem:ProofTools:rho-injectivity,sem:ProofTools:shift-coherence,sem:ProofTools:extension-representatives,sem:ProofTools:detection-transport,paper:5.4}
 In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y\in E_2^{11,136}(S^0)$, $\bar x\in E_2^{8,134}(C\nu)$ and permanent $\bar y\in E_2^{11,136}(C\nu)$. Require $x\in Z_2$, $y\in Z_1$, $\bar x\in Z_2$, the actual suspension label for $x$, the length-zero connecting extension on page $3$, $d_3(\bar x)=\bar y$, its specified no-crossing alternative, and the length-zero bottom-cell extension on page $2$. Then $x\in Z_3$ and there is an actual $\nu$-extension of length $3$ on page $4$ from $x$ to some $y'$ with $y'-y\in B_3$.
 % Blueprint note: This specialized result has its own proof and does not require the general Mahowald theorem as an extra hypothesis.
 \lean{KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer}

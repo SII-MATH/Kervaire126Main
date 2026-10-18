@@ -95,19 +95,6 @@ public theorem q_permanent_cycle : IsPermanentCycle model.classical.sphere (12,1
   obtain ⟨z, hz, _⟩ := q_permanent
   exact ⟨z, hz⟩
 
-public theorem table3 :
-    SurvivesTo model.classical.sphere 12 (9,132) V ∧
-    NeverHit model.classical.sphere (9,132) V ∧
-    HasNonzeroDifferential model.classical.sphere 2 (8,133) (10,134) (atom .x_125_8) d2Target :=
-  ⟨v_to_e12, v_not_hit, d2_x125_8⟩
-public theorem table7 :
-    SurvivesTo model.classical.sphere 5 (11,136) Y ∧
-    NeverHit model.classical.sphere (11,136) Y := ⟨y_to_e5, y_not_hit⟩
-public theorem table2 :
-    (SurvivesTo model.classical.sphere 6 (8,130) X ∧ NeverHit model.classical.sphere (8,130) X) ∧
-    (IsPermanentCycle model.classical.sphere (11,133) P ∧
-      IsPermanentCycle model.classical.sphere (12,134) Q) :=
-  ⟨⟨x_to_e6, x_not_hit⟩, ⟨p_permanent_cycle, q_permanent_cycle⟩⟩
 public theorem table9 (r : ℤ) (_hr : 2 ≤ r) :
     ¬ HasNonzeroDifferential model.classical.sphere r (6,132) (14,139) (atom .x_126_6) T := by
   intro hd
