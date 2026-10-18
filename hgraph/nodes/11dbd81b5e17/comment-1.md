@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/frontier/Literature.tex
+authored_source: blueprint/semantic/further/Literature.tex
 blueprint_label: frontier:Literature:a0113c9a3b80
 created: '2026-10-18T08:16:05'
 date: '2026-10-18T08:16:05'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05'
+updated: '2026-10-18T12:05:30.064289+00:00'
 ---
 Source verification (2026-10-18): Source adaptation checked. Symmetric monoidality gives multiplicativity of the canonical Ext comparison, with s,t,s-prime,t-prime nonnegative and stem t-s. Identification with the project’s selected firstQuotient and sphereAlgebra product is still an explicit pending comparison. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022
 

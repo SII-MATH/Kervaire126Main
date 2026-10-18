@@ -1,10 +1,8 @@
-"""AimPaper provenance checks and rendering compatibility for native hgraph.
+"""Paper source links and rendering compatibility for native hgraph.
 
-The authored statements, hidden correspondence metadata, labels and Lean links
-live in blueprint/paper/*.tex. Declaration correspondences and reviewed
-mathematical uses are distinct, even though both use native TeX annotations.
+These presentation helpers do not validate or change bindings, dependencies or
+proof states. All such semantics belong to native hgraph.
 """
-from collections import Counter
 import hashlib
 import html
 from pathlib import Path
@@ -12,18 +10,11 @@ import re
 import shutil
 import xml.etree.ElementTree as ET
 
-from hgraph.dashboard import discover_bib
 from hgraph.sync import parse_blueprint, _brace_span
 
 CORE = r'theorem|lemma|definition|corollary|proposition|fact'
 START = '% BEGIN AIMPAPER STATEMENT\n'
 END = '\n% END AIMPAPER STATEMENT'
-STATUS = {
-    'public-existing': '已有公共对应（范围限制见说明）',
-    'public-new': '已有公共对应（范围限制见说明）',
-    'partial': '部分对应', 'incomplete': '相关步骤待补齐',
-    'missing': '尚无公共对应', 'outside': '当前目标范围外',
-}
 
 
 def active_tex(text):
@@ -45,139 +36,19 @@ def citation_keys(text):
             for key in m[1].split(',')}
 
 
-def resolve_paper_bindings(statement, source_labels):
-    """Resolve stable authored names through explicit declaration dependencies.
-
-    Private homonyms in different modules remain separate. No textual name
-    search or global namespace guess can silently bind the wrong declaration;
-    mathematical prose need not contain implementation links.
-    """
-    refs = {label for label in statement['uses'] if label.startswith('decl:')}
-    if not refs <= source_labels.keys():
-        raise ValueError('Unknown Lean correspondence: ' + str(refs - source_labels.keys()))
-    visible_refs = set(re.findall(r'\\ref\{(decl:[^}]+)\}', active_tex(statement['body'])))
-    if not visible_refs <= refs:
-        raise ValueError('Paper dependencies must inherit every bound source')
-    names, targets = [], set()
-    for name in statement['lean']:
-        matches = [(label, source_labels[label]) for label in refs
-                   if name in (source_labels[label].get('lean_name'), source_labels[label].get('fqname'))]
-        if len(matches) != 1:
-            raise ValueError('Lean binding does not uniquely match its explicit source: ' + name)
-        target, source = matches[0]
-        names.append(source['lean_name'])
-        targets.add(target)
-    if targets != refs or len(names) != len(set(names)):
-        raise ValueError('Every listed correspondence needs one native Lean binding')
-    return names
-
-
-def correspondence_status(block, number):
-    """Read exactly one hidden status, accepting legacy rendered status text.
-
-    Comments preserve audit metadata while keeping the mathematical statement
-    clean. A duplicate or empty status must not silently override another one.
-    """
-    hidden = re.findall(r'^[ \t]*%[ \t]*Correspondence:[ \t]*([^\n]*)', block, re.M)
-    legacy = re.findall(r'\\textbf\{(?:对应状态：|Correspondence: )([^}]+)\}', active_tex(block))
-    statuses = [status.strip() for status in hidden + legacy]
-    if not statuses or not statuses[0]:
-        raise ValueError(f'Missing correspondence explanation: {number}')
-    if len(statuses) != 1:
-        raise ValueError(f'Expected exactly one correspondence status: {number}')
-    return statuses[0]
-
-
-def load_paper(root, source_labels):
-    """Reject missing/altered statements, broken correspondences and false green.
-
-    Native Lean bindings describe the existing project representation.
-    Incomplete/general-scope bridges carry the native sketch marker. Their scope
-    notes and correspondence status are hidden authoring metadata, rather than
-    explanatory text rendered inside the mathematical statement.
-    """
-    original = (root / 'AimPaper/main.tex').read_text()
-    expected = {(r['kind'], r['start_line'], r['end_line']): r for r in source_statements(original)}
-    result = []
-    seen = set()
+def load_paper(root):
+    """Read original paper material for source links and diagram rendering only."""
+    source = (root / 'AimPaper/main.tex').read_text()
+    originals = {(r['kind'], r['start_line'], r['end_line']): r
+                 for r in source_statements(source)}
+    records = []
     for path in sorted((root / 'blueprint/paper').rglob('*.tex')):
-        text = path.read_text()
-        blocks = re.split(r'(?=^% AimPaper: )', text, flags=re.M)[1:]
-        for block in blocks:
-            m = re.match(r'% AimPaper: (\d+\.\d+) (\w+) (\d+) (\d+)\n', block)
-            if not m or START not in block or END not in block:
-                raise ValueError(f'Malformed AimPaper provenance: {path}')
-            number, kind, start, end = m.groups()
-            key = kind, int(start), int(end)
-            raw = block.split(START, 1)[1].split(END, 1)[0]
-            if key not in expected or key in seen or raw != expected[key]['raw']:
-                raise ValueError(f'AimPaper statement differs from its source: {number}')
-            seen.add(key)
-            statements, proofs = parse_blueprint(active_tex(block))
-            if len(statements) != 1 or proofs or statements[0]['label'] != 'paper:' + number:
-                raise ValueError(f'AimPaper must have one native statement: {number}')
-            statement = statements[0]
-            refs = {label for label in statement['uses'] if label.startswith('decl:')}
-            if not refs <= source_labels.keys():
-                raise ValueError(f'Unknown Lean correspondence in AimPaper {number}: {refs - source_labels.keys()}')
-            if statement['leanok'] or statement['mathlibok']:
-                raise ValueError(f'AimPaper must derive status from real Lean declarations: {number}')
-            names = resolve_paper_bindings(statement, source_labels)
-            mathematical_uses = set(statement['uses']) - refs
-            if any(not label.startswith(('paper:', 'sem:')) for label in mathematical_uses):
-                raise ValueError(f'Invalid mathematical paper dependency: {number}')
-            if len(re.findall(r'^% Mathematical dependencies: reviewed$', block, re.M)) != 1:
-                raise ValueError(f'Missing mathematical dependency review: {number}')
-            canonical = re.findall(r'^% Canonical node: (paper:[0-9]+\.[0-9]+)$', block, re.M)
-            if len(canonical) > 1:
-                raise ValueError(f'Ambiguous canonical paper node: {number}')
-            status = correspondence_status(block, number)
-            if (status in ('部分对应', '相关步骤待补齐') or status.lower().startswith(('partial', 'incomplete', 'related steps remain'))) and not statement['sketch']:
-                raise ValueError(f'Partial correspondence needs native sketch and scope notes: {number}')
-            result.append({**statement, 'authored_lean': statement['lean'], 'lean': names, 'number': number, 'kind': kind, 'start_line': int(start),
-                           'end_line': int(end), 'raw': raw, 'mapping_labels': sorted(refs),
-                           'mathematical_uses': sorted(mathematical_uses),
-                           'canonical_label': canonical[0] if canonical else statement['label'],
-                           'mapping_status': status, 'owner': path.stem})
-    if seen != expected.keys() or len({r['number'] for r in result}) != len(expected):
-        raise ValueError('AimPaper statement coverage is not exhaustive and unique')
-    by_label = {r['label']: r for r in result}
-    for row in result:
-        canonical = row['canonical_label']
-        if canonical == row['label']:
-            continue
-        target = by_label.get(canonical)
-        # This is an explicitly reviewed repetition of the permanence theorem,
-        # not a general rule equating mathematical statements by Lean bindings.
-        if (row['label'], canonical) != ('paper:7.1', 'paper:1.4') or target is None:
-            raise ValueError('Unreviewed repeated paper statement: ' + row['label'])
-        if (set(row['lean']) != set(target['lean']) or row['sketch'] != target['sketch']
-                or row['label'] not in target['labels'] or 'thm:126survives' not in target['labels']):
-            raise ValueError('Repeated permanence statement lost its canonical binding or aliases')
-    bib = discover_bib(root / 'blueprint/content.tex')
-    keys = [r['key'] for r in bib]
-    cited = citation_keys(original)
-    if len(keys) != len(set(keys)) or not cited <= set(keys):
-        raise ValueError(f'AimPaper bibliography missing citations: {cited - set(keys)}')
-    if any(not r['title'] for r in bib if r['key'] in cited):
-        raise ValueError('AimPaper bibliography has an untitled cited entry')
-    if (root / 'AimPaper/algtop.sty').exists() and (root / 'blueprint/paper/algtop.sty').read_bytes() != (root / 'AimPaper/algtop.sty').read_bytes():
-        raise ValueError('Native paper macros differ from AimPaper/algtop.sty; update explicitly')
-    if (root / 'blueprint/paper/references.bib').read_bytes() != (root / 'AimPaper/main.bib').read_bytes():
-        raise ValueError('Native bibliography differs from AimPaper/main.bib; update explicitly')
-    return sorted(result, key=lambda r: tuple(map(int, r['number'].split('.')))), {
-        'statements': len(result), 'by_kind': dict(Counter(r['kind'] for r in result)),
-        'displayed_nodes': len({r['canonical_label'] for r in result}),
-        'mathematical_dependency_edges': sum(len(r['mathematical_uses']) for r in result
-                                            if r['canonical_label'] == r['label']),
-        'mathematical_dependencies_reviewed': len(result),
-        'mapping_status': dict(Counter(r['mapping_status'] for r in result)),
-        'with_source_links': sum(bool(r['mapping_labels']) for r in result),
-        'bound_statements': sum(bool(r['lean']) for r in result),
-        'partial_bound_statements': sum(bool(r['lean']) and r['sketch'] for r in result),
-        'bibliography_entries': len(bib), 'cited_entries': len(cited),
-        'source_sha256': hashlib.sha256(original.encode()).hexdigest(),
-    }
+        for number, kind, start, end in re.findall(
+                r'^% AimPaper: (\d+\.\d+) (\w+) (\d+) (\d+)$', path.read_text(), re.M):
+            original = originals.get((kind, int(start), int(end)))
+            if original is not None:
+                records.append({**original, 'number': number})
+    return records
 
 
 def reference_targets(root, statements):
@@ -217,6 +88,8 @@ def prepare_web_blueprint(root, destination):
         shutil.rmtree(destination)
     destination.mkdir(parents=True, exist_ok=True)
     for path in sorted((root / 'blueprint').rglob('*')):
+        if 'generated' in path.relative_to(root / 'blueprint').parts:
+            continue
         if not path.is_file() or path.suffix not in ('.tex', '.sty', '.bib'):
             continue
         relative = path.relative_to(root / 'blueprint')
@@ -327,43 +200,6 @@ def inline_diagram_styles(diagrams):
                      ' border-radius:.25em; text-indent:200%; white-space:nowrap; overflow:hidden;'
                      ' }')
     return '\n'.join(rules) + '\n'
-
-
-def validate_paper_graph(graph, records, analysis, projection=None):
-    from hgraph.graph import node_id
-    by_source = {}
-    for edge in graph.edges():
-        by_source.setdefault(edge.source, []).append(edge)
-    for record in records:
-        label = record.get('canonical_label', record['label'])
-        nid = node_id('bp', label)
-        node = graph.get_node(nid)
-        mappings = {node_id('bp', target) for target in (projection['uses'][label]
-                    if projection else record['mapping_labels'])}
-        hard = {e.target for e in by_source.get(nid, []) if e.hard}
-        if record['lean']:
-            targets = [node_id('lean', name) for name in record['lean']]
-            statuses = [graph.get_node(target).meta.get('lean_status') or 'empty' for target in targets]
-            expected_local = 'sorry' if 'sorry' in statuses else 'empty' if 'empty' in statuses else 'lean_ok'
-            if projection is not None:
-                expected_local = projection['entries'][label]['local_status']
-            formal = {e.target for e in by_source.get(nid, []) if e.type == 'formalizes'}
-            expected_closed = (projection['entries'][label].get('expected_display_closed',
-                               projection['entries'][label]['expected_closed']) if projection
-                               else all(analysis.closed[target] for target in targets))
-            if (analysis.closed[nid] != expected_closed
-                    or node.meta.get('lean_status') != expected_local
-                    or hard != mappings or formal != set(targets)):
-                raise ValueError('Paper binding lost actual local status/closure: ' + record['number'])
-        elif node.meta.get('lean_status') != 'empty' or hard != mappings:
-            raise ValueError('Unmapped paper node acquired proof status: ' + record['number'])
-        if bool(node.meta.get('sketch')) != record['sketch']:
-            raise ValueError('Paper mapping scope marker differs: ' + record['number'])
-        tags = set(node.meta.get('tags') or [])
-        tags.add('source:AimPaper')
-        graph.modify_node(nid, set_meta={'tags': sorted(tags)})
-    return dict(Counter(analysis.states[node_id('bp', label)]
-                        for label in {r.get('canonical_label', r['label']) for r in records}))
 
 
 def export_paper(root, out, records):

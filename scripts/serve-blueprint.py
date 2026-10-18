@@ -47,8 +47,8 @@ def main():
     parser.add_argument('--bind', default='127.0.0.1')
     parser.add_argument('--directory', type=Path, default=ROOT / '_site')
     args = parser.parse_args()
-    if not (args.directory / 'validation.json').is_file():
-        raise SystemExit('Generate a verified site with scripts/build-blueprint.py first.')
+    if not (args.directory / 'index.html').is_file():
+        raise SystemExit('Generate the site with scripts/build-blueprint.py first.')
     handler = partial(Handler, directory=str(args.directory.resolve()))
     with ThreadingHTTPServer((args.bind, args.port), handler) as server:
         print(f'Blueprint preview: http://{args.bind}:{args.port}/#/Kervaire126', flush=True)

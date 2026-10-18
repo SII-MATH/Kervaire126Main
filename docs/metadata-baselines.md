@@ -5,7 +5,7 @@
 | 文件 | 保留内容 | 消费者 |
 | --- | --- | --- |
 | 八份 `*-api.json` | 八个数学模块的公开与生成声明分组；每项名称、类型指纹、宇宙参数、公理依赖；完整导出集合 | 各模块 Lean 接口测试、Main 审计、Blueprint 绑定检查 |
-| `proof-obligations.json` | 每个许可证明洞的名称、模块、类型与证明体指纹、类别；精确 Main 根与 ProofTools 边界名单 | 八个数学模块 Lean 审计、hgraph 编译导入与分类 |
+| `proof-obligations.json` | 每个许可证明洞的名称、模块、类型与证明体指纹、类别；精确 Main 根与 ProofTools 边界名单 | 八个数学模块 Lean 审计；不再作为原生 hgraph 导出的输入 |
 | `mathematical-naming-restoration.json` | 已审查的标识符改名对应 | 源清单检查 |
 
 接口基线 schema 为 4，证明洞基线 schema 为 2。数组按声明逐行存储。格式精简保留原有检查值，不重新接受当前源码或放宽 Lean 检查。后续已授权的模块分层和第二线分类接口更新单独反映在基线中；E₂ 与 Adams 计算分别使用独立接口锁，原 Computation 兼容入口及其重复接口锁已删除；各模块接口仍核验完整导出与实际定义归属，源清单检查核验公开声明归属唯一。

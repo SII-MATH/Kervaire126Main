@@ -17,7 +17,6 @@
     We denote by $X/\lambda$ the cofiber of $\lambda$
     which is equivalent to $(S^{0,0}/\lambda) \wedge X$.
 % END AIMPAPER STATEMENT
-% Mathematical dependencies: reviewed
 \uses{paper:3.2,sem:AdamsSynthetic:nu}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 774-782](paper/main.tex.html#L774). The suspension comparison defines lambda between bigraded spheres; its cofibers define the quotient objects.
 
@@ -29,7 +28,7 @@
 % Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
 % Blueprint note: Direct formal counterparts: \texttt{KIP126.Synthetic.Context.XModLambda}.
 \lean{KIP126.Synthetic.Context.XModLambda}
-\uses{decl:a0f2a285d56161c8}
+
 \sketch
 \end{definition}
 
@@ -46,7 +45,6 @@
     We say there is an $f$-extension from $x\in E_\infty^{s,t}(X)$ to $y\in E_\infty^{s+n,t+n}(Y)$ if $d_n^{f}(x)=y$ in the $f$-ESS. We say this $f$-extension is $\textbf{essential}$ if $y$ is nontrivial in the $E_n$-page of the $f$-ESS, or equivalently $$y\notin \BESS{f}^{s+n,t+n}_{n-1}(Y).$$
     Otherwise we refer to it as inessential.
 % END AIMPAPER STATEMENT
-% Mathematical dependencies: reviewed
 \uses{paper:2.1}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 277-300](paper/main.tex.html#L277). An essential extension is defined using the differentials and boundary indeterminacy of the extension spectral sequence.
 
@@ -57,7 +55,7 @@
 % Blueprint note: Public definitions of extensions and essential extensions are available. The comparison with actual extension-spectral-sequence differentials retains boundedness and projectivity hypotheses; \texttt{ConvergentMap} applies specifically to synthetic families.
 % Blueprint note: Direct formal counterparts: \texttt{KIP126.AdamsSynthetic.ConvergentMap.ExtensionEquation}, \texttt{KIP126.AdamsSynthetic.ConvergentMap.EssentialExtension}.
 \lean{KIP126.AdamsSynthetic.ConvergentMap.ExtensionEquation,KIP126.AdamsSynthetic.ConvergentMap.EssentialExtension}
-\uses{decl:f2b01f94f2548cc1,decl:b77739d2cd7020a8}
+
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L297; paper/2412.10879.pdf.
 \end{definition}
@@ -84,7 +82,6 @@ Consider $f: X\to Y$, $x\in E_\infty^{s,t}(X)$, $y\in E_\infty^{s+n,t+n}(Y)$ and
      \end{enumerate}
 \end{enumerate}
 % END AIMPAPER STATEMENT
-% Mathematical dependencies: reviewed
 \uses{paper:2.3,sem:SpectralSequence:detection}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 307-325](paper/main.tex.html#L307). Representatives detected by x and y characterize extensions; the indeterminacy statements follow from the same characterization.
 
@@ -95,7 +92,7 @@ Consider $f: X\to Y$, $x\in E_\infty^{s,t}(X)$, $y\in E_\infty^{s+n,t+n}(Y)$ and
 % Blueprint note: Public components cover the existence of representatives, target indeterminacy at a fixed length, and higher-filtration corrections. No public theorem covering all clauses of the paper statement has been identified, in particular the $m>n$ branch and the essential shorter-differential witness.
 % Blueprint note: Direct formal counterparts: \texttt{KIP126.AdamsSynthetic.ConvergentMap.extensionEquation\_iff}.
 \lean{KIP126.AdamsSynthetic.ConvergentMap.extensionEquation_iff}
-\uses{decl:aafac89eb1ca10d7}
+
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L307; paper/2412.10879.pdf.
 \end{proposition}
@@ -114,7 +111,6 @@ Consider $f: X\to Y$, $x\in E_\infty^{s,t}(X)$, $y\in E_\infty^{s+n,t+n}(Y)$ and
 [{\cite[Definition 4.6]{Pst}}]
 The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w}\nu (S^w)$.
 % END AIMPAPER STATEMENT
-% Mathematical dependencies: reviewed
 \uses{sem:AdamsSynthetic:nu}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 770-772](paper/main.tex.html#L770). Define bigraded spheres by suspension of the synthetic analogue of an ordinary sphere.
 
@@ -126,7 +122,7 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
 % Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
 % Blueprint note: Direct formal counterparts: \texttt{KIP126.Synthetic.Context.Smn}.
 \lean{KIP126.Synthetic.Context.Smn}
-\uses{decl:d0bffa98dc8c5ac5}
+
 \sketch
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. The immutable raw statement is exactly Pstragowski’s definition as restated by AimPaper, but the direct binding here is only Smn. The three nu-sphere isomorphisms in weights 1, 2, 3 are separate Literature results. They do not establish the general all-integral formula; retain its existing partial/sketch status. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Definition 3.2, quoting \cite{Pst}, Definition 4.6; the current binding is partial.)
@@ -159,7 +155,6 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
     
     For $r=\infty$, we similar define an $(f,E_\infty)$-extension using the corresponding synthetic $\hat f$-extension.
 % END AIMPAPER STATEMENT
-% Mathematical dependencies: reviewed
 \uses{paper:2.3,paper:3.3,sem:AdamsSynthetic:normalized-map}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 1275-1317](paper/main.tex.html#L1275). Define page extensions as ESS differentials of the chosen normalized map on lambda quotients. The coordinate description in the preceding paragraph is explanatory; no theorem about later extensions is used to define the relation.
 
@@ -170,7 +165,7 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
 % Blueprint note: Direct formal counterparts: \texttt{KIP126.Kervaire.Route.FiniteExtension}, \texttt{KIP126.Kervaire.Route.InfiniteExtension}.
 \lean{KIP126.Kervaire.Route.FiniteExtension,KIP126.Kervaire.Route.InfiniteExtension}
-\uses{decl:2fc0d83dcb3e63a8,decl:14f44b2ceb2905ed}
+
 % Blueprint note: The original article number is 5.4; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1301}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
 \end{definition}
