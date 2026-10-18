@@ -33,6 +33,34 @@ def fixture():
 
 
 class BlueprintBoundaryTests(unittest.TestCase):
+    def test_native_memo_tab_reads_the_root_file_in_the_export_workspace(self):
+        from unittest.mock import patch
+        import yaml
+        from hgraph.site import _project_site_options
+
+        config = (blueprint.ROOT / 'hgraph/config.yaml').read_text()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'hgraph').mkdir()
+            (root / 'hgraph/config.yaml').write_text(config)
+            memo = root / 'MEMO.md'
+            memo.write_text('# Root memo\n\nFirst revision.\n')
+            with patch.object(blueprint, 'ROOT', root), \
+                 patch.object(blueprint, 'STATE', root / '.lake/blueprint'), \
+                 patch.object(blueprint, 'prepare_web_blueprint', return_value=root / 'blueprint'):
+                project = blueprint.stage_workspace() / 'Kervaire126'
+            site = yaml.safe_load((project / 'hgraph/config.yaml').read_text())['site']
+            self.assertEqual([tab['content'] for tab in site['tabs']], ['MEMO.md'])
+            self.assertEqual((project / 'MEMO.md').resolve(), memo)
+            tabs = _project_site_options(site, base=project)['customTabs']
+            self.assertEqual([tab['id'] for tab in tabs], ['memo'])
+            self.assertIn('First revision.', tabs[0]['html'])
+            memo.write_text('# Root memo\n\nSecond revision.\n')
+            updated = _project_site_options(site, base=project)['customTabs']
+            self.assertIn('Second revision.', updated[0]['html'])
+            self.assertNotIn('First revision.', updated[0]['html'])
+
+
     def test_computation_moves_preserve_source_review_ids(self):
         name = 'KIP126.Computation.Standard.d2_h6'
         old = blueprint.label('KIP126.Computation.Standard', name)

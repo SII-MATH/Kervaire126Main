@@ -301,21 +301,6 @@ def validate_paper_graph(graph, records, analysis, projection=None):
     return dict(Counter(analysis.states[node_id('bp', r['label'])] for r in records))
 
 
-def write_index(root, records, stats):
-    def link(label, title):
-        return '<a href="#/Kervaire126#' + html.escape(label, quote=True) + '">' + html.escape(title) + '</a>'
-    body = '<h2>AimPaper concordance</h2><p>Lin–Wang–Xu, <em>On the Last Kervaire Invariant Problem</em>.</p>'
-    body += '<p>All original numbers are retained. The first seven chapters follow the mathematical modules; Chapter 8 contains the unformalized geometric endpoint. Each statement begins with its article citation and original locator. Bound counterparts inherit their actual local state and complete dependency closure. Native sketch marks partial correspondences; read the explicit scope limitations.</p>'
-    body += '<p>Global conventions: spectra are 2-completed, connective and of finite type, with strongly convergent HF-Adams spectral sequences. Local hypotheses, notation and preceding definitions remain part of each source statement.</p>'
-    body += '<p><a href="paper/main.tex.html#L254" target="_blank">Full article and context</a> · <a href="paper/2412.10879.pdf" target="_blank">Original PDF</a> · <a href="paper/main.bib" target="_blank">Original BibTeX</a></p>'
-    body += f'<p>{stats["statements"]} original definitions and results; {stats["bibliography_entries"]} bibliography entries, of which {stats["cited_entries"]} are cited in the article. Remarks, notation, questions and proof text remain available in the original source. These reference entries add no Lean proof obligations.</p>'
-    body += '<table><thead><tr><th>Paper item</th><th>Chapter</th><th>Correspondence</th><th>Lean counterparts</th></tr></thead><tbody>'
-    for r in records:
-        body += '<tr><td>' + link(r['label'], r['kind'].title() + ' ' + r['number']) + '</td><td>' + r['owner'] + '</td><td>' + html.escape(r['mapping_status']) + '</td><td>' + str(len(r['mapping_labels'])) + '</td></tr>'
-    body += '</tbody></table>'
-    (root / '.lake/blueprint/paper-index.html').write_text(body)
-
-
 def export_paper(root, out, records):
     target = out / 'paper'
     target.mkdir(parents=True, exist_ok=True)
