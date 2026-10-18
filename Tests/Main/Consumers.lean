@@ -76,6 +76,41 @@ example : ∃ x : BiHom 122 126 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
   obtain ⟨x,y,hx,_⟩ := Paper.lemma_nuext125
   exact ⟨x,hx⟩
 
+/-- Statement-only consumer check for the original Lemma 7.16. Its single
+alpha-one witness supplies both Q11 and Q9 detection and the conclusion for
+every member of its actual right-module bracket. This check consumes the
+registered pending proof. -/
+example (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
+    ∃ a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11),
+      let a9 := a11 ≫ (model.quotients.tower S_0_0).rho 9 11 (by decide)
+      let bracket := fun z : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9) =>
+        KIP126.StableHomotopy.Toda.Relation
+          ((KIP126.Literature.Route.tripleTodaSource 1 2 0 1 123 129).inv ≫ z)
+          ((SyntheticCategory.biShift (123,130)).map KIP126.Literature.Standard.eta)
+          ((SyntheticCategory.biShift_comp (0,1) (123,129)).inv.app S_0_0 ≫
+            (SyntheticCategory.biShift (123,129)).map KIP126.Literature.Standard.syntheticH0)
+          (lambdaMultiply 3 a9)
+      Paper.FiniteDetected 11 (by decide) 9 132 0 KIP126.Computation.Standard.V a11 ∧
+      Paper.FiniteDetected 9 (by decide) 9 132 0 KIP126.Computation.Standard.V a9 ∧
+      (∃ z, bracket z) ∧
+        ∀ z, bracket z →
+          Paper.FiniteDetected 9 (by decide) 11 136 4 KIP126.Computation.Standard.Y z ∧
+          z ≠ 0 := by
+  obtain ⟨a11, ha, hnonempty, hall⟩ := Paper.lemma_toda2ext hc3 hc5
+  exact ⟨a11, ha.1, ha.2.1, hnonempty, hall⟩
+
+/-- Statement-only consumer check for the original Corollary 7.18.
+This deliberately consumes a registered pending proof; it does not certify
+the mathematical conclusion. Every detected source has its own target in Q9. -/
+example (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
+    ∀ y : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
+      Paper.FiniteDetected 9 (by decide) 11 136 4 KIP126.Computation.Standard.Y y →
+      ∃ t : BiHom 125 139 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
+        Paper.FiniteDetected 9 (by decide) 14 139 0 KIP126.Computation.Standard.T t ∧
+        sphereAction KIP126.Literature.Standard.syntheticH0 y = lambdaMultiply 6 t ∧
+        lambdaMultiply 6 t ≠ 0 :=
+  Paper.corollary_2ext125 hc3 hc5
+
 /-- The complete classification is callable without an upstream package. -/
 example : AdamsTwoLineClassification := adams_two_line_classification
 

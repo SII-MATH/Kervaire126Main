@@ -31,6 +31,24 @@ mechanism, source implementations, or private page-calculus helpers. -/
 #check_failure KIP126.Main.Internal.Choice.Completion.normalized_quotient
 #check_failure KIP126.Main.Internal.Choice.Completion.u_eta_difference_fifteen
 
+-- Exposing the two original statements does not expose the private partial
+-- proofs or turn those weaker reductions into public paper conclusions.
+#check_failure KIP126.Main.Paper.Internal.ninth_to_third_stem125_weight132_injective
+#check_failure KIP126.Main.Paper.Internal.ninth_stem125_weight132_filtration_eleven_of_third
+#check_failure KIP126.Main.Paper.Internal.relation_right_zero_factors
+#check_failure KIP126.Main.Paper.Internal.eta_indeterminacy_normalize
+#check_failure KIP126.Main.Paper.Internal.zero_source_toda_eta_image
+#check_failure KIP126.Main.Paper.Internal.alpha_three_restrict_three_zero
+#check_failure KIP126.Main.Paper.Internal.alpha_toda_restrict_three_eta_image
+#check_failure KIP126.Main.Paper.Internal.alpha_toda_restrict_three_unique
+#check_failure KIP126.Main.Paper.Internal.alpha_toda_detected_iff_restrict_three_zero
+#check_failure KIP126.Main.Paper.Internal.any_y_h0_detected
+#check_failure KIP126.Main.Paper.Internal.any_y_h0_difference_filtration_fifteen
+#check_failure KIP126.Main.Paper.Internal.any_y_h0_difference_lambda_two_zero
+#check_failure KIP126.Main.Paper.Internal.any_y_h0_lambda_two_independent
+#check_failure KIP126.Main.Paper.Internal.any_y_target_lambda_six_independent
+#check_failure KIP126.Main.Paper.Internal.any_y_extension_after_lambda_two
+
 open Lean Elab Command
 
 run_cmd do

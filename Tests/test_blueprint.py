@@ -33,33 +33,45 @@ def fixture():
 
 
 class BlueprintBoundaryTests(unittest.TestCase):
-    def test_native_memo_tab_reads_the_root_file_in_the_export_workspace(self):
+    def test_native_memo_tab_renders_the_root_record_in_the_export_workspace(self):
         from unittest.mock import patch
         import yaml
         from hgraph.site import _project_site_options
 
         config = (blueprint.ROOT / 'hgraph/config.yaml').read_text()
-        with tempfile.TemporaryDirectory() as directory:
+        template = blueprint.ROOT / 'site/memo.html'
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(blueprint.blueprint_memo, 'original_statements',
+                          return_value=({'6.12': {'raw': 'Original.', 'kind': 'theorem'}}, {})):
             root = Path(directory)
             (root / 'hgraph').mkdir()
             (root / 'hgraph/config.yaml').write_text(config)
-            memo = root / 'MEMO.md'
-            memo.write_text('# Root memo\n\nFirst revision.\n')
+            (root / 'site').mkdir()
+            shutil.copyfile(template, root / 'site/memo.html')
+            memo = root / 'corrections.yaml'
+            record = yaml.safe_dump({'version': 1, 'scope': 'Test scope', 'corrections': [{
+                'id': 'test', 'reference': 'Test', 'title': 'Test',
+                'status': {'kind': 'proposed', 'label': 'Pending'},
+                'original': {'statements': ['6.12'], 'source_line': 1},
+                'revision': {'nodes': [], 'note': 'Proposed.'},
+                'problem': 'First revision.', 'progress': 'Not proved.',
+                'links': [{'node': 'paper:6.12', 'title': 'Test'}]}]})
+            memo.write_text(record)
             with patch.object(blueprint, 'ROOT', root), \
                  patch.object(blueprint, 'STATE', root / '.lake/blueprint'), \
                  patch.object(blueprint, 'prepare_web_blueprint', return_value=root / 'blueprint'):
                 project = blueprint.stage_workspace() / 'Kervaire126'
             site = yaml.safe_load((project / 'hgraph/config.yaml').read_text())['site']
-            self.assertEqual([tab['content'] for tab in site['tabs']], ['MEMO.md'])
-            self.assertEqual((project / 'MEMO.md').resolve(), memo)
+            self.assertEqual([tab['content'] for tab in site['tabs']], ['site/memo.html'])
+            self.assertEqual((project / 'corrections.yaml').resolve(), memo)
             tabs = _project_site_options(site, base=project)['customTabs']
             self.assertEqual([tab['id'] for tab in tabs], ['memo'])
             self.assertIn('First revision.', tabs[0]['html'])
-            memo.write_text('# Root memo\n\nSecond revision.\n')
+            memo.write_text(record.replace('First revision.', 'Second revision.'))
+            blueprint.blueprint_memo.stage_memo(root, project)
             updated = _project_site_options(site, base=project)['customTabs']
             self.assertIn('Second revision.', updated[0]['html'])
             self.assertNotIn('First revision.', updated[0]['html'])
-
 
     def test_computation_moves_preserve_source_review_ids(self):
         name = 'KIP126.Computation.Standard.d2_h6'
@@ -237,6 +249,20 @@ class DraftPublicationTests(unittest.TestCase):
         self.assertEqual(publisher.source_open_nodes(sources, deps), {'base', 'result'})
         sources['base']['lean_status'] = 'lean_ok'
         self.assertEqual(publisher.source_open_nodes(sources, deps), set())
+
+    def test_existing_source_changes_refresh_evidence_without_new_bindings(self):
+        spec = importlib.util.spec_from_file_location('publisher_changed_source',
+            Path(__file__).resolve().parents[1] / 'scripts/publish-blueprint.py')
+        publisher = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(publisher)
+        sources = {'existing': {'verification': 'compiled-snapshot'}}
+        self.assertFalse(publisher.source_refresh_needed(sources))
+        self.assertEqual(publisher.public_source_paths(set()), set())
+        sources['existing']['verification'] = 'unverified-source-change'
+        self.assertTrue(publisher.source_refresh_needed(sources))
+        # An unknown declaration alone is not evidence of a source edit.
+        sources['existing'] = {'lean_status': 'empty', 'verification': 'unverified-support-module'}
+        self.assertFalse(publisher.source_refresh_needed(sources))
 
     def test_new_public_alias_can_be_discovered_and_remain_unknown_on_failed_build(self):
         import json
@@ -464,7 +490,7 @@ class AimPaperBoundaryTests(unittest.TestCase):
             partial = next(r for r in records if r['number'] == '2.1')
             self.assertEqual(len(partial['lean']), 1)
             self.assertTrue(partial['sketch'])
-            self.assertEqual(stats['bound_statements'], 42)
+            self.assertEqual(stats['bound_statements'], 47)
             self.assertNotIn('% Blueprint note:', partial['body'])
             self.assertNotIn('% Correspondence:', partial['body'])
             path, _ = self.paper_source(root, 'paper:2.1')
@@ -606,14 +632,13 @@ class AimPaperBoundaryTests(unittest.TestCase):
                     detail_body = display_body(source['body'], number, refs)
                     self.assertNotIn(r'\xymatrix', chapter_body)
                     self.assertNotIn(r'\xymatrix', detail_body)
-                    footer = (r'\par\href{paper/diagrams/' + number
-                              + '.html}{Original diagrams and hypotheses}')
-                    # Whole-chapter conversion appends the fallback link after
-                    # the theorem; detail conversion appends it inside the body.
+                    diagram_link = r'\href{paper/diagrams/' + number + '-1.svg}'
                     diagram_path, _ = self.paper_source(root, source['label'])
                     rendered_path = destination / diagram_path.relative_to(root / 'blueprint')
-                    self.assertIn(footer, rendered_path.read_text())
-                    self.assertEqual(' '.join((chapter_body + '\n' + footer).split()),
+                    self.assertIn(diagram_link, rendered_path.read_text())
+                    self.assertIn(diagram_link, chapter_body)
+                    self.assertNotIn('see the original commutative diagram', chapter_body)
+                    self.assertEqual(' '.join(chapter_body.split()),
                                      ' '.join(detail_body.split()))
             self.assertIn('Suppose $m,n,l', by_label['paper:2.12']['body'])
             self.assertNotIn(r'\xymatrix',
@@ -691,9 +716,21 @@ class AimPaperBoundaryTests(unittest.TestCase):
         rendered = display_body(original, '2.12', {'original': ('#/Kervaire126#paper:1.4', '1.4')})
         self.assertIn('Assume $x=0$', rendered)
         self.assertIn('Then $y=0$', rendered)
-        self.assertIn('paper/diagrams/2.12.html', rendered)
+        self.assertIn('paper/diagrams/2.12-1.svg', rendered)
+        self.assertLess(rendered.index('Assume'), rendered.index('paper/diagrams/'))
+        self.assertLess(rendered.index('paper/diagrams/'), rendered.index('Then'))
+        self.assertNotIn('$$', rendered)
         self.assertIn(r'\href{#/Kervaire126#paper:1.4}{1.4}', rendered)
         self.assertNotIn(r'\xymatrix', rendered)
+
+    def test_diagram_conversion_cannot_drop_adjacent_mathematics(self):
+        from blueprint_paper import display_body
+        with self.assertRaisesRegex(ValueError, 'standalone display'):
+            display_body(r'$$x=0,\quad\xymatrix{X & Y}$$', '2.12')
+        rendered = display_body(r'\[\xymatrix{X & Y}\] and $$\xymatrix{Y & Z}$$', '2.12')
+        self.assertIn('2.12-1.svg', rendered)
+        self.assertIn('2.12-2.svg', rendered)
+        self.assertNotIn(r'\[', rendered)
 
 
 if __name__ == '__main__':

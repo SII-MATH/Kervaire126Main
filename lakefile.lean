@@ -34,6 +34,9 @@ input_file proofToolsApi where
 input_file mainApi where
   path := "metadata/main-api.json"
   text := true
+input_file geometryApi where
+  path := "metadata/geometry-api.json"
+  text := true
 
 lean_lib BuildCheckInputs where
   roots := #[`Checks.Registry]
@@ -58,7 +61,8 @@ lean_lib KIP126 where
     .andSubmodules `KIP126.E2Computation,
     .andSubmodules `KIP126.ProofTools,
     .andSubmodules `KIP126.AdamsCalculations,
-    .andSubmodules `KIP126.Main]
+    .andSubmodules `KIP126.Main,
+    .andSubmodules `KIP126.Geometry]
 
 @[default_target]
 lean_lib SpectralSequenceChecks where
@@ -79,7 +83,7 @@ lean_lib LiteratureChecks where
   needs := #[.packageTarget .anonymous `literatureApi]
   roots := #[`Tests.Literature.Interface, `Tests.Literature.Consumers,
     `Tests.Literature.RouteConsumers, `Tests.Literature.Secondary,
-    `Tests.Literature.Lift]
+    `Tests.Literature.Lift, `Tests.Literature.Geometry, `Tests.Literature.GeometryObjects]
 
 @[default_target]
 lean_lib E2ComputationChecks where
@@ -103,6 +107,11 @@ lean_lib MainChecks where
   needs := #[.packageTarget .anonymous `mainApi]
   roots := #[`Tests.Main.Interface, `Tests.Main.Consumers, `Tests.Main.Boundary,
     `Tests.Main.LegacyResults]
+
+@[default_target]
+lean_lib GeometryChecks where
+  needs := #[.packageTarget .anonymous `geometryApi]
+  roots := #[`Tests.Geometry.Interface, `Tests.Geometry.Consumers]
 
 @[default_target]
 lean_lib ArchitectureChecks where

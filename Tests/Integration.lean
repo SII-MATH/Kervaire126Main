@@ -60,8 +60,9 @@ open Lean Elab Command in
 run_cmd do
   let env ← getEnv
   for mod in env.header.moduleNames do
-    if (`KIP126.Interface).isPrefixOf mod || (`KIP126.Main).isPrefixOf mod then
-      throwError "Integration consumer imported a retired delivery or Main: {mod}"
+    if (`KIP126.Interface).isPrefixOf mod || (`KIP126.Main).isPrefixOf mod ||
+        (`KIP126.Geometry).isPrefixOf mod then
+      throwError "Integration consumer imported a retired delivery, Main or Geometry: {mod}"
   for (name, info) in env.constants.toList do
     if (env.getModuleIdxFor? name).isNone then
       if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then

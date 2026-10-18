@@ -8,3 +8,4 @@ public import KIP126.E2Computation
 public import KIP126.ProofTools
 public import KIP126.AdamsCalculations
 public import KIP126.Main
+public import KIP126.Geometry

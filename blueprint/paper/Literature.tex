@@ -335,3 +335,32 @@ Suppose that we have a distinguished triangle of spectra
 % Blueprint note: Source verification (2026-10-18): Original source text. The protected AimPaper statement block is the paper theorem verbatim. Its existential theta choice and lambda-normalized quotient are not identical to the two fixed-choice bound BX interfaces. The existing sketch/partial correspondence must remain; no replacement of the block is proposed. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution [BurklundXu](https://arxiv.org/pdf/2302.11869v3): Proposition 7.19 and its proof; Theorem 7.20 and its proof; pages 54; arXiv:2302.11869v3, 9 November 2024; accepted version
 % Blueprint note: Detailed source attribution: (From \cite{LWX126}, Theorem 7.3; adapted there from \cite{BurklundXu}, Proposition 7.19.)
 \end{theorem}
+
+\section{Browder's bridge}
+The invariant in this criterion is the $4k+2$-dimensional invariant of
+Definition~\ref{sem:Literature:kervaire-invariant}. Accordingly the square
+index is positive, $j\geq1$; the surviving class $h_0^2$ in stem zero is
+outside the geometric dimension convention.
+% AimPaper: 1.3 theorem 117 123
+\begin{theorem}[Browder's criterion for Kervaire invariant one]
+\label{paper:1.3}
+\source{AimPaper Theorem 1.3}
+\level{coarse}
+\textit{(From \cite{LWX126}, Theorem 1.3; \cite{Browder}, Theorem 7.1, p.~178.)}
+% BEGIN AIMPAPER STATEMENT
+[Browder \cite{Browder}] \label{thm:browder}
+   There exist framed manifolds in dimension $n$ of Kervaire invariant one if and only if
+   \begin{enumerate}
+       \item $n=2^{j+1}-2$, and
+       \item the element $h_j^2$ in the Adams spectral sequence survives to the $E_\infty$-page.
+   \end{enumerate}
+% END AIMPAPER STATEMENT
+% Mathematical dependencies: reviewed
+\uses{sem:Literature:kervaire-existence,sem:AdamsSynthetic:standard-classes,sem:SpectralSequence:permanent}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 117-126](paper/main.tex.html#L117). Browder is an external input; standard Adams classes and permanence specify its criterion, rather than proving the geometric bridge.
+
+% Correspondence: public correspondence; external proof and fixed-model comparison pending.
+% Blueprint note: Source: Browder, Theorem 7.1, p. 178; the proof concludes on p. 184. The 4k+2 dimension convention in AimPaper is made explicit by j >= 1. The Lean conclusion uses nonzero survival of the actual standard square in the fixed 2-completed sphere Adams sequence. Its proof obligation includes the stable tangent/normal framing comparison, Pontryagin--Thom passage, 2-completion and class normalization; none is supplied by the new Geometry conclusions.
+\lean{KIP126.Literature.Geometry.browder_iff}
+\uses{decl:13cdb02206855002}
+\end{theorem}

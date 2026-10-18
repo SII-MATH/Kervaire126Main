@@ -7,6 +7,9 @@ import all KIP126.Literature.Classical
 import all KIP126.Literature.ClassicalRange
 import all KIP126.Literature.Delivery
 import all KIP126.Literature.EInfinity
+import all KIP126.Literature.Geometry.Manifolds
+import all KIP126.Literature.Geometry.KervaireInvariant
+import all KIP126.Literature.Geometry.Browder
 import all KIP126.Literature.Lift
 import all KIP126.Literature.May
 import all KIP126.Literature.Moss

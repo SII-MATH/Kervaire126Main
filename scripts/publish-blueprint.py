@@ -263,6 +263,17 @@ def mathematical_source_paths():
     return paths
 
 
+def source_refresh_needed(sources):
+    """A changed producer invalidates the cached dependency-based grouping.
+
+    Capture all mathematical modules: unchanged consumers may elaborate against
+    the changed producer differently, even when its public interface is frozen.
+    Repository audit consumers remain outside this independent capture.
+    """
+    return any(source.get('verification') == 'unverified-source-change'
+               for source in sources.values())
+
+
 def publish(*, refresh_source_evidence=False):
     b.verify_native_runtime()
     b.run_logged([sys.executable, '-m', 'unittest', 'discover', '-s', 'Tests', '-p', 'test_blueprint*.py'], 'paper-tests.log')
@@ -299,6 +310,9 @@ def publish(*, refresh_source_evidence=False):
     statements, _ = b.parse_blueprint(b.read_blueprint(ROOT / 'blueprint/content.tex'))
     needed_names = {name for statement in statements for name in statement['lean']} - sources.keys()
     paths = public_source_paths(needed_names)
+    if source_refresh_needed(sources):
+        b.phase('Mathematical sources changed; refreshing compiled evidence before grouping Blueprint entries…')
+        refresh_source_evidence = True
     if refresh_source_evidence:
         paths.update(mathematical_source_paths())
     b.phase(f'Publishing paper mappings using {len(sources)} cached declarations and {len(paths)} support module(s)…')

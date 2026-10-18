@@ -14,6 +14,7 @@ mathematical_entries = {
     'ProofTools': 'KIP126.ProofTools',
     'AdamsCalculations': 'KIP126.AdamsCalculations',
     'Main': 'KIP126.Main',
+    'Geometry': 'KIP126.Geometry',
 }
 entries = mathematical_entries
 allowed_dependencies = {
@@ -25,7 +26,8 @@ allowed_dependencies = {
                    'E2Computation', 'ProofTools'},
     'AdamsCalculations': {'SpectralSequence', 'AdamsSynthetic', 'Literature',
                           'E2Computation', 'ProofTools', 'AdamsCalculations'},
-    'Main': set(mathematical_entries),
+    'Main': set(mathematical_entries) - {'Geometry'},
+    'Geometry': set(mathematical_entries),
 }
 
 
@@ -195,15 +197,32 @@ if tool_holes != {
         'KIP126/ProofTools/GeneralizedMahowald.lean': 1}:
     errors.append('ProofTools remaining GL1/GL2/MH2 sites changed: ' + str(tool_holes))
 
-# Every Main declaration, including the completed choice-transport results,
-# must have an actual proof body. Upstream obligations keep their own owners.
+# The user authorized exactly two complete paper statements with pending proofs.
+# All other Main declarations, including the completed main route, remain free
+# of local placeholders. InternalAudit additionally checks the exact compiled
+# names/type/body fingerprints and forbids Main consumers of these two statements.
 main_holes = {}
 for path in (root / 'KIP126/Main').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
     if count:
         main_holes[str(path.relative_to(root))] = count
-if main_holes:
-    errors.append('Main proof placeholders forbidden: ' + str(main_holes))
+if main_holes != {'KIP126/Main/PaperResults.lean': 2}:
+    errors.append('Main statement-only proof sites changed: ' + str(main_holes))
+main_pending = {
+    row['name'] for row in json.loads(
+        (root / 'metadata/proof-obligations.json').read_text())['obligations']
+    if row['module'] == 'KIP126.Main' or row['module'].startswith('KIP126.Main.')
+}
+if main_pending != {
+        'KIP126.Main.Paper.lemma_toda2ext',
+        'KIP126.Main.Paper.corollary_2ext125'}:
+    errors.append('Main pending statement names changed: ' + str(sorted(main_pending)))
+
+# The geometric deductions have complete local proofs; their external inputs
+# remain in Literature and are checked by its exact obligation registry.
+for path in [root / 'KIP126/Geometry.lean', *(root / 'KIP126/Geometry').rglob('*.lean')]:
+    if re.search(r'(?<![\w`])(?:sorry|sorryAx|axiom)\b', code_only(path.read_text())):
+        errors.append('Geometry proof placeholders forbidden: ' + str(path.relative_to(root)))
 
 if errors:
     raise SystemExit('\n'.join(errors))

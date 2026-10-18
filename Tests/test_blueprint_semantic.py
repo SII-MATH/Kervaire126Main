@@ -112,6 +112,46 @@ class MainRemarkBindingTests(unittest.TestCase):
 
 
 class ProjectionTests(unittest.TestCase):
+    def test_omitted_public_producer_still_blocks_its_consumer(self):
+        sources, deps, obligations = fixture(
+            {'hidden': [], 'result': ['hidden'], 'independent': []}, holes=['hidden'])
+        projection = semantic.make_projection(sources, deps, obligations,
+            [statement('sem:result', 'result'), statement('sem:independent', 'independent')],
+            public_names=sources, omitted_producers=['hidden'])
+        self.assertEqual(projection['producer_names'], ['hidden'])
+        self.assertEqual(projection['omitted_producer_names'], ['hidden'])
+        self.assertEqual(projection['frontiers'], {})
+        row = projection['entries']['sem:result']
+        self.assertEqual(row['source_local_status'], 'lean_ok')
+        self.assertEqual(row['local_status'], 'sorry')
+        self.assertEqual(row['internal_obligation_labels'], ['decl:hidden'])
+        self.assertFalse(row['expected_closed'])
+        self.assertTrue(projection['entries']['sem:independent']['expected_closed'])
+        model = native_model(projection)
+        self.assertFalse(model.closed[list(projection['entries']).index('sem:result')])
+        self.assertEqual(obligations, {'hidden': {'status': 'pending-proof'}})
+
+    def test_main_scope_keeps_all_main_roots_and_only_filters_adams_branches(self):
+        sources, deps, obligations = fixture(
+            {'core': [], 'branch': [], 'other': [], 'sideInput': ['branch'],
+             'main': ['core'], 'otherMain': ['other']},
+            holes=['core', 'branch', 'other', 'sideInput'],
+            owners={'core': 'AdamsSynthetic', 'branch': 'AdamsSynthetic',
+                    'sideInput': 'Literature', 'main': 'Main', 'otherMain': 'Main'})
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / 'blueprint').mkdir()
+            (root / 'metadata').mkdir()
+            (root / 'blueprint/scope.json').write_text(json.dumps(
+                {'route': 'Main', 'restricted_module': 'AdamsSynthetic'}))
+            (root / 'metadata/main-api.json').write_text(json.dumps(
+                {'declarations': [{'name': 'main'}, {'name': 'otherMain'}]}))
+            scope = semantic.main_proof_scope(root, sources, deps, obligations, sources)
+        self.assertEqual(scope['restricted_obligations'], ['branch'])
+        self.assertEqual(scope['omitted_producers'], ['branch', 'sideInput'])
+        self.assertEqual(scope['main_adams_synthetic_obligations'], ['core'])
+        self.assertEqual(set(obligations), {'core', 'branch', 'other', 'sideInput'})
+
     def assert_matches_source(self, projection, sources, dependencies):
         """Check every entry against raw source reachability and native closure."""
         labels = list(projection['entries'])
@@ -182,6 +222,74 @@ class ProjectionTests(unittest.TestCase):
         projection = semantic.make_projection(sources, deps, obligations,
             [statement('sem:one', 'one'), statement('sem:both', 'both')])
         self.assertEqual(sorted(map(len, projection['frontiers'].values())), [1, 1])
+        self.assert_matches_source(projection, sources, deps)
+
+    def test_separate_pending_toda_statements_keep_their_authored_carriers(self):
+        names = {'paper:7.16': 'KIP126.Main.Paper.lemma_toda2ext',
+                 'paper:7.18': 'KIP126.Main.Paper.corollary_2ext125'}
+        sources, deps, obligations = fixture(
+            {name: [] for name in names.values()}, holes=names.values(),
+            owners=dict.fromkeys(names.values(), 'Main'))
+        projection = semantic.make_projection(sources, deps, obligations,
+            [statement(label, name) for label, name in names.items()], public_names=sources)
+        self.assertEqual(projection['frontiers'],
+                         {label: [name] for label, name in names.items()})
+        self.assertEqual(set(projection['entries']), set(names))
+        for label, name in names.items():
+            row = projection['entries'][label]
+            self.assertFalse(row['frontier'])
+            self.assertEqual(row['lean'], [name])
+            self.assertEqual(row['local_status'], 'sorry')
+            self.assertFalse(row['expected_closed'])
+            self.assertEqual(projection['uses'][label], set())
+        self.assert_matches_source(projection, sources, deps)
+
+    def test_aggregate_binding_cannot_carry_a_partially_consumed_producer_group(self):
+        sources, deps, obligations = fixture(
+            {'left': [], 'right': [], 'one': ['left'], 'both': ['left', 'right']},
+            holes=['left', 'right'])
+        projection = semantic.make_projection(sources, deps, obligations,
+            [statement('sem:aggregate', 'left', 'right'),
+             statement('sem:one', 'one'), statement('sem:both', 'both')],
+            public_names=sources)
+        self.assertNotIn('sem:aggregate', projection['frontiers'])
+        left = next(label for label, members in projection['frontiers'].items()
+                    if members == ['left'])
+        right = next(label for label, members in projection['frontiers'].items()
+                     if members == ['right'])
+        visible = reached(projection['uses']['sem:one'], projection['uses'])
+        self.assertIn(left, visible)
+        self.assertNotIn(right, visible)
+        self.assertNotIn('sem:aggregate', visible)
+        self.assert_matches_source(projection, sources, deps)
+
+    def test_partial_binding_keeps_the_existing_frontier_members_and_label(self):
+        sources, deps, obligations = fixture(
+            {'left': [], 'right': []}, holes=['left', 'right'])
+        original = semantic.make_projection(sources, deps, obligations, [], public_names=sources)
+        projection = semantic.make_projection(sources, deps, obligations,
+            [statement('sem:left', 'left')], public_names=sources)
+        self.assertEqual(projection['frontiers'], original['frontiers'])
+        label, members = next(iter(original['frontiers'].items()))
+        self.assertEqual(members, ['left', 'right'])
+        self.assertTrue(projection['entries'][label]['frontier'])
+        self.assertEqual(projection['entries'][label]['local_status'], 'sorry')
+        self.assertFalse(projection['entries'][label]['expected_closed'])
+        self.assert_matches_source(projection, sources, deps)
+
+    def test_authored_frontier_survives_even_with_exact_carriers_for_every_part(self):
+        sources, deps, obligations = fixture(
+            {'left': [], 'right': []}, holes=['left', 'right'])
+        original = semantic.make_projection(sources, deps, obligations, [], public_names=sources)
+        projection = semantic.make_projection(sources, deps, obligations,
+            [statement('sem:left', 'left'), statement('sem:right', 'right')],
+            public_names=sources, authored_frontier_labels=original['frontiers'])
+        self.assertEqual(projection['frontiers'], original['frontiers'])
+        label = next(iter(original['frontiers']))
+        self.assertTrue(projection['entries'][label]['frontier'])
+        self.assertEqual(projection['entries'][label]['lean'], ['left', 'right'])
+        self.assertEqual(projection['entries'][label]['local_status'], 'sorry')
+        self.assertFalse(projection['entries'][label]['expected_closed'])
         self.assert_matches_source(projection, sources, deps)
 
     def test_exact_partition_includes_unused_responsibilities_once(self):
@@ -391,7 +499,7 @@ class BindingOwnershipTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding'):
                 semantic.validate_binding_owners([row], sources, {})
         row['chapter'] = 'Geometry'
-        with self.assertRaisesRegex(ValueError, 'must name its mathematical module'):
+        with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding'):
             semantic.validate_binding_owners([row], sources, {})
         self.assertTrue(semantic.validate_binding_owners([
             {**statement('geometry'), 'chapter': 'Geometry'}], sources, {})['same_module_verified'])
@@ -402,6 +510,17 @@ class BindingOwnershipTests(unittest.TestCase):
         row = {**statement('paper:2.12', *sources), 'chapter': 'ProofTools'}
         with self.assertRaisesRegex(ValueError, 'Non-public Blueprint binding'):
             semantic.validate_binding_owners([row], sources, {})
+
+    def test_geometry_binds_its_consequences_and_references_browder(self):
+        sources, _, _ = fixture({'geometric_result': [], 'browder': []},
+            owners={'geometric_result': 'Geometry', 'browder': 'Literature'})
+        row = {**statement('paper:1.1', 'geometric_result'), 'chapter': 'Geometry'}
+        api = {'geometric_result': 'Geometry', 'browder': 'Literature'}
+        self.assertTrue(semantic.validate_binding_owners([row], sources, api)
+                        ['same_module_verified'])
+        row['lean'].append('browder')
+        with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding'):
+            semantic.validate_binding_owners([row], sources, api)
 
     def test_every_authored_binding_belongs_to_its_source_module(self):
         """Read current sources; no generated site or compiled snapshot is required."""
@@ -462,10 +581,21 @@ class BindingOwnershipTests(unittest.TestCase):
         self.assertEqual(rows['paper:3.2']['lean'], ['KIP126.Synthetic.Context.Smn'])
         self.assertEqual(rows['paper:6.1']['lean'],
                          ['KIP126.ProofTools.Standard.generalizedLeibniz'])
-        for label in ('paper:2.12', 'paper:2.15', 'paper:5.10', 'paper:7.16', 'paper:7.18'):
+        for label in ('paper:2.12', 'paper:2.15', 'paper:5.10'):
             self.assertEqual(rows[label]['lean'], [], label)
             self.assertFalse(any(target.startswith('decl:') for target in rows[label]['uses']), label)
             self.assertTrue(rows[label]['uses'], label)
+            self.assertTrue(rows[label]['sketch'], label)
+        pending_statements = {
+            'paper:7.16': ('KIP126.Main.Paper.lemma_toda2ext', 'decl:a9808e5306fbcca6'),
+            'paper:7.18': ('KIP126.Main.Paper.corollary_2ext125', 'decl:d773ac60ab52ea8c'),
+        }
+        for label, (name, source) in pending_statements.items():
+            self.assertEqual(rows[label]['lean'], [name], label)
+            self.assertEqual([target for target in rows[label]['uses']
+                              if target.startswith('decl:')], [source], label)
+            self.assertTrue(any(not target.startswith('decl:')
+                                for target in rows[label]['uses']), label)
             self.assertTrue(rows[label]['sketch'], label)
 
 

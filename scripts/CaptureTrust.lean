@@ -93,6 +93,11 @@ import all KIP126.Literature.Classical
 import all KIP126.Literature.ClassicalRange
 import all KIP126.Literature.Delivery
 import all KIP126.Literature.EInfinity
+import all KIP126.Literature.Geometry.Manifolds
+import all KIP126.Literature.Geometry.KervaireInvariant
+import all KIP126.Literature.Geometry.Browder
+import all KIP126.Geometry
+import all KIP126.Geometry.Kervaire
 import all KIP126.Literature.Lift
 import all KIP126.Literature.May
 import all KIP126.Literature.Moss
@@ -512,7 +517,7 @@ run_cmd do
     let mod := env.header.moduleNames[idx.toNat]!
     unless #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic, `KIP126.Literature,
       `KIP126.E2Computation, `KIP126.ProofTools, `KIP126.AdamsCalculations,
-      `KIP126.Main].any (·.isPrefixOf mod) do continue
+      `KIP126.Main, `KIP126.Geometry].any (·.isPrefixOf mod) do continue
     let body := info.value? (allowOpaque := true)
     let direct := info.type.hasSorry || body.any (·.hasSorry)
     let synthetic := info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry)

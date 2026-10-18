@@ -224,16 +224,19 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
     does not contain zero, and is detected by $\lambda^4 h_0^2x_{125,9,2}$. Here $\alpha_1 = [x_{123,9}+h_0x_{123,8}]$ refers to the homotopy class described in Lemma~\ref{lem:x_123_9}.
 % END AIMPAPER STATEMENT
 % Mathematical dependencies: reviewed
-\uses{paper:7.14,paper:7.15,paper:7.6,sem:Main:sixth-differential,sem:Main:eta-detection,sem:Literature:low-toda-comparison,sem:Literature:symmetric-toda-comparison,sem:Literature:toda-functoriality,sem:Literature:moss-convergence,sem:Computation:nondivisibility,sem:Computation:products-vanishing,sem:Computation:low-differentials,sem:Computation:table-certification}
+\uses{paper:7.14,paper:7.15,paper:7.6,sem:Main:sixth-differential,sem:Main:eta-detection,sem:Literature:low-toda-comparison,sem:Literature:symmetric-toda-comparison,sem:Literature:toda-functoriality,sem:Computation:nondivisibility,sem:Computation:products-vanishing,sem:Computation:low-differentials,sem:Computation:table-certification}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 2482-2566](paper/main.tex.html#L2482). Form the bracket using alpha-one, identify its nonzero h0 multiple, and rule out the lower-filtration candidates using the low and symmetric Toda laws, Moss convergence and the sphere computations. The assumed conditions do not invoke Proposition 7.8 as a theorem.
 
-% Blueprint note: Nonemptiness of the bracket and an equation after multiplication by h0 are supporting results, not the stated nonzero detection of every bracket member. No direct formal counterpart is bound here.
-% Correspondence: Partial correspondence.
-% Blueprint note: Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. A compatible filtration-11 bracket member and the full indeterminacy control needed for the stated detection remain absent. The present bindings do not prove that complete detection claim.
+% Blueprint note: The public theorem states the complete nonzero detection conclusion for the same synthetic Toda bracket in the actual ninth lambda quotient. Its proof remains pending as an explicitly registered sorry; this binding records the formalized statement and does not claim a proof. Nonemptiness and the equation after multiplication by h0 remain supporting results.
+% Correspondence: Partial correspondence: complete formal statement; proof pending.
+\lean{KIP126.Main.Paper.lemma_toda2ext}
+\uses{decl:a9808e5306fbcca6}
+% Blueprint note: Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. All members have the same actual image under $Q_9\to Q_3$, and, under the stated hypotheses, detection by $\lambda^4Y$ is equivalent to that image being zero. The vanishing of this common image remains unproved; the original bracket member cannot be replaced by a different high-filtration representative.
 
 
 \sketch
 % Blueprint note: Original statement: paper/main.tex.html#L2470; article PDF: paper/2412.10879.pdf.
+% Blueprint note: The original argument also invokes Moss convergence. Its general mapping-spectrum framework is outside the current Main proof route and is not displayed here; this paper entry retains its partial formal correspondence and does not claim that omitted source input has been proved.
 \end{lemma}
 
 % AimPaper: 7.18 corollary 2571 2575
@@ -252,9 +255,11 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 \uses{paper:7.16,paper:7.14,sem:SpectralSequence:detected-difference,sem:Literature:filtered-product-detection}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 2577-2584](paper/main.tex.html#L2577). Read the h0 multiple from the bracket proof and absorb the higher-filtration correction into the chosen target representative; the same ambiguity argument handles every source representative.
 
-% Blueprint note: A goal predicate and a theorem restricted to Toda-bracket members do not establish the quantified assertion for every detected representative. No direct formal counterpart is bound here.
-% Correspondence: Partial correspondence.
-% Blueprint note: The predicate AnyYH0Extension states the full goal for every detected representative. A private theorem proves the exact nonzero $h_0$ equation for members of the same Toda bracket. The predicate is not a proof; annihilation of the difference between an arbitrary detected $Y$ representative and such a bracket member is still missing.
+% Blueprint note: The public theorem states the complete assertion for every detected source representative, with a target representative depending on that source. Its proof remains pending as an explicitly registered sorry; this binding records the formalized statement and does not claim a proof. A goal predicate and a result restricted to Toda-bracket members do not establish this quantified conclusion.
+% Correspondence: Partial correspondence: complete formal statement; proof pending.
+\lean{KIP126.Main.Paper.corollary_2ext125}
+\uses{decl:d773ac60ab52ea8c}
+% Blueprint note: The predicate AnyYH0Extension states the full goal for every detected representative. Private proofs establish the exact nonzero $h_0$ equation for members of the same Toda bracket, choice independence of $\lambda^2h_0y$ for all $Y$-detected representatives, and choice independence of $\lambda^6t$ for all $T$-detected representatives. The unmultiplied assertion remains unproved: higher filtration alone does not make an $h_0$ error vanish or allow it to be absorbed by changing $t$. A separately checked finite-quotient construction produces an actual filtration-15 error with nonzero $h_0$ image; it does not supply a counterexample satisfying all hypotheses of this corollary.
 
 
 \sketch

@@ -1,8 +1,8 @@
 """Curated mathematical Blueprint over an independently retained source graph.
 
 Proof states come from actual compiled declarations; reviewed mathematical
-dependencies augment the retained compiled projection. Public producers have
-Lean-bound frontier entries. Private producers stay in the
+dependencies augment the retained compiled projection. In-scope public producers
+have Lean-bound frontier entries. Other producers stay in the
 internal source graph and contribute to the dependent mathematical status.
 No proof responsibility, interface or native frontend is changed.
 """
@@ -17,11 +17,11 @@ from blueprint_paper import active_tex, resolve_paper_bindings
 
 DONE = {'lean_ok', 'mathlib_ok'}
 MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature',
-           'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main')
+           'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main', 'Geometry')
 
 
 def public_interfaces(root):
-    """The seven locks partition the public interfaces by actual module owner."""
+    """The eight locks partition the public interfaces by actual module owner."""
     result = {}
     for path in (root / 'metadata').glob('*-api.json'):
         lock = json.loads(path.read_text())
@@ -131,25 +131,57 @@ def local_status(names, sources):
             else 'lean_ok')
 
 
-def make_projection(sources, dependencies, obligations, statements, public_names=None):
+def main_proof_scope(root, sources, dependencies, obligations, public_names):
+    """Restrict presentation while retaining all compiled responsibilities."""
+    path = root / 'blueprint/scope.json'
+    if not path.exists():
+        return {'omitted_producers': [], 'restricted_obligations': []}
+    policy = json.loads(path.read_text())
+    if policy != {'route': 'Main', 'restricted_module': 'AdamsSynthetic'}:
+        raise ValueError('Unsupported Blueprint presentation scope')
+    lock = json.loads((root / 'metadata/main-api.json').read_text())
+    roots = {row['name'] for row in lock['declarations']}
+    if not roots or not roots <= sources.keys():
+        raise ValueError('Main presentation roots lack compiled source evidence')
+    ancestry = ancestor_sets(dependencies)
+    required = roots | set().union(*(ancestry[name] for name in roots))
+    restricted = {name for name in obligations
+                  if sources[name]['owner'] == 'AdamsSynthetic' and name not in required}
+    omitted = {name for name in public_names if name in sources and
+               local_status([name], sources) not in DONE and
+               (name in restricted or ancestry[name].intersection(restricted))}
+    if omitted.intersection(required):
+        raise ValueError('Presentation scope omitted a Main prerequisite')
+    return {**policy, 'roots': sorted(roots), 'omitted_producers': sorted(omitted),
+            'restricted_obligations': sorted(restricted),
+            'main_adams_synthetic_obligations': sorted(
+                name for name in obligations if sources[name]['owner'] == 'AdamsSynthetic'
+                and name in required)}
+
+
+def make_projection(sources, dependencies, obligations, statements, public_names=None,
+                    omitted_producers=(), authored_frontier_labels=()):
     """Pure projection. Statements have label/title/lean(actual kernel names).
 
     Result: entries keyed by label (lean, ancestors, local_status,
     expected_closed, frontier), uses keyed by label, and frontier member lists.
     Every visible dependency is justified by ALL target bindings occurring in
-    the consumer's strict actual ancestry. Private prerequisites remain in the
+    the consumer's strict actual ancestry. Undisplayed prerequisites remain in the
     complete source graph and affect mathematical status without a binding.
     """
     ancestry = ancestor_sets(dependencies)
     producers = sorted(n for n in sources if local_status([n], sources) not in DONE)
     private_producers = set(producers) - set(public_names) if public_names is not None else set()
-    public_producers = set(producers) - private_producers
+    omitted_producers = set(omitted_producers)
+    if not omitted_producers <= set(producers):
+        raise ValueError('Presentation scope names a non-producer')
+    public_producers = set(producers) - private_producers - omitted_producers
 
     def status(names):
         # The source archive retains exact declaration-local completion. At the
-        # mathematical boundary, unfinished private implementation must not
-        # disappear merely because private Lean bindings are prohibited.
-        internal = private_producers.intersection(
+        # mathematical boundary, unfinished work must not disappear merely
+        # because its producer has no independent presentation binding.
+        internal = (private_producers | omitted_producers).intersection(
             set(names) | set().union(*(ancestry[n] for n in names)))
         return local_status(set(names) | internal, sources), sorted(internal)
 
@@ -178,10 +210,29 @@ def make_projection(sources, dependencies, obligations, statements, public_names
         kind = obligations.get(name, {}).get('status', 'unverified')
         incidence = tuple(index for index, (_label, ancestors) in enumerate(consumers) if name in ancestors)
         groups[source['owner'], kind, incidence].append(name)
-    frontiers = {}
-    for (owner, kind, _incidence), names in sorted(groups.items()):
+    authored = sorted(entries.items())
+    carrier_bindings = {frozenset(entry['lean']) for _label, entry in authored}
+    authored_frontier_labels = set(authored_frontier_labels)
+    def frontier_label(owner, names):
         stable = '\n'.join(sorted(sources[n]['label'] for n in names))
-        label = 'frontier:' + owner + ':' + hashlib.sha256(stable.encode()).hexdigest()[:12]
+        return 'frontier:' + owner + ':' + hashlib.sha256(stable.encode()).hexdigest()[:12]
+    frontier_groups = []
+    for (owner, kind, _incidence), names in sorted(groups.items()):
+        by_binding = defaultdict(list)
+        for name in names:
+            bindings = tuple(label for label, entry in authored if name in entry['lean'])
+            by_binding[bindings].append(name)
+        # Reuse distinct authored results only when every part already has an
+        # exact carrier and the old group has no authored frontier to preserve.
+        # Existing frontier bindings are still checked against the full group.
+        parts = list(by_binding.values())
+        if (frontier_label(owner, names) in authored_frontier_labels
+                or not all(frozenset(part) in carrier_bindings for part in parts)):
+            parts = [names]
+        frontier_groups.extend((owner, kind, part) for part in parts)
+    frontiers = {}
+    for owner, kind, names in frontier_groups:
+        label = frontier_label(owner, names)
         # An authored exact producer group can itself serve as the frontier.
         equivalent = [key for key, entry in entries.items() if set(entry['lean']) == set(names)]
         if equivalent:
@@ -249,6 +300,7 @@ def make_projection(sources, dependencies, obligations, statements, public_names
             raise ValueError('Semantic projection changed actual compiled closure: ' + label)
     return {'entries': entries, 'uses': uses, 'frontiers': frontiers,
             'producer_names': producers, 'private_producer_names': sorted(private_producers),
+            'omitted_producer_names': sorted(omitted_producers),
             'source_ancestors': ancestry}
 
 
@@ -404,7 +456,14 @@ def prepare(root, sources, dependencies, obligations, paper_records):
         else:
             raise ValueError('Unexpected primary Blueprint label: ' + row['label'])
     validate_binding_owners(authored, sources, api)
-    projection = make_projection(sources, dependencies, obligations, authored, public_names=api)
+    scope = main_proof_scope(root, sources, dependencies, obligations, api)
+    frontier_labels = {row['label']
+        for path in (root / 'blueprint/frontier').glob('*.tex')
+        for row in parse_blueprint(active_tex(path.read_text()))[0]}
+    projection = make_projection(sources, dependencies, obligations, authored, public_names=api,
+                                 omitted_producers=scope['omitted_producers'],
+                                 authored_frontier_labels=frontier_labels)
+    projection['display_scope'] = scope
     frontier_authoring = read_frontier_authoring(root, projection, sources)
     for label, statement in frontier_authoring.items():
         # Presentation only: membership, status, ancestors and closure retain
@@ -419,6 +478,7 @@ def prepare(root, sources, dependencies, obligations, paper_records):
         'ProofTools': 'Leibniz and Mahowald formulas',
         'AdamsCalculations': 'Differentials and survival in the Adams spectral sequence',
         'Main': 'Further Kervaire invariant calculations',
+        'Geometry': 'Geometric consequences',
     }
     for owner in MODULES:
         rows = [r for r in projection['entries'].values() if r.get('frontier') and r['owner'] == owner]
@@ -493,6 +553,8 @@ def validate(graph, projection, analysis):
             'frontier_entries': sum(r['frontier'] for r in projection['entries'].values()),
             'statements': len(entries), 'unique_unfinished_producers': len(projection['producer_names']),
             'private_implementation_producers': len(projection['private_producer_names']),
+            'omitted_presentation_producers': len(projection.get('omitted_producer_names', [])),
+            'display_scope': projection.get('display_scope'),
             'entries_with_internal_obligations': sum(bool(r['internal_producers'])
                                                     for r in projection['entries'].values()),
             'dependency_edges': sum(map(len, projection['uses'].values())),

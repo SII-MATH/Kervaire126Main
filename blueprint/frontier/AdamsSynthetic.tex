@@ -74,12 +74,7 @@ For $X\in\mathcal C_0$ and $a,s,t\in\mathbb Z$, there is a $\mathbb Z$-linear is
 \lean{KIP126.AdamsSynthetic.Standard.firstQuotient}
 \end{definition}
 
-\begin{definition}[The second page in Milnor coordinates]
-\label{frontier:AdamsSynthetic:8b66ee46e41e}
-\level{fine}
-For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the group on the right is the cohomology of the normalized Milnor cobar complex.
-\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv}
-\end{definition}
+
 
 \begin{definition}[Normalized synthetic lifts]
 \label{frontier:AdamsSynthetic:8e642612876d}
@@ -122,11 +117,12 @@ Equip $\mathrm{Syn}$ with a preadditive, monoidal, pretriangulated category stru
 \lean{KIP126.AdamsSynthetic.Standard.syntheticCategory}
 \end{definition}
 
-\begin{definition}[The designated Hopf classes]
-\label{frontier:AdamsSynthetic:afb5017e1acf}
+\begin{definition}[The second page in Milnor coordinates]
+\label{frontier:AdamsSynthetic:8b66ee46e41e}
 \level{fine}
-For every $i\in\mathbb N$, choose a class $h_i\in E_2^{1,2^i}(S)$.
-\lean{KIP126.AdamsSynthetic.Standard.standardHi}
+For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the group on the right is the cohomology of the normalized Milnor cobar complex.
+\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv}
+% Blueprint note: The completed standardHi definition now uses this comparison. Its construction remains a registered upstream obligation, and no representative-level source recognition is claimed here.
 \end{definition}
 
 \begin{definition}[Synthetic functorial cofibers]
@@ -186,56 +182,15 @@ The monoidal category $\mathrm{Sp}$ is symmetric and closed. For each $W$, tenso
 \lean{KIP126.AdamsSynthetic.Standard.closedBackground}
 \end{definition}
 
-\begin{definition}[Convergence for finite mapping spectra]
-\label{frontier:AdamsSynthetic:96311a094390}
-\level{fine}
-Let $X,Y\in\mathrm{Sp}$ be finite. The Adams tower of $F(X,Y)$ has canonical isomorphisms
-\[
-E_\infty^{s,t}F(X,Y)\cong\operatorname{gr}_F^s\pi_{t-s}F(X,Y),
-\]
-identifying an infinite-cycle tower representative with the associated graded class of its projected homotopy lift.
-\lean{KIP126.AdamsSynthetic.Standard.mappingConvergence}
-\end{definition}
 
-\begin{definition}[Weight-lowering maps]
-\label{frontier:AdamsSynthetic:110602630fd8}
-\level{fine}
-For $X\in\mathcal C_0$ and $s,t,w_1,w_2\in\mathbb Z$ with $w_1\leq w_2\leq t$, let
-\[
-W_{w_2,w_1}\colon E_\infty^{s,t,w_2}(\nu X)\longrightarrow E_\infty^{s,t,w_1}(\nu X)
-\]
-be the weight-lowering homomorphism.
-\lean{KIP126.AdamsSynthetic.Standard.weight_map}
-\end{definition}
 
-\begin{definition}[Tensor products of converging sequences]
-\label{frontier:AdamsSynthetic:17c9809bc74d}
-\level{fine}
-Equip the category of converging, bigraded spectral sequences of abelian groups with a monoidal structure, with tensor product denoted by $\otimes$ and tensor unit denoted by $\mathbf 1$.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_monoidal}
-\end{definition}
 
-\begin{definition}[Converging mapping pairings]
-\label{frontier:AdamsSynthetic:2fc8b595d232}
-\level{fine}
-For finite spectra $X,Y,Z$, let $M(X,Y)$ be the converging Adams sequence of $F(X,Y)$. There is a converging pairing
-\[
-P_{X,Y,Z}\colon M(X,Y)\times M(Y,Z)\longrightarrow M(X,Z).
-\]
-It consists of compatible pairings of pages, infinite cycles, $E_\infty$, filtered abutments, and associated graded groups; the convergence isomorphisms identify the $E_\infty$ pairing with the associated graded pairing.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_pairing}
-\end{definition}
 
-\begin{definition}[Elementary tensor pairings]
-\label{frontier:AdamsSynthetic:3b6637d8abc6}
-\level{fine}
-For finite spectra $X,Y,Z$, there is a converging pairing
-\[
-T_{X,Y,Z}\colon M(X,Y)\times M(Y,Z)\longrightarrow M(X,Y)\otimes M(Y,Z).
-\]
-Its finite-page, infinite-cycle, $E_\infty$, filtered-abutment, and associated-graded pairings commute with the quotient, inclusion, and convergence maps.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_tensorPairing}
-\end{definition}
+
+
+
+
+
 
 \begin{definition}[Filtered synthetic shift comparisons]
 \label{frontier:AdamsSynthetic:63b3daf63e20}
@@ -244,26 +199,11 @@ For $X\in\mathcal S_0$ and $p,\delta\in\mathbb Z^2$, there is an isomorphism bet
 \lean{KIP126.AdamsSynthetic.Standard.shift_filtered}
 \end{definition}
 
-\begin{definition}[Units of mapping sequences]
-\label{frontier:AdamsSynthetic:798ab66d363c}
-\level{fine}
-For every finite spectrum $X$, choose an infinite cycle $u_X$ of degree $(0,0)$ in $M(X,X)$ and an element of filtration zero in its degree-zero abutment. Their images agree in the associated graded group under convergence. They determine compatible classes on every finite page and on $E_\infty$.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_identity}
-\end{definition}
 
-\begin{definition}[Enrichment of finite spectra]
-\label{frontier:AdamsSynthetic:84529392feed}
-\level{fine}
-The finite spectra admit an enrichment in the monoidal category of converging spectral sequences, with enriched composition and identity morphisms satisfying the enriched associativity and unit laws.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_enriched}
-\end{definition}
 
-\begin{definition}[The converging tensor-unit class]
-\label{frontier:AdamsSynthetic:bceac53496b8}
-\level{fine}
-The tensor unit $\mathbf 1$ carries an infinite cycle of degree $(0,0)$ and a filtration-zero element of its degree-zero abutment. Their associated graded classes agree under convergence, giving compatible unit classes on finite pages and on $E_\infty$.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_unit_data}
-\end{definition}
+
+
+
 
 \begin{definition}[Finite-page synthetic shift comparisons]
 \label{frontier:AdamsSynthetic:f3257e955b3d}
@@ -275,46 +215,15 @@ E_r^{s,p_1+s,p_2}(X)\cong E_r^{s,(p+\delta)_1+s,(p+\delta)_2}(\Sigma^\delta X).
 \lean{KIP126.AdamsSynthetic.Standard.shift_page}
 \end{definition}
 
-\begin{definition}[Point-set realizations, cofibers, and smash products]
-\label{frontier:AdamsSynthetic:5934d2f3caff}
-\level{fine}
-The classical and synthetic categories have stable point-set model realizations whose homotopy categories are equivalent to $\mathrm{Sp}$ and $\mathrm{Syn}$, respectively. The classical model is closed symmetric monoidal, complete, cocomplete, and cofibrantly generated; its model tensor is compatible with the model structure. On cofibrant inputs, localization identifies its tensor with the tensor in $\mathrm{Sp}$, naturally in both inputs, and sends a cofibrant replacement of its unit to $S$.
 
-Write $Q$ for passage from classical prespectra to $\mathrm{Sp}$ under the source equivalence. For well-based prespectra $X,Y$ and $f\colon X\to Y$, there is an isomorphism $Q\operatorname{Cone}(f)\cong C(Qf)$ commuting with the cone inclusion and boundary. For good based spaces $A,B$, there is a natural isomorphism $Q\Sigma^\infty A\otimes Q\Sigma^\infty B\cong Q\Sigma^\infty(A\wedge B)$ compatible with the left unit. For all prespectra $X,Y$, the tensor $QX\otimes QY$ is naturally isomorphic to $Q(RX\wedge_{\mathrm{diag}}RY)$, where $R$ is the good replacement functor.
-\lean{KIP126.AdamsSynthetic.Standard.sourceDerivedSmashRecognition,KIP126.AdamsSynthetic.Standard.sourceCofiberRecognition,KIP126.AdamsSynthetic.Standard.spectrumRealization,KIP126.AdamsSynthetic.Standard.syntheticRealization,KIP126.AdamsSynthetic.Standard.sourceGeneratorTensorRecognition}
-\end{definition}
 
-\begin{definition}[Good replacement of prespectra]
-\label{frontier:AdamsSynthetic:4d1e8d566e6a}
-\level{fine}
-There is a functor $R$ on classical prespectra and a natural transformation $R\to\operatorname{id}$ such that $RX$ is levelwise good for every $X$, and every comparison $RX\to X$ is a stable equivalence.
-\lean{KIP126.AdamsSynthetic.Standard.sourceReplacement}
-\end{definition}
 
-\begin{definition}[First-page Milnor coordinates]
-\label{frontier:AdamsSynthetic:7bd1ea96b79a}
-\level{fine}
-For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism
-\[
-\phi_{s,t}\colon E_1^{s,t}(T(S))\cong C^{s,t}_{\mathrm{Milnor}},
-\]
-where the left side is the first layer group of the canonical coefficient-unit tower and the right side is the normalized Milnor cochain group.
-\lean{KIP126.AdamsSynthetic.Standard.milnorCoordinates}
-\end{definition}
 
-\begin{definition}[Comparison with the canonical Adams sequence]
-\label{frontier:AdamsSynthetic:dfe52f1f4fa8}
-\level{fine}
-For every $X\in\mathrm{Sp}$, there is an isomorphism between its classical Adams sequence and the sequence of its canonical coefficient-unit tower. The isomorphism includes the ambient groups, cycles, boundaries, finite pages, differentials, and infinite cycles and boundaries.
-\lean{KIP126.AdamsSynthetic.Standard.classical_canonicalIso}
-\end{definition}
 
-\begin{definition}[Recognition of classical stable homotopy]
-\label{frontier:AdamsSynthetic:e1d0c165854d}
-\level{fine}
-The ordinary stable localization of sequential prespectra is equivalent to $\mathrm{Sp}$. Under this equivalence, the source sphere corresponds to $S$, its identity to the positive sphere generator, and integer stable homotopy groups correspond naturally to the homotopy groups in $\mathrm{Sp}$, preserving zero and stable addition. The equivalence commutes naturally with desuspension and with suspension of well-based prespectra. A source mod-two coefficient prespectrum corresponds to $H\mathbb F_2$, with the same zeroth-homotopy coordinate, vanishing in nonzero degrees, and normalized coefficient unit.
-\lean{KIP126.AdamsSynthetic.Standard.sourceRecognition}
-\end{definition}
+
+
+
+
 
 
 
@@ -342,57 +251,15 @@ Let $X,Y$ be finite spectra and $f\colon X\to Y$. If $f$ factors through every i
 \lean{KIP126.AdamsSynthetic.Standard.finite_map_separation}
 \end{theorem}
 
-\begin{theorem}[Filtration and normalization identities]
-\label{frontier:AdamsSynthetic:fe4700bf9174}
-\level{fine}
-The following statements hold for the classical coefficient-unit tower and the source comparisons above.
-\begin{itemize}
-\item For finite $X,Y$, $f\colon X\to Y$, and $s\in\mathbb Z$, $f$ has map Adams filtration at least $s$ if and only if its corresponding class in $\pi_0F(X,Y)$ lies in $F^s$.
-\item If $f\colon X\to X'$ and $g\colon Y\to Y'$ are stable equivalences of prespectra, then $Rf\wedge_{\mathrm{diag}}Rg$ is a stable equivalence.
-\item For finite, rationally acyclic, homotopy two-local $X$ and $i\in\mathbb Z$, there exists $N\in\mathbb Z$ such that $F^s\pi_iX=0$ whenever $N<s$.
-\item For $r,s\in\mathbb Z$, sphere braiding is multiplication by $(-1)^{rs}$ under the sphere-smash comparison with $S^{r+s}$.
-\item For $s,t\in\mathbb N$ and a first-layer element $z$ of the canonical sphere tower that is a cycle for page two, $\Phi_{s,t}$ sends the class of $z$, transported to the classical sphere sequence, to the Milnor cohomology class of $\phi_{s,t}(z)$.
-\item One has $\Phi_{0,0}(1)=1_{\mathrm{Milnor}}$.
-\item For $i\in\mathbb N$, one has $\Phi_{1,2^i}(h_i)=h_i^{\mathrm{Milnor}}$.
-\end{itemize}
-\lean{KIP126.AdamsSynthetic.Standard.mapping_filtration_iff,KIP126.AdamsSynthetic.Standard.sourceReplacement_flat,KIP126.AdamsSynthetic.Standard.adams_filtration_bounded,KIP126.AdamsSynthetic.Standard.sphere_twist,KIP126.AdamsSynthetic.Standard.sphereE2_milnor_classOfCycle,KIP126.AdamsSynthetic.Standard.sphereUnit_milnor,KIP126.AdamsSynthetic.Standard.standardHi_milnor}
-\end{theorem}
 
-\begin{theorem}[Weight maps preserve common representatives]
-\label{frontier:AdamsSynthetic:3f7f165376fd}
-\level{fine}
-Let $X\in\mathcal C_0$ and $s,t,w_1,w_2\in\mathbb Z$ with $w_1\leq w_2\leq t$. If $z\in E_\infty^{s,t,w_2}(\nu X)$ and the weight-$w_2$ synthetic label of $x\in E_2^{s,t}(X)$ have a common infinite-cycle representative, then $W_{w_2,w_1}(z)$ and the weight-$w_1$ label of $x$ have a common infinite-cycle representative.
-\lean{KIP126.AdamsSynthetic.Standard.weight_representative}
-\end{theorem}
 
-\begin{theorem}[Enriched composition and identities on pages and abutments]
-\label{frontier:AdamsSynthetic:4cc31199aa3b}
-\level{fine}
-Let $X,Y,Z$ be finite spectra, and identify their enriched hom objects with $M(X,Y)$, $M(Y,Z)$, and $M(X,Z)$. Write $c\colon M(X,Y)\otimes M(Y,Z)\to M(X,Z)$ for enriched composition. For $r\in\mathbb Z$, $i,j\in\mathbb Z^2$, and page classes $x,y$ of these degrees,
-\[
-c_r(T_r(x,y))=P_r(x,y).
-\]
-For $i,j\in\mathbb Z$ and abutment elements $x,y$ of these degrees, one has $c_*(T_*(x,y))=P_*(x,y)$. The enriched identity $e_X\colon\mathbf1\to M(X,X)$ sends the tensor-unit class to the mapping unit on every page $r\in\mathbb Z$ and in the degree-zero abutment.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_abutment,KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_abutment,KIP126.AdamsSynthetic.Standard.mappingEnriched_composition_page,KIP126.AdamsSynthetic.Standard.mappingEnriched_identity_page}
-\end{theorem}
 
-\begin{theorem}[Enriched hom objects are mapping sequences]
-\label{frontier:AdamsSynthetic:5506df32761b}
-\level{fine}
-For finite spectra $X,Y$, the enriched hom object is $M(X,Y)$, the converging Adams sequence of $F(X,Y)$.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_hom_eq}
-\end{theorem}
 
-\begin{theorem}[Associativity and units of mapping pairings]
-\label{frontier:AdamsSynthetic:b1eb322c2456}
-\level{fine}
-For finite spectra $W,X,Y,Z$, page $r\in\mathbb Z$, and page classes $x\in M_r^i(W,X)$, $y\in M_r^j(X,Y)$, and $z\in M_r^k(Y,Z)$, one has
-\[
-P_r(P_r(x,y),z)=P_r(x,P_r(y,z))
-\]
-under the identifications of the two degree sums. For finite $X,Y$ and $x\in M_r^k(X,Y)$, the mapping-unit classes satisfy $P_r(u_X,x)=x=P_r(x,u_Y)$ under the zero-degree identifications. The abutment of $u_X$ corresponds to $\operatorname{id}_X\in\pi_0F(X,X)$.
-\lean{KIP126.AdamsSynthetic.Standard.mapping_page_right_unital,KIP126.AdamsSynthetic.Standard.mapping_page_left_unital,KIP126.AdamsSynthetic.Standard.mapping_identity_actual,KIP126.AdamsSynthetic.Standard.mapping_page_associative}
-\end{theorem}
+
+
+
+
+
 
 \begin{theorem}[Shift comparison on ambient homotopy]
 \label{frontier:AdamsSynthetic:b321b7897dca}
@@ -401,55 +268,15 @@ Let $X\in\mathcal S_0$, $p,\delta\in\mathbb Z^2$, and $\alpha\in\pi_{p_1,p_2}X$.
 \lean{KIP126.AdamsSynthetic.Standard.shift_ambient_eq}
 \end{theorem}
 
-\begin{theorem}[Mapping parity and shifted composition]
-\label{frontier:AdamsSynthetic:db1a37fe731a}
-\level{fine}
-For finite spectra $X,Y,Z$, the parity of the converging mapping pairing is the Adams stem parity. Let $a,b\in\mathbb Z$, $x\in\pi_aF(X,Y)$, and $y\in\pi_bF(Y,Z)$. Under the mapping-homotopy equivalence, $P_*(x,y)$ is the composite
-\[
-\Sigma^{a+b}X\cong\Sigma^b\Sigma^aX\xrightarrow{\Sigma^b x}\Sigma^bY\xrightarrow y Z.
-\]
-\lean{KIP126.AdamsSynthetic.Standard.mapping_parity,KIP126.AdamsSynthetic.Standard.mapping_abutment_compatible}
-\end{theorem}
 
-\begin{theorem}[The tensor-unit convergence degree]
-\label{frontier:AdamsSynthetic:f4b37c6194bd}
-\level{fine}
-The convergence reindexing of the monoidal tensor unit sends $(0,0)$ to $(0,0)$.
-\lean{KIP126.AdamsSynthetic.Standard.mappingEnriched_unit_reindex}
-\end{theorem}
 
-\begin{theorem}[Invariance under mod-two cohomology equivalences]
-\label{frontier:AdamsSynthetic:218f994e5318}
-\level{fine}
-Let $f\colon X\to Y$ be a morphism in the ordinary stable source category. Suppose that precomposition with $f$ induces a bijection
-\[
-[Y,\Sigma^dH\mathbb F_2]\longrightarrow[X,\Sigma^dH\mathbb F_2]
-\]
-for every $d\in\mathbb Z$, with coefficients and shifts identified by the source equivalence. Then the induced morphism of classical Adams sequences is an isomorphism, including its infinite-cycle and boundary comparisons.
-\lean{KIP126.AdamsSynthetic.Standard.sourceClassical_inverts_hf2}
-\end{theorem}
 
-\begin{theorem}[Milnor coordinates preserve the sphere product]
-\label{frontier:AdamsSynthetic:48d9205ecf08}
-\level{fine}
-For $s,t,s',t'\in\mathbb N$, $x\in E_2^{s,t}(S)$, and $y\in E_2^{s',t'}(S)$, one has
-\[
-\Phi_{s+s',t+t'}(xy)=\Phi_{s,t}(x)\smile\Phi_{s',t'}(y),
-\]
-where the product on the left uses the sum-degree identification and the product on the right is the normalized cobar cup product.
-\lean{KIP126.AdamsSynthetic.Standard.sphereProduct_milnor}
-\end{theorem}
 
-\begin{theorem}[Milnor coordinates preserve the first differential]
-\label{frontier:AdamsSynthetic:e2b5fb1dbff1}
-\level{fine}
-For $s,t\in\mathbb N$ and $x\in E_1^{s,t}(T(S))$, one has
-\[
-\phi_{s+1,t}(d_1x)=d_{\mathrm{Milnor}}\phi_{s,t}(x),
-\]
-where $d_1$ is the connecting-map differential of the canonical sphere tower.
-\lean{KIP126.AdamsSynthetic.Standard.milnorCoordinates_differential}
-\end{theorem}
+
+
+
+
+
 
 \begin{theorem}[First-quotient labels under positive weight shift]
 \label{frontier:AdamsSynthetic:894dd8ba400f}

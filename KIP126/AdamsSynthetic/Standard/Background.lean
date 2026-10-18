@@ -66,11 +66,11 @@ public def sphereE2_milnorEquiv (s t : ℕ) :
       MilnorCohomology s t := by
   sorry
 
-/-- The designated family retains its existing construction boundary.
-`Standard.standardHi_milnor` fixes its identity by the actual E₁-to-E₂
-comparison; both construction and source identification remain registered.
-Keeping this boundary also preserves existing computational consumers. -/
-public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := by sorry
+/-- Pull back the specified Milnor cocycles to the actual sphere E₂.
+The fixed comparison remains a registered construction obligation.
+Its source recognition is separate; the pullback does not complete it.
+No source comparison is completed. -/
+public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := (sphereE2_milnorEquiv 1 (2 ^ i)).symm (milnorHiClass i)
 public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
 public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry
 public def classicalSuspension (X : ClassicalObject) :

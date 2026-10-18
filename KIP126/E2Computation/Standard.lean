@@ -207,7 +207,7 @@ public theorem square_nonzero : h6Square ≠ 0 := by sorry
 public theorem square_exhaustive (x : model.classical.sphere.Page 2 (2,128)) :
     x = 0 ∨ x = h6Square := by sorry
 
-public abbrev nuCofiberSequence :=
+public noncomputable abbrev nuCofiberSequence :=
   model.classical.obj (HasFunctorialCofiber.cofib model.auxiliary.nuMap)
 public noncomputable def bottom (s t : ℤ) :
     model.classical.sphere.Page 2 (s,t) →ₗ[ℤ] nuCofiberSequence.Page 2 (s,t) :=

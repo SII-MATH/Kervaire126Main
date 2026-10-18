@@ -8,6 +8,13 @@ open HomotopicalAlgebra KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.AdamsSynthetic.Standard
 noncomputable section
 
+-- The designated class is the specified cocycle under the fixed comparison;
+-- this verifies its normalization without using the pending recognition theorem.
+example (i : ℕ) :
+    sphereE2_milnorEquiv 1 (2 ^ i) (standardHi i) =
+      KIP126.AdamsSynthetic.milnorHiClass i :=
+  (sphereE2_milnorEquiv 1 (2 ^ i)).apply_symm_apply _
+
 example (n : ℤ) (X : Spectrum) :
     (Sphere n : Spectrum) ⊗ X ≅ (shiftFunctor Spectrum n).obj X :=
   closedBackground.sphereTensorShift n X
