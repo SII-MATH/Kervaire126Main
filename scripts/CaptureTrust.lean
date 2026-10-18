@@ -72,20 +72,6 @@ import all KIP126.AdamsSynthetic.System
 import all KIP126.AdamsSynthetic.Tower
 import all KIP126.AdamsSynthetic.Weight
 import all KIP126.AdamsSynthetic
-import all KIP126.Computation.Basis
-import all KIP126.Computation.Source
-import all KIP126.Computation.Standard
-import all KIP126.Computation.Table.Archive
-import all KIP126.Computation.Table.Data
-import all KIP126.Computation.Table.Dimensions
-import all KIP126.Computation.Table.Internal.SourceExpression
-import all KIP126.Computation.Table.Internal.ZeroDimension
-import all KIP126.Computation.Table.Relations
-import all KIP126.Computation.Table.Syntax
-import all KIP126.Computation.Table.ThetaRelations
-import all KIP126.Computation.Table.Values
-import all KIP126.Computation.Table
-import all KIP126.Computation
 import all KIP126.E2Computation.AdamsTwoLine
 import all KIP126.E2Computation.Basis
 import all KIP126.E2Computation.Source
@@ -513,7 +499,7 @@ run_cmd do
     let mod := env.header.moduleNames[idx.toNat]!
     unless #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic, `KIP126.Literature,
       `KIP126.E2Computation, `KIP126.ProofTools, `KIP126.AdamsCalculations,
-      `KIP126.Computation, `KIP126.Main].any (·.isPrefixOf mod) do continue
+      `KIP126.Main].any (·.isPrefixOf mod) do continue
     let body := info.value? (allowOpaque := true)
     let direct := info.type.hasSorry || body.any (·.hasSorry)
     let synthetic := info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry)

@@ -9,7 +9,7 @@ source addresses. The fixed upstream comparison is used, not constructed here. -
 open private sourceValue value_comparison from
   KIP126.E2Computation.Table.Internal.SourceExpression
 
-namespace Tests.Computation.SourceExpression
+namespace Tests.E2Computation.SourceExpression
 open CategoryTheory KIP126.Computation KIP126.Computation.Table
 
 example (e : Expression) (ht : e.degree.2 ≤ 261) :
@@ -45,9 +45,7 @@ run_cmd do
   let env ← getEnv
   for m in env.header.moduleNames do
     if (`KIP126.LinProgram).isPrefixOf m ||
-        (`KIP126.Computation.Internal).isPrefixOf m ||
         (`KIP126.E2Computation.Internal).isPrefixOf m ||
-        (`KIP126.Computation).isPrefixOf m ||
         (`KIP126.ProofTools).isPrefixOf m ||
         (`KIP126.AdamsCalculations).isPrefixOf m then
       throwError "expression comparison imported a concrete source model: {m}"
@@ -59,4 +57,4 @@ run_cmd do
       unless [``propext, ``Classical.choice, ``Quot.sound, `sorryAx].contains axiomName do
         throwError "expression helper uses an unexpected axiom: {declaration}: {axiomName}"
 
-end Tests.Computation.SourceExpression
+end Tests.E2Computation.SourceExpression

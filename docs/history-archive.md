@@ -13,7 +13,7 @@
 | `metadata/upstream-update-review.json` | `local-history/metadata/upstream-update-review.json` |
 | `metadata/fixed-interface-migration.json` | `local-history/metadata/fixed-interface-migration.json` |
 
-完整的 `*-contracts.json`、`*-sources.json`（包括 AimPaper）、`migration-baseline.json` 与 `main-proof-port-review.json` 也已移至 `local-history/metadata/`。数学说明迁入 Blueprint/hgraph，出处通过 bibliography 引用。`metadata/` 只保留十份精简构建基线，见 [元数据检查基线](metadata-baselines.md)。重要的持续维护记录 `MEMO.md` 保留在仓库根目录并由 Git 跟踪。
+完整的 `*-contracts.json`、`*-sources.json`（包括 AimPaper）、`migration-baseline.json` 与 `main-proof-port-review.json` 也已移至 `local-history/metadata/`。数学说明迁入 Blueprint/hgraph，出处通过 bibliography 引用。`metadata/` 只保留九份精简构建基线，见 [元数据检查基线](metadata-baselines.md)。重要的持续维护记录 `MEMO.md` 保留在仓库根目录并由 Git 跟踪。
 
 一次性的 Blueprint 论文对应复核清单 `blueprint/paper/mapping-review.md`，以及旧快照的章节迁移和书目刷新脚本 `scripts/refresh-blueprint-layout.py`、`scripts/refresh-blueprint-paper.py`，也按原路径归档。当前生成与发布使用 `build-blueprint.py`、`publish-blueprint.py`，不依赖这些历史材料。
 
