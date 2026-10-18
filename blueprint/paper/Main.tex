@@ -1,0 +1,261 @@
+% Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{The permanence endpoint}
+
+% AimPaper: 1.4 theorem 128 130
+\begin{theorem}[Permanence of $h_6^2$]
+\label{paper:1.4}
+\source{AimPaper Theorem 1.4}
+\level{coarse}
+\textit{(From \cite{LWX126}, Theorem 1.4.)}
+% BEGIN AIMPAPER STATEMENT
+[Theorem~\ref{thm:126survives}] \label{thm:h_6_sq}\label{thm:h62}
+    The element $h_6^2$ survives to the $E_\infty$-page in the Adams spectral sequence.
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: This is the same permanence target as Theorem 7.1. The fixed formal statement additionally retains a common permanent representative and its nonzero limiting image.
+\lean{KIP126.Main.h6_sq_permanent}
+% Blueprint note: Formal counterparts: \ref{decl:1f8cdeb3f7818088}.
+\uses{decl:1f8cdeb3f7818088}
+% Blueprint note: The original paper presents this same conclusion twice; the two blueprint occurrences represent one mathematical target.
+% Blueprint note: Original statement: paper/main.tex.html#L128; article PDF: paper/2412.10879.pdf.
+\end{theorem}
+
+% AimPaper: 1.5 corollary 151 154
+\begin{corollary}[Survivors on the Adams 2-line]
+\label{paper:1.5}
+\source{AimPaper Corollary 1.5}
+\level{coarse}
+\textit{(From \cite{LWX126}, Corollary 1.5.)}
+% BEGIN AIMPAPER STATEMENT
+\label{cor:2line}
+    On the Adams 2-line, the only non-trivial elements that survive in the Adams spectral sequence are:
+    $$h_0h_2, \ h_0h_3, \ h_2h_4, \ h_1h_j \ (j \geq 3), \ h_j^2 \ (j \leq 6).$$
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence; complete local classification proof using the corrected third-page candidate interface.
+\lean{KIP126.Main.adams_two_line_classification}
+\uses{decl:1f5e564f6809671e}
+\par\emph{Proof.} Write any nonzero second-line class as a standard product using the exhaustive $E_2$ basis. Its third-page continuation restricts it to the corrected Adams--Lin--Leibniz candidates, including $h_0h_4$. Four exceptional mixed products support nonzero outgoing differentials, while HHR excludes squares of index at least seven. Conversely, the remaining products survive by the low-dimensional, Mahowald-family and Kervaire literature inputs, together with the main $h_6^2$ theorem.
+% Blueprint note: This binds a proof of the complete AdamsTwoLineClassification, not its proposition-valued definition or only its stem-126 specialization. The proof has no caller premise or local sorry. Nine new Literature source/comparison obligations, one unbounded E2 basis obligation and one Adams d2-stage calculation obligation were explicitly authorized and separately registered. These upstream gaps remain visible through compiled dependency closure; the complete formalization is not yet transitively closed.
+% Blueprint note: Approved source correction (2026-10-18): The original proof's E3 list omits h0 h4, which reaches E3 before its nonzero d3; see \cite{IWX}, Table 6, p.~222. The corrected public candidate predicate includes it, and Main excludes it using the separately registered Literature input iwx_h0_h4_d3. All square indices likewise remain E3 candidates until the later HHR exclusion. The original final statement above is preserved. The local assembly is complete relative to the corrected upstream interfaces; their source-to-fixed-model proofs remain pending. This does not turn a compilation check into a transitive proof-completion claim.
+% Blueprint note: Original statement: paper/main.tex.html#L151; article PDF: paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 7.1 theorem 2106 2108
+\begin{theorem}[The permanence theorem]
+\label{paper:7.1}
+\source{AimPaper Theorem 7.1}
+\level{coarse}
+\textit{(From \cite{LWX126}, Theorem 7.1.)}
+% BEGIN AIMPAPER STATEMENT
+[Theorem~\ref{thm:h_6_sq}] \label{thm:126survives}
+    The element $h_6^2$ survives to the $E_\infty$-page in the Adams spectral sequence.
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: This repeats Theorem 1.4 in the proof section of the paper. Both occurrences bind the same fixed nonzero-permanence theorem.
+\lean{KIP126.Main.h6_sq_permanent}
+% Blueprint note: Formal counterparts: \ref{decl:1f8cdeb3f7818088}.
+\uses{decl:1f8cdeb3f7818088}
+% Blueprint note: The original paper presents this same conclusion twice; the two blueprint occurrences represent one mathematical target.
+% Blueprint note: Original statement: paper/main.tex.html#L2106; article PDF: paper/2412.10879.pdf.
+\end{theorem}
+
+\section{The last differential and its detection conditions}
+
+% AimPaper: 7.8 proposition 2181 2204
+\begin{proposition}[The last differential and its detection conditions]
+\label{paper:7.8}
+\source{AimPaper Proposition 7.8}
+\level{coarse}
+\textit{(From \cite{LWX126}, Proposition 7.8.)}
+% BEGIN AIMPAPER STATEMENT
+\label{prop:possible_h_6_sq}\label{prop:possibleh62}
+Exactly one of the following two statements is true:
+\begin{enumerate}
+    \item The element $h_6^2$ survives to the $E_\infty$-page.
+   
+    \item There is a nonzero classical Adams differential 
+    $$d_{12}(h_6^2) = h_1h_4x_{109,12}.$$
+\end{enumerate}
+Furthermore, statement $(2)$ is true if and only if the following three statements are all true:
+\begin{enumerate} \setcounter{enumi}{2}
+    \item \leavevmode\vspace*{-\dimexpr\abovedisplayskip + \baselineskip}  
+    $$d_6(x_{126,8,4} + x_{126,8}) = 0.$$
+    
+    \item There exists a $\theta_5$ such that 
+    $\theta_5^2$ is detected by $\lambda^6 h_0^2x_{124,8}$. In particular, 
+    $$\theta_5^2 = \lambda^6 [h_0^2x_{124,8}] \neq 0 \in \pi_{124,124+4}S^{0,0}$$
+    for some $[h_0^2x_{124,8}]$.
+
+    \item There exists a homotopy class $[h_0^2x_{124,8}]$ such that
+    $\lambda^3 \eta [h_0^2x_{124,8}]$ is detected by $\lambda^6 h_1h_4x_{109,12}$. In particular, we have 
+    $$\lambda^3 \eta [h_0^2x_{124,8}] = \lambda^6 [h_1h_4x_{109,12}] \in \pi_{125,125+8} S^{0,0}$$
+    for some $[h_1h_4x_{109,12}]$.
+\end{enumerate}
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: The public theorem gives the exclusive permanence/nonzero-$d_{12}$ dichotomy and the full equivalence with $C_3$, $C_4$ and $C_5$ on the fixed system.
+\lean{KIP126.Main.h6_square_differential_dichotomy_and_criterion}
+% Blueprint note: Formal counterparts: \ref{decl:02115125beb2caa1}.
+\uses{decl:02115125beb2caa1}
+% Blueprint note: Original statement: paper/main.tex.html#L2181; article PDF: paper/2412.10879.pdf.
+\end{proposition}
+
+% AimPaper: 7.9 proposition 2208 2210
+\begin{proposition}[Incompatibility of $C_3$ and $C_5$]
+\label{paper:7.9}
+\source{AimPaper Proposition 7.9}
+\level{coarse}
+\textit{(From \cite{LWX126}, Proposition 7.9.)}
+% BEGIN AIMPAPER STATEMENT
+\label{prop:state5false}
+    If statement $(3)$ is true, then statement $(5)$ in Proposition~\ref{prop:possible_h_6_sq} must be false.
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: The public theorem proves $C_3\Rightarrow\neg C_5$ for the fixed detection predicates.
+\lean{KIP126.Main.eta_extension_excluded_of_d6_vanishes}
+% Blueprint note: Formal counterparts: \ref{decl:b76cf0b56fbb3b6d}.
+\uses{decl:b76cf0b56fbb3b6d}
+% Blueprint note: Original statement: paper/main.tex.html#L2208; article PDF: paper/2412.10879.pdf.
+\end{proposition}
+
+% AimPaper: 7.10 lemma 2221 2228
+\begin{lemma}[Independence of the theta choice]
+\label{paper:7.10}
+\source{AimPaper Lemma 7.10}
+\level{coarse}
+\textit{(From \cite{LWX126}, Lemma 7.10.)}
+% BEGIN AIMPAPER STATEMENT
+\label{lem:equistate4}
+    The statement $(4)$ in Proposition~\ref{prop:possible_h_6_sq} is equivalent to the following statement $(4')$:
+    \begin{enumerate}[label=(\arabic*')]\setcounter{enumi}{3} 
+    \item For every $\theta_5$, we have $\theta_5^2$ is detected by $\lambda^6 h_0^2x_{124,8}$. In particular, 
+    $$\theta_5^2 = \lambda^6 [h_0^2x_{124,8}] \neq 0 \in \pi_{124,124+4}S^{0,0}$$
+    for some $[h_0^2x_{124,8}]$.
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: The existence of a suitable theta choice in $C_4$ is equivalent to the same nonzero-detection condition for every admissible theta choice.
+\lean{KIP126.Main.theta5_square_nonzero_detection_choice_equivalence}
+% Blueprint note: Formal counterparts: \ref{decl:a6d701d30548bc25}.
+\uses{decl:a6d701d30548bc25}
+% Blueprint note: Original statement: paper/main.tex.html#L2221; article PDF: paper/2412.10879.pdf.
+\end{lemma}
+
+% AimPaper: 7.11 lemma 2244 2252
+\begin{lemma}[Independence of the detected $U$ representative]
+\label{paper:7.11}
+\source{AimPaper Lemma 7.11}
+\level{coarse}
+\textit{(From \cite{LWX126}, Lemma 7.11.)}
+% BEGIN AIMPAPER STATEMENT
+\label{lem:equistate5}
+    The statement $(5)$ in Proposition~\ref{prop:possible_h_6_sq} is equivalent to the following statement $(5')$:
+    \begin{enumerate}[label=(\arabic*')]\setcounter{enumi}{4} 
+    \item For every homotopy class $[h_0^2x_{124,8}]$, we have
+    $\lambda^3 \eta [h_0^2x_{124,8}]$ is detected by $\lambda^6 h_1h_4x_{109,12}$. In particular, we have 
+    $$\lambda^3 \eta [h_0^2x_{124,8}] = \lambda^6 [h_1h_4x_{109,12}] \in \pi_{125,125+8} S^{0,0}$$
+    for some $[h_1h_4x_{109,12}]$.
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: The existence of a suitable representative in $C_5$ is equivalent to the same detection condition for every admissible $U$ representative.
+\lean{KIP126.Main.eta_extension_detection_choice_equivalence}
+% Blueprint note: Formal counterparts: \ref{decl:d53e516f3bb1152b}.
+\uses{decl:d53e516f3bb1152b}
+% Blueprint note: Original statement: paper/main.tex.html#L2244; article PDF: paper/2412.10879.pdf.
+\end{lemma}
+
+\section{Local constructions in the ninth lambda quotient}
+
+% AimPaper: 7.14 lemma 2387 2403
+\begin{lemma}[The class $\alpha_1$ and its correction terms]
+\label{paper:7.14}
+\source{AimPaper Lemma 7.14}
+\level{coarse}
+\textit{(From \cite{LWX126}, Lemma 7.14.)}
+% BEGIN AIMPAPER STATEMENT
+\label{lem:x_123_9}\label{lem:x1239}
+    There exists a homotopy class 
+    $$\alpha_1 = [x_{123,9}+h_0x_{123,8}] \in \pi_{123,123+9} S^{0,0}/\lambda^9$$
+    with the following properties:
+    \begin{enumerate}
+    \item For any homotopy class $[h_0^2 x_{124,8}]$, there exist homotopy classes 
+    $$\alpha_2 \in \pi_{124,124+13} S^{0,0}/\lambda^9, \ \alpha_3 \in \pi_{125,125+15} S^{0,0}/\lambda^9,$$ 
+    such that 
+    \begin{align*}
+        \lambda^3 \eta \cdot \alpha_1 & = \lambda^3 [h_0^2 x_{124,8}] + 
+\lambda^6 \alpha_2 && \in \pi_{124,124+7} S^{0,0}/\lambda^9,\\
+\eta \cdot \alpha_2 & = \lambda \cdot \alpha_3 && \in \pi_{125,125+14} S^{0,0}/\lambda^9,
+    \end{align*}
+\item \leavevmode\vspace*{-\dimexpr\abovedisplayskip + \baselineskip} 
+$$\lambda^3 \cdot \alpha_1 \cdot [h_0] = 0 \in \pi_{123,123+7} S^{0,0}/\lambda^9.$$
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: A single detected class in the eleventh lambda quotient supplies the specified class in the ninth quotient, the two correction identities for every untruncated $U$ representative, and the exact $h_0$-annihilation relation.
+\lean{KIP126.Main.Paper.lemma_x1239}
+% Blueprint note: Formal counterparts: \ref{decl:78f05cae30b63c25}.
+\uses{decl:78f05cae30b63c25}
+% Blueprint note: Original statement: paper/main.tex.html#L2387; article PDF: paper/2412.10879.pdf.
+\end{lemma}
+
+% AimPaper: 7.16 lemma 2470 2474
+\begin{lemma}[Detection of the synthetic Toda bracket]
+\label{paper:7.16}
+\source{AimPaper Lemma 7.16}
+\level{coarse}
+\textit{(From \cite{LWX126}, Lemma 7.16.)}
+% BEGIN AIMPAPER STATEMENT
+\label{lem:toda2ext}
+    Assuming that both statements $(3)$ and $(5')$ in Proposition~\ref{prop:possible_h_6_sq} are true, the synthetic Toda bracket
+$$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0}/\lambda^9$$
+    does not contain zero, and is detected by $\lambda^4 h_0^2x_{125,9,2}$. Here $\alpha_1 = [x_{123,9}+h_0x_{123,8}]$ refers to the homotopy class described in Lemma~\ref{lem:x_123_9}.
+% END AIMPAPER STATEMENT
+% Correspondence: Partial correspondence.
+% Blueprint note: Private proofs construct the same nonempty Toda bracket in the ninth lambda quotient and the exact nonzero target after multiplication of any bracket member by $h_0$. A compatible filtration-11 bracket member and the full indeterminacy control needed for the stated detection remain absent. The present bindings do not prove that complete detection claim.
+\lean{KIP126.Main.SectionSeven.module_toda_nonempty_of_alpha,KIP126.Main.SectionSeven.Internal.anyy_bracket_exact_target}
+% Blueprint note: Formal counterparts: \ref{decl:882f3998193df850}, \ref{decl:3cd4e06c8ed4d48e}.
+\uses{decl:882f3998193df850,decl:3cd4e06c8ed4d48e}
+\sketch
+% Blueprint note: Original statement: paper/main.tex.html#L2470; article PDF: paper/2412.10879.pdf.
+\end{lemma}
+
+% AimPaper: 7.18 corollary 2571 2575
+\begin{corollary}[The $h_0$ extension]
+\label{paper:7.18}
+\source{AimPaper Corollary 7.18}
+\level{coarse}
+\textit{(From \cite{LWX126}, Corollary 7.18.)}
+% BEGIN AIMPAPER STATEMENT
+\label{cor:2ext125}
+    Assuming that both statements $(3)$ and $(5')$ in Proposition~\ref{prop:possible_h_6_sq} are true, we have a relation: For any homotopy class $[\lambda^4 h_0^2x_{125,9,2}]$,
+    $$[\lambda^4 h_0^2x_{125,9,2}] \cdot [h_0] = \lambda^6 [h_1h_4x_{109,12}] \neq 0 \in \pi_{125,125+8} S^{0,0}/\lambda^9,$$
+    for some $[h_1h_4x_{109,12}]$.
+% END AIMPAPER STATEMENT
+% Correspondence: Partial correspondence.
+% Blueprint note: The predicate AnyYH0Extension states the full goal for every detected representative. A private theorem proves the exact nonzero $h_0$ equation for members of the same Toda bracket. The predicate is not a proof; annihilation of the difference between an arbitrary detected $Y$ representative and such a bracket member is still missing.
+\lean{KIP126.Main.SectionSeven.AnyYH0Extension,KIP126.Main.SectionSeven.Internal.anyy_bracket_exact_target}
+% Blueprint note: Formal counterparts: \ref{decl:50d05b1b7057aec8}, \ref{decl:3cd4e06c8ed4d48e}.
+\uses{decl:50d05b1b7057aec8,decl:3cd4e06c8ed4d48e}
+\sketch
+% Blueprint note: Original statement: paper/main.tex.html#L2571; article PDF: paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 7.20 lemma 2617 2620
+\begin{lemma}[The normalized Hopf-element extension]
+\label{paper:7.20}
+\source{AimPaper Lemma 7.20}
+\level{coarse}
+\textit{(From \cite{LWX126}, Lemma 7.20.)}
+% BEGIN AIMPAPER STATEMENT
+\label{lem:nuext125}
+    There exists a homotopy class $[\lambda^4 h_1 x_{121,7}] \in \pi_{122,122+4}S^{0,0}/\lambda^9$, such that 
+    $$[\lambda^4 h_1 x_{121,7}] \cdot [h_2] = \lambda [\lambda^5 h_0^2 x_{125,9,2}] \in \pi_{125,125+5} S^{0,0}/\lambda^9.$$
+% END AIMPAPER STATEMENT
+% Correspondence: Public correspondence.
+% Blueprint note: The public theorem gives existential representatives of the two specified nonzero detected classes in the same ninth lambda quotient and the exact equation for the normalized Hopf element.
+\lean{KIP126.Main.Paper.lemma_nuext125}
+% Blueprint note: Formal counterparts: \ref{decl:aa6c1f751a271a53}.
+\uses{decl:aa6c1f751a271a53}
+% Blueprint note: Original statement: paper/main.tex.html#L2617; article PDF: paper/2412.10879.pdf.
+\end{lemma}

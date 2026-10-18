@@ -1,6 +1,6 @@
 module
 import all KIP126.Main.SectionSeven.Predicates
-public import KIP126.Computation.Table.Values
+public import KIP126.E2Computation.Table.Values
 import all KIP126.Main.Internal.LambdaZero
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.SectionSeven.NuTargetCosets

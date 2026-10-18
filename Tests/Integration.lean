@@ -28,6 +28,34 @@ example : HasNonzeroDifferential model.classical.sphere 2 (1,64) (3,65)
 #check_failure KIP126.Computation.Near126Results
 #check_failure KIP126.Main.Axiom.challenge2
 
+-- New source facts and finite-page screening are independently consumable
+-- before Main, including the unbounded HHR range.
+example : KIP126.AdamsCalculations.TwoLineD2Candidate 100 100 := by
+  unfold KIP126.AdamsCalculations.TwoLineD2Candidate
+  exact Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl))))
+
+example : KIP126.AdamsCalculations.TwoLineD2Candidate 0 4 := by
+  unfold KIP126.AdamsCalculations.TwoLineD2Candidate
+  omega
+
+example : ∃ y : model.classical.sphere.Page 2 (5,19),
+    HasNonzeroDifferential model.classical.sphere 3 (2,17) (5,19)
+      (KIP126.Literature.Standard.hiProduct 0 4) y :=
+  KIP126.Literature.Standard.iwx_h0_h4_d3
+
+example (j : ℕ) (hj : 7 ≤ j) :
+    ¬ NonzeroSurvival model.classical.sphere (2,((2^(j+1) : ℕ) : ℤ))
+      (model.standardClasses.standardHiSquare j) :=
+  KIP126.Literature.Standard.hhr_high_squares_not_permanent j hj
+
+example (i j : ℕ) (hij : i ≤ j)
+    (hne : KIP126.Literature.Standard.hiProduct i j ≠ 0)
+    (hr : ReachesPage model.classical.sphere 3
+      (KIP126.Classical.Adams.hiDegree i + KIP126.Classical.Adams.hiDegree j)
+      (KIP126.Literature.Standard.hiProduct i j)) :
+    KIP126.AdamsCalculations.TwoLineD2Candidate i j :=
+  KIP126.AdamsCalculations.two_line_d2_candidates i j hij hne hr
+
 open Lean Elab Command in
 run_cmd do
   let env ← getEnv

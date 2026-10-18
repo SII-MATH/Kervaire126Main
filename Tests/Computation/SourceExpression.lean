@@ -1,13 +1,13 @@
 module
 
-import all KIP126.Computation.Table.Internal.SourceExpression
+import all KIP126.E2Computation.Table.Internal.SourceExpression
 import Batteries.Tactic.OpenPrivate
 import Lean
 
 /-! Internal consumption of the bounded expression comparison, including invalid
 source addresses. The fixed upstream comparison is used, not constructed here. -/
 open private sourceValue value_comparison from
-  KIP126.Computation.Table.Internal.SourceExpression
+  KIP126.E2Computation.Table.Internal.SourceExpression
 
 namespace Tests.Computation.SourceExpression
 open CategoryTheory KIP126.Computation KIP126.Computation.Table
@@ -45,7 +45,11 @@ run_cmd do
   let env ← getEnv
   for m in env.header.moduleNames do
     if (`KIP126.LinProgram).isPrefixOf m ||
-        (`KIP126.Computation.Internal).isPrefixOf m then
+        (`KIP126.Computation.Internal).isPrefixOf m ||
+        (`KIP126.E2Computation.Internal).isPrefixOf m ||
+        (`KIP126.Computation).isPrefixOf m ||
+        (`KIP126.ProofTools).isPrefixOf m ||
+        (`KIP126.AdamsCalculations).isPrefixOf m then
       throwError "expression comparison imported a concrete source model: {m}"
   for declaration in [``sourceValue, ``value_comparison] do
     let info ← getConstInfo declaration

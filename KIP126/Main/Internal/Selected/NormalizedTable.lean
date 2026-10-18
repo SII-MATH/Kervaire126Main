@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.Computation.Table
+public import KIP126.AdamsCalculations.Table
 
 /-! A private change of presentation for the fixed Adams sequence. The
 record is proved equal to the actual input; it only makes the known first

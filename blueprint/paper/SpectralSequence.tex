@@ -1,0 +1,45 @@
+% Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{The extension spectral sequence}
+
+% AimPaper: 2.1 definition 264 271
+\begin{definition}[The extension spectral sequence]
+\label{paper:2.1}
+\source{AimPaper Definition 2.1}
+\level{coarse}
+(From \cite{LWX126}, Definition 2.1.)
+% BEGIN AIMPAPER STATEMENT
+\label{def:ess}
+  For a map $f: X\to Y$, we define an $f$-extension spectral sequence (denoted $f$-ESS) as the spectral sequence derived from filtering the above chain complex according to the Adams filtration on $\pi_*$. The $E_0$-page of this spectral sequence is isomorphic to the direct sum of $E_\infty$-pages of the Adams spectral sequences of $X$ and $Y$: 
+  $$\ESS{f}_0^{s,t} \cong E_\infty^{s,t}(X) \oplus E_\infty^{s,t}(Y) \Longrightarrow \Ker(\pi_*f)\oplus \Coker(\pi_*f)$$
+  where the $d_0$-differential is induced by $f$ on the $E_\infty$-pages.
+  
+  Differentials in this spectral sequence has the form
+  $$d_n^{f}: \ESS{f}_n^{s,t}\to \ESS{f}_n^{s+n, t+n}.$$
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The extension spectral sequence of the same filtered map is constructed under \texttt{IsBounded} hypotheses on the source and target filtrations. A dedicated construction for an arbitrary classical map $f$, together with the full abutment comparison in the paper, is not yet supplied.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.sequence}: \ref{decl:b59a9249659eb910} \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.differentialRelation\_iff}: \ref{decl:fd30464b637165e0}
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.sequence,KIP126.Core.SpectralSequence.FilteredMapExtension.differentialRelation_iff}
+\uses{decl:b59a9249659eb910,decl:fd30464b637165e0}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L264; paper/2412.10879.pdf.
+\end{definition}
+
+% AimPaper: 2.6 corollary 327 330
+\begin{corollary}[Vanishing below the Adams filtration]
+\label{paper:2.6}
+\source{AimPaper Corollary 2.6}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.6.)
+% BEGIN AIMPAPER STATEMENT
+If the Adams filtration of $f$ is $k$, then
+    $d^f_i=0$ for $i<k$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem asserting that $\operatorname{AF}(f)=k$ forces every $d_i^f$ with $i<k$ to vanish has been identified. The result \texttt{action\_filtration} provides related support but does not state this conclusion.
+% Blueprint note: Original statement and context: paper/main.tex.html#L327; paper/2412.10879.pdf.
+\end{corollary}

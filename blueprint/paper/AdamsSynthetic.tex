@@ -1,0 +1,92 @@
+% Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{Lambda and its quotient objects}
+
+% AimPaper: 3.3 definition 774 782
+\begin{definition}[The class $\lambda$ and its cofibers]
+\label{paper:3.3}
+\source{AimPaper Definition 3.3}
+\level{coarse}
+(From \cite{LWX126}, Definition 3.3.)
+% BEGIN AIMPAPER STATEMENT
+[{\cite[Definition 4.27]{Pst}}]
+    The natural comparison map
+    $$S^{0,-1}=\Sus \nu (S^{-1})\to \nu(\Sus S^{-1})=S^{0,0}$$
+    in the category of $\HF$-synthetic spectra is denoted by $\lambda\in \pi_{0,-1}S^{0,0}$. We denote by $S^{0,0}/\lambda$ the cofiber of $\lambda$. In general for synthetic $X$ the following
+    $$\lambda\wedge id_X: \Sus^{0,-1}X\to X.$$
+    is a natural transformation and by abuse of notation this map is also denoted by $\lambda$.
+    We denote by $X/\lambda$ the cofiber of $\lambda$
+    which is equivalent to $(S^{0,0}/\lambda) \wedge X$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The natural transformation $\lambda$ is the field \texttt{SyntheticCategory.lam}, and the quotient objects are public. A complete public comparison theorem covering both the construction of $\lambda$ from the comparison map for $\nu$ and the equivalence $X/\lambda\simeq(S/\lambda)\wedge X$ has not yet been supplied.
+% Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
+% Blueprint note: \par Bound declarations (private names are resolved through stable source references, without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.Synthetic.Context.SyntheticCategory}: \ref{decl:5dcf33287750315a}
+% Blueprint note: \item \texttt{KIP126.Synthetic.Context.lambdaPow}: \ref{decl:6a8ce148634e58e6}
+% Blueprint note: \item \texttt{KIP126.Synthetic.Context.XModLambda}: \ref{decl:a0f2a285d56161c8}
+% Blueprint note: \item \texttt{KIP126.Synthetic.Context.XModLambdaN}: \ref{decl:6447fe7926ae97c5}
+% Blueprint note: \end{itemize}
+\lean{KIP126.Synthetic.Context.SyntheticCategory,KIP126.Synthetic.Context.lambdaPow,KIP126.Synthetic.Context.XModLambda,KIP126.Synthetic.Context.XModLambdaN}
+\uses{decl:5dcf33287750315a,decl:6a8ce148634e58e6,decl:a0f2a285d56161c8,decl:6447fe7926ae97c5}
+\sketch
+\end{definition}
+
+\section{Detected extensions and their indeterminacy}
+
+% AimPaper: 2.3 definition 297 300
+\begin{definition}[Extensions and essential extensions]
+\label{paper:2.3}
+\source{AimPaper Definition 2.3}
+\level{coarse}
+(From \cite{LWX126}, Definition 2.3.)
+% BEGIN AIMPAPER STATEMENT
+\label{def:768fba8a}
+    We say there is an $f$-extension from $x\in E_\infty^{s,t}(X)$ to $y\in E_\infty^{s+n,t+n}(Y)$ if $d_n^{f}(x)=y$ in the $f$-ESS. We say this $f$-extension is $\textbf{essential}$ if $y$ is nontrivial in the $E_n$-page of the $f$-ESS, or equivalently $$y\notin \BESS{f}^{s+n,t+n}_{n-1}(Y).$$
+    Otherwise we refer to it as inessential.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: Public definitions of extensions and essential extensions are available. The comparison with actual extension-spectral-sequence differentials retains boundedness and projectivity hypotheses; \texttt{ConvergentMap} applies specifically to synthetic families.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.Relation}: \ref{decl:1a5a87f2a18ceb9a} \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.Essential}: \ref{decl:26f70481128f5b0b} \item \texttt{KIP126.AdamsSynthetic.ConvergentMap.ExtensionEquation}: \ref{decl:f2b01f94f2548cc1} \item \texttt{KIP126.AdamsSynthetic.ConvergentMap.EssentialExtension}: \ref{decl:b77739d2cd7020a8}
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.Relation,KIP126.Core.SpectralSequence.FilteredMapExtension.Essential,KIP126.AdamsSynthetic.ConvergentMap.ExtensionEquation,KIP126.AdamsSynthetic.ConvergentMap.EssentialExtension}
+\uses{decl:1a5a87f2a18ceb9a,decl:26f70481128f5b0b,decl:f2b01f94f2548cc1,decl:b77739d2cd7020a8}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L297; paper/2412.10879.pdf.
+\end{definition}
+
+% AimPaper: 2.5 proposition 307 321
+\begin{proposition}[Representatives and indeterminacy of extensions]
+\label{paper:2.5}
+\source{AimPaper Proposition 2.5}
+\level{coarse}
+(From \cite{LWX126}, Proposition 2.5.)
+% BEGIN AIMPAPER STATEMENT
+\label{prop:8154e6f1}
+Consider $f: X\to Y$, $x\in E_\infty^{s,t}(X)$, $y\in E_\infty^{s+n,t+n}(Y)$ and $y'\in E_\infty^{s+m,t+m}(Y)$ for $m,n\ge 0$.
+\begin{enumerate}
+    \item There is an $f$-extension from $x$ to $y$, i.e., $d_n^{f}(x)=y$ in the $f$-ESS if and only if there is a class $[x]\in \{x\}$ such that $f[x]\in \{y\}$.
+    \item An $f$-extension from $x$ to $y$ is inessential, i.e., $y$ is trivial in the $E_n$-page of the $f$-ESS if and only if there exists an element $x'\in E_\infty^{s+a,t+a}(X)$ for $0<a\le n$ such that we have an essential differential $d_{n-a}^{f}(x')=y$. Equivalently, there exists a class $[x'] \in \{x'\} \subset \pi_*X$ with AF$(x')>$AF$(x)$, such that $f[x'] \in \{y\}$.
+    
+    \item Suppose we have an $f$-extension from $x$ to both $y$ and $y'$.
+    \begin{enumerate}
+        \item If $m=n$, then $y-y'\in \BESS{f}^{s+n,t+n}_{n-1}(Y)$ and there exists an element $x'\in E_\infty^{s+a,t+a}(X)$ for $0<a\le n$ such that we have an essential differential 
+        $$d_{n-a}^{f}(x') = y-y'$$
+        in $f$-ESS. Equivalently, there exists a class $[x'] \in \{x'\} \subset \pi_*X$ with AF$(x')>$AF$(x)$, such that $f[x'] \in \{y-y'\}$. 
+        \item If $m>n$, then the $f$-extension from $x$ to $y$ is inessential.
+     \end{enumerate}
+\end{enumerate}
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: Public components cover the existence of representatives, target indeterminacy at a fixed length, and higher-filtration corrections. No public theorem covering all clauses of the paper statement has been identified, in particular the $m>n$ branch and the essential shorter-differential witness.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.AdamsSynthetic.ConvergentMap.extensionEquation\_iff}: \ref{decl:aafac89eb1ca10d7} \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.mem\_indeterminacy\_iff}: \ref{decl:121dd4a52f588940} \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.Relation.mem\_targetCoset\_iff}: \ref{decl:16c7793a07812c29} \item \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.essential\_iff}: \ref{decl:2b72ae39918662de}
+\lean{KIP126.AdamsSynthetic.ConvergentMap.extensionEquation_iff,KIP126.Core.SpectralSequence.FilteredMapExtension.mem_indeterminacy_iff,KIP126.Core.SpectralSequence.FilteredMapExtension.Relation.mem_targetCoset_iff,KIP126.Core.SpectralSequence.FilteredMapExtension.essential_iff}
+\uses{decl:aafac89eb1ca10d7,decl:121dd4a52f588940,decl:16c7793a07812c29,decl:2b72ae39918662de}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L307; paper/2412.10879.pdf.
+\end{proposition}

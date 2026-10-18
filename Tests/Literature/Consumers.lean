@@ -37,6 +37,10 @@ example : sphereFirstQuotient 1 2 (quotientClass 1 eta) =
 example : sphereFirstQuotient 1 64 h6FirstQuotient =
     model.standardClasses.standardH6 := h6FirstQuotient_label
 
+example : ∃ y : model.classical.sphere.Page 2 (5,19),
+    HasNonzeroDifferential model.classical.sphere 3 (2,17) (5,19)
+      (hiProduct 0 4) y := iwx_h0_h4_d3
+
 #check_failure KIP126.Literature.LiteratureInterface
 #check_failure KIP126.Literature.LiteratureResults
 #check_failure KIP126.Literature.ClassicalResults

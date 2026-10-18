@@ -1,0 +1,706 @@
+% Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{No-crossing criteria for filtered extensions}
+
+% AimPaper: 2.7 definition 344 352
+\begin{definition}[Crossings of extensions]
+\label{paper:2.7}
+\source{AimPaper Definition 2.7}
+\level{coarse}
+(From \cite{LWX126}, Definition 2.7.)
+% BEGIN AIMPAPER STATEMENT
+\label{def:98skj23}
+\begin{enumerate}[leftmargin=*]
+    \item For $x\in E_\infty^{s,t}(X)$, we say that the an $f$-extension $d_n^{f}(x)=y$ has a crossing that hits Adams filtration $p$ for some $p \leq s+n$, if there exists an element $x^\prime\in E_\infty^{s+a,t+a}(X)$ with $a>0$ and an $f$-extension $d_m^{f}(x^\prime)=y^\prime$ for $0\neq y^\prime\in E^{s+a+m, t+a+m}_\infty(Y)$ such that
+    $$p = \textup{AF}(y^\prime) = s+a+m\le \textup{AF}(y) = s+n.$$
+    \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing that hits the range AF $\ge p$ if there does not exist an element $x^\prime\in E_\infty^{s+a,t+a}(X)$ with $a>0$ and an $f$-extension $d_m^{f}(x^\prime)=y^\prime$ for $0\neq y^\prime\in E^{s+a+m, t+a+m}_\infty(Y)$ such that
+    $$p\le \textup{AF}(y^\prime) = s+a+m\le \textup{AF}(y) = s+n.$$
+    \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing if it has no crossing that hits the range AF$\ge \AF(x) + 1$.
+\end{enumerate}
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: Public representative-level definitions \texttt{FilteredNoCrossingRange} and \texttt{ExtensionNoCrossingRange} allow arbitrary filtration thresholds. Their comparison with \texttt{DifferentialDatum} and \texttt{HasCrossingAt} for a general classical $f$-extension spectral sequence has not yet been assembled into a complete public bridge, so this correspondence remains partial.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.Core.SpectralSequence.FilteredMapTransport.NoCrossing}: \ref{decl:60c806ba7a38bec7} \item \texttt{KIP126.ProofTools.Paper.FilteredNoCrossingRange}: \ref{decl:89fda1e3f535171f} \item \texttt{KIP126.ProofTools.Paper.ExtensionNoCrossingRange}: \ref{decl:44d0052f39f760c7}
+\lean{KIP126.Core.SpectralSequence.FilteredMapTransport.NoCrossing,KIP126.ProofTools.Paper.FilteredNoCrossingRange,KIP126.ProofTools.Paper.ExtensionNoCrossingRange}
+\uses{decl:60c806ba7a38bec7,decl:89fda1e3f535171f,decl:44d0052f39f760c7}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L344; paper/2412.10879.pdf.
+\end{definition}
+
+% AimPaper: 2.10 proposition 408 416
+\begin{proposition}[Characterization of extensions without crossings]
+\label{paper:2.10}
+\source{AimPaper Proposition 2.10}
+\level{coarse}
+(From \cite{LWX126}, Proposition 2.10.)
+% BEGIN AIMPAPER STATEMENT
+\label{prop:i8r47oe}
+    An $f$-extension from $x$ to $y$ has no crossing in the range $\AF\ge p$ if and only if for all $[x]\in \{x\}$ such that $\AF(f[x])\ge p$ we have $f[x]\in \{y\}$. In particular, we have
+    \begin{enumerate}
+        \item An $f$-extension from $x$ to $y$ has no crossing if and only if for all $[x]\in \{x\}$ we have $f[x]\in \{y\}$.
+        \item An $f$-extension $d_n^{f}(x)=0$ has no crossing if and only if for all $[x]\in \{x\}$,
+        $$\AF(f[x]) >\AF(x)+n.$$
+        \item If $\AF(f)=n$, then all $d^f_n$-differentials have no crossing in the $f$-ESS.
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterpart, within the scope described below.
+% Blueprint note: The full representative-level equivalence and its three clauses are public for arbitrary filtered abelian groups. An $E_\infty$ formulation for the same synthetic map is also available. This does not establish the missing general classical $f$-extension spectral sequence construction in Definition~2.1.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossingRange\_iff}: \ref{decl:8937ab8449f2f5f8} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_iff}: \ref{decl:7a4f928ddc60ba93} \item \texttt{KIP126.ProofTools.Paper.filtered\_zero\_extension\_noCrossing\_iff}: \ref{decl:d2bad3a7f86619e4} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_of\_filtration\_bound}: \ref{decl:cff569382c0d7bdf}
+\lean{KIP126.ProofTools.Paper.filtered_extension_noCrossingRange_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_zero_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_of_filtration_bound}
+\uses{decl:8937ab8449f2f5f8,decl:7a4f928ddc60ba93,decl:d2bad3a7f86619e4,decl:cff569382c0d7bdf}
+% Blueprint note: Original statement and context: paper/main.tex.html#L408; paper/2412.10879.pdf.
+\end{proposition}
+
+\section{Commutative squares and extension comparison}
+
+% AimPaper: 2.12 theorem 461 481
+\begin{theorem}[The extension theorem for a commutative square]
+\label{paper:2.12}
+\source{AimPaper Theorem 2.12}
+\level{coarse}
+(From \cite{LWX126}, Theorem 2.12.)
+% BEGIN AIMPAPER STATEMENT
+\label{thm:4114f70c}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }$$
+    Suppose $m,n,l\ge 0$, $0<k\le m+l-n$,
+    $$\begin{array}{ll}
+        x\in E^{s,t}_\infty(X) & y\in E^{s+n,t+n}_\infty(Y),\\
+        z\in E^{s+m,t+m}_\infty(Z) & w\in E^{s+m+l,t+m+l}_\infty(W),
+    \end{array}$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing,
+        \item $d^{g}_{l}(z)=w$, and has no crossing that hits the range AF $\ge s+n+k$,
+        \item $d^{q}_{k-1} y=0$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l-n}(y)=w$. (See Figure \ref{fig:4f154a8}.)
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The existing theorem \texttt{square\_frames} works in one convergent synthetic tower, using actual representatives on the four edges and no-crossing synchronization. It covers the special case in which the target edge also has no crossing. The general chase under the weaker $k$-range condition of the paper, and the comparison with a general classical $f$-extension spectral sequence, remain unavailable.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Internal.Leibniz.square\_frames}: \ref{decl:0d629ca12f041ee7}
+\lean{KIP126.ProofTools.Internal.Leibniz.square_frames}
+\uses{decl:0d629ca12f041ee7}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L461; paper/2412.10879.pdf.
+\end{theorem}
+
+% AimPaper: 2.15 corollary 555 574
+\begin{corollary}[A square of extensions without crossings]
+\label{paper:2.15}
+\source{AimPaper Corollary 2.15}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.15.)
+% BEGIN AIMPAPER STATEMENT
+\label{cor:0012nik}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }$$
+    Suppose $m,n,l\ge 0$, 
+    $$\begin{array}{ll}
+        x\in E^{s,t}_\infty(X) & y\in E^{s+n,t+n}_\infty(Y),\\
+        z\in E^{s+m,t+m}_\infty(Z) & w\in E^{s+m+l,t+m+l}_\infty(W),
+    \end{array}$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing,
+        \item $d^{g}_{l}(z)=w$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l-n}(y)=w$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The private theorem \texttt{square\_frames} supplies a commutative four-edge square with synchronized representatives; its conclusion identifies the image along the right edge with the lower-right representative. The present model uses \texttt{TowerExtensionEquation} and \texttt{TowerNoCrossing} in a convergent synthetic tower. The bridge to the general classical $f$-extension spectral sequence of the paper remains a separate obligation.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Internal.Leibniz.square\_frames}: \ref{decl:0d629ca12f041ee7}
+\lean{KIP126.ProofTools.Internal.Leibniz.square_frames}
+\uses{decl:0d629ca12f041ee7}
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 2.16 corollary 576 591
+\begin{corollary}[Extensions in a commutative triangle]
+\label{paper:2.16}
+\source{AimPaper Corollary 2.16}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.16.)
+% BEGIN AIMPAPER STATEMENT
+\label{cor:166dc180}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[dr]_{p} & Y\ar[d]^{q}\\
+    & Z
+    }$$
+    Suppose $n,m\ge 0$, 
+    $$x\in E^{s,t}_\infty(X), ~y\in E^{s+n,t+n}_\infty(Y), ~z\in E^{s+m,t+m}_\infty(Z)$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m-n}(y)=z$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public interface for the triangular-diagram consequence deriving the third extension from two extensions with a common source has been identified.
+% Blueprint note: Original statement and context: paper/main.tex.html#L576; paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 2.17 corollary 597 611
+\begin{corollary}[Composition of extensions]
+\label{paper:2.17}
+\source{AimPaper Corollary 2.17}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.17.)
+% BEGIN AIMPAPER STATEMENT
+\label{cor:290d35ce}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[d]_{p}\ar[dr]^{q} & \\
+    Z\ar[r]_{g} & W
+    }$$
+    Suppose $n,m\ge 0$, 
+    $$x\in E^{s,t}_\infty(X), ~z\in E^{s+m,t+m}_\infty(Y), ~w\in E^{s+m+l,t+m+l}_\infty(W)$$
+    and
+    \begin{enumerate}
+        \item $d^{p}_{m}(x)=z$,
+        \item $d^{g}_{l}(z)=w$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l}(x)=w$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public interface for the consequence deriving a composite extension from two consecutive extensions and a no-crossing hypothesis has been identified.
+% Blueprint note: Original statement and context: paper/main.tex.html#L597; paper/2412.10879.pdf.
+\end{corollary}
+
+\section{Functoriality and exactness of extension spectral sequences}
+
+% AimPaper: 2.18 corollary 617 626
+\begin{corollary}[Morphisms of extension spectral sequences]
+\label{paper:2.18}
+\source{AimPaper Corollary 2.18}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.18.)
+% BEGIN AIMPAPER STATEMENT
+\label{cor:e7b20ae2}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }.$$
+    Assume $\ESS{p}_0^{*,*}=\ESS{p}_r^{*,*}$ and $\ESS{q}_0^{*,*}=\ESS{q}_r^{*,*}$ for some $r\ge 0$. Then 
+    $$(d^p_r, d^q_r): E_\infty^{*,*}(X)\oplus E_\infty^{*,*}(Y)\to E_\infty^{*,*}(Z)\oplus E_\infty^{*,*}(W)$$
+    induces a map from the $f$-ESS to the $g$-ESS.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem constructing a morphism from the $f$-extension spectral sequence to the $g$-extension spectral sequence from the first differentials for $p$ and $q$ has been identified. \texttt{FilteredMapTransport} instead transports an already available filtered-map isomorphism.
+% Blueprint note: Original statement and context: paper/main.tex.html#L617; paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 2.19 corollary 632 635
+\begin{corollary}[Permanent cycles from a null composite]
+\label{paper:2.19}
+\source{AimPaper Corollary 2.19}
+\level{coarse}
+(From \cite{LWX126}, Corollary 2.19.)
+% BEGIN AIMPAPER STATEMENT
+\label{cor:aed3d1a4}
+    If the composition $g\circ f$ of two maps $f:X\to Y$, $g:Y\to Z$ is trivial, and $d_n^f(x)=y$ for $x\in E_\infty^{s,t}(X)$ and $y\in E_\infty^{s+n,t+n}(Y)$, then $y$ is a permanent cycle in the $g$-ESS, i.e., we have
+    $d^g_m(y)=0$ for all $m\ge 0$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem deriving permanence of the target of an $f$-extension in the $g$-extension spectral sequence from $g\circ f=0$ has been identified.
+% Blueprint note: Original statement and context: paper/main.tex.html#L632; paper/2412.10879.pdf.
+\end{corollary}
+
+% AimPaper: 2.20 proposition 648 654
+\begin{proposition}[Exactness and extension boundaries]
+\label{paper:2.20}
+\source{AimPaper Proposition 2.20}
+\level{coarse}
+(From \cite{LWX126}, Proposition 2.20.)
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cfe810af}
+    Suppose that the sequence of spectra
+    $$X\fto{f}Y\fto{g}Z$$
+    induces a sequence of homotopy groups
+    $$\pi_*X\fto{\pi_*f}\pi_*Y\fto{\pi_*g}\pi_*Z$$
+    that is exact in $\pi_*Y$. Then all permanent cycles in $E^{*,*}_\infty(Y)$ of the $g$-ESS are boundaries in the $f$-ESS.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart identified.
+% Blueprint note: No public theorem deriving that every permanent cycle in the $g$-extension spectral sequence is a boundary in the $f$-extension spectral sequence from exactness on homotopy groups has been identified.
+% Blueprint note: Original statement and context: paper/main.tex.html#L648; paper/2412.10879.pdf.
+\end{proposition}
+
+\section{Synthetic boundary maps and extension differentials}
+
+% AimPaper: 4.2 proposition 1025 1029
+\begin{proposition}[Extensions for $\lambda^n$ and $\rho$]
+\label{paper:4.2}
+\source{AimPaper Proposition 4.2}
+\level{coarse}
+(From \cite{LWX126}, Proposition 4.2.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:9770ae6e} 
+The only nonzero differentials in the extension spectral sequences for the maps $\lambda^n$ and $\rho$ from Notation~\ref{not:deltaandrho} are the $d_0$'s:
+$$d^{\lambda^n}_0=\lambda^n \ \text{and} \ d^{\rho}_0=\rho.$$ 
+As a result, these $d_0$'s have no crossings.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The finite-quotient and infinite versions concern the same actual maps $\lambda$ and $\rho$: they exclude essential extensions of positive length, identify the actual $d_0$ equations, and establish the absence of crossings.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite}: \ref{decl:b3cfccaa50c6a3cd}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite}: \ref{decl:60aa58f04dc1023c}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.lambda_rho_extension_collapse_finite,KIP126.ProofTools.Paper.lambda_rho_extension_collapse_infinite}
+\uses{decl:b3cfccaa50c6a3cd,decl:60aa58f04dc1023c}
+% Blueprint note: The original article number is 4.2; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1025}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+% AimPaper: 4.6 proposition 1068 1086
+\begin{proposition}[Boundary extensions from Adams differentials]
+\label{paper:4.6}
+\source{AimPaper Proposition 4.6}
+\level{coarse}
+(From \cite{LWX126}, Proposition 4.6.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:6de7d130}
+    Suppose in the classical Adams spectral sequence of $X$ we have $d_r(x)=y$, where $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_\infty^{s+r,t+r-1}(X)$. Consider the map
+    $$\delta:\nu X/\lambda^n\to \Sus^{1,-n}\nu X/\lambda^{m-n}.$$
+    \begin{enumerate}
+        \item If $r\ge n+1$, then we view $x$ as an element of 
+        $$E_\infty^{s,t,t}(\nu X/\lambda^n)\iso Z_n^{s,t}(X),$$
+        and $\lambda^{r-n-1} y$ as an element of 
+        $$E_\infty^{s+r,t+r-1, t+n}(\nu X/\lambda^{m-n})\iso Z_{m-r+1}^{s+r,t+r-1}(X)/B_{r-n}^{s+r,t+r-1}(X).$$
+        We then have
+        $$d^{\delta}_r(x)=\lambda^{r-n-1}y,$$
+        which is trivial if $r>m$.
+        \item If $r<n+1$, then we view $\lambda^{n+1-r}x$ as an element of 
+        $$E_\infty^{s,t,t-n-1+r}(\nu X/\lambda^n)\iso Z^{s,t}_{r-1}(X)/B^{s,t}_{n+2-r}(X),$$
+        and $y$ as an element of 
+        $$E_\infty^{s+r,t+r-1, t+r-1}(\nu X)\iso Z_\infty^{s+r,t+r-1}(X).$$
+        In this case, we have
+        $$d^{\delta}_r(\lambda^{n+1-r}x)=y.$$
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The four public statements cover both ranges of differential lengths, for finite and absolute $\delta$-extensions.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute}: \ref{decl:78b712b68310cbde}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute}: \ref{decl:803d5471bdaa89a9}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite}: \ref{decl:b8495f874a1b2818}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite}: \ref{decl:c3bbbea6d1f12b34}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_finite,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_finite}
+\uses{decl:78b712b68310cbde,decl:803d5471bdaa89a9,decl:b8495f874a1b2818,decl:c3bbbea6d1f12b34}
+% Blueprint note: The original article number is 4.6; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1068}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+% AimPaper: 4.10 corollary 1138 1144
+\begin{corollary}[$\lambda$ multiples of boundary extensions]
+\label{paper:4.10}
+\source{AimPaper Corollary 4.10}
+\level{coarse}
+(From \cite{LWX126}, Corollary 4.10.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:2a636737}
+    For $x,y,\delta$ in Proposition \ref{prop:6de7d130} we always have
+    \begin{equation}\label{eq:841425e9}
+        d^{\delta}_r(\lambda^ax)=\lambda^{a+r-n-1}y
+    \end{equation}
+    if $0\le a\le n$ and $0\le a+r-n-1<m-n$ (the differential is trivial if $a$ exceeds this range).
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The public statements cover the full valid range of weights, the zero endpoint $a=n$, and vanishing when the source or target lies outside the strip.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute}: \ref{decl:eedf6ddb7e1f7ce1}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite}: \ref{decl:4ef31a493b9ef817}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes}: \ref{decl:9ee455c902bcda6c}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes}: \ref{decl:1b13f26250672867}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_finite,KIP126.ProofTools.Paper.syntheticDeltaSource_vanishes,KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget_vanishes}
+\uses{decl:eedf6ddb7e1f7ce1,decl:4ef31a493b9ef817,decl:9ee455c902bcda6c,decl:1b13f26250672867}
+% Blueprint note: The original article number is 4.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1138}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{corollary}
+
+\section{Crossings of Adams differentials}
+
+% AimPaper: 4.14 definition 1165 1173
+\begin{definition}[Crossings of Adams differentials]
+\label{paper:4.14}
+\source{AimPaper Definition 4.14}
+\level{coarse}
+(From \cite{LWX126}, Definition 4.14.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:classicalcrossdiff}
+    Suppose $r\ge n+1$ and $d_r(x)=y$, where
+    $$x\in E_2^{s,t}(X), \hspace{0.5cm} y\in E_2^{s+r,t+r-1}(X).$$
+    A crossing of $d_r(x)=y$ on the $E_{n+1}$-page refers to an essential Adams differential
+    $$d_{r-a-b}(x^\prime)=y^\prime,$$
+    where
+    $$x^\prime\in E_2^{s+a,t+a}(X), \hspace{.5cm} y^\prime\in E_2^{s+r-b,t+r-b-1}(X),$$
+    with $0<a\le n-1$ and $0\le b\le r-n-1$. See Figure \ref{fig:f5eae42a}.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The definitions use the direction of classical differential crossings and the valid page range specified in the article. They are distinct from Moss crossings.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.HasCrossingOn}: \ref{decl:7e04ee02f4a57b31}
+% Blueprint note: \item \texttt{KIP126.ProofTools.NoCrossingOn}: \ref{decl:cd43aa102f21f4d4}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.HasCrossingOn,KIP126.ProofTools.NoCrossingOn}
+\uses{decl:7e04ee02f4a57b31,decl:cd43aa102f21f4d4}
+% Blueprint note: The original article number is 4.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1165}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{definition}
+
+% AimPaper: 4.16 proposition 1218 1224
+\begin{proposition}[Adams crossings and boundary-extension crossings]
+\label{paper:4.16}
+\source{AimPaper Proposition 4.16}
+\level{coarse}
+(From \cite{LWX126}, Proposition 4.16.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cross-dr-En}
+    The Adams differential $d_r(x)=y$ has a crossing on the $E_{n+1}$-page if and only if the corresponding $\delta_n$-extension
+    $$d^{\delta_n}_r(x)=\lambda^{r-n-1}y$$
+    for
+    $$\delta_{n}:\nu X/\lambda^{n}\to \Sus^{1,-n}\nu X$$
+    has a crossing.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The public theorem gives the equivalence between classical crossings and crossings in the actual $\delta$-extension spectral sequence throughout the range $2\leq\mathrm{page}\leq r$.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing}: \ref{decl:1b6be446b6483c14}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.classical_crossing_iff_delta_crossing}
+\uses{decl:1b6be446b6483c14}
+% Blueprint note: The original article number is 4.16; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1218}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+\section{Extension witnesses on finite and infinite pages}
+
+% AimPaper: 5.4 definition 1301 1317
+\begin{definition}[Extensions on the $E_r$-page]
+\label{paper:5.4}
+\source{AimPaper Definition 5.4}
+\level{coarse}
+(From \cite{LWX126}, Definition 5.4.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:6c076a33}
+    Let $x\in Z^{s,t}_{r-1}(X)$ and $y\in Z^{s+n,t+n}_{r-1-n+e(f)}(Y)$ for some 
+    $$e(f)\le n\le r-2+e(f).$$
+    We say that there is an $(f,E_r)$-extension from $x$ to $y$, denoted by
+    \begin{equation}\label{eq:b98be76a}
+    d_{n}^{f,E_r}(x)=y
+    \end{equation}
+    if there exists a synthetic $\hat f_{r-1}$-extension
+    \begin{equation}\label{eq:a020bad3}
+        d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y.
+    \end{equation}
+    where $x$ is viewed as an element of the subgroup (\ref{eq:eae450fe}) with $k=0$, and $\lambda^{n-e(f)} y$ is viewed as an element of the quotient group (\ref{eq:334248d2}) with $k=0$. 
+
+   We say that this $(f,E_r)$-extension in (\ref{eq:b98be76a}) is \emph{essential} if the corresponding synthetic $\hat f_{r-1}$-extension in (\ref{eq:a020bad3}) is an essential differential in the $\hat f_{r-1}$-ESS.
+    
+    For $r=\infty$, we similar define an $(f,E_\infty)$-extension using the corresponding synthetic $\hat f$-extension.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The finite- and infinite-page extension definitions are tied to the actual normalized map, cycle labels, degrees, and witnesses.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.Kervaire.Route.FiniteExtension}: \ref{decl:2fc0d83dcb3e63a8}
+% Blueprint note: \item \texttt{KIP126.Kervaire.Route.FiniteExtensionWitness}: \ref{decl:deaf51e8761d76aa}
+% Blueprint note: \item \texttt{KIP126.Kervaire.Route.InfiniteExtension}: \ref{decl:14f44b2ceb2905ed}
+% Blueprint note: \item \texttt{KIP126.Kervaire.Route.InfiniteExtensionWitness}: \ref{decl:dd30d23a64893f71}
+% Blueprint note: \end{itemize}
+\lean{KIP126.Kervaire.Route.FiniteExtension,KIP126.Kervaire.Route.FiniteExtensionWitness,KIP126.Kervaire.Route.InfiniteExtension,KIP126.Kervaire.Route.InfiniteExtensionWitness}
+\uses{decl:2fc0d83dcb3e63a8,decl:deaf51e8761d76aa,decl:14f44b2ceb2905ed,decl:dd30d23a64893f71}
+% Blueprint note: The original article number is 5.4; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1301}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{definition}
+
+% AimPaper: 5.9 definition 1437 1441
+\begin{definition}[Crossings of $E_r$-extensions]
+\label{paper:5.9}
+\source{AimPaper Definition 5.9}
+\level{coarse}
+(From \cite{LWX126}, Definition 5.9.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:41d51149}
+    A crossing of the $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ in (\ref{eq:b98be76a}) is defined as an essential $(f, E_{r-a})$-extension from some $x'\in Z_{r-1-a}^{s+a,t+a}(X)$ to 
+    $$y'\in Z_{r-1-n+b+e(f)}^{s+n-b,t+n-b}(Y)\backslash B_{1+n-b-e(f)}^{s+n-b,t+n-b}(Y)$$
+    (where $\backslash$ denotes the difference of sets and it means that $y'$ should survive to the classical Adams $E_{r-n+b+e(f)}$ page while it should not be hit by an Adams differential of length at most $1+n-b-e(f)$) for $0<a \le r-2$ and $0\le b\le n-a-e(f)$. See Figure \ref{fig:66241bf6}.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: Public definitions describe crossings and the absence of crossings for finite- and infinite-page extensions.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteHasCrossing}: \ref{decl:b7b799dc6331df44}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteNoCrossing}: \ref{decl:56ca21bee23b451d}
+% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteHasCrossing}: \ref{decl:1fcd89913d4c2a9a}
+% Blueprint note: \item \texttt{KIP126.ProofTools.InfiniteNoCrossing}: \ref{decl:c835e45ecedd37af}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.FiniteHasCrossing,KIP126.ProofTools.FiniteNoCrossing,KIP126.ProofTools.InfiniteHasCrossing,KIP126.ProofTools.InfiniteNoCrossing}
+\uses{decl:b7b799dc6331df44,decl:56ca21bee23b451d,decl:1fcd89913d4c2a9a,decl:c835e45ecedd37af}
+% Blueprint note: The original article number is 5.9; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1437}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{definition}
+
+% AimPaper: 5.10 proposition 1515 1517
+\begin{proposition}[Crossings of $E_r$-extensions and synthetic extensions]
+\label{paper:5.10}
+\source{AimPaper Proposition 5.10}
+\level{coarse}
+(From \cite{LWX126}, Proposition 5.10.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cross-f-Er}
+    An $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ (\ref{eq:b98be76a}) has a crossing if and only if the synthetic $\hat f_{r-1}$-extension $d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y$ (\ref{eq:a020bad3}) has a crossing.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved; these local steps do not establish the full equivalence.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Internal.Leibniz.finite\_normalized\_image\_filtration}: \ref{decl:a3e71ed8816e6f4f}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Internal.Leibniz.minimal\_length\_finite\_tower\_no\_crossing}: \ref{decl:bf55fd088d292215}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Internal.Leibniz.finite_normalized_image_filtration,KIP126.ProofTools.Internal.Leibniz.minimal_length_finite_tower_no_crossing}
+\uses{decl:a3e71ed8816e6f4f,decl:bf55fd088d292215}
+\sketch
+% Blueprint note: The original article number is 5.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1515}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+% AimPaper: 5.14 proposition 1581 1587
+\begin{proposition}[From infinity-page extensions to homotopy extensions]
+\label{paper:5.14}
+\source{AimPaper Proposition 5.14}
+\level{coarse}
+(From \cite{LWX126}, Proposition 5.14.)\par
+% BEGIN AIMPAPER STATEMENT
+Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
+    Then
+    $$d^{f,E_\infty}_n(x)=y$$
+    implies that
+    $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: no public counterpart yet.
+% Blueprint note: There is no public theorem identifying a normalized $f$-extension on the $E_\infty$ page with an extension in the classical $f$-extension spectral sequence. The existing definitions on the two sides do not supply this bridge.
+% Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+\section{The generalized Leibniz rule and Mahowald trick}
+
+% AimPaper: 6.1 theorem 1606 1621
+\begin{theorem}[The generalized Leibniz rule]
+\label{paper:6.1}
+\source{AimPaper Theorem 6.1}
+\level{coarse}
+(From \cite{LWX126}, Theorem 6.1.)\par
+% BEGIN AIMPAPER STATEMENT
+[Generalized Leibniz Rule]\label{thm:e73f481e}
+    Let $f: X\to Y$ be a map between two classical spectra.
+    Suppose that $2\le n\le r$, $e(f)\le m\le n-2+e(f)$, $l\ge e(f)$, and we have
+    $$x\in Z_{r-1}^{s,t}(X), \hspace{0.5cm} y\in Z_{r-1-m+e(f)}^{s+m,t+m}(Y)$$
+    $$x_\infty\in Z_\infty^{s+r,t+r-1}(X), \hspace{0.5cm} y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y)$$
+    and the following conditions hold:
+    \begin{enumerate}
+        \item $d_{r}(x)=x_\infty$,
+        \item $d_{m}^{f,E_n}(x)=y$,
+        \item $d_{l}^{f,E_\infty}(x_\infty)=y_\infty$,
+        \item the differential in (1) has no crossing on the $E_n$-page or (2) has no crossing.
+        \item the differential in (3) has no crossing.% on the $E_\infty$-page.
+    \end{enumerate}
+    Then we have an Adams differential
+    $$d_{r+l-m}(y)= y_\infty.$$
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The public proposition and callable theorem retain the no-crossing hypotheses, degrees, and page ranges. The API currently records a direct proof obligation for the theorem.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.GeneralizedLeibnizLaw}: \ref{decl:f3ddfa6a0ab7e3cd}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.generalizedLeibniz}: \ref{decl:32f8e3b6bd1522b7}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.GeneralizedLeibnizLaw,KIP126.ProofTools.Standard.generalizedLeibniz}
+\uses{decl:f3ddfa6a0ab7e3cd,decl:32f8e3b6bd1522b7}
+% Blueprint note: The original article number is 6.1; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1606}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{theorem}
+
+% AimPaper: 6.12 theorem 1780 1799
+\begin{theorem}[The generalized Mahowald trick]
+\label{paper:6.12}
+\source{AimPaper Theorem 6.12}
+\level{coarse}
+(From \cite{LWX126}, Theorem 6.12.)\par
+% BEGIN AIMPAPER STATEMENT
+[Generalized Mahowald Trick]\label{thm:158d451a} 
+    Consider a distinguished triangle of spectra
+    $$X\fto{f} Y\fto{g} Z\fto{h} \Sus X$$
+    with $e(f)+e(g)+e(h)=1$.
+    Suppose that $r=n+m+l$, $n_1=n-e(f)\ge 1$, $m_1=m-e(g)\ge 0$, $l_1=l-e(h)\ge 0$, and
+    $$\begin{array}{ll}
+        x\in Z_{n_1}^{s+l,t+l-1}(X), & y\in Z_{m_1+1}^{s+n+l,t+n+l-1}(Y),\\
+        \bar x\in Z_{r-1}^{s,t}(Z), & \bar y\in Z_\infty^{s+r,t+r-1}(Z),
+    \end{array}$$
+    such that
+    \begin{enumerate}
+        \item $d^{h,E_{r'}}_{l}\bar x=x$, where $r'=r-m_1=n_1+l_1+1$,
+        \item $d_r \bar x=\bar y$,
+            \item the $(h,E_{r'})$-extension in (1) has no crossing, or the Adams differential (2) has no crossing on the $E_{r'}$-page,
+        \item $d^{g,E_{m_1+2}}_{m}y=\bar y$.
+    \end{enumerate}
+    Then we have $x\in Z_{n+m+e(h)}^{s+l,t+l-1}(X)$ and
+    $$d^{f,E_{n+m+1+e(h)}}_{n}x\equiv y \mod B_{r'}^{s+n+l,t+n+l-1}(Y).$$
+    (See Figure \ref{fig:2aa45b21}.)
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The public Mahowald theorem additionally requires \texttt{NormalizedTriangleCompatible} and a \texttt{DesuspendsClass} relation between the specified \texttt{suspendedX} and $x$. Without the general bridge in Proposition~3.20, it does not establish the conclusion of the article under the same hypotheses. The theorem also has a direct proof obligation.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.GeneralizedMahowaldLaw}: \ref{decl:8a2032df991194a4}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.generalizedMahowald}: \ref{decl:0d9ec345dafe720f}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.GeneralizedMahowaldLaw,KIP126.ProofTools.Standard.generalizedMahowald}
+\uses{decl:8a2032df991194a4,decl:0d9ec345dafe720f}
+\sketch
+% Blueprint note: The original article number is 6.12; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1780}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{theorem}
+
+\section{Descent, indeterminacy and stretching}
+
+% AimPaper: 6.20 proposition 1981 1993
+\begin{proposition}[Restriction of extensions to earlier pages]
+\label{paper:6.20}
+\source{AimPaper Proposition 6.20}
+\level{coarse}
+(From \cite{LWX126}, Proposition 6.20.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:dec738d3}
+    Suppose that we have an $(f,E_r)$-extension $d^{f,E_r}_n(x)=y$, where $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_{r-1-n+e(f)}^{s+n,t+n}(Y)$. Then for all $2\le r'<r$, we also have
+    \begin{equation}\label{eq:dr'}
+        d^{f,E_{r'}}_n(x)=y.
+    \end{equation}
+
+    Furthermore, if $d^{f,E_r}_n(x)=y$ is essential and $n\le r'-2+e(f)$, then (\ref{eq:dr'}) is inessential if and only if there exists some $0<a'\le n-e(f)$ and an element
+    $$x'\in Z_{r'-1-a'}^{s+a',t+a'}(X)\backslash Z_{r-1-a'}^{s+a',t+a'}(X)$$
+    such that
+    $$d^{\hat f_{r'-1}}_{n-a'-b}(\lambda^{a'} x')=\lambda^{n-b-e(f)} y'$$
+    for some $b\ge 0$.
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The first assertion has a public counterpart with the required valid page-length bounds. The printed second assertion, including its set-difference condition, remains unproved. A revised equivalence is proved publicly after removing that condition, fixing the original target $y$, and setting $b=0$; it retains the same actual earlier quotient, a classical source cycle, the original target, and all length bounds. This entry remains a partial correspondence with the original article; completion of the revised statement is recorded separately.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtension\_descends}: \ref{decl:929856ed2e86801d}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel}: \ref{decl:bcf49d9d672e92f0}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.finiteExtension\_inessential\_iff\_shorter}: \ref{decl:405d4a4bc5a35eb6}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.finiteExtension_descends,KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel,KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
+\uses{decl:929856ed2e86801d,decl:bcf49d9d672e92f0,decl:405d4a4bc5a35eb6}
+\sketch
+% Blueprint note: The original article number is 6.20; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1981}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+
+% AimPaper: 6.23 corollary 2074 2081
+\begin{corollary}[Lifting extensions to later pages]
+\label{paper:6.23}
+\source{AimPaper Corollary 6.23}
+\level{coarse}
+(From \cite{LWX126}, Corollary 6.23.)\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:dfc6043e}
+    Suppose $r\ge r'$ and there exists an $(f,E_{r'})$-extension 
+    $$d^{f,E_{r'}}_n(x)=y$$
+    for $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_{r'-1-n+e(f)}^{s+n,t+n}(Y)$. Assume that this extension has no crossing of the form $d^{f,E_{r'-a}}_{n-a-b}(x')=y'$ for any $b>0$, $0<a\le n-e(f)$, and 
+    $$x'\in Z_{r'-1-a}^{s+a,t+a}(X)\backslash Z_{r-1-a}^{s+a,t+a}(X).$$ 
+    Under these conditions, we also have an $(f,E_{r})$-extension
+    $$d^{f,E_{r}}_n(x)=y.$$
+% END AIMPAPER STATEMENT
+
+
+% Correspondence: partial.
+% Blueprint note: The current interface treats only a finite later page and requires the source and target to satisfy the later-page cycle conditions. It excludes every nonzero short extension in the same earlier finite quotient that does not lift, which is stronger than excluding only the essential crossings in the article. It does not establish the case $r=\infty$.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FinitePageExtensionStretchingLaw}: \ref{decl:ab859bf3801f86c1}
+% Blueprint note: \item \texttt{KIP126.ProofTools.FiniteExtensionNonliftableCrossing}: \ref{decl:a094c51b29f055f0}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Standard.finitePageExtensionStretching}: \ref{decl:d5b2c280de2a8a19}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.FinitePageExtensionStretchingLaw,KIP126.ProofTools.FiniteExtensionNonliftableCrossing,KIP126.ProofTools.Standard.finitePageExtensionStretching}
+\uses{decl:ab859bf3801f86c1,decl:a094c51b29f055f0,decl:d5b2c280de2a8a19}
+\sketch
+% Blueprint note: The original article number is 6.23; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L2074}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{corollary}

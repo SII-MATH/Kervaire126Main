@@ -1,8 +1,7 @@
 module
 
-public import KIP126.Computation.Standard
-public import KIP126.Computation.Table
-public import KIP126.Computation.Table.Values
-public import KIP126.Computation.Table.Archive
-public import KIP126.Computation.Table.Relations
-public import KIP126.Computation.Table.ThetaRelations
+/- Backward-compatible aggregate of the independent E₂ layer and later
+Adams calculations. New upstream consumers should import E2Computation. -/
+
+public import KIP126.E2Computation
+public import KIP126.AdamsCalculations

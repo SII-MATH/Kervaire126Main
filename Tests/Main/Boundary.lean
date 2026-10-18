@@ -36,13 +36,19 @@ open Lean Elab Command
 run_cmd do
   let env ← getEnv
   let exported := env
-  for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion, `KIP126.Main.h6_sq_permanent] do
+  for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion,
+      `KIP126.Main.h6_sq_permanent, `KIP126.Main.adams_two_line_classification] do
     let some info := exported.find? name
       | throwError "Fixed paper endpoint is not exported: {name}"
     liftTermElabM <| Meta.forallTelescope info.type fun args _ => do
       unless args.isEmpty do
         throwError "Fixed paper endpoint acquired a caller premise: {name}"
   for name in #[`KIP126.Main.any_choice_criterion,
+      `KIP126.Main.adams_two_line_known_squares,
+      `KIP126.Main.adams_two_line_stem126,
+      `KIP126.Main.adams_two_line_classification,
+      `KIP126.Main.normalized_quotient,
+      `KIP126.Main.lambda_eta_theta_square_independent,
       `KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square,
       `KIP126.Main.eta_extension_detection_choice_equivalence,
       `KIP126.Main.eta_extension_excluded_of_d6_vanishes,
@@ -86,7 +92,6 @@ run_cmd do
 #check_failure KIP126.Main.d6_vanishes_iff_target_survives_twelve
 #check_failure KIP126.Main.delta_h6_square_bx
 #check_failure KIP126.Main.h6_square_no_outgoing
-#check_failure KIP126.Main.lambda_eta_theta_square_independent
 #check_failure KIP126.Main.lambda_three_eta_u_difference_filtration_fourteen
 #check_failure KIP126.Main.lambda_three_eta_u_eq_lambda_six
 #check_failure KIP126.Main.lambda_three_eta_u_filtration_fourteen

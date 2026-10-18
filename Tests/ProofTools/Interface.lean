@@ -23,6 +23,7 @@ run_cmd do
         !(`KIP126.SpectralSequence).isPrefixOf mod &&
         !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
         !(`KIP126.Literature).isPrefixOf mod &&
+        !(`KIP126.E2Computation).isPrefixOf mod &&
         !(`KIP126.ProofTools).isPrefixOf mod then
       throwError "ProofTools crossed its dependency boundary: {mod}"
   for decl in declarations do

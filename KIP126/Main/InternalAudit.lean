@@ -2,6 +2,7 @@ module
 import all KIP126.Main.PaperResults
 import all KIP126.Main.PaperResults.TodaFiltration
 import all KIP126.Main
+import all KIP126.Main.AdamsTwoLine
 import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.Internal.Choice.Completion
@@ -252,6 +253,10 @@ run_cmd do
     (`KIP126.Main.delta_h6_square_bx, #[]),
     (`KIP126.Main.delta_h6_square_eq_lambda_eta_theta_square, #[]),
     (`KIP126.Main.normalized_bx_finite, #[]),
+    (`KIP126.Main.normalized_quotient, #[]),
+    (`KIP126.Main.adams_two_line_known_squares, #[]),
+    (`KIP126.Main.adams_two_line_stem126, #[]),
+    (`KIP126.Main.adams_two_line_classification, #[]),
     (`KIP126.Main.h6_square_basis, #[]),
     (`KIP126.Main.h6_square_reaches_seven, #[]),
     (`KIP126.Main.h6_square_survives_three, #[]),

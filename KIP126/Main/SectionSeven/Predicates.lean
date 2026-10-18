@@ -1,6 +1,6 @@
 module
 
-public import KIP126.Computation
+public import KIP126.AdamsCalculations
 public import KIP126.Literature
 
 /-! Paper-specific language adapted from Kervaire126

@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-import KIP126.Computation.Table.Values
+import KIP126.E2Computation.Table.Values
 import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Choice.Invariance
 import all KIP126.Main.Internal.Choice.FinitePages
@@ -29,6 +29,13 @@ set_option backward.isDefEq.respectTransparency false
 set_option maxHeartbeats 1600000
 set_option maxRecDepth 10000
 
+/-- LWX Remark 7.4: the two finite-quotient vanishing conditions agree
+in the fixed bidegree. This includes the zero-length quotient. -/
+public theorem normalized_quotient (n : ℕ)
+    (a : BiHom 125 130 (S_0_0 : SyntheticSpectrum)) :
+    quotientClass n a = 0 ↔ quotientClass (n+1) (lambdaMultiply 1 a) = 0 := by
+  exact Internal.Choice.Completion.normalized_quotient n a
+
 /-- Remark 7.4: cancel one lambda using the actual source-page calculation
 in degree (3,129), then apply the original fixed-choice BX criterion. -/
 private theorem normalized_bx_finite (r : ℕ) (hr : 1 ≤ r) :
@@ -38,7 +45,7 @@ private theorem normalized_bx_finite (r : ℕ) (hr : 1 ≤ r) :
       (KIP126.Literature.Standard.lambdaEtaThetaSquare
         KIP126.Literature.Standard.bxTheta5) = 0 := by
   exact (KIP126.Literature.Standard.bx_finite r hr).trans
-    (Internal.Choice.Completion.normalized_quotient r
+    (normalized_quotient r
       (KIP126.Literature.Standard.etaThetaSquare KIP126.Literature.Standard.bxTheta5))
 
 private theorem h6_square_basis : basis .sphere 2 128 0 =
@@ -98,7 +105,7 @@ private theorem lambda_eta_theta_square_mod_lambda_zero
 The square difference has high filtration; the Section 7 eta-error and tmf
 arguments annihilate it. Only the lambda-eta-square expression is asserted
 independent, as in Remark 7.5. -/
-private theorem lambda_eta_theta_square_independent
+public theorem lambda_eta_theta_square_independent
     (theta : BiHom 62 64 (S_0_0 : SyntheticSpectrum)) (htheta : ThetaChoice theta) :
     KIP126.Literature.Standard.lambdaEtaThetaSquare theta =
       KIP126.Literature.Standard.lambdaEtaThetaSquare

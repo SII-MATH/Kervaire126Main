@@ -1,4 +1,11 @@
 module
+import all KIP126.AdamsCalculations.AdamsTwoLine
+import all KIP126.AdamsCalculations.Standard
+import all KIP126.AdamsCalculations.Table.Archive
+import all KIP126.AdamsCalculations.Table.Data
+import all KIP126.AdamsCalculations.Table.Syntax
+import all KIP126.AdamsCalculations.Table
+import all KIP126.AdamsCalculations
 import all KIP126.AdamsSynthetic.AdamsFiltration
 import all KIP126.AdamsSynthetic.Background
 import all KIP126.AdamsSynthetic.Coherence
@@ -79,6 +86,20 @@ import all KIP126.Computation.Table.ThetaRelations
 import all KIP126.Computation.Table.Values
 import all KIP126.Computation.Table
 import all KIP126.Computation
+import all KIP126.E2Computation.AdamsTwoLine
+import all KIP126.E2Computation.Basis
+import all KIP126.E2Computation.Source
+import all KIP126.E2Computation.Standard
+import all KIP126.E2Computation.Table.Data
+import all KIP126.E2Computation.Table.Dimensions
+import all KIP126.E2Computation.Table.Internal.SourceExpression
+import all KIP126.E2Computation.Table.Internal.ZeroDimension
+import all KIP126.E2Computation.Table.Relations
+import all KIP126.E2Computation.Table.Syntax
+import all KIP126.E2Computation.Table.ThetaRelations
+import all KIP126.E2Computation.Table.Values
+import all KIP126.E2Computation.Table
+import all KIP126.E2Computation
 import all KIP126.Literature.Applicability
 import all KIP126.Literature.BHS
 import all KIP126.Literature.BX
@@ -92,6 +113,7 @@ import all KIP126.Literature.Moss
 import all KIP126.Literature.RealizationTransport
 import all KIP126.Literature.Rigidity
 import all KIP126.Literature.Secondary
+import all KIP126.Literature.Standard.AdamsTwoLine
 import all KIP126.Literature.Standard.Filtration
 import all KIP126.Literature.Standard.QuotientAlgebra
 import all KIP126.Literature.Standard.Secondary
@@ -99,6 +121,7 @@ import all KIP126.Literature.Standard
 import all KIP126.Literature.Toda
 import all KIP126.Literature.Triangles
 import all KIP126.Literature
+import all KIP126.Main.AdamsTwoLine
 import all KIP126.Main.BoundaryFormula
 import all KIP126.Main.ChoiceIndependence
 import all KIP126.Main.ClassicalReduction
@@ -329,10 +352,10 @@ import all KIP126.ProofTools.Language
 import all KIP126.ProofTools.Laws
 import all KIP126.ProofTools.Operations
 import all KIP126.ProofTools.Paper.Crossing
-import all KIP126.ProofTools.Paper.ExtensionDescent
-import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
-import all KIP126.ProofTools.Paper.ExtensionEssentialSource
 import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
+import all KIP126.ProofTools.Paper.ExtensionDescent
+import all KIP126.ProofTools.Paper.ExtensionEssentialSource
+import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
@@ -489,7 +512,8 @@ run_cmd do
     let some idx := env.getModuleIdxFor? name | continue
     let mod := env.header.moduleNames[idx.toNat]!
     unless #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic, `KIP126.Literature,
-      `KIP126.Computation, `KIP126.ProofTools, `KIP126.Main].any (·.isPrefixOf mod) do continue
+      `KIP126.E2Computation, `KIP126.ProofTools, `KIP126.AdamsCalculations,
+      `KIP126.Computation, `KIP126.Main].any (·.isPrefixOf mod) do continue
     let body := info.value? (allowOpaque := true)
     let direct := info.type.hasSorry || body.any (·.hasSorry)
     let synthetic := info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry)

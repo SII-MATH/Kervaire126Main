@@ -1,0 +1,276 @@
+% Blueprint note: Fixed upstream source versions: \cite{KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+
+% Curated mathematical exposition; compiled dependencies and status are supplied by the publisher.
+
+\section{Common representatives and page calculus}
+
+
+\begin{definition}[Common cycle, boundary and permanent labels]
+\label{sem:ProofTools:common-labels}
+\level{coarse}
+For a classical spectrum $X$, a common label in bidegree $(s,t)$ is an element of $E_2^{s,t}(X)$. For $c\geq1$, it is a level-$c$ cycle, respectively boundary, if it lies in $Z_c^{s,t}(X)$, respectively $B_c^{s,t}(X)$. A permanent label is an element of $Z_\infty^{s,t}(X)$; the zero label is included.
+\lean{KIP126.ProofTools.Ambient,KIP126.ProofTools.IsCycle,KIP126.ProofTools.IsBoundary,KIP126.ProofTools.IsPermanent}
+\end{definition}
+
+\begin{definition}[Congruence and differential equations]
+\label{sem:ProofTools:congruence-and-differential}
+\level{coarse}
+For $c\geq1$, labels $x,y\in E_2^{s,t}(X)$ are congruent at level $c$ if $x-y\in B_c^{s,t}(X)$. For $r\geq2$, the equation $d_r(x)=y$ means that $x$ and $y$ represent classes on page $r$ and their classes satisfy the Adams differential equation, with source bidegree $(s,t)$ and target bidegree $(s+r,t+r-1)$. The target may be zero.
+\lean{KIP126.ProofTools.Congruent,KIP126.ProofTools.DifferentialAt}
+\end{definition}
+
+\begin{theorem}[Cycles and representatives on later pages]
+\label{sem:ProofTools:cycle-reaches}
+\level{coarse}
+For $r\geq2$, a common label lies in $Z_{r-1}$ if and only if it reaches page $r$. If $x$ represents $x_r$ on page $r$ and $y-x\in B_{r-1}$, then $y$ represents $x_r$. If $d_r(x)=y$ and $y'-y\in B_{r-1}$, then $d_r(x)=y'$.
+\lean{KIP126.ProofTools.isCycle_iff_reaches,KIP126.ProofTools.representsOnPage_of_congruent,KIP126.ProofTools.differentialAt_of_congruent}
+\end{theorem}
+
+\begin{theorem}[Boundary and cycle calculus]
+\label{sem:ProofTools:boundary-calculus}
+\level{coarse}
+For $c\geq1$, $B_c\subseteq Z_c$, and $B_1=0$. If a common label represents zero on page $r\geq2$, it lies in $B_{r-1}$. Projection of a common cycle to the initial page recovers its $E_2$-label.
+\lean{KIP126.ProofTools.Operations.boundaries_le_cycles,KIP126.ProofTools.Operations.boundaries_one,KIP126.ProofTools.Operations.represents_zero_mem_boundary,KIP126.ProofTools.Operations.initialProjection_eq_cycleLabel}
+\end{theorem}
+
+\begin{theorem}[Composition and infinite representatives]
+\label{sem:ProofTools:page-naturality}
+\level{coarse}
+For composable synthetic maps $f$ and $g$, their induced page maps satisfy $(g\circ f)_r=g_r\circ f_r$. If $x$ represents an infinite-page class $e$, then $f_2(x)$ represents $f_\infty(e)$.
+\lean{KIP126.ProofTools.Operations.family_page_comp,KIP126.ProofTools.Operations.family_infinity_representative_map}
+\end{theorem}
+
+\section{Finite filtration arguments}
+
+
+\begin{theorem}[Finite correction of a residual]
+\label{sem:ProofTools:finite-correction}
+\level{coarse}
+Let $A,A',B$ be abelian groups, $N\in\mathbb N$, and $\rho:A'\to A$ and $g:A\to B$ homomorphisms, let $E_k\leq A$, $L_k\leq A'$ with $L$ decreasing, and let $T\leq B$. Suppose that for each $s\leq k<s+N$, a residual $\delta\in E_k$ can either be corrected by some $\varepsilon\in L_k$ so that $\delta-\rho\varepsilon\in E_{k+1}$, or already satisfies $g\delta\in T$. Suppose also that $g(E_{s+N})\subseteq T$. If $\alpha_0-\rho\alpha\in E_s$, there is $\alpha'$ with
+\[\alpha'-\alpha\in L_s,\qquad g(\alpha_0-\rho\alpha')\in T.\]
+
+% Blueprint note: Finite correction concerns a finite interval; it does not assert a completion or a compatible infinite lift.
+\lean{KIP126.ProofTools.finite_filtration_correction}
+\end{theorem}
+
+\begin{theorem}[Reflection along a finite filtration interval]
+\label{sem:ProofTools:finite-reflection}
+\level{coarse}
+Let $B',B$ be abelian groups, $N\in\mathbb N$, and $\rho:B'\to B$ a homomorphism. Let $E$ be a decreasing filtration on $B$, and let $L_k\leq B'$. Suppose that for $s\leq k<s+N$, $b\in L_k$ and $\rho b\in E_{k+1}$ imply $b\in L_{k+1}$. Then $b\in L_s$ and $\rho b\in E_{s+N}$ imply $b\in L_{s+N}$.
+% Blueprint note: Ambient-map injectivity is not required.
+\lean{KIP126.ProofTools.finite_filtration_reflection}
+\end{theorem}
+
+\begin{theorem}[The first nonzero grade in a finite interval]
+\label{sem:ProofTools:leading-grade}
+\level{coarse}
+Let $E_k$ be subgroups of an abelian group and let $N\in\mathbb N$. If $b\in E_s$ but $b\notin E_{s+N}$, then there exists $s\leq k<s+N$ with
+\[b\in E_k\quad\text{and}\quad b\notin E_{k+1}.\]
+
+% Blueprint note: No separation or completeness assumption is required.
+\lean{KIP126.ProofTools.first_nonzero_filtration_grade}
+\end{theorem}
+
+\section{Convergence, filtration and detection}
+
+
+\begin{definition}[The infinite-page graded identification]
+\label{sem:ProofTools:infinity-graded}
+\level{coarse}
+For a convergent synthetic Adams tower on $X$, let
+\[E_\infty^{s,m+s,w}(X)\cong\operatorname{gr}^s\pi_{m,w}X\]
+be its convergence isomorphism.
+\lean{KIP126.ProofTools.Operations.infinityGradedIso}
+\end{definition}
+
+\begin{theorem}[Filtration representatives and preservation]
+\label{sem:ProofTools:filtration-representatives}
+\level{coarse}
+Every element of $F^s\pi_{m,w}X$ has a representative in the filtration subobject $F^sX$. If $g:X\to Y$ is a map of convergent towers, then
+\[g_*\bigl(F^s\pi_{m,w}X\bigr)\subseteq F^s\pi_{m,w}Y.\]
+\lean{KIP126.ProofTools.Operations.filtration_representative_exists,KIP126.ProofTools.Operations.map_preserves_filtration}
+\end{theorem}
+
+\begin{theorem}[Representatives for a tower extension equation]
+\label{sem:ProofTools:extension-representatives}
+\level{coarse}
+Let $g:X\to Y$ be a map of convergent towers. Fix $(m,w)$ and classes $x\in E_\infty^{s,m+s,w}(X)$ and $y\in E_\infty^{s+n,m+s+n,w}(Y)$. An extension equation of length $n$ from $x$ to $y$ holds if and only if $n\geq0$ and there are representatives
+\[a\in F^s\pi_{m,w}X,\qquad b\in F^{s+n}\pi_{m,w}Y,\qquad g_*(a)=b\]
+whose associated-graded classes correspond to $x$ and $y$ under the convergence isomorphisms.
+\lean{KIP126.ProofTools.Operations.tower_extension_iff}
+\end{theorem}
+
+\begin{theorem}[Naturality and the next-filtration ambiguity]
+\label{sem:ProofTools:grade-naturality}
+\level{coarse}
+Let $g:X\to Y$ be a map of convergent towers, $a\in F^s\pi_{m,w}X$ and $b\in F^s\pi_{m,w}Y$. If $g_*(a)=b$, their associated-graded classes satisfy $g_\infty([a])=[b]$. Conversely, this graded equality implies
+\[b-g_*(a)\in F^{s+1}\pi_{m,w}Y.\]
+If $g_\infty$ is injective in this degree and $g_*(a)\in F^{s+1}\pi_{m,w}Y$, then $a\in F^{s+1}\pi_{m,w}X$.
+\lean{KIP126.ProofTools.Operations.grade_natural,KIP126.ProofTools.Operations.grade_difference,KIP126.ProofTools.Operations.next_filtration_of_infinity_injective}
+\end{theorem}
+
+\begin{theorem}[Transport and reflection of detection]
+\label{sem:ProofTools:detection-transport}
+\level{coarse}
+Let $g:X\to Y$ be a map of convergent towers. If $x$ detects $\alpha$ on $X$, then $g_2(x)$ detects $g_*(\alpha)$ on $Y$. Conversely, suppose that $g_\infty$ is injective in filtration $s$, that $x$ represents an infinite-page class, and that $\alpha\in F^s\pi_{m,w}X$. If $g_2(x)$ detects $g_*(\alpha)$, then $x$ detects $\alpha$.
+\lean{KIP126.ProofTools.Operations.detects_map,KIP126.ProofTools.Operations.detects_reflect}
+\end{theorem}
+
+\begin{theorem}[A vanishing strip identifies filtration bounds]
+\label{sem:ProofTools:filtration-gap}
+\level{coarse}
+Fix a convergent synthetic Adams tower on $X$, and let $s\leq t$. If every infinite-page component $(j,m+j,w)$ vanishes for $s\leq j<t$, then for every $\alpha\in\pi_{m,w}X$,
+\[\operatorname{fil}(\alpha)\geq s\quad\Longleftrightarrow\quad\operatorname{fil}(\alpha)\geq t.\]
+
+% Blueprint note: The convergence is that of the specified synthetic tower.
+\lean{KIP126.ProofTools.Operations.filtration_iff_of_infinity_zero}
+\end{theorem}
+
+\section{Finite lambda quotients and sphere labels}
+
+
+\begin{theorem}[The finite quotient strip]
+\label{sem:ProofTools:finite-strip}
+\level{coarse}
+For $q>0$, the infinite page of $\nu X/\lambda^q$ vanishes outside $0\leq t-w<q$. Every $\alpha\in\pi_{t-s,t}(\nu X/\lambda^q)$ has filtration at least $s$. If $q\leq m+s-w$, an element of $\pi_{m,w}(\nu X/\lambda^q)$ in filtration at least $s$ is zero.
+\lean{KIP126.ProofTools.Operations.finite_infinity_zero_outside,KIP126.ProofTools.Operations.finite_bottom_filtration,KIP126.ProofTools.Operations.finite_high_filtration_zero}
+\end{theorem}
+
+\begin{theorem}[Injectivity of quotient reduction in the retained strip]
+\label{sem:ProofTools:rho-injectivity}
+\level{coarse}
+For $0<i\leq j$ and $t-w<i$, the quotient reduction $\rho:\nu X/\lambda^j\to\nu X/\lambda^i$ induces an injective map on the infinite-page component in tridegree $(s,t,w)$.
+% Blueprint note: The range bound refers to the smaller quotient.
+\lean{KIP126.ProofTools.Operations.rho_infty_injective}
+\end{theorem}
+
+\begin{theorem}[Finite target labels]
+\label{sem:ProofTools:finite-target-label}
+\level{coarse}
+For $q>0$ and $0\leq k<q$, let $y\in Z_{q-k}^{s,t}(X)$. Its finite target label at weight $t-k$ represents $e\in E_\infty^{s,t,t-k}(\nu X/\lambda^q)$ if and only if the finite-window comparison carries $e$ to the class of $y$ in
+\[Z_{q-k}^{s,t}(X)/B_{1+k}^{s,t}(X).\]
+\lean{KIP126.ProofTools.Operations.finite_target_label_iff}
+\end{theorem}
+
+\begin{theorem}[Sphere labels and finite lambda detection]
+\label{sem:ProofTools:sphere-label-detection}
+\level{coarse}
+The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ to $y$. Let $\alpha\in\pi_{t-s,t}(\nu S^0)$ have first-quotient image equal to this label, using the canonical zero-shift identification. For $q>0$ and $k\geq0$, the finite target label of $y$ in tridegree $(s,t,t-k)$ detects the image of $\lambda^k\alpha$ in $\nu S^0/\lambda^q$.
+\lean{KIP126.ProofTools.Operations.sphere_first_quotient_label,KIP126.ProofTools.Operations.sphere_finite_lambda_detects}
+\end{theorem}
+
+\begin{theorem}[Suspension and composition coherence]
+\label{sem:ProofTools:shift-coherence}
+\level{coarse}
+Assume that suspension and bigraded shifts are coherent with the homotopy functors. The canonical isomorphism
+\[\Sigma^{1,-q}Q\cong\Sigma(\Sigma^{0,-q}Q)\]
+identifies the induced suspension and bigraded-shift maps. The inverse and composition isomorphisms for shifts induce the corresponding inverse and composition maps on homotopy groups.
+\lean{KIP126.ProofTools.Operations.biSuspensionIso,KIP126.ProofTools.Operations.susp_invariance_add,KIP126.ProofTools.Operations.inverse_associativity,KIP126.ProofTools.Operations.shift_hom_associativity}
+\end{theorem}
+
+\section{Generalized Leibniz and Mahowald laws}
+
+
+\begin{definition}[The generalized Leibniz law]
+\label{sem:ProofTools:leibniz-law}
+\level{coarse}
+Let $f:X\to Y$ and write $e=e(f)$. The generalized Leibniz law is the following implication. Assume $2\leq p\leq r$, $e\leq m\leq p-2+e$, $e\leq l$, and
+\[x\in Z_{r-1}^{s,t}(X),\qquad y\in Z_{r-1-m+e}^{s+m,t+m}(Y),\]
+\[x_\infty\in Z_\infty^{s+r,t+r-1}(X),\qquad y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).\]
+Suppose that
+\[d_r(x)=x_\infty,\qquad d_m^{f,E_p}(x)=y,\qquad d_l^{f,E_\infty}(x_\infty)=y_\infty.\]
+Assume either that the first differential has no crossing on page $p$ or that the finite extension has no crossing, and assume that the infinite extension has no crossing. Then
+\[d_{r+l-m}(y)=y_\infty.\]
+\lean{KIP126.ProofTools.GeneralizedLeibnizLaw}
+\end{definition}
+
+\begin{definition}[The normalized-triangle Mahowald law]
+\label{sem:ProofTools:mahowald-law}
+\level{coarse}
+Let $X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X$ be a distinguished triangle with $e(f)+e(g)+e(h)=1$, whose normalized synthetic maps form a compatible triangle. Put
+\[n_1=n-e(f)\geq1,\quad m_1=m-e(g)\geq0,\quad l_1=l-e(h)\geq0,\quad r=n+m+l,\quad r'=r-m_1.\]
+The normalized-triangle Mahowald law is the following implication. Suppose
+\[x\in Z_{n_1}^{s+l,t+l-1}(X),\quad y\in Z_{m_1+1}^{s+l+n,t+l+n-1}(Y),\]
+\[\bar x\in Z_{r-1}^{s,t}(Z),\qquad\bar y\in Z_\infty^{s+r,t+r-1}(Z).\]
+Let $\widetilde x\in E_2^{s+l,t+l}(\Sigma X)$ desuspend to $x$ under the tower suspension comparison, and assume
+\[d_l^{h,E_{r'}}(\bar x)=\widetilde x,\qquad d_r(\bar x)=\bar y,\qquad d_m^{g,E_{m_1+2}}(y)=\bar y.\]
+Assume that the $h$-extension has no crossing or that the classical differential has no crossing on page $r'$. Then $x\in Z_{n+m+e(h)}^{s+l,t+l-1}(X)$ and there is $y'$ such that
+\[d_n^{f,E_{n+m+1+e(h)}}(x)=y',\qquad y'-y\in B_{r'}^{s+l+n,t+l+n-1}(Y).\]
+\lean{KIP126.ProofTools.GeneralizedMahowaldLaw}
+\end{definition}
+
+\begin{definition}[The same-quotient nonliftable obstruction]
+\label{sem:ProofTools:nonliftable-obstruction}
+\level{coarse}
+Let $r_{\rm early}\leq r_{\rm late}$. A nonliftable obstruction is an extension of length $n-a-b$ for the normalized map in the $(r_{\rm early}-1)$-st quotient, in stem $t-s$ and weight $t+e(f)$, where
+\[a,b\in\mathbb N,\qquad 0<a\leq r_{\rm early}-2,\qquad a+b\leq n.\]
+Its source has filtration $s+a$ and lies outside the image of quotient reduction from the $(r_{\rm late}-1)$-st quotient on $E_\infty$; its target has filtration $s+n-b$ and is nonzero. The extension may be inessential.
+% Blueprint note: The nonliftable obstruction is stronger than an essential classical crossing.
+\lean{KIP126.ProofTools.FiniteExtensionNonliftableCrossing}
+\end{definition}
+
+\begin{definition}[The finite stretching sufficient condition]
+\label{sem:ProofTools:finite-stretching-law}
+\level{coarse}
+Suppose $2\leq r_{\rm early}\leq r_{\rm late}$ and
+\[e(f)\leq n\leq r_{\rm early}-2+e(f).\]
+The finite stretching law is the following implication: if
+\[x\in Z_{r_{\rm late}-1}^{s,t}(X),\qquad y\in Z_{r_{\rm late}-1-n+e(f)}^{s+n,t+n}(Y),\qquad d_n^{f,E_{r_{\rm early}}}(x)=y,\]
+and there is no nonliftable obstruction as above, then
+\[d_n^{f,E_{r_{\rm late}}}(x)=y.\]
+% Blueprint note: Finite stretching does not supply an untruncated extension or a compatible infinite tower.
+\lean{KIP126.ProofTools.FinitePageExtensionStretchingLaw}
+\end{definition}
+
+\begin{theorem}[The zero-layer nu-cofiber Mahowald instance]
+\label{sem:ProofTools:nu-zero-layer}
+\level{coarse}
+In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y\in E_2^{11,136}(S^0)$, $\bar x\in E_2^{8,134}(C\nu)$ and permanent $\bar y\in E_2^{11,136}(C\nu)$. Require $x\in Z_2$, $y\in Z_1$, $\bar x\in Z_2$, the actual suspension label for $x$, the length-zero connecting extension on page $3$, $d_3(\bar x)=\bar y$, its specified no-crossing alternative, and the length-zero bottom-cell extension on page $2$. Then $x\in Z_3$ and there is an actual $\nu$-extension of length $3$ on page $4$ from $x$ to some $y'$ with $y'-y\in B_3$.
+% Blueprint note: This specialized result has its own proof and does not require the general Mahowald theorem as an extra hypothesis.
+\lean{KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer}
+\end{theorem}
+
+\section{Synthetic boundary maps and their labels}
+\begin{definition}[Synthetic boundary maps and weighted labels]
+\label{sem:ProofTools:synthetic-boundary-labels}
+\level{coarse}
+For $n>0$, the absolute connecting map of the quotient triangle is
+\[\delta_n:\nu X/\lambda^n\longrightarrow\Sigma^{1,-n}\nu X.\]
+For $0<n<m$, its finite version has target $\Sigma^{1,-n}(\nu X/\lambda^{m-n})$. Using the suspension isomorphism of the quotient triangle, the source label of $x$ is $\lambda^a x$ in the $n$-th quotient. For a classical differential of length $r=k+1$ and $n\leq a+k$, its target label is the shifted $\lambda^{a+k-n}y$; the finite label is its image under the target quotient projection. A crossing of the absolute boundary on page $p$ is an essential extension in that same boundary ESS, with source filtration $u$ and target filtration $v$ satisfying $s<u\leq v\leq s+r$.
+\lean{KIP126.ProofTools.Paper.syntheticAbsoluteBoundary,KIP126.ProofTools.Paper.syntheticFiniteBoundary,KIP126.ProofTools.Paper.syntheticDeltaSourceLabel,KIP126.ProofTools.Paper.syntheticBoundaryLabel,KIP126.ProofTools.Paper.syntheticDeltaNuLabel,KIP126.ProofTools.Paper.syntheticDeltaFiniteLabel,KIP126.ProofTools.Paper.DeltaHasCrossing}
+\end{definition}
+
+\section{Representative criteria and changing the page}
+
+
+\begin{definition}[Higher-source extension ranges]
+\label{sem:ProofTools:crossing-ranges}
+\level{coarse}
+Let $f$ be a map of convergent towers or filtered abelian groups. An extension from source filtration $s$ to target filtration $s+n$ has no higher-source crossing over $[u,s+n]$ if every extension with source filtration greater than $s$ and target filtration in $[u,s+n]$ has zero target label. All extensions, including inessential ones, occur in this quantification.
+\lean{KIP126.ProofTools.Paper.ExtensionNoCrossingRange,KIP126.ProofTools.Paper.FilteredNoCrossingRange,KIP126.ProofTools.Paper.RepresentsInfinityClass}
+\end{definition}
+
+\begin{theorem}[The full representative criterion]
+\label{sem:ProofTools:representative-criterion}
+\level{coarse}
+(From \cite{LWX126}, Prop. 2.10.)\par{}
+
+Fix a map of convergent towers and an extension equation of length $n$ from $x$ to $y$ in filtrations $s$ and $s+n$, and a threshold $u\leq s+n$. Absence of higher-source extensions whose target lies between $u$ and $s+n$ is equivalent to the following condition: every representative $a$ of $x$ whose image has filtration at least $u$ has image representing the specified $y$ in filtration $s+n$. For threshold $u=s$, the image-filtration premise is automatic. If $y=0$, the conclusion says that every such image has filtration at least $s+n+1$. A map increasing every filtration by at least $n$ satisfies this criterion. The same assertions hold for a homomorphism of abelian groups with decreasing filtrations, using representatives of the given associated-graded source class.
+\lean{KIP126.ProofTools.Paper.extension_noCrossingRange_iff,KIP126.ProofTools.Paper.extension_noCrossing_iff,KIP126.ProofTools.Paper.extension_zero_noCrossing_iff,KIP126.ProofTools.Paper.extension_noCrossing_of_filtration_bound,KIP126.ProofTools.Paper.filtered_extension_noCrossingRange_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_zero_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_of_filtration_bound}
+% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Proposition 2.10; with the stated threshold formulation.)
+\end{theorem}
+
+\begin{definition}[Finite correction labels]
+\label{sem:ProofTools:correction-label}
+\level{coarse}
+For $f:X\to Y$ and $x'\in E_2^{s+a,t+a}(X)$, the finite correction label is the image of $\lambda^a x'$ under the shift comparison and quotient isomorphism into the normalized finite source quotient, in synthetic weight $t+e(f)$.
+\lean{KIP126.ProofTools.Paper.finiteExtensionCorrectionLabel}
+\end{definition}
+
+\begin{theorem}[A nonliftable short extension or a late crossing]
+\label{sem:ProofTools:nonliftable-or-crossing}
+\level{coarse}
+Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
+% Blueprint note: This disjunction is distinct from the set-difference equivalence printed in Proposition~\ref{paper:6.20}.
+\lean{KIP126.ProofTools.Paper.FiniteExtensionNonliftableShortTo,KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
+\end{theorem}

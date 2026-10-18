@@ -1,5 +1,5 @@
 module
-public import KIP126.Computation.Table.Values
+public import KIP126.E2Computation.Table.Values
 import all KIP126.Main.Internal.DetectionLabels
 import all KIP126.Main.Internal.Selected.InfinityFrames
 /-! The target E₆ component computation from NuTargetHelpers.lean:1327–1643,

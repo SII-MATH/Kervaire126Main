@@ -25,6 +25,12 @@ input_file literatureApi where
 input_file computationApi where
   path := "metadata/computation-api.json"
   text := true
+input_file e2ComputationApi where
+  path := "metadata/e2-computation-api.json"
+  text := true
+input_file adamsCalculationsApi where
+  path := "metadata/adams-calculations-api.json"
+  text := true
 input_file proofToolsApi where
   path := "metadata/proof-tools-api.json"
   text := true
@@ -52,8 +58,10 @@ lean_lib KIP126 where
   globs := #[.one `KIP126, .andSubmodules `KIP126.SpectralSequence,
     .andSubmodules `KIP126.AdamsSynthetic,
     .andSubmodules `KIP126.Literature,
+    .andSubmodules `KIP126.E2Computation,
     .andSubmodules `KIP126.Computation,
     .andSubmodules `KIP126.ProofTools,
+    .andSubmodules `KIP126.AdamsCalculations,
     .andSubmodules `KIP126.Main]
 
 @[default_target]
@@ -82,6 +90,16 @@ lean_lib ComputationChecks where
   needs := #[.packageTarget .anonymous `computationApi]
   roots := #[`Tests.Computation.Interface, `Tests.Computation.Consumers,
     `Tests.Computation.SourceExpression]
+
+@[default_target]
+lean_lib E2ComputationChecks where
+  needs := #[.packageTarget .anonymous `e2ComputationApi]
+  roots := #[`Tests.E2Computation.Interface, `Tests.E2Computation.Consumers]
+
+@[default_target]
+lean_lib AdamsCalculationsChecks where
+  needs := #[.packageTarget .anonymous `adamsCalculationsApi]
+  roots := #[`Tests.AdamsCalculations.Interface, `Tests.AdamsCalculations.Consumers]
 
 @[default_target]
 lean_lib ProofToolsChecks where

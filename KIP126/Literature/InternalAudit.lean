@@ -14,6 +14,7 @@ import all KIP126.Literature.RealizationTransport
 import all KIP126.Literature.Rigidity
 import all KIP126.Literature.Secondary
 import all KIP126.Literature.Standard
+import all KIP126.Literature.Standard.AdamsTwoLine
 import all KIP126.Literature.Standard.Filtration
 import all KIP126.Literature.Standard.QuotientAlgebra
 import all KIP126.Literature.Standard.Secondary

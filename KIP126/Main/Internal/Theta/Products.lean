@@ -1,5 +1,5 @@
 module
-public import KIP126.Computation.Table.ThetaRelations
+public import KIP126.E2Computation.Table.ThetaRelations
 import all KIP126.Main.SectionSeven.NuTargetE2Calculus
 import all KIP126.Main.SectionSeven.NuTargetLinear
 
