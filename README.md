@@ -29,3 +29,11 @@ SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、Ad
 项目 Release 缓存与 Mathlib 依赖缓存分别恢复；`lake exe cache get` 获取后者。[CI](.github/workflows/ci.yml) 的 GitHub Actions 缓存保存 `.lake` 以加速 CI，不能代替面向其他工作者的 Release 附件；普通 Git 推送、拉取也不会自动同步这些附件。
 
 CI 的触发去重、依赖／项目缓存拆分及经过校验的 Release 缓存复用见 [CI 缓存说明](docs/ci-cache.md)。PR、main 与手动运行保留全量检查；develop 只在同提交已有面向 main 的 PR 时省去重复运行。
+
+## Automatic merge and review dashboard
+
+Non-draft pull requests from branches in this repository targeting `main` automatically opt in to auto-merge. The `PR auto-merge` workflow uses the installed integration GitHub App, waits for the required `Lean checks` and branch protection requirements, and preserves commits with a merge commit. Draft and fork pull requests do not opt in automatically.
+
+The App is configured through the Actions variable `INTEGRATE_APP_CLIENT_ID` and secret `INTEGRATE_APP_PRIVATE_KEY`. Its installation is limited to this repository with Contents and Pull requests write permissions. The workflow does not check out or execute PR code. App-authenticated merges trigger the existing `Blueprint Pages` workflow on `main`, updating the review dashboard after deployment succeeds.
+
+Release build-cache synchronization remains required for code pushed from local checkouts; GitHub Actions caches do not replace those Release assets.
