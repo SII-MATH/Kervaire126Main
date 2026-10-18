@@ -9,7 +9,7 @@
 \level{coarse}
 Let $C$ be an abelian category and let the grading group be additive. A spectral sequence consists of nested cycle and boundary subobjects, their quotient pages, differentials of the specified degree with square zero, and compatible identifications of successor pages with homology. The same ambient data determine $E_\infty$.
 % Blueprint note: This abstract definition does not construct a concrete Adams model.
-\lean{KIP126.Core.SpectralSequence,KIP126.Core.SpectralSequence.SSData,KIP126.Core.SpectralSequence.SSData.page,KIP126.Core.SpectralSequence.SSData.eInfty,KIP126.Core.SpectralSequence.GradedComplex,KIP126.Core.SpectralSequence.GradedComplex.homology}
+\lean{KIP126.Core.SpectralSequence}
 \end{definition}
 
 \begin{definition}[Adams pages and extension lengths]
@@ -23,7 +23,7 @@ An Adams page carries an integer value $r\geq2$. An extension length is a nonneg
 \label{sem:SpectralSequence:morphism}
 \level{coarse}
 A morphism preserves the ambient cycle and boundary towers and commutes with the differential. Its maps on finite pages and on $E_\infty$ are induced by this same underlying morphism.
-\lean{KIP126.Core.SpectralSequence.SSDataMorphism,KIP126.Core.SpectralSequence.PreSSMorphism,KIP126.Core.SpectralSequence.SpectralSequenceMorphism,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.eInftyMap}
+\lean{KIP126.Core.SpectralSequence.SpectralSequenceMorphism,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.eInftyMap}
 \end{definition}
 
 \begin{theorem}[Naturality on pages and at infinity]
@@ -51,14 +51,14 @@ A fixed $E_2$ label has at most one represented class on a specified later page.
 \label{sem:SpectralSequence:cycles-boundaries}
 \level{coarse}
 A page-$r$ cycle is an element $x_r\in\ker d_r$, and a page-$r$ boundary is an element of $\operatorname{im}d_r$. A second-page label is a boundary by page $r$ if it lifts from the boundary subobject at page $r+1$; it is a final boundary if it lifts from $B_\infty$. An incoming hit on page $r$ is a differential whose represented target is nonzero.
-\lean{KIP126.Core.SpectralSequence.IsPageCycle,KIP126.Core.SpectralSequence.IsPageBoundary,KIP126.Core.SpectralSequence.IsBoundaryBy,KIP126.Core.SpectralSequence.IsFinalBoundary,KIP126.Core.SpectralSequence.HitOnPage,KIP126.Core.SpectralSequence.NeverHit}
+\lean{KIP126.Core.SpectralSequence.IsPageCycle,KIP126.Core.SpectralSequence.IsPageBoundary,KIP126.Core.SpectralSequence.IsBoundaryBy,KIP126.Core.SpectralSequence.IsFinalBoundary,KIP126.Core.SpectralSequence.HitOnPage}
 \end{definition}
 
 \begin{definition}[Differentials between named labels]
 \label{sem:SpectralSequence:differential}
 \level{coarse}
 For $x\in E_2^p$ and $y\in E_2^q$, the relation $d_r(x)=y$ means that $q=p+\deg(d_r)$ and that there exist classes $x_r,y_r$ represented by $x,y$, respectively, satisfying $d_r(x_r)=y_r$. The differential is nonzero when $y_r\neq0$. Differential vanishing on $x$ means that every page-$r$ class represented by $x$ has zero outgoing differential; this condition also holds when $x$ has no page-$r$ representative.
-\lean{KIP126.Core.SpectralSequence.HasDifferential,KIP126.Core.SpectralSequence.HasNonzeroDifferential,KIP126.Core.SpectralSequence.DifferentialVanishesOn,KIP126.Core.SpectralSequence.DifferentialTargets}
+\lean{KIP126.Core.SpectralSequence.HasDifferential,KIP126.Core.SpectralSequence.HasNonzeroDifferential,KIP126.Core.SpectralSequence.DifferentialVanishesOn}
 \end{definition}
 
 \begin{theorem}[Consequences of a nonzero differential]
@@ -81,7 +81,7 @@ Let $2\leq a\leq b$. A label is a cycle on the window $[a,b]$ if, for every inte
 \label{sem:SpectralSequence:permanent}
 \level{coarse}
 A permanent cycle is an $E_2$ label with a common representative in $Z_\infty$. Nonzero survival requires that this representative have nonzero image in $E_\infty$. In both cases the infinite-cycle representative projects to the original $E_2$ label.
-\lean{KIP126.Core.SpectralSequence.IsPermanentCycle,KIP126.Core.SpectralSequence.NonzeroSurvival,KIP126.Core.SpectralSequence.InfiniteCycles,KIP126.Core.SpectralSequence.infinityToPage}
+\lean{KIP126.Core.SpectralSequence.IsPermanentCycle,KIP126.Core.SpectralSequence.NonzeroSurvival}
 \end{definition}
 
 \begin{theorem}[Stabilization after vanishing differentials]
@@ -165,14 +165,14 @@ The quotients $A^k/F^sA^k$, their transition morphisms, and the canonical cone f
 \label{sem:SpectralSequence:convergence}
 \level{coarse}
 Convergence consists of a bijective reindexing of degrees and isomorphisms $E_\infty^p\cong\operatorname{gr}^{s}A^k$ for that reindexing $p\mapsto(s,k)$. A converging spectral sequence packages the same sequence, filtered target, and comparison.
-\lean{KIP126.Core.SpectralSequence.Convergence,KIP126.Core.SpectralSequence.ConvergingSS,KIP126.Core.SpectralSequence.Convergence.filtrationDegree,KIP126.Core.SpectralSequence.Convergence.stemDegree}
+\lean{KIP126.Core.SpectralSequence.Convergence,KIP126.Core.SpectralSequence.ConvergingSS}
 \end{definition}
 
 \begin{definition}[Detection in an associated graded quotient]
 \label{sem:SpectralSequence:detection}
 \level{coarse}
 An infinity-page class detects a filtered representative when its convergence image equals the associated graded quotient of that representative. A convergence morphism preserves the filtered target and commutes with these specified infinity-page identifications.
-\lean{KIP126.Core.SpectralSequence.Detects,KIP126.Core.SpectralSequence.ConvergenceMorphism,KIP126.Core.SpectralSequence.ConvergenceMorphism.filteredMap}
+\lean{KIP126.Core.SpectralSequence.Detects,KIP126.Core.SpectralSequence.ConvergenceMorphism}
 \end{definition}
 
 \begin{theorem}[Differences of detected representatives]

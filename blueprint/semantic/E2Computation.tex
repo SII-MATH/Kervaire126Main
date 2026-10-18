@@ -40,7 +40,7 @@ The fixed source object has components $P^{s,t}$ over $\mathbb F_2$, bilinear ma
 For $s,t\in\mathbb N$ and $t\leq261$, the source coordinates are a linear equivalence
 \[P^{s,t}\cong\bigoplus_{i<\operatorname{basisCount}(s,t)}\mathbb F_2.\]
 The inverse of each coordinate unit vector is the value of the corresponding archived monomial. In particular, the archived monomials form a basis of $P^{s,t}$.
-\lean{KIP126.Computation.SourceBasisSpecification,KIP126.Computation.Standard.sourceCoordinates,KIP126.Computation.Standard.sourceBasis_values}
+\lean{KIP126.Computation.Standard.sourceCoordinates,KIP126.Computation.Standard.sourceBasis_values}
 \end{definition}
 
 \section{Comparison with the actual sphere}
@@ -65,7 +65,7 @@ The comparison is $\mathbb F_2$-linear.
 \label{sem:Computation:standard-atoms}
 \level{coarse}
 For $i=0,1,2,4,5,6$, the source atom $h_i$ is sent to the designated standard class $h_i\in E_2^{1,2^i}$. For every archived atom $a$, define its page class by $c(a)$.
-\lean{KIP126.Computation.Standard.atom,KIP126.Computation.Standard.h0,KIP126.Computation.Standard.h1,KIP126.Computation.Standard.h2,KIP126.Computation.Standard.h4,KIP126.Computation.Standard.h5,KIP126.Computation.Standard.h6,KIP126.Computation.Standard.comparison_h0,KIP126.Computation.Standard.comparison_h1,KIP126.Computation.Standard.comparison_h2,KIP126.Computation.Standard.comparison_h4,KIP126.Computation.Standard.comparison_h5,KIP126.Computation.Standard.comparison_h6,KIP126.Computation.Standard.atom_h0,KIP126.Computation.Standard.atom_h1,KIP126.Computation.Standard.atom_h2,KIP126.Computation.Standard.atom_h4,KIP126.Computation.Standard.atom_h5,KIP126.Computation.Standard.atom_h6}
+\lean{KIP126.Computation.Standard.atom,KIP126.Computation.Standard.comparison_h0,KIP126.Computation.Standard.comparison_h1,KIP126.Computation.Standard.comparison_h2,KIP126.Computation.Standard.comparison_h4,KIP126.Computation.Standard.comparison_h5,KIP126.Computation.Standard.comparison_h6,KIP126.Computation.Standard.atom_h0,KIP126.Computation.Standard.atom_h1,KIP126.Computation.Standard.atom_h2,KIP126.Computation.Standard.atom_h4,KIP126.Computation.Standard.atom_h5,KIP126.Computation.Standard.atom_h6}
 \end{theorem}
 
 \begin{theorem}[Coordinates on the actual page]
@@ -81,7 +81,7 @@ Its inverse sends each unit vector to the image of the same archived monomial. P
 \label{sem:Computation:h6-square-calibration}
 \level{coarse}
 The source product of the archived $h_6$ with itself maps to the designated actual class $h_6^2\in E_2^{2,128}$.
-\lean{KIP126.Computation.Standard.h6Square,KIP126.Computation.Standard.h6_square,KIP126.Computation.SpherePresentation.h6_square}
+\lean{KIP126.Computation.Standard.h6_square,KIP126.Computation.SpherePresentation.h6_square}
 \end{theorem}
 
 \section{Named E2 classes near the Kervaire stem}
@@ -127,6 +127,29 @@ The class $h_6^2$ is nonzero and every $x\in E_2^{2,128}$ satisfies $x=0$ or $x=
 \end{theorem}
 
 \section{Products, divisibility and E2 vanishing}
+
+\begin{definition}[The source label for the seventh differential]
+\label{sem:E2Computation:d7-label}
+\level{coarse}
+(From \cite{LinProgram}, archived sphere coordinates.)\par{}
+
+Define the second-page class
+\[A=x_{123,11,2}+x_{123,11}+h_0h_6[B_4]\in E_2^{11,134}.\]
+Its later differential is stated in \ref{sem:Computation:d7-source}.
+\lean{KIP126.Computation.Standard.d7Source}
+\end{definition}
+
+\begin{definition}[The two target labels in bidegree (9,134)]
+\label{sem:E2Computation:d3-labels}
+\level{coarse}
+(From \cite{LinProgram}, archived sphere coordinates.)\par{}
+
+Define
+\[B=h_5x_{94,8},\qquad B'=h_5x_{94,8}+h_6b\in E_2^{9,134}.\]
+The differential alternative involving them is stated in
+\ref{sem:Computation:d3-candidates}.
+\lean{KIP126.Computation.Standard.d3Candidate,KIP126.Computation.Standard.d3OtherCandidate}
+\end{definition}
 
 \begin{theorem}[Product relations for the named classes]
 \label{sem:Computation:products-vanishing}
@@ -193,7 +216,7 @@ The archived detector has bigraded $\mathbb F_2$-components, selected elements $
 \level{coarse}
 (From \cite{LinProgram}, archived finite tables.)\par
 A table row specifies the sphere or $C\nu$, an Adams bidegree and an increasing list of coordinate indices. A row is coordinate-valid if its degree occurs in the table and its coordinate indices are strictly increasing and less than the tabulated dimension.
-\lean{KIP126.Computation.Table.Raw.Spectrum,KIP126.Computation.Table.Raw.Degree,KIP126.Computation.Table.Raw.Product,KIP126.Computation.Table.Raw.BottomMap,KIP126.Computation.Table.Raw.degrees,KIP126.Computation.Table.Raw.products,KIP126.Computation.Table.Raw.bottomMaps,KIP126.Computation.Table.Raw.strictlyIncreasing,KIP126.Computation.Table.Raw.coordinatesValid}
+\lean{KIP126.Computation.Table.Raw.Spectrum,KIP126.Computation.Table.Raw.Degree,KIP126.Computation.Table.Raw.degrees,KIP126.Computation.Table.Raw.strictlyIncreasing,KIP126.Computation.Table.Raw.coordinatesValid}
 \end{definition}
 
 \begin{definition}[Realization and decoding of a table row]
@@ -202,14 +225,14 @@ A table row specifies the sphere or $C\nu$, an Adams bidegree and an increasing 
 For $o=S^0$ or $C\nu$, write $b_{o;s,t,i}\in E_2^{s,t}(o)$ for the specified basis vectors. For the sphere, $t\leq261$ and $i<\operatorname{basisCount}(s,t)$, these are the inverse coordinate images of the unit vectors; set $b_{S^0;s,t,i}=0$ when either bound fails. A coordinate-valid list $I$ represents
 \[\sum_{i\in I}b_{o;s,t,i}.\]
 An invalid coordinate list represents no element. The basis is complete if there is a linear coordinate equivalence sending every $b_{o;s,t,i}$ to the corresponding unit vector.
-\lean{KIP126.Computation.Table.object,KIP126.Computation.Table.sequence,KIP126.Computation.Table.Page,KIP126.Computation.Table.sphereBasis,KIP126.Computation.Table.cofiberBasis,KIP126.Computation.Table.basis,KIP126.Computation.Table.decode,KIP126.Computation.Table.BasisCorrect}
+\lean{KIP126.Computation.Table.sphereBasis,KIP126.Computation.Table.cofiberBasis,KIP126.Computation.Table.basis,KIP126.Computation.Table.decode,KIP126.Computation.Table.BasisCorrect}
 \end{definition}
 
 \begin{theorem}[Correctness of the finite table bases]
 \label{sem:Computation:table-bases}
 \level{coarse}
 For every degree listed in the finite archive, its specified basis is complete. On the sphere, its length equals the fixed archive basis count; on $C\nu$, correctness refers to the prescribed cofiber basis. For $t\leq261$, the complete sphere archive count equals the tabulated dimension in degree $(s,t)$.
-\lean{KIP126.Computation.Table.basis_count,KIP126.Computation.Table.cofiber_basis_correct,KIP126.Computation.Table.basis_correct,KIP126.Computation.Table.dimensionsByT,KIP126.Computation.Table.basisDimension,KIP126.Computation.Table.archive_dimension}
+\lean{KIP126.Computation.Table.basis_count,KIP126.Computation.Table.cofiber_basis_correct,KIP126.Computation.Table.basis_correct,KIP126.Computation.Table.archive_dimension}
 \end{theorem}
 
 \begin{definition}[Polynomial expressions and calibrated basis values]

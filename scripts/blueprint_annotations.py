@@ -49,8 +49,6 @@ def markdown_note(kind, text, bibliography):
             links.append('[' + key + '](' + url + ')' if url else '`' + key + '`')
         return ', '.join(links)
     text = re.sub(r'\\cite\{([^}]+)\}', citation, text)
-    text = re.sub(r'\\ref\{(decl:[^}]+)\}',
-                  lambda m: '[implementation](implementation/index.html#' + m[1] + ')', text)
     text = re.sub(r'\\texttt\{([^}]+)\}', lambda m: '`' + m[1] + '`', text)
     text = re.sub(r'\\(?:emph|textbf)\{([^}]+)\}', lambda m: m[1], text)
     text = re.sub(r'\\par\b\s*', '', text)

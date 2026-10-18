@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-18T06:58:30.001193+00:00'
 ---
 **Formal scope:** public counterparts; scope is specified below.
 
@@ -18,9 +18,9 @@ Bound declarations (private names are resolved through stable source references 
 
 \begin{itemize}
 
-\item `KIP126.ProofTools.HasCrossingOn`: [implementation](implementation/index.html#decl:7e04ee02f4a57b31)
+\item `KIP126.ProofTools.HasCrossingOn`
 
-\item `KIP126.ProofTools.NoCrossingOn`: [implementation](implementation/index.html#decl:cd43aa102f21f4d4)
+\item `KIP126.ProofTools.NoCrossingOn`
 
 \end{itemize}
 
