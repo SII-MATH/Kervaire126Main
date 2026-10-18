@@ -16,12 +16,14 @@ import shutil
 import subprocess
 import tarfile
 import tempfile
+import time
 from urllib.parse import urlencode
 
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_ARCHIVE = 2 * 1024**3
 MAX_EXPANDED = 16 * 1024**3
+RELEASE_DISCOVERY_SECONDS = 90
 
 
 def sha256(raw):
@@ -212,6 +214,62 @@ def install_build(staged, root, backup):
         raise
 
 
+def release_tags(repository):
+    """Find queue/PR source caches before paginating the repository's Releases."""
+    deadline = time.monotonic() + RELEASE_DISCOVERY_SECONDS
+    suffix = f'-{platform.system().lower()}-{platform.machine()}'
+    pattern = re.compile(r'build-cache-[0-9a-f]{40}' + re.escape(suffix))
+    seen = set()
+    commit = os.environ.get('GITHUB_SHA', '')
+    commits = []
+    if re.fullmatch(r'[0-9a-f]{40}', commit):
+        commits.append(commit)
+        try:
+            # The raw object retains parent headers even in checkout's depth-1
+            # clone. Revision walking (%P/rev-list) hides shallow parents.
+            headers = run('git', 'cat-file', '-p', commit).decode().split('\n\n', 1)[0]
+            parents = re.findall(r'^parent ([0-9a-f]{40})$', headers, re.MULTILINE)
+            # A synthetic PR/queue merge's last parent is the incoming head.
+            commits.extend(reversed(parents))
+        except (OSError, subprocess.SubprocessError) as error:
+            print(f'Cannot read source parents; retaining Release pagination: {error}')
+    for source in commits:
+        if time.monotonic() >= deadline:
+            print('Release discovery time budget exhausted')
+            return
+        tag = f'build-cache-{source}{suffix}'
+        if tag not in seen:
+            seen.add(tag)
+            yield tag
+
+    page = 1
+    while time.monotonic() < deadline:
+        try:
+            releases = api(f'repos/{repository}/releases?per_page=100&page={page}')
+            if not isinstance(releases, list):
+                raise ValueError('Unexpected Release list response')
+        except (OSError, ValueError, subprocess.SubprocessError) as error:
+            print(f'Release discovery unavailable on page {page}: {error}')
+            return
+        # API order is not a recency guarantee. Ordering only affects lookup
+        # cost; every candidate still needs exact input and checksum validation.
+        candidates = [r for r in releases if isinstance(r, dict) and not r.get('draft')
+                      and pattern.fullmatch(r.get('tag_name', ''))]
+        candidates.sort(key=lambda r: r.get('published_at') or '', reverse=True)
+        for release in candidates:
+            if time.monotonic() >= deadline:
+                print('Release discovery time budget exhausted')
+                return
+            tag = release['tag_name']
+            if tag not in seen:
+                seen.add(tag)
+                yield tag
+        if len(releases) < 100:
+            return
+        page += 1
+    print('Release discovery time budget exhausted')
+
+
 def restore_release():
     repository = os.environ['GITHUB_REPOSITORY']
     # Replacement is restricted to this CI checkout before compilation starts.
@@ -220,24 +278,19 @@ def restore_release():
     inputs = build_inputs()
     toolchain = (ROOT / 'lean-toolchain').read_text().strip()
     manifest_hash = sha256((ROOT / 'lake-manifest.json').read_bytes())
-    releases = api(f'repos/{repository}/releases?per_page=30')
     prefix = 'build-cache-'
     suffix = f'-{platform.system().lower()}-{platform.machine()}'
-    candidates = [release for release in releases if not release.get('draft') and
-                  release.get('tag_name', '').startswith(prefix) and
-                  release.get('tag_name', '').endswith(suffix)]
-    current_tag = f'{prefix}{os.environ.get("GITHUB_SHA", "")}{suffix}'
-    candidates.sort(key=lambda release: release['tag_name'] != current_tag)
-    # Small manifests first; never download a large archive for an incompatible snapshot.
-    # Keep a cache miss cheap; old snapshots remain an optional incremental baseline.
-    for release in candidates[:8]:
-        tag = release['tag_name']
+    checked = 0
+    for tag in release_tags(repository):
+        checked += 1
+        print(f'Checking Release cache metadata: {tag}')
         with tempfile.TemporaryDirectory(prefix='ci-release-', dir=ROOT / '.lake') as temporary:
             directory = Path(temporary)
             try:
                 meta_path = download(repository, tag, 'metadata.json', directory)
                 metadata = json.loads(meta_path.read_text())
                 if not compatible(metadata, inputs, repository, toolchain, manifest_hash):
+                    print(f'Skipping {tag}: environment, build status or input fingerprint differs')
                     continue
                 if tag != f'{prefix}{metadata["source_commit"]}{suffix}':
                     raise ValueError('Release tag/source commit mismatch')
@@ -290,7 +343,8 @@ def restore_release():
                 return
             except (KeyError, OSError, ValueError, subprocess.SubprocessError, tarfile.TarError) as error:
                 print(f'Ignoring unusable Release cache {tag}: {error}')
-    print('No matching Release cache; using Actions cache or an incremental build')
+    print(f'No matching Release cache after {checked} candidates; '
+          'using Actions cache or an incremental build')
 
 
 def main():

@@ -80,9 +80,19 @@ Only an exact input match can replace an Actions incremental baseline. Missing,
 incompatible, expired or corrupt releases leave that baseline intact and fall
 back to rebuilding. CI checks metadata/manifests, each archive part and the
 combined archive against SHA-256; it never selects merely the newest Release.
-Discovery is bounded to eight platform-matching candidates from the first 30
-Releases, preferring the current source commit. Network calls have timeouts and
-the entire optional restore step has a five-minute ceiling.
+Discovery first probes the current commit and its direct parents by their exact
+Release tags. This finds the incoming PR head's cache for a synthetic merge-group
+commit even when that Release is absent from the first listing page. Parent IDs
+come from the raw commit object, which retains them in a depth-one checkout.
+
+If those probes miss, discovery paginates Releases (100 per page), checking all
+platform-matching candidates within a 90-second discovery budget. Each page is
+ordered by publication time rather than relying on the API's list order; there
+is no eight-candidate/first-page cutoff. Tags are deduplicated. Logs identify
+each metadata probe, incompatible inputs, discovery failures and time-budget
+exhaustion. A cache hit still requires all compatibility and integrity checks;
+publication time only determines search order. Network calls have timeouts and
+the entire optional restore step retains its five-minute ceiling.
 
 Extraction is streamed to a temporary directory. Paths outside `.lake/build`,
 links, duplicate members, devices and excessive expansion are rejected. The
@@ -105,5 +115,6 @@ lake build
 ```
 
 The Python tests cover event coverage, stale/foreign PRs, API failure, input
-fingerprints, single/split archives, incompatible metadata, checksum failure,
+fingerprints, shallow merge parents, paginated discovery beyond the old cutoff,
+discovery timeouts/API failures, single/split archives, incompatible metadata, checksum failure,
 archive traversal/links/devices, active writers, and installation rollback.
