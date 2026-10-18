@@ -1,0 +1,141 @@
+name: Blueprint Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: blueprint-pages
+  cancel-in-progress: true
+
+jobs:
+  export:
+    name: Export main Blueprint
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LEAN_NUM_THREADS: '2'
+      MATHLIB_NO_CACHE_ON_UPDATE: '1'
+      SEED_URL: https://github.com/SII-MATH/Kervaire126Main/releases/download/blueprint-evidence-18113d44df596c43d4fb7aab2aaf7ca9e0c52c48/blueprint-evidence.tar.gz
+      SEED_SHA256: 813eeec13f436435d779d92053a52b58899af9550ed92b03c7d48b11c37f1595
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+
+      - name: Check out pinned public hgraph
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: SII-MATH/hgraph
+          ref: 6dce6022de98ffda2cde18cc7441526c4577efa7
+          path: .blueprint-tools/hgraph
+          persist-credentials: false
+
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.11'
+
+      - name: Install diagram tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            texlive-latex-base texlive-latex-recommended texlive-latex-extra \
+            texlive-fonts-recommended texlive-pictures lmodern dvisvgm graphviz
+
+      - name: Install and verify pinned hgraph outside build caches
+        run: |
+          python -m venv "$RUNNER_TEMP/blueprint-env"
+          "$RUNNER_TEMP/blueprint-env/bin/python" -m pip install --disable-pip-version-check 'PyYAML==6.0.1'
+          "$RUNNER_TEMP/blueprint-env/bin/python" -m pip install --disable-pip-version-check --no-deps .blueprint-tools/hgraph
+          "$RUNNER_TEMP/blueprint-env/bin/python" - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          import re
+          import subprocess
+          requirement = Path('requirements-blueprint.txt').read_text()
+          pin = re.search(r'hgraph @ git\+https://github\.com/SII-MATH/hgraph\.git@([0-9a-f]{40})', requirement).group(1)
+          assert subprocess.check_output(['git', '-C', '.blueprint-tools/hgraph', 'rev-parse', 'HEAD'], text=True).strip() == pin
+          spec = importlib.util.spec_from_file_location('blueprint_builder', 'scripts/build-blueprint.py')
+          builder = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(builder)
+          assert builder.PIN == pin
+          builder.verify_native_runtime()
+          PY
+          echo "$RUNNER_TEMP/blueprint-env/bin" >> "$GITHUB_PATH"
+
+      - name: Identify source tree
+        id: inputs
+        run: echo "tree=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
+
+      - name: Restore Lean build progress
+        id: cache
+        continue-on-error: true
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-blueprint
+          restore-keys: |
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-
+            lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-
+
+      - name: Install pinned Lean toolchain
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1
+        with:
+          auto-config: false
+          build: false
+          test: false
+          lint: false
+          use-mathlib-cache: false
+          use-github-cache: false
+
+      - name: Restore imported Mathlib dependencies
+        run: |
+          lake env python scripts/mathlib-cache-roots.py > "$RUNNER_TEMP/mathlib-roots.txt"
+          mapfile -t mathlib_roots < "$RUNNER_TEMP/mathlib-roots.txt"
+          if (( ${#mathlib_roots[@]} )); then
+            lake exe cache get "${mathlib_roots[@]}"
+          fi
+
+      - name: Publish current main with scoped verification
+        run: python scripts/blueprint-pages.py publish --seed-url "$SEED_URL" --seed-sha256 "$SEED_SHA256"
+
+      - name: Preserve Lean build progress
+        if: always() && steps.cache.outputs.cache-hit != 'true' && hashFiles('.lake/build/**/*.trace') != ''
+        continue-on-error: true
+        timeout-minutes: 8
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          # The hgraph checkout and Python environment are deliberately elsewhere.
+          path: .lake
+          key: lake-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('lean-toolchain', 'lake-manifest.json') }}-v1-${{ steps.inputs.outputs.tree }}-blueprint
+
+      - name: Upload website only
+        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy main Blueprint
+    needs: export
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+      - name: Deploy Pages artifact
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

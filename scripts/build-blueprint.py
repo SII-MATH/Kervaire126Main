@@ -66,7 +66,7 @@ def fingerprint(value):
 
 
 def site_inputs():
-    paths = [ROOT / p for p in ('scripts/build-blueprint.py', 'scripts/publish-blueprint.py', 'scripts/blueprint_paper.py', 'scripts/blueprint_semantic.py', 'scripts/blueprint_annotations.py', 'scripts/serve-blueprint.py', 'requirements-blueprint.txt',
+    paths = [ROOT / p for p in ('scripts/build-blueprint.py', 'scripts/publish-blueprint.py', 'scripts/blueprint-pages.py', '.github/workflows/pages.yml', 'Tests/test_blueprint_pages.py', 'scripts/blueprint_paper.py', 'scripts/blueprint_semantic.py', 'scripts/blueprint_annotations.py', 'scripts/serve-blueprint.py', 'requirements-blueprint.txt',
              'Tests/test_blueprint.py', 'Tests/test_blueprint_semantic.py', 'Tests/test_blueprint_annotations.py', 'Tests/check_blueprint_formulae.py', 'hgraph/config.yaml', 'site/config.yaml', 'site/overview.html')]
     paths.extend(p for p in (ROOT / 'blueprint').rglob('*')
                  if p.is_file() and 'generated' not in p.parts)
