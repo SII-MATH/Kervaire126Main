@@ -28,11 +28,11 @@
 .lake/blueprint-env/bin/python -m unittest discover -s Tests -p 'test_blueprint*.py'
 ```
 
-仅改记录或展示时，复用已核验数学导出刷新本地预览：
+仅改记录或展示时，复用现有原生数学导出刷新本地预览：
 
 ```sh
 .lake/blueprint-env/bin/python scripts/preview-memo.py
 python3 scripts/serve-blueprint.py --port 18728 --directory .lake/blueprint/memo-statements-preview
 ```
 
-新增或修改 Blueprint 节点、绑定或数学依赖时，先用 `scripts/build-blueprint.py` 重新生成并核验数学数据，再刷新预览。预览的 `validation.json` 区分已核验的数学快照与当前展示输入；本地预览不等于远程发布。
+新增或修改 Blueprint 节点、绑定或数学依赖时，先用 `scripts/build-blueprint.py` 按 hgraph 原生机制重新导出，再刷新预览。预览的 `publication.json` 记录基础导出与当前展示输入；网页状态不代表 Lean 编译或编译依赖闭包已核验，本地预览不等于远程发布。

@@ -14,7 +14,7 @@ lake exe cache get  # 获取锁定版本的 Mathlib 依赖缓存；已有缓存�
 lake build
 ```
 
-模块职责、接口与任务边界见 [AGENTS.md](AGENTS.md)。[metadata/](metadata/) 只保留接口、许可证明洞、审计边界与命名检查所需的精简基线，格式见 [元数据检查基线](docs/metadata-baselines.md)。数学说明与论文对应在 Blueprint 中维护，接口范围说明保存在 hgraph 原生节点附件；文献及固定代码版本通过 bibliography 引用，代码版本条目见 [source-snapshots.bib](blueprint/source-snapshots.bib)。待补工作由 Lean 编译证据和 hgraph 依赖状态展示；[proof-obligations.json](metadata/proof-obligations.json) 保留证明洞许可基线，构建通过不代表全部证明完成。Lake 的依赖锁 `lake-manifest.json` 保留在根目录。
+模块职责、接口与任务边界见 [AGENTS.md](AGENTS.md)。[metadata/](metadata/) 只保留接口、许可证明洞、审计边界与命名检查所需的精简基线，格式见 [元数据检查基线](docs/metadata-baselines.md)。数学说明与论文对应在 Blueprint 中维护，接口范围说明保存在 hgraph 原生节点附件；文献及固定代码版本通过 bibliography 引用，代码版本条目见 [source-snapshots.bib](blueprint/source-snapshots.bib)。待补工作保留在 Lean 源码与许可清单；Blueprint 使用 hgraph 原生的源码局部状态和手写依赖，不核验编译依赖闭包；[proof-obligations.json](metadata/proof-obligations.json) 保留证明洞许可基线，构建通过不代表全部证明完成。Lake 的依赖锁 `lake-manifest.json` 保留在根目录。
 
 SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry 八个数学模块在 `KIP126/` 下平级组织，公共入口为 `KIP126.<模块名>`。计算层按 `E2Computation → ProofTools → AdamsCalculations → Main → Geometry` 单向组织：E₂ 层提供独立的基底、乘法、维数和实际对象比较；后续 Adams 层负责微分、边界与存活。原 `KIP126.Computation` 及其子路径的兼容入口已删除，直接使用实际分层入口；既有 `KIP126.Computation.*` 公开声明名称保持不变，由实际定义模块的独立接口锁检查。移除原 `Def/` 目录层级的路径映射和验证记录已归档到 `local-history/metadata/module-path-migration.json`；历史来源仍使用其原始提交中的路径。
 

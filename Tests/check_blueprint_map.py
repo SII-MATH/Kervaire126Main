@@ -1,9 +1,10 @@
 """Exercise the published map through the actual pinned hgraph frontend."""
 import argparse
+from collections import Counter
 import json
 from pathlib import Path
 
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, expect
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -14,7 +15,11 @@ def main():
     parser.add_argument('--chromium', default='/root/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome')
     args = parser.parse_args()
     base = args.url.rstrip('/') + '/'
-    data = json.loads((ROOT / '_site/blueprint-map/data.json').read_text())
+    project = json.loads((ROOT / '_site/Kervaire126/data.json').read_text())
+    data = {'nodes': project['entries'], 'chapters': project['chapters'],
+            'edges': [edge for row in project['entries'] for edge in row['deps'] if edge['type'] == 'uses'],
+            'stats': {'nodes': len(project['entries']),
+                      'statuses': dict(Counter(row['lean_status'] for row in project['entries']))}}
     by_label = {node['label']: node for node in data['nodes']}
     errors, http, checks = [], [], []
     with sync_playwright() as p:
@@ -66,7 +71,8 @@ def main():
         assert frame.locator('.node-card:not(.dim)').count() == data['stats']['statuses']['empty']
         frame.locator('#map-status').select_option('all')
         frame.locator('#map-chapter').select_option(data['chapters'][-1]['title'])
-        assert frame.locator('.node-card:not(.dim)').count() == 3
+        expected = sum(block.get('t') == 'stmt' for block in data['chapters'][-1]['blocks'])
+        expect(frame.locator('.node-card:not(.dim)')).to_have_count(expected)
         frame.locator('#map-chapter').select_option('all')
         checks.append('search, status and chapter filters')
 

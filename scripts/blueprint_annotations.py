@@ -16,8 +16,8 @@ def authoring_notes(root):
     """Read only explicitly marked notes; preserve chapter-wide provenance."""
     root = Path(root)
     result = {}
-    for directory in ('semantic', 'paper', 'frontier'):
-        for path in sorted((root / 'blueprint' / directory).glob('*.tex')):
+    for directory in ('semantic', 'paper'):
+        for path in sorted((root / 'blueprint' / directory).rglob('*.tex')):
             text = path.read_text()
             blocks = list(ENV.finditer(text))
             if not blocks:
@@ -27,9 +27,9 @@ def authoring_notes(root):
             if chapter.exists():
                 common += NOTE.findall(chapter.read_text().split(r'\input', 1)[0])
             for block in blocks:
-                labels = re.findall(r'\\label\{((?:sem:|paper:|frontier:)[^}]+)\}', block[0])
+                labels = re.findall(r'\\label\{([^}]+)\}', block[0])
                 if not labels or labels[0] in result:
-                    raise ValueError('Ambiguous annotation target in ' + str(path))
+                    continue  # Leave structure warnings to native synchronization.
                 if '% Canonical node:' in block[0]:
                     continue  # An archived repetition has no second displayed node.
                 notes = list(dict.fromkeys(common + NOTE.findall(block[0])))
@@ -46,7 +46,8 @@ def markdown_note(kind, text, bibliography):
             key = key.strip()
             source = bibliography.get(key)
             if source is None:
-                raise ValueError('Unknown annotation bibliography key: ' + key)
+                links.append('`' + key + '`')
+                continue
             url = source.get('url')
             links.append('[' + key + '](' + url + ')' if url else '`' + key + '`')
         return ', '.join(links)
@@ -64,12 +65,10 @@ def sync_authoring_notes(graph, root):
     for label, record in authoring_notes(root).items():
         target = node_id('bp', label)
         if not graph.has_node(target):
-            raise ValueError('Missing native annotation target: ' + label)
+            continue
         content = '\n\n'.join(markdown_note(kind, text, bibliography)
                               for kind, text in record['notes'])
         matches = [note for note in graph.comments(target) if note.meta.get('origin') == ORIGIN]
-        if len(matches) > 1:
-            raise ValueError('Duplicate managed Blueprint annotations: ' + label)
         metadata = {'origin': ORIGIN, 'blueprint_label': label,
                     'authored_source': record['path'], 'title': 'Formal scope and provenance'}
         if not matches:

@@ -66,52 +66,15 @@ class AnnotationTests(unittest.TestCase):
             self.assertIn('still requires a bridge', notes[1].content)
             self.assertEqual(graph.get_node(target), node_before)
 
-    def test_unknown_or_duplicate_targets_are_rejected(self):
+    def test_notes_do_not_make_native_structure_warnings_fatal(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             graph, _ = self.fixture(root)
             path = root / 'blueprint/paper/Main.tex'
             path.write_text(path.read_text().replace('paper:1.1', 'paper:missing'))
-            with self.assertRaisesRegex(ValueError, 'Missing native annotation target'):
-                sync_authoring_notes(graph, root)
+            self.assertEqual(sync_authoring_notes(graph, root), 0)
             path.write_text(path.read_text() * 2)
-            with self.assertRaisesRegex(ValueError, 'Ambiguous annotation target'):
-                authoring_notes(root)
-
-
-class SourceEvidenceTests(unittest.TestCase):
-    def setUp(self):
-        spec = importlib.util.spec_from_file_location('source_evidence_publisher',
-            Path(__file__).resolve().parents[1] / 'scripts/publish-blueprint.py')
-        self.publisher = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(self.publisher)
-
-    def fixture(self, root):
-        folder = root / 'KIP126/SpectralSequence'
-        folder.mkdir(parents=True)
-        mathematical = folder / 'Basic.lean'
-        mathematical.write_text('module\nnamespace Test\npublic theorem result : True := trivial\nend Test\n')
-        audit = folder / 'InternalAudit.lean'
-        audit.write_text('module\nimport all KIP126.SpectralSequence.Basic\nexample : True := trivial\n')
-        for name in ('lean-toolchain', 'lake-manifest.json', 'lakefile.lean'):
-            (root / name).write_text('')
-        self.publisher.ROOT = root
-        return mathematical, audit
-
-    def test_audit_consumers_are_separate_and_named_producers_cannot_be_excluded(self):
-        with tempfile.TemporaryDirectory() as directory:
-            mathematical, audit = self.fixture(Path(directory))
-            self.assertEqual(self.publisher.mathematical_source_paths(), {mathematical})
-            audit.write_text(audit.read_text() + '\nnamespace Audit\npublic theorem named : True := trivial\nend Audit\n')
-            with self.assertRaisesRegex(ValueError, 'Audit contains named mathematical declarations'):
-                self.publisher.mathematical_source_paths()
-
-    def test_transitive_audit_imports_are_rejected(self):
-        with tempfile.TemporaryDirectory() as directory:
-            mathematical, _audit = self.fixture(Path(directory))
-            mathematical.write_text('module\nimport all KIP126.SpectralSequence.InternalAudit\n')
-            with self.assertRaisesRegex(ValueError, 'imports audit consumers'):
-                self.publisher.mathematical_source_paths()
+            self.assertEqual(set(authoring_notes(root)), {'paper:missing'})
 
 
 if __name__ == '__main__':
