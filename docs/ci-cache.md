@@ -6,7 +6,7 @@ removed. `Lean checks` remains the required PR/main check.
 
 ## Avoiding duplicate develop runs
 
-PRs, main pushes and manual runs always build. A develop push builds too, unless
+PRs, main pushes, merge groups and manual runs always build. A develop push builds too, unless
 the exact same commit already heads an open PR from this repository to main.
 That PR receives the full required check. A stale PR, another repository/base,
 or a failed API query does not suppress the develop build. A race while opening
@@ -15,6 +15,37 @@ a PR may still produce two builds; coverage takes priority over deduplication.
 Develop-push jobs are named `Develop checks`, so skipping one cannot publish a
 skipped or successful result under the required PR check's name. Event selection
 does not change branch protection, and API/setup failure retains a real build.
+
+## Main merge queue
+
+CI handles `merge_group: checks_requested` for `main` as well as pull requests.
+Every queue group runs the same required `Lean checks`, source inventory, cache
+checks and full `lake build` against GitHub's combined merge-group commit. The
+event planner never suppresses a merge-group build or looks it up as a develop
+PR. Concurrency includes the event name and PR number or full ref: separate
+queue groups, ordinary PRs and main pushes cannot cancel each other's checks.
+
+`.github/merge-queue-ruleset.json` records the repository ruleset applied to
+`refs/heads/main`: no bypass actors, `ALLGREEN`, merge commits, at most two
+concurrent queue builds, at most two PRs merged together, a minimum of one PR
+with no batching delay, and a 120-minute check timeout. These settings retain
+all required checks for every queued PR. The classic branch protection keeps
+its required GitHub Actions `Lean checks`, PR requirement and administrator
+enforcement. Its strict up-to-date flag is disabled only after the merge queue
+is active, since the queue validates the current main plus preceding PRs.
+
+The existing App-authenticated auto-merge workflow detects whether the base
+branch has a queue. With a queue it uses `gh pr merge --auto` without selecting
+a merge strategy, so GitHub queues the PR when its initial requirements pass.
+Without a queue it retains the existing merge-commit behavior. It never uses
+`--admin`, executes PR source or automatically resolves conflicts. A failed or
+conflicting queue group is removed by GitHub and must be fixed before re-entry.
+
+Apply the workflow support to main before activating the ruleset. The ruleset
+can be maintained through the repository rules API from the checked-in JSON;
+keep the existing branch protections when updating it. Official references:
+[merge queue configuration](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue)
+and [merge-group events](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#merge_group).
 
 ## Separate dependency and project caches
 
