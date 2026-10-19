@@ -17,12 +17,26 @@ crossing hypotheses; their callers never supply upstream result packages. -/
 #check KIP126.ProofTools.Paper.extensionBoundary_of_exact
 #check KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing
 #check KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension
+#check KIP126.ProofTools.Internal.Mahowald.ActualNoCrossing
+#check KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative
+#check KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement
+#check KIP126.ProofTools.Standard.generalizedMahowaldAtLevel
+#check KIP126.ProofTools.lambda_quotient_target_preserving_lift_iff
+#check KIP126.ProofTools.finite_target_from_full_lift_is_permanent
 
 namespace Tests.ProofTools
 open CategoryTheory KIP126.StableHomotopy
 open KIP126.Kervaire.Route KIP126.ProofTools
 open KIP126.AdamsSynthetic
 open KIP126.AdamsSynthetic.Standard (model)
+
+/-- An ordinary consumer obtains the full assertion without a row premise. -/
+example (T : TriangleData model.auxiliary)
+    (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+      normalizedExponent model.classicalTower T.g +
+      normalizedExponent model.classicalTower T.h = 1) :
+    KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement T he :=
+  KIP126.ProofTools.Standard.generalizedMahowaldAtLevel T he
 
 example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) :
     FinitePageExtensionStretchingLaw model X Y f :=

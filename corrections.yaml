@@ -31,15 +31,19 @@ corrections:
   title: 广义 Mahowald trick 不能直接消去 λ 层
   reference: THEOREM 6.12
   status:
-    kind: proposed
-    label: 强有限商带层候选已明确 · 同步与输出桥梁待证
+    kind: revised
+    label: 完整带层修正版已证 · 无额外水平行前提
   original:
     statements:
     - '6.12'
     source_line: 1780
   revision:
-    nodes: []
-    note: 群内研究已给出保留强有限商、双输入层数和共同实际代表的具体数学候选；尚无已公开并证明的完整修正版 Blueprint 节点。实际 no-crossing 的代表同步、普通 Adams 解码与保留目标的经典提升仍待补。
+    nodes:
+    - paper:6.12
+    definitions:
+    - sem:ProofTools:mahowald-law
+    - sem:ProofTools:mh-actual-no-crossing
+    note: 修正版完整定理已公开并证明。Literature 构造实际有限商正合行及同时保持两条指定箭头的同一余纤维同构；ProofTools 的 generalizedMahowaldAtLevel 直接消费该定理，不再要求调用方给 hRows。原标签、实际 no-crossing、共同代表、两条带符号像和强有限商结论完整保留；没有新增公理或证明洞，既有上游待补责任继续保留。
   problem: |-
     **原文与问题。** 原文标签 `thm:158d451a`，采用 Notation 2.2、Definition 5.4、Remark 5.7 的约定：素数为 2，谱为 2 完备的 connective finite-type 谱。证明末尾从带层关系
 
@@ -59,16 +63,20 @@ corrections:
 
     令 $x=b=d_2(h_4)=h_0h_3^2\ne0$，其余标签为零，则 $l_1=1$、$r=r'=3$。前提只看到 $b\bmod B_2=0$；而 $\operatorname{Ext}_{\mathcal A}^{2,13}=0$ 保证 $j_2(b)\ne0$，故底层 $d_0^{\hat j_2}(b)\ne0$，阻止所需的 $d_1$。Definition 5.4 的源位于第零层，只模 $B_1=0$，不能改读成经典 $E_3$ 中的零类。
   progress: |-
-    形式化反证为 [StatementReview.lean](KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的 `rotated_nu_generalized_mahowald_law_false`，前提与非零性见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证依赖既有登记的上游接口，不调用待证 MH2 或 GL。一般 MH2 的公共接口尚未修改，原待补保留；Main 使用 $l_1=0$ 的特例，本反例针对 $l_1=1$。
+    **完整带层修正版。** 获准采用的完整陈述由 Blueprint 的强有限层 MH 定义及 Theorem 6.12 维护；公开 Lean theorem 为 `KIP126.ProofTools.Standard.generalizedMahowaldAtLevel`。它构造同一 $a,b,c$，保留全部指定输入检测、严格 $\delta$ 方程、两条带符号像、两条原标签输出检测、原 $x$ 的 cycle 资格和原指定 $y$ 的强有限商延拓，没有消去 $\lambda$ 层，也没有增加水平行假设。目标研究与授权记录见 [ProofTools 接口提案](interface/proposals/ProofTools/20261018-mh-finite-level-target/report.md)。
 
-    **后续调研核对（2026-10-18）。** 已实际读取 project-math-assistant 群中 4 月 24 日原始 TeX、10 月 16 日复核与 10 月 17 日《广义MH与论文计算认证研究报告》。建议目标已收敛为保留强有限商与双输入层数、交付同一个实际代表及两条像方程的有限 MH；具体候选、完整前提和下游影响见[ProofTools 接口提案](interface/proposals/ProofTools/20261018-mh-finite-level-target/report.md)。本次另经独立报告员核对参数、可见层、weight 与源码，复核范围是数学规格和接口边界，不是新候选的 Lean 证明。实际 no-crossing 到代表同步的推论、普通 Adams 方框解码与保留指定目标的经典提升仍须分别证明。
+    **指定商映射的实际正合性。** `KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row` 在同一标准模型、同一相容 normalized triangle 和任意 $q>0$ 上给出保实际 quotient inclusion 的悬挂同构及字面 signed distinguished row。私有 cone 构造保留同一个悬挂比较和同一个余纤维同构，同时满足两条指定结构方程。证明从三八面体、有限源负 Hom 窗口、同一误差的有限胞腔 ghost 幂零及严格 tail 比较构造，不把逐球面为零直接当作全局箭头为零，不调用旧一般 MH／GL，不引入新公理、证明洞或上游结果包。最小 Literature 授权及独立审查见[该接口提案](interface/proposals/Literature/20261018-mh-finite-quotient-horizontal-row/report.md)。
 
-    Main 已改接独立的零层 ν 余纤维数值特例；当前一般私有零层证明的范围还要求中间对象为球谱，不能扩大成任意对象的零层定理已交付。现有 public 带 level GL 与有限除 λ 定理不自动恢复旧 MH 的指定零层源及目标，也不自动认证全部 SS 调用。此次不改变公共接口、证明洞清单或上述上游责任。
+    **实际 no-crossing 与提升。** `ActualNoCrossing` 的范围仍为同一实际 map、stem/weight 的全部 $s<u\le v\le s+n$，包含 $u=v$。共同源代表同步、保源保目标的实际 $\lambda$ 商提升障碍，以及指定有限目标来自完整 $\nu$ 代表时其原标签永久的结论保持原有范围。原先的私有条件装配已经接入实际 Literature 生产者；调用方不再提交 `hRows`。
+
+    **保留的边界。** 旧零层一般 law 的反例及原冻结待补声明保留，没有冒称旧陈述获证。Main 的独立零层 $\nu$ 数值特例、一般普通 Adams 方框解码、一般经典 extension 恢复和具体 SS 调用认证不由本次新定理自动完成。既有登记上游责任仍须分别完成；本次证明不是所有 synthetic 余纤维选择的通用正合性，也不声称任意 detector 源的正指数 lift 唯一。历史 `StableLambda.lean` 中依赖额外稳定 cofiber 字段与公理的实现未被迁入；更强 AdamsSynthetic tensor／exact-functor 方案未获本次授权，也未被当作必要假设。
   history: |-
     **早期候选与后续排除。** 不再把消去 λ 当作合法的一般推导。早期曾考虑额外要求源属于所需微分的定义域：令 $Q=n+m+e(h)$、$F=\hat f_Q$，要求 $x\in Z_Q$ 且底层标签 $x_0\in{}^F Z_{n-1}$。群内 10 月 16 日的补充复核随后给出纸面实际有限谱反例，说明只补这个条件仍不能保留原目标同余：取 $f=(2,\kappa):S^{14}\to S^{14}\vee S^0$ 的余纤维三角，$(e(f),e(g),e(h))=(1,0,0)$、$(n,m,l,s,t)=(5,0,1,2,31)$，$x=h_0h_3^2=d_2(h_4)$，其余标签为零。源可支持所需 $d_5$，但目标为非零永久类 $d_0^2$，不能模 $B_6$ 改成零。该补充反例尚非本仓库固定模型中的 Lean 反证；[原群完整说明与来源](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1455)。
 
-    **当前候选方向。** 王老师修改稿保留输出的 $l_1$ 层。后续研究进一步要求保留强有限商及实际目标商，不先投影到可能截断目标的小商；任意正输入层的推广还必须调整商长、保证可见范围并同步实际代表。经典 extension 另需保留目标的提升，不能由源永久性直接推出。具体数学规格维护于上述接口提案，不将未证候选冒写成 Blueprint 已形式化修正版。
+    **后续采用的修正方向。** 王老师修改稿保留输出的 $l_1$ 层。后续研究进一步要求保留强有限商及实际目标商，不先投影到可能截断目标的小商；任意正输入层的推广还必须调整商长、保证可见范围并同步实际代表。经典 extension 另需保留目标的提升，不能由源永久性直接推出。完整修正版陈述现在由 Blueprint 节点维护；研究与审核记录保留于上述接口提案。
   links:
+  - node: paper:6.12
+    title: 完整带层 MH 修正版
   - node: sem:ProofTools:nu-zero-layer
     title: 已证应用特例 · 零层 ν 余纤维 MH
 - id: descent

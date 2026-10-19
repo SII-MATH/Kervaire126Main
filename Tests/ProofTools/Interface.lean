@@ -228,6 +228,8 @@ run_cmd do
 -- Its representative construction and generic zero-layer proof stay private.
 #check_failure KIP126.ProofTools.Internal.Mahowald.generalized_mahowald_zero_layer_sphere
 #check_failure KIP126.ProofTools.Standard.nuCofiberMahowaldZeroLayer
+#check_failure KIP126.ProofTools.Internal.Mahowald.finite_level_extension_of_common_representative
+#check_failure KIP126.ProofTools.classical_lift_obstruction_iff
 
 section NuCofiberZeroLayerConsumer
 open CategoryTheory KIP126.StableHomotopy KIP126.AdamsSynthetic KIP126.Kervaire.Route

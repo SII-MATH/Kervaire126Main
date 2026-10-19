@@ -1,0 +1,158 @@
+Historical source excerpts independently inspected by /root/mh_coherence_review on 2026-10-19.
+These are exact checked text; line numbers are original.
+No import of these historical axioms or extra assumptions into current production is authorized.
+
+KIPBase/Synthetic/StableLambda.lean sha256=168cf742af426414e184b685846f76c9aaa9bdbb4c1798daa9e236a5265f7e90
+17: variable {Syn : Type u} [Category.{v} Syn] [Preadditive Syn]
+18:     [HasZeroObject Syn] [HasShift Syn ℤ]
+19:     [∀ n : ℤ, Functor.Additive (shiftFunctor Syn n)]
+20:     [MonoidalCategory Syn] [Pretriangulated Syn] [SyntheticCategory Syn]
+21:     [SyntheticShiftCofiberCompatibility (Syn := Syn)]
+22: 
+23: /-- The primitive stable content of the synthetic lambda action: every
+24: lambda power is a morphism of functors commuting with triangulated suspension.
+25: 
+26: This does not assume that a finite lambda quotient is exact. Exactness is
+27: derived below from the stable 3×3 property of the selected functorial cofiber. -/
+28: class SyntheticStableLambdaCompatibility where
+29:   lambdaPow_commShift (n : ℕ) :
+30:     NatTrans.CommShift (lambdaPowNatTrans (Syn := Syn) n) ℤ
+31: 
+32: namespace SyntheticStableLambdaCompatibility
+33: 
+34: variable [SyntheticStableLambdaCompatibility (Syn := Syn)]
+35: 
+36: /-- Install the stable coherence of each lambda power. -/
+37: noncomputable instance lambdaPowNatTrans_commShift (n : ℕ) :
+38:     NatTrans.CommShift (lambdaPowNatTrans (Syn := Syn) n) ℤ :=
+39:   SyntheticStableLambdaCompatibility.lambdaPow_commShift n
+43: namespace XModLambdaN
+44: 
+45: variable [SyntheticStableLambdaCompatibility (Syn := Syn)]
+46: 
+47: noncomputable local instance stableFunctorialCofiberInstance :
+48:     KIPBase.StableHomotopy.TensorTriangulatedCatWithFunctorialCofiber Syn :=
+49:   syn_functorial_cofiber
+50: 
+51: omit [SyntheticShiftCofiberCompatibility (Syn := Syn)]
+52:     [SyntheticStableLambdaCompatibility (Syn := Syn)] in
+53: /-- The finite lambda quotient functor is definitionally the pointwise
+54: cofiber of the stable natural transformation `lambdaPowNatTrans`. -/
+55: theorem functor_eq_natCofiberFunctor (n : ℕ) :
+56:     functor (Syn := Syn) n =
+57:       HasFunctorialCofiber.natCofiberFunctor Syn
+58:         (lambdaPowNatTrans (Syn := Syn) n) :=
+59:   rfl
+60: 
+61: /-- Finite lambda quotients commute coherently with triangulated suspension.
+62: This is obtained from stable functorial cofibers, not supplied as a quotient
+63: functor hypothesis. -/
+64: noncomputable instance functor_commShift (n : ℕ) :
+65:     (functor (Syn := Syn) n).CommShift ℤ := by
+66:   change (HasFunctorialCofiber.natCofiberFunctor Syn
+67:     (lambdaPowNatTrans (Syn := Syn) n)).CommShift ℤ
+68:   infer_instance
+69: 
+70: /-- Finite lambda quotients preserve distinguished triangles. The proof is
+71: the stable 3×3 theorem for the pointwise cofiber of the exact functors
+72: `biShift (0,-n)` and the identity. -/
+73: noncomputable instance functor_isTriangulated (n : ℕ) :
+74:     (functor (Syn := Syn) n).IsTriangulated := by
+75:   change (HasFunctorialCofiber.natCofiberFunctor Syn
+76:     (lambdaPowNatTrans (Syn := Syn) n)).IsTriangulated
+77:   infer_instance
+
+KIPBase/Synthetic/Basic.lean sha256=d2a1bad50caee5418ad1020d4dd0b51efcf62324ae450f18605a6a3720d5fced
+108: /-- KIP §3: synthetic spectra have a stable functorial cofiber compatible
+109: with tensor. In particular, its pointwise cofiber construction satisfies the
+110: stable 3×3 property recorded by the target class. -/
+111: axiom syn_functorial_cofiber :
+112:   TensorTriangulatedCatWithFunctorialCofiber Syn
+113: 
+
+KIPBase/StableHomotopy/TensorTriangulatedCategory.lean sha256=83d2c133e6b9b1257a3b5a9466a081f4367e7f828a018d07e21afe65711b358e
+130: class TensorTriangulatedCatWithFunctorialCofiber extends HasFunctorialCofiber C where
+131:   /-- Tensor with W commutes with functorial cofiber:
+132:       cofib(f ▷ W) ≅ cofib(f) ⊗ W. -/
+133:   tensorCofibIso : ∀ {X Y : C} (f : X ⟶ Y) (W : C),
+134:     cofib (f ▷ W) ≅ cofib f ⊗ W
+135:   /-- Stable 3×3 coherence: the pointwise cofiber of a morphism of exact
+136:       endofunctors has the canonical coherent shift comparison. This is the
+137:       stable enhancement missing from bare functorial choices of cones. -/
+138:   natCofiberFunctorCommShift (F G : Functor C C)
+139:       [F.CommShift ℤ] [G.CommShift ℤ] (τ : NatTrans F G)
+140:       [NatTrans.CommShift τ ℤ] :
+141:     (HasFunctorialCofiber.natCofiberFunctor C τ).CommShift ℤ
+142:   /-- The 3×3 lemma for the selected stable cofiber, including the natural
+143:       comparison of its third vertices. Exactness of the pointwise cofiber is
+144:       derived below from this coherent comparison. -/
+145:   natCofiberFunctorPreservesCofibers (F G : Functor C C)
+146:       [F.CommShift ℤ] [G.CommShift ℤ]
+147:       [F.IsTriangulated] [G.IsTriangulated] (τ : NatTrans F G)
+148:       [NatTrans.CommShift τ ℤ] :
+149:     letI := natCofiberFunctorCommShift F G τ
+150:     PreservesFunctorialCofibers C
+151:       (HasFunctorialCofiber.natCofiberFunctor C τ)
+152: 
+153: namespace TensorTriangulatedCatWithFunctorialCofiber
+154: 
+155: variable [TensorTriangulatedCatWithFunctorialCofiber C]
+156: 
+157: /-- The coherent shift comparison supplied by stable functorial cofibers. -/
+158: noncomputable instance natCofiberFunctor_commShift {F G : Functor C C}
+159:     [F.CommShift ℤ] [G.CommShift ℤ] (τ : NatTrans F G)
+160:     [NatTrans.CommShift τ ℤ] :
+161:     (HasFunctorialCofiber.natCofiberFunctor C τ).CommShift ℤ :=
+162:   natCofiberFunctorCommShift F G τ
+163: 
+164: /-- Exactness of pointwise cofibers, derived from the stable 3×3 field. -/
+165: noncomputable instance natCofiberFunctor_isTriangulated
+166:     {F G : Functor C C} [F.CommShift ℤ] [G.CommShift ℤ]
+167:     [F.IsTriangulated] [G.IsTriangulated] (τ : NatTrans F G)
+168:     [NatTrans.CommShift τ ℤ] :
+169:     (HasFunctorialCofiber.natCofiberFunctor C τ).IsTriangulated where
+170:   map_distinguished := by
+171:     intro T hT
+172:     let H := HasFunctorialCofiber.natCofiberFunctor C τ
+173:     let D := natCofiberFunctorPreservesCofibers F G τ
+174:     let K := Triangle.mk T.mor₁ (HasFunctorialCofiber.cofibι T.mor₁)
+175:       (HasFunctorialCofiber.cofibδ T.mor₁)
+176:     have hK : K ∈ distTriang C :=
+177:       HasFunctorialCofiber.cofib_distinguished T.mor₁
+
+KIP126/Def/Kervaire/Route/Tools/GeneralizedMahowald/Proofs.lean sha256=f1b3ffe0c42fac9e8bbe6c296d56b5cf1286a4da3930ed0cf8676dcd985a4244
+3329:                 (Nat.add_sub_cancel_left i q)) _ _ _ _
+3330:           · -- MH1: the remaining nonzero comparison is for T.Z other than the sphere.
+3331:             sorry
+3332:     obtain ⟨c,hc,hdelta⟩ := target_correction
+3333:     have hfirst : (a0+c) ≫ (D.quotientTower Zν).rho 1 i hi =
+3343:           (sf+n,((tf+n)-(sf+n))+(sf+n),tf+n+eg)
+3344:           (finiteSourceForExtension D T.Y T.Z T.g q (sf+n) (tf+n) y)
+3345:           (homotopyRegrade (by dsimp; omega) rfl ag) →
+3346:         ag ≫ finiteExtensionMap D T.Y T.Z T.g q = boundary aZ →
+3347:         (∃ c : BiHom (tf-sf) tf (XModLambdaN (nuZero D T.X) Q),
+3348:           c ≫ (D.quotientTower (nuZero D T.X)).rho 1 Q hQ = firstLabel D T.X sf tf x) ∧
+3349:         ∃ y' : E2 H (T.Y.obj D.auxiliary) (sf+n) (tf+n),
+3350:           y'-y ∈ boundaries H (T.Y.obj D.auxiliary) (n+m+l-(m-eg)) (sf+n,tf+n) ∧
+3351:           ∃ (af : BiHom (tf-sf) (tf+ef)
+3352:                 ((SyntheticObject.quotient Q (extensionSourceObject D T.X T.Y T.f)).obj D.nu D.auxiliary))
+3353:             (bf : BiHom (tf-sf) (tf+ef)
+3354:                 (XModLambdaN (D.nu.functor.obj (T.Y.obj D.auxiliary)) Q)),
+3355:             Detects (D.convergence (.quotient Q (extensionSourceObject D T.X T.Y T.f)))
+3356:               (sf,(tf-sf)+sf,tf+ef) (finiteSourceForExtension D T.X T.Y T.f Q sf tf x)
+3357:               (homotopyRegrade (by dsimp; omega) rfl af) ∧
+3358:             Detects (D.convergence (.quotient Q (.nu T.Y)))
+3359:               (sf+n,(tf-sf)+(sf+n),tf+ef) (finiteTargetForExtension D T.X T.Y T.f Q n sf tf hnf y')
+3360:               (homotopyRegrade (by dsimp; omega) rfl bf) ∧
+3361:             af ≫ finiteExtensionMap D T.X T.Y T.f Q = bf := by
+3362:     intro ag hag hstrict
+3363:     -- MH2, MainPaper lines 1875–1917: hcross synchronizes the h-extension
+3364:     -- with the delta representative aZ; htriangle and may.boundary then
+3365:     -- give the actual lift through lambda^Q and the strict f_Q square.
+3366:     -- hsusp identifies the ordinary suspension label with x. Transport
+3367:     -- through lambda powers must retain the finite B_(n+m+l-(m-e(g)))
+3368:     -- ambiguity in y', not merely equality in the infinity quotient.
+3369:     -- May supplies a signed homotopy relation; removing its sign requires
+3370:     -- the mod-2 label comparison, not an assertion of characteristic two
+3371:     -- for the homotopy groups. No FiniteExtension conclusion is assumed here.
+3372:     sorry
