@@ -19,11 +19,18 @@
     <div class="header-links"><span id="interface-count">Loading baselines…</span><a href="guide.html" target="_blank">Baseline guide ↗</a><a href="data.json" download>Download page data ↓</a></div>
   </header>
   <aside class="note">These are recorded interface locks, not a completed-build certificate. Source statements are shown before elaboration, with their local context. Axiom lists are the baseline allowance; <code>sorryAx</code> may be inherited from upstream. Registered obligations list direct unfinished responsibilities, including private helpers. Lean checks run separately.</aside>
-  <div id="interface-modules" class="modules" aria-label="Module overview"></div>
+  <section class="overview" aria-labelledby="interface-overview-title">
+    <h2 id="interface-overview-title">Interface overview</h2>
+    <p class="overview-help">Select a status or module to explore its interfaces. Counts cover named public declarations; generated exports are separate.</p>
+    <div id="interface-summary" class="status-summary" aria-label="Interface status totals"></div>
+    <div id="interface-modules" class="modules" aria-label="Module overview"></div>
+    <p class="overview-help">“Local proof complete” means the source body contains no <code>sorry</code> or <code>admit</code>, while its baseline still permits <code>sorryAx</code>. This can include dependencies in the same module. Definitions and objects are counted separately from proofs.</p>
+  </section>
   <form id="interface-filters" role="search">
     <label class="search">Search interfaces<input id="interface-search" type="search" placeholder="Declaration, source statement, axiom…" autocomplete="off"></label>
     <label>Module<select id="interface-module"><option value="">All modules</option></select></label>
     <label>Entries<select id="interface-kind"><option value="declaration">Public declarations</option><option value="generated">Generated exports</option><option value="obligation">Registered obligations</option><option value="">All entries</option></select></label>
+    <label>Status<select id="interface-status"><option value="">All statuses</option><option value="proved">Proof complete · baseline</option><option value="local">Local proof complete</option><option value="pending">Direct obligation</option><option value="defined">Definition / object</option><option value="unknown">Source unavailable</option></select></label>
     <label>Baseline dependency<select id="interface-dependency"><option value="">All dependencies</option><option value="sorry">Includes sorryAx</option><option value="no-sorry">No sorryAx recorded</option></select></label>
     <button type="reset">Reset</button>
   </form>

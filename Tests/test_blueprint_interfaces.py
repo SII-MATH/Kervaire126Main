@@ -82,6 +82,25 @@ class InterfacePageTests(unittest.TestCase):
         self.assertTrue(source['href'].endswith('#L' + str(source['line'])))
         self.assertTrue(any(r['source_is_parent'] for r in self.data['records']))
 
+    def test_native_source_flags_distinguish_direct_and_dependency_gaps(self):
+        from hgraph.sync import parse_lean
+        for name in ('KIP126.Main.h6_sq_permanent',):
+            row = next(r for r in self.data['records'] if r['name'] == name)
+            self.assertEqual(row['source']['kind'], 'theorem')
+            self.assertFalse(row['source']['sorry'])
+            self.assertIn('sorryAx', row['axioms'])
+            self.assertIsNone(row['obligation'])
+        parsed = {}
+        for row in self.data['records']:
+            if not row['source'] or not row['source'].get('kind') or row['source_is_parent']:
+                continue
+            source = row['source']
+            if source['file'] not in parsed:
+                parsed[source['file']] = {d['fqname']: d for d in parse_lean((ROOT / source['file']).read_text())}
+            original = parsed[source['file']][row['name']]
+            self.assertEqual(source['kind'], original['kind'])
+            self.assertEqual(source['sorry'], original['sorry'])
+
     def test_export_downloads_are_exact_and_mathematical_payload_is_unchanged(self):
         originals = {p: p.read_bytes() for p in (ROOT / 'interface/baselines').glob('*.json')}
         with tempfile.TemporaryDirectory() as folder:
