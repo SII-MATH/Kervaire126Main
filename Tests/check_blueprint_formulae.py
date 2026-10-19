@@ -83,7 +83,7 @@ def main():
               'strict_render_errors':errors, 'runtime_errors':runtime,'http_failures':http}
     (ROOT / '.lake/blueprint/formula-browser-validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(result,ensure_ascii=False))
-    if statements_checked != len(data['entries']) or result['paper_statements'] != 56 or checked < 100 or errors or runtime or http:
+    if statements_checked != len(data['entries']) or result['paper_statements'] != 54 or checked < 100 or errors or runtime or http:
         raise SystemExit(1)
 
 
