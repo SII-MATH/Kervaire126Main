@@ -32,6 +32,8 @@ def source_statements(root):
                 'file': path.relative_to(root).as_posix(),
                 'line': text.count('\n', 0, start) + 1 if start >= 0 else None,
                 'statement': declaration['statement'],
+                'kind': declaration['kind'],
+                'sorry': declaration['sorry'],
                 'context': declaration['context'],
             }
     return result

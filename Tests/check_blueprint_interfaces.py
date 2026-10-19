@@ -35,6 +35,43 @@ def main():
         cards = frame.locator('.interface-card')
         expect(cards).to_have_count(40)
         expect(frame.locator('#interface-prev')).to_be_disabled()
+        # Status totals partition only the named public API, never generated exports.
+        payload = page.request.get(args.url.rstrip('/') + '/interfaces/data.json').json()
+        public = [r for r in payload['records'] if r['kind'] == 'declaration']
+        def state(row):
+            source = row.get('source') or {}
+            if row.get('obligation') or source.get('sorry') is True:
+                return 'pending'
+            if row['source_is_parent'] or not source.get('kind') or not isinstance(source.get('sorry'), bool):
+                return 'unknown'
+            if source['kind'] in ('theorem', 'lemma'):
+                return 'local' if 'sorryAx' in row['axioms'] else 'proved'
+            return 'defined'
+        totals = {value: sum(state(row) == value for row in public)
+                  for value in ('proved', 'local', 'pending', 'defined', 'unknown')}
+        assert sum(totals.values()) == len(public)
+        for value, count in totals.items():
+            if not count and value == 'unknown':
+                continue
+            button = frame.locator(f'#interface-summary [data-status="{value}"]')
+            expect(button.locator('strong')).to_have_text(f'{count:,}')
+            button.click()
+            expect(frame.locator('#interface-status')).to_have_value(value)
+            expect(frame.locator('#interface-results')).to_contain_text(f'{count} matching entries')
+        # The final geometric theorem is locally complete but still permits upstream gaps.
+        geometry = frame.locator('.module-card').filter(has=frame.locator('[data-module="Geometry"]'))
+        geometry.locator('[data-status="local"]').click()
+        expect(cards).to_have_count(2)
+        expect(cards.first).to_contain_text('Local proof complete')
+        expect(cards.first).to_contain_text('Baseline permits dependency gaps')
+        expect(geometry.locator('.status-bar')).to_have_attribute('aria-label',
+            'Proofs complete: 0; Local proofs complete: 2; Direct obligations: 0; Definitions & objects: 0; Source unavailable: 0')
+        proof_tools = frame.locator('.module-card').filter(has=frame.locator('[data-module="ProofTools"]'))
+        proof_tools.locator('.obligation-link').click()
+        expect(frame.locator('#interface-kind')).to_have_value('obligation')
+        expect(cards).to_have_count(5)
+        frame.get_by_role('button', name='Reset', exact=True).click()
+        expect(cards).to_have_count(40)
         first = cards.first.locator('h2').inner_text()
         frame.locator('#interface-next').click()
         expect(frame.locator('#interface-page-number')).to_contain_text('Page 2 of')
@@ -86,6 +123,11 @@ def main():
         expect(cards).to_have_count(1)
         iframe = page.frames[-1]
         assert iframe.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+        frame.locator('#interface-summary [data-status="pending"]').click()
+        expect(frame.locator('#interface-status')).to_have_value('pending')
+        assert iframe.evaluate('document.documentElement.scrollWidth <= innerWidth + 1')
+        frame.get_by_role('button', name='Reset', exact=True).click()
+        frame.locator('#interface-search').fill('KIP126.Main.h6_sq_permanent')
         page.screenshot(path=str(ROOT / '.lake/blueprint/interfaces-mobile.png'), full_page=True)
         workspace.get_by_role('tab', name='Proposals', exact=True).click()
         proposals = workspace.frame_locator('iframe[title="Proposals"]')

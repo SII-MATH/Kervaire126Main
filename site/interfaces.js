@@ -5,6 +5,64 @@
   const module = $('#interface-module');
   const kind = $('#interface-kind');
   const dependency = $('#interface-dependency');
+  const status = $('#interface-status');
+  const states = {
+    proved: {label:'Proof complete · baseline', short:'Proofs complete'},
+    local: {label:'Local proof complete', short:'Local proofs complete'},
+    pending: {label:'Direct obligation', short:'Direct obligations'},
+    defined: {label:'Definition / object', short:'Definitions & objects'},
+    unknown: {label:'Source unavailable', short:'Source unavailable'},
+  };
+  function stateOf(row) {
+    if (row.obligation || row.source?.sorry === true) return 'pending';
+    if (row.source_is_parent || !row.source?.kind || typeof row.source.sorry !== 'boolean') return 'unknown';
+    if (['theorem', 'lemma'].includes(row.source.kind)) return row.axioms?.includes('sorryAx') ? 'local' : 'proved';
+    return 'defined';
+  }
+  function selectStatus(value, owner = '') {
+    module.value = owner; status.value = value; kind.value = 'declaration';
+    search.value = ''; dependency.value = ''; filter();
+  }
+  function statusButton(value, count, owner = '') {
+    const button = node('button', undefined, 'status-filter state-' + value);
+    button.type = 'button'; button.dataset.status = value; button.dataset.owner = owner;
+    button.append(node('strong', count.toLocaleString()), node('span', states[value].short));
+    button.addEventListener('click', () => selectStatus(value, owner));
+    return button;
+  }
+  function overview(modules) {
+    const publicRows = records.filter(row => row.kind === 'declaration');
+    const counts = rows => Object.fromEntries(Object.keys(states).map(value => [value, rows.filter(row => row.state === value).length]));
+    for (const [value, count] of Object.entries(counts(publicRows))) {
+      if (count || value !== 'unknown') $('#interface-summary').append(statusButton(value, count));
+    }
+    for (const item of modules) {
+      const rows = publicRows.filter(row => row.owner === item.name);
+      const totals = counts(rows);
+      const card = node('article', undefined, 'module-card');
+      const button = node('button', undefined, 'module-select');
+      button.type = 'button'; button.dataset.module = item.name;
+      button.append(node('strong', item.name), node('span', `${rows.length} public interfaces`));
+      button.addEventListener('click', () => { module.value = item.name; filter(); });
+      const bar = node('div', undefined, 'status-bar');
+      bar.setAttribute('role', 'img');
+      bar.setAttribute('aria-label', Object.entries(totals).map(([value, count]) => `${states[value].short}: ${count}`).join('; '));
+      const breakdown = node('div', undefined, 'module-statuses');
+      for (const [value, count] of Object.entries(totals)) {
+        if (!count) continue;
+        const segment = node('span', undefined, 'state-' + value);
+        segment.style.flexGrow = count; segment.title = `${states[value].short}: ${count}`; bar.append(segment);
+        breakdown.append(statusButton(value, count, item.name));
+      }
+      const obligations = node('button', `${item.obligations} registered obligations →`, 'obligation-link');
+      obligations.type = 'button';
+      obligations.addEventListener('click', () => {
+        module.value = item.name; kind.value = 'obligation'; status.value = 'pending';
+        search.value = ''; dependency.value = ''; filter();
+      });
+      card.append(button, bar, breakdown, obligations); $('#interface-modules').append(card);
+    }
+  }
   const pageSize = 40;
   let records = [], filtered = [], current = 0;
   function node(tag, text, className) {
@@ -31,8 +89,9 @@
       const badges = node('div', undefined, 'badges');
       const labels = {declaration:'Public declaration', generated:'Generated export', obligation:'Registered obligation'};
       badges.append(node('span', row.owner), node('span', labels[row.kind]));
+      badges.append(node('span', states[row.state].label, 'state-label state-' + row.state));
       if (row.obligation) badges.append(node('span', row.obligation.status, 'pending'));
-      if (row.axioms?.includes('sorryAx')) badges.append(node('span', 'Baseline includes sorryAx', 'pending'));
+      if (row.axioms?.includes('sorryAx')) badges.append(node('span', 'Baseline permits dependency gaps', 'pending'));
       const heading = node('h2'); heading.append(node('code', row.name));
       card.append(badges, heading);
       if (row.source?.statement && !row.source_is_parent) card.append(node('pre', row.source.statement, 'statement'));
@@ -66,14 +125,18 @@
     $('#interface-page-number').textContent = `Page ${current + 1} of ${pages}`;
     $('#interface-prev').disabled = current === 0;
     $('#interface-next').disabled = current + 1 >= pages;
-    for (const button of document.querySelectorAll('[data-module]')) {
+    for (const button of document.querySelectorAll('.module-select')) {
       button.setAttribute('aria-pressed', String(button.dataset.module === module.value));
+    }
+    for (const button of document.querySelectorAll('.status-filter')) {
+      button.setAttribute('aria-pressed', String(kind.value === 'declaration' && button.dataset.status === status.value && button.dataset.owner === module.value));
     }
   }
   function filter() {
     const words = search.value.trim().toLocaleLowerCase().split(/\s+/).filter(Boolean);
     filtered = records.filter(row => (!module.value || row.owner === module.value) &&
       (!kind.value || row.kind === kind.value) &&
+      (!status.value || row.state === status.value) &&
       (!dependency.value || (row.axioms !== undefined &&
         row.axioms.includes('sorryAx') === (dependency.value === 'sorry'))) &&
       words.every(word => row.searchText.includes(word)));
@@ -82,11 +145,12 @@
   $('#interface-filters').addEventListener('submit', event => event.preventDefault());
   $('#interface-filters').addEventListener('reset', () => setTimeout(filter, 0));
   search.addEventListener('input', filter);
-  for (const control of [module, kind, dependency]) control.addEventListener('change', filter);
+  for (const control of [module, kind, dependency, status]) control.addEventListener('change', filter);
   $('#interface-prev').addEventListener('click', () => { current--; render(); });
   $('#interface-next').addEventListener('click', () => { current++; render(); });
   window.addEventListener('interfaces:filters', event => {
     const values = event.detail;
+    status.value = ''; kind.value = 'declaration'; dependency.value = '';
     if ('search' in values) search.value = values.search;
     if ('module' in values) module.value = values.module;
     filter();
@@ -95,14 +159,11 @@
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
   }).then(data => {
-    records = data.records.map(row => ({...row, searchText:JSON.stringify(row).toLocaleLowerCase()}));
+    records = data.records.map(row => ({...row, state:stateOf(row), searchText:JSON.stringify(row).toLocaleLowerCase()}));
     for (const item of data.modules) {
       const option = node('option', item.name); option.value = item.name; module.append(option);
-      const button = node('button', undefined, 'module-card'); button.type = 'button'; button.dataset.module = item.name;
-      button.append(node('strong', item.name), node('span', `${item.declarations} declarations · ${item.generated} generated`), node('small', `${item.obligations} registered obligations · ${item.exports} exports`));
-      button.addEventListener('click', () => { module.value = item.name; filter(); });
-      $('#interface-modules').append(button);
     }
+    overview(data.modules);
     $('#interface-count').textContent = `${data.modules.length} modules · ${records.filter(row => row.kind === 'declaration').length} public declarations · ${records.filter(row => row.kind === 'obligation').length} registered obligations`;
     $('#interface-audit').textContent = JSON.stringify(data.audit_boundaries, null, 2);
     $('#interface-naming').textContent = JSON.stringify(data.naming, null, 2);
