@@ -60124,17 +60124,443 @@ public theorem comparison_unit : comparison 0 0 (by decide) sourceData.unit =
   exact (eq_of_heq (model.sphereAlgebra.unit_right (0,0) (e sourceData.unit))).symm.trans h.symm
 
 public theorem comparison_h0 : comparison 1 1 (by decide) (sourceData.atom .h0) =
-    model.standardClasses.standardHi 0 := by sorry
+    model.standardClasses.standardHi 0 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH0Source :
+      (sourceCoordinates 1 1 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 1)) 1) =
+        sourceData.atom .h0 := by
+    exact sourceBasis_values 1 1 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH0Nonzero : model.standardClasses.standardHi 0 ≠ 0 := by
+    obtain ⟨x, hx, hne⟩ :=
+      (KIP126.Literature.Standard.adamsOneLine_d2 4 (by decide)).target_survives
+    have ht : KIP126.Literature.oneLineTarget model 4 ≠ 0 := by
+      intro hz
+      apply hne
+      rw [← hx.eq_on_page_two, hz]
+    intro hz
+    apply ht
+    change model.sphereAlgebra.product (1,1) (2,16)
+      (model.standardClasses.standardHi 0) (model.standardClasses.standardHiSquare 3) = 0
+    rw [hz]
+    exact congrArg (fun f => f (model.standardClasses.standardHiSquare 3))
+      (map_zero (model.sphereAlgebra.product (1,1) (2,16)))
+
+  let q := sourceCoordinates 1 1 (by decide)
+  let c := comparison 1 1 (by decide)
+  have hs : sourceData.atom .h0 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH0Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 1 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 1)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 1) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h0)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h0) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 0) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH0Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 public theorem comparison_h1 : comparison 1 2 (by decide) (sourceData.atom .h1) =
-    model.standardClasses.standardHi 1 := by sorry
+    model.standardClasses.standardHi 1 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH1Source :
+      (sourceCoordinates 1 2 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 2)) 1) =
+        sourceData.atom .h1 := by
+    exact sourceBasis_values 1 2 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH1Nonzero : model.standardClasses.standardHi 1 ≠ 0 := by
+    obtain ⟨z, hz, hne⟩ := KIP126.Literature.Standard.eta_permanent
+    intro hx
+    have heq := SSData.infinity_projection_eq_of_page_projection_eq
+      (model.classical.sphere.ssData (1,2))
+      (↑(2 - model.classical.sphere.r₀).toNat : WithTop ℕ) z 0
+      (by simpa only [map_zero] using hz.trans hx)
+    exact hne (heq.trans (map_zero _))
+
+  let q := sourceCoordinates 1 2 (by decide)
+  let c := comparison 1 2 (by decide)
+  have hs : sourceData.atom .h1 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH1Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 2 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 2)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 2) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h1)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h1) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 1) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH1Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 public theorem comparison_h2 : comparison 1 4 (by decide) (sourceData.atom .h2) =
-    model.standardClasses.standardHi 2 := by sorry
+    model.standardClasses.standardHi 2 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH2Source :
+      (sourceCoordinates 1 4 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 4)) 1) =
+        sourceData.atom .h2 := by
+    exact sourceBasis_values 1 4 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH2Nonzero : model.standardClasses.standardHi 2 ≠ 0 := by
+    obtain ⟨z, hz, hne⟩ := KIP126.Literature.Standard.nu_permanent
+    intro hx
+    have heq := SSData.infinity_projection_eq_of_page_projection_eq
+      (model.classical.sphere.ssData (1,4))
+      (↑(2 - model.classical.sphere.r₀).toNat : WithTop ℕ) z 0
+      (by simpa only [map_zero] using hz.trans hx)
+    exact hne (heq.trans (map_zero _))
+
+  let q := sourceCoordinates 1 4 (by decide)
+  let c := comparison 1 4 (by decide)
+  have hs : sourceData.atom .h2 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH2Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 4 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 4)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 4) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h2)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h2) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 2) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH2Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 public theorem comparison_h4 : comparison 1 16 (by decide) (sourceData.atom .h4) =
-    model.standardClasses.standardHi 4 := by sorry
+    model.standardClasses.standardHi 4 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH4Source :
+      (sourceCoordinates 1 16 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 16)) 1) =
+        sourceData.atom .h4 := by
+    exact sourceBasis_values 1 16 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH4Nonzero : model.standardClasses.standardHi 4 ≠ 0 := by
+    obtain ⟨x, hx, hne⟩ :=
+      (KIP126.Literature.Standard.adamsOneLine_d2 4 (by decide)).source_survives
+    intro hz
+    apply hne
+    rw [← hx.eq_on_page_two, hz]
+
+  let q := sourceCoordinates 1 16 (by decide)
+  let c := comparison 1 16 (by decide)
+  have hs : sourceData.atom .h4 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH4Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 16 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 16)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 16) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h4)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h4) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 4) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH4Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 public theorem comparison_h5 : comparison 1 32 (by decide) (sourceData.atom .h5) =
-    model.standardClasses.standardHi 5 := by sorry
+    model.standardClasses.standardHi 5 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH5Source :
+      (sourceCoordinates 1 32 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 32)) 1) =
+        sourceData.atom .h5 := by
+    exact sourceBasis_values 1 32 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH5Nonzero : model.standardClasses.standardHi 5 ≠ 0 := by
+    obtain ⟨x, hx, hne⟩ :=
+      (KIP126.Literature.Standard.adamsOneLine_d2 5 (by decide)).source_survives
+    intro hz
+    apply hne
+    rw [← hx.eq_on_page_two, hz]
+
+  let q := sourceCoordinates 1 32 (by decide)
+  let c := comparison 1 32 (by decide)
+  have hs : sourceData.atom .h5 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH5Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 32 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 32)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 32) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h5)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h5) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 5) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH5Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 public theorem comparison_h6 : comparison 1 64 (by decide) (sourceData.atom .h6) =
-    model.standardClasses.standardH6 := by sorry
+    model.standardClasses.standardH6 := by
+  have hiCalibrationF2Cases (x : ZMod 2) : x = 0 ∨ x = 1 := by
+    have hlt := ZMod.val_lt x
+    have h : x.val = 0 ∨ x.val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+
+  have hiCalibrationOneCoordinate (f : Fin 1 →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single 0 1 := by
+    rcases hiCalibrationF2Cases (f 0) with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      exact h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = 0 := Fin.eq_zero i
+      subst i
+      simpa only [Finsupp.single_eq_same] using h
+
+  have hiCalibrationUnique (x y : Fin 1 →₀ ZMod 2)
+      (hx : x ≠ 0) (hy : y ≠ 0) : x = y := by
+    rcases hiCalibrationOneCoordinate x with h | h
+    · exact (hx h).elim
+    rcases hiCalibrationOneCoordinate y with h' | h'
+    · exact (hy h').elim
+    exact h.trans h'.symm
+
+  have hiCalibrationH6Source :
+      (sourceCoordinates 1 64 (by decide)).symm
+        (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 64)) 1) =
+        sourceData.atom .h6 := by
+    exact sourceBasis_values 1 64 (by decide) ⟨0, by decide⟩
+
+  have hiCalibrationH6Nonzero : model.standardClasses.standardHi 6 ≠ 0 := by
+    obtain ⟨x, hx, hne⟩ :=
+      (KIP126.Literature.Standard.adamsOneLine_d2 6 (by decide)).source_survives
+    intro hz
+    apply hne
+    rw [← hx.eq_on_page_two, hz]
+
+  let q := sourceCoordinates 1 64 (by decide)
+  let c := comparison 1 64 (by decide)
+  have hs : sourceData.atom .h6 ≠ 0 := by
+    intro hz
+    have h := hiCalibrationH6Source
+    rw [hz] at h
+    have hz' := congrArg (sourceCoordinates 1 64 (by decide)) h
+    have hz'' : (Finsupp.single (⟨0, by decide⟩ : Fin (archive.basisCount 1 64)) (1 : ZMod 2)) = 0 := by
+      exact (q.apply_symm_apply _).symm.trans (hz'.trans (map_zero q))
+    have hf := congrArg (fun f : Fin (archive.basisCount 1 64) →₀ ZMod 2 => f ⟨0, by decide⟩) hz''
+    exact one_ne_zero (by simpa only [Finsupp.single_eq_same, Finsupp.zero_apply] using hf)
+  let e := c.symm.trans q
+  have hcx : e (c (sourceData.atom .h6)) ≠ 0 := by
+    intro hz
+    have hzero : c (sourceData.atom .h6) = 0 := e.injective (hz.trans (map_zero e).symm)
+    exact hs (c.injective (hzero.trans (map_zero c).symm))
+  have hhy : e (model.standardClasses.standardHi 6) ≠ 0 := by
+    intro hz
+    exact hiCalibrationH6Nonzero (e.injective (hz.trans (map_zero e).symm))
+  apply e.injective
+  exact hiCalibrationUnique _ _ hcx hhy
 
 private noncomputable def presentation : SpherePresentation model sourceData where
   comparison := comparison
@@ -60660,8 +61086,67 @@ public theorem t_not_h2_multiple : ¬ ∃ a : model.classical.sphere.Page 2 (13,
 public theorem x_h2_zero : product (r := (9,134)) X h2 = 0 := by
   exact namedXH2Actual
 
+private theorem yNotH2Generator0 :
+    archiveGenerator0.value sourceData sourceGenerator = sourceData.atom .h0 := by
+  exact sourceAtom_agrees .h0
+private theorem yNotH2Generator391 :
+    archiveGenerator391.value sourceData sourceGenerator = sourceData.atom .x_125_9_2 := by
+  exact sourceAtom_agrees .x_125_9_2
+
+private theorem yNotH2SourceBinding
+    (i : Fin (archive.basisCount 11 136)) (hi : i.val = 3) :
+    (archive.basisMonomial 11 136 i).value sourceData sourceGenerator =
+      sourceData.product 2 2 9 134
+        (sourceData.product 1 1 1 1 (sourceData.atom .h0) (sourceData.atom .h0))
+        (sourceData.atom .x_125_9_2) := by
+  have hir : i = ⟨3, by decide⟩ := Fin.ext hi
+  subst i
+  change sourceData.product 1 1 10 135 (archiveGenerator0.value sourceData sourceGenerator)
+    (sourceData.product 1 1 9 134 (archiveGenerator0.value sourceData sourceGenerator)
+      (archiveGenerator391.value sourceData sourceGenerator)) = _
+  rw [yNotH2Generator0,yNotH2Generator391]
+  apply Subtype.ext
+  change _ * (_ * _) = (_ * _) * _
+  exact (mul_assoc _ _ _).symm
+
+private theorem yNotH2ActualBinding :
+    (coordinates 11 136 (by decide)).symm
+      (Finsupp.single (⟨3, by decide⟩ : Fin (archive.basisCount 11 136)) 1) = Y := by
+  have h := coordinates_basis 11 136 (by decide) ⟨3, by decide⟩
+  rw [yNotH2SourceBinding _ rfl] at h
+  have hsquare := comparison_product 1 1 1 1 (by decide)
+    (sourceData.atom .h0) (sourceData.atom .h0)
+  rw [comparison_h0] at hsquare
+  have hm := comparison_product 2 2 9 134 (by decide)
+    (sourceData.product 1 1 1 1 (sourceData.atom .h0) (sourceData.atom .h0))
+    (sourceData.atom .x_125_9_2)
+  rw [hsquare] at hm
+  exact h.trans hm
+
+private theorem yNotH2Nonzero : Y ≠ 0 := by
+  intro h
+  let e := coordinates 11 136 (by decide)
+  let i : Fin (archive.basisCount 11 136) := ⟨3, by decide⟩
+  have hb : e.symm (Finsupp.single i 1) = Y := yNotH2ActualBinding
+  have hv : Finsupp.single i (1 : ZMod 2) = 0 :=
+    (e.apply_symm_apply _).symm.trans ((congrArg e (hb.trans h)).trans e.map_zero)
+  have hi := (congrArg (fun f => f i) hv).trans (show (0 : Fin (archive.basisCount 11 136) →₀ ZMod 2) i = 0 from rfl)
+  have h10 : (1 : ZMod 2) = 0 := (show (Finsupp.single i (1 : ZMod 2)) i = 1 from Finsupp.single_eq_same).symm.trans hi
+  exact one_ne_zero h10
+
 public theorem y_not_h2_multiple : ¬ ∃ a : model.classical.sphere.Page 2 (10,132),
-    product (r := (11,136)) h2 a = Y := by sorry
+    product (r := (11,136)) h2 a = Y := by
+  rintro ⟨a,ha⟩
+  have hn : archive.basisCount 10 132 = 0 := rfl
+  haveI : Subsingleton (Fin (archive.basisCount 10 132) →₀ ZMod 2) := by
+    rw [hn]
+    infer_instance
+  have hz : a = 0 := (coordinates 10 132 (by decide)).injective (Subsingleton.elim _ _)
+  rw [hz] at ha
+  have hp : product (r := (11,136)) h2 (0 : model.classical.sphere.Page 2 (10,132)) = 0 := by
+    change model.sphereAlgebra.product (1,4) (10,132) h2 0 = 0
+    exact map_zero (model.sphereAlgebra.product (1,4) (10,132) h2)
+  exact yNotH2Nonzero (ha.symm.trans hp)
 
 public theorem h1_correction_zero : product (r := (14,139)) h1 correction = 0 := by
   exact namedH1CorrectionActual
@@ -60751,13 +61236,217 @@ public theorem top_comparison :
 public noncomputable def cofiberSource : nuCofiberSequence.Page 2 (8,134) :=
   topCell + bottom 8 134 (atom .x_126_8_2) + bottom 8 134 (atom .x_126_8)
 /-- The computation labels coincide with the same fixed literature labels. -/
-public theorem g_agrees : atom .g = KIP126.Literature.Standard.g := by sorry
-public theorem delta_agrees : atom .delta_h_1_mul_g = KIP126.Literature.Standard.deltaH1g := by sorry
+public theorem g_agrees : atom .g = KIP126.Literature.Standard.g := by
+  let q := sourceCoordinates 4 24 (by decide)
+  let i : Fin (archive.basisCount 4 24) := ⟨0, by decide⟩
+  have hb : q.symm (Finsupp.single i 1) = sourceData.atom .g := by
+    exact sourceBasis_values 4 24 (by decide) ⟨0, by decide⟩
+  have hs : sourceData.atom .g ≠ 0 := by
+    intro hz
+    have hv : Finsupp.single i (1 : ZMod 2) = 0 :=
+      (q.apply_symm_apply _).symm.trans ((congrArg q (hb.trans hz)).trans q.map_zero)
+    have hi := (congrArg (fun f => f i) hv).trans
+      (show (0 : Fin (archive.basisCount 4 24) →₀ ZMod 2) i = 0 from rfl)
+    have h10 : (1 : ZMod 2) = 0 :=
+      (show (Finsupp.single i (1 : ZMod 2)) i = 1 from Finsupp.single_eq_same).symm.trans hi
+    exact one_ne_zero h10
+  have ha : atom .g ≠ 0 := by
+    intro hz
+    exact hs ((comparison 4 24 (by decide)).injective
+      (hz.trans (comparison 4 24 (by decide)).map_zero.symm))
+  exact KIP126.Literature.Standard.g_unique (atom .g) ha
+public theorem delta_agrees : atom .delta_h_1_mul_g = KIP126.Literature.Standard.deltaH1g := by
+  let q := sourceCoordinates 9 54 (by decide)
+  let i : Fin (archive.basisCount 9 54) := ⟨0, by decide⟩
+  have hb : q.symm (Finsupp.single i 1) = sourceData.atom .delta_h_1_mul_g := by
+    exact sourceBasis_values 9 54 (by decide) ⟨0, by decide⟩
+  have hs : sourceData.atom .delta_h_1_mul_g ≠ 0 := by
+    intro hz
+    have hv : Finsupp.single i (1 : ZMod 2) = 0 :=
+      (q.apply_symm_apply _).symm.trans ((congrArg q (hb.trans hz)).trans q.map_zero)
+    have hi := (congrArg (fun f => f i) hv).trans
+      (show (0 : Fin (archive.basisCount 9 54) →₀ ZMod 2) i = 0 from rfl)
+    have h10 : (1 : ZMod 2) = 0 :=
+      (show (Finsupp.single i (1 : ZMod 2)) i = 1 from Finsupp.single_eq_same).symm.trans hi
+    exact one_ne_zero h10
+  have ha : atom .delta_h_1_mul_g ≠ 0 := by
+    intro hz
+    exact hs ((comparison 9 54 (by decide)).injective
+      (hz.trans (comparison 9 54 (by decide)).map_zero.symm))
+  exact KIP126.Literature.Standard.deltaH1g_unique (atom .delta_h_1_mul_g) ha
 
+/-! Fixed tmf detector source algebra, adapted from KIP126 (Apache-2.0),
+commit bbac1fc05843bdf2d56057e6114a38839e939378:
+* KIP126/Def/ClassicalAdams/Tmf/CsvE2/Data.lean
+* KIP126/Def/ClassicalAdams/Tmf/CsvE2/Proofs.lean
+
+The 13 generators and 72 relations define one fixed polynomial quotient.
+Its bidegree components are spans of the projected homogeneous monomials.
+The selected source classes are w₂² in (16,112) and βg⁴ in (19,114).
+Comparison with the actual detector Adams E₂ page, and calibration against
+the selected literature classes, are separate declarations below. -/
+noncomputable section DetectorCsvConstruction
+set_option backward.privateInPublic true
+
+private abbrev detectorCsvGenerator := Fin 13
+private abbrev detectorCsvPoly := MvPolynomial detectorCsvGenerator (ZMod 2)
+
+/-- detectorCsvGenerator IDs are exactly the fixed CSV order. -/
+private def detectorCsvGeneratorDegree (i : detectorCsvGenerator) : ℕ × ℕ :=
+  ![(1, 1), (1, 2), (1, 4), (3, 11), (4, 12), (3, 15), (4, 18), (3, 18), (4, 21), (4, 24), (5, 30), (7, 39), (8, 56)] i
+
+/-- Each inner list is a monomial of (detectorCsvGeneratorClass ID, exponent) pairs. -/
+private def detectorCsvRelationPowers : List (List (List (detectorCsvGenerator × ℕ))) := [
+  [[(0, 1), (1, 1)]],
+  [[(1, 1), (2, 1)]],
+  [[(1, 3)], [(0, 2), (2, 1)]],
+  [[(0, 3), (2, 1)]],
+  [[(0, 1), (2, 2)]],
+  [[(2, 3)]],
+  [[(0, 1), (3, 1)]],
+  [[(2, 1), (3, 1)]],
+  [[(1, 2), (3, 1)]],
+  [[(1, 1), (5, 1)]],
+  [[(2, 1), (5, 1)], [(0, 1), (7, 1)]],
+  [[(1, 1), (7, 1)]],
+  [[(1, 1), (6, 1)], [(0, 2), (7, 1)]],
+  [[(2, 2), (4, 1)], [(0, 2), (6, 1)]],
+  [[(0, 3), (7, 1)]],
+  [[(0, 3), (6, 1)]],
+  [[(2, 1), (6, 1)], [(0, 1), (8, 1)]],
+  [[(3, 2)]],
+  [[(1, 1), (8, 1)], [(0, 1), (2, 1), (7, 1)]],
+  [[(0, 2), (2, 1), (7, 1)]],
+  [[(0, 3), (8, 1)]],
+  [[(2, 1), (8, 1)], [(0, 1), (9, 1)]],
+  [[(2, 2), (7, 1)], [(1, 1), (9, 1)]],
+  [[(3, 1), (5, 1)], [(0, 2), (9, 1)]],
+  [[(0, 3), (9, 1)]],
+  [[(2, 1), (9, 1)]],
+  [[(1, 2), (9, 1)]],
+  [[(3, 1), (7, 1)]],
+  [[(3, 1), (6, 1)]],
+  [[(0, 1), (10, 1)]],
+  [[(3, 1), (8, 1)]],
+  [[(2, 1), (10, 1)]],
+  [[(1, 2), (10, 1)], [(0, 1), (5, 1), (7, 1)]],
+  [[(2, 1), (4, 1), (7, 1)], [(0, 1), (5, 1), (6, 1)]],
+  [[(3, 1), (9, 1)]],
+  [[(0, 2), (5, 1), (7, 1)]],
+  [[(6, 1), (7, 1)], [(5, 1), (8, 1)]],
+  [[(6, 2)], [(4, 1), (9, 1)]],
+  [[(0, 1), (7, 2)]],
+  [[(1, 1), (4, 1), (9, 1)], [(0, 2), (5, 1), (8, 1)]],
+  [[(7, 1), (8, 1)], [(5, 1), (9, 1)]],
+  [[(2, 1), (7, 2)]],
+  [[(0, 1), (11, 1)]],
+  [[(0, 1), (6, 1), (8, 1)]],
+  [[(3, 1), (10, 1)], [(1, 1), (11, 1)]],
+  [[(8, 2)], [(6, 1), (9, 1)]],
+  [[(2, 1), (11, 1)]],
+  [[(0, 1), (7, 1), (9, 1)]],
+  [[(1, 2), (11, 1)], [(0, 1), (6, 1), (9, 1)]],
+  [[(0, 2), (6, 1), (9, 1)]],
+  [[(8, 1), (9, 1)], [(5, 1), (10, 1)]],
+  [[(9, 2)], [(7, 1), (10, 1)]],
+  [[(6, 1), (10, 1)], [(5, 2), (7, 1)]],
+  [[(5, 2), (6, 1)], [(4, 1), (7, 2)]],
+  [[(0, 1), (5, 2), (7, 1)]],
+  [[(3, 1), (11, 1)]],
+  [[(8, 1), (10, 1)], [(5, 1), (7, 2)]],
+  [[(0, 1), (5, 2), (8, 1)]],
+  [[(9, 1), (10, 1)], [(7, 3)]],
+  [[(5, 1), (11, 1)], [(5, 2), (9, 1)]],
+  [[(5, 1), (6, 1), (8, 1)], [(4, 1), (7, 1), (9, 1)]],
+  [[(0, 1), (5, 2), (9, 1)]],
+  [[(7, 1), (11, 1)], [(5, 1), (7, 1), (9, 1)]],
+  [[(6, 1), (11, 1)], [(5, 1), (6, 1), (9, 1)]],
+  [[(0, 1), (5, 1), (6, 1), (9, 1)]],
+  [[(10, 2)], [(7, 2), (9, 1)], [(1, 2), (12, 1)]],
+  [[(8, 1), (11, 1)], [(5, 2), (10, 1)]],
+  [[(5, 4)], [(4, 1), (7, 1), (10, 1)], [(0, 4), (12, 1)]],
+  [[(9, 1), (11, 1)], [(5, 1), (7, 1), (10, 1)]],
+  [[(5, 3), (8, 1)], [(4, 1), (7, 3)]],
+  [[(10, 1), (11, 1)], [(5, 1), (7, 3)], [(1, 1), (3, 1), (12, 1)]],
+  [[(11, 2)], [(5, 2), (7, 1), (10, 1)]]
+]
+
+/-- Direct evaluation of the typed monomial encoding; no parser fallback. -/
+private def detectorCsvPolynomialOfPowers (powers : List (detectorCsvGenerator × ℕ)) : detectorCsvPoly :=
+  (powers.map fun p => MvPolynomial.X p.1 ^ p.2).prod
+
+private def detectorCsvRelationPolynomial (terms : List (List (detectorCsvGenerator × ℕ))) : detectorCsvPoly :=
+  (terms.map detectorCsvPolynomialOfPowers).sum
+
+private def detectorCsvDefiningIdeal : Ideal detectorCsvPoly :=
+  Ideal.span {p | ∃ terms ∈ detectorCsvRelationPowers, p = detectorCsvRelationPolynomial terms}
+
+private abbrev detectorCsvAlgebra := detectorCsvPoly ⧸ detectorCsvDefiningIdeal
+
+private def detectorCsvProjection : detectorCsvPoly →+* detectorCsvAlgebra := Ideal.Quotient.mk detectorCsvDefiningIdeal
+
+private def detectorCsvGeneratorClass (i : detectorCsvGenerator) : detectorCsvAlgebra := detectorCsvProjection (MvPolynomial.X i)
+
+private def detectorCsvMonomialDegree (m : detectorCsvGenerator →₀ ℕ) : ℕ × ℕ :=
+  m.sum fun i a => (a * (detectorCsvGeneratorDegree i).1, a * (detectorCsvGeneratorDegree i).2)
+
+private def detectorCsvPart (s t : ℕ) : Submodule (ZMod 2) detectorCsvAlgebra :=
+  Submodule.span (ZMod 2) {x | ∃ m : detectorCsvGenerator →₀ ℕ,
+    detectorCsvMonomialDegree m = (s, t) ∧ x = detectorCsvProjection (MvPolynomial.monomial m 1)}
+
+private abbrev detectorCsvAt (s t : ℕ) := ↥(detectorCsvPart s t)
+
+/-- CSV detectorCsvGeneratorClass 12 is w₂ in degree (8,56); v₂¹⁶ denotes its square.
+There is no assumption that an E₂ element named v₂ exists. -/
+private def detectorCsvV2SixteenValue : detectorCsvAlgebra := detectorCsvGeneratorClass 12 ^ 2
+
+/-- BR21 Table 5.4 writes the differential target as βg⁴.
+The exact equality with the selected β⁵g expression is proved from two
+relations of this quotient in CsvE2/Proofs.lean. -/
+private def detectorCsvBetaGFourValue : detectorCsvAlgebra := detectorCsvGeneratorClass 7 * detectorCsvGeneratorClass 9 ^ 4
+
+
+private def detectorComponentConstruction (s t : ℕ) :
+    ModuleCat.{0} (ZMod 2) :=
+  ModuleCat.of (ZMod 2) (detectorCsvAt s t)
+
+private theorem detectorCsvV2SixteenMem :
+    detectorCsvV2SixteenValue ∈ detectorCsvPart 16 112 := by
+  apply Submodule.subset_span
+  refine ⟨Finsupp.single 12 2, ?_, ?_⟩
+  · norm_num [detectorCsvMonomialDegree, detectorCsvGeneratorDegree,
+      Finsupp.sum_single_index]
+    decide
+  · simp [detectorCsvV2SixteenValue, detectorCsvGeneratorClass,
+      ← map_pow, MvPolynomial.X_pow_eq_monomial]
+
+private theorem detectorCsvBetaGFourMem :
+    detectorCsvBetaGFourValue ∈ detectorCsvPart 19 114 := by
+  apply Submodule.subset_span
+  refine ⟨Finsupp.single 7 1 + Finsupp.single 9 4, ?_, ?_⟩
+  · norm_num [detectorCsvMonomialDegree, Finsupp.sum_add_index', add_mul,
+      detectorCsvGeneratorDegree]
+    decide
+  · change detectorCsvProjection (MvPolynomial.X 7) *
+      detectorCsvProjection (MvPolynomial.X 9) ^ 4 = _
+    rw [← map_pow, ← map_mul, MvPolynomial.X_pow_eq_monomial,
+      MvPolynomial.X, MvPolynomial.monomial_mul, one_mul]
+
+private def detectorV2SixteenConstruction : detectorComponentConstruction 16 112 :=
+  ⟨detectorCsvV2SixteenValue, detectorCsvV2SixteenMem⟩
+
+private def detectorBetaGFourConstruction : detectorComponentConstruction 19 114 :=
+  ⟨detectorCsvBetaGFourValue, detectorCsvBetaGFourMem⟩
+
+end DetectorCsvConstruction
+
+set_option backward.privateInPublic true in
 /-- The pinned detector calculation, before comparison with the actual object. -/
-public noncomputable def detectorComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := by sorry
-public noncomputable def detectorV2Sixteen : detectorComponent 16 112 := by sorry
-public noncomputable def detectorBetaGFour : detectorComponent 19 114 := by sorry
+public noncomputable def detectorComponent : ℕ → ℕ → ModuleCat.{0} (ZMod 2) := detectorComponentConstruction
+set_option backward.privateInPublic true in
+public noncomputable def detectorV2Sixteen : detectorComponent 16 112 := detectorV2SixteenConstruction
+set_option backward.privateInPublic true in
+public noncomputable def detectorBetaGFour : detectorComponent 19 114 := detectorBetaGFourConstruction
 public noncomputable def detectorComparison (s t : ℕ) (ht : t ≤ 261) :
     detectorComponent s t ≃ₗ[ℤ] (model.classical.obj model.auxiliary.detector).Page 2 (s,t) := by sorry
 public theorem detector_v2_agrees : detectorComparison 16 112 (by decide) detectorV2Sixteen =
