@@ -58,27 +58,316 @@ public theorem realization_additive :
     model.recovery.realization
   exact Functor.additive_of_preservesBinaryBiproducts _
 
+section RealizationConstruction
+set_option backward.isDefEq.respectTransparency false
+
+-- Baseline Literature/Standard.lean SHA-256:
+-- 24a6452de81a4419bd0969d283df7b9004da848bd4e41c976e2bae20ba245777.
+-- Adapted only from the actual adjunction proof in upstream
+-- Kervaire126 8cb35dad5, Def/Synthetic/Localization/Proofs.lean:67--114.
+private theorem reflector_lambda_iso (X : SyntheticSpectrum) :
+    IsIso (model.recovery.localization.reflector.map (SyntheticCategory.lam.app X)) := by
+  let L := model.recovery.localization
+  have hl (Z : SyntheticSpectrum) (hZ : IsLambdaInvertible Z) :
+      Function.Bijective (fun f : X ⟶ Z => SyntheticCategory.lam.app X ≫ f) := by
+    letI : IsIso (SyntheticCategory.lam.app Z) := hZ
+    let hS := SyntheticCategory.biShift_fullyFaithful (Syn := SyntheticSpectrum) (0,-1)
+    have hn (f : X ⟶ Z) :
+        (SyntheticCategory.biShift (0,-1)).map f ≫ SyntheticCategory.lam.app Z =
+          SyntheticCategory.lam.app X ≫ f := by
+      exact SyntheticCategory.lam.naturality f
+    constructor
+    · intro f g h
+      apply hS.map_injective
+      apply (cancel_mono (SyntheticCategory.lam.app Z)).mp
+      rw [hn, hn]
+      exact h
+    · intro g
+      obtain ⟨f, hf⟩ := hS.map_surjective (g ≫ inv (SyntheticCategory.lam.app Z))
+      refine ⟨f, ?_⟩
+      change SyntheticCategory.lam.app X ≫ f = g
+      rw [← hn, hf]
+      simp
+  apply isIso_of_coyoneda_map_bijective
+  intro Z
+  change Function.Bijective (fun g : L.reflector.obj X ⟶ Z =>
+    L.reflector.map (SyntheticCategory.lam.app X) ≫ g)
+  have h : (fun g : L.reflector.obj X ⟶ Z =>
+      L.reflector.map (SyntheticCategory.lam.app X) ≫ g) =
+      (fun g => (L.adjunction.homEquiv _ Z).symm
+        (SyntheticCategory.lam.app X ≫ (L.adjunction.homEquiv X Z) g)) := by
+    funext g
+    apply (L.adjunction.homEquiv _ Z).injective
+    rw [Equiv.apply_symm_apply, L.adjunction.homEquiv_naturality_left]
+    rfl
+  rw [h]
+  exact (L.adjunction.homEquiv _ Z).symm.bijective.comp
+    ((hl Z.obj Z.property).comp (L.adjunction.homEquiv X Z).bijective)
+
+private theorem realization_lambda_iso (X : SyntheticSpectrum) :
+    IsIso (model.recovery.realization.map (SyntheticCategory.lam.app X)) := by
+  letI := reflector_lambda_iso X
+  change IsIso (model.recovery.equivalence.functor.map
+    (model.recovery.localization.reflector.map (SyntheticCategory.lam.app X)))
+  infer_instance
+
+set_option backward.privateInPublic true in
+private def realizationZeroBase :
+    Sphere (C := Spectrum) 0 ≅ model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) 0 0) :=
+  (shiftFunctorZero Spectrum ℤ).app SphereSpectrum ≪≫
+    model.recovery.nuRealizationIso.symm.app SphereSpectrum ≪≫
+    model.recovery.realization.mapIso model.nu.unitIso ≪≫
+    (model.recovery.realization.mapIso
+      (SyntheticCategory.biShift_zero.app (S_0_0 : SyntheticSpectrum))).symm
+
+set_option backward.privateInPublic true in
+private def realizationBase (m : ℤ) :
+    Sphere (C := Spectrum) m ≅ model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m 0) := by
+  by_cases hm : m = 0
+  · subst m
+    exact realizationZeroBase
+  · let R := model.recovery.realization
+    letI := model.exactness.realizationShift
+    let j : (SphereSpectrum : Spectrum) ≅ R.obj (S_0_0 : SyntheticSpectrum) :=
+      model.recovery.nuRealizationIso.symm.app SphereSpectrum ≪≫ R.mapIso model.nu.unitIso
+    exact (shiftFunctor Spectrum m).mapIso j ≪≫
+      ((R.commShiftIso m).app (S_0_0 : SyntheticSpectrum)).symm ≪≫
+      (R.mapIso ((SyntheticCategory.biShift_compat m).app (S_0_0 : SyntheticSpectrum))).symm
+
+set_option backward.privateInPublic true in
+private def realizationStep (m w : ℤ) :
+    model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m (w-1)) ≅
+      model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m w) := by
+  let f := lambdaMultiply 1 (𝟙 (Smn (Syn := SyntheticSpectrum) m w))
+  haveI : IsIso (model.recovery.realization.map f) := by
+    dsimp only [f, lambdaMultiply]
+    rw [lambdaPow_one model.quotients.coherence]
+    letI := realization_lambda_iso (Smn (Syn := SyntheticSpectrum) m w)
+    simp only [Functor.map_comp]
+    infer_instance
+  exact asIso (model.recovery.realization.map f)
+
+set_option backward.privateInPublic true in
+@[irreducible] private def realizationSphere (m w : ℤ) :
+    Sphere (C := Spectrum) m ≅ model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m w) :=
+  w.inductionOn' 0 (realizationBase m)
+    (fun w _ e => e ≪≫
+      eqToIso (congrArg (fun q => model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m q))
+        (by omega : w = w+1-1)) ≪≫ realizationStep m (w+1))
+    (fun w _ e => e ≪≫ (realizationStep m w).symm)
+
+private theorem realizationSphere_zero : realizationSphere 0 0 = realizationZeroBase := by
+  rw [realizationSphere, Int.inductionOn'_self]
+  simp [realizationBase]
+
+private theorem realizationUnit :
+    (realizationSphere 0 0).hom ≫ model.recovery.realization.map
+        (SyntheticCategory.biShift_zero.hom.app (S_0_0 : SyntheticSpectrum)) =
+      (shiftFunctorZero Spectrum ℤ).hom.app SphereSpectrum ≫
+        model.recovery.nuRealizationIso.inv.app SphereSpectrum ≫
+        model.recovery.realization.map model.nu.unitIso.hom := by
+  rw [realizationSphere_zero]
+  simp only [realizationZeroBase, Iso.trans_hom, Iso.app_hom, Iso.app_inv, Iso.symm_hom,
+    Functor.mapIso_inv, Functor.mapIso_hom, Category.assoc, ← Functor.map_comp,
+    Iso.inv_hom_id_app]
+  erw [Category.comp_id]
+
+
+end RealizationConstruction
+
+set_option backward.privateInPublic true in
 /-- The fixed mathematical object on the project background. -/
 public def realization_sphere :
-  ∀ m w : ℤ, Sphere (C := Spectrum) m ≅ model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m w) := by
-  sorry
+  ∀ m w : ℤ, Sphere (C := Spectrum) m ≅ model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m w) := realizationSphere
 
-/-- Source or comparison proof remains to be supplied. -/
+set_option backward.proofsInPublic true in
+set_option backward.privateInPublic true in
+/-- The sphere coordinates use the specified nu-realization unit comparison. -/
 public theorem realization_unit :
   (realization_sphere 0 0).hom ≫ model.recovery.realization.map
       (SyntheticCategory.biShift_zero.hom.app (S_0_0 : SyntheticSpectrum)) =
     (shiftFunctorZero Spectrum ℤ).hom.app SphereSpectrum ≫
       model.recovery.nuRealizationIso.inv.app SphereSpectrum ≫
       model.recovery.realization.map model.nu.unitIso.hom := by
-  sorry
+  change (realizationSphere 0 0).hom ≫ _ = _
+  exact realizationUnit
 
-/-- Source or comparison proof remains to be supplied. -/
+section RealizationLambdaConstruction
+set_option backward.isDefEq.respectTransparency false
+
+private theorem realizationSphere_succ (m w : ℤ) (hw : 0 ≤ w) :
+    realizationSphere m (w+1) = realizationSphere m w ≪≫
+      eqToIso (congrArg (fun q => model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m q))
+        (by omega : w = w+1-1)) ≪≫ realizationStep m (w+1) := by
+  unfold realizationSphere
+  rw [Int.inductionOn'_add_one hw]
+
+private theorem realizationSphere_pred (m w : ℤ) (hw : w ≤ 0) :
+    realizationSphere m (w-1) = realizationSphere m w ≪≫ (realizationStep m w).symm := by
+  unfold realizationSphere
+  rw [Int.inductionOn'_sub_one hw]
+
+private theorem realizationSphere_succ_to (m v w : ℤ) (hv : 0 ≤ v) (hvw : v+1=w) :
+    realizationSphere m w = realizationSphere m v ≪≫
+      eqToIso (congrArg (fun q => model.recovery.realization.obj (Smn (Syn := SyntheticSpectrum) m q))
+        (by omega : v = w-1)) ≪≫ realizationStep m w := by
+  subst w
+  exact realizationSphere_succ m v hv
+
+private theorem realizationSphere_adjacent (m w : ℤ) :
+    (realizationSphere m (w-1)).hom ≫ model.recovery.realization.map
+      (lambdaMultiply 1 (𝟙 (Smn (Syn := SyntheticSpectrum) m w))) =
+        (realizationSphere m w).hom := by
+  change (realizationSphere m (w-1)).hom ≫ (realizationStep m w).hom = _
+  by_cases hw : w ≤ 0
+  · rw [realizationSphere_pred m w hw]
+    simp only [Iso.trans_hom, Iso.symm_hom, Category.assoc, Iso.inv_hom_id, Category.comp_id]
+  · have hs := realizationSphere_succ_to m (w-1) w (by omega) (by omega)
+    rw [hs]
+    simp only [Iso.trans_hom, eqToIso.hom, eqToHom_refl, Category.id_comp]
+
+
+-- Pure coherence proof reconstructed from existing source; no Main import.
+private theorem shift_assoc_inv (coh : BiShiftCoherence SyntheticSpectrum)
+    (a b c ab bc total : ℤ × ℤ) (hab : a+b=ab) (hbc : b+c=bc)
+    (habc : ab+c=total) (habc' : a+bc=total) (A : SyntheticSpectrum) :
+    (biShiftAddIso ab c total habc).inv.app A ≫
+      (SyntheticCategory.biShift c).map ((biShiftAddIso a b ab hab).inv.app A) =
+    (biShiftAddIso a bc total habc').inv.app A ≫
+      (biShiftAddIso b c bc hbc).inv.app ((SyntheticCategory.biShift a).obj A) := by
+  classical
+  have he : ((SyntheticCategory.biShift c).mapIso ((biShiftAddIso a b ab hab).app A) ≪≫
+      (biShiftAddIso ab c total habc).app A) =
+    ((biShiftAddIso b c bc hbc).app ((SyntheticCategory.biShift a).obj A) ≪≫
+      (biShiftAddIso a bc total habc').app A) :=
+    Iso.ext (coh.associativity a b c ab bc total hab hbc habc habc' A)
+  have hi := congrArg Iso.inv he
+  exact hi
+
+
+private def lambdaAt (m : ℤ) (n : ℕ) (w v : ℤ)
+    (h : (m,w)+(0,-(n:ℤ))=(m,v))
+    {X : SyntheticSpectrum} (a : BiHom m w X) : BiHom m v X :=
+  (biShiftAddIso (m,w) (0,-(n:ℤ)) (m,v) h).inv.app S_0_0 ≫
+    lambdaPow n (Smn m w) ≫ a
+
+private theorem lambdaAt_heq (m : ℤ) (n : ℕ) (w v : ℤ)
+    (h : (m,w)+(0,-(n:ℤ))=(m,v))
+    {X : SyntheticSpectrum} (a : BiHom m w X) :
+    HEq (lambdaAt m n w v h a) (lambdaMultiply n a) := by
+  delta lambdaAt KIP126.Synthetic.Context.lambdaMultiply KIP126.Synthetic.Context.biShiftAddIso
+  simp only [Iso.trans_inv,NatTrans.comp_app,eqToIso.inv,eqToHom_app,
+    Category.assoc,eqToHom_comp_heq_iff,heq_eqToHom_comp_iff]
+  rfl
+
+private theorem multiply_heq {m w w' : ℤ} {X : SyntheticSpectrum} (n : ℕ)
+    (h : w=w') {a : BiHom m w X} {b : BiHom m w' X} (hab : HEq a b) :
+    HEq (lambdaMultiply n a) (lambdaMultiply n b) := by
+  subst w'
+  cases hab
+  rfl
+
+private theorem lambda_multiply_compose {m w : ℤ} {X : SyntheticSpectrum}
+    (k n : ℕ) (a : BiHom m w X) :
+    HEq (lambdaMultiply n (lambdaMultiply k a)) (lambdaMultiply (k+n) a) := by
+  let v := w-(k:ℤ)
+  let u := v-(n:ℤ)
+  let hk : (m,w)+(0,-(k:ℤ))=(m,v) := by ext <;> dsimp [v] <;> omega
+  let hn : (m,v)+(0,-(n:ℤ))=(m,u) := by ext <;> dsimp [u] <;> omega
+  let hkn : (m,w)+(0,-((k+n:ℕ):ℤ))=(m,u) := by ext <;> (dsimp [u,v]; omega)
+  have ha := shift_assoc_inv model.quotients.coherence (m,w) (0,-(k:ℤ)) (0,-(n:ℤ))
+    (m,v) (0,-((k+n:ℕ):ℤ)) (m,u)
+    hk (by ext <;> dsimp <;> omega) hn hkn (S_0_0 : SyntheticSpectrum)
+  have heq : lambdaAt m n v u hn (lambdaAt m k w v hk a) =
+      lambdaAt m (k+n) w u hkn a := by
+    unfold lambdaAt
+    have hnat₁ := congrArg (fun t => t ≫ (lambdaPow k (Smn m w) ≫ a))
+      (lambdaPow_naturality n
+        ((biShiftAddIso (m,w) (0,-(k:ℤ)) (m,v) hk).inv.app (S_0_0 : SyntheticSpectrum)))
+    simp (config := { congrConsts := false }) only [Category.assoc] at hnat₁
+    erw [← hnat₁]
+    have hnat₂ := congrArg (fun t => t ≫ a)
+      (lambdaPow_naturality n (lambdaPow k (Smn m w)))
+    simp (config := { congrConsts := false }) only [Category.assoc] at hnat₂
+    erw [← hnat₂]
+    erw [←Category.assoc,ha]
+    erw [lambdaPow_add model.quotients.coherence k n (k+n) rfl (Smn m w)]
+    delta KIP126.Synthetic.Context.lambdaShiftAddIso KIP126.Synthetic.Context.lambdaDegree KIP126.Synthetic.Context.biShiftAddIso
+    simp (config := { congrConsts := false }) only [Category.assoc]
+    rfl
+  have houter := lambdaAt_heq m n v u hn (lambdaAt m k w v hk a)
+  have hinner := multiply_heq n (by rfl : v=w-(k:ℤ)) (lambdaAt_heq m k w v hk a)
+  exact (houter.trans hinner).symm.trans ((heq_of_eq heq).trans (lambdaAt_heq m (k+n) _ _ hkn a))
+
+private theorem realizationTransport {m w w' : ℤ} {X : SyntheticSpectrum}
+    (hw : w = w') {a : BiHom m w X} {b : BiHom m w' X} (hab : HEq a b) :
+    (realizationSphere m w).hom ≫ model.recovery.realization.map a =
+      (realizationSphere m w').hom ≫ model.recovery.realization.map b := by
+  subst w'
+  cases hab
+  rfl
+
+private theorem realizationAdjacentMap {m w : ℤ} {X : SyntheticSpectrum} (a : BiHom m w X) :
+    (realizationSphere m (w-1)).hom ≫ model.recovery.realization.map (lambdaMultiply 1 a) =
+      (realizationSphere m w).hom ≫ model.recovery.realization.map a := by
+  have hc : lambdaMultiply 1 a =
+      lambdaMultiply 1 (𝟙 (Smn (Syn := SyntheticSpectrum) m w)) ≫ a := by
+    delta KIP126.Synthetic.Context.lambdaMultiply
+    simp only [Category.comp_id, Category.assoc]
+  rw [hc, Functor.map_comp, ← Category.assoc, realizationSphere_adjacent]
+
+private theorem lambdaMultiplyZero {m w : ℤ} {X : SyntheticSpectrum} (a : BiHom m w X) :
+    HEq (lambdaMultiply 0 a) a := by
+  let hz : (m,w)+(0,-((0:ℕ):ℤ))=(m,w) := by ext <;> simp
+  have he : lambdaAt m 0 w w hz a = a := by
+    unfold lambdaAt
+    change (biShiftAddIso (m,w) 0 (m,w) (add_zero (m,w))).inv.app S_0_0 ≫
+      SyntheticCategory.biShift_zero.hom.app (Smn (Syn := SyntheticSpectrum) m w) ≫ a = a
+    erw [← model.quotients.coherence.right_unit (m,w) (S_0_0 : SyntheticSpectrum)]
+    exact Iso.inv_hom_id_app_assoc (biShiftAddIso (m,w) 0 (m,w) (add_zero (m,w))) (S_0_0 : SyntheticSpectrum) a
+  exact (lambdaAt_heq m 0 w w hz a).symm.trans (heq_of_eq he)
+
+private theorem realizationLambdaMap {m w : ℤ} {X : SyntheticSpectrum}
+    (a : BiHom m w X) (k : ℕ) :
+    (realizationSphere m (w-k)).hom ≫ model.recovery.realization.map (lambdaMultiply k a) =
+      (realizationSphere m w).hom ≫ model.recovery.realization.map a := by
+  induction k with
+  | zero =>
+    exact realizationTransport (by omega : w-(0:ℕ)=w) (lambdaMultiplyZero a)
+  | succ k ih =>
+    have h := realizationTransport (by omega : w-(k:ℤ)-1=w-((k+1:ℕ):ℤ))
+      (lambda_multiply_compose k 1 a)
+    calc
+      _ = (realizationSphere m (w-(k:ℤ)-1)).hom ≫
+          model.recovery.realization.map (lambdaMultiply 1 (lambdaMultiply k a)) := h.symm
+      _ = (realizationSphere m (w-(k:ℤ))).hom ≫
+          model.recovery.realization.map (lambdaMultiply k a) := realizationAdjacentMap _
+      _ = _ := ih
+
+private theorem realizationLambda :
+    ∀ (m w : ℤ) (k : ℕ),
+      (realizationSphere m (w-k)).hom ≫ model.recovery.realization.map
+        (lambdaMultiply k (𝟙 (Smn (Syn := SyntheticSpectrum) m w))) =
+          (realizationSphere m w).hom := by
+  intro m w k
+  have h := realizationLambdaMap (𝟙 (Smn (Syn := SyntheticSpectrum) m w)) k
+  erw [model.recovery.realization.map_id, Category.comp_id] at h
+  exact h
+
+
+
+end RealizationLambdaConstruction
+
+set_option backward.proofsInPublic true in
+set_option backward.privateInPublic true in
+/-- Every realized lambda power agrees with the same sphere coordinates. -/
 public theorem realization_lambda :
   ∀ (m w : ℤ) (k : ℕ),
     (realization_sphere m (w-k)).hom ≫
       model.recovery.realization.map (lambdaMultiply k (𝟙 (Smn (Syn := SyntheticSpectrum) m w))) =
         (realization_sphere m w).hom := by
-  sorry
+  change ∀ (m w : ℤ) (k : ℕ), (realizationSphere m (w-k)).hom ≫ _ = (realizationSphere m w).hom
+  exact realizationLambda
 
 public def realizationData : RealizationCoordinates model where
   additive := realization_additive
@@ -170,12 +459,6 @@ public def theta5 :
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/
-public theorem h5Square_permanent :
-  NonzeroSurvival model.classical.sphere (2,64)
-    (model.standardClasses.standardHiSquare 5) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
 public theorem theta5_detection :
   ClassicalTheta5Detected model theta5 := by
   sorry
@@ -243,6 +526,83 @@ public theorem adamsOneLine_d2 :
       (1,((2^j : ℕ) : ℤ)) (3,1+((2^(j-1+1) : ℕ) : ℤ))
       (model.standardClasses.standardHi j) (oneLineTarget model j) := by
   sorry
+
+section H5SquarePermanenceConstruction
+set_option backward.isDefEq.respectTransparency false
+
+private theorem nonzeroSurvivalOfPermanentNoIncoming
+    (p : ℤ × ℤ) (x : model.classical.sphere.Page 2 p)
+    (hperm : IsPermanentCycle model.classical.sphere p x) (hx : x ≠ 0)
+    (hin : ∀ r : ℤ, 2 ≤ r →
+      model.classical.sphere.d r (p-model.classical.sphere.diffDeg r) = 0) :
+    NonzeroSurvival model.classical.sphere p x := by
+  let E := model.classical.sphere
+  let D := E.ssData p
+  let n : WithTop ℕ := ↑(2-E.r₀).toNat
+  obtain ⟨z,hz⟩ := hperm
+  refine ⟨z,hz,?_⟩
+  intro hz0
+  have hB : D.B ⊤ = D.B n := boundaries_top_eq_of_d_eq_zero E 2
+    (le_of_eq (model.classical.firstPage SphereSpectrum)) p hin
+  have hb := (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) z).mp hz0
+  apply hx
+  rw [←hz]
+  change D.pageπ n (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) z) = 0
+  apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mpr
+  change (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ (D.Z n).arrow) z ∈ _
+  rw [Subobject.ofLE_arrow]
+  rwa [←hB]
+
+private theorem h5SquareActualNonzero : model.standardClasses.standardHiSquare 5 ≠ 0 := by
+  obtain ⟨hdeg,xr,yr,_,hy,_,hne⟩ := adamsOneLine_d2 6 (by decide)
+  intro hz
+  apply hne
+  rw [←hy.eq_on_page_two]
+  change model.sphereAlgebra.product (1,1) (2,64)
+    (model.standardClasses.standardHi 0) (model.standardClasses.standardHiSquare 5) = 0
+  rw [hz, map_zero]
+
+private theorem h5SquareNoIncoming (r : ℤ) (hr : 2 ≤ r) :
+    model.classical.sphere.d r (((2:ℤ),64)-model.classical.sphere.diffDeg r) = 0 := by
+  by_cases h2 : r = 2
+  · subst r
+    have hq : ((2:ℤ),64)-model.classical.sphere.diffDeg 2 = (0,63) := by
+      rw [model.classical.differentialDegree]
+      decide
+    rw [hq]
+    letI := KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero 2 63 (by decide)
+    ext a
+    have ha : a = 0 := Subsingleton.elim _ _
+    simp only [ha, map_zero]
+  · let q := ((2:ℤ),64)-model.classical.sphere.diffDeg r
+    have hs : q.1 < 0 := by
+      dsimp only [q]
+      rw [model.classical.differentialDegree]
+      change 2-r < 0
+      omega
+    letI : Subsingleton (model.classical.sphere.Page r q) :=
+      KIP126.AdamsSynthetic.Standard.classical_page_negative .sphere r q.1 q.2 hs
+    ext a
+    have ha : a = 0 := Subsingleton.elim _ _
+    simp only [ha, map_zero]
+
+private theorem h5SquarePermanentCandidate :
+    NonzeroSurvival model.classical.sphere (2,64)
+      (model.standardClasses.standardHiSquare 5) := by
+  have hperm : IsPermanentCycle model.classical.sphere (2,64)
+      (model.standardClasses.standardHiSquare 5) := by
+    obtain ⟨z,hz,_,_,_⟩ := theta5_detection
+    exact ⟨z,hz⟩
+  exact nonzeroSurvivalOfPermanentNoIncoming _ _ hperm h5SquareActualNonzero h5SquareNoIncoming
+
+/-- The detected square is nonzero at infinity: the independent Adams d2 target
+forces E2 nonvanishing, and every possible incoming source is zero. -/
+public theorem h5Square_permanent :
+  NonzeroSurvival model.classical.sphere (2,64)
+    (model.standardClasses.standardHiSquare 5) := by
+  exact h5SquarePermanentCandidate
+
+end H5SquarePermanenceConstruction
 
 /-- The specified tmf unit is definitionally the same algebra unit. -/
 public theorem tmf_algebra_unit :
@@ -592,49 +952,205 @@ public def nuPageData : NuPageCoordinates model where
 
 public def pageLambda := NuPageCoordinates.lambda model nuPageData
 
-/-- The fixed mathematical object on the project background. -/
-public def free_component :
-  ∀ (X : ClassicalObject) (r : ℤ) (_hr : 2 ≤ r)
-    (s t w : ℤ) (_h : r-2 ≤ t-w),
-    (model.family.nu model.nu (X.obj model.auxiliary)).Page r (s,t,w) ≅
-      (model.classical.obj (X.obj model.auxiliary)).Page r (s,t) := by
-  sorry
+section FirstPageComparisonConstruction
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 800000
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem free_e2 :
-  ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
-      (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)),
-    (free_component X 2 (by omega) s t w (by omega)).hom (nuWeightLabel model X s t w hw x) = x := by
-  sorry
+private structure FromFirstMorphism
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    (E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι)
+    extends SSDataMorphism ι E.ssData F.ssData where
+  r₀_eq : E.r₀=F.r₀
+  diffDeg_eq : E.diffDeg=F.diffDeg
+  comm_d : ∀ (r : ℤ), E.r₀ ≤ r → ∀ p : ι,
+    let g := toSSDataMorphism
+    g.pageMapAt (E := E.toPreSS) (E' := F.toPreSS) r₀_eq r p ≫ F.d r p =
+      E.d r p ≫ g.pageMapAt (E := E.toPreSS) (E' := F.toPreSS) r₀_eq r (p+E.diffDeg r) ≫
+        eqToHom (by rw [diffDeg_eq])
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem free_lambda :
-  ∀ (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
-      (s t w : ℤ) (h : r-2 ≤ t-w),
-    pageLambda X r s t w ≫ (free_component X r hr s t (w-1) (by omega)).hom =
-      (free_component X r hr s t w h).hom := by
-  sorry
+private def FromFirstMorphism.pageMap
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι}
+    (f : FromFirstMorphism E F) (r : ℤ) (p : ι) :=
+  f.toSSDataMorphism.pageMapAt (E := E.toPreSS) (E' := F.toPreSS) f.r₀_eq r p
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem free_differential :
-  ∀ (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
-      (s t w : ℤ) (h : r-2 ≤ t-w),
-    syntheticDifferential model X r s t w ≫
-        (free_component X r hr (s+r) (t+r-1) w (by omega)).hom =
-      (free_component X r hr s t w h).hom ≫ classicalDifferential model X r s t := by
-  sorry
+private theorem FromFirstMorphism.pageMap_comm_d
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι}
+    (f : FromFirstMorphism E F) (r : ℤ) (hr : E.r₀ ≤ r) (p : ι) :
+    f.pageMap r p ≫ F.d r p = E.d r p ≫ f.pageMap r (p+E.diffDeg r) ≫
+      eqToHom (by rw [f.diffDeg_eq]) := f.comm_d r hr p
 
-public def freeData : FreeLambdaPages model nuPageData where
-  component := free_component
-  e2 := free_e2
-  lambda := free_lambda
-  differential := free_differential
+private def firstPageComparisonOfMorphism
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι}
+    (f : SpectralSequenceMorphism E F) : FromFirstMorphism E F where
+  toSSDataMorphism := f.toSSDataMorphism
+  r₀_eq := f.r₀_eq
+  diffDeg_eq := f.diffDeg_eq
+  comm_d r _ p := f.pageMap_comm_d r p
 
-public def classicalLift := FreeLambdaPages.classicalLift model freeData
+private theorem finiteQuotientNextProjectionZero
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    (E : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι)
+    (r : ℤ) (hr : E.r₀ ≤ r) (p : ι)
+    (z : (Subobject.underlying.obj ((E.ssData (p+E.diffDeg r)).Z
+      ↑((r-E.r₀).toNat+1)) : ModuleCat.{0} ℤ)) :
+    (E.ssData (p+E.diffDeg r)).pageπ ↑((r-E.r₀).toNat+1) z = 0 ↔
+      (Subobject.ofLE _ _ ((E.ssData (p+E.diffDeg r)).Z_anti
+        (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat)) ≫
+          (E.ssData (p+E.diffDeg r)).pageπ ↑(r-E.r₀).toNat) z ∈
+        LinearMap.range (E.d r p).hom := by
+  let D := E.ssData (p+E.diffDeg r)
+  let n := (r-E.r₀).toNat
+  have hnm : (↑n : WithTop ℕ) ≤ ↑(n+1) := by exact_mod_cast Nat.le_succ n
+  let i := Subobject.ofLE (D.Z ↑(n+1)) (D.Z ↑n) (D.Z_anti hnm)
+  let j := Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑n)
+    ((D.B_le_Z _).trans (D.Z_anti hnm))
+  rw [← subobjectModule_image, E.B_succ r p hr, subobjectModule_image]
+  change D.pageπ ↑(n+1) z = 0 ↔ (i ≫ D.pageπ ↑n) z ∈ LinearMap.range (j ≫ D.pageπ ↑n).hom
+  constructor
+  · intro hz
+    obtain ⟨v, hv⟩ := (cokernel_π_eq_zero_iff_mem_range
+      (Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _)) z).mp hz
+    refine ⟨v, ?_⟩
+    rw [← hv]
+    change (j ≫ D.pageπ ↑n) v =
+      ((Subobject.ofLE (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _)) ≫ i ≫ D.pageπ ↑n) v
+    congr 2
+    dsimp only [i,j]
+    rw [← Category.assoc, Subobject.ofLE_comp_ofLE]
+  · rintro ⟨v, hv⟩
+    apply (subobject_cokernel_π_eq_zero_iff (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _) z).mpr
+    have hz : D.pageπ ↑n (i z-j v) = 0 := by
+      rw [map_sub]
+      exact sub_eq_zero.mpr hv.symm
+    have hb := (subobject_cokernel_π_eq_zero_iff (D.B ↑n) (D.Z ↑n) (D.B_le_Z _) _).mp hz
+    have hb' := (ModuleCat.subobjectModule D.V).monotone (D.B_mono hnm) hb
+    have hv' : (D.Z ↑n).arrow (j v) ∈ (ModuleCat.subobjectModule D.V) (D.B ↑(n+1)) := by
+      change (j ≫ (D.Z ↑n).arrow) v ∈ _
+      dsimp only [j]
+      rw [Subobject.ofLE_arrow]
+      exact ⟨v, rfl⟩
+    have hh := ((ModuleCat.subobjectModule D.V) (D.B ↑(n+1))).add_mem hb' hv'
+    rw [map_sub, sub_add_cancel] at hh
+    change (i ≫ (D.Z ↑n).arrow) z ∈ _ at hh
+    dsimp only [i] at hh
+    rwa [Subobject.ofLE_arrow] at hh
 
-public abbrev classicalLift_differential := FreeLambdaPages.classicalLift_differential model freeData
+private theorem finiteQuotientNextEqOfEarlierEq (D : SSData (ModuleCat.{0} ℤ))
+    (n : ℕ) (a b : (Subobject.underlying.obj (D.Z ↑(n+1)) : ModuleCat.{0} ℤ))
+    (h : (Subobject.ofLE _ _ (D.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫
+      D.pageπ ↑n) a = (Subobject.ofLE _ _ (D.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫
+      D.pageπ ↑n) b) : D.pageπ ↑(n+1) a = D.pageπ ↑(n+1) b := by
+  apply sub_eq_zero.mp
+  rw [← map_sub]
+  apply (subobject_cokernel_π_eq_zero_iff (D.B ↑(n+1)) (D.Z ↑(n+1)) (D.B_le_Z _) _).mpr
+  have hz : (Subobject.ofLE _ _ (D.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫
+      D.pageπ ↑n) (a-b) = 0 := by rw [map_sub, h, sub_self]
+  have hb := (subobject_cokernel_π_eq_zero_iff (D.B ↑n) (D.Z ↑n) (D.B_le_Z _) _).mp hz
+  have he := ConcreteCategory.congr_hom (Subobject.ofLE_arrow
+    (D.Z_anti (show (↑n : WithTop ℕ) ≤ ↑(n+1) by exact_mod_cast Nat.le_succ n))) (a-b)
+  change (D.Z ↑n).arrow _ = (D.Z ↑(n+1)).arrow (a-b) at he
+  rw [he] at hb
+  exact (ModuleCat.subobjectModule D.V).monotone
+    (D.B_mono (by exact_mod_cast Nat.le_succ n)) hb
 
-public abbrev classicalLift_lambda := FreeLambdaPages.classicalLift_lambda model freeData
+private theorem finiteQuotientSuccessorComparison
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι}
+    (f : FromFirstMorphism E F) (r : ℤ) (hr : E.r₀ ≤ r) (q : ι) :
+    (Function.Surjective (f.pageMap r q) →
+      Function.Injective (f.pageMap r (q+E.diffDeg r)) →
+      Function.Injective (f.pageMap (r+1) (q+E.diffDeg r))) ∧
+    (Function.Surjective (f.pageMap r (q+E.diffDeg r)) →
+      Function.Injective (f.pageMap r (q+E.diffDeg r+E.diffDeg r)) →
+      Function.Surjective (f.pageMap (r+1) (q+E.diffDeg r))) := by
+  have hfirst := f.r₀_eq
+  have hdegree := f.diffDeg_eq
+  rcases E with ⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩
+  rcases F with ⟨⟨r₀',D',δ',d'⟩,dd',Zs',Bs'⟩
+  dsimp at hfirst hdegree
+  subst r₀'
+  subst δ'
+  change r₀ ≤ r at hr
+  let E : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι := ⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩
+  let F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι := ⟨⟨r₀,D',δ,d'⟩,dd',Zs',Bs'⟩
+  let p := q+δ r
+  let g := f.toSSDataMorphism
+  let n := (r-r₀).toNat
+  have hs : (r+1-r₀).toNat = n+1 := by dsimp [n]; omega
+  let down (T : SSData (ModuleCat.{0} ℤ)) :=
+    Subobject.ofLE (T.Z ↑(n+1)) (T.Z ↑n)
+      (T.Z_anti (by exact_mod_cast Nat.le_succ n)) ≫ T.pageπ ↑n
+  have naturalDown (z : (Subobject.underlying.obj ((D p).Z ↑(n+1)) : ModuleCat.{0} ℤ)) :
+      (g.pageMap p ↑n) (down (D p) z) =
+        down (D' p) (g.cycleMap p ↑(n+1) z) := by
+    have h := g.cycleMap_ofLE_assoc p
+      (show (↑n : WithTop ℕ) ≤ ↑(n+1) by exact_mod_cast Nat.le_succ n) ((D' p).pageπ ↑n)
+    rw [← g.pageπ_pageMap] at h
+    simpa only [down, ModuleCat.comp_apply] using (ConcreteCategory.congr_hom h z)
+  have comm (q : ι) (x : (D q).page ↑n) :
+      (g.pageMap (q+δ r) ↑n) (d r q x) = d' r q (g.pageMap q ↑n x) := by
+    have h := f.pageMap_comm_d r hr q
+    simpa only [FromFirstMorphism.pageMap, SSDataMorphism.pageMapAt, eqToHom_refl,
+      Category.comp_id, ModuleCat.comp_apply, E, F, g, n] using
+        (ConcreteCategory.congr_hom h x).symm
+  constructor
+  · intro hin hmid
+    change Function.Surjective (g.pageMap q ↑n) at hin
+    change Function.Injective (g.pageMap p ↑n) at hmid
+    change Function.Injective (g.pageMap p ↑(r+1-r₀).toNat)
+    rw [hs]
+    intro a b hab
+    apply sub_eq_zero.mp
+    have ha : g.pageMap p ↑(n+1) (a-b) = 0 := by rw [map_sub, hab, sub_self]
+    haveI : Epi ((D p).pageπ ↑(n+1)) := inferInstanceAs (Epi (cokernel.π _))
+    obtain ⟨z,hz⟩ := (ModuleCat.epi_iff_surjective ((D p).pageπ ↑(n+1))).mp inferInstance (a-b)
+    rw [← hz] at ha ⊢
+    have hzmap : (D' p).pageπ ↑(n+1) (g.cycleMap p ↑(n+1) z) = 0 := by
+      simpa only [ModuleCat.comp_apply] using
+        (ConcreteCategory.congr_hom (g.pageπ_pageMap p ↑(n+1)) z).symm.trans ha
+    have hzin := (finiteQuotientNextProjectionZero F r hr q (g.cycleMap p ↑(n+1) z)).mp hzmap
+    change down (D' p) (g.cycleMap p ↑(n+1) z) ∈ LinearMap.range
+      (d' r q).hom at hzin
+    obtain ⟨b,hb⟩ := hzin
+    obtain ⟨c,rfl⟩ := hin b
+    have hc := comm q c
+    have he : down (D p) z = d r q c := by
+      apply hmid
+      rw [naturalDown, hc, hb]
+    apply (finiteQuotientNextProjectionZero E r hr q z).mpr
+    change down (D p) z ∈ LinearMap.range (d r q).hom
+    exact ⟨c,he.symm⟩
+  · intro hmid hout
+    change Function.Surjective (g.pageMap p ↑n) at hmid
+    change Function.Injective (g.pageMap (p+δ r) ↑n) at hout
+    change Function.Surjective (g.pageMap p ↑(r+1-r₀).toNat)
+    rw [hs]
+    intro a
+    haveI : Epi ((D' p).pageπ ↑(n+1)) := inferInstanceAs (Epi (cokernel.π _))
+    obtain ⟨z',rfl⟩ := (ModuleCat.epi_iff_surjective ((D' p).pageπ ↑(n+1))).mp inferInstance a
+    obtain ⟨x,hx⟩ := hmid (down (D' p) z')
+    have hx0 : d r p x = 0 := by
+      apply hout
+      rw [map_zero, comm, hx]
+      change down (D' p) z' ∈ LinearMap.ker (d' r p).hom
+      rw [← subobjectModule_kernel, Zs' r p hr, subobjectModule_image]
+      exact ⟨z',rfl⟩
+    have hxmem : x ∈ ModuleCat.subobjectModule _ (kernelSubobject (d r p)) := by
+      rw [subobjectModule_kernel]
+      exact hx0
+    rw [Zs r p hr, subobjectModule_image] at hxmem
+    obtain ⟨z,hz⟩ := hxmem
+    refine ⟨(D p).pageπ ↑(n+1) z, ?_⟩
+    have hp := ConcreteCategory.congr_hom (g.pageπ_pageMap p ↑(n+1)) z
+    simp only [ModuleCat.comp_apply] at hp
+    refine hp.trans (finiteQuotientNextEqOfEarlierEq (D' p) n _ z' ?_)
+    change down (D' p) (g.cycleMap p ↑(n+1) z) = down (D' p) z'
+    rw [← naturalDown, hz, hx]
+
+end FirstPageComparisonConstruction
 
 universe absorbComparisonU absorbComparisonV absorbComparisonI
 
@@ -747,12 +1263,334 @@ public def inversionData : LambdaInversionComparison model nuPageData where
   differential := inversion_differential
   lambda := inversion_lambda
 
-/-- Source or comparison proof remains to be supplied. -/
+section FreeInversionConstruction
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 800000
+
+private theorem freeDifferentialTransport
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    (E : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι)
+    (r : ℤ) {p q : ι} (h : p=q) :
+    eqToHom (congrArg (E.Page r) h) ≫ E.d r q =
+      E.d r p ≫ eqToHom (congrArg (E.Page r) (congrArg (fun p => p+E.diffDeg r) h)) := by
+  cases h
+  simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
+
+private def freeInflate
+    {ι κ : Type} [AddCommGroup ι] [DecidableEq ι] [AddCommGroup κ] [DecidableEq κ]
+    (E : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) κ)
+    (τ : ι →+ κ) (δ : ℤ → ι) (hδ : ∀ r, τ (δ r) = E.diffDeg r) :
+    KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι where
+  r₀ := E.r₀
+  ssData p := E.ssData (τ p)
+  diffDeg := δ
+  d r p := E.d r (τ p) ≫ eqToHom (congrArg (E.Page r)
+    (by rw [map_add, hδ]))
+  d_comp_d r p := by
+    have h := freeDifferentialTransport E r
+      (p := τ p+E.diffDeg r) (q := τ (p+δ r)) (by rw [map_add,hδ])
+    simp only [← Category.assoc]
+    rw [Category.assoc (E.d r (τ p)), h]
+    simp only [← Category.assoc, E.d_comp_d, zero_comp]
+  Z_succ r p hr := by
+    dsimp only
+    rw [← E.Z_succ r (τ p) hr]
+    apply (ModuleCat.subobjectModule _).injective
+    simp only [subobjectModule_kernel]
+    ext x
+    change (E.d r (τ p) ≫ eqToHom _) x = 0 ↔ E.d r (τ p) x = 0
+    rw [ModuleCat.comp_apply]
+    exact (ModuleCat.mono_iff_injective (eqToHom _)).mp inferInstance |>.eq_iff' (by simp)
+  B_succ r p hr := by
+    dsimp only
+    have aux (q : κ) (h : τ p+E.diffDeg r=q) :
+        imageSubobject (E.d r (τ p) ≫ eqToHom (congrArg (E.Page r) h)) =
+          imageSubobject (Subobject.ofLE ((E.ssData q).B ↑((r-E.r₀).toNat+1))
+            ((E.ssData q).Z ↑(r-E.r₀).toNat)
+            (((E.ssData q).B_le_Z _).trans ((E.ssData q).Z_anti
+              (by exact_mod_cast Nat.le_succ (r-E.r₀).toNat))) ≫
+                (E.ssData q).pageπ ↑(r-E.r₀).toNat) := by
+      cases h
+      simpa only [eqToHom_refl, Category.comp_id] using E.B_succ r (τ p) hr
+    exact aux _ (by rw [map_add,hδ])
+
+private def freeForgetWeight : Tridegree →+ (ℤ × ℤ) where
+  toFun i := (i.1,i.2.1)
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+private def freeClassicalInflation (X : ClassicalObject) :=
+  freeInflate (model.classical.obj (X.obj model.auxiliary)) freeForgetWeight syntheticAdamsRawShift
+    (fun r => (model.classical.differentialDegree _ r).symm)
+
+private theorem freeNormalizePageMap
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {D D' : ι → SSData (ModuleCat.{0} ℤ)} (g : SSDataMorphism ι D D')
+    (a b c : ℤ) (ha : a=c) (hb : b=c) (r : ℤ) (p : ι) :
+    eqToHom (congrArg (fun z => (D p).page ↑(r-z).toNat) ha) ≫
+      g.pageMap p ↑(r-c).toNat ≫
+        eqToHom (congrArg (fun z => (D' p).page ↑(r-z).toNat) hb.symm) =
+      g.pageMap p ↑(r-a).toNat ≫
+        eqToHom (congrArg (fun z => (D' p).page ↑(r-z).toNat) (ha.trans hb.symm)) := by
+  cases ha
+  cases hb
+  simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
+
+private def freeInversionRawMap (X : ClassicalObject) (r s t w : ℤ) :=
+  (inversion_data X).pageMapAt
+    (E := (model.family.nu model.nu (X.obj model.auxiliary)).sequence.toPreSS)
+    (E' := (freeClassicalInflation X).toPreSS)
+    ((model.family.nu model.nu (X.obj model.auxiliary)).firstPage.trans
+      (model.classical.firstPage _).symm) r (s,t,w)
+
+private theorem freeInversionRawMap_eq (X : ClassicalObject) (r s t w : ℤ) :
+    freeInversionRawMap X r s t w = comparisonPageMap model X (inversion_data X) r s t w := by
+  dsimp only [freeInversionRawMap, comparisonPageMap, SSDataMorphism.pageMapAt]
+  exact (freeNormalizePageMap (inversion_data X) _ _ 2
+    (model.family.nu model.nu (X.obj model.auxiliary)).firstPage
+    (model.classical.firstPage _) r (s,t,w)).symm
+
+private theorem freeDegreeMapNatural
+    {ι : Type} {A B : ι → ModuleCat.{0} ℤ}
+    (m : ∀ i, A i ⟶ B i) {p q : ι} (h : p=q) :
+    eqToHom (congrArg A h) ≫ m q = m p ≫ eqToHom (congrArg B h) := by
+  cases h
+  simp only [eqToHom_refl, Category.id_comp, Category.comp_id]
+
+private theorem freeLocalDifferentialSquare
+    {ι : Type} [AddCommGroup ι] [DecidableEq ι]
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) ι}
+    (r : ℤ) (p q : ι) (hδ : E.diffDeg r=F.diffDeg r)
+    (m : ∀ i, E.Page r i ⟶ F.Page r i)
+    (hs : p+E.diffDeg r=q) (ht : p+F.diffDeg r=q)
+    (h : (E.d r p ≫ eqToHom (congrArg (E.Page r) hs)) ≫ m q =
+      m p ≫ (F.d r p ≫ eqToHom (congrArg (F.Page r) ht))) :
+    m p ≫ F.d r p = E.d r p ≫ m (p+E.diffDeg r) ≫
+      eqToHom (congrArg (F.Page r) (congrArg (fun d => p+d) hδ)) := by
+  apply (cancel_mono (eqToHom (congrArg (F.Page r) ht))).mp
+  simp only [Category.assoc, eqToHom_trans]
+  have hn := freeDegreeMapNatural m hs
+  rw [Category.assoc, hn] at h
+  simpa only [Category.assoc] using h.symm
+
+private def freeInversionMorphism (X : ClassicalObject) :
+    FromFirstMorphism
+      (model.family.nu model.nu (X.obj model.auxiliary)).sequence (freeClassicalInflation X) where
+  toSSDataMorphism := inversion_data X
+  r₀_eq := (model.family.nu model.nu (X.obj model.auxiliary)).firstPage.trans
+    (model.classical.firstPage _).symm
+  diffDeg_eq := funext (model.family.nu model.nu (X.obj model.auxiliary)).differentialDegree
+  comm_d r hr p := by
+    rcases p with ⟨s,t,w⟩
+    have hr2 : 2 ≤ r := by
+      simpa only [(model.family.nu model.nu (X.obj model.auxiliary)).firstPage] using hr
+    let E := (model.family.nu model.nu (X.obj model.auxiliary)).sequence
+    let F := freeClassicalInflation X
+    let m := fun i : Tridegree => freeInversionRawMap X r i.1 i.2.1 i.2.2
+    change m (s,t,w) ≫ F.d r (s,t,w) =
+      E.d r (s,t,w) ≫ m ((s,t,w)+E.diffDeg r) ≫ _
+    apply freeLocalDifferentialSquare (E := E) (F := F) r (s,t,w) (s+r,t+r-1,w)
+      ((model.family.nu model.nu (X.obj model.auxiliary)).differentialDegree r) m
+      (by rw [(model.family.nu model.nu (X.obj model.auxiliary)).differentialDegree];
+          ext <;> simp only [syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega)
+      (by change (s,t,w)+syntheticAdamsRawShift r = _;
+          ext <;> simp only [syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega)
+    change (E.d r (s,t,w) ≫ _) ≫ freeInversionRawMap X r (s+r) (t+r-1) w =
+      freeInversionRawMap X r s t w ≫ (F.d r (s,t,w) ≫ _)
+    rw [freeInversionRawMap_eq, freeInversionRawMap_eq]
+    have h := inversion_differential X r hr2 s t w
+    dsimp only at h
+    delta KIP126.Literature.syntheticDifferential KIP126.Literature.classicalDifferential at h
+    delta SyntheticAdamsSS.d at h
+    simpa only [E, F, freeClassicalInflation, freeInflate, freeForgetWeight,
+      AddMonoidHom.coe_mk, ZeroHom.coe_mk, Category.assoc, eqToHom_trans] using h
+
+private theorem freeInversionMorphism_pageMap (X : ClassicalObject) (r s t w : ℤ) :
+    (freeInversionMorphism X).pageMap r (s,t,w) =
+      comparisonPageMap model X (inversion_data X) r s t w := by
+  change freeInversionRawMap X r s t w = _
+  exact freeInversionRawMap_eq X r s t w
+
+private def freeRawPageIso
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) Tridegree}
+    (e : E ≅ F) (r : ℤ) (p : Tridegree) : E.Page r p ≅ F.Page r p where
+  hom := e.hom.pageMap r p
+  inv := e.inv.pageMap r p
+  hom_inv_id := by
+    rw [← SpectralSequenceMorphism.pageMap_comp, e.hom_inv_id,
+      SpectralSequenceMorphism.pageMap_id]
+  inv_hom_id := by
+    rw [← SpectralSequenceMorphism.pageMap_comp, e.inv_hom_id,
+      SpectralSequenceMorphism.pageMap_id]
+
+private theorem freeNuWeightLabelBijective (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t) :
+    Function.Bijective (nuWeightLabel model X s t w hw) := by
+  let zeroIso := SyntheticCategory.biShift_zero.app
+    (model.nu.functor.obj (X.obj model.auxiliary))
+  let zeroPage := freeRawPageIso (model.family.functor.mapIso zeroIso) 2
+    (s,t,t-(t-w).toNat)
+  have hzero : Function.Bijective zeroPage.hom := ConcreteCategory.bijective_of_isIso _
+  change Function.Bijective (fun x => nuWeightLabel model X s t w hw x)
+  dsimp only [nuWeightLabel, regradeE2, targetNuLabel]
+  apply Function.Bijective.comp
+  · exact ConcreteCategory.bijective_of_isIso _
+  · apply Function.Bijective.comp
+    · exact hzero
+    · change Function.Bijective
+        ((fun z : (model.family.obj ((SyntheticCategory.biShift (0,0)).obj
+            (model.nu.functor.obj (X.obj model.auxiliary)))).E₂
+              (s,t,t+0-(t-w).toNat) =>
+          Eq.mp (by simp only [add_zero]) z) ∘
+            (model.comparison.nuE2 X 0 s t (t-w).toNat))
+      exact (Equiv.cast _).bijective.comp
+        (model.comparison.nuE2 X 0 s t (t-w).toNat).bijective
+
+private theorem freeInversionMorphism_e2_bijective (X : ClassicalObject) (s t w : ℤ)
+    (hw : w ≤ t) : Function.Bijective ((freeInversionMorphism X).pageMap 2 (s,t,w)) := by
+  rw [freeInversionMorphism_pageMap]
+  have hlabel := freeNuWeightLabelBijective X s t w hw
+  constructor
+  · intro a b hab
+    obtain ⟨x,rfl⟩ := hlabel.2 a
+    obtain ⟨y,rfl⟩ := hlabel.2 b
+    apply congrArg (nuWeightLabel model X s t w hw)
+    exact (inversion_e2 X s t w hw x).symm.trans (hab.trans (inversion_e2 X s t w hw y))
+  · intro x
+    exact ⟨nuWeightLabel model X s t w hw x, inversion_e2 X s t w hw x⟩
+
+-- Preserve this proved witness under its private name in the exposed constructor.
+set_option backward.privateInPublic true in
+private theorem freeInversionIsIso (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
+    (s t w : ℤ) (hfree : r-2 ≤ t-w) :
+    IsIso (comparisonPageMap model X (inversion_data X) r s t w) := by
+  let E := (model.family.nu model.nu (X.obj model.auxiliary)).sequence
+  let f := freeInversionMorphism X
+  have first : E.r₀ = 2 := (model.family.nu model.nu (X.obj model.auxiliary)).firstPage
+  have degree (r : ℤ) : E.diffDeg r = syntheticAdamsRawShift r :=
+    (model.family.nu model.nu (X.obj model.auxiliary)).differentialDegree r
+  have comparison (r : ℤ) (hr : 2 ≤ r) (s t w : ℤ) :
+      (Function.Surjective (f.pageMap r (s-r,t-r+1,w)) →
+        Function.Injective (f.pageMap r (s,t,w)) →
+        Function.Injective (f.pageMap (r+1) (s,t,w))) ∧
+      (Function.Surjective (f.pageMap r (s,t,w)) →
+        Function.Injective (f.pageMap r (s+r,t+r-1,w)) →
+        Function.Surjective (f.pageMap (r+1) (s,t,w))) := by
+    let q : Tridegree := (s-r,t-r+1,w)
+    have hcenter : q+E.diffDeg r = (s,t,w) := by
+      rw [degree]
+      ext <;> simp only [q, syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega
+    have hout : (s,t,w)+E.diffDeg r = (s+r,t+r-1,w) := by
+      rw [degree]
+      ext <;> simp only [syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega
+    let P (p p' : Tridegree) : Prop :=
+      (Function.Surjective (f.pageMap r q) →
+        Function.Injective (f.pageMap r p) → Function.Injective (f.pageMap (r+1) p)) ∧
+      (Function.Surjective (f.pageMap r p) →
+        Function.Injective (f.pageMap r p') → Function.Surjective (f.pageMap (r+1) p))
+    have h : P (q+E.diffDeg r) (q+E.diffDeg r+E.diffDeg r) :=
+      finiteQuotientSuccessorComparison f r (by rw [first]; exact hr) q
+    have h' : P (s,t,w) ((s,t,w)+E.diffDeg r) :=
+      Eq.mp (congrArg (fun p => P p (p+E.diffDeg r)) hcenter) h
+    exact Eq.mp (congrArg (P (s,t,w)) hout) h'
+  have pages (k : ℕ) :
+      (∀ s t w : ℤ, (k : ℤ) ≤ t-w → Function.Injective (f.pageMap (k+2) (s,t,w))) ∧
+      (∀ s t w : ℤ, 0 ≤ t-w → Function.Surjective (f.pageMap (k+2) (s,t,w))) := by
+    induction k with
+    | zero =>
+      constructor
+      · intro s t w hnonneg
+        change Function.Injective (f.pageMap 2 (s,t,w))
+        exact (freeInversionMorphism_e2_bijective X s t w (by omega)).1
+      · intro s t w hnonneg
+        change Function.Surjective (f.pageMap 2 (s,t,w))
+        exact (freeInversionMorphism_e2_bijective X s t w (by omega)).2
+    | succ k ih =>
+      have hr : (2 : ℤ) ≤ (k : ℤ)+2 := by omega
+      constructor
+      · intro s t w hfree
+        have hin := ih.2 (s-(k+2)) (t-(k+2)+1) w (by omega)
+        have hmid := ih.1 s t w (by omega)
+        have h := (comparison ((k : ℤ)+2) hr s t w).1 hin hmid
+        have hpage : ((Nat.succ k : ℕ) : ℤ)+2 = (k : ℤ)+2+1 := by omega
+        exact Eq.mp (congrArg (fun r : ℤ => Function.Injective (f.pageMap r (s,t,w))) hpage.symm) h
+      · intro s t w hnonneg
+        have hmid := ih.2 s t w hnonneg
+        have hout := ih.1 (s+(k+2)) (t+(k+2)-1) w (by omega)
+        have h := (comparison ((k : ℤ)+2) hr s t w).2 hmid hout
+        have hpage : ((Nat.succ k : ℕ) : ℤ)+2 = (k : ℤ)+2+1 := by omega
+        exact Eq.mp (congrArg (fun r : ℤ => Function.Surjective (f.pageMap r (s,t,w))) hpage.symm) h
+  let k := (r-2).toNat
+  have hk : (k : ℤ)+2 = r := by dsimp [k]; rw [Int.toNat_of_nonneg (by omega)]; omega
+  have hbij : Function.Bijective (f.pageMap r (s,t,w)) := by
+    rw [← hk]
+    exact ⟨(pages k).1 s t w (by omega), (pages k).2 s t w (by omega)⟩
+  apply (ConcreteCategory.isIso_iff_bijective _).mpr
+  rw [← freeInversionMorphism_pageMap X r s t w]
+  exact hbij
+
+-- Keep the IsIso witness private and preserve the frozen public/generated exports.
+set_option backward.proofsInPublic true in
+set_option backward.privateInPublic true in
+/-- The fixed inversion map is an isomorphism throughout the free range,
+by the joint injectivity/surjectivity comparison induction. -/
+public def free_component :
+  ∀ (X : ClassicalObject) (r : ℤ) (_hr : 2 ≤ r)
+    (s t w : ℤ) (_h : r-2 ≤ t-w),
+    (model.family.nu model.nu (X.obj model.auxiliary)).Page r (s,t,w) ≅
+      (model.classical.obj (X.obj model.auxiliary)).Page r (s,t) := by
+  intro X r hr s t w h
+  letI : IsIso (comparisonPageMap model X (inversion_data X) r s t w) := by
+    exact freeInversionIsIso X r hr s t w h
+  exact asIso (comparisonPageMap model X (inversion_data X) r s t w)
+
+/-- Compatibility is inherited from the same fixed inversion comparison. -/
+public theorem free_e2 :
+  ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
+      (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)),
+    (free_component X 2 (by omega) s t w (by omega)).hom (nuWeightLabel model X s t w hw x) = x := by
+  intro X s t w hw x
+  exact inversion_e2 X s t w hw x
+
+/-- Compatibility is inherited from the same fixed inversion comparison. -/
+public theorem free_lambda :
+  ∀ (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
+      (s t w : ℤ) (h : r-2 ≤ t-w),
+    pageLambda X r s t w ≫ (free_component X r hr s t (w-1) (by omega)).hom =
+      (free_component X r hr s t w h).hom := by
+  intro X r hr s t w h
+  exact inversion_lambda X r hr s t w
+
+/-- Compatibility is inherited from the same fixed inversion comparison. -/
+public theorem free_differential :
+  ∀ (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
+      (s t w : ℤ) (h : r-2 ≤ t-w),
+    syntheticDifferential model X r s t w ≫
+        (free_component X r hr (s+r) (t+r-1) w (by omega)).hom =
+      (free_component X r hr s t w h).hom ≫ classicalDifferential model X r s t := by
+  intro X r hr s t w h
+  exact inversion_differential X r hr s t w
+
+public def freeData : FreeLambdaPages model nuPageData where
+  component := free_component
+  e2 := free_e2
+  lambda := free_lambda
+  differential := free_differential
+
+public def classicalLift := FreeLambdaPages.classicalLift model freeData
+
+public abbrev classicalLift_differential := FreeLambdaPages.classicalLift_differential model freeData
+
+public abbrev classicalLift_lambda := FreeLambdaPages.classicalLift_lambda model freeData
+
+/-- The constructed free comparison uses precisely this inversion map. -/
 public theorem free_inversion :
   ∀ (X : ClassicalObject) (r : ℤ) (hr : 2 ≤ r)
     (s t w : ℤ) (h : r-2 ≤ t-w),
     (free_component X r hr s t w h).hom = comparisonPageMap model X (inversion_data X) r s t w := by
-  sorry
+  intro X r hr s t w h
+  rfl
+
+end FreeInversionConstruction
 
 /-- The fixed mathematical object on the project background. -/
 public def finite_quotient_component :
@@ -849,31 +1687,8 @@ public theorem finite_quotient_retained :
   ∀ (s t w : ℤ), 0 ≤ t-w ∧ t-w < n →
     IsIso ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) n).pageMap 2 (s,t,w)) := finiteQuotientRetainedImpl
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem finite_quotient_safe :
-  ∀ (X : ClassicalObject) (n : ℕ) (hn : 0 < n),
-  ∀ (r s t w : ℤ), 2 ≤ r → 0 ≤ t-w → t-w+r-2 < n →
-    IsIso ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) n).pageMap r (s,t,w)) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem degeneration :
-  ∀ (X : ClassicalObject) (N : ℤ),
-    DegeneratesAt (model.classical.obj (X.obj model.auxiliary)) N →
-    DegeneratesAt (model.family.nu model.nu (X.obj model.auxiliary)).sequence N := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem above_diagonal :
-  ∀ (X : ClassicalObject) (r : ℤ), 2 ≤ r →
-    ∀ (s t w : ℤ), t < w → IsZero ((model.family.nu model.nu (X.obj model.auxiliary)).Page r (s,t,w)) := by
-  sorry
-
-/-- Derived from the fixed objects and previously established operations. -/
-public def finite_quotient :
-  ∀ (X : ClassicalObject) (n : ℕ), 0 < n → NuModLambdaPageData model X n := fun X n hn => { component := finite_quotient_component X n hn, component_retained := finite_quotient_component_retained X n hn, retained := finite_quotient_retained X n hn, safe := finite_quotient_safe X n hn }
-
-/-- Source or comparison proof remains to be supplied. -/
+/-- The zero E₂ components remain zero on every later page by monotonicity
+of the same cycle and boundary subobjects. -/
 public theorem finite_quotient_vanishing :
   ∀ (X : ClassicalObject) (n : ℕ), 0 < n →
     ∀ (r : ℤ), 2 ≤ r → ∀ (s t w : ℤ), (t-w < 0 ∨ (n : ℤ) ≤ t-w) →
@@ -902,6 +1717,105 @@ public theorem finite_quotient_vanishing :
     _ = D.B (↑(0 : ℕ)) := hBZ.symm
     _ ≤ D.B ↑(r-E.r₀).toNat := D.B_mono (by exact bot_le)
 
+
+set_option backward.isDefEq.respectTransparency false in
+set_option maxHeartbeats 800000 in
+/-- The retained E₂ strip propagates by a joint induction: the whole strip
+remains injective, while the stated safe substrip remains surjective. -/
+public theorem finite_quotient_safe :
+  ∀ (X : ClassicalObject) (n : ℕ) (hn : 0 < n),
+  ∀ (r s t w : ℤ), 2 ≤ r → 0 ≤ t-w → t-w+r-2 < n →
+    IsIso ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) n).pageMap r (s,t,w)) := by
+  intro X n hn
+  let E := (model.family.nu model.nu (X.obj model.auxiliary)).sequence
+  let F := (model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) n).sequence
+  let f : E ⟶ F := model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) n
+  have first : E.r₀ = 2 := (model.family.nu model.nu (X.obj model.auxiliary)).firstPage
+  have degree (r : ℤ) : E.diffDeg r = syntheticAdamsRawShift r :=
+    (model.family.nu model.nu (X.obj model.auxiliary)).differentialDegree r
+  have comparison (r : ℤ) (hr : 2 ≤ r) (s t w : ℤ) :
+      (Function.Surjective (f.pageMap r (s-r,t-r+1,w)) →
+        Function.Injective (f.pageMap r (s,t,w)) →
+        Function.Injective (f.pageMap (r+1) (s,t,w))) ∧
+      (Function.Surjective (f.pageMap r (s,t,w)) →
+        Function.Injective (f.pageMap r (s+r,t+r-1,w)) →
+        Function.Surjective (f.pageMap (r+1) (s,t,w))) := by
+    let q : Tridegree := (s-r,t-r+1,w)
+    have hcenter : q+E.diffDeg r = (s,t,w) := by
+      rw [degree]
+      ext <;> simp only [q, syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega
+    have hout : (s,t,w)+E.diffDeg r = (s+r,t+r-1,w) := by
+      rw [degree]
+      ext <;> simp only [syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add] <;> omega
+    let P (p p' : Tridegree) : Prop :=
+      (Function.Surjective (f.pageMap r q) →
+        Function.Injective (f.pageMap r p) → Function.Injective (f.pageMap (r+1) p)) ∧
+      (Function.Surjective (f.pageMap r p) →
+        Function.Injective (f.pageMap r p') → Function.Surjective (f.pageMap (r+1) p))
+    have h : P (q+E.diffDeg r) (q+E.diffDeg r+E.diffDeg r) :=
+      finiteQuotientSuccessorComparison (firstPageComparisonOfMorphism f) r (by rw [first]; exact hr) q
+    have h' : P (s,t,w) ((s,t,w)+E.diffDeg r) :=
+      Eq.mp (congrArg (fun p => P p (p+E.diffDeg r)) hcenter) h
+    exact Eq.mp (congrArg (P (s,t,w)) hout) h'
+  have pages (k : ℕ) :
+      (∀ s t w : ℤ, 0 ≤ t-w → t-w < n →
+        Function.Injective (f.pageMap (k+2) (s,t,w))) ∧
+      (∀ s t w : ℤ, 0 ≤ t-w → t-w+(k+2)-2 < n →
+        Function.Surjective (f.pageMap (k+2) (s,t,w))) := by
+    induction k with
+    | zero =>
+      constructor
+      · intro s t w hnonneg hlt
+        change Function.Injective (f.pageMap 2 (s,t,w))
+        haveI : IsIso (f.pageMap 2 (s,t,w)) := finite_quotient_retained X n hn s t w ⟨hnonneg,hlt⟩
+        exact (ConcreteCategory.isIso_iff_bijective _).mp inferInstance |>.1
+      · intro s t w hnonneg hlt
+        change Function.Surjective (f.pageMap 2 (s,t,w))
+        haveI : IsIso (f.pageMap 2 (s,t,w)) := finite_quotient_retained X n hn s t w ⟨hnonneg,by omega⟩
+        exact (ConcreteCategory.isIso_iff_bijective _).mp inferInstance |>.2
+    | succ k ih =>
+      have hr : (2 : ℤ) ≤ (k : ℤ)+2 := by omega
+      constructor
+      · intro s t w hnonneg hlt
+        have hin : Function.Surjective (f.pageMap (k+2) (s-(k+2),t-(k+2)+1,w)) := by
+          by_cases hsource : 0 ≤ (t-((k : ℤ)+2)+1)-w
+          · exact ih.2 _ _ _ hsource (by omega)
+          · have hz := finite_quotient_vanishing X n hn ((k : ℤ)+2) hr
+              (s-(k+2)) (t-(k+2)+1) w (Or.inl (by omega))
+            haveI := hz.epi (f.pageMap (k+2) (s-(k+2),t-(k+2)+1,w))
+            exact (ModuleCat.epi_iff_surjective _).mp inferInstance
+        have h := (comparison ((k : ℤ)+2) hr s t w).1 hin (ih.1 _ _ _ hnonneg hlt)
+        have hpage : ((Nat.succ k : ℕ) : ℤ)+2 = (k : ℤ)+2+1 := by omega
+        exact Eq.mp (congrArg (fun r : ℤ => Function.Injective (f.pageMap r (s,t,w))) hpage.symm) h
+      · intro s t w hnonneg hlt
+        have hmid := ih.2 s t w hnonneg (by push_cast at hlt; omega)
+        have hout := ih.1 (s+(k+2)) (t+(k+2)-1) w (by omega) (by push_cast at hlt; omega)
+        have h := (comparison ((k : ℤ)+2) hr s t w).2 hmid hout
+        have hpage : ((Nat.succ k : ℕ) : ℤ)+2 = (k : ℤ)+2+1 := by omega
+        exact Eq.mp (congrArg (fun r : ℤ => Function.Surjective (f.pageMap r (s,t,w))) hpage.symm) h
+  intro r s t w hr hnonneg hlt
+  let k := (r-2).toNat
+  have hk : (k : ℤ)+2 = r := by dsimp [k]; rw [Int.toNat_of_nonneg (by omega)]; omega
+  apply (ConcreteCategory.isIso_iff_bijective _).mpr
+  rw [← hk]
+  exact ⟨(pages k).1 s t w hnonneg (by omega), (pages k).2 s t w hnonneg (by omega)⟩
+
+/-- Source or comparison proof remains to be supplied. -/
+public theorem degeneration :
+  ∀ (X : ClassicalObject) (N : ℤ),
+    DegeneratesAt (model.classical.obj (X.obj model.auxiliary)) N →
+    DegeneratesAt (model.family.nu model.nu (X.obj model.auxiliary)).sequence N := by
+  sorry
+
+/-- Source or comparison proof remains to be supplied. -/
+public theorem above_diagonal :
+  ∀ (X : ClassicalObject) (r : ℤ), 2 ≤ r →
+    ∀ (s t w : ℤ), t < w → IsZero ((model.family.nu model.nu (X.obj model.auxiliary)).Page r (s,t,w)) := by
+  sorry
+
+/-- Derived from the fixed objects and previously established operations. -/
+public def finite_quotient :
+  ∀ (X : ClassicalObject) (n : ℕ), 0 < n → NuModLambdaPageData model X n := fun X n hn => { component := finite_quotient_component X n hn, component_retained := finite_quotient_component_retained X n hn, retained := finite_quotient_retained X n hn, safe := finite_quotient_safe X n hn }
 
 /-- The fixed mathematical object on the project background. -/
 public def eInfinity_nu :
@@ -1149,28 +2063,6 @@ public theorem eInfinity_lambda_finite :
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/
-public theorem eInfinity_rho_finite :
-  ∀ (X : ClassicalObject) (i j : ℕ) (hi : 0 < i) (hij : i ≤ j)
-      (p : Bidegree) (w : ℤ) (hw : 0 ≤ p.2-w ∧ p.2-w < i)
-      (x : ((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) j).sequence.ssData (p.1,p.2,w)).eInfty),
-    infinityFiniteWindow X i hi p w hw
-        ((model.family.map ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij)).eInftyMap (p.1,p.2,w) x) =
-      quotientMap model X (by omega) le_rfl p
-        (infinityFiniteWindow X j (by omega) p w (by constructor <;> omega) x) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem eInfinity_rho_nu :
-  ∀ (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
-      (p : Bidegree) (w : ℤ) (hw : 0 ≤ p.2-w ∧ p.2-w < q)
-      (x : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (p.1,p.2,w)).eInfty),
-    infinityFiniteWindow X q hq p w hw
-        ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) q).eInftyMap (p.1,p.2,w) x) =
-      permanentToFinite model X (q-p.2+w) (1+p.2-w) p
-        (infinityNuWindow X p w (by omega) x) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
 public theorem eInfinity_nu_labels :
   ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
       (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
@@ -1192,6 +2084,168 @@ public theorem eInfinity_finite_labels :
       ∃ hx : x ∈ cycles model X (q-t+w) (s,t),
         infinityFiniteWindow X q hq (s,t) w hw z = subquotientClass (cycles model X (q-t+w) (s,t)) (boundaries model X (1+t-w) (s,t)) ⟨x,hx⟩ := by
   sorry
+
+private theorem rhoNuLabelSurjective (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t) :
+    Function.Surjective (nuWeightLabel model X s t w hw) := by
+  intro a
+  let F := free_component X 2 (by omega) s t w (by omega)
+  refine ⟨F.hom a, ?_⟩
+  apply (ModuleCat.mono_iff_injective F.hom).mp inferInstance
+  exact free_e2 X s t w hw (F.hom a)
+
+private theorem rhoInfinityRepresentativeExists (A : SyntheticAdamsSS.{0})
+    (i : Tridegree) (e : (A.sequence.ssData i).eInfty) :
+    ∃ x : A.Page 2 i, HasInfinityRepresentative A 2 i x e := by
+  let D := A.sequence.ssData i
+  haveI : Epi (D.pageπ ⊤) := inferInstanceAs (Epi (cokernel.π _))
+  obtain ⟨z, hz⟩ := (ModuleCat.epi_iff_surjective (D.pageπ ⊤)).mp inferInstance e
+  exact ⟨(Subobject.ofLE _ _ (D.Z_anti le_top) ≫
+    D.pageπ (↑(2-A.sequence.r₀).toNat : WithTop ℕ)) z, by omega, z, rfl, hz⟩
+
+-- The actual SSData morphism sends one common infinite cycle to another.
+-- Adapted from Background.infinity_rep_morphism, without importing its private declaration.
+private theorem rhoInfinityRepresentativeMorphism
+    {E E' : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) Tridegree}
+    (f : E ⟶ E') (i : Tridegree) {x : E.Page 2 i} {e : (E.ssData i).eInfty}
+    (h : ∃ z : (Subobject.underlying.obj ((E.ssData i).Z ⊤) : ModuleCat ℤ),
+      (Subobject.ofLE _ _ ((E.ssData i).Z_anti le_top) ≫
+        (E.ssData i).pageπ (↑(2-E.r₀).toNat : WithTop ℕ)) z = x ∧
+      (E.ssData i).pageπ ⊤ z = e) :
+    ∃ z : (Subobject.underlying.obj ((E'.ssData i).Z ⊤) : ModuleCat ℤ),
+      (Subobject.ofLE _ _ ((E'.ssData i).Z_anti le_top) ≫
+        (E'.ssData i).pageπ (↑(2-E'.r₀).toNat : WithTop ℕ)) z = f.pageMap 2 i x ∧
+      (E'.ssData i).pageπ ⊤ z = f.eInftyMap i e := by
+  have hstart := f.r₀_eq
+  rcases E with ⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩
+  rcases E' with ⟨⟨r₀',D',δ',d'⟩,dd',Zs',Bs'⟩
+  dsimp at hstart
+  subst r₀'
+  obtain ⟨z,hz,he⟩ := h
+  let n : WithTop ℕ := ↑(2-r₀).toNat
+  refine ⟨f.toSSDataMorphism.cycleMap i ⊤ z, ?_, ?_⟩
+  · have hs := f.toSSDataMorphism.cycleMap_ofLE_assoc i
+      (r := n) (s := ⊤) le_top ((D' i).pageπ n)
+    have hp := f.toSSDataMorphism.pageπ_pageMap i n
+    have hq : (Subobject.ofLE ((D i).Z ⊤) ((D i).Z n) ((D i).Z_anti le_top) ≫
+        (D i).pageπ n) ≫ f.toSSDataMorphism.pageMap i n =
+        f.toSSDataMorphism.cycleMap i ⊤ ≫
+          Subobject.ofLE ((D' i).Z ⊤) ((D' i).Z n) ((D' i).Z_anti le_top) ≫ (D' i).pageπ n := by
+      rw [Category.assoc,hp]
+      exact hs
+    change ((Subobject.ofLE _ _ _ ≫ (D' i).pageπ n)
+      (f.toSSDataMorphism.cycleMap i ⊤ z)) =
+      ((f.toSSDataMorphism.pageMap i n ≫ eqToHom _) x)
+    simpa only [ModuleCat.comp_apply, hz, eqToHom_refl, Category.comp_id, n]
+      using (ConcreteCategory.congr_hom hq z).symm
+  · have hp := f.toSSDataMorphism.pageπ_pageMap i ⊤
+    change (D' i).pageπ ⊤ (f.toSSDataMorphism.cycleMap i ⊤ z) =
+      f.toSSDataMorphism.pageMap i ⊤ e
+    simpa only [ModuleCat.comp_apply, he] using
+      (ConcreteCategory.congr_hom hp z).symm
+
+private theorem rhoInfinityRepresentativeMap {X Y : SyntheticSpectrum}
+    (g : X ⟶ Y) (i : Tridegree) {x : (model.family.obj X).Page 2 i}
+    {e : ((model.family.obj X).sequence.ssData i).eInfty}
+    (h : HasInfinityRepresentative (model.family.obj X) 2 i x e) :
+    HasInfinityRepresentative (model.family.obj Y) 2 i
+      (model.family.pageMap g 2 i x) ((model.family.map g).eInftyMap i e) := by
+  obtain ⟨hr,z,hz,he⟩ := h
+  obtain ⟨z',hz',he'⟩ := rhoInfinityRepresentativeMorphism (model.family.map g) i ⟨z,hz,he⟩
+  exact ⟨hr,z',hz',he'⟩
+
+private theorem rhoFiniteLabelSurjective (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+    (s t w : ℤ) (hw : 0 ≤ t-w ∧ t-w < q) :
+    Function.Surjective (fun x =>
+      (model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) q).pageMap
+        2 (s,t,w) (nuWeightLabel model X s t w (by omega) x)) := by
+  haveI := finite_quotient_retained X q hq s t w hw
+  exact ((ModuleCat.epi_iff_surjective _).mp inferInstance).comp
+    (rhoNuLabelSurjective X s t w (by omega))
+
+private theorem rhoFiniteLabelMap (X : ClassicalObject) (i j : ℕ) (hij : i ≤ j)
+    (s t w : ℤ) (a : (model.family.nu model.nu (X.obj model.auxiliary)).Page 2 (s,t,w)) :
+    model.family.pageMap
+        ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij)
+        2 (s,t,w)
+        ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) j).pageMap
+          2 (s,t,w) a) =
+      (model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) i).pageMap
+        2 (s,t,w) a := by
+  let V := model.nu.functor.obj (X.obj model.auxiliary)
+  let rho := (model.quotients.tower V).rho i j hij
+  change (((model.family.map (XModLambdaN.incl V j)).pageMap 2 (s,t,w)) ≫
+    (model.family.map rho).pageMap 2 (s,t,w)) a = _
+  rw [← SpectralSequenceMorphism.pageMap_comp, ← model.family.map_comp,
+    (model.quotients.tower V).rho_quotient hij]
+  rfl
+
+/-- Restriction preserves the common infinite representative and its quotient class. -/
+public theorem eInfinity_rho_finite :
+  ∀ (X : ClassicalObject) (i j : ℕ) (hi : 0 < i) (hij : i ≤ j)
+      (p : Bidegree) (w : ℤ) (hw : 0 ≤ p.2-w ∧ p.2-w < i)
+      (x : ((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) j).sequence.ssData (p.1,p.2,w)).eInfty),
+    infinityFiniteWindow X i hi p w hw
+        ((model.family.map ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij)).eInftyMap (p.1,p.2,w) x) =
+      quotientMap model X (by omega) le_rfl p
+        (infinityFiniteWindow X j (by omega) p w (by constructor <;> omega) x) := by
+  intro X i j hi hij p w hw z
+  rcases p with ⟨s,t⟩
+  have hj : 0 < j := by omega
+  have hwj : 0 ≤ t-w ∧ t-w < j := by constructor <;> omega
+  obtain ⟨a,ha⟩ := rhoInfinityRepresentativeExists
+    (model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) j) (s,t,w) z
+  obtain ⟨x,hx⟩ := rhoFiniteLabelSurjective X j hj s t w hwj a
+  rw [← hx] at ha
+  obtain ⟨hxj,hfinitej⟩ := (eInfinity_finite_labels X j hj s t w hwj x z).mp ha
+  have hmap := rhoInfinityRepresentativeMap
+    ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij) (s,t,w) ha
+  have hmap' : HasInfinityRepresentative
+      (model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) i) 2 (s,t,w)
+      ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) i).pageMap
+        2 (s,t,w) (nuWeightLabel model X s t w (by omega) x))
+      ((model.family.map
+        ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij)).eInftyMap
+        (s,t,w) z) := by
+    have heq := rhoFiniteLabelMap X i j hij s t w (nuWeightLabel model X s t w (by omega) x)
+    exact Eq.mp (congrArg (fun a => HasInfinityRepresentative
+      (model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) i) 2 (s,t,w) a
+      ((model.family.map
+        ((model.quotients.tower (model.nu.functor.obj (X.obj model.auxiliary))).rho i j hij)).eInftyMap
+        (s,t,w) z)) heq) hmap
+  obtain ⟨hxi,hfinitei⟩ := (eInfinity_finite_labels X i hi s t w hw x _).mp hmap'
+  calc
+    _ = subquotientClass (KIP126.Literature.cycles model X (i-t+w) (s,t))
+        (KIP126.Literature.boundaries model X (1+t-w) (s,t)) ⟨x,hxi⟩ := hfinitei
+    _ = KIP126.Literature.quotientMap model X (by omega) le_rfl (s,t)
+        (subquotientClass (KIP126.Literature.cycles model X (j-t+w) (s,t))
+          (KIP126.Literature.boundaries model X (1+t-w) (s,t)) ⟨x,hxj⟩) := rfl
+    _ = _ := congrArg (KIP126.Literature.quotientMap model X (by omega) le_rfl (s,t)) hfinitej.symm
+
+/-- Projection from nu preserves the common infinite representative and its quotient class. -/
+public theorem eInfinity_rho_nu :
+  ∀ (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+      (p : Bidegree) (w : ℤ) (hw : 0 ≤ p.2-w ∧ p.2-w < q)
+      (x : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (p.1,p.2,w)).eInfty),
+    infinityFiniteWindow X q hq p w hw
+        ((model.family.quotientProjection (model.nu.functor.obj (X.obj model.auxiliary)) q).eInftyMap (p.1,p.2,w) x) =
+      permanentToFinite model X (q-p.2+w) (1+p.2-w) p
+        (infinityNuWindow X p w (by omega) x) := by
+  intro X q hq p w hw z
+  rcases p with ⟨s,t⟩
+  obtain ⟨a,ha⟩ := rhoInfinityRepresentativeExists (model.family.nu model.nu (X.obj model.auxiliary)) (s,t,w) z
+  obtain ⟨x,hx⟩ := rhoNuLabelSurjective X s t w (by omega) a
+  rw [← hx] at ha
+  obtain ⟨hxperm,hnu⟩ := (eInfinity_nu_labels X s t w (by omega) x z).mp ha
+  have hmap := rhoInfinityRepresentativeMap
+    (XModLambdaN.incl (model.nu.functor.obj (X.obj model.auxiliary)) q) (s,t,w) ha
+  obtain ⟨hxcycle,hfinite⟩ := (eInfinity_finite_labels X q hq s t w hw x _).mp hmap
+  calc
+    _ = subquotientClass (KIP126.Literature.cycles model X (q-t+w) (s,t))
+        (KIP126.Literature.boundaries model X (1+t-w) (s,t)) ⟨x,hxcycle⟩ := hfinite
+    _ = permanentToFinite model X (q-t+w) (1+t-w) (s,t)
+        (subquotientClass (KIP126.Literature.permanentCycles model X (s,t))
+          (KIP126.Literature.boundaries model X (1+t-w) (s,t)) ⟨x,hxperm⟩) := rfl
+    _ = _ := congrArg (permanentToFinite model X (q-t+w) (1+t-w) (s,t)) hnu.symm
 
 private def infinityCompatibilityData : EInfinityCompatibility model infinityPresentationData infinityShiftData where
   lambda_nu := eInfinity_lambda_nu

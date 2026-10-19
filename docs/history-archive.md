@@ -13,7 +13,7 @@
 | `metadata/upstream-update-review.json` | `local-history/metadata/upstream-update-review.json` |
 | `metadata/fixed-interface-migration.json` | `local-history/metadata/fixed-interface-migration.json` |
 
-完整的 `*-contracts.json`、`*-sources.json`（包括 AimPaper）、`migration-baseline.json` 与 `main-proof-port-review.json` 也已移至 `local-history/metadata/`。数学说明迁入 Blueprint/hgraph，出处通过 bibliography 引用。`metadata/` 只保留九份精简构建基线，见 [元数据检查基线](metadata-baselines.md)。重要的持续维护记录统一放在根目录 `corrections.yaml` 并由 Git 跟踪，格式见 [修正记录维护](corrections.md)；迁移前的完整记录备份放在 `local-history/`。
+完整的 `*-contracts.json`、`*-sources.json`（包括 AimPaper）、`migration-baseline.json` 与 `main-proof-port-review.json` 也已移至 `local-history/metadata/`。数学说明迁入 Blueprint/hgraph，出处通过 bibliography 引用。`interface/baselines/` 保留十份精简构建基线，见 [元数据检查基线](metadata-baselines.md)。重要的持续维护记录统一放在根目录 `corrections.yaml` 并由 Git 跟踪，格式见 [修正记录维护](corrections.md)；迁移前的完整记录备份放在 `local-history/`。
 
 一次性的 Blueprint 论文对应复核清单 `blueprint/paper/mapping-review.md`，以及旧快照的章节迁移和书目刷新脚本 `scripts/refresh-blueprint-layout.py`、`scripts/refresh-blueprint-paper.py`，也按原路径归档。当前生成与发布使用 `build-blueprint.py`、`publish-blueprint.py`，不依赖这些历史材料。
 
@@ -27,7 +27,7 @@
 
 ## 持续审阅的接口提案
 
-17 份独立接口审查报告已从 `local-history/metadata/interface-reviews/<模块>/<ID>/report.md` 迁入 Git 跟踪的 `interface-proposals/<模块>/<ID>/report.md`，用于 dashboard 持续审阅。归档原件保留为历史快照；提案文件记录原路径与原件 SHA-256，完整保留原元数据和正文。后续投递及状态更新只写提案目录，见 [接口提案指南](interface-proposals.md)。未迁入的小型证据仍留在本地归档，网页明确标记为本地证据，不冒充已公开可访问。
+17 份独立接口审查报告已从 `local-history/metadata/interface-reviews/<模块>/<ID>/report.md` 迁入 Git 跟踪的 `interface/proposals/<模块>/<ID>/report.md`，用于 dashboard 持续审阅。归档原件保留为历史快照；提案文件记录原路径与原件 SHA-256，完整保留原元数据和正文。后续投递及状态更新只写提案目录，见 [接口提案指南](interface-proposals.md)。未迁入的小型证据仍留在本地归档，网页明确标记为本地证据，不冒充已公开可访问。
 
 ## 从 Git 历史恢复
 

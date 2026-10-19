@@ -11,5 +11,5 @@ public import KIP126.Main.PaperResults
 
 /-! The paper's final theorem and selected intermediate results.
 The public surface includes selected intermediate results; proof stages stay private.
-Proof/construction status is recorded in metadata/main-api.json and metadata/proof-obligations.json.
+Proof/construction status is recorded in interface/baselines/main-api.json and interface/baselines/proof-obligations.json.
 -/

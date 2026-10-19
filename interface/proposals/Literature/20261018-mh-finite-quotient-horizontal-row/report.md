@@ -1,7 +1,7 @@
 ---
 issue_id: "20261018-mh-finite-quotient-horizontal-row"
 title: "固定 normalized triangle 的有限 λ 商 signed 水平行"
-summary: "获批的固定 normalized 有限商 signed 水平行已有完整 public 证明，同一 esusp 的 cone 同构及两条结构箭头亦已私有证明；已接回无额外 hRows 前提的完整公共 MH。Literature 根继承 50 项原登记责任，无新增洞或公理；全量 Lean、信任、接口及 Blueprint 检查已通过；既有上游责任保留。"
+summary: "获批的固定 normalized 有限商 signed 水平行已有完整 public 证明，同一 esusp 的 cone 同构及两条结构箭头亦已私有证明；已接回无额外 hRows 前提的完整公共 MH。合并后 Literature 根继承 47 项当前登记上游责任，无新增洞或公理；全量 Lean、信任、接口及 Blueprint 检查已通过；既有上游责任保留。"
 responsibility_module: "Literature"
 targets:
   - "KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row"
@@ -15,7 +15,7 @@ api_file_and_sha256: "metadata/literature-api.json 623be0c562a22b58fd06647f208a4
 source_file_and_sha256: "KIP126/Literature/Triangles.lean 19742b2fdfe1318a33a40924993a99868f9aaa6fc42cb78f17a826b99e17487b"
 reporter_agent: "/root/mh_coherence_review"
 independent_of_discoverer_and_implementer: true
-evidence_level: "已批准方案的完整生产证明与两路独立 Lean／对象／依赖审查通过；最终统一 lake build、全仓信任捕获、公开消费、接口锁、源码清单、64 项 Python 测试及原生 Blueprint 导出均通过。数学完成限于本获批固定行及完整带层 MH，既有上游待补责任保留。"
+evidence_level: "原完成快照的独立证明审查保留；合并远程 75 项补证后，完整 lake build（3573 jobs）、72 项 Python 测试、源码与接口检查、原生 Blueprint 导出和三个核心根的实际 kernel 依赖复核均通过。当前全仓 237 项既有待补，row／cone 47 项上游、完整 MH 55 项上游，未新增公理或证明洞。"
 status: approved-implemented-and-validated-before-publication
 human_decision: >-
   2026-10-19（Asia/Shanghai），本任务用户消息，协调者 /root 转交完整原文：
@@ -25,6 +25,14 @@ human_decision: >-
 ---
 
 # 接口调整人审报告
+
+## 合并远程 main 的验证（2026-10-19）
+
+本次合并保留远程 `2e856875` 的接口工作区迁移、废弃错误 GL／MH 蓝图节点清理，以及 75 项既有责任的补证。当前接口清单位于 `interface/baselines/`，提案位于 `interface/proposals/`；当前全仓许可待补为 **237** 项，逐项采用该远程基线，未恢复已完成的责任，也未增加许可。新的完整带层 MH 条目保留；旧一般 law 的冻结责任与反例记录仍保留。
+
+本任务的 MH 数学源码与已验证提交 `20dcf765` 完全一致；新增的商行、同一余纤维同构的两箭头和无 `hRows` 的完整 MH 均未改型或减弱。下文的 312 项总数、50／54 项根闭包及 3570 jobs／64 tests 是合并前独立完成快照，不作为合并后待补计数。合并结果的完整 `lake build` 通过 **3573 jobs**，**72 项 Python 测试**、549 项目文件／35 消费者和审计文件的源码清单、20 份提案校验及 Blueprint 原生导出均通过。
+
+协调者另以所有上游及 ProofTools 实际源码的 `import all` 捕获三个根的完整 kernel 证明依赖，共核对 2014 个实际项目节点。合并后 row 根及 same-esusp cone 根各继承 **47** 项当前登记上游责任，完整 MH 根继承 **55** 项；增加的传递边来自远程补证后的真实证明体，未增加任何许可。三根均无新增公理、直接或 synthetic 证明洞、循环、缺失、下游依赖及旧 MH／GL／争议 unshifted 输入，所有实际待补的类型和证明体指纹与当前 237 项清单一致，且没有 ProofTools 待补依赖。
 
 ## 已获批准的具体方案与范围
 
@@ -37,7 +45,7 @@ human_decision: >-
 
 用户先前授权 ProofTools 新 MH 陈述及证明工作；本次 2026-10-19 消息进一步明确批准最小 Literature theorem、跨模块接回无条件 MH、Blueprint 同步和全量检查。真实原话与授权边界见文末人类审核记录。该批准不扩展到另一份 AdamsSynthetic 通用/tensor 方案，且明确禁止新增公理或证明洞。
 
-## 当前执行结果与验证边界（2026-10-19）
+## MH 独立完成快照与验证边界（2026-10-19，合并远程补证之前）
 
 本段由 `/root/mh_api_audit` 回写已获批方案的执行状态，依据当前生产源码及协调者交付的证明、独审和信任核验结果。原独立报告与人审授权记录保留。本回写者曾实现实际三八面体基础的两条私有引理，**不将该实现写作自己的独立完整证明审查**；最终结构行和完整 MH 的独审由协调者另行安排。
 

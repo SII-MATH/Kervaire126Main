@@ -1,7 +1,6 @@
 module
 
 public import KIP126.E2Computation.Table
-public import KIP126.AdamsCalculations.Standard
 public import KIP126.AdamsCalculations.Table.Data
 
 /-! Claims on later Adams pages, with their actual-page decoding. -/

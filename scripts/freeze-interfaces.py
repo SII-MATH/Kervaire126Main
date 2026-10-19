@@ -12,7 +12,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-METADATA_DIR = Path('metadata')
+BASELINES_DIR = Path('interface/baselines')
 MODULES = [
     ('spectral-sequence', 'SpectralSequence', 'KIP126.SpectralSequence'),
     ('adams-synthetic', 'AdamsSynthetic', 'KIP126.AdamsSynthetic'),
@@ -156,15 +156,15 @@ def freeze(stem, module, entry_module):
     result = minimal_api({'module': module, 'entry_module': entry_module,
                           'declarations': named, 'generated_declarations': generated,
                           'exports': sorted(r['name'] for r in data)})
-    write_baseline(METADATA_DIR / (stem + '-api.json'), result)
+    write_baseline(BASELINES_DIR / (stem + '-api.json'), result)
     print(module, len(named), 'named', len(generated), 'generated')
 
 
 def freeze_trust():
-    previous = json.loads((METADATA_DIR / 'proof-obligations.json').read_text())
+    previous = json.loads((BASELINES_DIR / 'proof-obligations.json').read_text())
     data = json.loads(Path('.lake/trust-capture.json').read_text())
     result = reviewed_obligations(data, previous)
-    write_baseline(METADATA_DIR / 'proof-obligations.json', result)
+    write_baseline(BASELINES_DIR / 'proof-obligations.json', result)
     print('Permitted obligations:', result['summary'])
 
 

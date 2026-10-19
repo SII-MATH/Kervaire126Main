@@ -1,10 +1,10 @@
 # 接口提案投递与审阅
 
-Dashboard 的“接口提案”页签集中展示 agent 对形式化接口的独立审查报告。可搜索完整报告，按责任模块与人审状态筛选，展开全文，下载原始报告，并复制或下载审阅反馈交给 agent 回写。反馈窗口不会直接保存数据或改变状态。
+Dashboard 的 **Interfaces → Proposals** 区域集中展示 agent 对形式化接口的独立审查报告。可搜索完整报告，按责任模块与人审状态筛选，展开全文，下载原始报告，并复制或下载审阅反馈交给 agent 回写。反馈窗口不会直接保存数据或改变状态。
 
 ## 唯一维护源
 
-每份提案只维护 `interface-proposals/<模块>/<唯一ID>/report.md`，由 Git 跟踪。YAML 文件头保存索引和人审信息，Markdown 正文保留完整证据、候选差异及下游影响。页面按文件自动收集，无需另登记索引。不得在另一个 YAML/JSON 中平行维护同一提案。
+每份提案只维护 `interface/proposals/<模块>/<唯一ID>/report.md`，由 Git 跟踪。YAML 文件头保存索引和人审信息，Markdown 正文保留完整证据、候选差异及下游影响。页面按文件自动收集，无需另登记索引。不得在另一个 YAML/JSON 中平行维护同一提案。
 
 已迁入的 17 份报告来自本地历史归档；`archived_from` 和 `archived_sha256` 记录迁入时的来源与完整原件校验值。原件作为历史快照保留；迁入后的更新只写本目录。历史 `Computation` 归属原样标明，不据此移动当前模块责任。原始状态保留，包括部分批准和未获人审批准但可继续研究的情形。
 
@@ -20,7 +20,7 @@ Dashboard 的“接口提案”页签集中展示 agent 对形式化接口的独
   --title '具体接口问题' --reporter '/root/independent_reporter'
 ```
 
-也可复制 `interface-proposals/TEMPLATE.md`。填写真实 targets、完整上下文、证据、实际检查、候选的精确差异、下游影响及阻塞范围。文件头的 `independent_of_discoverer_and_implementer` 必须如实填写。研究汇总可使用 `draft` 且填 `false`，页面明确标记“研究草稿 · 待独立复核”；进入正式人审或批准状态前必须完成独立复核，不得把发现笔记冒充独立报告。
+也可复制 `interface/proposals/TEMPLATE.md`。填写真实 targets、完整上下文、证据、实际检查、候选的精确差异、下游影响及阻塞范围。文件头的 `independent_of_discoverer_and_implementer` 必须如实填写。研究汇总可使用 `draft` 且填 `false`，页面明确标记“研究草稿 · 待独立复核”；进入正式人审或批准状态前必须完成独立复核，不得把发现笔记冒充独立报告。
 
 必填文件头字段为 `issue_id`、`title`、`summary`、`responsibility_module`、`targets`、`baseline_commit`、`reporter_agent`、`independent_of_discoverer_and_implementer`、`evidence_level`、`status`、`human_decision`。额外来源元数据完整显示于“来源与原始状态”，不会被丢弃。重复 YAML 键或 ID、缺失字段及没有人审依据的批准状态会使提案校验失败。
 
@@ -42,4 +42,4 @@ Dashboard 的“接口提案”页签集中展示 agent 对形式化接口的独
 .lake/blueprint-env/bin/python scripts/build-blueprint.py
 ```
 
-原生 hgraph 导出同时生成页签与报告页面；不依赖 `local-history/`，不修改数学依赖、公共接口或证明状态。重新导出后刷新 dashboard 可见；远程站点仍随已有 Pages 流程发布。
+原生 hgraph 导出同时生成统一的 Interfaces 页签与报告页面；不依赖 `local-history/`，不修改数学依赖、公共接口或证明状态。重新导出后刷新 dashboard 可见；远程站点仍随已有 Pages 流程发布。

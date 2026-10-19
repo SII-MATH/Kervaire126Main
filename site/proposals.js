@@ -27,6 +27,14 @@
   module.addEventListener('change', filter);
   status.addEventListener('change', filter);
   document.querySelector('.proposal-filters').addEventListener('reset', () => setTimeout(filter, 0));
+  const query = new URLSearchParams(window.interfaceInitialFilters || location.search);
+  search.value = query.get('search') || '';
+  if ([...module.options].some(option => option.value === query.get('module'))) module.value = query.get('module');
+  window.addEventListener('interfaces:filters', event => {
+    if ('search' in event.detail) search.value = event.detail.search;
+    if ('module' in event.detail) module.value = event.detail.module;
+    filter();
+  });
   filter();
   document.addEventListener('click', event => {
     const link = event.target.closest('[data-blueprint]');

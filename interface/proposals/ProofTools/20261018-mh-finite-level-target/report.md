@@ -11,14 +11,22 @@ targets:
 baseline_commit: 1dc13a1973bc0f69c14e39f197372c30a350d4e8
 reporter_agent: /root/mh_interface_review
 independent_of_discoverer_and_implementer: true
-evidence_level: "已批准方案的完整生产证明与两路独立 Lean／对象／依赖审查通过；最终统一 lake build、全仓信任捕获、公开消费、接口锁、源码清单、64 项 Python 测试及原生 Blueprint 导出均通过。数学完成限于本获批固定行及完整带层 MH，既有上游待补责任保留。"
+evidence_level: "原完成快照的独立证明审查保留；合并远程 75 项补证后，完整 lake build（3573 jobs）、72 项 Python 测试、源码与接口检查、原生 Blueprint 导出和三个核心根的实际 kernel 依赖复核均通过。当前全仓 237 项既有待补，row／cone 47 项上游、完整 MH 55 项上游，未新增公理或证明洞。"
 status: approved-implemented-and-validated-before-publication
 human_decision: '2026-10-18 用户明确要求：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”授权范围为本提案的 ProofTools MH 方案、完整类型与实际 no-crossing、相应 Blueprint 替换及补证；不推定为可新增公理、改变其他数学模块公共接口或增加上游待补责任。'
 ---
 
 # 建议采用的目标
 
-## 当前执行状态与验证边界（2026-10-19）
+## 合并远程 main 的验证（2026-10-19）
+
+本次合并保留远程 `2e856875` 的接口工作区迁移、废弃错误 GL／MH 蓝图节点清理，以及 75 项既有责任的补证。当前接口清单位于 `interface/baselines/`，提案位于 `interface/proposals/`；当前全仓许可待补为 **237** 项，逐项采用该远程基线，未恢复已完成的责任，也未增加许可。新的完整带层 MH 条目保留；旧一般 law 的冻结责任与反例记录仍保留。
+
+本任务的 MH 数学源码与已验证提交 `20dcf765` 完全一致；新增的商行、同一余纤维同构的两箭头和无 `hRows` 的完整 MH 均未改型或减弱。下文的 312 项总数、50／54 项根闭包及 3570 jobs／64 tests 是合并前独立完成快照，不作为合并后待补计数。合并结果的完整 `lake build` 通过 **3573 jobs**，**72 项 Python 测试**、549 项目文件／35 消费者和审计文件的源码清单、20 份提案校验及 Blueprint 原生导出均通过。
+
+协调者另以所有上游及 ProofTools 实际源码的 `import all` 捕获三个根的完整 kernel 证明依赖，共核对 2014 个实际项目节点。合并后 row 根及 same-esusp cone 根各继承 **47** 项当前登记上游责任，完整 MH 根继承 **55** 项；增加的传递边来自远程补证后的真实证明体，未增加任何许可。三根均无新增公理、直接或 synthetic 证明洞、循环、缺失、下游依赖及旧 MH／GL／争议 unshifted 输入，所有实际待补的类型和证明体指纹与当前 237 项清单一致，且没有 ProofTools 待补依赖。
+
+## MH 独立完成快照与验证边界（2026-10-19，合并远程补证之前）
 
 2026-10-18 用户已在本提案交付后明确批准按方案推进，要求定下完整 Lean 陈述、实际 no-crossing，替换 ProofTools Blueprint 的旧版本并完成证明。下文中“尚未批准”描述的是研究交付时的历史边界，当前以本段及文件头的人审记录为准；不再为同一 ProofTools 方案重复请求确认。完整证明、接口实际差异、检查和任何新增上游接口疑点按实施结果续写，不能把方向批准写成已经完成证明。
 

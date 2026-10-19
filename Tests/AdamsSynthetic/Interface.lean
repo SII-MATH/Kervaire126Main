@@ -11,7 +11,7 @@ set_option maxHeartbeats 0
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 -- Direct sorry obligations are locked separately by the internal trust audits.
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../metadata/adams-synthetic-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../interface/baselines/adams-synthetic-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let declarations := named ++ generated

@@ -1,16 +1,24 @@
 # 元数据检查基线
 
-`metadata/` 保留十份构建输入，不作为数学说明或进度展示的第二份数据库。
+`interface/baselines/` 保留十份构建输入，不作为数学说明或进度展示的第二份数据库。
 
 | 文件 | 保留内容 | 消费者 |
 | --- | --- | --- |
 | 八份 `*-api.json` | 八个数学模块的公开与生成声明分组；每项名称、类型指纹、宇宙参数、公理依赖；完整导出集合 | 各模块 Lean 接口测试、Main 审计、Blueprint 绑定检查 |
-| `proof-obligations.json` | 每个许可证明洞的名称、模块、类型与证明体指纹、类别；精确 Main 根与 ProofTools 边界名单 | 八个数学模块 Lean 审计；不再作为原生 hgraph 导出的输入 |
+| `proof-obligations.json` | 每个许可证明洞的名称、模块、类型与证明体指纹、类别；精确 Main 根与 ProofTools 边界名单 | 八个数学模块 Lean 审计与 Interfaces 只读展示；不改变原生数学节点状态 |
 | `mathematical-naming-restoration.json` | 已审查的标识符改名对应 | 源清单检查 |
 
 接口基线 schema 为 4，证明洞基线 schema 为 2。数组按声明逐行存储。格式精简保留原有检查值，不重新接受当前源码或放宽 Lean 检查。后续已授权的模块分层和第二线分类接口更新单独反映在基线中；E₂ 与 Adams 计算分别使用独立接口锁，原 Computation 兼容入口及其重复接口锁已删除；各模块接口仍核验完整导出与实际定义归属，源清单检查核验公开声明归属唯一。
 
 数学说明和论文对应维护在 `blueprint/semantic/` 与 `blueprint/paper/`；接口范围说明是 hgraph 原生节点附件。出处使用 bibliography，固定代码提交见 `blueprint/source-snapshots.bib`。完整类型文本、依赖关系和完成状态由 Lean 捕获与 hgraph 导出，不在基线中重复维护。目标修正、问题成因、反例与状态集中记录在根目录 `corrections.yaml`，原始及修正陈述只引用 AimPaper 和 Blueprint 节点；维护方式见 [修正记录](corrections.md)。
+
+## 前端展示
+
+hgraph 的 **Interfaces → Baselines** 区域由 `scripts/blueprint_interfaces.py` 从上述十份基线直接生成，提供模块概览、声明与生成导出搜索、许可证明洞、Main／ProofTools 审计边界、改名对应和原始 JSON 下载。源码陈述与局部上下文使用 hgraph 原生 Lean 解析器读取，属于未经 elaboration 的源码展示，不替代编译后的完整类型。页签只读，不另维护接口数据库，也不新增数学章节、绑定或状态规则。公理列表表示锁中许可的依赖；包含 `sorryAx` 可能来自上游，无该项也不表示本次网页导出已通过完整构建。
+
+同一页签的两个子页按需加载并保留页面、筛选及滚动状态，往返不重复请求基线；刷新文档时重新读取当前导出，不使用跨版本持久缓存。**Proposals** 区域提供接口提案审阅；可从声明查找相关提案，也可从提案返回责任模块的接口基线。
+
+运行既有 `scripts/build-blueprint.py` 即可接入原生自定义页签；发布仍独立于 Lean 全量构建。
 
 ## 显式更新
 
