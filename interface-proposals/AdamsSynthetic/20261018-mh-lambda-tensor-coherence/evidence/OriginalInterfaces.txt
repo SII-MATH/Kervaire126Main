@@ -1,0 +1,1185 @@
+Baseline b5ad178bab6c9a295baf66f9b1042797f449aac5
+These are exact source excerpts; line numbers are original.
+
+KIP126/AdamsSynthetic/Context.lean lines 1-242 sha256=b2c4994e874dc3139c0a905be85a88f51727a6fec907953cc0217113c32480b1
+1: module
+2: 
+3: public import Mathlib.Algebra.Category.Grp.Abelian
+4: public import Mathlib.CategoryTheory.Monoidal.Braided.Basic
+5: public import Mathlib.CategoryTheory.Monoidal.Closed.Basic
+6: public import Mathlib.CategoryTheory.Triangulated.Functor
+7: public import Mathlib.Data.ZMod.Basic
+8: 
+9: @[expose] section
+10: 
+11: /-!
+12: # Stable-homotopy context interfaces
+13: 
+14: These interfaces package the structures of one given homotopy-category
+15: background. Chosen cofibers, synthetic grading, and the ν functor remain
+16: associated data. No global instance is selected by declaring the records.
+17: -/
+18: 
+19: namespace KIP126.StableHomotopy
+20: 
+21: open CategoryTheory CategoryTheory.Limits
+22: open MonoidalCategory Pretriangulated
+23: 
+24: universe u v
+25: 
+26: /-- The structural part of a stable homotopy category.
+27: 
+28: The fields are bundled so a concrete model can supply its additive, shifted,
+29: monoidal, and triangulated structures together.  In particular, this class
+30: does not assert the extra closedness, cofiber choices, or sign conventions
+31: used by particular constructions; those belong to separate witness records.
+32: -/
+33: public class StableHomotopyCategory (C : Type u) extends
+34:     Category.{v} C,
+35:     Preadditive C,
+36:     HasShift C ℤ,
+37:     MonoidalCategory C where
+38:   /-- Every shift functor is additive. -/
+39:   shiftAdditive : ∀ (n : ℤ), (shiftFunctor C n).Additive
+40:   /-- The category has a zero object. -/
+41:   hasZeroObject : HasZeroObject C
+42:   /-- The category is pretriangulated. -/
+43:   pretriangulated : Pretriangulated C
+44: 
+45: attribute [instance] StableHomotopyCategory.shiftAdditive
+46: attribute [instance] StableHomotopyCategory.hasZeroObject
+47: attribute [reducible] StableHomotopyCategory.pretriangulated
+48: attribute [instance] StableHomotopyCategory.pretriangulated
+49: 
+50: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+51: 
+52: /-! ### Explicit cofiber and tensor-triangulated witnesses -/
+53: 
+54: /-- A chosen functorial cofiber construction on a stable category.
+55: 
+56: This is data supplied by a concrete model.  Keeping it as a class preserves
+57: the convenient Mathlib notation without introducing a global postulate that
+58: would silently choose a cofiber for every map.
+59: -/
+60: public class HasFunctorialCofiber where
+61:   cofib : {X Y : C} → (X ⟶ Y) → C
+62:   cofibι : {X Y : C} → (f : X ⟶ Y) → Y ⟶ cofib f
+63:   cofibδ : {X Y : C} → (f : X ⟶ Y) → cofib f ⟶ (shiftFunctor C (1 : ℤ)).obj X
+64:   cofib_distinguished : ∀ {X Y : C} (f : X ⟶ Y),
+65:     Triangle.mk f (cofibι f) (cofibδ f) ∈ distTriang C
+66:   cofibMap : ∀ {X₁ Y₁ X₂ Y₂ : C} (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂)
+67:     (α : X₁ ⟶ X₂) (β : Y₁ ⟶ Y₂), α ≫ f₂ = f₁ ≫ β →
+68:     (cofib f₁ ⟶ cofib f₂)
+69:   cofibMap_ι : ∀ {X₁ Y₁ X₂ Y₂ : C} (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂)
+70:     (α : X₁ ⟶ X₂) (β : Y₁ ⟶ Y₂) (h : α ≫ f₂ = f₁ ≫ β),
+71:     β ≫ cofibι f₂ = cofibι f₁ ≫ cofibMap f₁ f₂ α β h
+72:   cofibMap_δ : ∀ {X₁ Y₁ X₂ Y₂ : C} (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂)
+73:     (α : X₁ ⟶ X₂) (β : Y₁ ⟶ Y₂) (h : α ≫ f₂ = f₁ ≫ β),
+74:     cofibMap f₁ f₂ α β h ≫ cofibδ f₂ =
+75:       cofibδ f₁ ≫ (shiftFunctor C (1 : ℤ)).map α
+76: 
+77: /-- The sphere spectrum is the monoidal unit. -/
+78: public abbrev SphereSpectrum : C := 𝟙_ C
+79: 
+80: /-- The `n`-sphere is the `n`-fold shift of the sphere spectrum. -/
+81: public abbrev Sphere (n : ℤ) : C := (shiftFunctor C n).obj SphereSpectrum
+82: 
+83: /-- Stable homotopy classes represented by maps from the `n`-sphere. -/
+84: public abbrev HomotopyGroup (n : ℤ) (X : C) : Type v := Sphere n ⟶ X
+85: 
+86: /-- The selected mod-two coefficient object and unit on this same background.
+87: The record specifies its homotopy groups; it does not construct a spectrum. -/
+88: public structure ModTwoCoefficients (C : Type u) [StableHomotopyCategory.{u, v} C] where
+89:   object : C
+90:   pi0Equiv : HomotopyGroup 0 object ≃+ ZMod 2
+91:   homotopy_vanishes : ∀ n : ℤ, n ≠ 0 → Subsingleton (HomotopyGroup n object)
+92: 
+93: /-- The unit is the element `1` in the same specified zeroth homotopy group. -/
+94: public def ModTwoCoefficients.unit (H : ModTwoCoefficients C) :
+95:     SphereSpectrum ⟶ H.object :=
+96:   (shiftFunctorZero C ℤ).inv.app SphereSpectrum ≫ H.pi0Equiv.symm 1
+97: 
+98: /-- The graded homotopy groups of a spectrum, as additive-group objects. -/
+99: public noncomputable def HomotopyGroups (X : C) : ℤ → AddCommGrpCat.{v} :=
+100:   fun n => AddCommGrpCat.mk (HomotopyGroup n X)
+101: 
+102: /-! ### Distinguished cofiber triangles and induced maps -/
+103: 
+104: /-- A chosen distinguished triangle `X → Y → Z → ΣX`. -/
+105: public structure HoCofiberSequence where
+106:   X : C
+107:   Y : C
+108:   Z : C
+109:   f : X ⟶ Y
+110:   g : Y ⟶ Z
+111:   h : Z ⟶ (shiftFunctor C (1 : ℤ)).obj X
+112:   distinguished : Triangle.mk f g h ∈ distTriang C
+113: 
+114: /-- The map on homotopy groups induced by postcomposition with `f`. -/
+115: public def inducedMap {X Y : C} (f : X ⟶ Y) (n : ℤ) :
+116:     HomotopyGroup n X →+ HomotopyGroup n Y where
+117:   toFun := fun α => α ≫ f
+118:   map_zero' := Limits.zero_comp
+119:   map_add' := fun a b => Preadditive.add_comp _ _ _ a b f
+120: 
+121: end KIP126.StableHomotopy
+122: 
+123: namespace KIP126.Synthetic.Context
+124: 
+125: open CategoryTheory CategoryTheory.Limits
+126: open KIP126.StableHomotopy
+127: 
+128: attribute [local instance] HasZeroObject.zero'
+129: 
+130: universe u v u' v'
+131: 
+132: /-- A stable category with a coherent bigraded suspension and deformation map.
+133: 
+134: The parent class supplies the additive, shifted, monoidal, and triangulated
+135: structure.  `biShift` records the extra synthetic grading, while `lam` is the
+136: natural transformation
+137: `Σ^(0,-1) ⟶ Id` used to define the λ-power quotients.
+138: -/
+139: public class SyntheticCategory (Syn : Type u) extends
+140:     StableHomotopyCategory.{u, v} Syn where
+141:   biShift : ℤ × ℤ → Syn ⥤ Syn
+142:   biShift_comp : ∀ (a b : ℤ × ℤ),
+143:     biShift a ⋙ biShift b ≅ biShift (a + b)
+144:   biShift_zero : biShift (0, 0) ≅ 𝟭 Syn
+145:   biShift_compat : ∀ n : ℤ, biShift (n, 0) ≅ shiftFunctor Syn n
+146:   /-- Each bigraded suspension is fully faithful (the inverse suspension is
+147:       supplied by the same coherence data in a concrete model). -/
+148:   biShift_fullyFaithful : ∀ p : ℤ × ℤ, (biShift p).FullyFaithful
+149:   lam : biShift (0, -1) ⟶ 𝟭 Syn
+150:   biShift_tensor_comm : ∀ (p : ℤ × ℤ) (X Y : Syn),
+151:     (biShift p).obj (MonoidalCategory.tensorObj X Y) ≅
+152:       MonoidalCategory.tensorObj ((biShift p).obj X) Y
+153: 
+154: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+155: 
+156: /-- The `n`-fold composite of the deformation map `λ` on `X`.
+157: 
+158: The recursive definition follows the coherence isomorphism supplied by
+159: `biShift_comp`; in particular `lambdaPow 0 X` is the chosen identity
+160: isomorphism from `Σ^(0,0)X` to `X`.
+161: -/
+162: public noncomputable def lambdaPow : (n : ℕ) → (X : Syn) →
+163:     (SyntheticCategory.biShift (0, -(n : ℤ))).obj X ⟶ X
+164:   | 0, X => SyntheticCategory.biShift_zero.hom.app X
+165:   | n + 1, X => by
+166:       have step1 :
+167:           (SyntheticCategory.biShift ((0 : ℤ), -1) ⋙
+168:             SyntheticCategory.biShift ((0 : ℤ), -(n : ℤ))).obj X ⟶ X :=
+169:         (SyntheticCategory.biShift ((0 : ℤ), -(n : ℤ))).map
+170:             (SyntheticCategory.lam.app X) ≫ lambdaPow n X
+171:       have step2 :
+172:           (SyntheticCategory.biShift ((0, -1) + (0, -(n : ℤ)))).obj X ⟶ X :=
+173:         (SyntheticCategory.biShift_comp (0, -1) (0, -(n : ℤ))).inv.app X ≫ step1
+174:       have heq :
+175:           ((0 : ℤ), (-1 : ℤ)) + ((0 : ℤ), -(n : ℤ)) =
+176:             ((0 : ℤ), -(↑(n + 1) : ℤ)) := by
+177:         simp
+178:       exact heq ▸ step2
+179: 
+180: /-- The chosen cofiber of `λ_X`. -/
+181: public noncomputable def XModLambda (X : Syn) [HasFunctorialCofiber (C := Syn)] : Syn :=
+182:   HasFunctorialCofiber.cofib (SyntheticCategory.lam.app X)
+183: 
+184: /-- The chosen cofiber of `λⁿ_X`. -/
+185: public noncomputable def XModLambdaN (X : Syn) (n : ℕ)
+186:     [HasFunctorialCofiber (C := Syn)] : Syn :=
+187:   HasFunctorialCofiber.cofib (lambdaPow n X)
+188: 
+189: /-- The explicit ν-interface from a stable category into the synthetic one.
+190: 
+191: The compatibility fields are hypotheses supplied by a concrete construction;
+192: they are deliberately stored in a record instead of declared as axioms.
+193: -/
+194: public structure NuFunctorData (Stable : Type u) [StableHomotopyCategory.{u, v} Stable]
+195:     (Syn : Type u') [SyntheticCategory.{u', v'} Syn] where
+196:   functor : Stable ⥤ Syn
+197:   additive : functor.Additive
+198:   zeroIso : functor.obj 0 ≅ (0 : Syn)
+199:   /-- The synthetic analogue of the ordinary sphere is the synthetic unit.
+200:   This is explicit model data, not a claim that ν is strong monoidal on all
+201:   spectra. Source: Pstrągowski, Definition 4.6 and its following discussion
+202:   (`Source/Pst/source/synthetic_spectra.tex`, lines 1935–1938). -/
+203:   unitIso : functor.obj (SphereSpectrum (C := Stable)) ≅ SphereSpectrum (C := Syn)
+204:   suspensionIso : ∀ X : Stable,
+205:     functor.obj ((shiftFunctor Stable (1 : ℤ)).obj X) ≅
+206:       (SyntheticCategory.biShift (1, 1)).obj (functor.obj X)
+207: 
+208: /-- The landing of a normalized synthetic connecting map:
+209: `Σ^(0,-1) ν(ΣX) ≅ Σ^(1,0) νX ≅ (νX)[1]`.
+210: Every comparison is supplied by the same ν datum and synthetic grading. -/
+211: public noncomputable def NuFunctorData.boundaryLandingIso
+212:     {Stable : Type u} [StableHomotopyCategory.{u, v} Stable]
+213:     {Syn : Type u'} [SyntheticCategory.{u', v'} Syn]
+214:     (N : NuFunctorData Stable Syn) (X : Stable) :
+215:     (SyntheticCategory.biShift (0, -1)).obj
+216:         (N.functor.obj ((shiftFunctor Stable (1 : ℤ)).obj X)) ≅
+217:       (shiftFunctor Syn (1 : ℤ)).obj (N.functor.obj X) :=
+218:   (SyntheticCategory.biShift (0, -1)).mapIso (N.suspensionIso X) ≪≫
+219:     (SyntheticCategory.biShift_comp (1, 1) (0, -1)).app (N.functor.obj X) ≪≫
+220:     (SyntheticCategory.biShift_compat (Syn := Syn) 1).app (N.functor.obj X)
+221: 
+222: end KIP126.Synthetic.Context
+223: 
+224: namespace KIP126.Synthetic.Context
+225: 
+226: open CategoryTheory MonoidalCategory
+227: 
+228: universe u v
+229: 
+230: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+231: 
+232: /-- The synthetic sphere `S^(0,0)`, the monoidal unit. -/
+233: public noncomputable def S_0_0 : Syn := 𝟙_ Syn
+234: 
+235: /-- The bigraded synthetic sphere `S^(m,n)`. -/
+236: public noncomputable def Smn (m n : ℤ) : Syn :=
+237:   (SyntheticCategory.biShift (m, n)).obj S_0_0
+238: 
+239: /-- The bigraded homotopy class type `[S^(m,n), X]`. -/
+240: public abbrev BiHom (m n : ℤ) (X : Syn) : Type v := Smn m n ⟶ X
+241: 
+242: end KIP126.Synthetic.Context
+
+KIP126/AdamsSynthetic/Coherence.lean lines 1-150 sha256=d8c2d43c86adb547f9fcecd6a89832f1fcb79a6fad3fa179d30c6164a95b184d
+1: module
+2: 
+3: public import KIP126.AdamsSynthetic.Context
+4: 
+5: @[expose] section
+6: 
+7: /-! Coherence and derived power laws of the same given synthetic shifts and λ.
+8: Adapted from the fixed review source; no replacement shifts or powers are selected. -/
+9: 
+10: namespace KIP126.Synthetic.Context
+11: 
+12: open CategoryTheory
+13: 
+14: universe u v
+15: 
+16: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+17: 
+18: /-- The same recursive λ powers, constructed as natural transformations.
+19: Their components are proved equal to the existing `lambdaPow` separately. -/
+20: public noncomputable def lambdaPowNatTrans : (n : ℕ) →
+21:     SyntheticCategory.biShift (0, -(n : ℤ)) ⟶ 𝟭 Syn
+22:   | 0 => SyntheticCategory.biShift_zero.hom
+23:   | n + 1 => by
+24:       have step : SyntheticCategory.biShift ((0 : ℤ), -1) ⋙
+25:           SyntheticCategory.biShift ((0 : ℤ), -(n : ℤ)) ⟶ 𝟭 Syn :=
+26:         Functor.whiskerRight SyntheticCategory.lam
+27:             (SyntheticCategory.biShift ((0 : ℤ), -(n : ℤ))) ≫
+28:           lambdaPowNatTrans n
+29:       have result : SyntheticCategory.biShift ((0, -1) + (0, -(n : ℤ))) ⟶ 𝟭 Syn :=
+30:         (SyntheticCategory.biShift_comp (0, -1) (0, -(n : ℤ))).inv ≫ step
+31:       have heq : ((0 : ℤ), (-1 : ℤ)) + ((0 : ℤ), -(n : ℤ)) =
+32:           ((0 : ℤ), -(↑(n + 1) : ℤ)) := by simp
+33:       exact heq ▸ result
+34: 
+35: end KIP126.Synthetic.Context
+36: 
+37: namespace KIP126.Synthetic.Context
+38: 
+39: open CategoryTheory
+40: 
+41: set_option backward.isDefEq.respectTransparency false
+42: 
+43: universe u v
+44: 
+45: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+46: 
+47: theorem transported_app {a b : ℤ × ℤ} (hab : a = b)
+48:     (α : SyntheticCategory.biShift a ⟶ 𝟭 Syn) (X : Syn) :
+49:     (hab ▸ α).app X = (hab ▸ α.app X) := by
+50:   subst b
+51:   rfl
+52: 
+53: /-- This natural-transformation presentation does not choose a different λ power. -/
+54: @[simp] public theorem lambdaPowNatTrans_app (n : ℕ) (X : Syn) :
+55:     (lambdaPowNatTrans n).app X = lambdaPow n X := by
+56:   induction n with
+57:   | zero => rfl
+58:   | succ n ih =>
+59:     simp only [lambdaPowNatTrans, lambdaPow, transported_app, NatTrans.comp_app,
+60:       Functor.whiskerRight_app, ih]
+61: 
+62: /-- Every existing λ-power is natural in the synthetic object. -/
+63: public theorem lambdaPow_naturality (n : ℕ) {X Y : Syn} (f : X ⟶ Y) :
+64:     (SyntheticCategory.biShift (0, -(n : ℤ))).map f ≫ lambdaPow n Y =
+65:       lambdaPow n X ≫ f := by
+66:   have h := (lambdaPowNatTrans n).naturality f
+67:   dsimp only [Functor.id_obj, Functor.id_map] at h
+68:   simpa only [lambdaPowNatTrans_app] using h
+69: 
+70: end KIP126.Synthetic.Context
+71: 
+72: namespace KIP126.Synthetic.Context
+73: 
+74: open CategoryTheory
+75: 
+76: universe u v
+77: 
+78: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+79: 
+80: /-- The specified addition comparison, transported to a named total degree. -/
+81: public noncomputable def biShiftAddIso (a b c : ℤ × ℤ) (h : a + b = c) :
+82:     SyntheticCategory.biShift a ⋙ SyntheticCategory.biShift b ≅
+83:       (SyntheticCategory.biShift c : Syn ⥤ Syn) :=
+84:   SyntheticCategory.biShift_comp a b ≪≫
+85:     eqToIso (congrArg SyntheticCategory.biShift h)
+86: 
+87: /-- The degree of the already defined `lambdaPow n`. -/
+88: public def lambdaDegree (n : ℕ) : ℤ × ℤ := (0, -(n : ℤ))
+89: 
+90: /-- The existing addition comparison on the λ axis, with no new choices. -/
+91: public noncomputable def lambdaShiftAddIso (i j k : ℕ) (h : i + j = k) :
+92:     SyntheticCategory.biShift (lambdaDegree i) ⋙
+93:         SyntheticCategory.biShift (lambdaDegree j) ≅
+94:       (SyntheticCategory.biShift (lambdaDegree k) : Syn ⥤ Syn) :=
+95:   biShiftAddIso (lambdaDegree i) (lambdaDegree j) (lambdaDegree k)
+96:     (by subst k; ext <;> simp [lambdaDegree, Nat.cast_add, add_comm])
+97: 
+98: /-- The source map for restriction from the `j`th to the `i`th λ quotient.
+99: It uses multiplication by the existing `lambdaPow (j-i)`, through the
+100: specified addition comparison. Its commuting square is proved separately. -/
+101: public noncomputable def lambdaRestrictionSourceMap (i j : ℕ) (hij : i ≤ j) (X : Syn) :
+102:     (SyntheticCategory.biShift (lambdaDegree j)).obj X ⟶
+103:       (SyntheticCategory.biShift (lambdaDegree i)).obj X :=
+104:   (lambdaShiftAddIso (j - i) i j (Nat.sub_add_cancel hij)).inv.app X ≫
+105:     (SyntheticCategory.biShift (lambdaDegree i)).map (lambdaPow (j - i) X)
+106: 
+107: end KIP126.Synthetic.Context
+108: 
+109: namespace KIP126.Synthetic.Context
+110: 
+111: open CategoryTheory
+112: 
+113: universe u v
+114: 
+115: variable (Syn : Type u) [SyntheticCategory.{u, v} Syn]
+116: 
+117: /-- Associativity, units, and centrality of λ for the existing suspension
+118: comparisons. The named intermediate and final degrees only make every
+119: transport explicit; their equalities determine them uniquely. -/
+120: public structure BiShiftCoherence : Prop where
+121:   associativity : ∀ (a b c ab bc total : ℤ × ℤ)
+122:       (hab : a + b = ab) (hbc : b + c = bc)
+123:       (habc : ab + c = total) (habc' : a + bc = total) (X : Syn),
+124:     (SyntheticCategory.biShift c).map ((biShiftAddIso a b ab hab).hom.app X) ≫
+125:         (biShiftAddIso ab c total habc).hom.app X =
+126:       (biShiftAddIso b c bc hbc).hom.app ((SyntheticCategory.biShift a).obj X) ≫
+127:         (biShiftAddIso a bc total habc').hom.app X
+128:   left_unit : ∀ (a : ℤ × ℤ) (X : Syn),
+129:     (biShiftAddIso 0 a a (zero_add a)).hom.app X =
+130:       (SyntheticCategory.biShift a).map (SyntheticCategory.biShift_zero.hom.app X)
+131:   right_unit : ∀ (a : ℤ × ℤ) (X : Syn),
+132:     (biShiftAddIso a 0 a (add_zero a)).hom.app X =
+133:       SyntheticCategory.biShift_zero.hom.app ((SyntheticCategory.biShift a).obj X)
+134:   lambda_comm : ∀ (a : ℤ × ℤ) (X : Syn),
+135:     SyntheticCategory.lam.app ((SyntheticCategory.biShift a).obj X) =
+136:       (biShiftAddIso a (0, -1) (a + (0, -1)) rfl).hom.app X ≫
+137:         (biShiftAddIso (0, -1) a (a + (0, -1)) (add_comm _ _)).inv.app X ≫
+138:         (SyntheticCategory.biShift a).map (SyntheticCategory.lam.app X)
+139: 
+140: end KIP126.Synthetic.Context
+141: 
+142: namespace KIP126.Synthetic.Context
+143: 
+144: open CategoryTheory
+145: 
+146: set_option backward.isDefEq.respectTransparency false
+147: 
+148: universe u v
+149: 
+150: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+
+KIP126/AdamsSynthetic/Quotients.lean lines 1-220 sha256=8642336652d56b4cf97d366127487a4dd412472fd3b761512ff5cc1ea287e539
+1: module
+2: 
+3: public import KIP126.AdamsSynthetic.Coherence
+4: 
+5: set_option backward.isDefEq.respectTransparency false
+6: 
+7: @[expose] section
+8: 
+9: /-! Maps and finite triangles on the actual chosen λ-power cofibers.
+10: Functoriality of the chosen cofiber maps is explicit input. Restriction and
+11: triangle data do not assert completeness, boundedness, or convergence. -/
+12: 
+13: namespace KIP126.Synthetic.Context
+14: 
+15: open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy
+16: 
+17: universe u v
+18: 
+19: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+20:   [HasFunctorialCofiber (C := Syn)]
+21: 
+22: public noncomputable def XModLambdaN.incl (X : Syn) (n : ℕ) : X ⟶ XModLambdaN X n :=
+23:   HasFunctorialCofiber.cofibι (lambdaPow n X)
+24: 
+25: public noncomputable def XModLambdaN.proj (X : Syn) (n : ℕ) :
+26:     XModLambdaN X n ⟶ ((SyntheticCategory.biShift (0, -(n : ℤ))).obj X)⟦(1 : ℤ)⟧ :=
+27:   HasFunctorialCofiber.cofibδ (lambdaPow n X)
+28: 
+29: /-- The map supplied by the same chosen cofiber construction. No identity
+30: or composition law for this choice is asserted by the minimal cofiber class. -/
+31: public noncomputable def XModLambdaN.map {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :
+32:     XModLambdaN X n ⟶ XModLambdaN Y n :=
+33:   HasFunctorialCofiber.cofibMap (lambdaPow n X) (lambdaPow n Y)
+34:     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)
+35: 
+36: /-- This is the actual λⁿ cofiber triangle. The definition makes no
+37: inverse-limit or completeness assertion. -/
+38: public noncomputable def XModLambdaN.cofiberTriangle (X : Syn) (n : ℕ) : Triangle Syn :=
+39:   Triangle.mk (lambdaPow n X) (XModLambdaN.incl X n) (XModLambdaN.proj X n)
+40: 
+41: end KIP126.Synthetic.Context
+42: 
+43: namespace KIP126.Synthetic.Context
+44: 
+45: open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy
+46: 
+47: universe u v
+48: 
+49: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+50:   [HasFunctorialCofiber (C := Syn)]
+51: 
+52: public theorem XModLambdaN.incl_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :
+53:     f ≫ XModLambdaN.incl Y n = XModLambdaN.incl X n ≫ XModLambdaN.map f n :=
+54:   HasFunctorialCofiber.cofibMap_ι (lambdaPow n X) (lambdaPow n Y)
+55:     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)
+56: 
+57: public theorem XModLambdaN.proj_naturality {X Y : Syn} (f : X ⟶ Y) (n : ℕ) :
+58:     XModLambdaN.map f n ≫ XModLambdaN.proj Y n =
+59:       XModLambdaN.proj X n ≫
+60:         (shiftFunctor Syn (1 : ℤ)).map
+61:           ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) :=
+62:   HasFunctorialCofiber.cofibMap_δ (lambdaPow n X) (lambdaPow n Y)
+63:     ((SyntheticCategory.biShift (0, -(n : ℤ))).map f) f (lambdaPow_naturality n f)
+64: 
+65: public theorem XModLambdaN.cofiberTriangle_distinguished (X : Syn) (n : ℕ) :
+66:     XModLambdaN.cofiberTriangle X n ∈ distTriang Syn :=
+67:   HasFunctorialCofiber.cofib_distinguished (lambdaPow n X)
+68: 
+69: public theorem XModLambdaN.lambdaPow_comp_incl (X : Syn) (n : ℕ) :
+70:     lambdaPow n X ≫ XModLambdaN.incl X n = 0 :=
+71:   comp_distTriang_mor_zero₁₂ _ (XModLambdaN.cofiberTriangle_distinguished X n)
+72: 
+73: public theorem XModLambdaN.incl_comp_proj (X : Syn) (n : ℕ) :
+74:     XModLambdaN.incl X n ≫ XModLambdaN.proj X n = 0 :=
+75:   comp_distTriang_mor_zero₂₃ _ (XModLambdaN.cofiberTriangle_distinguished X n)
+76: 
+77: end KIP126.Synthetic.Context
+78: 
+79: namespace KIP126.Synthetic.Context
+80: open CategoryTheory KIP126.StableHomotopy
+81: universe u v
+82: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+83:   [HasFunctorialCofiber (C := Syn)]
+84: public structure LambdaQuotientFunctoriality : Prop where
+85:   map_id : ∀ (X : Syn) (n : ℕ), XModLambdaN.map (𝟙 X) n = 𝟙 _
+86:   map_comp : ∀ {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z) (n : ℕ),
+87:     XModLambdaN.map (f ≫ g) n = XModLambdaN.map f n ≫ XModLambdaN.map g n
+88: 
+89: end KIP126.Synthetic.Context
+90: 
+91: namespace KIP126.Synthetic.Context
+92: 
+93: open CategoryTheory KIP126.StableHomotopy
+94: 
+95: universe u v
+96: 
+97: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+98:   [HasFunctorialCofiber (C := Syn)]
+99: 
+100: /-- The chosen cofiber map of the proved λ-power factorization square.
+101: Both its source and target are the existing `XModLambdaN` objects. This
+102: construction alone does not assert identity or composition laws for the
+103: choice of `HasFunctorialCofiber.cofibMap`. -/
+104: public noncomputable def XModLambdaN.restriction (coh : BiShiftCoherence Syn)
+105:     (X : Syn) (i j : ℕ) (hij : i ≤ j) : XModLambdaN X j ⟶ XModLambdaN X i :=
+106:   HasFunctorialCofiber.cofibMap (lambdaPow j X) (lambdaPow i X)
+107:     (lambdaRestrictionSourceMap i j hij X) (𝟙 X)
+108:     (by simpa only [lambdaDegree, Category.comp_id] using
+109:       lambdaRestrictionSourceMap_commutes coh i j hij X)
+110: 
+111: end KIP126.Synthetic.Context
+112: 
+113: namespace KIP126.Synthetic.Context
+114: 
+115: open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy
+116: 
+117: universe u v
+118: 
+119: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+120:   [HasFunctorialCofiber (C := Syn)]
+121: 
+122: /-- A finite λ–ρ–δ triangle on the actual quotients, including its
+123: compatibility with multiplication by the existing `lambdaPow i X`. -/
+124: public structure LambdaRhoDeltaTriangle (X : Syn) (i j : ℕ) where
+125:   i_pos : 0 < i
+126:   i_lt_j : i < j
+127:   lambdaMap :
+128:     (SyntheticCategory.biShift (0, -(i : ℤ))).obj (XModLambdaN X (j - i)) ⟶
+129:       XModLambdaN X j
+130:   rho : XModLambdaN X j ⟶ XModLambdaN X i
+131:   delta : XModLambdaN X i ⟶
+132:     ((SyntheticCategory.biShift (0, -(i : ℤ))).obj
+133:       (XModLambdaN X (j - i)))⟦(1 : ℤ)⟧
+134:   distinguished : Triangle.mk lambdaMap rho delta ∈ distTriang Syn
+135:   lambda_quotient :
+136:     (SyntheticCategory.biShift (0, -(i : ℤ))).map (XModLambdaN.incl X (j - i)) ≫
+137:         lambdaMap = lambdaPow i X ≫ XModLambdaN.incl X j
+138:   rho_quotient : XModLambdaN.incl X j ≫ rho = XModLambdaN.incl X i
+139: 
+140: /-- Restriction maps between the existing finite λ quotients with exact
+141: identity, composition, quotient, and triangle compatibility laws. -/
+142: public structure FiniteLambdaQuotientTower (X : Syn) where
+143:   rho : ∀ (i j : ℕ), i ≤ j → (XModLambdaN X j ⟶ XModLambdaN X i)
+144:   rho_id : ∀ i, rho i i le_rfl = 𝟙 (XModLambdaN X i)
+145:   rho_comp : ∀ {k i j : ℕ} (hki : k ≤ i) (hij : i ≤ j),
+146:     rho i j hij ≫ rho k i hki = rho k j (hki.trans hij)
+147:   rho_quotient : ∀ {i j : ℕ} (hij : i ≤ j),
+148:     XModLambdaN.incl X j ≫ rho i j hij = XModLambdaN.incl X i
+149:   triangle : ∀ {i j : ℕ}, 0 < i → i < j → LambdaRhoDeltaTriangle X i j
+150:   triangle_rho : ∀ {i j : ℕ} (hi : 0 < i) (hij : i < j),
+151:     (triangle hi hij).rho = rho i j hij.le
+152: 
+153: end KIP126.Synthetic.Context
+154: 
+155: namespace KIP126.Synthetic.Context
+156: 
+157: open CategoryTheory KIP126.StableHomotopy
+158: 
+159: universe u v
+160: 
+161: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+162:   [HasFunctorialCofiber (C := Syn)] {X Y : Syn}
+163: 
+164: /-- All components are the actual `XModLambdaN.map f n`; this record supplies
+165: their compatibility with the specified restrictions and λ–ρ–δ triangles. -/
+166: public structure FiniteLambdaQuotientTower.Hom (TX : FiniteLambdaQuotientTower X)
+167:     (TY : FiniteLambdaQuotientTower Y) (f : X ⟶ Y) : Prop where
+168:   rho_naturality : ∀ {i j : ℕ} (hij : i ≤ j),
+169:     TX.rho i j hij ≫ XModLambdaN.map f i =
+170:       XModLambdaN.map f j ≫ TY.rho i j hij
+171:   lambda_naturality : ∀ {i j : ℕ} (hi : 0 < i) (hij : i < j),
+172:     (SyntheticCategory.biShift (0, -(i : ℤ))).map
+173:           (XModLambdaN.map f (j - i)) ≫
+174:         (TY.triangle hi hij).lambdaMap =
+175:       (TX.triangle hi hij).lambdaMap ≫ XModLambdaN.map f j
+176:   delta_naturality : ∀ {i j : ℕ} (hi : 0 < i) (hij : i < j),
+177:     XModLambdaN.map f i ≫ (TY.triangle hi hij).delta =
+178:       (TX.triangle hi hij).delta ≫
+179:         (shiftFunctor Syn (1 : ℤ)).map
+180:           ((SyntheticCategory.biShift (0, -(i : ℤ))).map
+181:             (XModLambdaN.map f (j - i)))
+182: 
+183: end KIP126.Synthetic.Context
+184: 
+185: namespace KIP126.Synthetic.Context
+186: open CategoryTheory KIP126.StableHomotopy
+187: universe u v
+188: variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+189:   [HasFunctorialCofiber (C := Syn)]
+190: 
+191: /-- The quotient functor uses exactly the selected cofiber maps. -/
+192: public noncomputable def LambdaQuotientFunctoriality.functor
+193:     (Q : LambdaQuotientFunctoriality (Syn := Syn)) (n : ℕ) : Syn ⥤ Syn where
+194:   obj X := XModLambdaN X n
+195:   map f := XModLambdaN.map f n
+196:   map_id X := Q.map_id X n
+197:   map_comp f g := Q.map_comp f g n
+198: 
+199: /-- Restrictions commute with the actual inclusion, by the cofiber square. -/
+200: public theorem XModLambdaN.restriction_incl (coh : BiShiftCoherence Syn)
+201:     (X : Syn) (i j : ℕ) (hij : i ≤ j) :
+202:     XModLambdaN.incl X j ≫ XModLambdaN.restriction coh X i j hij =
+203:       XModLambdaN.incl X i := by
+204:   have h := HasFunctorialCofiber.cofibMap_ι (lambdaPow j X) (lambdaPow i X)
+205:     (lambdaRestrictionSourceMap i j hij X) (𝟙 X)
+206:     (by simpa only [lambdaDegree, Category.comp_id] using
+207:       lambdaRestrictionSourceMap_commutes coh i j hij X)
+208:   simpa only [Category.id_comp, XModLambdaN.incl, XModLambdaN.restriction, XModLambdaN] using h.symm
+209: 
+210: /-- The selected finite quotient system and its structural coherences.
+211: The restriction agreement rules out an unrelated family of identically named maps. -/
+212: public structure LambdaQuotientSystem (Syn : Type u) [SyntheticCategory.{u,v} Syn]
+213:     [HasFunctorialCofiber (C := Syn)] where
+214:   coherence : BiShiftCoherence Syn
+215:   functoriality : LambdaQuotientFunctoriality (Syn := Syn)
+216:   tower : ∀ X : Syn, FiniteLambdaQuotientTower X
+217:   restriction : ∀ (X : Syn) (i j : ℕ) (hij : i ≤ j),
+218:     (tower X).rho i j hij = XModLambdaN.restriction coherence X i j hij
+219:   natural : ∀ {X Y : Syn} (f : X ⟶ Y), FiniteLambdaQuotientTower.Hom (tower X) (tower Y) f
+220: end KIP126.Synthetic.Context
+
+KIP126/AdamsSynthetic/SphereTensor.lean lines 1-15 sha256=70b1d6dcb9f3eb29921c801143002c41bf4b29e6647cb2d2c51bf8c8cf333626
+1: module
+2: public import KIP126.AdamsSynthetic.Sphere
+3: /-! The tensor presentation of a bigraded suspension, derived from the
+4: existing category fields. Source: Def/Synthetic/Sphere/Data.lean:40–43,
+5: bbac1fc05843 (MIT). -/
+6: @[expose] section
+7: namespace KIP126.Synthetic.Context
+8: open CategoryTheory MonoidalCategory
+9: universe u v
+10: public noncomputable def biShift_eq_tensor_Smn {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+11:     (m n : ℤ) (X : Syn) :
+12:     (SyntheticCategory.biShift (m,n)).obj X ≅ Smn m n ⊗ X :=
+13:   (SyntheticCategory.biShift (m,n)).mapIso (λ_ X).symm ≪≫
+14:     SyntheticCategory.biShift_tensor_comm (m,n) (𝟙_ Syn) X
+15: end KIP126.Synthetic.Context
+
+KIP126/AdamsSynthetic/Recovery.lean lines 120-139 sha256=724d743f546158663212aa5c8e9970d7f4fdc1960a2c60e37ff5d43e373b1c40
+120: end KIP126.Synthetic.Context
+121: 
+122: namespace KIP126.AdamsSynthetic
+123: open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+124: universe u v w
+125: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+126:   {Syn : Type w} [SyntheticCategory.{w, v} Syn]
+127: 
+128: /-- The exactness conditions of the fixed review model, applied to the same
+129: specified suspension and realization functors. No extra ν exactness is inferred. -/
+130: public structure StructuralExactness (N : NuFunctorData C Syn) (R : LambdaRecovery N) where
+131:   classicalTriangulated : IsTriangulated C
+132:   syntheticTriangulated : IsTriangulated Syn
+133:   shiftAdditive : ∀ p, (SyntheticCategory.biShift (Syn := Syn) p).Additive
+134:   shiftCommShift : ∀ p, (SyntheticCategory.biShift (Syn := Syn) p).CommShift ℤ
+135:   shiftExact : ∀ p, letI := shiftCommShift p;
+136:     (SyntheticCategory.biShift (Syn := Syn) p).IsTriangulated
+137:   realizationShift : R.realization.CommShift ℤ
+138:   realizationExact : letI := realizationShift; R.realization.IsTriangulated
+139: end KIP126.AdamsSynthetic
+
+KIP126/AdamsSynthetic/System.lean lines 30-105 sha256=2278a0714ba8f204e0d6e6f3f1e2bba838ec71adedade2916955ae58c39fffa4
+30: namespace KIP126.Kervaire.Route
+31: open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+32: open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic
+33: universe u v w
+34: variable (C : Type u) [StableHomotopyCategory.{u,v} C]
+35:   [HasFunctorialCofiber (C := C)]
+36:   (Syn : Type w) [SyntheticCategory.{w,v} Syn]
+37:   [HasFunctorialCofiber (C := Syn)]
+38: 
+39: /-- The same given background supplies every named object and comparison.
+40: Towers and their presentations are inputs, not concrete implementations. -/
+41: public structure ModelData where
+42:   coefficients : ModTwoCoefficients C
+43:   classical : ClassicalAdamsFamily C
+44:   nu : NuFunctorData C Syn
+45:   family : SyntheticAdamsFamily Syn
+46:   /-- Preservation uses the complete homology short-exactness premise. -/
+47:   nuExactTriangle : ∀ (T : CategoryTheory.Pretriangulated.Triangle C),
+48:     T ∈ distTriang C → HomologyShortExact coefficients T →
+49:     ∃ h : nu.functor.obj T.obj₃ ⟶ (shiftFunctor Syn (1 : ℤ)).obj (nu.functor.obj T.obj₁),
+50:       CategoryTheory.Pretriangulated.Triangle.mk
+51:         (nu.functor.map T.mor₁) (nu.functor.map T.mor₂) h ∈ distTriang Syn
+52:   recovery : LambdaRecovery nu
+53:   exactness : StructuralExactness nu recovery
+54:   auxiliary : AuxiliaryData C
+55:   sphereAlgebra : SphereE2Algebra classical
+56:   standardClasses : StandardSphereClasses classical sphereAlgebra
+57:   classicalTower : ClassicalTowerPresentation coefficients.unit classical
+58:   classicalSuspension : ∀ X : ClassicalObject,
+59:     ClassicalTowerSuspension classicalTower (X.obj auxiliary)
+60:   syntheticTower : SyntheticTowerPresentation (nuCoefficientUnit coefficients nu) family
+61:   comparison : E2Comparison classical family nu auxiliary
+62:   quotients : LambdaQuotientSystem Syn
+63:   normalizedMap : ∀ (X Y : ClassicalObject) (f : X.obj auxiliary ⟶ Y.obj auxiliary),
+64:     NormalizedSyntheticMap classicalTower nu f
+65:   classicalConvergence : ∀ X : ClassicalObject,
+66:     ClassicalTowerConvergence classicalTower (X.obj auxiliary)
+67:   convergence : ∀ X : SyntheticObject,
+68:     SyntheticTowerConvergence syntheticTower
+69:       (X.obj nu auxiliary)
+70:   /-- The first quotient comparison has the same shifted ν-object and E₂. -/
+71:   firstQuotient : FirstQuotientComparison classical nu auxiliary
+72: 
+73: variable {C Syn}
+74: 
+75: /-- Compatibility on the selected object closure. No convergence on every
+76: synthetic object is requested, and every induced map is the actual map. -/
+77: public structure ComparisonCompatible (D : ModelData C Syn) : Prop where
+78:   convergence_natural : ∀ (X Y : SyntheticObject)
+79:       (f : X.obj D.nu D.auxiliary ⟶ Y.obj D.nu D.auxiliary),
+80:     Nonempty (ConvergentMap D.family f (D.convergence X).toConvergence
+81:       (D.convergence Y).toConvergence)
+82:   first_quotient : ∀ (X : ClassicalObject) (a s t : ℤ)
+83:       (x : (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t)),
+84:     KIP126.AdamsSynthetic.Detects
+85:       (D.convergence (.quotient 1 (.shift (0,a) (.nu X)))) (s,t,t+a)
+86:       (D.family.pageMap
+87:         (HasFunctorialCofiber.cofibι (lambdaPow 1
+88:           ((SyntheticCategory.biShift (0,a)).obj (D.nu.functor.obj (X.obj D.auxiliary)))))
+89:         2 (s,t,t+a) (by simpa only [Nat.cast_zero, sub_zero] using D.comparison.nuE2 X a s t 0 x))
+90:       ((D.firstQuotient X a s t).symm x)
+91: 
+92: variable (C Syn)
+93: 
+94: /-- The coherent consumer background. This does not assert an instance exists. -/
+95: public structure Model extends ModelData C Syn where
+96:   comparisonCompatible : ComparisonCompatible toModelData
+97:   sphereDetectionCompatible : SphereDetectionCompatible comparison quotients.functoriality
+98:     firstQuotient (convergence .sphere) (convergence (.quotient 1 .sphere))
+99:   multiplicationCompatible : MultiplicationCompatible comparison sphereAlgebra (convergence .sphere)
+100:   sphereProductCommutative : SphereProductCommutative (Syn := Syn)
+101: 
+102: variable {C Syn}
+103: namespace Model
+104: variable (D : Model C Syn)
+105: 
+
+KIP126/AdamsSynthetic/Standard/Background.lean lines 22-56 sha256=fac23593359ce629d88d011454152f57f7c045eb5a2cadaf3d7d00a712806469
+22: 
+23: /-- The category of spectra; its concrete model is a deferred construction. -/
+24: public def Spectrum : Type 1 := by sorry
+25: /-- The category of HF₂-synthetic spectra; its construction is deferred. -/
+26: public def SyntheticSpectrum : Type 1 := by sorry
+27: public instance spectrumCategory : StableHomotopyCategory.{1,0} Spectrum := by sorry
+28: public instance syntheticCategory : SyntheticCategory.{1,0} SyntheticSpectrum := by sorry
+29: public instance spectrumCofiber : HasFunctorialCofiber (C := Spectrum) := by sorry
+30: public instance syntheticCofiber : HasFunctorialCofiber (C := SyntheticSpectrum) := by sorry
+31: 
+32: /-- HF₂ and its homotopy identification on the fixed category. -/
+33: public def coefficients : ModTwoCoefficients Spectrum := by sorry
+34: /-- The classical Adams functor, including its first page and differential degree. -/
+35: public def classical : ClassicalAdamsFamily Spectrum := by sorry
+36: /-- The fixed ν functor, including its sphere and suspension comparisons. -/
+37: public def nu : NuFunctorData Spectrum SyntheticSpectrum := by sorry
+38: /-- The synthetic Adams functor on the fixed synthetic category. -/
+39: public def family : SyntheticAdamsFamily SyntheticSpectrum := by sorry
+40: 
+41: /-- ν preserves a distinguished triangle under the complete HF₂ short-exactness hypothesis. -/
+42: public theorem nu_preserves_triangle (T : CategoryTheory.Pretriangulated.Triangle Spectrum)
+43:     (hT : T ∈ distTriang Spectrum) (hH : HomologyShortExact coefficients T) :
+44:     ∃ h : nu.functor.obj T.obj₃ ⟶
+45:         (shiftFunctor SyntheticSpectrum (1 : ℤ)).obj (nu.functor.obj T.obj₁),
+46:       CategoryTheory.Pretriangulated.Triangle.mk
+47:         (nu.functor.map T.mor₁) (nu.functor.map T.mor₂) h ∈ distTriang SyntheticSpectrum := by
+48:   sorry
+49: 
+50: /-- The λ-localization and its equivalence with this classical category. -/
+51: public def recovery : LambdaRecovery nu := by sorry
+52: /-- Exactness of the same suspension and realization functors. -/
+53: public def exactness : StructuralExactness nu recovery := by sorry
+54: /-- The fixed auxiliary spectra used in the selected object closure. -/
+55: public def auxiliary : AuxiliaryData Spectrum := by sorry
+56: /-- Multiplication on the actual sphere E₂, not an independent formal algebra. -/
+
+KIP126/AdamsSynthetic/Standard/Background.lean lines 75-88 sha256=fac23593359ce629d88d011454152f57f7c045eb5a2cadaf3d7d00a712806469
+75: public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry
+76: public def classicalSuspension (X : ClassicalObject) :
+77:     ClassicalTowerSuspension classicalTower (X.obj auxiliary) := by sorry
+78: public def syntheticTower : SyntheticTowerPresentation (nuCoefficientUnit coefficients nu) family := by sorry
+79: public def comparison : E2Comparison classical family nu auxiliary := by sorry
+80: public def quotients : LambdaQuotientSystem SyntheticSpectrum := by sorry
+81: public def normalizedMap (X Y : ClassicalObject) (f : X.obj auxiliary ⟶ Y.obj auxiliary) :
+82:     NormalizedSyntheticMap classicalTower nu f := by sorry
+83: public def classicalConvergence (X : ClassicalObject) :
+84:     ClassicalTowerConvergence classicalTower (X.obj auxiliary) := by sorry
+85: public def convergence (X : SyntheticObject) :
+86:     SyntheticTowerConvergence syntheticTower (X.obj nu auxiliary) := by sorry
+87: public def firstQuotient : FirstQuotientComparison classical nu auxiliary := by sorry
+88: 
+
+KIP126/Literature/May.lean lines 1-140 sha256=2f0bbbb492f71d5f95bd1b56de257860991aea70eda5eb40258e83113c8cebbb
+1: module
+2: 
+3: public import KIP126.AdamsSynthetic.Context
+4: 
+5: /-! May's signed pushpull consequence on the supplied tensor and suspension
+6: conventions. Source: May (2001), TC3, pp. 12–13 and Lemma 4.6, p. 14;
+7: fixed migration source bbac1fc05843bdf2d56057e6114a38839e939378,
+8: `Def/Kervaire/Route/SourceLanguage.lean` and
+9: `Interface/Solution/Literature/Route/May.lean`. -/
+10: 
+11: @[expose] section
+12: namespace KIP126.StableHomotopy
+13: open CategoryTheory CategoryTheory.Limits
+14: universe u v
+15: variable {C : Type u} [StableHomotopyCategory.{u,v} C]
+16: set_option backward.isDefEq.respectTransparency false
+17: 
+18: /-- Apply this exact functor with its specified suspension comparison. -/
+19: public def HoCofiberSequence.map (T : HoCofiberSequence (C := C)) (F : C ⥤ C)
+20:     [F.CommShift ℤ] [F.IsTriangulated] : HoCofiberSequence (C := C) where
+21:   X := F.obj T.X
+22:   Y := F.obj T.Y
+23:   Z := F.obj T.Z
+24:   f := F.map T.f
+25:   g := F.map T.g
+26:   h := F.map T.h ≫ (F.commShiftIso (1 : ℤ)).hom.app T.X
+27:   distinguished := F.map_distinguished _ T.distinguished
+28: 
+29: /-- The actual boundary map, obtained by desuspending the triangle's last
+30: map; its source and target are the represented homotopy groups. -/
+31: public noncomputable def connectingHomomorphism
+32:     (T : HoCofiberSequence (C := C)) (n : ℤ) :
+33:     HomotopyGroup n T.Z →+ HomotopyGroup (n-1) T.X where
+34:   toFun z := (shiftFunctorAdd' C n (-1) (n-1) (by omega)).hom.app SphereSpectrum ≫
+35:     (shiftFunctor C (-1)).map (z ≫ T.h) ≫
+36:     (shiftFunctorCompIsoId C 1 (-1) (by omega)).hom.app T.X
+37:   map_zero' := by simp only [Functor.map_zero, zero_comp, comp_zero]
+38:   map_add' := by
+39:     intros
+40:     simp only [Preadditive.add_comp, Functor.map_add, Preadditive.comp_add]
+41: 
+42: end KIP126.StableHomotopy
+43: 
+44: namespace KIP126.Literature.Route
+45: open CategoryTheory CategoryTheory.MonoidalCategory
+46: open KIP126.StableHomotopy KIP126.Synthetic.Context
+47: universe u v w
+48: variable (Syn : Type u) [SyntheticCategory.{u,v} Syn]
+49: 
+50: /-- Exact tensor functors with fixed shift choices. Realizing TC3 for
+51: these choices remains an applicability obligation of the source model. -/
+52: public structure MayContext where
+53:   leftShift : ∀ X : Syn, (tensorLeft X).CommShift ℤ
+54:   rightShift : ∀ X : Syn, (tensorRight X).CommShift ℤ
+55:   leftExact : ∀ X : Syn, letI := leftShift X; (tensorLeft X).IsTriangulated
+56:   rightExact : ∀ X : Syn, letI := rightShift X; (tensorRight X).IsTriangulated
+57: 
+58: /-- The part of TC3 and its pushpull square used by the route. The two
+59: boundaries have opposite signs in the same actual suspension target. -/
+60: public structure MayPushpullData (B : MayContext Syn)
+61:     (T U : HoCofiberSequence (C := Syn)) where
+62:   vertex : Syn
+63:   j1 : vertex ⟶ T.X ⊗ U.Z
+64:   j2 : vertex ⟶ T.Y ⊗ U.Y
+65:   j3 : vertex ⟶ T.Z ⊗ U.X
+66:   square : j1 ≫ (T.f ▷ U.Z) = j2 ≫ (T.Y ◁ U.g)
+67:   other_square : j2 ≫ (T.g ▷ U.Y) = j3 ≫ (T.Z ◁ U.f)
+68:   boundary : letI := B.leftShift; letI := B.rightShift
+69:     letI := B.leftExact; letI := B.rightExact
+70:     j1 ≫ (U.map (tensorLeft T.X)).h = -(j3 ≫ (T.map (tensorRight U.X)).h)
+71:   lift : ∀ (n : ℤ) (a : HomotopyGroup n (T.X ⊗ U.Z))
+72:       (b : HomotopyGroup n (T.Y ⊗ U.Y)),
+73:     a ≫ (T.f ▷ U.Z) = b ≫ (T.Y ◁ U.g) →
+74:     ∃ v : HomotopyGroup n vertex, v ≫ j1 = a ∧ v ≫ j2 = b
+75: 
+76: /-- Source theorem input, not a construction of a TC3 model. -/
+77: private def MaySourceResults (B : MayContext Syn) : Prop :=
+78:   ∀ T U, Nonempty (MayPushpullData Syn B T U)
+79: 
+80: public def MayContext.SignedBoundary (B : MayContext Syn) : Prop :=
+81:   letI := B.leftShift; letI := B.rightShift
+82:   letI := B.leftExact; letI := B.rightExact
+83:   ∀ (T U : HoCofiberSequence (C := Syn)) (n : ℤ)
+84:     (a : HomotopyGroup n (T.X ⊗ U.Z)) (b : HomotopyGroup n (T.Y ⊗ U.Y)),
+85:     inducedMap (T.f ▷ U.Z) n a = inducedMap (T.Y ◁ U.g) n b →
+86:     ∃ c : HomotopyGroup n (T.Z ⊗ U.X),
+87:       inducedMap (T.g ▷ U.Y) n b = inducedMap (T.Z ◁ U.f) n c ∧
+88:       connectingHomomorphism (U.map (tensorLeft T.X)) n a =
+89:         -(connectingHomomorphism (T.map (tensorRight U.X)) n c)
+90: 
+91: variable {Syn}
+92: set_option backward.isDefEq.respectTransparency false in
+93: /-- A common pushpull lift proves the signed formula. -/
+94: private theorem may_signed_boundary_of_source (B : MayContext Syn)
+95:     (hB : MaySourceResults Syn B) : B.SignedBoundary := by
+96:   letI := B.leftShift
+97:   letI := B.rightShift
+98:   letI := B.leftExact
+99:   letI := B.rightExact
+100:   intro T U n a b hab
+101:   rcases hB T U with ⟨P⟩
+102:   rcases P.lift n a b hab with ⟨z, hza, hzb⟩
+103:   refine ⟨z ≫ P.j3, ?_, ?_⟩
+104:   · change b ≫ (T.g ▷ U.Y) = (z ≫ P.j3) ≫ (T.Z ◁ U.f)
+105:     rw [← hzb, Category.assoc, P.other_square, Category.assoc]
+106:   · have hs : a ≫ (U.map (tensorLeft T.X)).h =
+107:         -((z ≫ P.j3) ≫ (T.map (tensorRight U.X)).h) := by
+108:       rw [← hza, Category.assoc, P.boundary]
+109:       simp only [Preadditive.comp_neg, Category.assoc]
+110:     simp only [connectingHomomorphism, AddMonoidHom.coe_mk, ZeroHom.coe_mk,
+111:       hs, Functor.map_neg, Preadditive.comp_neg, Preadditive.neg_comp]
+112:     rfl
+113: 
+114: set_option backward.isDefEq.respectTransparency false in
+115: /-- Sign removal requires exponent two in the actual projected group.
+116: Mod-two Adams coordinates alone do not imply this hypothesis. -/
+117: private theorem may_boundary_projected_of_exponent_two (B : MayContext Syn)
+118:     (hB : MaySourceResults Syn B) (T U : HoCofiberSequence (C := Syn))
+119:     (n : ℤ) (a : HomotopyGroup n (T.X ⊗ U.Z))
+120:     (b : HomotopyGroup n (T.Y ⊗ U.Y))
+121:     (hab : inducedMap (T.f ▷ U.Z) n a = inducedMap (T.Y ◁ U.g) n b)
+122:     {G : Type w} [AddCommGroup G]
+123:     (q : HomotopyGroup (n-1) (T.X ⊗ U.X) →+ G)
+124:     (htwo : ∀ x, q x + q x = 0) :
+125:     letI := B.leftShift; letI := B.rightShift
+126:     letI := B.leftExact; letI := B.rightExact
+127:     ∃ c : HomotopyGroup n (T.Z ⊗ U.X),
+128:       inducedMap (T.g ▷ U.Y) n b = inducedMap (T.Z ◁ U.f) n c ∧
+129:       q (connectingHomomorphism (U.map (tensorLeft T.X)) n a) =
+130:         q (connectingHomomorphism (T.map (tensorRight U.X)) n c) := by
+131:   letI := B.leftShift
+132:   letI := B.rightShift
+133:   letI := B.leftExact
+134:   letI := B.rightExact
+135:   rcases may_signed_boundary_of_source B hB T U n a b hab with ⟨c, hc, hboundary⟩
+136:   refine ⟨c, hc, ?_⟩
+137:   rw [hboundary, map_neg]
+138:   exact neg_eq_of_add_eq_zero_right (htwo _)
+139: 
+140: end KIP126.Literature.Route
+
+KIP126/Literature/Standard.lean lines 1785-1819 sha256=d473658cbd0d2944a5a75f2741ff24f5827c1e6e57f4d2d11c05508a0f4135c6
+1785: /-- The fixed mathematical object on the project background. -/
+1786: @[implicit_reducible] public def may_leftShift :
+1787:   ∀ X : SyntheticSpectrum, (tensorLeft X).CommShift ℤ := by
+1788:   sorry
+1789: 
+1790: /-- The fixed mathematical object on the project background. -/
+1791: @[implicit_reducible] public def may_rightShift :
+1792:   ∀ X : SyntheticSpectrum, (tensorRight X).CommShift ℤ := by
+1793:   sorry
+1794: 
+1795: /-- Source or comparison proof remains to be supplied. -/
+1796: public theorem may_leftExact :
+1797:   ∀ X : SyntheticSpectrum, letI := may_leftShift X; (tensorLeft X).IsTriangulated := by
+1798:   sorry
+1799: 
+1800: /-- Source or comparison proof remains to be supplied. -/
+1801: public theorem may_rightExact :
+1802:   ∀ X : SyntheticSpectrum, letI := may_rightShift X; (tensorRight X).IsTriangulated := by
+1803:   sorry
+1804: 
+1805: public def mayData : Route.MayContext SyntheticSpectrum where
+1806:   leftShift := may_leftShift
+1807:   rightShift := may_rightShift
+1808:   leftExact := may_leftExact
+1809:   rightExact := may_rightExact
+1810: 
+1811: /-- Source or comparison proof remains to be supplied. -/
+1812: public theorem may_pushpull :
+1813:   ∀ T U : HoCofiberSequence (C := SyntheticSpectrum), Nonempty (Route.MayPushpullData SyntheticSpectrum mayData T U) := by
+1814:   sorry
+1815: 
+1816: /-- Derived from the fixed objects and previously established operations. -/
+1817: public theorem may_signed_boundary :
+1818:   Route.MayContext.SignedBoundary SyntheticSpectrum mayData := Route.may_signed_boundary_of_source mayData may_pushpull
+1819: 
+
+KIP126/Literature/Standard/QuotientAlgebra.lean lines 14-32 sha256=f9763f325334f35600c0e089b7f5b0ca973f5134341067b234f1718ab9159db4
+14: public def quotientAlgebraProduct {A : SyntheticSpectrum} (Q : MonObj A) {m n k l : ℤ}
+15:     (x : BiHom m n A) (y : BiHom k l A) : BiHom (m+k) (n+l) A :=
+16:   (SyntheticCategory.biShift_comp (m,n) (k,l)).inv.app S_0_0 ≫
+17:     (biShift_eq_tensor_Smn k l (Smn m n)).hom ≫ (y ⊗ₘ x) ≫ Q.mul
+18: 
+19: @[implicit_reducible] public def quotientSyntheticSymmetric : SymmetricCategory SyntheticSpectrum := by sorry
+20: @[implicit_reducible] public def quotientAlgebra (q : ℕ) (hq : 0<q) :
+21:     MonObj (XModLambdaN (S_0_0 : SyntheticSpectrum) q) := by sorry
+22: public theorem quotientAlgebra_commutative (q : ℕ) (hq : 0<q) :
+23:     letI := quotientSyntheticSymmetric
+24:     letI := quotientAlgebra q hq
+25:     IsCommMonObj (XModLambdaN (S_0_0 : SyntheticSpectrum) q) := by sorry
+26: public theorem quotientAlgebra_unit (q : ℕ) (hq : 0<q) :
+27:     (quotientAlgebra q hq).one=XModLambdaN.incl (S_0_0 : SyntheticSpectrum) q := by sorry
+28: public theorem quotientAlgebra_sphere_action (q : ℕ) (hq : 0<q) (m n k l : ℤ)
+29:     (x : BiHom m n (S_0_0 : SyntheticSpectrum))
+30:     (y : BiHom k l (XModLambdaN (S_0_0 : SyntheticSpectrum) q)) :
+31:     quotientAlgebraProduct (quotientAlgebra q hq) (quotientClass q x) y=sphereAction x y := by sorry
+32: 
+
+KIP126/ProofTools/GeneralizedMahowald/Geometry.lean lines 166-258 sha256=a847ef7c02ca160f84f19bbff299c697d406ad2b34f802111781581d250418ac
+166:         rw [Category.assoc, O''.comm₁]
+167:         change HasFunctorialCofiber.cofibι c ≫ O'.m₃ ≫ _ = _
+168:         rw [← Category.assoc, O'.comm₃]
+169:   · exact O''.comm₂
+170:   · exact O''.comm₃
+171:   · simpa only [Triangulated.Octahedron.triangle, Triangle.rotate, Triangle.mk,
+172:       Preadditive.neg_comp, ← Functor.map_comp] using O''.mem
+173: 
+174: private def may_normalized_rotated (T : TriangleData model.auxiliary)
+175:     (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+176:       normalizedExponent model.classicalTower T.g +
+177:       normalizedExponent model.classicalTower T.h = 1)
+178:     (hT : KIP126.Literature.NormalizedTriangleCompatible model T he) :
+179:     HoCofiberSequence (C := SyntheticSpectrum) where
+180:   X := (KIP126.Literature.normalizedTriangle model T he).obj₂
+181:   Y := (KIP126.Literature.normalizedTriangle model T he).obj₃
+182:   Z := (KIP126.Literature.normalizedTriangle model T he).obj₁⟦(1:ℤ)⟧
+183:   f := (KIP126.Literature.normalizedTriangle model T he).mor₂
+184:   g := (KIP126.Literature.normalizedTriangle model T he).mor₃
+185:   h := -(shiftFunctor SyntheticSpectrum (1:ℤ)).map
+186:     (KIP126.Literature.normalizedTriangle model T he).mor₁
+187:   distinguished := rot_of_distTriang _ hT
+188: 
+189: private def may_relative_unit_rotated (i q : ℕ) (hi : 0 < i) (hq : 0 < q) :
+190:     HoCofiberSequence (C := SyntheticSpectrum) :=
+191:   let L := (model.quotients.tower (𝟙_ SyntheticSpectrum)).triangle hi
+192:     (show i < i+q by omega)
+193:   { X := XModLambdaN (𝟙_ SyntheticSpectrum) (i+q)
+194:     Y := XModLambdaN (𝟙_ SyntheticSpectrum) i
+195:     Z := ((SyntheticCategory.biShift (0,-(i:ℤ))).obj
+196:       (XModLambdaN (𝟙_ SyntheticSpectrum) ((i+q)-i)))⟦(1:ℤ)⟧
+197:     f := L.rho
+198:     g := L.delta
+199:     h := -(shiftFunctor SyntheticSpectrum (1:ℤ)).map L.lambdaMap
+200:     distinguished := rot_of_distTriang _ L.distinguished }
+201: 
+202: /- The two actual tensor equations, with the rotated minus signs expanded.
+203: Write N=(A--f→B--g→C--h→ΣA), L=(F_-i Qq1--λ→Qr1--ρ→Qi1).
+204: Then a is the suspended [y] slot B⊗ΣF_-i Qq1; b is [xBar] in C⊗Qi1.
+205: The result is c∈π_n(ΣA⊗Qr1), c(ΣA⊗ρ)=b(h⊗Qi1), and
+206: c(Σf⊗Qr1)κ_right = -a(B⊗Σλ)κ_left.
+207: The negative sign is genuine under the registered May conventions. -/
+208: private theorem may_tensor_common_lift
+209:     (T : TriangleData model.auxiliary)
+210:     (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+211:       normalizedExponent model.classicalTower T.g +
+212:       normalizedExponent model.classicalTower T.h = 1)
+213:     (hT : KIP126.Literature.NormalizedTriangleCompatible model T he)
+214:     (i q : ℕ) (hi : 0 < i) (hq : 0 < q)
+215:     (n : ℤ)
+216:     (a : HomotopyGroup n ((may_normalized_rotated T he hT).X ⊗
+217:       (may_relative_unit_rotated i q hi hq).Z))
+218:     (b : HomotopyGroup n ((may_normalized_rotated T he hT).Y ⊗
+219:       (may_relative_unit_rotated i q hi hq).Y))
+220:     (hab : a ≫ ((may_normalized_rotated T he hT).f ▷
+221:         (may_relative_unit_rotated i q hi hq).Z) =
+222:       b ≫ ((may_normalized_rotated T he hT).Y ◁
+223:         (may_relative_unit_rotated i q hi hq).g)) :
+224:     let N := KIP126.Literature.normalizedTriangle model T he
+225:     let L := (model.quotients.tower (𝟙_ SyntheticSpectrum)).triangle hi
+226:       (show i < i+q by omega)
+227:     let U := may_relative_unit_rotated i q hi hq
+228:     letI := KIP126.Literature.Standard.may_leftShift
+229:     letI := KIP126.Literature.Standard.may_rightShift
+230:     ∃ c : HomotopyGroup n (N.obj₁⟦(1:ℤ)⟧ ⊗ U.X),
+231:       c ≫ (N.obj₁⟦(1:ℤ)⟧ ◁ L.rho) = b ≫ (N.mor₃ ▷ U.Y) ∧
+232:       c ≫ (tensorRight U.X).map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map N.mor₁) ≫
+233:           ((tensorRight U.X).commShiftIso (1:ℤ)).hom.app N.obj₂ =
+234:         -(a ≫ (tensorLeft N.obj₂).map
+235:           ((shiftFunctor SyntheticSpectrum (1:ℤ)).map L.lambdaMap) ≫
+236:             ((tensorLeft N.obj₂).commShiftIso (1:ℤ)).hom.app U.X) := by
+237:   letI := KIP126.Literature.Standard.may_leftShift
+238:   letI := KIP126.Literature.Standard.may_rightShift
+239:   letI := KIP126.Literature.Standard.may_leftExact
+240:   letI := KIP126.Literature.Standard.may_rightExact
+241:   obtain ⟨P⟩ := KIP126.Literature.Standard.may_pushpull
+242:     (may_normalized_rotated T he hT) (may_relative_unit_rotated i q hi hq)
+243:   obtain ⟨v,hva,hvb⟩ := P.lift n a b hab
+244:   refine ⟨v ≫ P.j3, ?_, ?_⟩
+245:   · change (v ≫ P.j3) ≫ ((may_normalized_rotated T he hT).Z ◁
+246:       (may_relative_unit_rotated i q hi hq).f) =
+247:         b ≫ ((may_normalized_rotated T he hT).g ▷ (may_relative_unit_rotated i q hi hq).Y)
+248:     rw [←hvb]
+249:     simp only [Category.assoc, P.other_square]
+250:   · have hb := congrArg (fun z => v ≫ z) P.boundary
+251:     rw [Preadditive.comp_neg, ←Category.assoc, hva] at hb
+252:     dsimp only [HoCofiberSequence.map, may_normalized_rotated, may_relative_unit_rotated] at hb
+253:     simp only [Functor.map_neg, Preadditive.neg_comp, Preadditive.comp_neg,
+254:       neg_neg] at hb
+255:     simpa only [may_relative_unit_rotated, Category.assoc] using hb.symm
+256: 
+257: end
+258: end KIP126.ProofTools.Internal.Mahowald
+
+KIP126/ProofTools/GeneralizedMahowald/FiniteMay.lean lines 1-98 sha256=b03d866c90761c443eedda153609aa9dd1a8feada2ee8c2164f43e88c033841a
+1: module
+2: 
+3: import all KIP126.ProofTools.GeneralizedMahowald.Geometry
+4: 
+5: /-! Fixed-quotient coordinates for the signed finite May statement.
+6: 
+7: The statement below uses one normalized triangle and the actual selected
+8: quotient towers.  Its two output equations refer to one representative.
+9: The proved lemma at the end gives the restriction equation and an actual
+10: lambda factorization of its second image.  It does not identify that
+11: lambda preimage with the prescribed input. -/
+12: 
+13: @[expose] section
+14: namespace KIP126.ProofTools.Internal.Mahowald
+15: open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
+16: open KIP126.StableHomotopy KIP126.Synthetic.Context
+17: open KIP126.AdamsSynthetic KIP126.Kervaire.Route KIP126.Literature
+18: open KIP126.AdamsSynthetic.Standard
+19: noncomputable section
+20: set_option backward.isDefEq.respectTransparency false
+21: set_option maxHeartbeats 1000000
+22: 
+23: /-- The complete signed finite May target in fixed quotient coordinates.
+24: The bidegree of the source is arbitrary.  The ordinary suspension is kept
+25: explicit, so no suspension/weight comparison is hidden in either equation.
+26: The length `(A+B)-A` is definitionally the short quotient chosen by the
+27: fixed tower and propositionally equals `B`.
+28: 
+29: The suspension comparison is constrained by its actual quotient inclusion
+30: square; the claim is about every such comparison.  No version of this
+31: statement is assumed in the results below. -/
+32: private def finiteMayFixedQuotients
+33:     (T : TriangleData model.auxiliary)
+34:     (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+35:       normalizedExponent model.classicalTower T.g +
+36:       normalizedExponent model.classicalTower T.h = 1)
+37:     (A B : ℕ) (hA : 0 < A) (hB : 0 < B) (m w : ℤ) : Prop :=
+38:   let N := normalizedTriangle model T he
+39:   let F := SyntheticCategory.biShift (Syn := SyntheticSpectrum) (0,-(A:ℤ))
+40:   let LZ := (model.quotients.tower N.obj₃).triangle hA (show A < A+B by omega)
+41:   let LY := (model.quotients.tower N.obj₂).triangle hA (show A < A+B by omega)
+42:   ∀ (esusp : XModLambdaN (N.obj₂⟦(1:ℤ)⟧) (A+B) ≅
+43:         (XModLambdaN N.obj₂ (A+B))⟦(1:ℤ)⟧),
+44:     XModLambdaN.incl (N.obj₂⟦(1:ℤ)⟧) (A+B) ≫ esusp.hom =
+45:       (shiftFunctor SyntheticSpectrum (1:ℤ)).map (XModLambdaN.incl N.obj₂ (A+B)) →
+46:     ∀ (a : BiHom m w (XModLambdaN N.obj₃ A))
+47:       (b : BiHom m w ((F.obj (XModLambdaN N.obj₂ ((A+B)-A)))⟦(1:ℤ)⟧)),
+48:       a ≫ LZ.delta = b ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+49:         (F.map (XModLambdaN.map N.mor₂ ((A+B)-A))) →
+50:       ∃ c : BiHom m w (XModLambdaN (N.obj₁⟦(1:ℤ)⟧) (A+B)),
+51:         c ≫ (model.quotients.tower (N.obj₁⟦(1:ℤ)⟧)).rho A (A+B) (by omega) =
+52:           a ≫ XModLambdaN.map N.mor₃ A ∧
+53:         c ≫ XModLambdaN.map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map N.mor₁) (A+B) ≫
+54:             esusp.hom =
+55:           -(b ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map LY.lambdaMap)
+56: 
+57: /-- A common fixed-quotient lift, together with an actual lambda preimage
+58: of its second image.  The same c occurs in both equations, and every map
+59: is selected before choosing c.  The preimage d is produced by exactness;
+60: this lemma makes no equality claim between d and the prescribed b. -/
+61: private theorem finite_may_first_image_and_second_factor
+62:     (T : TriangleData model.auxiliary)
+63:     (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+64:       normalizedExponent model.classicalTower T.g +
+65:       normalizedExponent model.classicalTower T.h = 1)
+66:     (hT : NormalizedTriangleCompatible model T he)
+67:     (A B : ℕ) (hA : 0 < A) (hB : 0 < B) (m w : ℤ)
+68:     (a : BiHom m w (XModLambdaN (normalizedTriangle model T he).obj₃ A))
+69:     (b : BiHom m w
+70:       (((SyntheticCategory.biShift (0,-(A:ℤ))).obj
+71:         (XModLambdaN (normalizedTriangle model T he).obj₂ ((A+B)-A)))⟦(1:ℤ)⟧))
+72:     (hab : a ≫ ((model.quotients.tower (normalizedTriangle model T he).obj₃).triangle
+73:         hA (show A < A+B by omega)).delta =
+74:       b ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map
+75:         ((SyntheticCategory.biShift (0,-(A:ℤ))).map
+76:           (XModLambdaN.map (normalizedTriangle model T he).mor₂ ((A+B)-A)))) :
+77:     let N := normalizedTriangle model T he
+78:     ∃ (c : BiHom m w (XModLambdaN (N.obj₁⟦(1:ℤ)⟧) (A+B)))
+79:       (d : BiHom m w ((SyntheticCategory.biShift (0,-(A:ℤ))).obj
+80:         (XModLambdaN (N.obj₂⟦(1:ℤ)⟧) ((A+B)-A)))),
+81:       c ≫ (model.quotients.tower (N.obj₁⟦(1:ℤ)⟧)).rho A (A+B) (by omega) =
+82:         a ≫ XModLambdaN.map N.mor₃ A ∧
+83:       d ≫ ((model.quotients.tower (N.obj₂⟦(1:ℤ)⟧)).triangle
+84:         hA (show A < A+B by omega)).lambdaMap =
+85:         c ≫ XModLambdaN.map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map N.mor₁) (A+B) := by
+86:   let N := normalizedTriangle model T he
+87:   have hgh : N.mor₂ ≫ N.mor₃ = 0 := comp_distTriang_mor_zero₂₃ N hT
+88:   have hhf : N.mor₃ ≫ (shiftFunctor SyntheticSpectrum (1:ℤ)).map N.mor₁ = 0 :=
+89:     comp_distTriang_mor_zero₃₁ N hT
+90:   obtain ⟨c,hc⟩ := quotient_boundary_lift N.mor₂ N.mor₃ hgh
+91:     A (A+B) hA (by omega) a b hab
+92:   obtain ⟨d,hd⟩ := quotient_lift_image_division N.mor₃
+93:     ((shiftFunctor SyntheticSpectrum (1:ℤ)).map N.mor₁) hhf
+94:     A (A+B) hA (by omega) a c hc
+95:   exact ⟨c,d,hc,hd⟩
+96: 
+97: end
+98: end KIP126.ProofTools.Internal.Mahowald

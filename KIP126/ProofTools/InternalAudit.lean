@@ -61,6 +61,20 @@ import all KIP126.ProofTools.GeneralizedMahowald.SuspensionDetection
 import all KIP126.ProofTools.GeneralizedMahowald.ShiftLabels
 import all KIP126.ProofTools.GeneralizedMahowald.Synchronization
 import all KIP126.ProofTools.GeneralizedMahowald.Geometry
+import all KIP126.ProofTools.GeneralizedMahowald.ActualNoCrossing
+import all KIP126.ProofTools.GeneralizedMahowald.ClassicalLift
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteMay
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelLabels
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelStatement
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteComparison
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelInputs
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLambdaSurjectivity
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelConclusion
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteMay3x3
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteMayAtTriangle
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelSourceLabel
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelOutputLabels
+import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelAssembly
 import all KIP126.ProofTools.GeneralizedMahowald.OctahedralPullback
 import all KIP126.ProofTools.GeneralizedMahowald.CommonShiftEdge
 import all KIP126.ProofTools.GeneralizedMahowald.ZeroLayerAssembly
@@ -176,6 +190,30 @@ run_cmd do
   -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift cannot silently use MH2 or generalizedLeibniz.
   let provedTools := #[
+    `KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative,
+    `KIP126.ProofTools.Internal.Mahowald.finite_may_first_image_and_second_factor,
+    `KIP126.ProofTools.Internal.Mahowald.finite_rho_lift_label_and_cycles,
+    `KIP126.ProofTools.Internal.Mahowald.finite_level_extension_of_common_representative,
+    `KIP126.ProofTools.Internal.Mahowald.finite_suspension_comparisons_equal_on_spheres,
+    `KIP126.ProofTools.Internal.Mahowald.finite_suspension_normalized_map_on_spheres,
+    `KIP126.ProofTools.Internal.Mahowald.finite_suspension_restriction_on_spheres,
+    `KIP126.ProofTools.Internal.Mahowald.finite_level_synchronized_inputs,
+    `KIP126.ProofTools.Internal.Mahowald.finite_lambda_filtered_surjective,
+    `KIP126.ProofTools.Internal.Mahowald.finite_lambda_filtered_surjective_shift,
+    `KIP126.ProofTools.Internal.Mahowald.detected_pair_unshift,
+    `KIP126.ProofTools.Internal.Mahowald.finite_level_conclusion_of_infinity_pair,
+    `KIP126.ProofTools.Internal.Mahowald.finite_level_conclusion_of_suspended_detects,
+    `KIP126.ProofTools.Internal.Mahowald.ThreeByThree.common_lift_of_no_return,
+    `KIP126.ProofTools.Internal.Mahowald.normalized_finite_may_of_horizontal_row,
+    `KIP126.ProofTools.Internal.Mahowald.finite_may_at_normalized_triangle,
+    `KIP126.ProofTools.Internal.Mahowald.finite_may_at_normalized_triangle_explicit_lengths,
+    `KIP126.ProofTools.Internal.Mahowald.finite_suspended_source_label_reflection,
+    `KIP126.ProofTools.Internal.Mahowald.finite_lambda_layer_detects,
+    `KIP126.ProofTools.Internal.Mahowald.finite_lambda_suspended_signed_detects_explicit_lengths,
+    `KIP126.ProofTools.Internal.Mahowald.finite_mahowald_at_level,
+    `KIP126.ProofTools.Standard.generalizedMahowaldAtLevel,
+    `KIP126.ProofTools.lambda_quotient_target_preserving_lift_iff,
+    `KIP126.ProofTools.finite_target_from_full_lift_is_permanent,
     `KIP126.ProofTools.Paper.adamsFiltrationVanishing,
     `KIP126.ProofTools.Paper.extensionSquare,
     `KIP126.ProofTools.Paper.noCrossingExtensionSquare,

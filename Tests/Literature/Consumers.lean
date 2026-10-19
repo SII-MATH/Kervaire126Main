@@ -5,11 +5,27 @@ import KIP126.Literature
 /-! Fixed literature theorems are used by ordinary import, with no delivery,
 model variable or result package supplied by the consumer. -/
 
-open CategoryTheory
+open CategoryTheory CategoryTheory.Pretriangulated
 open KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.AdamsSynthetic KIP126.Classical.Adams KIP126.Core.SpectralSequence
 open KIP126.AdamsSynthetic.Standard (Spectrum SyntheticSpectrum model)
 open KIP126.Literature.Standard
+
+example (T : KIP126.Kervaire.Route.TriangleData model.auxiliary)
+    (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+      normalizedExponent model.classicalTower T.g +
+      normalizedExponent model.classicalTower T.h = 1)
+    (hT : KIP126.Literature.NormalizedTriangleCompatible model T he)
+    (q : ℕ) (hq : 0 < q) :
+    let V := KIP126.Literature.normalizedTriangle model T he
+    ∃ esusp : XModLambdaN (V.obj₂⟦(1:ℤ)⟧) q ≅ (XModLambdaN V.obj₂ q)⟦(1:ℤ)⟧,
+      XModLambdaN.incl (V.obj₂⟦(1:ℤ)⟧) q ≫ esusp.hom =
+        (shiftFunctor SyntheticSpectrum (1:ℤ)).map (XModLambdaN.incl V.obj₂ q) ∧
+      Triangle.mk (XModLambdaN.map V.mor₂ q)
+        (XModLambdaN.map V.mor₃ q)
+        (-(XModLambdaN.map ((shiftFunctor SyntheticSpectrum (1:ℤ)).map V.mor₁) q ≫
+          esusp.hom)) ∈ distTriang SyntheticSpectrum :=
+  normalized_finite_quotient_horizontal_row T he hT q hq
 
 example : theta5 + theta5 = 0 := theta5_order_two
 

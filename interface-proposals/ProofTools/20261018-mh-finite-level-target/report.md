@@ -1,20 +1,92 @@
 ---
 issue_id: ProofTools-20261018-mh-finite-level-target
 title: MH 形式化目标：强有限商、双输入层数与共同代表
-summary: 独立复核支持以强有限商、双输入层及共同实际代表作为 MH 数学目标；普通 Adams 解码与保留目标的经典提升分别证明。完整公共 Lean 签名和实际 no-crossing 同步条件尚未定稿，本提案不授权接口变更，也未交付新 Lean 证明。
+summary: 获批的完整双层 MH 已由 public generalizedMahowaldAtLevel 证明，结论保持原 FiniteMahowaldAtLevelStatement，完全去掉额外 hRows；实际 no-crossing、共同代表、signed 方程、指定检测与强商结论均保留。Literature 固定行及 same-esusp cone 已证，无新增洞或公理；全量 Lean、信任、接口及 Blueprint 检查已通过；既有上游责任保留。
 responsibility_module: ProofTools
 targets:
   - KIP126.ProofTools.GeneralizedMahowaldLaw
   - KIP126.ProofTools.Standard.generalizedMahowald
+  - KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement
+  - KIP126.ProofTools.Standard.generalizedMahowaldAtLevel
 baseline_commit: 1dc13a1973bc0f69c14e39f197372c30a350d4e8
 reporter_agent: /root/mh_interface_review
 independent_of_discoverer_and_implementer: true
-evidence_level: 独立数学指标与源码依赖复核；有限算术复现；旧 law 的实际对象反证相对于已登记上游待补成立；未新增 Lean 证明或重跑历史计算
-status: pending-human-review
-human_decision: null
+evidence_level: "已批准方案的完整生产证明与两路独立 Lean／对象／依赖审查通过；最终统一 lake build、全仓信任捕获、公开消费、接口锁、源码清单、64 项 Python 测试及原生 Blueprint 导出均通过。数学完成限于本获批固定行及完整带层 MH，既有上游待补责任保留。"
+status: approved-implemented-and-validated-before-publication
+human_decision: '2026-10-18 用户明确要求：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”授权范围为本提案的 ProofTools MH 方案、完整类型与实际 no-crossing、相应 Blueprint 替换及补证；不推定为可新增公理、改变其他数学模块公共接口或增加上游待补责任。'
 ---
 
 # 建议采用的目标
+
+## 当前执行状态与验证边界（2026-10-19）
+
+2026-10-18 用户已在本提案交付后明确批准按方案推进，要求定下完整 Lean 陈述、实际 no-crossing，替换 ProofTools Blueprint 的旧版本并完成证明。下文中“尚未批准”描述的是研究交付时的历史边界，当前以本段及文件头的人审记录为准；不再为同一 ProofTools 方案重复请求确认。完整证明、接口实际差异、检查和任何新增上游接口疑点按实施结果续写，不能把方向批准写成已经完成证明。
+
+完整 public theorem **现已实现**：`KIP126.ProofTools.Standard.generalizedMahowaldAtLevel`，实际定义于 `KIP126/ProofTools/GeneralizedMahowald/FiniteLevelAssembly.lean:163`。其完整入口为：
+
+```lean
+public theorem generalizedMahowaldAtLevel
+    (T : TriangleData model.auxiliary)
+    (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+      normalizedExponent model.classicalTower T.g +
+      normalizedExponent model.classicalTower T.h = 1) :
+    FiniteMahowaldAtLevelStatement T he
+```
+
+这里的固定 `model`、完整 `FiniteMahowaldAtLevelStatement`、实际 no-crossing 以及全部原指定标签保持原类型；不是只新增一个 `Prop` 定义。证明主体直接展开原目标，同步三个实际 ESS 输入为同一 `a,b`，调用实际有限商行产生**同一个 c**，保留两条 signed 像方程、全部输入与输出检测、原 x 的更高 cycle 及原 y 的强商 `LevelFiniteExtension`。**公开定理和内部完整装配均不再有 hRows 前提**，没有把实际商行或 MH 输出作为新字段转交给调用者。
+
+这一步使用已获跨模块授权并已证的 `KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row`，实际定义于 `KIP126/Literature/Standard/FiniteQuotientNormalized.lean:334`。该 theorem 保同一个实际 quotient inclusion 的 `esusp`，并证明全部选定 quotient maps 与字面负号构成 distinguished 行；同文件私有 cone 同构对**相同 esusp** 同时证明 inclusion 和 projection 两条结构箭头。当前已跨过早期“任意 good filling 尚未识别为指定地图”的阶段。详细接口及授权范围继续维护在 [Literature 提案](../../Literature/20261018-mh-finite-quotient-horizontal-row/report.md)。
+
+本段由 `/root/mh_api_audit` 回写执行状态，依据当前源码和协调者交付的证明/独审结果；该回写者曾实现三八面体基础的两条私有引理，不以本段冒充自己对该实现的独立完整证明审查。原独立提案、人审原话与授权范围均保留。当前源码 SHA-256：
+
+| 当前实现源 | SHA-256 |
+| --- | --- |
+| `KIP126/ProofTools/GeneralizedMahowald/FiniteLevelAssembly.lean` | `12fd9525b85a39171839b2666da5b6680fbb6aa1733051f370dc4cfc13c3e2b5` |
+| `KIP126/Literature/Standard/FiniteQuotientNormalized.lean` | `3b58d08ea75a73abc5137d6ccb84b22091bf5cfdaa9d6a803642e153daec5eef` |
+
+最终统一检查已完成：`lake build` 通过 **3570 jobs**，包括八模块接口锁、普通公共消费、架构及全部内部信任检查；源码清单覆盖 **549** 个项目文件和 **35** 个消费者／审计文件；全部 **64** 项 Python 测试及 **20** 份接口提案校验通过，Blueprint 原生同步和导出通过（406 个数学条目）。当前数学正文与绑定分别指向 Literature 的实际公开 row 和 ProofTools 的完整公开 MH，不以命题定义或私有辅助步骤冒充定理。
+
+最终全仓 kernel 捕获覆盖 **14077** 项声明。全体 **312** 项原登记待补的名称、归属、类型及证明体指纹逐项保持原样，无新增公理、直接证明洞或 synthetic sorry。实际 row 及 same-esusp cone 根各继承 **50** 项原登记上游责任，完整 MH 根继承 **54** 项，均无 ProofTools 待补、旧 MH／GL、争议 normalized 结果或下游依赖；独立审查与协调者完整捕获相符。原完整 `FiniteMahowaldAtLevelStatement` 源文件逐字未改，全部既有公开类型、宇宙参数和公理依赖保持原样；工具链和依赖锁未变。
+
+Blueprint 的完整 MH 条目现实际绑定 public `generalizedMahowaldAtLevel`，不以 `Prop` 定义或私有局部步骤充当完整 theorem。导出、接口锁、既有洞清单和 Blueprint 的最终一致同步由协调者统一检查。旧 `GeneralizedMahowaldLaw`、`Standard.generalizedMahowald` 与其历史待补及反例记录没有被本次新 theorem 改成已补完；本轮也不把整个项目、全部历史 SS 计算、一般普通 Adams 方框或无条件经典恢复标记为无洞或已认证。
+
+获批的完整目标、实际 no-crossing、Literature 固定行及无 hRows 的完整公共 MH 已实现并完成上述全量验证，状态据此记为 `approved-implemented-and-validated-before-publication`；原批准范围和未完成上游边界保持不变。
+
+最终实施状态由协调者 `/root` 据实际构建、捕获、独审及导出回写；原独立报告和全部人审原文保持原样。三个伴生导出是 Lean 原生生成项：`CategoryTheory.Pretriangulated.invRotCompRot.eq_1` 实际归属 Literature 的 `FiniteQuotientNormalized`，`KIP126.Literature.normalizedTriangle.eq_1` 及 `KIP126.AdamsSynthetic.Standard.shift_page.congr_simp` 实际归属 ProofTools 的 `FiniteLevelAssembly`。没有为它们手写额外数学接口或 Blueprint 绑定。最终锁完整包含真实导出：Literature 790 项，ProofTools 212 项。
+
+
+最终接口锁 SHA-256（文件头所列旧哈希仍为原提案审查基线）：
+
+| 当前接口锁 | SHA-256 |
+| --- | --- |
+| `metadata/literature-api.json` | `885823085c33639c29155f9593f13db3e9f26f3af43e640f81c95cff6127a89e` |
+| `metadata/proof-tools-api.json` | `872918c18d6c4615d12e8af35eb7cce8946e26da259db920c75597fc6d86c316` |
+
+## 历史实施阶段记录（最终固定行与公共 MH 完成之前）
+
+以下保留早期 `Prop` 定义、hRows 条件装配及对应构建快照，明确其证据只覆盖当时源码。“仍缺固定行”“无条件 MH 尚未交付”等句子均是历史进度，当前状态以上节为准。
+
+已实施的完整目标定义为 `KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement`，源文件 `KIP126/ProofTools/GeneralizedMahowald/FiniteLevelStatement.lean`。它保留所有双层参数、指定经典标签、三个实际 ESS 输入、full-triangle essential no-crossing、同一代表及 signed 方程和最终强商结论。四个移位源采用实际 `levelFiniteSourceLabel`，没有重新引入未校准的任意正移位 νE₂ 标签；比较的 ρ 方框由已证的逐球面有限 no-return 推出，不额外作为前提。普通导入和完整类型检查已通过。这个 `Prop` 定义没有证明其真值。
+
+已完成的证明在 `ActualNoCrossing.lean`、`FiniteLevelLabels.lean`、`FiniteComparison.lean`、`ClassicalLift.lean`；均未添加 `sorry` 或公理，也未调用旧一般 MH/GL。实际 λ 商的第一条像与同一代表第二像的某个 λ 分解见 `FiniteMay.lean`，尚未将该分解的原像识别为指定 $b$。数学上它与原目标不同，不作为完整 May 结论交付。条件性的完整 transport 已在归档研究文件通过 Lean，但它仍需要结构数据的实际固定生产者，不能充作标准模型证明。
+
+`FiniteLevelInputs.lean` 已将三个实际 ESS 输入同步为具有五条指定检测和严格 $\delta a=\Sigma Fg(b)$ 的同一 $a,b$，并证明完整目标的顶端消失窗口。`FiniteLambdaSurjectivity.lean` 已从既有有限 $E_\infty$ 坐标满射、实际收敛与有限商顶端消失证明实际 $\lambda^A$ 在窗口 $A\le m+u-w$ 上的严格 $F^u$ 满射及其移位版本。这一步不使用完备性；也不能单独保证调整 $b$ 后同时保持 $g(b)$，因此不算第二像方程已经完成。
+
+`FiniteMay3x3.lean` 随后交付较小的纯三角图路线：TR3/TR4 先构造第二像严格正确、第一像差为固定 $b\circ z$ 的同一代表，再用 normalized finite no-return 消去差；`normalized_finite_may_of_horizontal_row` 得到两条严格像方程。其明确条件是固定水平行 `Triangle.mk (Q_N G) (Q_N h) kN` 为 distinguished；`kN` 可以直接取带字面负号的目标，无需假设商函子加性。这是条件定理，不是当前模型已交付该水平行正合性。上游仅需生产一个 canonical、保包含的悬挂比较及相应正合水平行，任意其他比较在球面上由 `FiniteComparison.lean` 处理；不要求所有选择全局正合，也不必补完整张量相容结构。上述独立提案已收录这一较小备选。
+
+`FiniteLevelConclusion.lean` 已证明实际检测对的反悬挂、固有源标签反射到原类的更高 cycle，以及精确悬挂 source/image 检测对推出完整强商 `LevelFiniteExtension`，包括保留原指定 $y$ 的算术重标。`FiniteLevelSourceLabel.lean` 从同一 $c$ 的实际 ρ 像反射完整高层源检测；`FiniteLevelOutputLabels.lean` 把同一 $b$ 的 $j$ 层标签严格送到 $A+j$ 层，保留普通悬挂和实际负号，不要求 $y$ 永久。
+
+完整 `FiniteLevelAssembly.lean` 的私有 `finite_mahowald_at_level_of_horizontal_rows` 已通过 Lean 和生产目标构建，直接证明 `hRows → Standard.FiniteMahowaldAtLevelStatement T he`，不以另一个简化或通用命题代替公开目标。它完整保留同一 $a,b,c$、五条输入检测、严格 δ 等式、两条带符号像方程、两条原标签的输出检测、原 $x$ 的完整 cycle 和原指定 $y$ 的强商扩张。私有 `NormalizedFiniteQuotientHorizontalRows` 只要求固定商行 distinguished 及存在一个保包含的悬挂比较，不包含任何 MH 输出；其固定模型真值未被定义或证明。
+
+Blueprint 的原零层 MH theorem 和语义陈述已由完整带层目标取代；完整 theorem 保留未证状态且不绑定私有组件，原文唯一仍在 AimPaper 及 corrections 页。公开旧 law 与原有待补继续保留为历史接口，未被本次新定义冒充补完。新公开导出只有实际 no-crossing、共同源定理、完整目标定义和两个实际提升/目标永久性定理；辅助结果保持私有。
+
+独立核验发现 May 张量图到固定 λ 商的结构识别没有由现有接口交付，较强充分方案见 `interface-proposals/AdamsSynthetic/20261018-mh-lambda-tensor-coherence/report.md`。纯三角图路线已给出更小的下一步：[Literature 水平行提案](../../Literature/20261018-mh-finite-quotient-horizontal-row/report.md) 请求一个完整内联的固定商正合行 theorem，不依赖 ProofTools 私有谓词，也不需要完整张量比较结构。其 normalized triangle 语言属于 Literature，不能反向塞入 AdamsSynthetic。用户已于 2026-10-19 明确批准该最小跨模块方案与接回 ProofTools，禁止新增公理或证明洞；决定原话及精确范围维护于 Literature 提案。新增的 Literature 私有构造已给任意实际对象的保包含悬挂比较，并从实际 λ 余纤维三角的产品比较证明固定商函子的加性、负号与有限双积保持及标准分裂三角保持；尚未把八面体的良好商行识别为全部指定地图；没有以历史实现中的额外 stable cofiber 公理绕过这一证明。无条件公共 MH、一般普通 Adams 方框解码、经典 extension 恢复和实际 SS 证书不能因此称作全部完成。
+
+检查：最终完整 `lake build` 已通过（3549 jobs），覆盖完整条件装配及全部源/目标标签、精确商长与悬挂运输；ProofTools 独立审计核查 3887 项声明，确认仍仅有原来的五项登记待补，没有项目公理。最终全仓信任捕获覆盖 13520 项项目声明；重新冻结核验未改变任何现有基线，全仓仍为 312 项原登记责任。普通公共捕获与 209 项 ProofTools 导出逐项匹配。源清单核验覆盖 531 项目文件和 35 消费/审计文件；Blueprint 原生导出、34 项相关测试和 20 份接口提案校验通过。完整条件根另经直接 import all 全源码的独立依赖核验：42 项传递上游待补全部已登记，无本地证明洞或旧 MH/GL；这些上游责任并未因此完成。原待补清单与其他模块接口锁未修改；原生页面仍只将 `Prop` 定义绑定为定义，不把私有条件证明冒充无条件公共 MH theorem。
+
+2026-10-19 续检：`lake build` 通过（3551 jobs），源清单覆盖 533 项目文件和 35 消费/审计文件；Literature 信任审计覆盖 1468 项声明，仍为原登记 130 项待补，ProofTools 仍为原登记五项。最终全仓信任捕获覆盖 13541 项项目声明；两份新增私有源没有本地证明洞或项目公理，30 项传递上游待补全部已登记，无下游证明依赖。Blueprint 34 项测试及 20 份提案校验通过。新增构造均私有，因此本轮所有公共接口锁和 312 项待补基线保持不变。signed row 与无条件 MH 仍未交付，构建通过不替代这两个数学结论。
+
+下文保留获准实施前的研究记录及当时的提案措辞；其中“未定稿”“尚未 elaboration”“尚未批准”等状态以本节的当前实施结果和 Literature 提案人审记录为准。
 
 2026-10-18。用户本次要求查阅 project-math-assistant 群和仓库研究，确定应形式化的 MH 版本。本报告由未参与本候选发现或实现的独立报告员复核；协调者研究草稿及其已核来源保留，数学与源码核验范围见末节。不把“基本确定陈述”解释为已批准增删公开声明。
 
@@ -226,4 +298,4 @@ Main 的禁用旧 MH 边界和现有安全特例保持；AdamsCalculations 的�
 
 ## 人类审核记录
 
-`human_decision: null`。本报告没有收到人类对具体候选、公共签名或实施范围的明确批准；群内既有意见、历史其他提案批准及 agent 审查意见均未写作本提案授权。
+2026-10-18，本聊天用户明确批准：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”据此将状态改为 `approved-interface-change`，实施尚在进行；授权内容及不扩大到其他模块/新增公理和上游责任的边界见文件头。群内既有意见、历史其他提案批准及 agent 审查意见没有被写作额外授权。

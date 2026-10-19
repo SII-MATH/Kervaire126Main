@@ -196,20 +196,114 @@ Assume either that the first differential has no crossing on page $p$ or that th
 \lean{KIP126.ProofTools.GeneralizedLeibnizLaw}
 \end{definition}
 
-\begin{definition}[The normalized-triangle Mahowald law]
+\begin{definition}[Actual essential no-crossing]
+\label{sem:ProofTools:mh-actual-no-crossing}
+\level{coarse}
+\uses{sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration}
+Fix a map $F:U\to V$ of convergent synthetic Adams towers and one stem and weight $(p,w)$. For a source filtration $s$ and length $a$, actual no-crossing means
+\[
+\text{there is no essential }d_{v-u}^{F}(\xi)=\eta
+\quad\text{with }s<u\leq v\leq s+a
+\]
+in this same map and bidegree. Essentiality is taken in the actual extension spectral sequence, including all shorter extension images. The diagonal $u=v$ is included.
+\lean{KIP126.ProofTools.Internal.Mahowald.ActualNoCrossing}
+\end{definition}
+
+\begin{theorem}[A common source from actual no-crossing]
+\label{sem:ProofTools:mh-common-source}
+\level{coarse}
+\uses{sem:ProofTools:mh-actual-no-crossing,sem:ProofTools:filtration-representatives,sem:ProofTools:finite-correction}
+Let $F:U\to V$ and $G:U\to W$ be maps of convergent towers with the same source convergence. Fix the same stem and weight, and suppose
+\[
+d_a^F(\xi)=\eta,\qquad d_b^G(\xi)=\zeta.
+\]
+If either equation has actual no-crossing in its full higher-source triangle, then there are actual representatives $u,v,w$ of $\xi,\eta,\zeta$, respectively, with
+\[F(u)=v,\qquad G(u)=w.\]
+The representatives lie in filtrations $s,s+a,s+b$. Zero labels, inessential input equations, and length zero are allowed.
+\lean{KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative}
+\end{theorem}
+
+\begin{definition}[The strong finite-layer Mahowald assertion]
 \label{sem:ProofTools:mahowald-law}
 \level{coarse}
-Let $X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X$ be a distinguished triangle with $e(f)+e(g)+e(h)=1$, whose normalized synthetic maps form a compatible triangle. Put
-\[n_1=n-e(f)\geq1,\quad m_1=m-e(g)\geq0,\quad l_1=l-e(h)\geq0,\quad r=n+m+l,\quad r'=r-m_1.\]
-The normalized-triangle Mahowald law is the following implication. Suppose
-\[x\in Z_{n_1}^{s+l,t+l-1}(X),\quad y\in Z_{m_1+1}^{s+l+n,t+l+n-1}(Y),\]
-\[\bar x\in Z_{r-1}^{s,t}(Z),\qquad\bar y\in Z_\infty^{s+r,t+r-1}(Z).\]
-Let $\widetilde x\in E_2^{s+l,t+l}(\Sigma X)$ desuspend to $x$ under the tower suspension comparison, and assume
-\[d_l^{h,E_{r'}}(\bar x)=\widetilde x,\qquad d_r(\bar x)=\bar y,\qquad d_m^{g,E_{m_1+2}}(y)=\bar y.\]
-Assume that the $h$-extension has no crossing or that the classical differential has no crossing on page $r'$. Then $x\in Z_{n+m+e(h)}^{s+l,t+l-1}(X)$ and there is $y'$ such that
-\[d_n^{f,E_{n+m+1+e(h)}}(x)=y',\qquad y'-y\in B_{r'}^{s+l+n,t+l+n-1}(Y).\]
-\lean{KIP126.ProofTools.GeneralizedMahowaldLaw}
+\uses{sem:ProofTools:mh-actual-no-crossing,paper:3.20,sem:ProofTools:finite-target-label}
+Fix one classical triangle $X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X$ and its compatible normalized synthetic triangle. Write $Q_DW=\nu W/\lambda^D$, retaining the fixed normalization and suspension comparisons in every map. Put
+\[
+n_1=n-e_f\geq1,\quad m_1=m-e_g\geq0,\quad k=l-e_h\geq0,\quad r=n+m+l,
+\qquad e_f+e_g+e_h=1.
+\]
+For $i,j\geq0$ with $j<n_1$, set
+\[
+A=n_1+k+i-j,\quad B=m_1+j+1,\quad N=A+B=r+i,
+\quad K=i+k,\quad J=A+j,\quad Q=N-K=r-k.
+\]
+Thus $0\leq i,K<A$, $0\leq j<B$, and $0\leq J<N$. Take classical labels in the prescribed bidegrees
+\[
+\bar x\in Z_{r-1}^{s,t}(Z),\quad \bar y\in Z_\infty^{s+r,t+r-1}(Z),\quad
+x\in Z_{n_1-j}^{s+l,t+l-1}(X),\quad y\in Z_{m_1+1}^{s+l+n,t+l+n-1}(Y),
+\]
+with $d_r\bar x=\bar y$. Write the normalized vertices as $U=\Sigma^{0,e_f}\nu X$, $V=\nu Y$, and $W=\Sigma^{0,-e_g}\nu Z$. Choose actual suspension--quotient isomorphisms
+\[
+\varepsilon_X^D:Q_D(\Sigma U)\cong\Sigma Q_DU\quad(D=A,N),\qquad
+\varepsilon_Y^N:Q_N(\Sigma V)\cong\Sigma Q_NV.
+\]
+Each must commute with its quotient inclusion. Compatibility with reduction $Q_N\to Q_A$ on bigraded sphere representatives follows internally from these inclusion squares and the finite no-return comparison; it is not an extra hypothesis. The assertion below is quantified over these choices. The map $h_A$ uses $\varepsilon_X^A$, and the output uses $\varepsilon_X^N,\varepsilon_Y^N$; a comparison preserving only objects is insufficient. Finite source labels are transported by these actual shifts and quotients, using the intrinsic finite source label rather than an independently chosen positive-shift $E_2$ identification.
+
+Their actual finite infinite-page classes must support the following three equations in the indicated fixed maps:
+\[
+d_l^{h_A}(\lambda^i\bar x)=\lambda^Kx,\qquad
+d_r^{\delta_{A,B}}(\lambda^i\bar x)=\lambda^{B-1}\bar y,\qquad
+d_m^{g_B}(\lambda^jy)=\lambda^{B-1}\bar y.
+\]
+The first two equations use the same infinite-page source class. The last two use the same top-layer target class. The $h$ target is related to the specified $x$ by the fixed actual suspension comparison. Assume actual no-crossing on either $h_A$ or $\delta_{A,B}$: the entire triangle $s<u\leq v\leq s+l$ or $s<u\leq v\leq s+r$, respectively. Both are at the same actual stem and weight. In unshifted $Z$ coordinates this is $(t-s,t-i)$; in the normalized third vertex it is $(t-s,t-i-e_g)$.
+
+The strong finite-layer Mahowald assertion is that there exist the same actual representatives $a,b,c$, with
+\[
+a\text{ detecting }\lambda^i\bar x,\quad h_A(a)\text{ detecting }\lambda^Kx,
+\quad \delta_{A,B}(a)=g_B(b)\text{ detecting }\lambda^{B-1}\bar y,
+\quad b\text{ detecting }\lambda^jy,
+\]
+\[
+\rho(c)=h_A(a),\qquad f_N(c)=-\lambda^Ab,
+\]
+such that $c$ detects $\lambda^Kx$ and its actual $f_N$ image detects $\lambda^Jy$. Equivalently for the resulting page relation,
+\[
+x\in Z_Q,\qquad d_n^{\hat f_N}(\lambda^Kx)=[\lambda^Jy].
+\]
+The source label lies in $Z_Q/B_{K+1}$; the target lies in $Z_{m_1+1}/B_{J+1}$ modulo shorter actual $\hat f_N$ extension images. The actual representatives are retained in addition to this quotient relation. At $i=j=0$ the output is in the strong quotient $Q_r$:
+\[
+x\in Z_{n+m+e_h},\qquad d_n^{\hat f_r}(\lambda^kx)=[\lambda^{r'-1}y],\quad r'=n_1+k+1.
+\]
+A zero target label means a higher filtration, not a zero homotopy image. No power of $\lambda$ is cancelled.
+% Blueprint note: This entry binds the definition of the full assertion. The complete theorem is bound separately at Theorem 6.12. Its proof preserves the same representatives, signed images, exact labels and terminal conclusions, and consumes the proved fixed-model Literature row internally.
+% Blueprint note: The authorized minimal Literature theorem now constructs the actual signed distinguished quotient row and an inclusion-compatible suspension comparison. The full Mahowald theorem has no additional horizontal-row premise. Existing upstream construction and comparison obligations remain registered.
+\lean{KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement}
 \end{definition}
+
+\begin{theorem}[The target-preserving lifting obstruction]
+\label{sem:ProofTools:mh-target-preserving-lift}
+\level{coarse}
+\uses{sem:ProofTools:filtration-representatives,sem:AdamsSynthetic:lambda-quotients}
+Fix $\varphi_N:Q_NU\to Q_NV$ and one stem and weight. Let $p:\pi U\to\pi Q_NU$ be quotient inclusion and let $\partial$ be its actual cofiber connecting map. Choose subgroups $F\leq\pi U$, $S_+\leq S\leq\pi Q_NU$, and $T_+\leq\pi Q_NV$, with source-filtration reflection $p(\alpha)\in S\Rightarrow\alpha\in F$. For $c_0\in S$, put
+\[V_0=S_+\cap\varphi_N^{-1}(T_+).\]
+Then
+\[
+\partial c_0\in\partial V_0
+\quad\Longleftrightarrow\quad
+\exists\alpha\in F:\ p(\alpha)-c_0\in S_+,\quad
+\varphi_Np(\alpha)-\varphi_Nc_0\in T_+.
+\]
+In the MH application, $S_+$ and $T_+$ are the filtrations immediately above the prescribed source and target. The original $c_0$ need not lift; some member of its target-preserving affine family must lift.
+\lean{KIP126.ProofTools.lambda_quotient_target_preserving_lift_iff}
+\end{theorem}
+
+\begin{theorem}[A specified finite target from a full lift is permanent]
+\label{sem:ProofTools:mh-lifted-target-permanent}
+\level{coarse}
+\uses{sem:ProofTools:finite-target-label,sem:ProofTools:filtration-representatives,sem:Literature:infinite-finite-window}
+Let $N>0$ and $0\leq t-w<N$. Fix $y\in E_2^{s,t}(X)$ and an actual full class $\beta\in\pi_{t-s,w}\nu X$. If the projection of $\beta$ to $Q_NX$ detects the specified finite label $\lambda^{t-w}y$, then the original label $y$ belongs to $Z_\infty^{s,t}(X)$. Filtration reflection in the visible window is proved internally. No permanence assumption on $y$ is made; equality only modulo uncontrolled shorter extension images would not suffice.
+\lean{KIP126.ProofTools.finite_target_from_full_lift_is_permanent}
+\end{theorem}
 
 \begin{definition}[The same-quotient nonliftable obstruction]
 \label{sem:ProofTools:nonliftable-obstruction}

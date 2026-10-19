@@ -39,8 +39,21 @@ class ProofToolsBindingTests(unittest.TestCase):
         # Completed original statements acquire native source-local evidence;
         # the remaining comparison bridges and general laws stay pending.
         by_label = {r['label']: r for r in rows}
-        for label in ('paper:6.1', 'paper:6.12', 'frontier:ProofTools:003e9deb7ec5'):
+        for label in ('paper:6.1', 'frontier:ProofTools:003e9deb7ec5'):
             self.assertEqual(_tex_lean_status(by_label[label], states)[0], 'sorry')
+        # The revised MH assertion is a formal proposition definition. It must
+        # not serve as evidence that the separate MH theorem has been proved.
+        self.assertEqual(by_label['sem:ProofTools:mahowald-law']['lean'],
+                         ['KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement'])
+        self.assertEqual(_tex_lean_status(by_label['sem:ProofTools:mahowald-law'], states)[0],
+                         'lean_ok')
+        self.assertEqual(by_label['paper:6.12']['lean'],
+                         ['KIP126.ProofTools.Standard.generalizedMahowaldAtLevel'])
+        self.assertEqual(_tex_lean_status(by_label['paper:6.12'], states)[0], 'lean_ok')
+        for label in ('sem:ProofTools:mh-common-source',
+                      'sem:ProofTools:mh-target-preserving-lift',
+                      'sem:ProofTools:mh-lifted-target-permanent'):
+            self.assertEqual(_tex_lean_status(by_label[label], states)[0], 'lean_ok')
         original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite', '2.20': 'extensionBoundary_of_exact', '5.10': 'finiteCrossing_iff_syntheticCrossing', '5.14': 'infiniteExtension_to_classicalExtension'}
         pending = {'2.20', '5.10', '5.14'}
         for number, name in original_statements.items():
