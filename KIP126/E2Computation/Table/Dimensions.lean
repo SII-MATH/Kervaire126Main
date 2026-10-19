@@ -279,6 +279,6 @@ public def basisDimension (s t : ℕ) : ℕ := ((dimensionsByT t)[s]?).getD 0
 /-- The complete bounded archive is the same one used by Standard.coordinates. -/
 public theorem archive_dimension (s t : ℕ) (ht : t ≤ 261) :
     Standard.archive.basisCount s t = basisDimension s t := by
-  sorry
+  interval_cases t <;> rfl
 
 end KIP126.Computation.Table
