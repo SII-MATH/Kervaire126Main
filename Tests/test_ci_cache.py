@@ -133,18 +133,18 @@ if sys.argv[1:3] == ['api', 'graphql']:
 
 
 class InputTests(unittest.TestCase):
-    def test_fingerprint_tracks_lean_metadata_scripts_modes_and_locked_dependencies(self):
+    def test_fingerprint_tracks_lean_baselines_scripts_modes_and_locked_dependencies(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            for name in ['A.lean', 'metadata/a.json', 'scripts/helper.py', 'README.md', 'lean-toolchain', 'lake-manifest.json']:
-                path = root / name; path.parent.mkdir(exist_ok=True); path.write_text('first')
+            for name in ['A.lean', 'interface/baselines/a.json', 'scripts/helper.py', 'README.md', 'lean-toolchain', 'lake-manifest.json']:
+                path = root / name; path.parent.mkdir(parents=True, exist_ok=True); path.write_text('first')
             subprocess.run(['git', 'add', '.'], cwd=root, check=True)
             original = ci.build_inputs(root)
             self.assertEqual(len(original['files']), 5)
             (root / 'README.md').write_text('documentation change')
             self.assertEqual(ci.build_inputs(root), original)
-            for name in ['A.lean', 'metadata/a.json', 'scripts/helper.py', 'lean-toolchain', 'lake-manifest.json']:
+            for name in ['A.lean', 'interface/baselines/a.json', 'scripts/helper.py', 'lean-toolchain', 'lake-manifest.json']:
                 with self.subTest(name=name):
                     (root / name).write_text('second')
                     self.assertNotEqual(ci.build_inputs(root)['fingerprint'], original['fingerprint'])

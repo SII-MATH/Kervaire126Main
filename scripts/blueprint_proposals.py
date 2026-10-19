@@ -45,7 +45,7 @@ def read_reports(root):
     """The tracked report is canonical; local-history is never a build input."""
     root = Path(root)
     reports, seen = [], set()
-    for path in sorted((root / 'interface-proposals').glob('*/*/report.md')):
+    for path in sorted((root / 'interface/proposals').glob('*/*/report.md')):
         raw = path.read_text()
         parts = re.split(r'^---\s*$', raw, maxsplit=2, flags=re.M)
         if len(parts) != 3 or parts[0].strip():
@@ -184,7 +184,7 @@ def render_reports(root):
  <details class="proposal-report"><summary>展开报告 · 完整前提、证据与方案</summary>
  <div class="proposal-body">{markdown(report['body'], report['path'], root)}</div></details>
  <details><summary>来源与原始状态</summary><pre>{esc(yaml.safe_dump(m, allow_unicode=True, sort_keys=False))}</pre></details>
- <footer><button type="button" data-feedback="{esc(m['issue_id'], quote=True)}">填写审阅反馈</button>
+ <footer><a data-interface-section="baselines" href="../interfaces/index.html?search=&amp;module={quote(m['responsibility_module'], safe='')}">查看模块接口 →</a><button type="button" data-feedback="{esc(m['issue_id'], quote=True)}">填写审阅反馈</button>
  <a href="reports/{quote(report['path'], safe='/')}" download>下载完整报告 ↓</a></footer>
  </article>''')
     template = (Path(root) / 'site/proposals.html').read_text()
@@ -192,19 +192,13 @@ def render_reports(root):
         '<!-- PROPOSAL_COUNT -->', str(len(cards)))
 
 
-def stage_proposals(root, project):
-    destination = Path(project) / 'site/proposals.html'
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    destination.write_text('<iframe class="proposal-frame" title="接口提案审阅区" '
-                           'src="proposals/index.html" loading="lazy"></iframe>')
-
-
 def export_proposals(root, out):
     root, out = Path(root), Path(out)
     destination = out / 'proposals'
     destination.mkdir(parents=True, exist_ok=True)
     # Reuse KaTeX shipped with pinned hgraph; no CDN, dependency or toolchain change.
-    content = render_reports(root)
+    from blueprint_interfaces import interface_navigation
+    content = render_reports(root).replace('<!-- INTERFACE_NAV -->', interface_navigation('proposals'))
     loader = next((out / 'assets').glob('katexLoader-*.js'))
     style = next((out / 'assets').glob('katexLoader-*.css'))
     content = content.replace('<!-- PROPOSAL_MATH -->',
@@ -216,7 +210,7 @@ def export_proposals(root, out):
         'document.addEventListener("toggle",event=>{if(event.target.matches(".proposal-report[open]"))'
         'window.renderProposalMath(event.target)},true);</script>')
     (destination / 'index.html').write_text(content)
-    for name in ('proposals.css', 'proposals.js'):
+    for name in ('proposals.css', 'proposals.js', 'interface-navigation.js'):
         shutil.copyfile(root / 'site' / name, destination / name)
     reports = read_reports(root)
     for report in reports:
@@ -229,10 +223,10 @@ def export_proposals(root, out):
                 target = destination / 'reports' / source.relative_to(root)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, target)
-    shutil.copyfile(root / 'interface-proposals/TEMPLATE.md', destination / 'TEMPLATE.md')
+    shutil.copyfile(root / 'interface/proposals/TEMPLATE.md', destination / 'TEMPLATE.md')
     guide = markdown((root / 'docs/interface-proposals.md').read_text(), 'docs/interface-proposals.md', root)
     (destination / 'guide.html').write_text('<!doctype html><html lang="zh-CN"><meta charset="utf-8">'
-        '<meta name="viewport" content="width=device-width,initial-scale=1"><title>接口提案投递指南</title>'
+        '<meta name="viewport" content="width=device-width,initial-scale=1"><title>Interface proposal guide</title>'
         '<link rel="stylesheet" href="proposals.css"><main class="proposal-page proposal-body">' + guide + '</main></html>')
-    return {'reports': len(reports), 'source': 'interface-proposals/*/*/report.md',
+    return {'reports': len(reports), 'source': 'interface/proposals/*/*/report.md',
             'scope': 'Review presentation only; no interface, proof-state or approval changes.'}

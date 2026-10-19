@@ -70,7 +70,7 @@ the repository's existing `build-cache-<commit>-<os>-<arch>` Releases when it
 has no exact project-cache hit. It reads small metadata first and accepts only
 a passed, clean build with the same repository, OS/architecture, toolchain,
 manifest hash, and exact build-input manifest. This uses the existing Release
-schema: tracked Lean files, dependency locks, metadata JSON and scripts,
+schema: tracked Lean files, dependency locks, `interface/baselines/` JSON and scripts,
 including Git file modes and SHA-256 file contents.
 Both the original sorted-file-list manifest and the fingerprint-envelope
 manifest are accepted. In either format the complete file list must match the
@@ -78,7 +78,7 @@ checkout exactly, in addition to the metadata fingerprint and checksum checks.
 
 Only an exact input match can replace an Actions incremental baseline. Missing,
 incompatible, expired or corrupt releases leave that baseline intact and fall
-back to rebuilding. CI checks metadata/manifests, each archive part and the
+back to rebuilding. CI checks interface/baselines/manifests, each archive part and the
 combined archive against SHA-256; it never selects merely the newest Release.
 Discovery first probes the current commit and its direct parents by their exact
 Release tags. This finds the incoming PR head's cache for a synthetic merge-group

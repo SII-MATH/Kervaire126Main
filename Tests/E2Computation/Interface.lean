@@ -9,7 +9,7 @@ set_option maxHeartbeats 0
 /-! The E₂ entry is independently consumable before ProofTools. Its own lock
 fixes public types, universes, axiom dependencies and generated declarations. -/
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../metadata/e2-computation-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../interface/baselines/e2-computation-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let expectedExports ← ofExcept <| contract.getObjValAs? (Array String) "exports"
