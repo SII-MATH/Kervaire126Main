@@ -144,7 +144,7 @@ public theorem sphereE2_milnor_classOfCycle (s t : ℕ)
 fixed comparison. -/
 public theorem standardHi_milnor (i : ℕ) :
     sphereE2_milnorEquiv 1 (2 ^ i) (standardHi i) = milnorHiClass i := by
-  sorry
+  exact (sphereE2_milnorEquiv 1 (2 ^ i)).apply_symm_apply (milnorHiClass i)
 
 /-- Compatibility of the actual sphere E₂ multiplication with the actual
 concatenation product in normalized cobar cohomology. -/
@@ -160,9 +160,35 @@ public theorem sphereProduct_milnor (s t s' t' : ℕ)
       milnorCup (sphereE2_milnorEquiv s t x) (sphereE2_milnorEquiv s' t' y) := by
   sorry
 
+private theorem milnorCup_unit_right_zero (x : MilnorCohomology 0 0) :
+    milnorCup x milnorUnitClass = x := by
+  change Milnor.cohomologyCup x Milnor.unitClass = x
+  obtain ⟨y, hy, rfl⟩ := Milnor.classOfCycle_surjective x
+  rw [Milnor.unitClass, Milnor.cohomologyCup_classOfCycle]
+  apply congrArg (Milnor.classOf 0 0)
+  apply Subtype.ext
+  apply Subtype.ext
+  change @Milnor.cupPolynomial 0 0 y.val 1 = y.val
+  simp only [Milnor.cupPolynomial, map_one, mul_one]
+  have hrename : (fun a : Fin 0 × ℕ => (a.1.castAdd 0, a.2)) = id := by
+    funext a
+    exact Fin.elim0 a.1
+  rw [hrename, MvPolynomial.rename_id]
+  rfl
+
 public theorem sphereUnit_milnor :
     sphereE2_milnorEquiv 0 0 sphereAlgebra.unit = milnorUnitClass := by
-  sorry
+  let x := (sphereE2_milnorEquiv 0 0).symm milnorUnitClass
+  have hx : sphereE2_milnorEquiv 0 0 x = milnorUnitClass :=
+    (sphereE2_milnorEquiv 0 0).apply_symm_apply milnorUnitClass
+  have h := sphereProduct_milnor 0 0 0 0 sphereAlgebra.unit x
+  change sphereE2_milnorEquiv 0 0
+      (sphereAlgebra.product (0,0) (0,0) sphereAlgebra.unit x) =
+    milnorCup (sphereE2_milnorEquiv 0 0 sphereAlgebra.unit)
+      (sphereE2_milnorEquiv 0 0 x) at h
+  rw [eq_of_heq (sphereAlgebra.unit_left (0,0) x), hx,
+    milnorCup_unit_right_zero] at h
+  exact h.symm
 
 /-- The actual Main square is the cup square of the specified ξ₁⁶⁴ cocycle. -/
 public theorem standardH6Square_milnor :

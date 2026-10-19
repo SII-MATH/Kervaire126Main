@@ -1,6 +1,7 @@
 module
 
 public import KIP126.AdamsSynthetic.Standard.Filtration
+import all KIP126.AdamsSynthetic.Standard.Background
 public import KIP126.AdamsSynthetic.MappingEnrichment
 public import KIP126.AdamsSynthetic.Enrichment
 import all KIP126.AdamsSynthetic.Enrichment
@@ -11,6 +12,7 @@ public import KIP126.AdamsSynthetic.ESSShift
 public import KIP126.AdamsSynthetic.Weight
 public import KIP126.AdamsSynthetic.PageExtensions
 public import KIP126.AdamsSynthetic.ConsumerOperations
+import KIP126.SpectralSequence.FinitePageCalculus.Proofs
 
 /-! Fixed composition, enrichment and ESS transport. Each mathematical
 operation and compatibility theorem is declared separately, then assembled
@@ -52,12 +54,142 @@ public theorem mapping_page_associative : ∀ (W X Y Z : MappingObject (IsFinite
       ((mapping_pairing W X Z).ssPairing.pair r i (j + k) x
         ((mapping_pairing X Y Z).ssPairing.pair r j k y z)) := by sorry
 
-/-- Fixed MappingComposition.identity; construction or proof deferred to its owning module. -/
-public def mapping_identity : ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)), ConvergingSSUnit (mappingSystem.hom X X).underlying rfl := by sorry
+private theorem pageSubsingletonOfAmbient
+    (D : SSData (ModuleCat.{0} ℤ)) (r : WithTop ℕ) [Subsingleton D.V] :
+    Subsingleton (D.page r) := by
+  have hV : IsZero D.V := ModuleCat.isZero_of_subsingleton D.V
+  have hZ : IsZero (Subobject.underlying.obj (D.Z r)) :=
+    IsZero.of_mono (D.Z r).arrow hV
+  letI : Epi (D.pageπ r) := coequalizer.π_epi
+  exact ModuleCat.subsingleton_of_isZero (IsZero.of_epi (D.pageπ r) hZ)
 
-/-- Fixed MappingComposition.identity_actual; construction or proof deferred to its owning module. -/
-public theorem mapping_identity_actual : ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
-    mappingHomotopyZeroEquiv closedBackground X.val X.val (mapping_identity X).abutment = 𝟙 X.val := by sorry
+private theorem classicalPageNegativeGeneral (M : Spectrum) (r s t : ℤ)
+    (hs : s < 0) : Subsingleton ((classical.obj M).Page r (s,t)) := by
+  let T := classicalTower.tower M
+  have hi (a b : ℕ) (hab : a ≤ b) (h : a = b) : IsIso (T.map hab) := by
+    subst b
+    rw [T.map_self]
+    infer_instance
+  let f := T.mapAt (show s ≤ s+1 by omega)
+  haveI : IsIso f := hi s.toNat (s+1).toNat (by omega) (by omega)
+  have hLayer : IsZero (T.layer s) :=
+    Pretriangulated.Triangle.isZero₃_of_isIso₁
+      (Pretriangulated.Triangle.mk f (HasFunctorialCofiber.cofibι f)
+        (HasFunctorialCofiber.cofibδ f))
+      (HasFunctorialCofiber.cofib_distinguished f) (show IsIso f from inferInstance)
+  letI : Subsingleton (T.FirstPage (s,t)) := ⟨fun a b => hLayer.eq_of_tgt a b⟩
+  let D := (classical.obj M).ssData (s,t)
+  letI : Subsingleton D.V :=
+    (classicalTower.sequence M).ambient (s,t) |>.toLinearEquiv.injective.subsingleton
+  exact pageSubsingletonOfAmbient D _
+
+private theorem boundariesAtZeroStable (M : Spectrum) :
+    ((classical.obj M).ssData (0,0)).B ⊤ = ((classical.obj M).ssData (0,0)).B 0 := by
+  have h := boundaries_top_eq_of_d_eq_zero (classical.obj M) 2
+    (le_of_eq (classical.firstPage M)) (0,0) ?_
+  · simpa only [classical.firstPage, sub_self, Int.toNat_zero, Nat.cast_zero] using h
+  intro r hr
+  have hs : (((0 : ℤ), (0 : ℤ)) - (classical.obj M).diffDeg r).1 < 0 := by
+    rw [classical.differentialDegree]
+    dsimp
+    omega
+  letI := classicalPageNegativeGeneral M r
+    (((0 : ℤ), (0 : ℤ)) - (classical.obj M).diffDeg r).1
+    (((0 : ℤ), (0 : ℤ)) - (classical.obj M).diffDeg r).2 hs
+  ext a
+  have ha : a = 0 := Subsingleton.elim _ _
+  simp only [ha, map_zero]
+
+private theorem zeroInfinityEqDeterminesAllPages (M : Spectrum) (r : ℤ)
+    (z z' : InfiniteCycles (classical.obj M) (0,0))
+    (h : ((classical.obj M).ssData (0,0)).pageπ ⊤ z =
+      ((classical.obj M).ssData (0,0)).pageπ ⊤ z') :
+    infinityToPage (classical.obj M) r (0,0) z =
+      infinityToPage (classical.obj M) r (0,0) z' := by
+  let D := (classical.obj M).ssData (0,0)
+  let n : WithTop ℕ := ↑(r-(classical.obj M).r₀).toNat
+  have hB : D.B ⊤ = D.B n :=
+    le_antisymm ((boundariesAtZeroStable M).le.trans (D.B_mono (show 0 ≤ n from zero_le)))
+      (D.B_mono le_top)
+  exact FinitePageCalculus.same_boundaries_projection_eq D n ⊤ le_top hB z z' h
+
+set_option backward.privateInPublic true in
+private def mappingIdentityWitness
+    (X : MappingObject (IsFiniteSpectrum (C := Spectrum))) :
+    { U : ConvergingSSUnit (mappingSystem.hom X X).underlying rfl //
+      mappingHomotopyZeroEquiv closedBackground X.val X.val U.abutment = 𝟙 X.val } := by
+  classical
+  apply Classical.choice
+  let M := mappingSpectrum closedBackground X.val X.val
+  let T := classicalTower.tower M
+  let c := mappingConvergence X.val X.val X.property X.property
+  let a := (mappingHomotopyZeroEquiv closedBackground X.val X.val).symm (𝟙 X.val)
+  have ha : a ∈ T.filtrationSubmodule 0 0 := by
+    refine ⟨a ≫ T.zeroIso.inv, ?_⟩
+    change (a ≫ T.zeroIso.inv) ≫ T.projection 0 = a
+    have hproj : T.projection 0 = T.zeroIso.hom := by
+      change T.map (Nat.zero_le 0) ≫ T.zeroIso.hom = T.zeroIso.hom
+      rw [T.map_self, Category.id_comp]
+    rw [hproj, Category.assoc, Iso.inv_hom_id, Category.comp_id]
+  have hmem : a ∈ ModuleCat.subobjectModule _ (T.filtration.F 0 0) := by
+    simpa only [AbstractAdamsTower.filtration, OrderIso.apply_symm_apply] using ha
+  change ∃ b, (T.filtration.F 0 0).arrow.hom b = a at hmem
+  obtain ⟨b, hb⟩ := hmem
+  let e := (c.identification (0,0)).inv (T.filtration.toAssociatedGraded 0 0 b)
+  haveI : Epi (((classical.obj M).ssData (0,0)).pageπ ⊤) :=
+    inferInstanceAs (Epi (cokernel.π _))
+  obtain ⟨z, hz⟩ := (ModuleCat.epi_iff_surjective
+    (((classical.obj M).ssData (0,0)).pageπ ⊤)).mp inferInstance e
+  let U : ConvergingSSUnit (mappingSystem.hom X X).underlying rfl :=
+    { cycle := z
+      filtered := b
+      compatible := by
+        change T.filtration.transportGraded rfl
+          ((c.identification (0,0)).hom (((classical.obj M).ssData (0,0)).pageπ ⊤ z)) =
+          T.filtration.toAssociatedGraded 0 0 b
+        rw [Filtration.transportGraded_self, ModuleCat.id_apply, hz]
+        change ((c.identification (0,0)).inv ≫ (c.identification (0,0)).hom) _ = _
+        rw [Iso.inv_hom_id]
+        rfl }
+  refine ⟨⟨U, ?_⟩⟩
+  change mappingHomotopyZeroEquiv closedBackground X.val X.val
+    ((T.filtration.F 0 0).arrow b) = 𝟙 X.val
+  rw [hb]
+  exact (mappingHomotopyZeroEquiv closedBackground X.val X.val).apply_symm_apply _
+
+set_option backward.privateInPublic true in
+/-- The fixed mapping identity, with one common infinite cycle and the actual identity abutment. -/
+public def mapping_identity :
+    ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
+      ConvergingSSUnit (mappingSystem.hom X X).underlying rfl :=
+  fun X => (mappingIdentityWitness X).val
+
+/-- The fixed mapping identity abuts to the actual identity morphism. -/
+public theorem mapping_identity_actual :
+    ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
+      mappingHomotopyZeroEquiv closedBackground X.val X.val
+        (mapping_identity X).abutment = 𝟙 X.val :=
+  fun X => (mappingIdentityWitness X).property
+
+private theorem actualIdentityDeterminesPages
+    (X : MappingObject (IsFiniteSpectrum (C := Spectrum)))
+    (U V : ConvergingSSUnit (mappingSystem.hom X X).underlying rfl)
+    (hU : mappingHomotopyZeroEquiv closedBackground X.val X.val U.abutment = 𝟙 X.val)
+    (hV : mappingHomotopyZeroEquiv closedBackground X.val X.val V.abutment = 𝟙 X.val)
+    (r : ℤ) : U.page r = V.page r := by
+  let F := (mappingSystem.hom X X).underlying.F
+  have hf : U.filtered = V.filtered := by
+    apply (ModuleCat.mono_iff_injective (F.F 0 0).arrow).mp inferInstance
+    apply (mappingHomotopyZeroEquiv closedBackground X.val X.val).injective
+    exact hU.trans hV.symm
+  have hu := U.compatible
+  have hv := V.compatible
+  simp only [Filtration.transportGraded_self] at hu hv
+  have he : U.eInfty = V.eInfty := by
+    apply ((mappingSystem.hom X X).underlying.conv.iso (0,0)).toLinearEquiv.injective
+    exact hu.trans ((congrArg (F.toAssociatedGraded 0 0) hf).trans hv.symm)
+  exact zeroInfinityEqDeterminesAllPages
+    (mappingSpectrum closedBackground X.val X.val) r U.cycle V.cycle he
 
 /-- Fixed MappingComposition.page_left_unital; construction or proof deferred to its owning module. -/
 public theorem mapping_page_left_unital : ∀ (X Y : MappingObject (IsFiniteSpectrum (C := Spectrum))) (r : ℤ) (k : ℤ × ℤ)
@@ -199,18 +331,108 @@ public theorem mappingEnriched_composition_abutment : letI := mappingEnriched_mo
       f.convergence.aMap (i+j) ((mappingEnriched_tensorPairing X Y Z).abutmentPair i j x y) =
         (mappingComposition.pairing X Y Z).abutmentPair i j x y := by sorry
 
-/-- Fixed MappingEnrichment.unit_reindex; construction or proof deferred to its owning module. -/
-public theorem mappingEnriched_unit_reindex : mappingEnriched_monoidal.tensorUnit.underlying.conv.reindex (0,0) = (0,0) := by sorry
+/-- The enriched identity fixes the mapping system degree at the unit. -/
+public theorem mappingEnriched_unit_reindex : mappingEnriched_monoidal.tensorUnit.underlying.conv.reindex (0,0) = (0,0) := by
+  letI := mappingEnriched_monoidal
+  let X : MappingObject (IsFiniteSpectrum (C := Spectrum)) :=
+    ⟨SphereSpectrum, IsFiniteSpectrum.sphere⟩
+  let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
+    mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
+  exact congrFun f.convergence.reindex_eq (0,0)
+
 
 /-- Fixed MappingEnrichment.unit_data; construction or proof deferred to its owning module. -/
 public def mappingEnriched_unit_data : ConvergingSSUnit mappingEnriched_monoidal.tensorUnit.underlying mappingEnriched_unit_reindex := by sorry
 
-/-- Fixed MappingEnrichment.identity_page; construction or proof deferred to its owning module. -/
+/-- Fixed MappingEnrichment.identity_abutment; construction or proof deferred to its owning module. -/
+public theorem mappingEnriched_identity_abutment : letI := mappingEnriched_monoidal
+    ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
+      let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
+        mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
+      f.convergence.aMap 0 mappingEnriched_unit_data.abutment = (mappingComposition.identity X).abutment := by sorry
+
+private theorem inducedAssocGradedMapTransport
+    {A₁ A₂ : ℤ → ModuleCat.{0} ℤ}
+    {F₁ : Filtration A₁} {F₂ : Filtration A₂}
+    (aMap : ∀ k, A₁ k ⟶ A₂ k)
+    (hcompat : ∀ s k, ∃ φ : FiltrationPiece F₁ s k ⟶ FiltrationPiece F₂ s k,
+      φ ≫ (F₂.F s k).arrow = (F₁.F s k).arrow ≫ aMap k)
+    {p q : ℤ × ℤ} (hpq : p = q) :
+    Filtration.inducedAssocGradedMap aMap hcompat p.1 p.2 ≫ F₂.transportGraded hpq =
+      F₁.transportGraded hpq ≫ Filtration.inducedAssocGradedMap aMap hcompat q.1 q.2 := by
+  subst q
+  simp only [Filtration.transportGraded_self, Category.comp_id, Category.id_comp]
+
+private theorem unitMorphismInfinity
+    (X : MappingObject (IsFiniteSpectrum (C := Spectrum)))
+    {A : ConvergingSequence.{0,0} ℤ}
+    (hA : A.underlying.conv.reindex (0,0) = (0,0))
+    (U : ConvergingSSUnit A.underlying hA)
+    (V : ConvergingSSUnit (mappingSystem.hom X X).underlying rfl)
+    (f : A ⟶ mappingSystem.hom X X)
+    (hab : f.convergence.aMap 0 U.abutment = V.abutment) :
+    f.sequence.eInftyMap (0,0) U.eInfty = V.eInfty := by
+  let Fs := A.underlying.F
+  let Ft := (mappingSystem.hom X X).underlying.F
+  let g := f.convergence
+  let hc := g.filtration_compat 0 0
+  have hb : hc.choose U.filtered = V.filtered := by
+    apply (ModuleCat.mono_iff_injective (Ft.F 0 0).arrow).mp inferInstance
+    have hm := ConcreteCategory.congr_hom hc.choose_spec U.filtered
+    exact hm.trans hab
+  have hm := g.iso_compat (0,0)
+  have hm' := congrArg (fun k => k ≫ Ft.transportGraded hA) hm
+  change (g.eMap (0,0) ≫ ((mappingSystem.hom X X).underlying.conv.iso (0,0)).hom ≫
+      Ft.transportGraded hA.symm) ≫ Ft.transportGraded hA =
+    ((A.underlying.conv.iso (0,0)).hom ≫
+      Filtration.inducedAssocGradedMap g.aMap g.filtration_compat
+        (A.underlying.conv.reindex (0,0)).1 (A.underlying.conv.reindex (0,0)).2) ≫
+          Ft.transportGraded hA at hm'
+  simp only [Category.assoc, Filtration.transportGraded_trans,
+    Filtration.transportGraded_self] at hm'
+  rw [inducedAssocGradedMapTransport g.aMap g.filtration_compat hA] at hm'
+  have he := ConcreteCategory.congr_hom hm' U.eInfty
+  change ((mappingSystem.hom X X).underlying.conv.iso (0,0)).hom (g.eMap (0,0) U.eInfty) =
+    Filtration.inducedAssocGradedMap g.aMap g.filtration_compat 0 0
+      (Fs.transportGraded hA ((A.underlying.conv.iso (0,0)).hom U.eInfty)) at he
+  have hu : Fs.transportGraded hA ((A.underlying.conv.iso (0,0)).hom U.eInfty) =
+      Fs.toAssociatedGraded 0 0 U.filtered := U.compatible
+  have he₁ := he.trans
+    (congrArg (Filtration.inducedAssocGradedMap g.aMap g.filtration_compat 0 0) hu)
+  have hq : Fs.toAssociatedGraded 0 0 ≫
+      Filtration.inducedAssocGradedMap g.aMap g.filtration_compat 0 0 =
+        hc.choose ≫ Ft.toAssociatedGraded 0 0 := by
+    exact cokernel.π_desc _ _ _
+  have he' := he₁.trans (ConcreteCategory.congr_hom hq U.filtered)
+  have he'' := he'.trans (congrArg (Ft.toAssociatedGraded 0 0) hb)
+  have hv := V.compatible
+  simp only [Filtration.transportGraded_self] at hv
+  apply ((mappingSystem.hom X X).underlying.conv.iso (0,0)).toLinearEquiv.injective
+  rw [← f.eInfty_compatible]
+  exact he''.trans hv.symm
+
+/-- The enriched identity has the specified representative on every page. -/
 public theorem mappingEnriched_identity_page : letI := mappingEnriched_monoidal
     ∀ (X : MappingObject (IsFiniteSpectrum (C := Spectrum))) (r : ℤ),
       let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
         mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
-      f.sequence.pageMap r (0,0) (mappingEnriched_unit_data.page r) = (mappingComposition.identity X).page r := by sorry
+      f.sequence.pageMap r (0,0) (mappingEnriched_unit_data.page r) = (mappingComposition.identity X).page r := by
+  letI := mappingEnriched_monoidal
+  intro X r
+  let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
+    mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
+  have hi := unitMorphismInfinity X mappingEnriched_unit_reindex
+    mappingEnriched_unit_data (mappingComposition.identity X) f
+    (mappingEnriched_identity_abutment X)
+  have htop := congrArg (fun m => m mappingEnriched_unit_data.cycle)
+    (f.sequence.toSSDataMorphism.pageπ_pageMap (0,0) ⊤)
+  change f.sequence.pageMap r (0,0)
+    (infinityToPage _ r (0,0) mappingEnriched_unit_data.cycle) =
+      infinityToPage _ r (0,0) (mappingComposition.identity X).cycle
+  rw [infinityToPage_naturality]
+  exact zeroInfinityEqDeterminesAllPages
+    (mappingSpectrum closedBackground X.val X.val) r _ _ (htop.symm.trans hi)
+
 
 /-- The enriched identity agrees at E∞ by its page law on the same infinite cycle. -/
 public theorem mappingEnriched_identity_eInfty : letI := mappingEnriched_monoidal
@@ -234,13 +456,6 @@ public theorem mappingEnriched_identity_eInfty : letI := mappingEnriched_monoida
   have htop := congrArg (fun m => m mappingEnriched_unit_data.cycle)
     (f.sequence.toSSDataMorphism.pageπ_pageMap (0,0) ⊤)
   exact htop.trans hinf
-
-/-- Fixed MappingEnrichment.identity_abutment; construction or proof deferred to its owning module. -/
-public theorem mappingEnriched_identity_abutment : letI := mappingEnriched_monoidal
-    ∀ X : MappingObject (IsFiniteSpectrum (C := Spectrum)),
-      let f : 𝟙_ (ConvergingSequence.{0,0} ℤ) ⟶ mappingSystem.hom X X :=
-        mappingEnriched_enriched.id X ≫ eqToHom (mappingEnriched_hom_eq X X)
-      f.convergence.aMap 0 mappingEnriched_unit_data.abutment = (mappingComposition.identity X).abutment := by sorry
 
 public def mappingEnrichment : MappingEnrichment mappingComposition where
   monoidal := mappingEnriched_monoidal
@@ -581,26 +796,47 @@ public def gradedEnrichment : GradedLambdaEnrichment SyntheticSpectrum where
   compose := graded_compose
   compose_homogeneous := graded_compose_homogeneous
 
-/-- Fixed NuInfinityWeightMaps.map; construction or proof deferred to its owning module. -/
+public def shift_filtered (δ : ℤ × ℤ) : ∀ (X : SyntheticObject) (p : ℤ × ℤ),
+    FilteredPieceIso (model.convergence X).filtration
+      (model.convergence (.shift δ X)).filtration p (p+δ) := by sorry
+
+
+set_option backward.privateInPublic true in
+private def weightMapImplementation : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ) (_hw : w₁ ≤ w₂) (_ht : w₂ ≤ t),
+    ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₂)).eInfty ⟶
+      ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₁)).eInfty := by
+  intro X s t w₁ w₂ hw ht
+  let k : ℕ := (w₂-w₁).toNat
+  let δ : ℤ × ℤ := (0,-(k:ℤ))
+  let p : ℤ × ℤ := (t-s,w₂)
+  let A := model.nu.functor.obj (X.obj model.auxiliary)
+  have hk : w₂ - (k:ℤ) = w₁ := by
+    dsimp only [k]
+    rw [Int.toNat_of_nonneg (sub_nonneg.mpr hw)]
+    omega
+  let sh := towerInfinityIso (model.convergence (.nu X))
+    (model.convergence (.shift δ (.nu X))) (shift_filtered δ (.nu X) p) s
+  have hsrc : (s,p.1+s,p.2) = (s,t,w₂) := by
+    dsimp only [p]
+    ext <;> simp
+  have htgt : (s,(p+δ).1+s,(p+δ).2) = (s,t,w₁) := by
+    dsimp only [p, δ, Prod.fst_add, Prod.snd_add]
+    ext <;> simp_all only [add_zero, sub_add_cancel]
+    omega
+  let e : ((model.family.obj A).sequence.ssData (s,t,w₂)).eInfty ≅
+      ((model.family.obj ((SyntheticCategory.biShift δ).obj A)).sequence.ssData (s,t,w₁)).eInfty :=
+    eqToIso (congrArg (fun q => ((model.family.obj A).sequence.ssData q).eInfty) hsrc.symm) ≪≫
+      sh ≪≫
+        eqToIso (congrArg (fun q =>
+          ((model.family.obj ((SyntheticCategory.biShift δ).obj A)).sequence.ssData q).eInfty) htgt)
+  exact e.hom ≫ (model.family.map (lambdaPow k A)).eInftyMap (s,t,w₁)
+
+
+set_option backward.privateInPublic true in
+/-- Actual weight lowering: shift the fixed filtered homotopy, then apply the same λ power. -/
 public def weight_map : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ) (_hw : w₁ ≤ w₂) (_ht : w₂ ≤ t),
     ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₂)).eInfty ⟶
-      ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₁)).eInfty := by sorry
-
-/-- Fixed NuInfinityWeightMaps.map_self; construction or proof deferred to its owning module. -/
-public theorem weight_map_self : ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t),
-    weight_map X s t w w le_rfl hw = 𝟙 _ := by sorry
-
-/-- Fixed NuInfinityWeightMaps.map_comp; construction or proof deferred to its owning module. -/
-public theorem weight_map_comp : ∀ (X : ClassicalObject) (s t w₁ w₂ w₃ : ℤ)
-      (h₁₂ : w₁ ≤ w₂) (h₂₃ : w₂ ≤ w₃) (h₃ : w₃ ≤ t),
-    weight_map X s t w₂ w₃ h₂₃ h₃ ≫ weight_map X s t w₁ w₂ h₁₂ (h₂₃.trans h₃) =
-      weight_map X s t w₁ w₃ (h₁₂.trans h₂₃) h₃ := by sorry
-
-/-- Fixed NuInfinityWeightMaps.naturality; construction or proof deferred to its owning module. -/
-public theorem weight_naturality : ∀ (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
-      (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t),
-    (model.family.map (model.nu.functor.map f)).eInftyMap (s,t,w₂) ≫ weight_map Y s t w₁ w₂ hw ht =
-      weight_map X s t w₁ w₂ hw ht ≫ (model.family.map (model.nu.functor.map f)).eInftyMap (s,t,w₁) := by sorry
+      ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₁)).eInfty := weightMapImplementation
 
 /-- Fixed NuInfinityWeightMaps.representative; construction or proof deferred to its owning module. -/
 public theorem weight_representative : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ)
@@ -611,6 +847,168 @@ public theorem weight_representative : ∀ (X : ClassicalObject) (s t w₁ w₂ 
       HasInfinityRepresentative _ 2 (s,t,w₁) (nuWeightLabel model X s t w₁ (hw.trans ht) x)
         (weight_map X s t w₁ w₂ hw ht z) := by sorry
 
+private def weightRawPageIso
+    {E F : KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) Tridegree}
+    (e : E ≅ F) (r : ℤ) (p : Tridegree) : E.Page r p ≅ F.Page r p where
+  hom := e.hom.pageMap r p
+  inv := e.inv.pageMap r p
+  hom_inv_id := by
+    rw [← SpectralSequenceMorphism.pageMap_comp, e.hom_inv_id,
+      SpectralSequenceMorphism.pageMap_id]
+  inv_hom_id := by
+    rw [← SpectralSequenceMorphism.pageMap_comp, e.inv_hom_id,
+      SpectralSequenceMorphism.pageMap_id]
+
+private theorem weightLabelBijective (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t) :
+    Function.Bijective (nuWeightLabel model X s t w hw) := by
+  let zeroIso := SyntheticCategory.biShift_zero.app
+    (model.nu.functor.obj (X.obj model.auxiliary))
+  let zeroPage := weightRawPageIso (model.family.functor.mapIso zeroIso) 2
+    (s,t,t-(t-w).toNat)
+  have hzero : Function.Bijective zeroPage.hom := ConcreteCategory.bijective_of_isIso _
+  change Function.Bijective (fun x => nuWeightLabel model X s t w hw x)
+  dsimp only [nuWeightLabel, regradeE2, targetNuLabel]
+  apply Function.Bijective.comp
+  · exact ConcreteCategory.bijective_of_isIso _
+  · apply Function.Bijective.comp
+    · exact hzero
+    · change Function.Bijective
+        ((fun z : (model.family.obj ((SyntheticCategory.biShift (0,0)).obj
+            (model.nu.functor.obj (X.obj model.auxiliary)))).E₂
+              (s,t,t+0-(t-w).toNat) =>
+          Eq.mp (by simp only [add_zero]) z) ∘
+            (model.comparison.nuE2 X 0 s t (t-w).toNat))
+      exact (Equiv.cast _).bijective.comp
+        (model.comparison.nuE2 X 0 s t (t-w).toNat).bijective
+
+private theorem infinityHasWeightLabel (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
+    (z : ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData
+      (s,t,w)).eInfty) :
+    ∃ x, HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model X s t w hw x) z := by
+  let A := model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))
+  haveI : Epi ((A.sequence.ssData (s,t,w)).pageπ ⊤) :=
+    inferInstanceAs (Epi (cokernel.π _))
+  obtain ⟨a, ha⟩ := (ModuleCat.epi_iff_surjective
+    ((A.sequence.ssData (s,t,w)).pageπ ⊤)).mp inferInstance z
+  obtain ⟨x, hx⟩ := (weightLabelBijective X s t w hw).surjective
+    ((Subobject.ofLE _ _ ((A.sequence.ssData (s,t,w)).Z_anti le_top) ≫
+      (A.sequence.ssData (s,t,w)).pageπ
+        (↑(2-A.sequence.r₀).toNat : WithTop ℕ)) a)
+  exact ⟨x, by omega, a, hx.symm, ha⟩
+
+private theorem familyPageMapCast
+    {U V : SyntheticSpectrum} (g : U ⟶ V) {p q : Tridegree} (h : p = q)
+    (x : (model.family.obj U).E₂ p) :
+    model.family.pageMap g 2 q
+      (Eq.mp (congrArg (fun a : Tridegree => ((model.family.obj U).E₂ a : Type)) h) x) =
+      Eq.mp (congrArg (fun a : Tridegree => ((model.family.obj V).E₂ a : Type)) h)
+        (model.family.pageMap g 2 p x) := by
+  subst q
+  rfl
+
+private theorem targetNuLabelNatural
+    (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (s t : ℤ) (k : ℕ) (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    model.family.pageMap (model.nu.functor.map f) 2 (s,t,t-k)
+      (targetNuLabel model X s t k x) =
+    targetNuLabel model Y s t k ((model.classical.map f).pageMap 2 (s,t) x) := by
+  let p : Tridegree := (s,t,t-k)
+  let nuf := model.nu.functor.map f
+  let x₀ : (model.family.obj ((SyntheticCategory.biShift (0,0)).obj
+      (model.nu.functor.obj (X.obj model.auxiliary)))).E₂ p := by
+    simpa only [add_zero] using model.comparison.nuE2 X 0 s t k x
+  let y₀ : (model.family.obj ((SyntheticCategory.biShift (0,0)).obj
+      (model.nu.functor.obj (Y.obj model.auxiliary)))).E₂ p := by
+    simpa only [add_zero] using model.comparison.nuE2 Y 0 s t k
+      ((model.classical.map f).pageMap 2 (s,t) x)
+  have hxy : model.family.pageMap ((SyntheticCategory.biShift (0,0)).map nuf) 2 p x₀ = y₀ := by
+    have hdeg : (s,t,t+0-(k : ℤ)) = p := by dsimp [p]; simp only [add_zero]
+    have hraw := model.comparison.nu_natural X Y f 0 s t k x
+    have hc := familyPageMapCast ((SyntheticCategory.biShift (0,0)).map nuf) hdeg
+      (model.comparison.nuE2 X 0 s t k x)
+    exact hc.trans (congrArg
+      (fun z => Eq.mp (congrArg (fun a : Tridegree =>
+        ((model.family.obj ((SyntheticCategory.biShift (0,0)).obj
+          (model.nu.functor.obj (Y.obj model.auxiliary)))).E₂ a : Type)) hdeg) z) hraw)
+  let zx := SyntheticCategory.biShift_zero.hom.app
+    (model.nu.functor.obj (X.obj model.auxiliary))
+  let zy := SyntheticCategory.biShift_zero.hom.app
+    (model.nu.functor.obj (Y.obj model.auxiliary))
+  have hn : (SyntheticCategory.biShift (0,0)).map nuf ≫ zy = zx ≫ nuf :=
+    SyntheticCategory.biShift_zero.hom.naturality nuf
+  change model.family.pageMap nuf 2 p (model.family.pageMap zx 2 p x₀) =
+    model.family.pageMap zy 2 p y₀
+  calc
+    _ = model.family.pageMap (zx ≫ nuf) 2 p x₀ :=
+      (ConcreteCategory.congr_hom (familyPageMap_comp model.family zx nuf 2 p) x₀).symm
+    _ = model.family.pageMap ((SyntheticCategory.biShift (0,0)).map nuf ≫ zy) 2 p x₀ :=
+      congrArg (fun g => model.family.pageMap g 2 p x₀) hn.symm
+    _ = model.family.pageMap zy 2 p
+        (model.family.pageMap ((SyntheticCategory.biShift (0,0)).map nuf) 2 p x₀) :=
+      ConcreteCategory.congr_hom
+        (familyPageMap_comp model.family ((SyntheticCategory.biShift (0,0)).map nuf) zy 2 p) x₀
+    _ = _ := congrArg (model.family.pageMap zy 2 p) hxy
+
+private theorem familyPageMapRegrade
+    {U V : SyntheticSpectrum} (g : U ⟶ V) {p q : Tridegree} (h : p = q)
+    (x : (model.family.obj U).E₂ p) :
+    model.family.pageMap g 2 q (regradeE2 h x) =
+      regradeE2 h (model.family.pageMap g 2 p x) := by
+  subst q
+  rfl
+
+private theorem weightLabelNatural
+    (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (s t w : ℤ) (hw : w ≤ t)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    model.family.pageMap (model.nu.functor.map f) 2 (s,t,w)
+      (nuWeightLabel model X s t w hw x) =
+    nuWeightLabel model Y s t w hw ((model.classical.map f).pageMap 2 (s,t) x) := by
+  unfold nuWeightLabel
+  rw [familyPageMapRegrade, targetNuLabelNatural]
+
+/-- The fixed weight maps preserve identities. -/
+public theorem weight_map_self : ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t),
+    weight_map X s t w w le_rfl hw = 𝟙 _ := by
+  intro X s t w hw
+  ext z
+  obtain ⟨x, hx⟩ := infinityHasWeightLabel X s t w hw z
+  have hm := weight_representative X s t w w le_rfl hw x z hx
+  exact HasInfinityRepresentative.unique hm hx
+
+
+/-- The fixed weight maps compose along increasing weights. -/
+public theorem weight_map_comp : ∀ (X : ClassicalObject) (s t w₁ w₂ w₃ : ℤ)
+      (h₁₂ : w₁ ≤ w₂) (h₂₃ : w₂ ≤ w₃) (h₃ : w₃ ≤ t),
+    weight_map X s t w₂ w₃ h₂₃ h₃ ≫ weight_map X s t w₁ w₂ h₁₂ (h₂₃.trans h₃) =
+      weight_map X s t w₁ w₃ (h₁₂.trans h₂₃) h₃ := by
+  intro X s t w₁ w₂ w₃ h₁₂ h₂₃ h₃
+  ext z
+  obtain ⟨x, hx⟩ := infinityHasWeightLabel X s t w₃ h₃ z
+  have h₂ := weight_representative X s t w₂ w₃ h₂₃ h₃ x z hx
+  have h₁ := weight_representative X s t w₁ w₂ h₁₂ (h₂₃.trans h₃) x _ h₂
+  have h₁' := weight_representative X s t w₁ w₃ (h₁₂.trans h₂₃) h₃ x z hx
+  exact HasInfinityRepresentative.unique h₁ h₁'
+
+
+/-- The fixed weight maps commute with maps induced by nu. -/
+public theorem weight_naturality : ∀ (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+      (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) (ht : w₂ ≤ t),
+    (model.family.map (model.nu.functor.map f)).eInftyMap (s,t,w₂) ≫ weight_map Y s t w₁ w₂ hw ht =
+      weight_map X s t w₁ w₂ hw ht ≫ (model.family.map (model.nu.functor.map f)).eInftyMap (s,t,w₁) := by
+  intro X Y f s t w₁ w₂ hw ht
+  ext z
+  obtain ⟨x, hx⟩ := infinityHasWeightLabel X s t w₂ ht z
+  have hy := infinity_rep_map (model.nu.functor.map f) (s,t,w₂) hx
+  rw [weightLabelNatural] at hy
+  have hleft := weight_representative Y s t w₁ w₂ hw ht
+    ((model.classical.map f).pageMap 2 (s,t) x) _ hy
+  have hlow := weight_representative X s t w₁ w₂ hw ht x z hx
+  have hright := infinity_rep_map (model.nu.functor.map f) (s,t,w₁) hlow
+  rw [weightLabelNatural] at hright
+  exact HasInfinityRepresentative.unique hleft hright
+
+
 public def weightMaps : NuInfinityWeightMaps model where
   map := weight_map
   map_self := weight_map_self
@@ -618,9 +1016,6 @@ public def weightMaps : NuInfinityWeightMaps model where
   naturality := weight_naturality
   representative := weight_representative
 
-public def shift_filtered (δ : ℤ × ℤ) : ∀ (X : SyntheticObject) (p : ℤ × ℤ),
-    FilteredPieceIso (model.convergence X).filtration
-      (model.convergence (.shift δ X)).filtration p (p+δ) := by sorry
 
 public theorem shift_ambient_eq (δ : ℤ × ℤ) : ∀ (X : SyntheticObject) (p : ℤ × ℤ)
       (a : BiHom p.1 p.2 (X.obj model.nu model.auxiliary)),
@@ -667,7 +1062,25 @@ public theorem mapping_sphere_product (p q : ℤ × ℤ)
 public theorem mapping_sphere_unit :
     (sphereMappingAdamsIso closedBackground classical).hom.pageMap 2 (0,0)
       ((mapping_identity ⟨SphereSpectrum, IsFiniteSpectrum.sphere⟩).page 2) =
-        sphereAlgebra.unit := by sorry
+        sphereAlgebra.unit := by
+  let S : FiniteSpectrum := ⟨SphereSpectrum, IsFiniteSpectrum.sphere⟩
+  let e := sphereMappingAdamsIso closedBackground classical
+  let u := e.inv.pageMap 2 (0,0) sphereAlgebra.unit
+  have hu : e.hom.pageMap 2 (0,0) u = sphereAlgebra.unit := by
+    have h := congrArg (fun f => f sphereAlgebra.unit)
+      (congrArg (fun f => f.pageMap 2 (0,0)) e.inv_hom_id)
+    simpa only [SpectralSequenceMorphism.pageMap_comp,
+      SpectralSequenceMorphism.pageMap_id, ModuleCat.comp_apply,
+      ModuleCat.id_apply] using h
+  have h := mapping_sphere_product (0,0) (0,0) ((mapping_identity S).page 2) u
+  have hleft := eq_of_heq (mapping_page_left_unital S S 2 (0,0) u)
+  rw [hleft] at h
+  change e.hom.pageMap 2 (0,0) u = sphereAlgebra.product (0,0) (0,0)
+    (e.hom.pageMap 2 (0,0) ((mapping_identity S).page 2))
+    (e.hom.pageMap 2 (0,0) u) at h
+  rw [hu] at h
+  exact (eq_of_heq (sphereAlgebra.unit_right (0,0)
+    (e.hom.pageMap 2 (0,0) ((mapping_identity S).page 2)))).symm.trans h.symm
 
 public theorem graded_associative (W X Y Z : SyntheticSpectrum)
     (f : TotalWeightHom W X) (g : TotalWeightHom X Y) (h : TotalWeightHom Y Z) :

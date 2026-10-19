@@ -1,4 +1,5 @@
 module
+import Mathlib.RingTheory.Ideal.Quotient.Operations
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
 import all KIP126.ProofTools.Paper.OriginalStatements
 import all KIP126.ProofTools.Paper.ExtensionDescent

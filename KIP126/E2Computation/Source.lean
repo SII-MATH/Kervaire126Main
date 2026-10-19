@@ -5,8 +5,9 @@ public import KIP126.AdamsSynthetic
 /-! Pure mathematical source presentation for the fixed Lin sphere calculation.
 Adapted from KIP126 (Apache-2.0), review commit bbac1fc05843bdf2d56057e6114a38839e939378.
 The fixed objects and theorems are provided by Computation.Standard. These
-mathematical types support the eventual archived quotient construction and its
-comparison proof. No raw database, checker or concrete cobar construction is
+mathematical types support its constructed fixed untruncated native quotient;
+source-basis correctness, source coordinates and the actual-page comparison
+remain separate mathematical obligations. No raw database, checker or concrete cobar construction is
 imported by the consumer. A revision string does not prove any result. -/
 
 @[expose] section
@@ -63,8 +64,11 @@ public abbrev Atom.record : Atom → Nat × String × Nat × Nat
 /-- The actual finite list of source labels and degrees, without a raw table dependency. -/
 public abbrev Atom.degree (a : Atom) : ℕ × ℕ := (a.record.2.2.1, a.record.2.2.2)
 
-/-- A graded source-data algebra. The project fixes one in Computation.Standard;
-its archived quotient construction remains pending. Source labels must be the archived generators at
+/-- A graded source-data algebra. Computation.Standard constructs the project's
+fixed untruncated native CSV quotient, homogeneous components, quotient
+product and unit, and original archived Atom labels. Source-basis correctness,
+source coordinates and the actual-page comparison remain separate obligations.
+Source labels must be the archived generators at
 `Atom.record`, not freshly chosen actual-page elements. The comparison below
 is an additional mathematical obligation, not a consequence of provenance. -/
 public structure ProgramData where

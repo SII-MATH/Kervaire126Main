@@ -1,5 +1,6 @@
 module
 import KIP126.E2Computation.Standard
+import Mathlib.RingTheory.Ideal.Quotient.Operations
 import KIP126.E2Computation.Table.Values
 
 set_option backward.isDefEq.respectTransparency false
