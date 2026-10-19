@@ -378,27 +378,46 @@ From \cite{LWX126}, Proposition 2.20.\par
     $$\pi_*X\fto{\pi_*f}\pi_*Y\fto{\pi_*g}\pi_*Z$$
     that is exact in $\pi_*Y$. Then all permanent cycles in $E^{*,*}_\infty(Y)$ of the $g$-ESS are boundaries in the $f$-ESS.
 % END AIMPAPER STATEMENT
-\uses{paper:2.1,paper:2.5}
+\uses{paper:2.1,paper:2.5,sem:SpectralSequence:completion,sem:AdamsSynthetic:selected-convergence}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 656-664](paper/main.tex.html#L656). Convergence of the filtered complex and exactness identify permanent cycles with extension boundaries; representatives give the alternative proof.
 
 
 
-The formal theorem with explicit convergence hypotheses is
-Theorem~\ref{sem:ProofTools:complete-exact-extension-boundaries}: in every
-stem, the Adams filtration of $\pi_*Y$ is complete with finite nonnegative
-filtration quotients, and the Adams filtration of $\pi_*Z$ is separated.
-Its proof constructs one representative killed by $g$ from the finite
-inverse system of approximate representatives, then applies the displayed
-homotopy exactness. Permanence itself still permits a different
-representative on each page.
-% Blueprint note: The quoted AimPaper statement is retained verbatim, with its global 2-complete connective finite-type context. Its formal theorem and proof are bound to the separate entry with explicit convergence hypotheses; the original quotation has no direct Lean binding here.
+As throughout \cite{LWX126}, spectra are understood to be 2-completed,
+connective and of finite type. The Lean binding expresses the same
+conclusion through the representative criterion of
+Proposition~\ref{paper:2.5}, with completeness of the middle homotopy
+filtration, finite nonnegative filtration quotients and separation of the
+target filtration explicit in its background inputs. Permanence still
+permits a different representative on each page; zero labels are included.
+The fixed Standard model's realization of this completed background and
+its convergence hypotheses remains an upstream task, tracked in
+issue 31.
+% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form theorem. The explicit background inputs are retained; this binding does not assert their construction for the fixed Standard model.
+% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
+\lean{KIP126.ProofTools.Paper.extensionBoundary_of_exact}
 \end{proposition}
 \begin{proof}
+\uses{paper:2.5,sem:SpectralSequence:completion,sem:AdamsSynthetic:selected-convergence}
 \textit{(See \cite{LWX126}, Proposition 2.20.)} \href{paper/main.tex.html#L656}{Original proof}.
 
-Convergence of the $g$-extension spectral sequence identifies a permanent cycle $y$ with the leading term of a representative $[y]$ in $\ker(g_*: \pi_*Y\to\pi_*Z)$. Exactness supplies $[x]\in\pi_*X$ with $f[x]=[y]$. Taking the first nonzero Adams-filtration term $x$ of this representative gives an $f$-extension from $x$ to $y$, by Proposition~\ref{paper:2.5}. Hence $y$ is an $f$-extension boundary.
+The representative argument makes the convergence step explicit. Fix
+$y\in E_\infty^{s,d+s}(Y)$. For each integer $k$, let $S_k$ consist of the
+residue classes in $\pi_dY/F^k\pi_dY$ represented by some $b$ representing
+$y$ with $g_*b\in F^k\pi_dZ$. Permanence makes every $S_k$ nonempty.
+The finite nonnegative quotients also make every integer-indexed quotient
+finite, and the quotient transitions carry $S_l$ into $S_k$ for $k\leq l$.
+The finite inverse-system principle gives a compatible family of such
+residues. Completeness lifts it to one element $b\in\pi_dY$.
 
-The formal theorem in \ref{sem:ProofTools:complete-exact-extension-boundaries} is proved with completeness of the source homotopy filtration, finite filtration quotients and separation of the target filtration stated explicitly. Its finite inverse-system construction supplies the required common kernel representative. This conditional proof does not assert those hypotheses for every model from weak Adams convergence alone.
+The residue at $k=s+1$ shows that $b$ still represents $y$. For every
+$n\geq0$, its residue at $n$ agrees with that of a representative whose
+image lies in $F^n\pi_dZ$. Filtration preservation then puts $g_*b$ in
+$F^n\pi_dZ$ as well. Separation gives $g_*b=0$, and homotopy exactness
+supplies $c\in\pi_dX$ with $f_*c=b$. At $a=\min(0,s)$ the source Adams
+filtration is the whole homotopy group, so $c$ defines an
+associated-graded class $x$. Proposition~\ref{paper:2.5} gives the required
+$f$-extension from $x$ to $y$, so $y$ is an $f$-extension boundary.
 \end{proof}
 
 \section{Synthetic boundary maps and extension differentials}
@@ -709,30 +728,55 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
     implies that
     $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
 % END AIMPAPER STATEMENT
-\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11}
+\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11,paper:2.5,sem:Literature:realization-coordinates,sem:Literature:lambda-inversion-adams-comparison,sem:Literature:lambda-inversion-detection}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
 
 
 
-Theorem~\ref{sem:ProofTools:lambda-inversion-homotopy-extension} proves the
-formal transport with specified realization coordinates and the actual
-Adams-tower comparison of
-Definition~\ref{sem:Literature:lambda-inversion-adams-comparison}.
-The comparison transports detection of the same homotopy representative;
-zero labels, boundary labels and inessential extensions remain allowed.
-Constructing these comparison data for the fixed Standard model is still
-required before specializing that conditional theorem.
+As throughout \cite{LWX126}, spectra are understood to be 2-completed,
+connective and of finite type. The Lean binding expresses the extension
+equation by the representative criterion of Proposition~\ref{paper:2.5}:
+$x$ detects one $a$ and $y$ detects $f_*a$. Realization coordinates and
+the actual Adams-tower comparison of
+Definition~\ref{sem:Literature:lambda-inversion-adams-comparison} make the
+lambda-inversion background explicit. Zero labels, boundary labels and
+inessential extensions remain allowed. Constructing these comparison
+data for the fixed Standard model remains an upstream task, tracked in
+issue 31.
 % Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
 % Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
 % Blueprint note: The printed boundary group on $Y$ has index $(s,t)$ although $y$ has degree $(s+n,t+n)$. The typed conclusion uses the latter degree and keeps zero and inessential extensions. See the statement-typing correction record.
-% Blueprint note: The original quotation has no direct Lean binding here. The separate formal entry states the comparison premise and binds the proved conditional transport, without claiming that the Standard comparison producer has been constructed.
+% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form transport. The realization coordinates and actual comparison remain explicit inputs; the binding does not assert that the Standard comparison producer has been constructed.
+% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
+\lean{KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension}
 \end{proposition}
 \begin{proof}
+\uses{sem:ProofTools:extension-representatives,sem:Literature:lambda-inversion-detection,sem:Literature:lambda-inversion-adams-comparison,sem:AdamsSynthetic:normalized-map,paper:3.11,paper:2.5}
 \textit{(See \cite{LWX126}, Proposition 5.14.)} \href{paper/main.tex.html#L1589}{Original proof}.
 
 Invert $\lambda$ in the filtered synthetic map $\widehat f$. The comparison with the classical map $f$ induces a morphism of extension spectral sequences. On the starting page, Proposition~\ref{paper:3.11} sends a label in $Z_\infty/B_{1+t-w}$ to its class in $Z_\infty/B_\infty=E_\infty$.
 
-Naturality transports the given differential to a classical $f$-extension between these images. The target is taken in its own bidegree $(s+n,t+n)$, as required for the quotient by its boundary group. Localization can enlarge the boundary indeterminacy, so the resulting extension need not be essential. The formal theorem in \ref{sem:ProofTools:lambda-inversion-homotopy-extension} proves this transport for the same representative from the specified realization coordinates and actual Adams-tower comparison, including zero and boundary labels. Constructing that comparison for the fixed Standard model remains an upstream task; the conditional transport theorem itself is proved.
+For the formal representative transport, put $e=e(f)$ and $w=t+e$.
+The actual extension equation gives one representative
+$\beta\in\pi_{t-s,w}(\Sigma^{0,e}\nu X)$ whose image under $\hat f$
+has the specified target detection. Apply the detection transport theorem
+to this same $\beta$ and to $\hat f_*\beta$. The prescribed $E_2$
+comparisons return precisely $x$ and $y$.
+
+Realization of the normalized factorization, followed by cancellation of
+the invertible realized lambda map, gives
+\[
+\theta_Y\circ\operatorname{Re}(\hat f)
+ =f\circ\theta_{\Sigma^{0,e}\nu X}.
+\]
+Thus the first realized representative is $a$, and the second is exactly
+$f_*a$. The sphere-coordinate transport accounts for
+$(t+n)-(s+n)=t-s$. By Proposition~\ref{paper:2.5}, these detections give
+the classical $f$-extension in the conclusion. The target is taken in its
+own bidegree $(s+n,t+n)$, as required for the quotient by its boundary
+group. Localization can enlarge the boundary indeterminacy, so the
+resulting extension need not be essential. The argument includes zero
+and boundary labels and imposes no nonvanishing or essentiality condition.
 \end{proof}
 
 \section{The finite-layer generalized Mahowald trick}

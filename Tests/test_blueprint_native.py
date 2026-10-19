@@ -71,30 +71,38 @@ class ProofToolsBindingTests(unittest.TestCase):
             self.assertEqual(row['lean'], ['KIP126.ProofTools.Paper.' + name])
             self.assertEqual(_tex_lean_status(row, states)[0],
                              'sorry' if number in pending else 'lean_ok')
-        # Original quotations retain the article's exact statement. Only the
-        # separate entries with all approved premises bind the conditional proofs.
+        # The article's original nodes bind the proved representative forms;
+        # their common background stays explicit without duplicate statements.
         originals = {row['number']: row for row in load_paper(ROOT)}
-        conditional = {
+        background_explicit = {
             '2.20': ('sem:ProofTools:complete-exact-extension-boundaries',
                      'extensionBoundary_of_exact'),
             '5.14': ('sem:ProofTools:lambda-inversion-homotopy-extension',
                      'infiniteExtension_to_classicalExtension'),
         }
-        for number, (label, name) in conditional.items():
-            original, revised = by_label['paper:' + number], by_label[label]
-            self.assertEqual(original['lean'], [])
+        for number, (retired_label, name) in background_explicit.items():
+            original = by_label['paper:' + number]
+            self.assertNotIn(retired_label, by_label)
             source = re.sub(r'\\label\{[^}]+\}', '', originals[number]['raw'])
             self.assertIn(' '.join(source.split()), ' '.join(original['body'].split()))
-            self.assertIn(label, original['body'])
-            self.assertEqual(revised['lean'], ['KIP126.ProofTools.Paper.' + name])
-            self.assertEqual(_tex_lean_status(revised, states)[0], 'lean_ok')
-        complete = by_label['sem:ProofTools:complete-exact-extension-boundaries']['body']
-        for condition in (r'\varprojlim', 'finite for every', r'\bigcap_{n\geq0}'):
+            self.assertEqual(original['lean'], ['KIP126.ProofTools.Paper.' + name])
+            self.assertEqual(_tex_lean_status(original, states)[0], 'lean_ok')
+            for row in all_rows:
+                self.assertNotIn(retired_label, row['uses'], row['label'])
+        complete = ' '.join(by_label['paper:2.20']['body'].split())
+        for condition in ('2-completed, connective and of finite type',
+                          'completeness of the middle homotopy filtration',
+                          'finite nonnegative filtration quotients',
+                          'separation of the target filtration'):
             self.assertIn(condition, complete)
-        comparison = by_label['sem:ProofTools:lambda-inversion-homotopy-extension']
-        self.assertIn('Fix realization coordinates $R$', comparison['body'])
+        self.assertIn('fixed Standard model', complete)
+        self.assertIn('upstream task', complete)
+        comparison = by_label['paper:5.14']
         self.assertIn('sem:Literature:lambda-inversion-adams-comparison', comparison['uses'])
-        self.assertIn('fixed Standard model is still', by_label['paper:5.14']['body'])
+        self.assertIn('Realization coordinates', comparison['body'])
+        self.assertIn('actual Adams-tower comparison', comparison['body'])
+        self.assertIn('fixed Standard model', comparison['body'])
+        self.assertIn('upstream task', comparison['body'])
 
 
 class NativeDependencyTests(unittest.TestCase):

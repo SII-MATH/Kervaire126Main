@@ -238,3 +238,8 @@ JSON中的实际type fingerprint为 `360519681979022276`，宇宙仍为u/v/w。2
 出处：协调者 `/root` 在本session后续派工消息转发的真实用户原话；编号映射是第一项2.20、第三项5.14、第二项5.10。本报告仅记录第一项授权：添加上文 `hYcomplete`、`hYfinite`、`hZseparated`，保持原hexact、逐页ClassicalPermanent及结论，补完证明并同步既有接口/责任/测试，不新增sorry。其他项各自报告，不把5.10的说明/PDF请求解释成其statement修改授权。
 
 状态为 `approved-interface-change`。这不表示实现已完成、Standard的条件已无待补来源依赖或全仓检查已通过。实施及统一验证由协调者继续安排。旧报告2026-10-18的保留statement授权仅作为历史保存；本条新的明确授权在上述限定范围内取代旧限制。
+
+
+## 2026-10-19：统一原文节点绑定
+
+用户随后明确要求将已完成形式化直接绑定灰色原文节点，不再另设改写的自然语言版本，因为结论相同，显式输入表达的是论文默认背景。本轮据此将 `KIP126.ProofTools.Paper.extensionBoundary_of_exact` 直接绑定 `paper:2.20`，保留AimPaper原引文，将代表元证明合并到同一节点，取消原独立改写节点。Lean公开类型、证明和已批准背景输入保持不变；该绑定不声称固定Standard背景或比较实例已经构造。跨模块固定对象迁移已按用户要求推迟，跟踪于 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。本报告既有接口批准、证据等级与未完成边界不变。
