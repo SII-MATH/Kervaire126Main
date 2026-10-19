@@ -72,7 +72,7 @@ class AimPaperPresentationTests(unittest.TestCase):
             self.assertIn('thm:126survives', permanence['labels'])
             self.assertFalse(any(row['label'] == 'paper:7.1' for row in paper))
             self.assertEqual(permanence['title'], 'Permanence of $h_6^2$')
-            self.assertIn(r'(From \cite{LWX126}, Theorem 1.4, Theorem 7.1.)', permanence['body'])
+            self.assertIn(r'From \cite{LWX126}, Theorem 1.4, Theorem 7.1.\par', permanence['body'])
             self.assertNotIn('[Theorem', permanence['body'])
             original_permanence = next(row for row in original if row['label'] == 'paper:1.4')
             self.assertNotIn('[Theorem', display_body(original_permanence['body'], '1.4', refs))
