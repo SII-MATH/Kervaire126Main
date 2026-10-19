@@ -10,7 +10,7 @@ set_option maxHeartbeats 0
 -- A normal consumer imports only the public entry point. The contract locks
 -- complete types, universe parameters, exports and transitive axiom dependencies.
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../metadata/spectral-sequence-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../interface/baselines/spectral-sequence-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let declarations := named ++ generated

@@ -14,7 +14,7 @@ MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature',
 def public_interfaces(root):
     """The eight locks partition the public interfaces by actual module owner."""
     result = {}
-    for path in (root / 'metadata').glob('*-api.json'):
+    for path in (root / 'interface/baselines').glob('*-api.json'):
         lock = json.loads(path.read_text())
         if lock.get('module') not in MODULES:
             continue  # Only mathematical module locks determine ownership.

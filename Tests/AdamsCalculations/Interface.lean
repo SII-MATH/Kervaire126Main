@@ -9,7 +9,7 @@ set_option maxHeartbeats 0
 /-! Later Adams calculations have their own reviewed public interface. They
 may use E₂ input and ProofTools, and cannot import Main or unowned modules. -/
 run_cmd do
-  let contract ← ofExcept <| Json.parse (include_str "../../metadata/adams-calculations-api.json")
+  let contract ← ofExcept <| Json.parse (include_str "../../interface/baselines/adams-calculations-api.json")
   let named ← ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let generated ← ofExcept <| contract.getObjValAs? (Array Json) "generated_declarations"
   let expectedExports ← ofExcept <| contract.getObjValAs? (Array String) "exports"

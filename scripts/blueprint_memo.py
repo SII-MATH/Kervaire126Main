@@ -115,7 +115,7 @@ def markdown(text):
         url, label = html.unescape(match[1]), match[2]
         if url.startswith('local-history/'):
             return '<span class="memo-local-ref">' + label + ' <small>本地审查记录</small></span>'
-        if url.startswith('interface-proposals/'):
+        if url.startswith('interface/proposals/'):
             from blueprint_proposals import read_reports
             report = next((r for r in read_reports(Path(__file__).resolve().parents[1]) if r['path'] == url), None)
             if report:

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Interfaces · Kervaire 126</title>
+  <link rel="stylesheet" href="interfaces.css">
+  <script src="../hgraph-custom-page.js" defer></script>
+  <script src="interface-navigation.js" defer></script>
+  <script src="interfaces.js" defer></script>
+</head>
+<body>
+<main class="interface-page">
+  <!-- INTERFACE_NAV -->
+  <header>
+    <div class="eyebrow">PUBLIC INTERFACES · BUILD BASELINES</div>
+    <h1>Interfaces</h1>
+    <p class="intro">Explore the eight module interfaces and their registered proof obligations.</p>
+    <div class="header-links"><span id="interface-count">Loading baselines…</span><a href="guide.html" target="_blank">Baseline guide ↗</a><a href="data.json" download>Download page data ↓</a></div>
+  </header>
+  <aside class="note">These are recorded interface locks, not a completed-build certificate. Source statements are shown before elaboration, with their local context. Axiom lists are the baseline allowance; <code>sorryAx</code> may be inherited from upstream. Registered obligations list direct unfinished responsibilities, including private helpers. Lean checks run separately.</aside>
+  <div id="interface-modules" class="modules" aria-label="Module overview"></div>
+  <form id="interface-filters" role="search">
+    <label class="search">Search interfaces<input id="interface-search" type="search" placeholder="Declaration, source statement, axiom…" autocomplete="off"></label>
+    <label>Module<select id="interface-module"><option value="">All modules</option></select></label>
+    <label>Entries<select id="interface-kind"><option value="declaration">Public declarations</option><option value="generated">Generated exports</option><option value="obligation">Registered obligations</option><option value="">All entries</option></select></label>
+    <label>Baseline dependency<select id="interface-dependency"><option value="">All dependencies</option><option value="sorry">Includes sorryAx</option><option value="no-sorry">No sorryAx recorded</option></select></label>
+    <button type="reset">Reset</button>
+  </form>
+  <p id="interface-results" role="status" aria-live="polite">Loading…</p>
+  <div id="interface-empty" hidden>No matching entries. Try another search or filter.</div>
+  <div id="interface-records"></div>
+  <nav class="pagination" aria-label="Interface result pages"><button type="button" id="interface-prev">Previous</button><span id="interface-page-number"></span><button type="button" id="interface-next">Next</button></nav>
+  <details class="reference"><summary>Audit boundaries</summary><p>Exact Main roots and the ProofTools boundary, read from the obligation registry.</p><pre id="interface-audit"></pre></details>
+  <details class="reference"><summary>Identifier renames</summary><pre id="interface-naming"></pre></details>
+  <details class="reference"><summary>Download canonical baselines</summary><div id="interface-downloads"></div></details>
+  <noscript>This explorer needs JavaScript. The canonical files are available at <a href="interface/baselines/proof-obligations.json">proof-obligations.json</a> and the <a href="guide.html">baseline guide</a>.</noscript>
+</main>
+</body>
+</html>

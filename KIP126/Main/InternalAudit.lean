@@ -364,7 +364,7 @@ run_cmd do
 -- that audit recursively checks these boundary declarations with full bodies.
 -- The independent full-body dependency observer checks the composed graph.
 run_cmd do
-  let contract ← Lean.ofExcept <| Json.parse (include_str "../../metadata/main-api.json")
+  let contract ← Lean.ofExcept <| Json.parse (include_str "../../interface/baselines/main-api.json")
   let rows ← Lean.ofExcept <| contract.getObjValAs? (Array Json) "declarations"
   let roots ← rows.mapM fun row => do
     let name ← Lean.ofExcept <| row.getObjValAs? String "name"
