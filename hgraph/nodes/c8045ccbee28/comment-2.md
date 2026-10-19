@@ -6,11 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T14:03:28.770545+00:00'
+updated: '2026-10-19T06:19:35.726539+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 
-Original proof: [AimPaper source, lines 2698-2778](paper/main.tex.html#L2698), using Lemma 7.16 and Corollary 7.18 before the nu extension and cofiber contradiction. The retained formal route is explained at sem:Main:weak-representative-route: it preserves the nonzero lambda-squared h0 value while removing low-filtration terms and does not invoke either pending public statement. The authored dependencies follow this retained route; the original statements and their unresolved proof obligations remain separately visible.
+Original proof: [AimPaper source, lines 2698-2778](paper/main.tex.html#L2698), using Lemma 7.16 and Corollary 7.18 before the nu extension and cofiber contradiction. The retained formal route is explained at sem:Main:weak-representative-route: it preserves the nonzero lambda-squared h0 value while removing low-filtration terms and does not invoke either conditional public statement. The authored dependencies follow this independent route. The two conditional statements now follow by excluding their hypotheses; the original direct proof gaps remain documented separately.
 
 **Formal scope:** Public correspondence.
 

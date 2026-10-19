@@ -73,7 +73,9 @@ run_cmd do
       `KIP126.Main.h6_sq_permanent,
       `KIP126.Main.h6_square_differential_dichotomy_and_criterion,
       `KIP126.Main.theta5_square_nonzero_detection_choice_equivalence,
-      `KIP126.Main.theta_square_three_possibilities] do
+      `KIP126.Main.theta_square_three_possibilities,
+      `KIP126.Main.Paper.lemma_toda2ext,
+      `KIP126.Main.Paper.corollary_2ext125] do
     let some info := exported.find? name
       | throwError "Missing selected paper result: {name}"
     if info.type.hasSorry || (info.value? (allowOpaque := true)).any (·.hasSorry) then

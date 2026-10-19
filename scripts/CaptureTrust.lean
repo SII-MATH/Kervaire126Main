@@ -99,6 +99,7 @@ import all KIP126.Literature.EInfinity
 import all KIP126.Literature.Geometry.Browder
 import all KIP126.Literature.Geometry.KervaireInvariant
 import all KIP126.Literature.Geometry.Manifolds
+import all KIP126.Literature.LambdaInversionAdams
 import all KIP126.Literature.Lift
 import all KIP126.Literature.May
 import all KIP126.Literature.Moss
@@ -391,6 +392,7 @@ import all KIP126.ProofTools.Language
 import all KIP126.ProofTools.Laws
 import all KIP126.ProofTools.LevelLanguage
 import all KIP126.ProofTools.Operations
+import all KIP126.ProofTools.Paper.ClassicalKernelCompactness
 import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 import all KIP126.ProofTools.Paper.ExtensionDescent

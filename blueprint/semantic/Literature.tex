@@ -40,7 +40,16 @@ Both groups use the same classical category and coefficient object.
 (Project construction; cf.\ \cite{Pst}, Prop. 4.40.)\par{}
 
 Let $\operatorname{Re}$ be the additive realization functor with sphere isomorphisms $S^m\cong\operatorname{Re}(S^{m,w})$. Its isomorphism at the unit is the $\nu$--realization comparison. In these coordinates, realization sends each sphere map $\lambda^k$ to the identity. Write $\operatorname{Re}(a)$ for the induced realization of a sphere class or a class on $\nu X$.
-\lean{KIP126.Literature.Standard.realization_additive,KIP126.Literature.Standard.realization_sphere,KIP126.Literature.Standard.realization_unit,KIP126.Literature.Standard.realization_lambda,KIP126.Literature.Standard.realizationData,KIP126.Literature.Standard.realizeSphere,KIP126.Literature.Standard.realizeNu}
+For any specified system $R$ of these coordinates, write
+$\rho_{m,w}:S^m\xrightarrow{\sim}\operatorname{Re}(S^{m,w})$ for its
+sphere isomorphism. If $c_m:S^{m,0}\xrightarrow{\sim}S^m_{\mathrm{syn}}$
+is the actual compatibility with ordinary synthetic suspension, define
+the ordinary sphere coordinate by
+\[
+r_m=\operatorname{Re}(c_m)\circ\rho_{m,0}:
+S^m\xrightarrow{\sim}\operatorname{Re}(S^m_{\mathrm{syn}}).
+\]
+\lean{KIP126.Literature.Standard.realization_additive,KIP126.Literature.Standard.realization_sphere,KIP126.Literature.Standard.realization_unit,KIP126.Literature.Standard.realization_lambda,KIP126.Literature.Standard.realizationData,KIP126.Literature.Standard.realizeSphere,KIP126.Literature.Standard.realizeNu,KIP126.Literature.realizationSphereCoordinate}
 % Blueprint note: Source verification (2026-10-18): Source adaptation checked. The sphere coordinates, unit equality, and realization of every lambda power are proved in Lean from the fixed adjunction, shifts, lambda-localization, and bi-shift coherence. Their underlying project model constructions retain their existing proof obligations. These are project definitions packaging coordinates and transporting homotopy classes; the article does not contain these names or choices. Additivity is proved in Lean from the actual realization adjunction and biproduct preservation, rather than quoted as a separate numbered theorem. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; Proposition 4.40; Remark 4.41; pages 39, 49; arXiv:1803.01804v3, 10 November 2022
 % Blueprint note: Detailed source attribution: (Adapted from \cite{Pst}, Definition 4.6, Proposition 4.40, and Remark 4.41.)
 \end{definition}
@@ -227,6 +236,107 @@ Inverting $\lambda$ induces a morphism from the synthetic cycle-and-boundary dat
 % Blueprint note: Source verification (2026-10-18): Source adaptation checked. The chosen SSDataMorphism includes all cycle and boundary levels, including the project infinity construction; this is packaging beyond the literal printed spectral-sequence morphism. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.36; Theorem 4.37; Proposition 4.40; pages arXiv PDF pp. 47-49; published pp. 621-624; arXiv:1803.01804v3, 10 November 2022; numbering also checked in Invent. Math. 232 (2023) [BHS](https://arxiv.org/pdf/1910.14116v3): paragraph immediately before Notation A.7; proof of Theorem A.8; pages arXiv PDF p. 72; published p. 307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 % Blueprint note: Detailed source attribution: (Adapted from \cite{Pst}, Proposition 4.40, and \cite{BHS}, Notation A.6, the comparison before Notation A.7, and Theorem A.8.)
 \end{definition}
+
+\begin{definition}[An actual lambda-inversion comparison of two Adams towers]
+\label{sem:Literature:lambda-inversion-object-comparison}
+\level{coarse}
+\uses{sem:Literature:realization-coordinates,sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration}
+(Tower-level comparison data for the realization of \cite{Pst}, Proposition 4.40; cf.\ the Adams comparison in \cite{BHS}, Theorem A.8.)\par{}
+
+Fix a model $D$, realization coordinates $R$, a selected synthetic object
+$U$ and a selected classical object $X$. An object comparison consists
+of isomorphisms
+\[
+\theta:\operatorname{Re}(U)\xrightarrow{\sim}X,\qquad
+\theta_w:\operatorname{Re}(\Sigma^{0,-w}U)\xrightarrow{\sim}X
+\quad(w\in\mathbb Z),
+\]
+and maps from the realized stages and cofiber layers of the actual Adams
+tower of $\Sigma^{0,-w}U$ to those of the actual classical tower of $X$.
+These maps commute with every tower transition, projection and cofiber
+inclusion. The target isomorphisms agree on a homotopy class
+$\beta\in\pi_{m,w}U$ by the equation
+\[
+\theta_w\circ\operatorname{Re}(\mathrm{wt}_{m,w}(\beta))\circ r_m
+ =\theta\circ\operatorname{Re}(\beta)\circ\rho_{m,w},
+\]
+where $\mathrm{wt}_{m,w}$ is the fixed weight-desuspension map.
+For each $w$ the comparison also specifies a morphism of the actual
+cycle-and-boundary presentations, preserving all finite and infinite
+levels. On the first-page ambient representatives it is the map induced
+by realization, $r_{t-s}$ and the specified cofiber-layer map.
+\lean{KIP126.Literature.LambdaInversionAdamsObjectComparison}
+\end{definition}
+
+\begin{definition}[The page-two map of an actual tower comparison]
+\label{sem:Literature:lambda-inversion-e2-map}
+\level{coarse}
+\uses{sem:Literature:lambda-inversion-object-comparison}
+For an object comparison $K$ and an integer weight $w$, define
+\[
+K_{2,w}^{s,t}:E_2^{s,t,w}(U)\longrightarrow E_2^{s,t}(X)
+\]
+as the page-two quotient map induced by its cycle-and-boundary morphism.
+The source and target starting-page identifications are those of the
+same Adams families.
+\lean{KIP126.Literature.LambdaInversionAdamsObjectComparison.e2Map}
+\end{definition}
+
+\begin{definition}[Lambda inversion on the selected nu objects and their shifts]
+\label{sem:Literature:lambda-inversion-adams-comparison}
+\level{coarse}
+\uses{sem:Literature:lambda-inversion-object-comparison,sem:Literature:lambda-inversion-e2-map,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:normalized-map}
+A lambda-inversion Adams comparison for $D$ and $R$ gives object
+comparisons $K_X$ for $\nu X$ and $K_{X,a}$ for
+$\Sigma^{0,a}\nu X$, for every selected $X$ and every $a\in\mathbb N$.
+The target isomorphism of $K_X$ is the specified
+$\operatorname{Re}(\nu X)\cong X$ from recovery. Its shifted counterpart
+satisfies
+\[
+\theta_{X,a}\circ\operatorname{Re}(\lambda^{+a}_{\nu X})=\theta_X,
+\qquad \lambda^{+a}_{\nu X}:\nu X\longrightarrow\Sigma^{0,a}\nu X.
+\]
+For every $s,t\in\mathbb Z$ and $k\in\mathbb N$, the maps
+$(K_X)_{2,t-k}^{s,t}$ and $(K_{X,a})_{2,t+a-k}^{s,t}$ send the prescribed unshifted and shifted
+$\nu$-images of an $E_2^{s,t}(X)$ label back to that very label.
+These are specified maps of the actual towers and their presentations.
+Constructing this comparison for the fixed Standard model remains an
+upstream task; the definition alone supplies no such instance.
+\lean{KIP126.Literature.LambdaInversionAdamsComparison}
+\end{definition}
+
+\begin{theorem}[An actual tower comparison transports the same detecting representative]
+\label{sem:Literature:lambda-inversion-detection}
+\level{coarse}
+\uses{sem:Literature:lambda-inversion-object-comparison,sem:Literature:lambda-inversion-e2-map,sem:Literature:realization-coordinates,sem:AdamsSynthetic:selected-convergence}
+Let $K$ be an object comparison between $U$ and $X$. For any
+$s,t,w\in\mathbb Z$, suppose that
+$x\in E_2^{s,t,w}(U)$ detects an actual class
+$\beta\in\pi_{t-s,w}U$ under the specified convergence. Then
+$K_{2,w}^{s,t}(x)$ classically detects
+\[
+\theta\circ\operatorname{Re}(\beta)\circ\rho_{t-s,w}
+\in\pi_{t-s}X.
+\]
+The label and its representative may be zero, and the label may be a
+boundary. The conclusion uses this same $\beta$.
+\lean{KIP126.Literature.LambdaInversionAdamsObjectComparison.detects}
+\end{theorem}
+\begin{proof}
+\uses{sem:Literature:lambda-inversion-object-comparison,sem:AdamsSynthetic:selected-convergence}
+Lift $\beta$ to its actual synthetic Adams stage. The canonical
+convergence formula identifies the cofiber image of this lift with a
+common infinite-cycle representative of its detecting class. Realize
+the lift and compose with the specified stage map. The projection and
+sphere-coordinate equations give exactly
+$\theta\operatorname{Re}(\beta)\rho_{t-s,w}$, while the cofiber square
+and the ambient comparison identify its layer class with the image of
+the original infinite representative. Preservation of cycles and
+boundaries identifies its page-two label with $K_{2,w}^{s,t}(x)$.
+The classical canonical convergence formula now gives the claimed
+detection.
+\end{proof}
+% Blueprint note: This generic detection theorem is proved from the displayed actual comparison data. It introduces no nonzero-survival or essential-extension premise. The construction of the Standard comparison data remains separate.
 
 \begin{proposition}[The finite quotient E-two strip]
 \label{sem:Literature:finite-quotient-labels}

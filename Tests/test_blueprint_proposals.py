@@ -15,12 +15,12 @@ import blueprint_proposals as proposals
 
 
 class InterfaceProposalTests(unittest.TestCase):
-    def test_migrated_reports_preserve_complete_metadata_and_body(self):
+    def test_migrated_provenance_and_current_review_decisions(self):
         reports = proposals.read_reports(ROOT)
         self.assertGreaterEqual(len(reports), 17)
         self.assertEqual(sum('archived_from' in r['meta'] for r in reports), 17)
-        # Migration has no runtime dependency on the ignored archive. When it is
-        # present, also compare every original field and the whole report body.
+        # The archive preserves the original snapshot; subsequent human review
+        # updates belong in the tracked report, so its decision and body may evolve.
         for report in reports:
             m = report['meta']
             if 'archived_from' not in m:
@@ -30,13 +30,20 @@ class InterfaceProposalTests(unittest.TestCase):
             if archived.exists():
                 self.assertEqual(hashlib.sha256(archived.read_bytes()).hexdigest(), m['archived_sha256'])
                 _, front, body = archived.read_text().split('---', 2)
-                for key, value in yaml.safe_load(front).items():
-                    self.assertEqual(m[key], value)
-                self.assertEqual(report['body'], body.strip())
+                original = yaml.safe_load(front)
+                for key in ('issue_id', 'responsibility_module'):
+                    self.assertEqual(m[key], original[key])
+                self.assertTrue(body.strip())
         gl = next(r for r in reports if r['meta']['issue_id'] == 'ProofTools-20261018-GL-fixed-object-counterexample')
-        self.assertEqual(gl['meta']['status'], 'pending-human-review')
-        self.assertIsNone(gl['meta']['human_decision'])
+        self.assertEqual(gl['meta']['status'], 'approved-interface-change')
+        self.assertIn('Standard.generalizedLeibniz', gl['meta']['human_decision'])
+        self.assertIn('Standard.generalizedMahowald', gl['meta']['human_decision'])
+        self.assertIn('AtLevel', gl['meta']['human_decision'])
         self.assertIn('no Lean negation certificate', gl['meta']['evidence_level'])
+        crossing = next(r for r in reports if r['meta']['issue_id'] ==
+                        'ProofTools-20261018-gl-crossing-lambda-lift')
+        self.assertEqual(crossing['meta']['status'], 'pending-human-review')
+        self.assertIsNone(crossing['meta']['human_decision'])
 
     def test_invalid_reports_and_unjustified_approvals_fail(self):
         template = (ROOT / 'interface/proposals/TEMPLATE.md').read_text()

@@ -1,0 +1,10 @@
+public theorem infiniteExtension_to_classicalExtension (X Y : ClassicalObject)
+    (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) (n s t : ℤ)
+    (x : permanentCycles D X (s,t)) (y : permanentCycles D Y (s+n,t+n))
+    (he : InfiniteExtension D X Y f n s t x.val y.val) :
+    ∃ a : HomotopyGroup (t-s) (X.obj D.auxiliary),
+      ClassicalDetects (D.classicalConvergence X) (s,t) x.val a ∧
+      ClassicalDetects (D.classicalConvergence Y) (s+n,t+n) y.val
+        (eqToHom (congrArg (Sphere (C := C))
+          (show (t+n)-(s+n) = t-s by omega)) ≫ a ≫ f) := by
+  sorry

@@ -211,11 +211,11 @@ run_cmd do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"
     pure ((`KIP126.Main).isPrefixOf mod.toName)
   let expectedNames : Array String ← expected.mapM fun (row : Json) => Lean.ofExcept <| row.getObjValAs? String "name"
-  -- The two original paper statements were authorized for statement-only
-  -- exposure. No other Main declaration may acquire a pending proof.
-  let pendingPaperNames := #["KIP126.Main.Paper.lemma_toda2ext",
+  -- Both conditional paper results are now proved. Keep the independent
+  -- contradiction route from using either of them as an input.
+  let conditionalPaperNames := #["KIP126.Main.Paper.lemma_toda2ext",
     "KIP126.Main.Paper.corollary_2ext125"]
-  unless expectedNames.all pendingPaperNames.contains do
+  unless expectedNames.isEmpty do
     throwError "Unapproved Main proof obligation in registry: {expectedNames}"
   let env ← getEnv
   let mut checked : Nat := 0
@@ -229,8 +229,8 @@ run_cmd do
     let directDependencies := info.type.getUsedConstants ++
       (body.map Expr.getUsedConstants).getD #[]
     for dependency in directDependencies do
-      if pendingPaperNames.contains dependency.toString then
-        throwError "Main declaration depends on a statement-only pending proof: {name} uses {dependency}"
+      if conditionalPaperNames.contains dependency.toString then
+        throwError "Main contradiction route depends on a conditional paper result: {name} uses {dependency}"
     if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then
       throwError "Synthetic sorry from failed elaboration: {name}"
     if info.type.hasSorry then
@@ -380,14 +380,14 @@ run_cmd do
   -- Their full-body audit stays as strict as the historical public roots.
   let paperRootNames := #["KIP126.Main.Paper.FiniteDetected",
     "KIP126.Main.Paper.SphereDetected", "KIP126.Main.Paper.lemma_x1239",
-    "KIP126.Main.Paper.lemma_nuext125"]
+    "KIP126.Main.Paper.lemma_nuext125", "KIP126.Main.Paper.lemma_toda2ext",
+    "KIP126.Main.Paper.corollary_2ext125"]
   let reviewedRootNames := reviewedRootNames ++ paperRootNames
-  -- The two newly exposed original statements may have only their own exact
-  -- registered placeholder. They are never premises of an existing result.
-  let pendingPaperRoots := #[`KIP126.Main.Paper.lemma_toda2ext,
+  -- These results follow from incompatible hypotheses. The independent
+  -- exclusion theorem and all earlier results must not use them.
+  let conditionalPaperRoots := #[`KIP126.Main.Paper.lemma_toda2ext,
     `KIP126.Main.Paper.corollary_2ext125]
-  let allReviewedRootNames := reviewedRootNames ++ pendingPaperRoots.map Name.toString
-  unless (roots.map Name.toString).qsort (· < ·) == allReviewedRootNames.qsort (· < ·) do
+  unless (roots.map Name.toString).qsort (· < ·) == reviewedRootNames.qsort (· < ·) do
     throwError "Reviewed Main roots differ from the frozen public interface"
   let forbidden := #[`KIP126.ProofTools.Standard.generalizedMahowald,
     `KIP126.ProofTools.Standard.generalizedLeibniz]
@@ -405,8 +405,8 @@ run_cmd do
       visited := visited.insert name
       if forbidden.contains name then
         throwError "Main public root {root} regained an unfinished MH2/GL dependency: {name}"
-      if pendingPaperRoots.contains name && name != root then
-        throwError "Main public root {root} depends on a statement-only pending proof: {name}"
+      if conditionalPaperRoots.contains name && name != root then
+        throwError "Main public root {root} depends on a conditional paper result: {name}"
       let some info := env.find? name
         | throwError "Missing dependency while auditing Main public root {root}: {name}"
       let some idx := env.getModuleIdxFor? name
@@ -421,8 +421,7 @@ run_cmd do
       if info.type.hasSyntheticSorry || body.any (·.hasSyntheticSorry) then
         throwError "Synthetic sorry reachable from Main public root {root}: {name}"
       if info.type.hasSorry || body.any (·.hasSorry) then
-        unless pendingPaperRoots.contains root && name == root do
-          throwError "Main/ProofTools placeholder reachable from Main public root {root}: {name}"
+        throwError "Main/ProofTools placeholder reachable from Main public root {root}: {name}"
       if isProofTools then
         -- An imported theorem can be represented as an axiom with no body.
         -- Never interpret that absence as a completed cross-module audit.
@@ -443,4 +442,4 @@ run_cmd do
   -- Reject stale boundary entries as well as newly introduced dependencies.
   unless boundary.toArray.qsort Name.quickLt == reviewedProofToolsBoundary.qsort Name.quickLt do
     throwError "Main/ProofTools reviewed audit boundary changed: {boundary.toArray}"
-  logInfo m!"Main public-root regression audit: {reviewedRootNames.size} established roots without local placeholders; {pendingPaperRoots.size} statement-only roots allowing only their own exact registered pending proof; {checkedMain.size} Main declarations; no old MH2/GL; {boundary.size} exact ProofTools boundaries delegated to its full-body internal audit"
+  logInfo m!"Main public-root regression audit: {reviewedRootNames.size} established roots without local placeholders (including both conditional paper results); {checkedMain.size} Main declarations; no old MH2/GL; {boundary.size} exact ProofTools boundaries delegated to its full-body internal audit"

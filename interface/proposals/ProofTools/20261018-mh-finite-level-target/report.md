@@ -1,7 +1,7 @@
 ---
 issue_id: ProofTools-20261018-mh-finite-level-target
 title: MH 形式化目标：强有限商、双输入层数与共同代表
-summary: 获批的完整双层 MH 已由 public generalizedMahowaldAtLevel 证明，结论保持原 FiniteMahowaldAtLevelStatement，完全去掉额外 hRows；实际 no-crossing、共同代表、signed 方程、指定检测与强商结论均保留。Literature 固定行及 same-esusp cone 已证，无新增洞或公理；全量 Lean、信任、接口及 Blueprint 检查已通过；既有上游责任保留。
+summary: "用户已明确授权撤销两个旧 GL/MH theorem，保留 law 定义、反例证据及已证 AtLevel；已实施源码删除与消费测试迁移，精确接口锁与两模块审计已通过；完整检查按用户后续要求暂缓。"
 responsibility_module: ProofTools
 targets:
   - KIP126.ProofTools.GeneralizedMahowaldLaw
@@ -12,8 +12,9 @@ baseline_commit: 1dc13a1973bc0f69c14e39f197372c30a350d4e8
 reporter_agent: /root/mh_interface_review
 independent_of_discoverer_and_implementer: true
 evidence_level: "原完成快照的独立证明审查保留；合并远程 75 项补证后，完整 lake build（3573 jobs）、72 项 Python 测试、源码与接口检查、原生 Blueprint 导出和三个核心根的实际 kernel 依赖复核均通过。当前全仓 237 项既有待补，row／cone 47 项上游、完整 MH 55 项上游，未新增公理或证明洞。"
-status: approved-implemented-and-validated-before-publication
-human_decision: '2026-10-18 用户明确要求：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”授权范围为本提案的 ProofTools MH 方案、完整类型与实际 no-crossing、相应 Blueprint 替换及补证；不推定为可新增公理、改变其他数学模块公共接口或增加上游待补责任。'
+status: approved-interface-change
+human_decision: "2026-10-18 用户明确要求：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”授权范围为本提案的 ProofTools MH 方案、完整类型与实际 no-crossing、相应 Blueprint 替换及补证；不推定为可新增公理、改变其他数学模块公共接口或增加上游待补责任。
+2026-10-19 本对话用户明确授权：“那就删掉这两个旧定理，保留 law 定义、反例证据和已证的 AtLevel 版本，同步接口锁、待补清单和测试，再跑完整检查。”授权仅撤销 Standard.generalizedLeibniz 与 Standard.generalizedMahowald 两个旧 theorem；保留 law 定义、反例证据、AtLevel 版本及三项其他论文责任。"
 ---
 
 # 建议采用的目标
@@ -307,3 +308,201 @@ Main 的禁用旧 MH 边界和现有安全特例保持；AdamsCalculations 的�
 ## 人类审核记录
 
 2026-10-18，本聊天用户明确批准：“就按这个方案推进，先把完整的 Lean 陈述和实际 no-crossing 条件定下来，写出完整的陈述，替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明。”据此将状态改为 `approved-interface-change`，实施尚在进行；授权内容及不扩大到其他模块/新增公理和上游责任的边界见文件头。群内既有意见、历史其他提案批准及 agent 审查意见没有被写作额外授权。
+
+
+## 2026-10-19 本轮固定基线独立复核与删除范围待决
+
+本段报告员为 `/root/interface_reporter`，未参与本候选发现、反例实现或带层定理实现。复核基线为 `0e940a5108088ad73a19415721060012a8aad779`，工作区为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/prooftools-main-proofs-20261019`；本次用户任务是完成 ProofTools/Main 的 sorry 及 Main 灰色 Blueprint 节点。依据当前 AGENTS.md、`docs/interface-proposals.md`、指定 protocol 和人审模板，只追加本段，不改生产源码、接口锁、修正记录、人审原话或文件头的历史状态。
+
+本段中的**撤销旧定理出口建议仍为 `pending-human-review`，`human_decision: null`**；它不是新增的独立提案，不改变本报告既有人审事项的状态。授权实现一个正确替代定理，不自动授权删除仍冻结的旧声明。当前用户的补证请求也没有明确包含删除公共声明。
+
+### 当前原接口及其目的（完整声明复录）
+
+当前 generic law 仍位于 `KIP126/ProofTools/Laws.lean`，目的为从实际相容三角、两条有限扩张、Z 上微分及旧 crossing，返回**指定原始 x** 的更高 cycle 和零 λ 层 f-extension，允许目标在指定 B 层内修改。完整上下文与当前声明如下；固定入口将这些参数专门化到 `Standard.model`：
+
+```lean
+universe u v w
+variable {C : Type u} [StableHomotopyCategory.{u,v} C]
+  [HasFunctorialCofiber (C := C)]
+  {Syn : Type w} [SyntheticCategory.{w,v} Syn]
+  [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)
+public def GeneralizedMahowaldLaw (T : TriangleData D.auxiliary) : Prop :=
+  ∀ he : (normalizedExponent D.classicalTower T.f : ℤ) + normalizedExponent D.classicalTower T.g +
+      normalizedExponent D.classicalTower T.h = 1,
+  KIP126.Literature.NormalizedTriangleCompatible D T he →
+  ∀ (n m l s t : ℤ),
+    let r := n + m + l
+    let n₁ := n - normalizedExponent D.classicalTower T.f
+    let m₁ := m - normalizedExponent D.classicalTower T.g
+    let l₁ := l - normalizedExponent D.classicalTower T.h
+    let r' := r - m₁
+    ∀ (x : Ambient D (T.X) (s + l, t + l - 1))
+      (y : Ambient D (T.Y) (s + l + n, t + l - 1 + n))
+      (xBar : Ambient D (T.Z) (s, t))
+      (yBar : Ambient D (T.Z) (s + l + n + m, t + l - 1 + n + m))
+      (suspendedX : Ambient D (.shift 1 T.X) (s + l, t + l)),
+      1 ≤ n₁ → 0 ≤ m₁ → 0 ≤ l₁ →
+      IsCycle D (T.X) n₁ (s + l, t + l - 1) x →
+      IsCycle D (T.Y) (m₁ + 1) (s + l + n, t + l - 1 + n) y →
+      IsCycle D (T.Z) (r - 1) (s, t) xBar →
+      IsPermanent D (T.Z) (s + l + n + m, t + l - 1 + n + m) yBar →
+      (D.classicalSuspension T.X).DesuspendsClass (s + l) (t + l) suspendedX x →
+      FiniteExtension D T.Z (.shift 1 T.X) T.h r'.toNat l s t xBar suspendedX →
+      DifferentialAt D (T.Z) r (s, t)
+        (s + l + n + m, t + l - 1 + n + m) xBar yBar →
+      (FiniteNoCrossing D T.Z (.shift 1 T.X) T.h r'.toNat l s t ∨
+        NoCrossingOn D (T.Z) r r' (s, t)) →
+      FiniteExtension D T.Y T.Z T.g (m₁ + 2).toNat m (s + l + n) (t + l - 1 + n) y yBar →
+      IsCycle D (T.X) (n + m + normalizedExponent D.classicalTower T.h) (s + l, t + l - 1) x ∧
+        ∃ y' : Ambient D (T.Y) (s + l + n, t + l - 1 + n),
+          FiniteExtension D T.X T.Y T.f (n + m + 1 + normalizedExponent D.classicalTower T.h).toNat
+            n (s + l) (t + l - 1) x y' ∧
+          Congruent D (T.Y) r' (s + l + n, t + l - 1 + n) y' y
+
+public theorem KIP126.ProofTools.Standard.generalizedMahowald
+    (T : TriangleData model.auxiliary) :
+    GeneralizedMahowaldLaw model T
+```
+
+### 独立实际对象、全部前提及反证核对
+
+本轮直接阅读 `StatementReview.lean`、`RotatedNuTriangle.lean`、`RotatedNuPremises.lean`、`SuspensionClassLabels.lean`、`SourceBoundaryReview.lean` 及 `BottomNuInjection.lean`，未用发现者摘要代替源码核验。
+
+| 原前提/对象 | 本轮实际核验 |
+| --- | --- |
+| 固定对象 | X=sphere，Y=ν-cofiber，Z=`.shift 1 (.shift 3 .sphere)`；T 是固定 ν 三角的实际旋转，h 为 `-Σν`，不是任意抽象模型。 |
+| 固定 normalized maps 及几何 | `rotated_nu_normalized_distinguished` 证明所选 normalized 三角的相容性，不只声称存在任选旋转；指数逐项为 `(0,0,1)`。 |
+| 参数范围 | `(n,m,l,s,t)=(1,0,2,1,16)`，r=r′=3，n₁=1，m₁=0，l₁=1，符合全部下界。 |
+| 指定 x | `mh2BoundaryClass=oneLineTarget model 4`，由 Literature `adamsOneLine_d2 4` 给非零 `d₂(h₄)`；在 `(3,17)` 的 B₂ 内，因此属于要求的 Z₁。 |
+| 指定 y、xBar、yBar | 均为零，分别在 `(4,18)`、`(1,16)`、`(4,18)`，满足 Z₁、Z₂ 与永久条件；原 law 明确允许零。 |
+| 真实 suspendedX | 由 `exists_suspendsClass_mem_boundary`、实际 tower/layer 与 raw-boundary 悬挂比较构造 sx，确实 `DesuspendsClass ... sx x`，且 sx∈B₂；没有把任意 E₂ 等价当反悬挂。 |
+| h 扩张 | 商 Q₂ 中的真实零 witness，再沿允许的目标 B₂ 歧义加 sx，得到 page=3、length=2 的指定 h 扩张。 |
+| Z 微分 | `candidate_zero_differential` 构造 `d₃(0)=0` 的真实页代表。 |
+| crossing 析取 | 采用 Z 上微分 no-crossing 分支。唯一位置 a=1,b=0；相应源 `(2,17)` 由实际移位/第一商比较及 sphere Ext `(2,13)` 为零而消失。无需另假设 h 分支。 |
+| g 扩张 | 固定 g 的 page=2、length=0 零 witness，长度界由 e(g)=0 验证。 |
+| 假结论 | 原结论要求从**同一原始 x** 出发的 page=3、length=1 零层 f-extension。`nonzero_leading_image_no_positive_extension` 排除任何目标 y′，比只排除同余条件更强。 |
+
+`BottomNuInjection` 使用固定 ν 三角上的 Hom 精确性、实际第一商与 Ext `(2,13)`、`(3,14)` 消失，证明该指定 boundary 的 normalized 底映射 E₂ 像非零。正长度零层扩张则强迫同一 E₂ 像为零。`StatementReview` 的 `rotated_nu_generalized_mahowald_law_false` 将这些事实代入原 law 得否定；它不调用 `Standard.generalizedMahowald`。因此这是**相对于已登记上游构造/比较责任的固定对象 Lean 否定**，不是自由模型反例，也不是“未找到证明”。同一个包含旧 sorry theorem 的环境不能据此拿 False 消除其他目标。
+
+### 保留原接口的内部方案、已有正确替代和精确最小变更
+
+先考虑保留原接口补证：重选 May lift、补第二像、λ 除法或把 x 悄悄换成同余代表，都无法同时维持本表中的全部原前提和 exact-source 结论。x∈B₂ 并不等于原始 E₂ 向量 x=0；原 h 输入在正 λ 层已把这项歧义商掉，但零层 f 输出重新要求原始 x，因此失败。问题属于原命题错误/λ 层与指定对象关联失配，不是仅缺局部几何实现。
+
+已实现的新签名保持为：
+
+```lean
+public theorem KIP126.ProofTools.Standard.generalizedMahowaldAtLevel
+    (T : TriangleData model.auxiliary)
+    (he : (normalizedExponent model.classicalTower T.f : ℤ) +
+      normalizedExponent model.classicalTower T.g +
+      normalizedExponent model.classicalTower T.h = 1) :
+    FiniteMahowaldAtLevelStatement T he
+```
+
+本轮核对 `FiniteLevelStatement.lean` 完整类型及 `FiniteLevelAssembly.lean` 装配：前提使用同一实际三角、n₁,m₁,k,i,j，j<n₁，三个实际 ESS 输入与 actual no-crossing；结论交付同一 a,b,c、两条严格 signed 方程、五项输入检测和输出检测、原 x 的 cycle 及 `LevelFiniteExtension (Q+1) K ... x y`。其中 `A=n₁+k+i-j,B=m₁+j+1,N=A+B,K=i+k,J=A+j,Q=N-K`；并无额外 hRows。它保留强商 Q_N 的 λ^K 源层，不提供原 law 的任意零层取消。新旧前提和输出均有实质变化，不能称新 theorem 已补完旧 `GeneralizedMahowaldLaw`。
+
+待人类决定的最小方案：撤销且仅撤销旧 theorem `Standard.generalizedMahowald (T : TriangleData model.auxiliary) : GeneralizedMahowaldLaw model T` 的公共导出及其旧待补登记；候选旧名称签名为**无声明**。保留当前 `GeneralizedMahowaldLaw` Prop 定义以表达历史失败命题及固定对象否定，保留已证 `generalizedMahowaldAtLevel`、原反证文件和提案。此方案无新 theorem 责任、新公理或新前提，无须把共同代表证明转给 Main。若要求保留旧 theorem，必须如实保留其争议 sorry，不能宣称“原洞已证完”。私有化/删除 Prop 定义或新增 exact-source 修正版属于另外范围，本段未申请其实施。
+
+### 现有人审权限、下游和可继续项
+
+本报告既有人审原话“就按这个方案推进……替换掉现在 blueprint prooftools 章节里里无法证明的版本，再完成形式化证明”已支持当前带层方案及 Blueprint 替换；无需重复询问该已获批方案。既有实施记录同时明确旧 law 和待补保留。没有查到授权**删除旧 theorem 公共出口**的真实原话，故不能把本报告的 implemented 状态扩张成删除批准。新删除建议的决定仍为 null；不改写原批准。
+
+直接消费者是 `Tests/ProofTools/Consumers.lean:50` 的旧 law example；生产源码中未发现 AdamsCalculations/Main 调用旧 theorem。`Main/InternalAudit.lean` 明确禁止旧 GL/MH 出现在公共 Main 根依赖中。删除获批后的同步范围为旧 theorem 源码、ProofTools API 导出/type/axiom 锁、旧洞登记、ProofTools internal audit 的精确许可洞数组和对应普通消费例；保留独立反证及 Main 无旧 law 依赖边界。Blueprint `paper:6.12` 已绑定完整带层 theorem，`Tests/test_blueprint_native.py` 已禁止旧 law/theorem 四项绑定，不需要恢复旧节点。继续运行 inventory、接口/消费者/Trust 与完整 `lake build`，不删除原有覆盖或放宽检查。
+
+阻塞只覆盖原全称零层 exact-source law 的正确补证及其真实调用闭包。Main 既有安全数值实例、其他本地引理、灰色节点的真实命题对应、三个其他 ProofTools 责任、已完成带层 GL/MH 的使用均可继续。是否那些独立原陈述另有接口问题需各自证明，不能据本反证推定它们都错误。
+
+### 本轮实际执行的证明体依赖复现与局限
+
+报告员使用固定 Lean 4.32.2，以 stdin 普通元程序只读导入当前已编译的全部相关模块；`import all` 恢复项目真实证明体，递归遍历类型及证明体常量，不从 import 列表推断依赖。命令无 `-o`，没有写共享构建产物；下列完整命令可在上述工作区复现：
+
+```sh
+python3 - <<'PYPROBE'
+from pathlib import Path
+import subprocess
+imports=[]
+for part in ('SpectralSequence','AdamsSynthetic','Literature','E2Computation','ProofTools'):
+ for p in sorted((Path('KIP126')/part).rglob('*.lean')):
+  if p.name!='InternalAudit.lean' and (Path('.lake/build/lib/lean')/p.with_suffix('.olean')).exists():
+   imports.append('import all '+'.'.join(p.with_suffix('').parts))
+probe='module\n'+'\n'.join(imports)+"""
+import Lean
+open Lean Elab Command
+set_option maxHeartbeats 0
+set_option maxRecDepth 8192
+run_cmd do
+  let env ← getEnv
+  for target in #[`KIP126.ProofTools.Internal.Mahowald.rotated_nu_generalized_mahowald_law_false,
+    `KIP126.ProofTools.Standard.generalizedMahowaldAtLevel,
+    `KIP126.ProofTools.Standard.generalizedLeibnizAtLevel] do
+    let some (root,ri) := env.constants.toList.find? (fun (n,_) => ((privateToUserName? n).getD n)==target)
+      | throwError "missing root {target}"
+    logInfo m!"ROOT {target}: {ri.type}"
+    let mut todo := #[root]
+    let mut seen : NameSet := {}
+    let mut holes : Array Name := #[]
+    let mut axiomsFound : Array Name := #[]
+    let mut bad : Array Name := #[]
+    while let some n := todo.back? do
+      todo := todo.pop
+      if seen.contains n then continue
+      seen := seen.insert n
+      let some info := env.find? n | throwError "missing {n}"
+      let some idx := env.getModuleIdxFor? n | continue
+      let mod := env.header.moduleNames[idx.toNat]!
+      unless (`KIP126).isPrefixOf mod do continue
+      if n==`KIP126.ProofTools.Standard.generalizedLeibniz || n==`KIP126.ProofTools.Standard.generalizedMahowald ||
+          (`KIP126.Main).isPrefixOf mod || (`KIP126.AdamsCalculations).isPrefixOf mod then bad := bad.push n
+      let b := info.value? (allowOpaque := true)
+      if info.isAxiom then axiomsFound := axiomsFound.push n
+      if info.type.hasSorry || b.any (·.hasSorry) then holes := holes.push n
+      if info.type.hasSyntheticSorry || b.any (·.hasSyntheticSorry) then throwError "synthetic sorry {n}"
+      todo := todo ++ info.type.getUsedConstants
+      if let some v := b then todo := todo ++ v.getUsedConstants
+    logInfo m!"CLOSURE {target}: holes={holes.size}; project axioms={axiomsFound}; forbidden={bad}"
+    for n in holes do logInfo m!"UPSTREAM {target}: {n}"
+"""
+r=subprocess.run(['lake','env','lean','--stdin'],input=probe,text=True,capture_output=True)
+print(r.stdout); print(r.stderr); print('RETURN',r.returncode)
+PYPROBE
+```
+
+实际成功输出（`RETURN 0`）为：
+
+| 实际 kernel 根 | 传递含 sorry 声明数 | 项目公理/不可见公理体 | 禁用旧 theorem 或下游模块 |
+| --- | ---: | --- | --- |
+| `rotated_nu_generalized_mahowald_law_false` | 57 | `[]` | `[]` |
+| `Standard.generalizedMahowaldAtLevel` | 55 | `[]` | `[]` |
+| `Standard.generalizedLeibnizAtLevel` | 53 | `[]` | `[]` |
+
+三根均未触发 synthetic sorry 检查；输出的所有待补声明位于 AdamsSynthetic、Literature 或实际 E2Computation 源模块，未见 ProofTools 本地洞。`Computation.Standard.sourceCoordinates/comparison` 的命名是兼容公开名称，责任依实际源文件为 E2Computation，不是后续 AdamsCalculations。MH 反证闭包明确包含 `adamsOneLine_d2`、`nuCofiber_triangle`、`nuCofiber_normalized_label`、固定模型/归一化/悬挂及 E∞ 比较、实际 E₂ 坐标和 `synthetic_homotopy_separated`；没有借旧 GL/MH 的未证 theorem，也没有用它们的下游结论形成循环。保留这些未完成上游意味着不能称本反证或两个替代定理为无项目待补的基础证明。
+
+这项 probe 检查的是已有编译快照的完整可见证明体；它没有重证上游责任，也不替代协调者对当前源码及锁的全量 `lake build`。初次沙箱内 `lake env lean` 自定位失败；改用沙箱外同一固定工具链后可运行。首次全文件导入遇到尚未构建的 `Paper/OriginalStatements.olean`，第二次元程序使用了 Lean 保留字作局部变量名而失败；最终命令限定已有 olean，并改名后 exit 0。所有失败均未产生证明或被当作数学反证。两个根和反证的 olean 均已存在且可读；当前表格不掩盖这些复现限制。
+
+有限参数检查也实际 exit 0：GL 得 crossing 三对及 `d₄(0)=v` 的次数，MH 得 r=r′=3、n₁=1、m₁=0、k=1 及被迫 page=3/length=1 输出。提案校验使用主检出的既有环境：`/inspire/hdd/global_user/czxs25250150/Kervaire126Main/.lake/blueprint-env/bin/python scripts/interface-proposals.py validate`，实际输出 `Validated 20 interface reports.`；默认 python 缺 hgraph，未安装或升级任何依赖。
+
+本轮读到的源码/锁 SHA-256 如下。文件头中的旧路径和指纹保留为历史元数据，本表明确当前已迁移到 `interface/baselines/` 的复核基线：
+
+| 文件 | SHA-256 |
+| --- | --- |
+| `interface/baselines/proof-tools-api.json` | `872918c18d6c4615d12e8af35eb7cce8946e26da259db920c75597fc6d86c316` |
+| `interface/baselines/proof-obligations.json` | `a1ae6319534fa43ff6240400f4a5410000dee7bd763009d8b6a5f459dab8a9a8` |
+| `KIP126/ProofTools/Laws.lean` | `8731a608b3c750b044837c927ae45a8aee71eebdff441d89dd82df6b97f0732a` |
+| `KIP126/ProofTools/GeneralizedLeibniz.lean` | `5ffca10bbcfc95048225a2d17175a76374d804288d022e9ee1e64736167cd8b9` |
+| `KIP126/ProofTools/GeneralizedMahowald.lean` | `35479f3f2b4af8a0ff7950410557e47cd1d36f2263c10e2426fd6510a2d10c70` |
+| `KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean` | `9d1e24895fafa69c994d1b512e308c99fb94d351102234a5db8ee141cc33f47c` |
+| `KIP126/ProofTools/GeneralizedMahowald/FiniteLevelStatement.lean` | `cdcaac79ea9481bd2030a2bd48fd091889d49097df1df8a7119a80acd2f77182` |
+
+本轮没有代填删除方案的人类决定，没有修改原批准范围，也没有发布或实施拟议代码。
+
+
+## 2026-10-19 用户明确批准撤销旧 theorem
+
+用户在核对 Blueprint 已只绑定两个 AtLevel 版本后，明确要求：
+
+> 那就删掉这两个旧定理，保留 law 定义、反例证据和已证的 AtLevel 版本，同步接口锁、待补清单和测试，再跑完整检查。
+
+本段由协调者 `/root` 记录真实授权及实施范围，不冒充独立报告员的新审查，也不改变此前证据等级。授权撤销的仅为 `KIP126.ProofTools.Standard.generalizedLeibniz`、`KIP126.ProofTools.Standard.generalizedMahowald` 两个错误 theorem；对应源码中的三处 `sorry` 和两项登记责任随之移除，不能记作证明了旧命题。`GeneralizedLeibnizLaw`、`GeneralizedMahowaldLaw`、固定模型 MH 否定证书、原 GL 数学反例和全部 AtLevel 定义/证明保留。
+
+普通消费测试改为要求旧 theorem 不可见，并继续消费两个 law 定义及 AtLevel 定理。Main 的旧 GL/MH 禁用边界继续保留；既有 Blueprint 不绑定这两个旧 theorem，无须变更其数学节点。三项 `Paper.OriginalStatements` 责任继续逐项锁定，没有新增公理或证明洞。编译、精确接口和全量检查结果随后记录。
+
+精确编译捕获已完成：删除两个命名 theorem，另有旧 GL 证明生成的自动辅助 `KIP126.Literature.bocksteinLabel.congr_simp` 随证明消失，其实际定义归属原为 ProofTools；没有新增导出，所有剩余接口行（类型、宇宙、axiom 依赖）逐行不变。待补总数 233，ProofTools 三项。用户随后要求暂不运行完整检查，先证明剩余三责任，因此本段只记录已完成的公共入口编译与精确捕获，不宣称本轮全量检查通过。

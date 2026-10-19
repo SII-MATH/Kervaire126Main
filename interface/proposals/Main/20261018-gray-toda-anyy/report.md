@@ -2,7 +2,7 @@
 title: Toda 检测与任意代表扩张的缺口
 archived_from: local-history/metadata/interface-reviews/Main/20261018-gray-toda-anyy/report.md
 archived_sha256: bade7e530ed09c4aaf36ee78048489bd9641bb4931818c16f1eeb1274ee2f58e
-summary: "原目标与原接口的研究可继续，无需立即确认；部分中间机制受阻，不构成满足论文完整前提的反例。"
+summary: "两项完整条件命题现已由独立的前提排除定理证明，类型与固定对象不变；Main/ProofTools 闭包无本地待补，仍继承 116 项上游责任。原文局部 Toda 与代表误差论证的缺口保留，不构成满足完整前提的反例。"
 issue_id: "Main-20261018-gray-toda-anyy"
 responsibility_module: "Main"
 targets:
@@ -247,3 +247,56 @@ lake env lean local-history/metadata/interface-reviews/Main/20261018-gray-toda-a
 ## 人类审核记录
 
 `human_decision: null`。截至本报告，用户只授权继续补原结论并保持原公共接口；没有针对本报告方案 B/C 的明确批准。agent 的进展、建议或批准私有证据整理均不构成数学陈述修改授权。
+
+## 2026-10-19 独立增补：原条件命题的本地责任已经消除
+
+本节由未参与候选实现的 `/root/main_audit` 独立核验，基线为 `0e940a5108088ad73a19415721060012a8aad779`，工作区为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/prooftools-main-proofs-20261019`。本节保留上述历史证据和原有 `pending-human-review` / `human_decision: null`，不批准方案 B/C，也不撤销历史上对直接代表机制的障碍结论。此前“没有公共完整定理”“仍有两个 Main 直接证明洞”的叙述是当时快照；以下为当前结果。
+
+当前用户要求补 Main 的 `sorry` 并绑定灰节点，未要求独立完成原文的直接局部证明。候选没有改变公共类型、前提、对象或导出；因此本次正常补证明不需要接口调整批准。本节只核验候选及实际依赖，不把补证明授权写作对其他接口方案的人审批准。
+
+### 目标级结论与固定类型
+
+- **通过：** `KIP126.Main.Paper.lemma_toda2ext` 的本地直接责任消除。完整 kernel 类型指纹为 `299194068720801273`，宇宙参数为 `[]`。
+- **通过：** `KIP126.Main.Paper.corollary_2ext125` 的本地直接责任消除。完整 kernel 类型指纹为 `2927248977343468461`，宇宙参数为 `[]`。
+- **通过：** `sem:Main:weak-representative-route` 绑定既有公共 `KIP126.Main.eta_extension_excluded_of_d6_vanishes`。该声明实际定义在 `KIP126/Main/H6SquarePermanent.lean:16`，列入 Main 接口锁，kernel 类型指纹为 `17210897524146462465`，宇宙参数为 `[]`。节点正文明确陈述同一互斥结论，不绑定私有代表构造或辅助证明。
+
+两项条件定理的 `public theorem` 到 `:= by` 之前的完整源码签名与本次基线逐字相同，SHA-256 分别为 `6eb2f57ffbb8fcb37359f23559f656ee5cd76597c1ea600f3d7e167d9c86458e` 和 `b1f9999282174941e545a5cc0cd4cdbe51e321ad28ec0a4defd6812e6a3ed30d`；kernel 指纹及宇宙与未更改的 `interface/baselines/main-api.json` 逐项相符。所有 Q11→Q9 关联、同一 bracket 的非空性及全成员量词、任意 Y 检测源、允许随源变化的 T 代表和精确未乘额外 λ 的等式均保留。
+
+`Conditions.lean`、排除定理文件及其 `SectionSeven/Final.lean`、`NuTarget.lean`、`CofiberRigidity.lean` 与本次基线一致。`hc3` 仍是固定 W 在实际第六页的零微分；W 确为 `x_126_8_4 + x_126_8`。`hc5` 仍保留实际未截断 U 代表及 λ³ηu 的指定检测，未另加非零目标假设。T、Y、模型、实例和有限商没有被替换。
+
+### 证明体、互斥来源与非循环性
+
+当前两证明体分别在 `PaperResults.lean:110,124` 调用：
+
+```lean
+False.elim (KIP126.Main.eta_extension_excluded_of_d6_vanishes hc3 hc5)
+```
+
+这是原有真实假设 `hc3` 和 `hc5` 的互斥，不是一个无前提的 `False` 公理。独立阅读的实际路线是：
+
+1. 公共排除定理调用 `SectionSeven.Final` 的私有结论。
+2. `Final` 用 `target_nu_divisible hc3 hc5` 得到同一实际 T 的 λν 可除关系，并用同一 Cν 底胞的有限页生存/非边界窗口排除它。
+3. `NuTarget` 先构造原 bracket 成员及其精确 h₀ 目标，再保留非零 λ²h₀ 值去除低滤过项，检测得到的高滤过代表，接上已证第九商 ν 扩张及乘法计算。它不声称去除后的代表仍在原 bracket，也不使用任意 Y 代表的未乘额外 λ 的扩张。
+4. `CofiberRigidity` 通过实际底胞标签、E₆ 生存、B₅ 边界窗口、λ⁴ 检测和 λν 合成为零取得矛盾。这里出现的内部 `False.elim` 仍来自该可除关系与底胞非零性的冲突。
+
+源码导入闭包含 453 个项目模块，无导入环；排除定理的源码导入闭包不含 `PaperResults`。更强的 kernel 实际类型和证明体常量闭包核验也确认：排除根完全不含 `lemma_toda2ext` 或 `corollary_2ext125`，两项新结果不能成为该排除证明的循环输入。旧的 `KIP126.ProofTools.Standard.generalizedLeibniz` 和 `KIP126.ProofTools.Standard.generalizedMahowald` 同样不在闭包中。
+
+### 实际检查与精确上游责任
+
+只读无 `-o` 审计探针 `/tmp/MainAudit20261019.lean` 对当前实际生产模块使用 `import all`，逐个遍历根的完整 kernel 类型及可见证明体中使用的常量；该导入仅用于独立审计。普通 `import KIP126.Main.PaperResults` 的单独消费探针也成功读取两项公共定理。两项探针均使用固定工具链的绝对路径执行 `lake env lean`，exit 0，没有写生产 olean。最初探针因 `OriginalStatements.olean` 缺失失败的事实保留在本轮日志；协调者编译当前目标后，完整探针才成功运行，未用缺失证明体推断完成。
+
+| 根 | 实际项目声明闭包节点数 | 传递直接待补 | Main/ProofTools 待补 | 项目公理 / synthetic sorry |
+| --- | ---: | ---: | ---: | ---: |
+| `lemma_toda2ext` | 11091 | 116 | 0 | 0 / 0 |
+| `corollary_2ext125` | 11088 | 116 | 0 | 0 / 0 |
+| `eta_extension_excluded_of_d6_vanishes` | 11085 | 116 | 0 | 0 / 0 |
+
+三个根的传递直接待补集合完全相同：AdamsSynthetic 39、Literature 50、E2Computation 23、AdamsCalculations 4。**116 项的名称、实际责任模块和完整 kernel 类型指纹逐项匹配当前待补清单**，没有未登记项；全部实际项目常量均可审计，没有隐藏为无证明体 axiom 的项目输入。三个根的公理集合仍为 `Classical.choice`、`propext`、`Quot.sound`、`sorryAx`。
+
+完整 116 项清单、各根完整 kernel 打印类型、类型指纹、宇宙、源码 SHA-256、编译产物哈希以及原始依赖图哈希记录在本提案的 `evidence/conditional-proof-audit-20261019.json`；该证据 SHA-256 为 `344975c3160a65a4d15814f68c6b33a8da34fc040eb7f9f8c77110d0853639f6`。完整逐边原始图保留在 `/tmp/main-audit-20261019.json`；该临时文件的位置和 SHA-256 也存于证据中，不把临时文件视作永久归档。审计没有刷新接口锁、修改检查或增添许可责任；全仓库 `lake build` 及共享待补清单更新仍由协调者串行执行。
+
+### 结论的准确范围
+
+这次核验通过的是**原有两个完整条件命题的本地证明**，以及灰节点对相同公共互斥结论的准确绑定。原文直接路线所需的同一 bracket 的共同 Q3 值为零、以及任意源代表的未乘额外 λ 的误差吸收论证仍未独立补出；历史固定对象误差证据继续有效。本次没有从乘 λ² 的等式取消 λ²，没有把新高滤过代表冒认为原 bracket 成员，也没有改变条件命题的量词。
+
+由于 116 项上游构造和定理仍待完成，本节不宣称固定模型的无条件一致性已获证明，也不宣称整个目标已经没有 `sorryAx`。未发现本次候选借用已知无前提矛盾的证据；依赖已登记上游责任与完成这些责任是两回事。当前可继续上游补证、直接原文构造研究及既有 Main 结论的普通消费；不需要据本次结果调整公共接口。

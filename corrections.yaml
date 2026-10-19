@@ -7,7 +7,7 @@ corrections:
   reference: COROLLARY 2.17 / PROPOSITION 5.14
   status:
     kind: partial
-    label: 2.17 原命题已证，5.14 比较待补
+    label: 类型修正保留；5.14 在显式塔比较下已证
   original:
     statements:
     - '2.17'
@@ -15,18 +15,71 @@ corrections:
     source_line: 597
   revision:
     nodes: []
-    note: 没有另行提出加强或减弱数学前提的修正版；原文逐字保留，公开陈述只采用其图及元素次数所要求的类型。2.17 的原命题已在此类型下完成证明；5.14 的比较证明仍待补。
+    note: 本条只记录对象与次数排印，原文逐字保留。2.17 的原命题已在修正类型下完成证明；5.14 后续获准显式加入实际塔比较，其条件版本及标准实例未完成边界见单独的比较条目。
   problem: |-
     Corollary 2.17 的图为 X → Z → W，但元素 z 的对象被印为未在该图声明的 Y。Lean 类型依图使用 Z。原文另写 n,m≥0，却使用长度 m,l；本次保留未使用的 n 与原写的 n,m≥0，没有新增 l≥0 假设。
 
     Proposition 5.14 中 y 的次数为 (s+n,t+n)，但结论的目标边界群下标印为 (s,t)。为了使商类有类型，目标使用 y 自身次数 (s+n,t+n) 的无限边界群。源次数、映射 f、扩张长度及允许 inessential 扩张的范围均保留。
   progress: |-
-    用户明确授权将剩余十项写为公开 theorem 并登记待补证明。对应声明位于 ProofTools/Paper/OriginalStatements.lean；这两项使用原文的经典同伦代表元／E∞ 类，未以 synthetic 特例替代，也未加入额外的 crossing 或有界性条件。随后保持陈述不变补完了 2.17；5.14 仍缺一般模型中的同一代表元检测比较，保留待补责任。
+    用户明确授权将剩余十项写为公开 theorem 并登记待补证明。对应声明位于 ProofTools/Paper/OriginalStatements.lean；这两项使用原文的经典同伦代表元／E∞ 类，未以 synthetic 特例替代，也未加入额外的 crossing 或有界性条件。随后保持陈述不变补完了 2.17。2026-10-19 用户另行批准给 5.14 加入实际 λ 反演 Adams 塔比较；这一比较前提不是本条的排印修正，另见下条及独立接口报告。
   links:
   - node: paper:2.17
     title: Corollary 2.17 · 复合延拓原文
   - node: paper:5.14
     title: Proposition 5.14 · 无穷页到经典延拓原文
+- id: exact-extension-compactness
+  title: 将论文的完备有限型背景落实为实际 Adams 滤过条件
+  reference: PROPOSITION 2.20
+  status:
+    kind: revised
+    label: 显式完备、有限商与分离条件下已证
+  original:
+    statements:
+    - '2.20'
+    source_line: 648
+  revision:
+    nodes:
+    - sem:ProofTools:complete-exact-extension-boundaries
+  problem: |-
+    原文的全篇背景是 2 完备、connective、finite-type 谱。原泛型 Lean 模型没有包含这些背景所需的实际 Adams 滤过收敛条件：逐页永久性允许每页选择不同代表，不能仅用同伦正合性选出同一个被 g 杀死的代表。问题属于形式化遗漏背景条件，并非已发现满足原论文全部背景的反例。
+  counterexample: |-
+    去掉完备性背景，可取非完备的有理无限滤过分量，使 g 的像处处落在任意深滤过，所有逐页扩张均为零，却没有同一核代表。完整模型、固定对象及证据等级见 [独立接口报告](interface/proposals/ProofTools/20261018-original220-convergence/report.md)；该证据不是满足原论文全部全局条件的反例，也不冒称本仓库固定 Standard 模型的 Lean 反证。
+  progress: |-
+    2026-10-19 用户批准显式加入三个自然条件：Y 的各次同伦群对实际 Adams 滤过完备、非负层商有限，Z 的实际滤过分离。原逐页永久性、正合性和结论保留，未把共同核代表或待证结论作为前提。私有有限逆系统构造与 canonical completion 得到同一代表，Z 的分离性使其 g 像为零，随后应用原正合性。公开定理及辅助构造无本地证明洞；这不另行证明任意模型或固定 Standard 满足所列收敛条件。
+  links:
+  - node: paper:2.20
+    title: Proposition 2.20 · 原文
+  - node: sem:ProofTools:complete-exact-extension-boundaries
+    title: 带实际滤过收敛条件的正合边界定理
+- id: lambda-inversion-adams-comparison
+  title: 为无穷页到经典延拓补全实际 λ 反演 Adams 塔比较
+  reference: PROPOSITION 5.14
+  status:
+    kind: partial
+    label: 给定实际比较的同代表定理已证；标准比较实例未构造
+  original:
+    statements:
+    - '5.14'
+    source_line: 1581
+  revision:
+    nodes:
+    - sem:ProofTools:lambda-inversion-homotopy-extension
+    definitions:
+    - sem:Literature:lambda-inversion-object-comparison
+    - sem:Literature:lambda-inversion-adams-comparison
+  problem: |-
+    原文使用 λ 反演诱导的延拓谱序列映射。原泛型 Model 有对象级恢复，但没有约束选定 synthetic 与 classical Adams 塔的实际 stage、projection、cofiber 层和 E₂ 坐标。对象级等价不能自动推出同一代表元及其 f 像的检测相容。这里属于形式化的比较输入缺失；没有发现满足完整论文背景的 5.14 反例。
+  progress: |-
+    2026-10-19 用户批准加入 R : RealizationCoordinates D 与实际塔比较 hcomp。Literature 新接口约束真实塔映射、所有有限及无限 Z/B 的映射和既有 νE₂ 标定；不含 Detects、ClassicalDetects 或 5.14 结论字段。通用检测运输与 ProofTools 条件定理均已补证：从原 extension 选同一个 β，通过 normalized map 分解和 ν 恢复的自然性得到同一个经典 a 及其 a≫f，涵盖零、边界类及 inessential 扩张。
+
+    标准对象上的 hcomp producer 尚未构造。仅定义比较结构、证明给定比较后的结论不能算作标准比较已完成；本轮不新增 sorry、公理或许可责任替代该构造。具体缺口与已批准范围见 [独立接口报告](interface/proposals/Literature/20261019-lambda-inversion-adams-comparison/report.md)。
+  links:
+  - node: paper:5.14
+    title: Proposition 5.14 · 原文
+  - node: sem:ProofTools:lambda-inversion-homotopy-extension
+    title: 给定实际比较的同代表元经典延拓
+  - node: sem:Literature:lambda-inversion-detection
+    title: 实际塔映射的检测运输
 - id: mahowald
   title: 广义 Mahowald trick 不能直接消去 λ 层
   reference: THEOREM 6.12
@@ -69,7 +122,7 @@ corrections:
 
     **实际 no-crossing 与提升。** `ActualNoCrossing` 的范围仍为同一实际 map、stem/weight 的全部 $s<u\le v\le s+n$，包含 $u=v$。共同源代表同步、保源保目标的实际 $\lambda$ 商提升障碍，以及指定有限目标来自完整 $\nu$ 代表时其原标签永久的结论保持原有范围。原先的私有条件装配已经接入实际 Literature 生产者；调用方不再提交 `hRows`。
 
-    **保留的边界。** 旧零层一般 law 的反例及原冻结待补声明保留，没有冒称旧陈述获证。Main 的独立零层 $\nu$ 数值特例、一般普通 Adams 方框解码、一般经典 extension 恢复和具体 SS 调用认证不由本次新定理自动完成。既有登记上游责任仍须分别完成；本次证明不是所有 synthetic 余纤维选择的通用正合性，也不声称任意 detector 源的正指数 lift 唯一。历史 `StableLambda.lean` 中依赖额外稳定 cofiber 字段与公理的实现未被迁入；更强 AdamsSynthetic tensor／exact-functor 方案未获本次授权，也未被当作必要假设。
+    **保留的边界。** 旧零层一般 law 的定义及其反例保留。2026-10-19 用户明确授权撤销 `Standard.generalizedMahowald` 旧 theorem，并移除其直接待补登记；这是撤销错误断言，不是证明旧陈述。已证 AtLevel 定理不变。Main 的独立零层 $\nu$ 数值特例、一般普通 Adams 方框解码、一般经典 extension 恢复和具体 SS 调用认证不由本次新定理自动完成。既有登记上游责任仍须分别完成；本次证明不是所有 synthetic 余纤维选择的通用正合性，也不声称任意 detector 源的正指数 lift 唯一。历史 `StableLambda.lean` 中依赖额外稳定 cofiber 字段与公理的实现未被迁入；更强 AdamsSynthetic tensor／exact-functor 方案未获本次授权，也未被当作必要假设。
   history: |-
     **早期候选与后续排除。** 不再把消去 λ 当作合法的一般推导。早期曾考虑额外要求源属于所需微分的定义域：令 $Q=n+m+e(h)$、$F=\hat f_Q$，要求 $x\in Z_Q$ 且底层标签 $x_0\in{}^F Z_{n-1}$。群内 10 月 16 日的补充复核随后给出纸面实际有限谱反例，说明只补这个条件仍不能保留原目标同余：取 $f=(2,\kappa):S^{14}\to S^{14}\vee S^0$ 的余纤维三角，$(e(f),e(g),e(h))=(1,0,0)$、$(n,m,l,s,t)=(5,0,1,2,31)$，$x=h_0h_3^2=d_2(h_4)$，其余标签为零。源可支持所需 $d_5$，但目标为非零永久类 $d_0^2$，不能模 $B_6$ 改成零。该补充反例尚非本仓库固定模型中的 Lean 反证；[原群完整说明与来源](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1455)。
 
@@ -210,10 +263,14 @@ corrections:
     $\widetilde\sigma\,\widetilde{Ph_1}=\widetilde\eta^2\widetilde\kappa+\lambda\widetilde{Pc_0}$ 与 $\lambda\widetilde\eta^2\widetilde\kappa=0$，故高滤过代表 $\lambda\widetilde{Ph_1}$ 在源的指定 grade 表示零，却映到 $\lambda^2\widetilde{Pc_0}$。原式允许该非 essential 扩张。全部三个经典 crossing 位置分别因低滤过项、$h_1^2d_0=d_2(e_0)\in B_2$ 或源群消失被排除；原结论却为 $d_4(0)=Pc_0\ne0$。全部代表由 BHS 完整低维环与滤过计算核对，经典边界及存活由 IWX 原始数据独立核对。
 
     BHS 的生成元表把 $Pc_0$ weight 印为 24；其两张图、三条齐次关系以及 IWX 的 $(\mathrm{stem},\mathrm{AF})=(16,7)$ 一致确定应为 23，审查明确保存原印值，不把排印修正隐藏在接口中。这是实际球面上的数学反例，尚未在 Lean 中将这些元素运输到待构造的 `Standard.model`；不能称为 kernel 已证明固定 GL 的否定。详见[独立球面核验](local-history/proof-sessions/gl-2026-10-18/fixed-object-review/sigma-audit/report.md)。
+
+    **Proposition 5.10 的独立加强反例。** 在实际谱 $M=H\mathbb Z_2^\wedge\oplus H(\mathbb Z/4)\oplus H\mathbb Z_2^\wedge$ 上取 $f_*(a,\theta,c)=(4c,j(a),2a)$，$e(f_*)=0$，$(r,q,n,s,t)=(4,3,2,1,1)$。原非零永久标签与实际代表 $(0,0,1)\mapsto(4,0,0)$ 给出 essential 长度 2 扩张；同源 grade 的 16 个代表的目标 coset 不含零。同一大商在 $(u,v)=(2,3)$ 有 essential crossing，而 Definition 5.9 的全部三个小商候选 $(i,j)=(1,0),(1,1),(2,0)$ 均不存在。因此增加原扩张 essential 性仍不能修复该 iff。完整前提、谱识别、所有代表枚举与证据边界见 [已投递的独立审查 PDF](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1521)。这是满足论文全局谱条件的数学反例及有限枚举核验，尚非 Lean 完整 Model 反证，也不反驳固定 tmf detector 的实例。
   progress: |-
-    新版本没有本地证明洞，仍依赖登记的上游责任。原 GL 公共接口与原两个待补位置保持不变；新增版本不等于证明原 GL，也未声称新旧 crossing 条件等价。Main 的既有 GL/MH2 依赖禁用边界保留。
+    带层版本没有本地证明洞，仍依赖登记的上游责任。2026-10-19 用户在确认 Blueprint 已只绑定 AtLevel 版本后，明确授权撤销 `Standard.generalizedLeibniz` 旧 theorem、其两个 `sorry` 位置及对应直接待补登记。原 law 定义、实际数学反例和已证 AtLevel 定理保留；撤销不等于证明原 GL，也不声称新旧 crossing 条件等价。Main 的既有 GL/MH2 依赖禁用边界保留。
 
     反例的实际谱／球面识别属于数学核验；有限算术 Lean 检查不能替代把这些元素运输到固定 `Standard.model` 的形式化。
+
+    用户另要求将 5.10 原命题、反例及具体替代方案制作 PDF 并发送 project-math-assistant；10 页 A4 审查稿已于 2026-10-19 发送并回查附件。该项尚未授权更改：原公开 iff 及其唯一直接待补责任保留。有条件的有限 λ 除法是可用替代的充分条件定理，不是原 iff 的等价改写。
   history: |-
     **另行公开带 level 的 GL。** 保留实际 $\lambda$ 层：固定经典页 $n$，任意 $k\ge0$，使用实际商与 weight
 
@@ -301,7 +358,7 @@ corrections:
 
     **上游接口核验。** `sem:AdamsSynthetic:finite-quotient-separation` 只涉及有限 $\lambda$ 商，有无需原谱完备性假设的来源证明路线；固定模型与固定塔的正式构造仍待补。`sem:Literature:selected-lifts` 中的滤过—$\lambda$ 比较已在独立审计文件中以原完整签名通过 Lean 检查，使用有限商窗口、有限商分离性和余纤维正合性，无目标自身或 Main 回用；其正式生产证明仍未替换，仍继承 33 项登记上游待补。不能把普通球版本称为 BHS Corollary A.19 在完备假设下的直接应用，也不能恢复未截断对象的无限制分离性。此核验仅针对该节点的滤过—$\lambda$ 分句，不表示同节点的永久提升或实现核已完成。
 
-    **未完成边界。** Proposition 7.9 的局部组合已有证明，但整体继续继承上述模型、比较、结构及计算责任。Lemma 7.16 与 Corollary 7.18 的两个原始公开 `sorry` 保留；没有通过替代路线将它们标为完成。本次没有改变任何公共数学接口、固定对象或待补清单，也不主张这条路线的数学原创性。
+    **未完成边界。** Proposition 7.9 的局部组合已有证明，但整体继续继承上述模型、比较、结构及计算责任。2026-10-19 在保持两个完整公共陈述不变的前提下，Lemma 7.16 与 Corollary 7.18 已调用独立的 Proposition 7.9 排除定理，消去其共同假设而完成条件命题证明；移除两项直接待补责任。完整依赖审计要求排除路线不使用这两个结论。此证明不补出原文局部 Toda 检测或未乘 $\lambda^2$ 的代表误差消去步骤；这些历史论证缺口继续保留。本次不改变固定对象或公共数学接口，也不主张路线的数学原创性。
   history: |-
     用户在核查上游接口与原文条件后明确决定“保留现在的证明路线”，并要求在 AimPaper corrections 中列明原文序号与新路线的 Blueprint 节点。本条记录该路线选择；它不是批准修改 Lemma 7.16、Corollary 7.18 或上游公共陈述。
 
@@ -314,9 +371,9 @@ corrections:
   - node: paper:7.11
     title: Lemma 7.11 · 代表独立性及复用的滤过计算
   - node: paper:7.16
-    title: Lemma 7.16 · 原始括号检测仍待补
+    title: Lemma 7.16 · 条件命题由独立前提排除证明
   - node: paper:7.18
-    title: Corollary 7.18 · 任意代表精确扩张仍待补
+    title: Corollary 7.18 · 条件命题由独立前提排除证明
   - node: paper:7.20
     title: Proposition 7.20 · 接回第九商的 ν 扩张
   - node: paper:7.21
@@ -344,20 +401,20 @@ corrections:
   reference: LEMMA 7.16 · PROOF
   status:
     kind: partial
-    label: 局部归约已证 · 原结论待补
+    label: 完整条件命题已证 · 原文局部论证未补
   original:
     statements:
     - '7.16'
     source_line: 2470
   revision:
     nodes: []
-    note: 公共陈述保持原样；尚未构造属于指定括号的高滤过成员，不把辅助归约作为原陈述的完整修正版。
+    note: 公共陈述保持原样，已由独立的前提不相容定理完成条件命题；未另写修正版，也不声称补出了原文局部高滤过括号构造。
   problem: |-
     原证明排除低滤过候选时，需要保留实际商 $Q_9=S^{0,0}/\lambda^9$ 中的同一个 Toda 括号。AF7 的一个选定代表被 $\lambda^2$ 消灭，并不自动控制其高滤过误差；AF9 分支在原文第 2557–2560 行从 $\eta$ 作用后的等式推回原等式，尚缺相应核控制。这些是当前证明路线的未闭合步骤，未构成满足全部前提的原定理反例。
   progress: |-
     已证明同一实际括号任意两成员的差属于 $F^{11}$，每个成员非零；只要构造一个属于 $F^{11}$ 的实际成员，便可推出所有成员的完整非零检测结论。现有精确归约把检测等价于该成员在 $Q_9\to Q_3$ 下的像为零。剥除低层并保留 $\lambda^2h_0$ 的既有构造没有证明新代表仍属于原括号，不能替代缺失的存在性。
 
-    新增结果均为 Main 私有引理，不新增公共声明或待补责任。`lemma_toda2ext` 的原 `sorry` 保留，已有上游待补仍然继承。独立复核记录见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
+    2026-10-19：`lemma_toda2ext` 的完整公共类型保持不变，现由 `eta_extension_excluded_of_d6_vanishes hc3 hc5` 的矛盾消去证明，移除本地 `sorry`。排除定理通过独立的较弱代表控制路线证明，不调用本结论或 Corollary 7.18；仍继承实际上游待补。这是原条件命题的证明，不是上述局部构造的完成。此前局部归约的独立复核记录见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
   links:
   - node: paper:7.16
     title: Lemma 7.16 · 原始 Toda 括号的检测
@@ -366,14 +423,14 @@ corrections:
   reference: COROLLARY 7.18 · PROOF
   status:
     kind: partial
-    label: 精确误差条件已证 · 原结论待补
+    label: 完整条件命题已证 · 直接误差消去未补
   original:
     statements:
     - '7.18'
     source_line: 2571
   revision:
     nodes: []
-    note: 保留任意检测代表和未乘 λ² 的原等式；没有把已证的乘 λ² 版本替换为公共结论。
+    note: 任意检测代表量词及未乘 λ² 的原等式保持不变；条件命题通过独立的前提排除证明，不以乘 λ² 版本替换原结论。
   problem: |-
     原证明从一个括号代表的精确关系推广到任意同标签代表时，仅有高滤过信息不足以消灭 $h_0$ 误差。在当前固定对象及分次下，所有 $T$ 检测代表的 $\lambda^6$ 像已经证明相同，因此不能依靠更换目标代表吸收任意非零误差。
   counterexample: |-
@@ -383,7 +440,7 @@ corrections:
   progress: |-
     新增私有等价引理：给定初始精确非零关系 $h_0y_0=\lambda^6t_0$，另一代表 $y$ 存在原结论要求的目标，当且仅当 $h_0(y-y_0)=0$；同样的等价保留对所有 $Y$ 检测代表的量词。原有结果只保证此误差被 $\lambda^2$ 消灭，尚不能推出未乘 $\lambda^2$ 的零性。
 
-    这是一项精确的剩余责任归约，不是原推论的否定。公共类型、接口锁及两项 Main 待补责任均保持不变；不调用后续条件不相容定理或主定理来替代原文路线。独立复核与证据范围见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
+    这是一项原文直接证明路线的精确责任归约，不是原推论的否定。2026-10-19 保持完整公共类型不变，改由已独立证明的前提不相容定理消去 `hc3` 与 `hc5`，完成 `corollary_2ext125` 并移除直接待补；没有取消 $\lambda$ 因子，没有把原误差证据标为失效，也没有声称原文局部路线完成。该排除定理不调用本推论或 Lemma 7.16；仍继承既有上游待补。此前直接路线的独立复核与证据范围见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`。
   links:
   - node: paper:7.18
     title: Corollary 7.18 · 任意代表的精确 h₀ 扩张

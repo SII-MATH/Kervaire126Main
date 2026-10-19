@@ -1,0 +1,59 @@
+KIP126.ProofTools.Paper.extensionBoundary_of_exact.{u, v, w} {C : Type u}
+  [KIP126.StableHomotopy.StableHomotopyCategory C] [KIP126.StableHomotopy.HasFunctorialCofiber] {Syn : Type w}
+  [KIP126.Synthetic.Context.SyntheticCategory Syn] [KIP126.StableHomotopy.HasFunctorialCofiber]
+  (D : KIP126.Kervaire.Route.Model C Syn) (X Y Z : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary X ⟶ KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y)
+  (g :
+    KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y ⟶ KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Z)
+  (hYcomplete :
+    ∀ (d : ℤ),
+      Nonempty
+        ((D.classicalTower.tower (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y)).filtration.CompletionWitness
+          d))
+  (hYfinite :
+    ∀ (d : ℤ) (n : ℕ),
+      Finite
+        (KIP126.StableHomotopy.HomotopyGroup d (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y) ⧸
+          (D.classicalTower.tower (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y)).filtrationSubmodule (↑n)
+            d))
+  (hZsep :
+    ∀ (d : ℤ) (a : KIP126.StableHomotopy.HomotopyGroup d (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Z)),
+      (∀ (n : ℕ),
+          a ∈
+            (D.classicalTower.tower (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Z)).filtrationSubmodule (↑n)
+              d) →
+        a = 0)
+  (hexact :
+    ∀ (d : ℤ) (a : KIP126.StableHomotopy.HomotopyGroup d (KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y)),
+      CategoryTheory.CategoryStruct.comp a g = 0 ↔ ∃ b, CategoryTheory.CategoryStruct.comp b f = a)
+  (d s : ℤ) (y : ↑(KIP126.ProofTools.Paper.ClassicalGrade D Y s d)) :
+  KIP126.ProofTools.Paper.ClassicalPermanent D Y Z g d s y →
+    ∃ a ≤ s, ∃ x, KIP126.ProofTools.Paper.ClassicalExtension D X Y f d a s x y
+KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension.{u, v, w} {C : Type u}
+  [KIP126.StableHomotopy.StableHomotopyCategory C] [KIP126.StableHomotopy.HasFunctorialCofiber] {Syn : Type w}
+  [KIP126.Synthetic.Context.SyntheticCategory Syn] [KIP126.StableHomotopy.HasFunctorialCofiber]
+  (D : KIP126.Kervaire.Route.Model C Syn) (R : KIP126.Literature.RealizationCoordinates D)
+  (hcomp : KIP126.Literature.LambdaInversionAdamsComparison D R) (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary X ⟶ KIP126.Kervaire.Route.ClassicalObject.obj D.auxiliary Y)
+  (n s t : ℤ) (x : ↥(KIP126.Literature.permanentCycles D X (s, t)))
+  (y : ↥(KIP126.Literature.permanentCycles D Y (s + n, t + n)))
+  (he : KIP126.Kervaire.Route.InfiniteExtension D X Y f n s t ↑x ↑y) :
+  ∃ a,
+    KIP126.AdamsSynthetic.ClassicalDetects (D.classicalConvergence X) (s, t) (↑x) a ∧
+      KIP126.AdamsSynthetic.ClassicalDetects (D.classicalConvergence Y) (s + n, t + n) (↑y)
+        (CategoryTheory.CategoryStruct.comp (CategoryTheory.eqToHom ⋯) (CategoryTheory.CategoryStruct.comp a f))
+KIP126.Literature.LambdaInversionAdamsObjectComparison.detects.{u, v, w} {C : Type u}
+  [KIP126.StableHomotopy.StableHomotopyCategory C] [KIP126.StableHomotopy.HasFunctorialCofiber] {Syn : Type w}
+  [KIP126.Synthetic.Context.SyntheticCategory Syn] [KIP126.StableHomotopy.HasFunctorialCofiber]
+  {D : KIP126.Kervaire.Route.Model C Syn} {R : KIP126.Literature.RealizationCoordinates D}
+  {U : KIP126.Kervaire.Route.SyntheticObject} {X : KIP126.Kervaire.Route.ClassicalObject}
+  (K : KIP126.Literature.LambdaInversionAdamsObjectComparison D R U X) (s t w : ℤ)
+  (x : ↑((D.family.obj (KIP126.Kervaire.Route.SyntheticObject.obj D.nu D.auxiliary U)).E₂ (s, t, w)))
+  (β : KIP126.Synthetic.Context.BiHom (t - s) w (KIP126.Kervaire.Route.SyntheticObject.obj D.nu D.auxiliary U))
+  (hβ : KIP126.AdamsSynthetic.Detects (D.convergence U) (s, t, w) x β) :
+  KIP126.AdamsSynthetic.ClassicalDetects (D.classicalConvergence X) (s, t)
+    ((CategoryTheory.ConcreteCategory.hom (K.e2Map w (s, t))) x)
+    (CategoryTheory.CategoryStruct.comp (R.sphere (t - s) w).hom
+      (CategoryTheory.CategoryStruct.comp (D.recovery.realization.map β) K.target.hom))

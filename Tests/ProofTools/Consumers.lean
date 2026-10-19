@@ -1,7 +1,7 @@
 module
 
--- The original interfaces keep their fixed types. Completed proofs and the
--- three remaining comparison obligations are audited separately.
+-- The representative tools expose their actual completeness, separation,
+-- and realization comparison hypotheses through the ordinary public entry.
 
 import KIP126.ProofTools
 
@@ -24,11 +24,57 @@ crossing hypotheses; their callers never supply upstream result packages. -/
 #check KIP126.ProofTools.lambda_quotient_target_preserving_lift_iff
 #check KIP126.ProofTools.finite_target_from_full_lift_is_permanent
 
+-- Retired false theorems cannot be consumed through the public entry point.
+#check_failure KIP126.ProofTools.Standard.generalizedLeibniz
+#check_failure KIP126.ProofTools.Standard.generalizedMahowald
+#check KIP126.ProofTools.GeneralizedLeibnizLaw
+#check KIP126.ProofTools.GeneralizedMahowaldLaw
+#check KIP126.ProofTools.Standard.generalizedLeibnizAtLevel
+
 namespace Tests.ProofTools
 open CategoryTheory KIP126.StableHomotopy
 open KIP126.Kervaire.Route KIP126.ProofTools
 open KIP126.AdamsSynthetic
 open KIP126.AdamsSynthetic.Standard (model)
+
+/-- Proposition 2.20 is callable with source completeness and finite quotients,
+target separation, and exactness at the middle group supplied explicitly. -/
+example (X Y Z : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (g : Y.obj model.auxiliary ⟶ Z.obj model.auxiliary)
+    (hYcomplete : ∀ d : ℤ, Nonempty
+      (KIP126.Core.SpectralSequence.Filtration.CompletionWitness
+        (model.classicalTower.tower (Y.obj model.auxiliary)).filtration d))
+    (hYfinite : ∀ (d : ℤ) (n : ℕ), Finite
+      (HomotopyGroup d (Y.obj model.auxiliary) ⧸
+        (model.classicalTower.tower (Y.obj model.auxiliary)).filtrationSubmodule n d))
+    (hZsep : ∀ (d : ℤ) (a : HomotopyGroup d (Z.obj model.auxiliary)),
+      (∀ n : ℕ, a ∈
+        (model.classicalTower.tower (Z.obj model.auxiliary)).filtrationSubmodule n d) → a = 0)
+    (hexact : ∀ d : ℤ, ∀ a : HomotopyGroup d (Y.obj model.auxiliary),
+      a ≫ g = 0 ↔ ∃ b : HomotopyGroup d (X.obj model.auxiliary), b ≫ f = a)
+    (d s : ℤ) (y : Paper.ClassicalGrade model Y s d)
+    (hy : Paper.ClassicalPermanent model Y Z g d s y) :
+    ∃ a : ℤ, a ≤ s ∧ ∃ x : Paper.ClassicalGrade model X a d,
+      Paper.ClassicalExtension model X Y f d a s x y :=
+  Paper.extensionBoundary_of_exact model X Y Z f g
+    hYcomplete hYfinite hZsep hexact d s y hy
+
+/-- Proposition 5.14 preserves the source representative and its actual image.
+The supplied realization comparison need not have a standard-model producer. -/
+example (R : KIP126.Literature.RealizationCoordinates model)
+    (hcomp : KIP126.Literature.LambdaInversionAdamsComparison model R)
+    (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (n s t : ℤ)
+    (x : KIP126.Literature.permanentCycles model X (s,t))
+    (y : KIP126.Literature.permanentCycles model Y (s+n,t+n))
+    (he : InfiniteExtension model X Y f n s t x.val y.val) :
+    ∃ a : HomotopyGroup (t-s) (X.obj model.auxiliary),
+      ClassicalDetects (model.classicalConvergence X) (s,t) x.val a ∧
+      ClassicalDetects (model.classicalConvergence Y) (s+n,t+n) y.val
+        (eqToHom (congrArg (Sphere (C := KIP126.AdamsSynthetic.Standard.Spectrum))
+          (show (t+n)-(s+n) = t-s by omega)) ≫ a ≫ f) :=
+  Paper.infiniteExtension_to_classicalExtension model R hcomp X Y f n s t x y he
 
 /-- An ordinary consumer obtains the full assertion without a row premise. -/
 example (T : TriangleData model.auxiliary)
@@ -41,13 +87,6 @@ example (T : TriangleData model.auxiliary)
 example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) :
     FinitePageExtensionStretchingLaw model X Y f :=
   KIP126.ProofTools.Standard.finitePageExtensionStretching X Y f
-
-example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) :
-    GeneralizedLeibnizLaw model X Y f :=
-  KIP126.ProofTools.Standard.generalizedLeibniz X Y f
-
-example (T : TriangleData model.auxiliary) : GeneralizedMahowaldLaw model T :=
-  KIP126.ProofTools.Standard.generalizedMahowald T
 
 example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
     (rEarlier rLater : ℕ) (n s t : ℤ)

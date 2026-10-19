@@ -1,24 +1,34 @@
 module
 
 public import KIP126.ProofTools.Language
+public import KIP126.Literature.LambdaInversionAdams
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
 import all KIP126.ProofTools.FiltrationOperations
+import all KIP126.ProofTools.Paper.ClassicalKernelCompactness
+import all KIP126.ProofTools.DetectionOperations
 
-/-! Original AimPaper statements, not revised theorems or synthetic substitutes.
+/-! Representative statements from AimPaper, with explicit convergence and
+realization hypotheses where the general model requires them.
 
 The first eight statements use the actual classical Adams filtration on
 homotopy groups. At fixed stem `d`, filtration `s` means bidegree `(s,d+s)`;
 thus all original `(s,t)` coordinates are retained with `d = t-s`.
 The representative relation is the one in AimPaper Definition 2.3 and
-Proposition 2.5(1). No boundedness or synthetic-to-classical comparison is
-assumed. The relation permits a signed target-source difference: when it is
+Proposition 2.5(1). The relation permits a signed target-source difference: when it is
 negative, a filtration-preserving map can only have zero target grade.
 
-The original statements are kept fixed. The finite representative arguments
-prove 2.6, 2.12, 2.15--2.19; the convergence and comparison bridges required
-for 2.20, 5.10 and 5.14 remain individually registered proof obligations.
-In particular the original Proposition 5.10 is deliberately not strengthened
-with the extra kernel-crossing condition of finiteLambdaDivision.
+The finite representative arguments prove 2.6, 2.12, 2.15--2.19.
+Proposition 2.20 is proved with completeness of the source homotopy
+filtration, finite filtration quotients and separation of the target
+filtration. A finite inverse system and the canonical completion cone
+produce one kernel representative, to which homotopy exactness applies.
+Proposition 5.14 is proved from the specified realization coordinates and
+an actual lambda-inversion Adams-tower comparison. Detection transports the
+same representative, including zero and boundary labels. Constructing that
+comparison for the fixed Standard model remains an upstream task.
+The original Proposition 5.10 remains a registered proof obligation; its
+interface has not been strengthened with the kernel-crossing condition of
+finiteLambdaDivision.
 -/
 namespace KIP126.ProofTools.Paper
 open CategoryTheory CategoryTheory.Limits
@@ -702,18 +712,114 @@ public theorem permanentCycle_of_nullComposite (X Y Z : ClassicalObject)
   · simp
   · simp
 
-/-- AimPaper Proposition 2.20: exactness only at the middle homotopy group,
-with no short exactness, bounded-filtration or chosen-lift premise added. -/
+/-! Separate the finite algebra in Proposition 2.20 from its convergence
+step.  The following lemmas do not interchange page-dependent witnesses.
+In particular, a common kernel representative is not a consequence recorded
+by `ClassicalTowerConvergence`. -/
+
+private theorem classical_permanent_iff_approximate_kernel (Y Z : ClassicalObject)
+    (g : Y.obj D.auxiliary ⟶ Z.obj D.auxiliary) (d s : ℤ)
+    (y : ClassicalGrade D Y s d) :
+    ClassicalPermanent D Y Z g d s y ↔
+      ∀ n : ℕ, ∃ a : HomotopyGroup d (Y.obj D.auxiliary),
+        ClassicalRepresents D Y s d y a ∧
+          a ≫ g ∈ (D.classicalTower.tower (Z.obj D.auxiliary)).filtrationSubmodule
+            (s+n+1) d := by
+  constructor
+  · intro h n
+    obtain ⟨a, ha, hga⟩ := h n
+    exact ⟨a, ha, (classical_represents_zero_iff D Z (s+n) d (a≫g)).mp hga⟩
+  · intro h n
+    obtain ⟨a, ha, hga⟩ := h n
+    exact ⟨a, ha, (classical_represents_zero_iff D Z (s+n) d (a≫g)).mpr hga⟩
+
+private theorem classical_boundary_of_kernel_representative (X Y Z : ClassicalObject)
+    (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
+    (g : Y.obj D.auxiliary ⟶ Z.obj D.auxiliary)
+    (hexact : ∀ d : ℤ, ∀ a : HomotopyGroup d (Y.obj D.auxiliary),
+      a ≫ g = 0 ↔ ∃ b : HomotopyGroup d (X.obj D.auxiliary), b ≫ f = a)
+    (d s : ℤ) (y : ClassicalGrade D Y s d)
+    (hkernel : ∃ a : HomotopyGroup d (Y.obj D.auxiliary),
+      ClassicalRepresents D Y s d y a ∧ a ≫ g = 0) :
+    ∃ a : ℤ, a ≤ s ∧ ∃ x : ClassicalGrade D X a d,
+      ClassicalExtension D X Y f d a s x y := by
+  obtain ⟨a, ha, hga⟩ := hkernel
+  obtain ⟨b, hbf⟩ := (hexact d a).mp hga
+  let k : ℤ := min 0 s
+  have hk : k.toNat = 0 := Int.toNat_eq_zero.mpr (min_le_left 0 s)
+  have hb : b ∈ (D.classicalTower.tower (X.obj D.auxiliary)).filtrationSubmodule k d := by
+    change ∃ z : HomotopyGroup d
+        ((D.classicalTower.tower (X.obj D.auxiliary)).stage k.toNat),
+      z ≫ ((D.classicalTower.tower (X.obj D.auxiliary)).map (Nat.zero_le k.toNat) ≫
+        (D.classicalTower.tower (X.obj D.auxiliary)).zeroIso.hom) = b
+    rw [hk]
+    refine ⟨b ≫ (D.classicalTower.tower (X.obj D.auxiliary)).zeroIso.inv, ?_⟩
+    simp only [AbstractAdamsTower.map_self, Category.id_comp, Category.assoc,
+      Iso.inv_hom_id, Category.comp_id]
+  obtain ⟨x, hx⟩ := classical_ess_label_exists D X k d b hb
+  exact ⟨k, min_le_right 0 s, x, b, hx, hbf.symm ▸ ha⟩
+
+/-- AimPaper Proposition 2.20, with the source profinite compactness and
+target separation hypotheses explicit. Exactness is only required at the
+middle homotopy group; no chosen kernel representative is assumed. -/
 public theorem extensionBoundary_of_exact (X Y Z : ClassicalObject)
     (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
     (g : Y.obj D.auxiliary ⟶ Z.obj D.auxiliary)
+    (hYcomplete : ∀ d : ℤ, Nonempty (Filtration.CompletionWitness
+      (D.classicalTower.tower (Y.obj D.auxiliary)).filtration d))
+    (hYfinite : ∀ (d : ℤ) (n : ℕ), Finite
+      (HomotopyGroup d (Y.obj D.auxiliary) ⧸
+        (D.classicalTower.tower (Y.obj D.auxiliary)).filtrationSubmodule n d))
+    (hZsep : ∀ (d : ℤ) (a : HomotopyGroup d (Z.obj D.auxiliary)),
+      (∀ n : ℕ, a ∈
+        (D.classicalTower.tower (Z.obj D.auxiliary)).filtrationSubmodule n d) → a = 0)
     (hexact : ∀ d : ℤ, ∀ a : HomotopyGroup d (Y.obj D.auxiliary),
       a ≫ g = 0 ↔ ∃ b : HomotopyGroup d (X.obj D.auxiliary), b ≫ f = a) :
     ∀ d s : ℤ, ∀ y : ClassicalGrade D Y s d,
       ClassicalPermanent D Y Z g d s y →
       ∃ a : ℤ, a ≤ s ∧ ∃ x : ClassicalGrade D X a d,
         ClassicalExtension D X Y f d a s x y := by
-  sorry
+  intro d s y hpermanent
+  apply classical_boundary_of_kernel_representative D X Y Z f g hexact d s y
+  let TY := D.classicalTower.tower (Y.obj D.auxiliary)
+  let TZ := D.classicalTower.tower (Z.obj D.auxiliary)
+  have hfinite : ∀ n : ℕ, Finite (TY.filtration.quotientAt n d) := by
+    intro n
+    letI : Finite (HomotopyGroup d (Y.obj D.auxiliary) ⧸
+        ModuleCat.subobjectModule _ (TY.filtration.F n d)) := by
+      simpa only [AbstractAdamsTower.filtration, OrderIso.apply_symm_apply]
+        using hYfinite d n
+    exact finite_quotientAt_of_submodule TY.filtration d n
+  let S : ℤ → Set (HomotopyGroup d (Y.obj D.auxiliary)) := fun k =>
+    {a | ClassicalRepresents D Y s d y a ∧ a ≫ g ∈ TZ.filtrationSubmodule k d}
+  have hS : Antitone S := by
+    intro k l hkl a ha
+    exact ⟨ha.1, TZ.filtrationSubmodule_antitone d hkl ha.2⟩
+  have hne : ∀ k : ℤ, (S k).Nonempty := by
+    intro k
+    let n := (k-s-1).toNat
+    obtain ⟨a, ha, hga⟩ := hpermanent n
+    have hga' : a≫g ∈ TZ.filtrationSubmodule (s+n+1) d :=
+      (classical_represents_zero_iff D Z (s+n) d (a≫g)).mp hga
+    refine ⟨a, ha, TZ.filtrationSubmodule_antitone d ?_ hga'⟩
+    dsimp only [n]
+    omega
+  obtain ⟨a, ha⟩ := finite_filtration_compactness TY.filtration d
+    (hYcomplete d).some (finite_quotientAt_int TY.filtration d hfinite) S hS hne
+  have hrep : ClassicalRepresents D Y s d y a := by
+    obtain ⟨b, hb, hab⟩ := ha (s+1)
+    apply classical_represents_of_difference D Y s d y a b hb.1
+    have hh := (quotientProjection_eq_iff_sub_mem TY.filtration d (s+1) a b).mp hab
+    simpa only [AbstractAdamsTower.filtration, OrderIso.apply_symm_apply] using hh
+  refine ⟨a, hrep, hZsep d (a≫g) (fun n => ?_)⟩
+  obtain ⟨b, hb, hab⟩ := ha n
+  have hh := (quotientProjection_eq_iff_sub_mem TY.filtration d n a b).mp hab
+  have hdiff : a-b ∈ TY.filtrationSubmodule n d := by
+    simpa only [AbstractAdamsTower.filtration, OrderIso.apply_symm_apply] using hh
+  have himage := classical_map_mem D Y Z g d n (a-b) hdiff
+  rw [Preadditive.sub_comp] at himage
+  have hsum := (TZ.filtrationSubmodule n d).add_mem himage hb.2
+  simpa only [sub_add_cancel] using hsum
 
 /-- AimPaper Proposition 5.10, original finite-page crossing equivalence.
 The competing synthetic extension is in the same actual quotient and weight.
@@ -739,11 +845,82 @@ public theorem finiteCrossing_iff_syntheticCrossing (X Y : ClassicalObject)
             (t-s,t+normalizedExponent D.classicalTower f) a (b-a) source target := by
   sorry
 
+private theorem paper_detects_transport (U : SyntheticObject) {i j : Tridegree} (h : i=j)
+    (x : (D.family.obj (U.obj D.nu D.auxiliary)).E₂ i)
+    (a : BiHom (i.2.1-i.1) i.2.2 (U.obj D.nu D.auxiliary))
+    (ha : Detects (D.convergence U) i x a) :
+    Detects (D.convergence U) j (regradeE2 h x)
+      (homotopyRegrade (congrArg (fun k : Tridegree => k.2.1-k.1) h)
+        (congrArg (fun k : Tridegree => k.2.2) h) a) := by
+  subst j
+  exact ha
+
+private theorem paper_e2_regrade_comp {A : SyntheticAdamsSS.{v}}
+    {i j k : Tridegree} (hij : i=j) (hjk : j=k) (z : A.E₂ i) :
+    regradeE2 hjk (regradeE2 hij z)=regradeE2 (hij.trans hjk) z := by
+  subst j
+  subst k
+  rfl
+
+private theorem paper_homotopy_regrade_comp {A : Syn} {m m' m'' w w' w'' : ℤ}
+    (hm : m=m') (hm' : m'=m'') (hw : w=w') (hw' : w'=w'') (a : BiHom m w A) :
+    homotopyRegrade hm' hw' (homotopyRegrade hm hw a) =
+      homotopyRegrade (hm.trans hm') (hw.trans hw') a := by
+  subst m'
+  subst m''
+  subst w'
+  subst w''
+  rfl
+
+private theorem paper_e2Map_regrade {R : RealizationCoordinates D}
+    {U : SyntheticObject} {X : ClassicalObject}
+    (K : LambdaInversionAdamsObjectComparison D R U X)
+    (s t w w' : ℤ) (hw : w=w') (h : (s,t,w)=(s,t,w'))
+    (x : (D.family.obj (U.obj D.nu D.auxiliary)).E₂ (s,t,w)) :
+    K.e2Map w' (s,t) (regradeE2 h x)=K.e2Map w (s,t) x := by
+  subst w'
+  rfl
+
+private theorem realization_homotopy_regrade (R : RealizationCoordinates D)
+    {U : Syn} (m m' w : ℤ) (hm : m=m') (a : BiHom m w U) :
+    (R.sphere m' w).hom ≫ D.recovery.realization.map (homotopyRegrade hm rfl a) =
+      eqToHom (congrArg (Sphere (C := C)) hm.symm) ≫
+        (R.sphere m w).hom ≫ D.recovery.realization.map a := by
+  subst m'
+  simp only [homotopyRegrade,eqToHom_refl,Category.id_comp]
+
+private theorem normalized_realization_square (R : RealizationCoordinates D)
+    (K : LambdaInversionAdamsComparison D R) (X Y : ClassicalObject)
+    (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) :
+    D.recovery.realization.map (D.normalizedMap X Y f).map ≫ (K.nu Y).target.hom =
+      (K.shiftedNu X (normalizedExponent D.classicalTower f)).target.hom ≫ f := by
+  let L := D.recovery.realization
+  let e := normalizedExponent D.classicalTower f
+  let l := L.map (lambdaToPositivePow e (D.nu.functor.obj (X.obj D.auxiliary)))
+  have hl : l ≫ (K.shiftedNu X e).target.hom = (K.nu X).target.hom :=
+    K.shiftedNu_target X e
+  have hliso : IsIso l := by
+    have heq : l = (K.nu X).target.hom ≫ (K.shiftedNu X e).target.inv := by
+      rw [←hl]
+      simp only [Category.assoc,Iso.hom_inv_id,Category.comp_id]
+    rw [heq]
+    infer_instance
+  letI := hliso
+  apply (cancel_epi l).mp
+  rw [←Category.assoc,←L.map_comp,(D.normalizedMap X Y f).factorization]
+  simp only [K.nu_target] at hl ⊢
+  have hn := D.recovery.nuRealizationIso.hom.naturality f
+  dsimp only [Functor.comp_map,Functor.id_map] at hn
+  change L.map (D.nu.functor.map f) ≫
+      D.recovery.nuRealizationIso.hom.app (Y.obj D.auxiliary) = _
+  rw [hn,←hl,Category.assoc]
+
 /-- AimPaper Proposition 5.14. ClassicalDetects factors through the original
 Z∞/B∞ classes; neither essentiality nor nonzero labels are required.
 The printed B∞ index on Y is (s,t), although y has degree (s+n,t+n);
 the typed target uses the latter degree, as recorded in corrections.yaml. -/
-public theorem infiniteExtension_to_classicalExtension (X Y : ClassicalObject)
+public theorem infiniteExtension_to_classicalExtension (R : RealizationCoordinates D)
+    (hcomp : LambdaInversionAdamsComparison D R) (X Y : ClassicalObject)
     (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary) (n s t : ℤ)
     (x : permanentCycles D X (s,t)) (y : permanentCycles D Y (s+n,t+n))
     (he : InfiniteExtension D X Y f n s t x.val y.val) :
@@ -752,7 +929,119 @@ public theorem infiniteExtension_to_classicalExtension (X Y : ClassicalObject)
       ClassicalDetects (D.classicalConvergence Y) (s+n,t+n) y.val
         (eqToHom (congrArg (Sphere (C := C))
           (show (t+n)-(s+n) = t-s by omega)) ≫ a ≫ f) := by
-  sorry
+  obtain ⟨W⟩ := he
+  let e := normalizedExponent D.classicalTower f
+  let w : ℤ := t+e
+  let p : ℤ × ℤ := (t-s,w)
+  let U := extensionSourceObject D X Y f
+  let g := (D.normalizedMap X Y f).map
+  obtain ⟨_,ar,br,hab,hax,hby⟩ :=
+    (Internal.tower_extension_iff (D.convergentMap U (.nu Y) g)
+      p s n W.source W.target).mp W.equation
+  let beta : BiHom (t-s) w (U.obj D.nu D.auxiliary) :=
+    ((D.syntheticTower.filtration (U.obj D.nu D.auxiliary)).F s p).arrow ar
+  have hs := Internal.source_frame_detects (D.convergence U) p s W.source
+    (infiniteSourceForExtension D X Y f s t x.val) W.source_rep ar hax
+  have hsource : Detects (D.convergence U) (s,t,w)
+      (regradeE2 (show (s,t,t+(e:ℤ)-(0:ℕ))=(s,t,w) by simp [w])
+        (D.comparison.nuE2 X e s t 0 x.val)) beta := by
+    have H := paper_detects_transport D U
+      (show (s,p.1+s,p.2)=(s,t,w) by ext <;> dsimp [p] <;> omega) _ _ hs
+    dsimp only [infiniteSourceForExtension] at H
+    rw [paper_e2_regrade_comp,paper_homotopy_regrade_comp] at H
+    exact H
+  let a : HomotopyGroup (t-s) (X.obj D.auxiliary) :=
+    (R.sphere (t-s) w).hom ≫ D.recovery.realization.map beta ≫
+      (hcomp.shiftedNu X e).target.hom
+  have hclassSource := (hcomp.shiftedNu X e).detects s t w _ beta hsource
+  have ha : ClassicalDetects (D.classicalConvergence X) (s,t) x.val a := by
+    rw [paper_e2Map_regrade D _ s t (t+(e:ℤ)-(0:ℕ)) w (by simp [w]),
+      hcomp.shiftedNu_e2] at hclassSource
+    exact hclassSource
+  have ht := Internal.source_frame_detects (D.convergence (.nu Y)) p (s+n) W.target
+    (infiniteTargetForExtension D X Y f n s t W.length_lower y.val) W.target_rep br hby
+  have hstem : t-s = (t+n)-(s+n) := by omega
+  have hindex : t-s+(s+n)=t+n := by omega
+  have hweight : (t+n)-((n-(e:ℤ)).toNat:ℤ)=w := by
+    rw [Int.toNat_of_nonneg (by have h := W.length_lower; dsimp [e] at *; omega)]
+    dsimp [w]
+    omega
+  have htarget : Detects (D.convergence (.nu Y)) (s+n,t+n,w)
+      (regradeE2 (show (s+n,t+n,(t+n)-((n-(e:ℤ)).toNat:ℤ))=(s+n,t+n,w) by rw [hweight])
+        (targetNuLabel D Y (s+n) (t+n) (n-(e:ℤ)).toNat y.val))
+      (homotopyRegrade hstem rfl (beta ≫ g)) := by
+    rw [←hab] at ht
+    have H := paper_detects_transport D (.nu Y)
+      (show (s+n,p.1+(s+n),p.2)=(s+n,t+n,w) by ext <;> dsimp [p] <;> omega) _ _ ht
+    dsimp only [infiniteTargetForExtension] at H
+    rw [paper_e2_regrade_comp,paper_homotopy_regrade_comp] at H
+    exact H
+  have hclassTarget := (hcomp.nu Y).detects (s+n) (t+n) w _
+    (homotopyRegrade hstem rfl (beta ≫ g)) htarget
+  refine ⟨a,ha,?_⟩
+  have htclass : ClassicalDetects (D.classicalConvergence Y) (s+n,t+n) y.val
+      ((R.sphere ((t+n)-(s+n)) w).hom ≫
+        D.recovery.realization.map (homotopyRegrade hstem rfl (beta ≫ g)) ≫
+          (hcomp.nu Y).target.hom) := by
+    rw [paper_e2Map_regrade D _ (s+n) (t+n) _ w hweight,hcomp.nu_e2] at hclassTarget
+    exact hclassTarget
+  convert htclass using 1
+  symm
+  calc
+    _ = (eqToHom (congrArg (Sphere (C := C)) hstem.symm) ≫
+        (R.sphere (t-s) w).hom ≫ D.recovery.realization.map (beta ≫ g)) ≫
+          (hcomp.nu Y).target.hom := by
+      simpa only [Category.assoc] using congrArg
+        (fun z => z ≫ (hcomp.nu Y).target.hom)
+        (realization_homotopy_regrade D R (t-s) ((t+n)-(s+n)) w hstem (beta ≫ g))
+    _ = _ := by
+      dsimp only [a,g]
+      rw [Functor.map_comp]
+      simp only [Category.assoc]
+      rw [normalized_realization_square D R hcomp X Y f]
+
+
+/-- The individual classical detection lift for Proposition 5.14 exists
+without essentiality or a nonzero label. The proposition additionally needs
+compatibility of ONE such lift with the given synthetic extension and f;
+that comparison is not supplied by this individual existence lemma. -/
+private theorem classical_detection_exists_of_permanent_label (X : ClassicalObject)
+    (s t : ℤ) (x : permanentCycles D X (s,t)) :
+    ∃ a : HomotopyGroup (t-s) (X.obj D.auxiliary),
+      ClassicalDetects (D.classicalConvergence X) (s,t) x.val a := by
+  obtain ⟨z,hz⟩ := x.property
+  let F := (D.classicalTower.tower (X.obj D.auxiliary)).filtration
+  let e := (((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).pageπ ⊤) z
+  haveI : Epi (F.toAssociatedGraded s (t-s)) := inferInstanceAs (Epi (cokernel.π _))
+  obtain ⟨b,hb⟩ := (ModuleCat.epi_iff_surjective (F.toAssociatedGraded s (t-s))).mp
+    inferInstance (((D.classicalConvergence X).identification (s,t)).hom e)
+  refine ⟨(F.F s (t-s)).arrow b,z,?_,b,rfl,hb.symm⟩
+  have h0 : (D.classical.obj (X.obj D.auxiliary)).r₀ = 2 := D.classical.firstPage _
+  apply eq_of_heq
+  apply HEq.trans ?_ (heq_of_eq hz)
+  have hindex : (↑(2-(D.classical.obj (X.obj D.auxiliary)).r₀).toNat : WithTop ℕ) = 0 := by
+    rw [h0]; rfl
+  unfold cycleLabel
+  dsimp only
+  have app_heq : ∀ {A B : ModuleCat.{v} ℤ} (h : A=B) (a : A),
+      HEq ((eqToHom h) a) a := by
+    intro A B h a
+    subst B
+    rfl
+  change HEq _ (((eqToHom (by simp [Page,h0])) :
+      ((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).page 0 ⟶
+        (D.classical.obj (X.obj D.auxiliary)).Page 2 (s,t)) ((Subobject.ofLE _ _ _ ≫
+    ((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).pageπ 0) z))
+  apply HEq.trans ?_ (app_heq _ _).symm
+  let g (k : WithTop ℕ) : (((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).page k : ModuleCat.{v} ℤ) :=
+    (Subobject.ofLE _ _ (((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).Z_anti le_top) ≫
+      ((D.classical.obj (X.obj D.auxiliary)).ssData (s,t)).pageπ k) z
+  change HEq (g _) (g 0)
+  have aux : ∀ k l : WithTop ℕ, k=l → HEq (g k) (g l) := by
+    intro k l h
+    subst l
+    rfl
+  exact aux _ _ hindex
 
 end
 end KIP126.ProofTools.Paper

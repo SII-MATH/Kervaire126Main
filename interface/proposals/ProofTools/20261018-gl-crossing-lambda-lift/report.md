@@ -389,3 +389,196 @@ InfiniteNoCrossing D X Y f l (s+r) (t+r-1) →
 ## 人类审核记录
 
 尚无本报告方案的明确人类决定。`human_decision: null`。协调者或其他 agent 的数学同意、已有不同问题的批准、等待和沉默，均不计作本方案授权。
+
+
+## 2026-10-19：当前泛型 5.10 的完整模型与同一 detector 自映射复核
+
+本段由独立报告员 `/root/interface_reporter` 追加，未参与候选发现或实现。工作区为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/prooftools-main-proofs-20261019`，起始提交 `0e940a5108088ad73a19415721060012a8aad779`；当前含其他 worker 的未提交补证。本轮读取当前规则及指定 protocol/template，只写本报告，不改源码、锁、corrections、旧 GL/MH 报告或人审记录；按用户安排不运行全量检查。
+
+**结论：下述有限矩阵可由实际谱及完整的数学 Model 实现，构成当前任意 D 版本 5.10 的数学反例。** 模型采用 HF₂-local 谱与 hypercomplete HF₂-synthetic 谱，单位、ν、λ-localization 和实际塔整套相容。尚无 Lean `Model` 值或 Lean 否定证书，不能称为 kernel 已验证的完整反例，也不能称为固定 tmf `Standard.model` 的反例。
+
+新涉及的 5.10 接口处置仍为 **`status=pending-human-review`、`human_decision=null`**。旧 GL/MH 删除授权不覆盖这条不同声明；本段不推测新授权，不改变文件头的原待审状态。
+
+### 当前完整声明及真实前提
+
+本报告原来的普通谱例子曾不能装入固定对象闭包。本轮目标后来公开为泛型 D；当前完整上下文、签名如下：
+
+```lean
+universe u v w
+variable {C : Type u} [StableHomotopyCategory.{u,v} C]
+  [HasFunctorialCofiber (C := C)]
+  {Syn : Type w} [SyntheticCategory.{w,v} Syn]
+  [HasFunctorialCofiber (C := Syn)] (D : Model C Syn)
+public theorem finiteCrossing_iff_syntheticCrossing (X Y : ClassicalObject)
+    (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
+    (r : ℕ) (n s t : ℤ)
+    (x : Ambient D X (s,t)) (y : Ambient D Y (s+n,t+n))
+    (he : FiniteExtension D X Y f r n s t x y) :
+    FiniteHasCrossing D X Y f r n s t ↔
+      ∃ a b : ℤ, s < a ∧ a ≤ b ∧ b ≤ s+n ∧
+        ∃ (source : ((D.family.obj
+          ((SyntheticObject.quotient (r-1) (extensionSourceObject D X Y f)).obj
+            D.nu D.auxiliary)).sequence.ssData
+          (a,(t-s)+a,t+normalizedExponent D.classicalTower f)).eInfty)
+          (target : ((D.family.obj
+          ((SyntheticObject.quotient (r-1) (.nu Y)).obj D.nu D.auxiliary)).sequence.ssData
+          (a+(b-a),(t-s)+(a+(b-a)),t+normalizedExponent D.classicalTower f)).eInfty),
+          target ≠ 0 ∧ TowerExtensionEquation
+            (D.convergentMap (.quotient (r-1) (extensionSourceObject D X Y f))
+              (.quotient (r-1) (.nu Y)) (finiteExtensionMap D X Y f (r-1)))
+            (t-s,t+normalizedExponent D.classicalTower f) a (b-a) source target
+```
+
+没有隐含 `D=Standard.model`，原 he 不要求非零或 essential。`AuxiliaryData.detector : C` 没有 tmf 条件；因此可以在某一合法 generic D 内把 `.detector` 选为下述 M，**不需要新增 ClassicalObject 直和构造子**。这不是把固定 Standard detector 私自换掉。
+
+左侧 `FiniteHasCrossing`：自然数 i,j，`0<i≤r−2`、`j≤n−i−e(f)`；同一 f 在 page r−i、length n−i−j、source `(s+i,t+i)` 上的真实 `FiniteExtensionWitness`；W.Essential 且指定经典靶不在 B_(1+n−j−e(f))。Witness 的全部字段含 page/length 界、指定标签的 cycle、同一实际 map 上的 E∞ source/target、两个标签代表比较及实际 equation。右侧则在同一大商 Q_(r−1)、固定 stem/weight，要求更高 source filtration 的非零靶 equation。右侧没有 essential 前提，但本例右侧也 essential；仅加 essential 不能修复。
+
+### 完整 Model 的实际实现，而非只指定有限矩阵
+
+取 H=HF₂，C=Ho(Sp_H)，tensor 为 H-localized smash，单位 S₂∧。取 Syn=Ho(hypercomplete Syn_H)，tensor 与单位也取 hypercompletion 后的版本。[Pstrągowski §5.1 Remark 5.5、Propositions 5.6–5.7](https://arxiv.org/html/1803.01804v3#S5.SS1) 提供这套 completed tensor、ν 的 locality 及 λ-invertible recovery：ν(S₂∧) 正是此 Syn 的单位，λ-inversion 恢复同一个 C。不能把 whole-Syn 的普通单位 νS 与 C 的完备单位混用。
+
+令 E=Hℤ₂、T=H(ℤ/4)、M=E⊕T⊕E，`auxiliary.detector=M`、`detectorUnit=0`，其余 etaMap/nuMap 取真实 Hopf 映射，ν-cofiber 为在同一 C 中取的完备 Cν。零 detectorUnit 合法且未参与本计算。
+
+报告员逐项读取 `System.lean` 以及 Context、Configuration、Tower、Detection、Comparisons、Recovery、Compatibility、Normalized、Sphere 和 witness 定义，核对 Model 的全部字段如下：
+
+| 字段/实例 | 实际数学实现及核对 |
+| --- | --- |
+| StableHomotopyCategory、SyntheticCategory、HasFunctorialCofiber | 上述两个稳定范畴的同伦范畴；实际加法、双移位、tensor、三角和 λ。选定实际 cofiber 及方块填充满足两个结构箭头方程；当前 cofiber class 没有额外严格复合律要求。 |
+| coefficients | C 中 H、π₀=F₂、其余 π=0；完备球谱到 H 的真实单位。 |
+| classical、classicalTower、classicalSuspension | 实际 H coefficient tower、exact-couple 谱序列及同一塔的悬挂。TowerSequencePresentation 的 ambient/cycles/boundaries/differential 由该 exact couple 生产，不自由指定 d₂。 |
+| nu、nuExactTriangle | usual ν 限制到 H-local 对象，取相容的单位、加法、悬挂比较；完整 homology short-exact 三角由 [Pstrągowski Lemma 4.23](https://arxiv.org/html/1803.01804v3#S4.SS2) 保持，没有把 ν 当任意 exact functor。 |
+| recovery、exactness | 上述 hypercomplete λ-invertible recovery；同一双移位和 realization 的 exactness。 |
+| auxiliary | M 是唯一 detector 对象，两份 E 分量独立；Hopf η、ν 与 ν-cofiber 真实，未用其他任选谱替换球谱。 |
+| sphereAlgebra、standardClasses | S₂∧ 的真实 Adams Ext、F₂、乘法/单位、标准 hᵢ；Model 没有额外非零/永久结论字段。 |
+| family、syntheticTower | 同一 νH coefficient tower 及其真实 synthetic Adams family；所有 weight 使用指定塔的 weight shift。 |
+| comparison、firstQuotient | 实际 νE₂、Cλ/Ext 与 λ 自然比较；[Pstrągowski 4.56–4.58](https://arxiv.org/html/1803.01804v3#S4.SS6)、[BHS A.8](https://arxiv.org/html/1910.14116v3#A1.SS1) 识别同一谱页/代表，不另选标签或滤过。 |
+| quotients | 同一实际 λⁿ cofiber 系统、ρ/λ/δ 三角及其自然性。 |
+| normalizedMap（对全部 selected maps） | e=0 取 νf，带零移位比较；e=1 时第一 residual factorization 蕴含 H_*f=0，Pstrągowski 4.57 在 t=w=0 的精确列给 νf 的 λ-lift。对所有这种 map 选 lift 满足原 factorization；不只构造本例 map。 |
+| classicalConvergence、convergence | 下文给所有选定对象及任意有限迭代 quotient/shift 的 canonical 强收敛；不省略全闭包。 |
+| comparisonCompatible（两字段） | Canonical tower→associated-grade 比较对每个实际 map 自然，且 first quotient 检测由实际 reduction 诱导。 |
+| sphereDetectionCompatible（两字段） | 同一球谱的实际 Cλ reduction 及实际 λ^k 检测；零 leading term 意味更高 filtration，仍在原范围。 |
+| multiplicationCompatible、sphereProductCommutative | 同一 complete 球谱、multiplicative coefficient tower 与 composition product 的 canonical 检测比较；双分次球谱 coherence 采用 topological Koszul sign，没有换另一 E₂ 乘法或 abutment。 |
+
+**任意迭代商/移位的收敛。** 经典生成谱 S₂∧、完备 Cν、M 均 bounded below、H-nilpotent complete 且 mod-2 finite type，整数移位保留这些性质。经典 Adams 各双次数有限，ML 成立；[BHS A.13、A.16–A.17](https://arxiv.org/html/1910.14116v3#A1.SS1) 给 νX 的 νH-nilpotent completeness 与强收敛。
+
+对 local A，νH⊗A 是 νH-module，因而 local；actual Adams residual 由它与 A 的 fiber 得到，也 local。所以 whole-Syn 中这条塔已位于 hypercomplete 子范畴，completed tensor 不改变该塔或其 filtration。经典 H-local 塔同理。νH-nilpotent completeness 等价 `lim_s I^s⊗A=0`；各 I^s⊗− 及 inverse limit 保有限 exact diagrams，故该性质对有限 cofiber 与双移位封闭，覆盖任意有限次 λ 商与移位。[BHS A.14](https://arxiv.org/html/1910.14116v3#A1.SS1) 也直接给第一层有限商。
+
+每个这样的对象是有限移位 νX 的有限 cone 构造。固定三次数的 coefficient/cobar 项有限维：生成谱的 mod-2 homology finite type，Steenrod cobar 在固定内部次数的贡献有限；固定 Adams 层及有限 cone/shift 保留有限性。于是每个 E₂ 三次数有限，后页只可能有限次发生非零进出微分，ML 障碍消失；BHS A.17 给整个有限构造闭包的 canonical 强收敛。这足以供应当前 Model 要求的 associated-grade identification 及同一代表的 canonical 方程，而不要求全范畴每个对象都强收敛。其对 map/乘法的相容来自同一真实 tower，未假定 5.10 或 GL/MH。
+
+这是一套完整**数学模型**实现；没有提交 Lean Model 定义或 kernel 否定证明。把这套范畴构造形式化仍是未交付工程，不能用仓库上游 sorry 的任选结果代替。
+
+### 实际群及地图的独立识别
+
+报告员本次重新读取 [May–Milgram，Lemma 3(ii),(iii)、Lemma 4，p.129](https://math.uchicago.edu/~may/PAPERS/34.pdf)：Hℤ 有 h₀ 塔；T 有底 θ、顶 u 两塔，`d₂(h₀^k u)=h₀^(k+2)θ`；有限和分解。Hℤ→Hℤ₂ 的 mod-2 等价保留这些输入。
+
+由 Cλ 长正合列、nonnegative-Chow 比较与上述 d₂/收敛，在 w≥1，π_(0,w)νE=ℤ₂，其 generator 吸收 realization 子群 2^wℤ₂，λ 在这些坐标为乘2；π_(0,w)νT=ℤ/2，λ 从正 weight w+1 到 w 为零；二者 π_(-1,w)=0。T 的 native 类为 h₀^wθ，F^w 是全群，F^(w+1)=0。w≥2 时此类虽为经典边界，在该 native synthetic weight 仍非零。
+
+因此对 q≥1：
+
+\[
+G_{q,w}=\pi_{0,w}Q_q\nu M=\mathbb Z/2^q\oplus\mathbb Z/2\oplus\mathbb Z/2^q,
+\quad F^wG=G,\quad
+F^{w+j}G=2^j\mathbb Z/2^q\oplus0\oplus2^j\mathbb Z/2^q\quad(j\ge1).
+\]
+
+取同一个 self-map `f(x,t,z)=(0,jx,2x)`，j:E→T 为模4商映射。其 H₀(−;F₂) 的 j 分量非零，故不通过第一 residual stage，e(f)=0，normalized map 为带零移位识别的 νf。νj 在每个 native h₀ 底层非零，自然性给所有 q,w 的实际 map `f_(q,w)(x,t,z)=(0,x mod2,2x mod2^q)`。实际 λ:Q_(q−1)@weight(w+1)→Q_q@weight w 是 `(x,t,z)↦(2x,0,2z)`，方块交换。这些 map 没有独立任选；λ-kernel 中的 T 分量正是除 λ 的障碍。
+
+### 全部真实前提和 crossing
+
+| 条件 | 独立核验 |
+| --- | --- |
+| D、X、Y | 上述完整 generic 模型，X=Y=.detector=M；不主张等于 Standard.model。 |
+| 参数范围 | r=4、q=3、n=2、s=t=1、e=0，合法 0≤2≤r−2；stem/weight=(0,1)。 |
+| 原始 x、y | 分别为 `(1,1)`、`(3,3)` 的零标签；source reaches page4、target reaches page2。 |
+| 原 he | source=target=0、所有实际 homotopy lifts=0，满足全部界、cycle、代表与 equation；接口允许 inessential 原输入。 |
+| RHS 的整数 a,b | a=2、b=3，1<2≤3≤3。 |
+| RHS source/target | 在 G_(3,1) 取 α=(2,0,0)∈F²∖F³，β=fα=(0,0,4)∈F³∖F⁴；canonical E∞ grades 位于 `(2,2,1)`、`(3,3,1)`，实际代表给 length1 equation，target≠0。 |
+| RHS 全部靶歧义 | 同源 grade 的四个实际代表均映到 β，零靶不在完整 coset；故也 essential。 |
+
+LHS 自然数 i,j 恰为三对，native source filtration/weight 为 1+i：
+
+| i,j | q′、weight、length | 排除全部实际源/靶 |
+| --- | --- | --- |
+| 1,0 | 2、2、1 | 像在 F³ 强迫 x 偶，继而 2x=0 mod4，像整体零，无 essential extension。 |
+| 1,1 | 2、2、0 | 唯一非零 target grade 是 h₀²θ，属于被排除的 B₂。 |
+| 2,0 | 1、3、0 | 唯一非零 target grade 是 h₀³θ，属于 B₂⊆B₃，违反 B₃ 排除。 |
+
+零 source grade 有零实际代表，故不能产生 essential extension；另外两分量在 f 的 kernel。length0 的 native target 分母 B₁=0，不能偷偷加自由 E 标签仍保持同一 grade；其他经典边界标签若 E∞ grade 零，也不 essential。这覆盖全部原始 E₂ 线性组合、实际代表及整个靶 coset。因此 RHS 真、LHS 假；成因为大商乘 λ 消掉 T 阻挡，而小商 native source 无法同步消去它，不是实现笔误或单纯缺证明。
+
+### 本轮独立复现及证据局限
+
+报告员重跑 `/tmp/crossing-proof-20261019/check_crossing.py`，exit0；又独立运行以下全源grade/全代表/coset枚举，不调用发现者的 Python 函数：
+
+```sh
+python3 - <<'PY'
+from itertools import product
+for i,j in ((1,0),(1,1),(2,0)):
+ q,w,L=3-i,1+i,2-i-j
+ G=list(product(range(2**q),range(2),range(2**q)))
+ F=lambda a,k: k<=0 or (a[0]%(2**k)==0 and a[1]==0 and a[2]%(2**k)==0)
+ gr=lambda a,k:(a[0]//2**k%2,a[1] if k==0 else 0,a[2]//2**k%2)
+ mp=lambda a:(0,a[0]%2,2*a[0]%(2**q))
+ fibers={z:set() for z in product(range(2),repeat=3)}
+ for a in G:
+  if F(mp(a),L): fibers[gr(a,0)].add(gr(mp(a),L))
+ essential={s:ys for s,ys in fibers.items() if ys and (0,0,0) not in ys}
+ assert all(ys=={(0,1,0)} for ys in essential.values())
+ assert not essential or (L==0 and w>=2 and 1+2-j>=2)
+ print(i,j,len(G),len(essential),'allowed targets after boundary=[]')
+G=list(product(range(8),range(2),range(8)))
+reps=[a for a in G if F(a,1) and gr(a,1)==(1,0,0)]
+ys={(0,a[0]%2,(2*a[0])%8) for a in reps}
+assert ys=={(0,0,4)}
+print('RHS source representatives=',len(reps),'images=',ys)
+PY
+```
+
+实际 exit0：三窗口枚举32、32、8个实际代表，essential source fibers 为0、4、4，边界排除后全部为空；RHS四个同源代表的像集合恰为 `{(0,0,4)}`。这是有限算术证据；全模型/谱识别由上面的独立数学构造承担，没有生成 Lean 完整模型证书。本轮只做必要局部计算，不运行全量 checks。
+
+### 依赖审计、精确待决方案及非阻塞任务
+
+独立证据顺序为 May–Milgram 的经典输入 → Pstrągowski 的真实 complete/synthetic 比较 → BHS 的塔/有限窗口/收敛 → 实际群与自然 map → 全 crossing 排除。没有调用 GL、MH、5.10、5.14、2.20、AdamsCalculations、Main 或相关 sorry 得到的结论；没有用不一致导出 False。Model 的所有字段在数学上逐项实现；Lean 实现和 kernel 运输仍未完成，不能省略这个证据边界。
+
+先尝试保留原接口的内部方案：上述实际模型满足全部字段与真实前提后，任意-D 全称等价不能被正确证明。把 detector 默认为 tmf、忽略合法零 he、悄悄补 essential 或把 D 设成 Standard 都改变语义；本例 RHS 已 essential。仅该反例不推翻固定 Standard 版本，后者也未在此获证。
+
+最小精确待审方案：撤销公共 theorem `KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing`，即上述完整原签名对应候选签名为**无声明**；保留旧 `FiniteHasCrossing` 定义、反例及现有正确带层/有条件除 λ 工具。这是删除错误接口，不能记作证明原命题。若改用同商 actual crossing 或补 λ-kernel 同步条件，须另给完整可审准确签名和证明；本段没有准备好并批准该新 theorem。收窄为 Standard.model 是另一个仍未证明的候选，不能默认实施。
+
+受影响范围为这一 theorem 的源码/导出、ProofTools API锁、对应待补登记、internal audit 精确许可洞集合、原声明消费者、Blueprint `paper:5.10` 与原生 Blueprint 测试；实施时保留其他 trust 覆盖与 Main 禁用边界。相对 AimPaper 的修正只由协调者维护于 `corrections.yaml`，本报告不平行保存修正版。其他模块公共接口、工具链和依赖锁均不在本方案内。
+
+准确阻塞项为任意-D 5.10 的全称补证及其真实依赖闭包。5.14、2.20、Main 补证、灰色节点真实对应、actual level 工具及 λ-kernel 条件下的局部证明可继续；不能因这项反例自动宣称那些不同目标也为假。用户要求先补证、暂缓全量检查保持；无需重复确认旧 GL/MH 已批准范围。
+
+### 本次源码身份与人审记录
+
+以下为 dirty worktree 中读取快照，不冒称已提交或全量构建验证：
+
+| 文件 | SHA-256 |
+| --- | --- |
+| `KIP126/ProofTools/Paper/OriginalStatements.lean` | `ac4eb11d31ef053edcaa8553eba5b959fd2349fcd092b8d1341b3f13a04da7cc` |
+| `KIP126/ProofTools/Language.lean` | `50164249c50b08c58a5357e1aec2ea6035dd8043474e71b69082b56eed9cd7ee` |
+| `KIP126/AdamsSynthetic/System.lean` | `2278a0714ba8f204e0d6e6f3f1e2bba838ec71adedade2916955ae58c39fffa4` |
+| `KIP126/AdamsSynthetic/Configuration.lean` | `aca9ba1263dfecd248440a667461265fd7b0149430a74b5fdc342cd5cc47f1e1` |
+| `KIP126/AdamsSynthetic/Compatibility.lean` | `69abbf22400a8b26f2189dc08a30e34185e590fee8ab64717e6cf42589ed97a3` |
+| `/tmp/crossing-proof-20261019/check_crossing.py` | `6497ccf45c5d0848af7933c934e906b9a01f30c27cf570555de9490603433b32` |
+
+新5.10处置请求的人类决定：**null**。本轮没有收到对此具体声明删除/改型的明确决定；历史其他批准或 agent 的数学意见不作为本项授权。实施交协调者安排。
+
+
+## 2026-10-19 审查 PDF 交付与投递记录
+
+协调者本次明确转达用户要求：制作解释原命题、完整全局条件、真实谱反例、全部 crossing 排除及修正版的具体 PDF，并发给 `project-math-assistant`。授权只涵盖本次审查材料制作/外发；**没有批准修改本条原文、公共声明或待补登记**。本报告保持 `pending-human-review`、`human_decision: null`，发送或agent数学核验不替代人审。
+
+本地一次性交付为 `local-history/reports/20261019-prop510-review/Prop5.10-review-2026-10-19.pdf`（10页A4桌面），SHA-256 `b104aa87b322464c3b2cb79727f6fb5f66e795c238ecf733126fecbca39436eb`。同目录归档原生LaTeX、原签名/现有替代完整签名、有限脚本及JSON、source hashes、编译日志、QA/预览和发送回查。目录按仓库规则被Git忽略，其本地路径不是dashboard已托管附件；实际PDF附在下述飞书消息中。
+
+PDF完整写出已证 `finiteLambdaDivision` 的实际小商 target-kernel no-crossing（含初始行）、保留同一个大商源及像的四项结论、固定Standard模型范围，以及它与旧iff不等价。另加入同一M的加强例 `f*(a,θ,c)=(4c,ja,2a)`：原he `h₀c→h₀³a` 非零essential，16个同源代表的完整target coset不含0；RHS四个代表与全部三个小商排除保持。加强例由本报告员提出，再经 `/root/independent_review` 独立核对完整前提并实际复跑枚举后纳入，不以提出者自检冒充独审。证据仍是谱级数学反例＋有限计算，无Lean完整Model或否定证书，非固定tmf detector反例。
+
+最终PDF QA：missing-glyph=0、overfull=0、undefined=0；目视抽样最终页1、2、6、7、9、10，数学公式、反例、表格和完整接口附录正常。没有运行全仓检查；本报告员没有改数学源码、接口锁、待补或corrections。
+
+投递通过user身份搜索唯一精确同名群：`project-math-assistant`，chat_id `oc_0757f47818759dc02c05b8dd370aa649`。首次user发送被飞书 `230027 user_unauthorized` 拒绝，未生成消息；随后只读确认当前应用bot已在同一群且可发言，以 **飞书CLI应用bot** 上传同一PDF并成功发送一条带附件post。没有重复发送失败的user请求。
+
+- message_id：`om_x100b62682b77f880ce3610b758c7c9c`。
+- [实际审查PDF消息](https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1521)。
+- 正文：“Prop5.10 原命题／反例／修正版提案，供审核；尚未授权改原文／接口。”另附10页A4及非Lean完整Model证书的说明。
+- identity：`bot`；sender：`飞书 CLI`。
+- 只读回查确认正文、文件名和消息附件；附件区资源key与上传key不同，进一步下载消息对应资源，SHA-256与本地PDF完全一致。证据见同目录 `delivery.json`、`message-readback.json`、`attachment-hash-verification.json`。
+
+本次原5.10 theorem与待补责任保留；后续删除或改写须取得针对本项的明确人类决定，再由协调者实施。外发成功不改变人审状态。

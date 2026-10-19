@@ -185,39 +185,33 @@ for path in tests | {root / 'Tests/Trust.lean'}:
     if re.search(r'(?<![\w`])(?:sorry|sorryAx|axiom)\b', code_only(path.read_text())):
         errors.append('Consumer source contains a local sorry/axiom: ' + str(path.relative_to(root)))
 
-# Preserve the remaining GL1/GL2/MH2 sites and the three original statements
-# whose convergence or comparison bridges are still missing, with exact counts.
+# The refuted GL/MH theorems were retired with explicit user authorization.
+# Only the original crossing equivalence remains pending review.
 tool_holes = {}
 for path in (root / 'KIP126/ProofTools').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
     if count:
         tool_holes[str(path.relative_to(root))] = count
 if tool_holes != {
-        'KIP126/ProofTools/GeneralizedLeibniz.lean': 2,
-        'KIP126/ProofTools/GeneralizedMahowald.lean': 1,
-        'KIP126/ProofTools/Paper/OriginalStatements.lean': 3}:
-    errors.append('ProofTools existing law or authorized original-statement sites changed: ' + str(tool_holes))
+        'KIP126/ProofTools/Paper/OriginalStatements.lean': 1}:
+    errors.append('ProofTools authorized original-statement sites changed: ' + str(tool_holes))
 
-# The user authorized exactly two complete paper statements with pending proofs.
-# All other Main declarations, including the completed main route, remain free
-# of local placeholders. InternalAudit additionally checks the exact compiled
-# names/type/body fingerprints and forbids Main consumers of these two statements.
+# Main, including the two conditional paper results, has no local placeholders.
+# InternalAudit also verifies their independence from the contradiction route.
 main_holes = {}
 for path in (root / 'KIP126/Main').rglob('*.lean'):
     count = len(re.findall(r'(?<![\w`])sorry\b', code_only(path.read_text())))
     if count:
         main_holes[str(path.relative_to(root))] = count
-if main_holes != {'KIP126/Main/PaperResults.lean': 2}:
-    errors.append('Main statement-only proof sites changed: ' + str(main_holes))
+if main_holes:
+    errors.append('Main proof placeholders forbidden: ' + str(main_holes))
 main_pending = {
     row['name'] for row in json.loads(
         (root / 'interface/baselines/proof-obligations.json').read_text())['obligations']
     if row['module'] == 'KIP126.Main' or row['module'].startswith('KIP126.Main.')
 }
-if main_pending != {
-        'KIP126.Main.Paper.lemma_toda2ext',
-        'KIP126.Main.Paper.corollary_2ext125'}:
-    errors.append('Main pending statement names changed: ' + str(sorted(main_pending)))
+if main_pending:
+    errors.append('Main pending proofs forbidden: ' + str(sorted(main_pending)))
 
 # The geometric deductions have complete local proofs; their external inputs
 # remain in Literature and are checked by its exact obligation registry.

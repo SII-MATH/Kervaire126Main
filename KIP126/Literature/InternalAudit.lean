@@ -4,6 +4,7 @@ import all KIP126.Literature.Applicability
 import all KIP126.Literature.BHS
 import all KIP126.Literature.BX
 import all KIP126.Literature.Classical
+import all KIP126.Literature.LambdaInversionAdams
 import all KIP126.Literature.ClassicalRange
 import all KIP126.Literature.Delivery
 import all KIP126.Literature.EInfinity
