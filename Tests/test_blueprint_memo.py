@@ -25,14 +25,16 @@ class MemoPresentationTests(unittest.TestCase):
         self.assertEqual(compactness['original']['statements'], ['2.20'])
         self.assertEqual(compactness['status']['kind'], 'revised')
         self.assertEqual(compactness['revision']['nodes'],
-                         ['sem:ProofTools:complete-exact-extension-boundaries'])
+                         ['paper:2.20'])
+        self.assertIn('并非修改论文结论', compactness['revision']['note'])
         self.assertIn('形式化遗漏背景条件', compactness['problem'])
         self.assertIn('这不另行证明任意模型或固定 Standard 满足所列收敛条件', compactness['progress'])
         comparison = next(r for r in records if r['id'] == 'lambda-inversion-adams-comparison')
         self.assertEqual(comparison['original']['statements'], ['5.14'])
         self.assertEqual(comparison['status']['kind'], 'partial')
         self.assertEqual(comparison['revision']['nodes'],
-                         ['sem:ProofTools:lambda-inversion-homotopy-extension'])
+                         ['paper:5.14'])
+        self.assertIn('并非修改论文结论', comparison['revision']['note'])
         self.assertEqual(comparison['revision']['definitions'],
                          ['sem:Literature:lambda-inversion-object-comparison',
                           'sem:Literature:lambda-inversion-adams-comparison'])

@@ -15,7 +15,7 @@ corrections:
     source_line: 597
   revision:
     nodes: []
-    note: 本条只记录对象与次数排印，原文逐字保留。2.17 的原命题已在修正类型下完成证明；5.14 后续获准显式加入实际塔比较，其条件版本及标准实例未完成边界见单独的比较条目。
+    note: 本条只记录对象与次数排印，原文逐字保留。2.17 的原命题已在修正类型下完成证明；5.14 的形式化显式提供论文背景中的实际塔比较，已证定理直接绑定原文节点，标准实例未完成边界见单独的比较条目。
   problem: |-
     Corollary 2.17 的图为 X → Z → W，但元素 z 的对象被印为未在该图声明的 Y。Lean 类型依图使用 Z。原文另写 n,m≥0，却使用长度 m,l；本次保留未使用的 n 与原写的 n,m≥0，没有新增 l≥0 假设。
 
@@ -39,18 +39,19 @@ corrections:
     source_line: 648
   revision:
     nodes:
-    - sem:ProofTools:complete-exact-extension-boundaries
+    - paper:2.20
+    note: 本条记录形式化默认背景显式化，并非修改论文结论。已证代表元定理直接绑定原文节点，不另设改写的自然语言版本；实际固定背景的统一组装留待后续跨模块接口迁移。
   problem: |-
     原文的全篇背景是 2 完备、connective、finite-type 谱。原泛型 Lean 模型没有包含这些背景所需的实际 Adams 滤过收敛条件：逐页永久性允许每页选择不同代表，不能仅用同伦正合性选出同一个被 g 杀死的代表。问题属于形式化遗漏背景条件，并非已发现满足原论文全部背景的反例。
   counterexample: |-
     去掉完备性背景，可取非完备的有理无限滤过分量，使 g 的像处处落在任意深滤过，所有逐页扩张均为零，却没有同一核代表。完整模型、固定对象及证据等级见 [独立接口报告](interface/proposals/ProofTools/20261018-original220-convergence/report.md)；该证据不是满足原论文全部全局条件的反例，也不冒称本仓库固定 Standard 模型的 Lean 反证。
   progress: |-
     2026-10-19 用户批准显式加入三个自然条件：Y 的各次同伦群对实际 Adams 滤过完备、非负层商有限，Z 的实际滤过分离。原逐页永久性、正合性和结论保留，未把共同核代表或待证结论作为前提。私有有限逆系统构造与 canonical completion 得到同一代表，Z 的分离性使其 g 像为零，随后应用原正合性。公开定理及辅助构造无本地证明洞；这不另行证明任意模型或固定 Standard 满足所列收敛条件。
+
+    用户随后明确将已完成形式化直接绑定 paper:2.20，取消独立改写条目。该调整承认所列条件表达论文默认背景，并不将固定 Standard 的完成模型组装视为已完成；该跨模块迁移登记为后续 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。
   links:
   - node: paper:2.20
-    title: Proposition 2.20 · 原文
-  - node: sem:ProofTools:complete-exact-extension-boundaries
-    title: 带实际滤过收敛条件的正合边界定理
+    title: Proposition 2.20 · 原文与已证形式化
 - id: lambda-inversion-adams-comparison
   title: 为无穷页到经典延拓补全实际 λ 反演 Adams 塔比较
   reference: PROPOSITION 5.14
@@ -63,21 +64,22 @@ corrections:
     source_line: 1581
   revision:
     nodes:
-    - sem:ProofTools:lambda-inversion-homotopy-extension
+    - paper:5.14
     definitions:
     - sem:Literature:lambda-inversion-object-comparison
     - sem:Literature:lambda-inversion-adams-comparison
+    note: 本条记录形式化默认背景及实际比较输入显式化，并非修改论文结论。已证同代表元定理直接绑定原文节点，不另设改写的自然语言版本；原文目标边界群的次数排印仍由 original-statement-typing 单独记录。
   problem: |-
     原文使用 λ 反演诱导的延拓谱序列映射。原泛型 Model 有对象级恢复，但没有约束选定 synthetic 与 classical Adams 塔的实际 stage、projection、cofiber 层和 E₂ 坐标。对象级等价不能自动推出同一代表元及其 f 像的检测相容。这里属于形式化的比较输入缺失；没有发现满足完整论文背景的 5.14 反例。
   progress: |-
     2026-10-19 用户批准加入 R : RealizationCoordinates D 与实际塔比较 hcomp。Literature 新接口约束真实塔映射、所有有限及无限 Z/B 的映射和既有 νE₂ 标定；不含 Detects、ClassicalDetects 或 5.14 结论字段。通用检测运输与 ProofTools 条件定理均已补证：从原 extension 选同一个 β，通过 normalized map 分解和 ν 恢复的自然性得到同一个经典 a 及其 a≫f，涵盖零、边界类及 inessential 扩张。
 
     标准对象上的 hcomp producer 尚未构造。仅定义比较结构、证明给定比较后的结论不能算作标准比较已完成；本轮不新增 sorry、公理或许可责任替代该构造。具体缺口与已批准范围见 [独立接口报告](interface/proposals/Literature/20261019-lambda-inversion-adams-comparison/report.md)。
+
+    用户随后明确将已完成形式化直接绑定 paper:5.14，取消独立改写条目。该调整保留论文结论以及零、边界标签和 inessential 扩张的原有范围；实际固定背景和标准塔比较的统一组装登记为后续 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。
   links:
   - node: paper:5.14
-    title: Proposition 5.14 · 原文
-  - node: sem:ProofTools:lambda-inversion-homotopy-extension
-    title: 给定实际比较的同代表元经典延拓
+    title: Proposition 5.14 · 原文与已证形式化
   - node: sem:Literature:lambda-inversion-detection
     title: 实际塔映射的检测运输
 - id: mahowald

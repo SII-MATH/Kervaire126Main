@@ -259,3 +259,8 @@ public structure LambdaInversionAdamsComparison (R : RealizationCoordinates D) w
 其第三项对应原5.14加入R及实际Adams塔比较hcomp，限定字段为stage/transition/cofiber/E₂ ν标定；保同一代表元、f像、zero/boundary，不扩大Model，不用检测/目标结果字段，标准comparison也须构造且不得新增sorry。允许Literature+ProofTools对应接口与来源/锁/责任/测试同步。其他模块实质接口变化不从此推定授权；第二项PDF要求不等于5.10statement已批准。
 
 本报告在独立检查方案后记录真实现有决定，最终状态 `approved-interface-change`；没有将agent建议、等待或另份报告的批准当成本方案授权。条件型5.14与generic检测传输的证明及局部独立递归审计已完成，见本报告验证补记；Standard比较producer及全仓验证未据此宣称完成。
+
+
+## 2026-10-19：统一原文节点绑定
+
+用户随后明确要求将已完成形式化直接绑定灰色原文节点，不再另设改写的自然语言版本，因为结论相同，显式输入表达的是论文默认背景。本轮据此将 `KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension` 直接绑定 `paper:5.14`，保留AimPaper原引文，将代表元证明合并到同一节点，取消原独立改写节点。Lean公开类型、证明和已批准背景输入保持不变；该绑定不声称固定Standard背景或比较实例已经构造。跨模块固定对象迁移已按用户要求推迟，跟踪于 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。本报告既有接口批准、证据等级与未完成边界不变。
