@@ -6,11 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.566544+00:00'
+updated: '2026-10-19T03:46:52.865458+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 
-Mathematical dependency review: [AimPaper source, lines 2622-2676](paper/main.tex.html#L2622). Use the nu-cofiber d3 and the generalized Mahowald trick to produce the E4 extension, then lift and multiply it through the lambda-quotient maps.
+Mathematical dependency review: [AimPaper source, lines 2622-2676](paper/main.tex.html#L2622). Use the nu-cofiber d3 and the independently proved zero-layer nu-cofiber Mahowald instance to produce the E4 extension, then lift and multiply it through the lambda-quotient maps.
 
 **Formal scope:** Public correspondence.
 
