@@ -1,6 +1,7 @@
 """Exercise the actual native synchronizer without a repository evidence layer."""
 import importlib.util
 from pathlib import Path
+import re
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -8,6 +9,7 @@ from unittest.mock import patch
 from hgraph.analysis import Analysis
 from hgraph.graph import Graph, node_id
 from hgraph.sync import parse_lean, parse_blueprint, read_blueprint, _tex_lean_status
+from blueprint_paper import load_paper
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('native_blueprint_builder', ROOT / 'scripts/build-blueprint.py')
@@ -62,13 +64,37 @@ class ProofToolsBindingTests(unittest.TestCase):
         all_rows, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))
         for row in all_rows:
             self.assertFalse(removed.intersection(row['uses']), row['label'])
-        original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite', '2.20': 'extensionBoundary_of_exact', '5.10': 'finiteCrossing_iff_syntheticCrossing', '5.14': 'infiniteExtension_to_classicalExtension'}
-        pending = {'2.20', '5.10', '5.14'}
+        original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite', '5.10': 'finiteCrossing_iff_syntheticCrossing'}
+        pending = {'5.10'}
         for number, name in original_statements.items():
             row = by_label['paper:' + number]
             self.assertEqual(row['lean'], ['KIP126.ProofTools.Paper.' + name])
             self.assertEqual(_tex_lean_status(row, states)[0],
                              'sorry' if number in pending else 'lean_ok')
+        # Original quotations retain the article's exact statement. Only the
+        # separate entries with all approved premises bind the conditional proofs.
+        originals = {row['number']: row for row in load_paper(ROOT)}
+        conditional = {
+            '2.20': ('sem:ProofTools:complete-exact-extension-boundaries',
+                     'extensionBoundary_of_exact'),
+            '5.14': ('sem:ProofTools:lambda-inversion-homotopy-extension',
+                     'infiniteExtension_to_classicalExtension'),
+        }
+        for number, (label, name) in conditional.items():
+            original, revised = by_label['paper:' + number], by_label[label]
+            self.assertEqual(original['lean'], [])
+            source = re.sub(r'\\label\{[^}]+\}', '', originals[number]['raw'])
+            self.assertIn(' '.join(source.split()), ' '.join(original['body'].split()))
+            self.assertIn(label, original['body'])
+            self.assertEqual(revised['lean'], ['KIP126.ProofTools.Paper.' + name])
+            self.assertEqual(_tex_lean_status(revised, states)[0], 'lean_ok')
+        complete = by_label['sem:ProofTools:complete-exact-extension-boundaries']['body']
+        for condition in (r'\varprojlim', 'finite for every', r'\bigcap_{n\geq0}'):
+            self.assertIn(condition, complete)
+        comparison = by_label['sem:ProofTools:lambda-inversion-homotopy-extension']
+        self.assertIn('Fix realization coordinates $R$', comparison['body'])
+        self.assertIn('sem:Literature:lambda-inversion-adams-comparison', comparison['uses'])
+        self.assertIn('fixed Standard model is still', by_label['paper:5.14']['body'])
 
 
 class NativeDependencyTests(unittest.TestCase):

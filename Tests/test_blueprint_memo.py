@@ -17,10 +17,27 @@ class MemoPresentationTests(unittest.TestCase):
     def test_all_authored_sections_are_present_without_claiming_global_completion(self):
         records = memo.read_corrections(ROOT / 'corrections.yaml')
         page = memo.render_memo(ROOT)
-        self.assertEqual(len(records), 9)
+        self.assertEqual(len(records), 11)
         typing = next(r for r in records if r['id'] == 'original-statement-typing')
         self.assertEqual(typing['original']['statements'], ['2.17', '5.14'])
         self.assertEqual(typing['status']['kind'], 'partial')
+        compactness = next(r for r in records if r['id'] == 'exact-extension-compactness')
+        self.assertEqual(compactness['original']['statements'], ['2.20'])
+        self.assertEqual(compactness['status']['kind'], 'revised')
+        self.assertEqual(compactness['revision']['nodes'],
+                         ['sem:ProofTools:complete-exact-extension-boundaries'])
+        self.assertIn('形式化遗漏背景条件', compactness['problem'])
+        self.assertIn('这不另行证明任意模型或固定 Standard 满足所列收敛条件', compactness['progress'])
+        comparison = next(r for r in records if r['id'] == 'lambda-inversion-adams-comparison')
+        self.assertEqual(comparison['original']['statements'], ['5.14'])
+        self.assertEqual(comparison['status']['kind'], 'partial')
+        self.assertEqual(comparison['revision']['nodes'],
+                         ['sem:ProofTools:lambda-inversion-homotopy-extension'])
+        self.assertEqual(comparison['revision']['definitions'],
+                         ['sem:Literature:lambda-inversion-object-comparison',
+                          'sem:Literature:lambda-inversion-adams-comparison'])
+        self.assertIn('标准对象上的 hcomp producer 尚未构造', comparison['progress'])
+        self.assertIn('不能算作标准比较已完成', comparison['progress'])
         for record in records:
             for key in memo.TEXT_FIELDS:
                 self.assertIn(memo.markdown(record.get(key, '')), page)
@@ -31,7 +48,8 @@ class MemoPresentationTests(unittest.TestCase):
         self.assertNotIn('以下为原文的完整英文陈述', page)
         self.assertNotIn('直接从 AimPaper 读取', page)
         self.assertNotIn('修正后的陈述以中文完整写出', page)
-        self.assertIn('原两个待补位置保持不变', page)
+        self.assertIn(memo.markdown(typing['revision']['note']), page)
+        self.assertNotIn('原两个待补位置保持不变', page)
         self.assertIn('没有本地证明洞', page)
         self.assertNotIn('href="local-history/', page)
         self.assertIn('source/KIP126/ProofTools/Paper/ExtensionDescent.lean.html#L83', page)
@@ -60,7 +78,7 @@ class MemoPresentationTests(unittest.TestCase):
     def test_originals_include_every_hypothesis_and_conclusion_from_actual_source(self):
         originals, refs = memo.original_statements(ROOT)
         page = memo.render_memo(ROOT)
-        for number in ('6.12', '6.20', '5.10', '6.1', '1.5', '2.17', '5.14', '7.9', '7.16', '7.18'):
+        for number in ('6.12', '6.20', '5.10', '6.1', '1.5', '2.17', '2.20', '5.14', '7.9', '7.16', '7.18'):
             self.assertIn(memo.original_html(originals[number]['raw'], refs), page)
         self.assertIn('the differential in (3) has no crossing.', page)
         self.assertIn('for some $b', page)
@@ -97,11 +115,17 @@ class MemoPresentationTests(unittest.TestCase):
             (out / 'memo/MEMO.md').write_text('Obsolete download')
             (out / 'memo/MEMO.md.gz').write_bytes(b'obsolete')
             result = memo.export_memo(ROOT, out)
-            self.assertEqual(result['records'], 9)
+            self.assertEqual(result['records'], 11)
             self.assertEqual(result['content_source'], 'corrections.yaml')
             self.assertFalse((out / 'memo/MEMO.md').exists())
             self.assertFalse((out / 'memo/MEMO.md.gz').exists())
-            self.assertNotIn('节点正文将在', json.loads(data.read_text())['customTabs'][0]['html'])
+            exported = json.loads(data.read_text())['customTabs'][0]['html']
+            self.assertNotIn('节点正文将在', exported)
+            for identity in ('exact-extension-compactness', 'lambda-inversion-adams-comparison'):
+                record = next(r for r in records if r['id'] == identity)
+                self.assertIn(memo.markdown(record['progress']), exported)
+                for label in record['revision']['nodes'] + record['revision'].get('definitions', []):
+                    self.assertIn(label, exported)
             data.write_text(json.dumps({'entries': [{'label': label} for label in labels[1:]]}))
             with self.assertRaisesRegex(ValueError, 'missing from the exported Blueprint'):
                 memo.export_memo(ROOT, out)

@@ -1,6 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
+import KIP126.Main.H6SquarePermanent
 import all KIP126.Main.SectionSeven.Predicates
 import all KIP126.Main.SectionSeven.AlphaOne
 import all KIP126.Main.SectionSeven.NormalizedNu
@@ -10,8 +11,9 @@ import all KIP126.Main.Internal.NuNinth.Assembly
 /-! Formal statements from Section 7 of AimPaper. The public
 detection predicates retain the fixed quotient maps and nonzero associated
 graded classes. Completed proofs call the existing constructions on those
-objects. Lemma 7.16 and Corollary 7.18 have complete statements but explicitly
-registered pending proofs; they are not inputs to the completed Main route. -/
+objects. Lemma 7.16 and Corollary 7.18 follow from the independently proved
+incompatibility of their two hypotheses; neither is an input to that proof.
+This does not complete the direct Toda-detection calculation. -/
 
 section
 namespace KIP126.Main.Paper
@@ -71,12 +73,13 @@ public theorem lemma_nuext125 :
         KIP126.Literature.Standard.nuCofiber_nu_exponent) x = lambdaMultiply 1 y := by
   exact KIP126.Main.Internal.NuNinth.nu_extension_in_ninth_quotient
 
-/-- AimPaper Lemma 7.16 (`lem:toda2ext`), complete statement; proof pending.
+/-- AimPaper Lemma 7.16 (`lem:toda2ext`), with its complete statement.
 One Q11 alpha-one witness supplies its actual Q9 image and the full properties
 of Lemma 7.14. The bracket is the right-module Toda relation
 (eta, h0, lambda^3 alpha-one); every member of this same nonempty bracket is
 nonzero and detected by lambda^4 Y. No assertion about all alpha-one choices
-is added. The remaining calculation is the vanishing of its common Q3 image. -/
+is added. The proof uses the independently established incompatibility of
+the hypotheses; the direct calculation of its common Q3 image is separate. -/
 public theorem lemma_toda2ext
     (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
     ∃ a11 : BiHom 123 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 11),
@@ -104,12 +107,13 @@ public theorem lemma_toda2ext
       (∃ z, bracket z) ∧
       ∀ z, bracket z →
         FiniteDetected 9 (by decide) 11 136 4 KIP126.Computation.Standard.Y z ∧ z ≠ 0 := by
-  sorry
+  exact False.elim (KIP126.Main.eta_extension_excluded_of_d6_vanishes hc3 hc5)
 
-/-- AimPaper Corollary 7.18 (`cor:2ext125`), complete statement; proof pending.
+/-- AimPaper Corollary 7.18 (`cor:2ext125`), with its complete statement.
 Every Y-detected representative is quantified, and its T-detected representative
 may depend on it. Both belong to the same actual Q9. The exact unmultiplied
-equation is retained; the proved lambda-squared comparison is not a substitute. -/
+equation is retained. The proof uses the independently established
+incompatibility of the hypotheses, without cancelling a lambda factor. -/
 public theorem corollary_2ext125
     (hc3 : Stem126D6Vanishes) (hc5 : EtaExtensionDetection) :
     ∀ y : BiHom 125 132 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
@@ -117,7 +121,7 @@ public theorem corollary_2ext125
       ∃ t : BiHom 125 139 (XModLambdaN (S_0_0 : SyntheticSpectrum) 9),
         FiniteDetected 9 (by decide) 14 139 0 KIP126.Computation.Standard.T t ∧
         sphereAction syntheticH0 y = lambdaMultiply 6 t ∧ lambdaMultiply 6 t ≠ 0 := by
-  sorry
+  exact False.elim (KIP126.Main.eta_extension_excluded_of_d6_vanishes hc3 hc5)
 
 end
 end KIP126.Main.Paper

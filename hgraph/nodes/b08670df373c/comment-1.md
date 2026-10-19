@@ -6,7 +6,7 @@ created: '2026-10-18T08:58:09'
 date: '2026-10-18T08:58:09'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T12:05:30.051812+00:00'
+updated: '2026-10-19T07:58:21.718780+00:00'
 ---
 Source verification (2026-10-18): Partial source correspondence. Each of the 36 clauses has its own primary source and locator. Source verification does not discharge any existing Lean proof or source-to-model comparison. Clause 26 has an unverified pre-initial-page extension; clause 35 omits the weight shifts in its related source and is not verified. The other clauses retain their explicit completeness, convergence, coordinate and selected-model qualifications. Primary references: [Xu](https://msp.org/gt/2016/20-3/gt-v20-n3-p08-p.pdf): Corollary 1.3; pages 1612 [IWX](https://arxiv.org/pdf/2001.04511v3): Corollary 1.3, Table 1, row k=62; pages [4, 6] [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf): Proposition II.5.22; Example I.1.14; Definition II.6.21; pages [16, 17, 264, 265, 278, 279] [EKMM](https://www.math.uchicago.edu/~may/BOOKS/EKMM.pdf): Proposition IV.1.2(i), after shifting X by -(n+1); pages [72] [Adams58](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Adams-SS.pdf): Lemma 2.3 and the following m=0 paragraph; pages 184 [Adams60](https://www.maths.ed.ac.uk/~v1ranick/papers/adams1.pdf): Section 1.1, after Theorem 1.1.1; pages 20 [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf): Example I.1.8; proof of Proposition II.5.21; pages [12, 264] [LWX126](https://arxiv.org/abs/2412.10879): Proposition 3.16; Notation 3.19; Notation 7.2; pages [18, 19, 42] [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.40 and Remark 4.41; pages 49 [LWX126](https://arxiv.org/abs/2412.10879): Proof of Lemma 7.10; pages 45 [IWXCharts](https://zenodo.org/records/6987157/files/Adams-classical-Einfty.csv?download=1): Adams-classical-Einfty.csv, physical rows 204--207 (including header) [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): Proposition1.4;Table1.1,p54;Remark1.5,pp56–57;Figure1.9,p56 [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): Section0.3,p5;Section0.5,pp8–9;Section1.2,p64 [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): BR21 Proposition1.4;Table1.1,p56;Remark1.5,pp56–57;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [IWX](https://www.numdam.org/item/10.1007/s10240-023-00139-1.pdf): BR21 Proposition1.4;Table1.1,p56;Remark1.5,pp56–57;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): Proposition1.4;Table1.1,p54;Figure1.9,p56 [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): Section0.1,p1;Section0.5,pp8–9;Section1.2,p64 [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): BR21 Proposition1.4;Table1.1,p56;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [IWX](https://www.numdam.org/item/10.1007/s10240-023-00139-1.pdf): BR21 Proposition1.4;Table1.1,p56;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.36; Theorem 4.37; Proposition 4.40; pages arXiv PDF pp. 47-49; published pp. 621-624; arXiv:1803.01804v3, 10 November 2022; numbering also checked in Invent. Math. 232 (2023) [BHS](https://arxiv.org/pdf/1910.14116v3): paragraph immediately before Notation A.7; proof of Theorem A.8; pages arXiv PDF p. 72; published p. 307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Lemma 9.15 and its proof; pages 34–35; arXiv:1910.14116v3, 10 May 2022 [LWX126](https://arxiv.org/abs/2412.10879): Propositions 3.16–3.17; Remark 3.18; pages 18–19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [Pst](https://arxiv.org/pdf/1803.01804v3): Lemma 4.23; pages 43; arXiv:1803.01804v3, 10 November 2022 [LWX126](https://arxiv.org/abs/2412.10879): Notation 3.19; Proposition 3.20; pages 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [May01](https://www.math.uchicago.edu/~may/PAPERS/AddJan01.pdf): Axiom TC3; Lemma 4.6; pages 12–14; Author-hosted January 2001 preprint, 31 pages; numbered statements retain published numbering [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [BelmontKong2024](https://arxiv.org/pdf/2112.08689v2): Definitions 2.3–2.4; Theorem 4.10 and Assumptions 3.14, 3.17; pages 5, 12–13, 16–17; arXiv:2112.08689v2, 16 August 2024 (not a different published numbering) [MayMatric1969](https://www.math.uchicago.edu/~may/PAPERS/8.pdf): Definition 1.2 and Proposition 2.3 (ordinary triple-product case); pages 538, 543–544; Original J. Algebra 12 (1969), 533–568, author-hosted scan
 
@@ -82,76 +82,76 @@ Clause 35: Write the BHS coordinates as (s,k,omega) and the project coordinates 
 
 Clause 36: The cited papers concern the usual classical spectrum or its 2-primary/2-completed version. Recognition of the fixed project category, Adams tower, coefficient object, and selected Lean constants is a separate, currently pending formal comparison; this audit does not prove it. Primary references: [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): BR21 Proposition1.4;Table1.1,p56;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [IWX](https://www.numdam.org/item/10.1007/s10240-023-00139-1.pdf): BR21 Proposition1.4;Table1.1,p56;Figure1.10,p57; IWX Table4,p215,row(45,9,24)
 
-Detailed source attribution: (Adapted from the individually cited results below. The selected-model comparisons, the extension to $N<2$, and the unshifted conclusion retain the stated verification limits; see [Pst](https://doi.org/10.1007/s00222-022-01173-2), [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), [LWX126](https://arxiv.org/abs/2412.10879), [BR21](https://doi.org/10.1090/surv/253), [Moss](https://doi.org/10.1007/BF01129978), [May01](https://doi.org/10.1006/aima.2001.1995).)
+Detailed source attribution: (From the individually cited results below. The selected-model comparisons, the extension to $N<2$, and the unshifted conclusion retain the stated verification limits; see [Pst](https://doi.org/10.1007/s00222-022-01173-2), [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), [LWX126](https://arxiv.org/abs/2412.10879), [BR21](https://doi.org/10.1090/surv/253), [Moss](https://doi.org/10.1007/BF01129978), [May01](https://doi.org/10.1006/aima.2001.1995).)
 
-Clause 1 detailed source attribution: (Adapted from [Xu](https://doi.org/10.2140/gt.2016.20.1611), Corollary 1.3, p.~1612; and [IWX](https://doi.org/10.1007/s10240-023-00139-1), Corollary 1.3 and Table 1, row 62.)
+Clause 1 detailed source attribution: (From [Xu](https://doi.org/10.2140/gt.2016.20.1611), Corollary 1.3, p.~1612; and [IWX](https://doi.org/10.1007/s10240-023-00139-1), Corollary 1.3 and Table 1, row 62.)
 
-Clause 2 detailed source attribution: (Adapted from [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40, and [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(2) and the comparison before Notation A.7.)
+Clause 2 detailed source attribution: (From [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40, and [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(2) and the comparison before Notation A.7.)
 
-Clause 3 detailed source attribution: (Adapted from [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf), Proposition II.5.22 and Definition II.6.21, specialized to $H\mathbb F_2$; cf.\ [EKMM](https://www.math.uchicago.edu/~may/BOOKS/EKMM.pdf), Proposition IV.1.2(i).)
+Clause 3 detailed source attribution: (From [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf), Proposition II.5.22 and Definition II.6.21, specialized to $H\mathbb F_2$; cf.\ [EKMM](https://www.math.uchicago.edu/~may/BOOKS/EKMM.pdf), Proposition IV.1.2(i).)
 
-Clause 4 detailed source attribution: (Adapted from [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3, p.~184; and [Adams60](https://doi.org/10.2307/1970147), Section 1.1, p.~20.)
+Clause 4 detailed source attribution: (From [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3, p.~184; and [Adams60](https://doi.org/10.2307/1970147), Section 1.1, p.~20.)
 
-Clause 5 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(2).)
+Clause 5 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(2).)
 
-Clause 6 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a), equivalently Theorem 9.19(2a).)
+Clause 6 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a), equivalently Theorem 9.19(2a).)
 
-Clause 7 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
+Clause 7 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
 
-Clause 8 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Lemma 9.15, as restated in [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.16; comparison with the selected Adams tower remains pending.)
+Clause 8 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Lemma 9.15, as restated in [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.16; comparison with the selected Adams tower remains pending.)
 
-Clause 9 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2b),(3b), equivalently Theorem 9.19(2b),(3b).)
+Clause 9 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2b),(3b), equivalently Theorem 9.19(2b),(3b).)
 
-Clause 10 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(3a), equivalently Theorem 9.19(3a).)
+Clause 10 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(3a), equivalently Theorem 9.19(3a).)
 
-Clause 11 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and its proof.)
+Clause 11 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and its proof.)
 
-Clause 12 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and the comparison before Notation A.7.)
+Clause 12 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and the comparison before Notation A.7.)
 
-Clause 13 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 54, and Remark 1.5, pp. 56--57.)
+Clause 13 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 54, and Remark 1.5, pp. 56--57.)
 
-Clause 14 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2b),(3b), equivalently Theorem 9.19(2b),(3b).)
+Clause 14 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2b),(3b), equivalently Theorem 9.19(2b),(3b).)
 
-Clause 15 detailed source attribution: (Adapted from [Moss](https://doi.org/10.1007/BF01129978), Section 1, pp. 283--285; the tower formulation follows [BelmontKong2024](https://arxiv.org/abs/2112.08689v2), Definition 2.3.)
+Clause 15 detailed source attribution: (From [Moss](https://doi.org/10.1007/BF01129978), Section 1, pp. 283--285; the tower formulation follows [BelmontKong2024](https://arxiv.org/abs/2112.08689v2), Definition 2.3.)
 
-Clause 16 detailed source attribution: (Adapted from [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3, p.~184; and [Adams60](https://doi.org/10.2307/1970147), Section 1.1, p.~20.)
+Clause 16 detailed source attribution: (From [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3, p.~184; and [Adams60](https://doi.org/10.2307/1970147), Section 1.1, p.~20.)
 
-Clause 17 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Section 0.3, p. 5, Section 0.5, pp. 8--9, and Section 1.2, p. 64.)
+Clause 17 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Section 0.3, p. 5, Section 0.5, pp. 8--9, and Section 1.2, p. 64.)
 
-Clause 18 detailed source attribution: (Adapted from [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf), Example I.1.8, p.~12, and the proof of Proposition II.5.21, p.~264.)
+Clause 18 detailed source attribution: (From [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf), Example I.1.8, p.~12, and the proof of Proposition II.5.21, p.~264.)
 
-Clause 19 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), the comparison before Notation A.7 and the proof of Theorem A.8; [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40.)
+Clause 19 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), the comparison before Notation A.7 and the proof of Theorem A.8; [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40.)
 
-Clause 20 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and the comparison before Notation A.7.)
+Clause 20 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8 and the comparison before Notation A.7.)
 
-Clause 21 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1, the permanent-cycle paragraph, and Corollary A.19.)
+Clause 21 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1, the permanent-cycle paragraph, and Corollary A.19.)
 
-Clause 22 detailed source attribution: (Adapted from [Pst](https://doi.org/10.1007/s00222-022-01173-2), Lemma 4.23, as restated in [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.1; recognition of the selected synthetic model remains pending.)
+Clause 22 detailed source attribution: (From [Pst](https://doi.org/10.1007/s00222-022-01173-2), Lemma 4.23, as restated in [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.1; recognition of the selected synthetic model remains pending.)
 
-Clause 23 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
+Clause 23 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
 
-Clause 24 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 56, and Remark 1.5, pp. 56--57; notation as in [IWX](https://doi.org/10.1007/s10240-023-00139-1), Table 4, p. 215.)
+Clause 24 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 56, and Remark 1.5, pp. 56--57; notation as in [IWX](https://doi.org/10.1007/s10240-023-00139-1), Table 4, p. 215.)
 
-Clause 25 detailed source attribution: (Adapted from [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.16 and Notation 3.19; and [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40 and Remark 4.41.)
+Clause 25 detailed source attribution: (From [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.16 and Notation 3.19; and [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40 and Remark 4.41.)
 
-Clause 26 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(3). The extension to $N<2$ remains unverified.)
+Clause 26 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.8(3). The extension to $N<2$ remains unverified.)
 
-Clause 27 detailed source attribution: (Adapted from [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.17 and Remark 3.18, using the proof of [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Lemma 9.15; comparison with the selected connecting map remains pending.)
+Clause 27 detailed source attribution: (From [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.17 and Remark 3.18, using the proof of [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Lemma 9.15; comparison with the selected connecting map remains pending.)
 
-Clause 28 detailed source attribution: (Adapted from [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3 and the following m=0 paragraph, p.~184.)
+Clause 28 detailed source attribution: (From [Adams58](https://doi.org/10.1007/BF02564578), Lemma 2.3 and the following m=0 paragraph, p.~184.)
 
-Clause 29 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 54, and Figure 1.9, p. 56.)
+Clause 29 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 54, and Figure 1.9, p. 56.)
 
 Clause 30 detailed source attribution: (From [LWX126](https://arxiv.org/abs/2412.10879), proof of Lemma 7.10, p.~45; independently checked against [IWXCharts](https://zenodo.org/records/6987157), the stem-62 E-infinity rows.)
 
-Clause 31 detailed source attribution: (Adapted from [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1, the permanent-cycle paragraph, and Corollary A.19.)
+Clause 31 detailed source attribution: (From [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), Theorem A.1, the permanent-cycle paragraph, and Corollary A.19.)
 
-Clause 32 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Section 0.1, p. 1, and Section 1.2, p. 64.)
+Clause 32 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Section 0.1, p. 1, and Section 1.2, p. 64.)
 
 Clause 33 detailed source attribution: (Related source: [LWX126](https://arxiv.org/abs/2412.10879), Proposition 3.20, which retains weight shifts; the present unshifted conclusion is not verified.)
 
-Clause 34 detailed source attribution: (Adapted from [May01](https://doi.org/10.1006/aima.2001.1995), Axiom TC3 and Lemma 4.6; see [LWX126](https://arxiv.org/abs/2412.10879), Lemma 6.11. The signed comparison for the selected tensor context remains pending.)
+Clause 34 detailed source attribution: (From [May01](https://doi.org/10.1006/aima.2001.1995), Axiom TC3 and Lemma 4.6; see [LWX126](https://arxiv.org/abs/2412.10879), Lemma 6.11. The signed comparison for the selected tensor context remains pending.)
 
-Clause 35 detailed source attribution: (Adapted from [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40, and [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), the comparison before Notation A.7 and Theorem A.8.)
+Clause 35 detailed source attribution: (From [Pst](https://doi.org/10.1007/s00222-022-01173-2), Proposition 4.40, and [BHS](https://doi.org/10.4310/acta.2023.v231.n2.a1), the comparison before Notation A.7 and Theorem A.8.)
 
-Clause 36 detailed source attribution: (Adapted from [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 56, and Figure 1.10, p. 57; notation as in [IWX](https://doi.org/10.1007/s10240-023-00139-1), Table 4, p. 215.)
+Clause 36 detailed source attribution: (From [BR21](https://doi.org/10.1090/surv/253), Proposition 1.4 and Table 1.1, p. 56, and Figure 1.10, p. 57; notation as in [IWX](https://doi.org/10.1007/s10240-023-00139-1), Table 4, p. 215.)

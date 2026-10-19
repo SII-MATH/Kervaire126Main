@@ -2,14 +2,38 @@ module
 
 import KIP126.Literature
 
-/-! Fixed literature theorems are used by ordinary import, with no delivery,
-model variable or result package supplied by the consumer. -/
+/-! Literature theorems are used through the ordinary public import. The
+lambda-inversion comparison remains explicit mathematical input. -/
 
 open CategoryTheory CategoryTheory.Pretriangulated
 open KIP126.StableHomotopy KIP126.Synthetic.Context
 open KIP126.AdamsSynthetic KIP126.Classical.Adams KIP126.Core.SpectralSequence
 open KIP126.AdamsSynthetic.Standard (Spectrum SyntheticSpectrum model)
 open KIP126.Literature.Standard
+
+section LambdaInversionConsumer
+open KIP126.Kervaire.Route KIP126.Synthetic.SpectralSequence
+universe u v w
+variable {C : Type u} [StableHomotopyCategory.{u,v} C]
+  [HasFunctorialCofiber (C := C)]
+  {Syn : Type w} [SyntheticCategory.{w,v} Syn]
+  [HasFunctorialCofiber (C := Syn)]
+  (D : Model C Syn)
+
+/-- Detection transports the specified representative itself, including zero
+or boundary labels; no nonzero or essentiality condition is supplied. -/
+example (R : KIP126.Literature.RealizationCoordinates D)
+    (U : SyntheticObject) (X : ClassicalObject)
+    (K : KIP126.Literature.LambdaInversionAdamsObjectComparison D R U X)
+    (s t w : ℤ)
+    (x : (D.family.obj (U.obj D.nu D.auxiliary)).E₂ (s,t,w))
+    (β : BiHom (t-s) w (U.obj D.nu D.auxiliary))
+    (hβ : Detects (D.convergence U) (s,t,w) x β) :
+    ClassicalDetects (D.classicalConvergence X) (s,t) (K.e2Map w (s,t) x)
+      ((R.sphere (t-s) w).hom ≫ D.recovery.realization.map β ≫ K.target.hom) :=
+  K.detects s t w x β hβ
+
+end LambdaInversionConsumer
 
 example (T : KIP126.Kervaire.Route.TriangleData model.auxiliary)
     (he : (normalizedExponent model.classicalTower T.f : ℤ) +

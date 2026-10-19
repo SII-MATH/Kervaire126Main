@@ -38,6 +38,10 @@ def main():
         visible = frame.locator('.proposal-card:not([hidden])')
         assert 0 < visible.count() < len(reports)
         frame.locator('#proposal-module').select_option('Main')
+        # The Main dependency audit now explicitly records independence from GL.
+        expect(visible).to_have_count(1)
+        expect(visible.first).to_have_attribute('id', 'Main-20261018-gray-toda-anyy')
+        frame.locator('#proposal-search').fill('__no_matching_proposal__')
         expect(visible).to_have_count(0)
         expect(frame.locator('#proposal-empty')).to_be_visible()
         frame.get_by_role('button', name='重置', exact=True).click()
@@ -66,7 +70,9 @@ def main():
         assert downloaded.value.suggested_filename.endswith('-review.txt')
         page.keyboard.press('Escape')
         expect(frame.locator('#proposal-review')).not_to_be_visible()
-        expect(gl.locator('.proposal-status')).to_have_text('未获人审批准')
+        # Draft feedback leaves the actual approval boundary unchanged.
+        expect(gl.locator('.proposal-status')).to_have_text('已批准接口修改')
+        expect(frame.locator('#ProofTools-20261018-gl-crossing-lambda-lift .proposal-status')).to_have_text('未获人审批准')
         page.set_viewport_size({'width': 390, 'height': 844})
         frame.locator('#proposal-search').fill('ProofTools-20261018-GL-fixed-object-counterexample')
         expect(visible).to_have_count(1)

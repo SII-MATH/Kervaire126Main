@@ -1,0 +1,5 @@
+module
+import KIP126.ProofTools.Paper.OriginalStatements
+#check KIP126.ProofTools.Paper.extensionBoundary_of_exact
+#check KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension
+#check KIP126.Literature.LambdaInversionAdamsObjectComparison.detects

@@ -15,6 +15,12 @@ def main():
     parser.add_argument('--url', default='http://127.0.0.1:18727/')
     parser.add_argument('--chromium', default='/root/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome')
     args = parser.parse_args()
+    registry = json.loads((ROOT / 'interface/baselines/proof-obligations.json').read_text())
+    proof_tools_obligations = [r for r in registry['obligations']
+                              if r['module'].startswith('KIP126.ProofTools.')]
+    assert {r['name'] for r in proof_tools_obligations} == {
+        'KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing'}
+    assert registry['summary']['by_module']['ProofTools'] == len(proof_tools_obligations) == 1
     errors, failed, data_requests = [], [], []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, executable_path=args.chromium, args=['--no-sandbox'])
@@ -37,6 +43,9 @@ def main():
         expect(frame.locator('#interface-prev')).to_be_disabled()
         # Status totals partition only the named public API, never generated exports.
         payload = page.request.get(args.url.rstrip('/') + '/interfaces/data.json').json()
+        published_tools = [r['obligation'] for r in payload['records']
+                           if r['kind'] == 'obligation' and r['owner'] == 'ProofTools']
+        assert published_tools == proof_tools_obligations
         public = [r for r in payload['records'] if r['kind'] == 'declaration']
         def state(row):
             source = row.get('source') or {}
@@ -69,7 +78,8 @@ def main():
         proof_tools = frame.locator('.module-card').filter(has=frame.locator('[data-module="ProofTools"]'))
         proof_tools.locator('.obligation-link').click()
         expect(frame.locator('#interface-kind')).to_have_value('obligation')
-        expect(cards).to_have_count(5)
+        expect(cards).to_have_count(len(proof_tools_obligations))
+        expect(cards.first).to_contain_text(proof_tools_obligations[0]['name'])
         frame.get_by_role('button', name='Reset', exact=True).click()
         expect(cards).to_have_count(40)
         first = cards.first.locator('h2').inner_text()
@@ -103,9 +113,8 @@ def main():
         frame.get_by_role('button', name='Reset', exact=True).click()
         frame.locator('#interface-kind').select_option('obligation')
         frame.locator('#interface-module').select_option('ProofTools')
-        expected = [r for r in json.loads((ROOT / 'interface/baselines/proof-obligations.json').read_text())['obligations']
-                    if r['module'].startswith('KIP126.ProofTools.')]
-        expect(cards).to_have_count(len(expected))
+        expect(cards).to_have_count(len(proof_tools_obligations))
+        expect(cards.first).to_contain_text(proof_tools_obligations[0]['name'])
         expect(cards.first).to_contain_text('Registered obligation')
         frame.locator('#interface-dependency').select_option('no-sorry')
         expect(cards).to_have_count(0)  # obligations do not carry a compiled axiom list

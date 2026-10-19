@@ -1,0 +1,18 @@
+public theorem extensionBoundary_of_exact (X Y Z : ClassicalObject)
+    (f : X.obj D.auxiliary ⟶ Y.obj D.auxiliary)
+    (g : Y.obj D.auxiliary ⟶ Z.obj D.auxiliary)
+    (hYcomplete : ∀ d : ℤ, Nonempty (Filtration.CompletionWitness
+      (D.classicalTower.tower (Y.obj D.auxiliary)).filtration d))
+    (hYfinite : ∀ (d : ℤ) (n : ℕ), Finite
+      (HomotopyGroup d (Y.obj D.auxiliary) ⧸
+        (D.classicalTower.tower (Y.obj D.auxiliary)).filtrationSubmodule n d))
+    (hZsep : ∀ (d : ℤ) (a : HomotopyGroup d (Z.obj D.auxiliary)),
+      (∀ n : ℕ, a ∈
+        (D.classicalTower.tower (Z.obj D.auxiliary)).filtrationSubmodule n d) → a = 0)
+    (hexact : ∀ d : ℤ, ∀ a : HomotopyGroup d (Y.obj D.auxiliary),
+      a ≫ g = 0 ↔ ∃ b : HomotopyGroup d (X.obj D.auxiliary), b ≫ f = a) :
+    ∀ d s : ℤ, ∀ y : ClassicalGrade D Y s d,
+      ClassicalPermanent D Y Z g d s y →
+      ∃ a : ℤ, a ≤ s ∧ ∃ x : ClassicalGrade D X a d,
+        ClassicalExtension D X Y f d a s x y := by
+  -- implemented proof audited in the supplied compiled environment

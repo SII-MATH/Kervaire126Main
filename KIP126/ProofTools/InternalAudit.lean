@@ -2,6 +2,7 @@ module
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 import all KIP126.ProofTools.Paper.ExtensionRepresentatives
 import all KIP126.ProofTools.Paper.OriginalStatements
+import all KIP126.ProofTools.Paper.ClassicalKernelCompactness
 import all KIP126.ProofTools.Paper.ExtensionDescent
 import all KIP126.ProofTools.Paper.ExtensionIndeterminacy
 import all KIP126.ProofTools.Paper.ExtensionEssentialSource
@@ -179,17 +180,17 @@ run_cmd do
     checked := checked + 1
   unless holes.qsort (· < ·) == expectedNames.qsort (· < ·) do
     throwError "Proof obligation registry has stale or missing declarations: {holes}"
+  for retired in #[`KIP126.ProofTools.Standard.generalizedLeibniz,
+      `KIP126.ProofTools.Standard.generalizedMahowald] do
+    if env.contains retired then
+      throwError "Retired false theorem was reintroduced: {retired}"
   let permittedGapDeclarations := #[
-    "KIP126.ProofTools.Standard.generalizedLeibniz",
-    "KIP126.ProofTools.Standard.generalizedMahowald",
-    "KIP126.ProofTools.Paper.extensionBoundary_of_exact",
-    "KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing",
-    "KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension"]
+    "KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing"]
   unless holes.qsort (· < ·) == permittedGapDeclarations.qsort (· < ·) do
-    throwError "ProofTools pending declarations differ from the two existing laws and three remaining original statements: {holes}"
+    throwError "ProofTools pending declarations differ from the remaining original crossing statement: {holes}"
   -- These completed tools may use fixed upstream obligations, but must not
   -- depend on any unfinished local paper theorem. In particular, the
-  -- general MH1 boundary lift cannot silently use MH2 or generalizedLeibniz.
+  -- general MH1 boundary lift must stay independent of the retired GL/MH claims.
   let provedTools := #[
     `KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative,
     `KIP126.ProofTools.Internal.Mahowald.finite_may_first_image_and_second_factor,
@@ -222,6 +223,8 @@ run_cmd do
     `KIP126.ProofTools.Paper.extensionComposition,
     `KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism,
     `KIP126.ProofTools.Paper.permanentCycle_of_nullComposite,
+    `KIP126.ProofTools.Paper.extensionBoundary_of_exact,
+    `KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension,
 
     `KIP126.ProofTools.Standard.finitePageExtensionStretching,
     `KIP126.ProofTools.Standard.generalizedLeibnizAtLevel,
