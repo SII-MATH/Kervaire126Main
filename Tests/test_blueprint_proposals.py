@@ -39,10 +39,10 @@ class InterfaceProposalTests(unittest.TestCase):
         self.assertIn('no Lean negation certificate', gl['meta']['evidence_level'])
 
     def test_invalid_reports_and_unjustified_approvals_fail(self):
-        template = (ROOT / 'interface-proposals/TEMPLATE.md').read_text()
+        template = (ROOT / 'interface/proposals/TEMPLATE.md').read_text()
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            path = root / 'interface-proposals/Main/example/report.md'
+            path = root / 'interface/proposals/Main/example/report.md'
             path.parent.mkdir(parents=True)
             for content in (template.replace('status: draft', 'status: approved-interface-change'),
                             template.replace('status: draft', 'status: typo'),
@@ -72,7 +72,7 @@ class InterfaceProposalTests(unittest.TestCase):
                 '[unsafe](javascript:alert) [relative](evidence/not-present.json) '
                 '[archived](local-history/missing.md) '
                 '[node](#/Kervaire126#paper:6.1)\n\n<script>alert(1)</script>')
-        rendered = proposals.markdown(text, 'interface-proposals/Main/x/report.md', ROOT)
+        rendered = proposals.markdown(text, 'interface/proposals/Main/x/report.md', ROOT)
         self.assertIn('href="https://example.com/paper"', rendered)
         self.assertIn('data-blueprint="paper:6.1"', rendered)
         self.assertNotIn('href="javascript:', rendered)
@@ -84,7 +84,7 @@ class InterfaceProposalTests(unittest.TestCase):
     def test_code_and_tables_preserve_formal_signatures(self):
         rendered = proposals.markdown('```lean\n∀ x, x < 2 → P x\n```\n\n'
                                      '| 原 | 新 |\n| --- | --- |\n| `P x` | `Q x` |',
-                                     'interface-proposals/Main/x/report.md', ROOT)
+                                     'interface/proposals/Main/x/report.md', ROOT)
         self.assertIn('<pre><code>∀ x, x &lt; 2 → P x</code></pre>', rendered)
         self.assertIn('<table>', rendered)
         self.assertIn('<code>Q x</code>', rendered)
@@ -93,9 +93,9 @@ class InterfaceProposalTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             root, out = Path(folder) / 'source', Path(folder) / 'export'
             # Simulate a fresh checkout with no ignored historical archive.
-            shutil.copytree(ROOT / 'interface-proposals', root / 'interface-proposals')
+            shutil.copytree(ROOT / 'interface/proposals', root / 'interface/proposals')
             (root / 'site').mkdir()
-            for name in ('proposals.html', 'proposals.css', 'proposals.js'):
+            for name in ('proposals.html', 'proposals.css', 'proposals.js', 'interface-navigation.js'):
                 shutil.copyfile(ROOT / 'site' / name, root / 'site' / name)
             (root / 'docs').mkdir()
             shutil.copyfile(ROOT / 'docs/interface-proposals.md', root / 'docs/interface-proposals.md')
@@ -113,8 +113,10 @@ class InterfaceProposalTests(unittest.TestCase):
             self.assertTrue((out / 'proposals/TEMPLATE.md').is_file())
             for report in proposals.read_reports(root):
                 self.assertEqual((out / 'proposals/reports' / report['path']).read_text(), report['raw'])
-            proposals.stage_proposals(root, out / 'staged')
-            self.assertIn('src="proposals/index.html"', (out / 'staged/site/proposals.html').read_text())
+            from blueprint_interfaces import stage_interfaces
+            stage_interfaces(root, out / 'staged')
+            self.assertIn('src="interfaces/index.html"', (out / 'staged/site/interfaces.html').read_text())
+            self.assertIn('aria-current="page">Proposals', (out / 'proposals/index.html').read_text())
 
 
 if __name__ == '__main__':

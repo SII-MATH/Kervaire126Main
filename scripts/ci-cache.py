@@ -90,7 +90,7 @@ def build_inputs(root=ROOT):
         mode, _, stage = info.decode().split()
         path = raw_path.decode()
         if not (path.endswith('.lean') or path in {'lean-toolchain', 'lake-manifest.json'} or
-                (path.startswith('metadata/') and path.endswith('.json')) or path.startswith('scripts/')):
+                (path.startswith('interface/baselines/') and path.endswith('.json')) or path.startswith('scripts/')):
             continue
         if stage != '0' or mode not in {'100644', '100755'}:
             raise ValueError(f'Unsupported build input: {path}')

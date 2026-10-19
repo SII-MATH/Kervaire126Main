@@ -93,7 +93,7 @@ class MinimalBaselineTests(unittest.TestCase):
         previous, actual = fixture()
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            (root / 'metadata').mkdir()
+            (root / 'interface/baselines').mkdir(parents=True)
             (root / '.lake').mkdir()
             source = root / 'KIP126/Main/Example.lean'
             source.parent.mkdir(parents=True)
@@ -101,14 +101,14 @@ class MinimalBaselineTests(unittest.TestCase):
                               'public theorem result : True := trivial\nend KIP126.Main\n')
             item = {'name': 'KIP126.Main.result', 'module': 'KIP126.Main.Example',
                     'type_fingerprint': '999', 'universes': []}
-            (root / 'metadata/proof-obligations.json').write_text(json.dumps(previous))
+            (root / 'interface/baselines/proof-obligations.json').write_text(json.dumps(previous))
             (root / '.lake/main-capture.json').write_text(json.dumps([item]))
             (root / '.lake/trust-capture.json').write_text(json.dumps([
                 actual, {**item, 'axioms': [], 'is_axiom': False,
                          'synthetic_sorry': False, 'direct_sorry': False}]))
             subprocess.run([sys.executable, str(ROOT / 'scripts/freeze-interfaces.py'), 'main'],
                            cwd=root, check=True, capture_output=True, text=True)
-            result = json.loads((root / 'metadata/main-api.json').read_text())
+            result = json.loads((root / 'interface/baselines/main-api.json').read_text())
             self.assertEqual(result['declarations'][0]['name'], item['name'])
             self.assertEqual(result['exports'], [item['name']])
 

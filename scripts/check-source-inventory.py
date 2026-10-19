@@ -99,7 +99,7 @@ def imports(path):
 # including generated exports, must have a unique source-module owner.
 locked_owners = {}
 locked_modules = set()
-for path in sorted((root / 'metadata').glob('*-api.json')):
+for path in sorted((root / 'interface/baselines').glob('*-api.json')):
     api = json.loads(path.read_text())
     module = api['module']
     if module not in entries or api['entry_module'] != entries[module]:
@@ -124,7 +124,7 @@ if locked_modules != set(entries):
 
 # Keep the individually reviewed mathematical names from the upstream cleanup.
 # Local coordinate variables (for example c3) are unrelated to declarations.
-naming_path = root / 'metadata/mathematical-naming-restoration.json'
+naming_path = root / 'interface/baselines/mathematical-naming-restoration.json'
 if naming_path.exists():
     naming = json.loads(naming_path.read_text())
     retired_names = set(naming['identifier_renames']) - {'PropositionSevenEight'}
@@ -211,7 +211,7 @@ if main_holes != {'KIP126/Main/PaperResults.lean': 2}:
     errors.append('Main statement-only proof sites changed: ' + str(main_holes))
 main_pending = {
     row['name'] for row in json.loads(
-        (root / 'metadata/proof-obligations.json').read_text())['obligations']
+        (root / 'interface/baselines/proof-obligations.json').read_text())['obligations']
     if row['module'] == 'KIP126.Main' or row['module'].startswith('KIP126.Main.')
 }
 if main_pending != {

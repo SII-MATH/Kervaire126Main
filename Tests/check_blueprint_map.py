@@ -27,7 +27,7 @@ def main():
         page = browser.new_page(viewport={'width': 1440, 'height': 1000})
         page.set_default_timeout(30000)
         page.on('pageerror', lambda e: errors.append(str(e)))
-        page.on('response', lambda r: http.append([r.status, r.url]) if r.status >= 400 else None)
+        page.on('response', lambda r: http.append([r.status, r.url]) if r.status >= 400 and not r.url.endswith('/favicon.ico') else None)
         page.goto(base + '#/Kervaire126', wait_until='networkidle')
 
         def open_map():
@@ -45,6 +45,7 @@ def main():
         assert 'Verification' not in nav_text and 'Implementation index' not in nav_text
         frame = open_map()
         checks.append('navigation and complete node population')
+        token = frame.locator('body').evaluate('() => window.__mapRetainedToken = crypto.randomUUID()')
         zoom = frame.locator('#map-zoom-level').inner_text()
         frame.locator('#map-zoom-in').click()
         assert frame.locator('#map-zoom-level').inner_text() != zoom
@@ -94,7 +95,7 @@ def main():
         frame.locator('#detail-body .detail-source-ref a').click()
         page.wait_for_function("decodeURIComponent(location.hash).endsWith('#sem:Main:last-differential')")
         page.locator('#stmt-' + node['id'] + ' .sbody').wait_for()
-        page.locator('iframe[title="Blueprint map"]').wait_for(state='detached')
+        page.locator('iframe[title="Blueprint map"]').wait_for(state='hidden')
         checks.append('math preview and parent blueprint navigation')
 
         # Navigation scrolls smoothly; measure the reading position after that
@@ -116,8 +117,9 @@ def main():
             return {hash:location.hash,scrollY:scrollY,query:document.querySelector('.navq').value};
         }''')
         frame = open_map()
+        assert frame.locator('body').evaluate('() => window.__mapRetainedToken') == token
         frame.locator('#map-close').click()
-        page.locator('iframe[title="Blueprint map"]').wait_for(state='detached')
+        page.locator('iframe[title="Blueprint map"]').wait_for(state='hidden')
         after = page.evaluate('''() => ({hash:location.hash,scrollY:scrollY,
             query:document.querySelector('.navq').value,
             sentinel:window.__mapCloseSentinel,

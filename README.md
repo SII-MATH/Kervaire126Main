@@ -14,13 +14,13 @@ lake exe cache get  # 获取锁定版本的 Mathlib 依赖缓存；已有缓存�
 lake build
 ```
 
-模块职责、接口与任务边界见 [AGENTS.md](AGENTS.md)。[metadata/](metadata/) 只保留接口、许可证明洞、审计边界与命名检查所需的精简基线，格式见 [元数据检查基线](docs/metadata-baselines.md)。数学说明与论文对应在 Blueprint 中维护，接口范围说明保存在 hgraph 原生节点附件；文献及固定代码版本通过 bibliography 引用，代码版本条目见 [source-snapshots.bib](blueprint/source-snapshots.bib)。待补工作保留在 Lean 源码与许可清单；Blueprint 使用 hgraph 原生的源码局部状态和手写依赖，不核验编译依赖闭包；[proof-obligations.json](metadata/proof-obligations.json) 保留证明洞许可基线，构建通过不代表全部证明完成。Lake 的依赖锁 `lake-manifest.json` 保留在根目录。
+模块职责、接口与任务边界见 [AGENTS.md](AGENTS.md)。根目录 [interface/](interface/README.md) 统一组织接口基线与提案，对应 hgraph 的 Interfaces 页签。[interface/baselines/](interface/baselines/) 只保留接口、许可证明洞、审计边界与命名检查所需的精简基线，格式见 [元数据检查基线](docs/metadata-baselines.md)。数学说明与论文对应在 Blueprint 中维护，接口范围说明保存在 hgraph 原生节点附件；文献及固定代码版本通过 bibliography 引用，代码版本条目见 [source-snapshots.bib](blueprint/source-snapshots.bib)。待补工作保留在 Lean 源码与许可清单；Blueprint 使用 hgraph 原生的源码局部状态和手写依赖，不核验编译依赖闭包；[proof-obligations.json](interface/baselines/proof-obligations.json) 保留证明洞许可基线，构建通过不代表全部证明完成。Lake 的依赖锁 `lake-manifest.json` 保留在根目录。
 
 SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry 八个数学模块在 `KIP126/` 下平级组织，公共入口为 `KIP126.<模块名>`。计算层按 `E2Computation → ProofTools → AdamsCalculations → Main → Geometry` 单向组织：E₂ 层提供独立的基底、乘法、维数和实际对象比较；后续 Adams 层负责微分、边界与存活。原 `KIP126.Computation` 及其子路径的兼容入口已删除，直接使用实际分层入口；既有 `KIP126.Computation.*` 公开声明名称保持不变，由实际定义模块的独立接口锁检查。移除原 `Def/` 目录层级的路径映射和验证记录已归档到 `local-history/metadata/module-path-migration.json`；历史来源仍使用其原始提交中的路径。
 
 历史计算审计、接口审查、证明会话、报告及完整契约和来源 JSON 统一放在被 Git 忽略的 `local-history/`，本地文件保留，整理与恢复方式见 [历史材料归档](docs/history-archive.md)。修正记录统一维护在根目录 [corrections.yaml](corrections.yaml)，按 [结构化格式](docs/corrections.md) 供 agent 编辑并生成网页；历史证据仍指向本地归档。构建、hgraph 导出与精简基线更新均不要求归档目录存在。
 
-持续审阅的独立接口报告统一投递到 Git 跟踪的 `interface-proposals/`，在 dashboard 的“接口提案”区域搜索、筛选、阅读并生成审阅反馈。17 份既有报告已迁入，原件作为历史快照保留；后续只更新提案目录。投递格式及人审回写见 [接口提案指南](docs/interface-proposals.md)。
+持续审阅的独立接口报告统一投递到 Git 跟踪的 `interface/proposals/`，在 dashboard 的 **Interfaces → Proposals** 区域搜索、筛选、阅读并生成审阅反馈。17 份既有报告已迁入，原件作为历史快照保留；后续只更新提案目录。投递格式及人审回写见 [接口提案指南](docs/interface-proposals.md)。
 
 Geometry 只复现 AimPaper Theorem 1.1 与 Corollary 1.2：126 维存在性和六个维数的精确分类。两个推论无本地证明洞；Literature 提供真实闭光滑流形及稳定标架的数据模型，分别登记 Kervaire 不变量构造与 Browder 固定模型比较的待补责任。Browder 的几何索引取 `j ≥ 1`，不把零维的 `h₀²` 纳入几何维数分类。
 

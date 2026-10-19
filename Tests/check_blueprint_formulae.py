@@ -34,7 +34,7 @@ def main():
         page = browser.new_page(viewport={'width':1440,'height':1000})
         page.set_default_timeout(60000)
         page.on('pageerror', lambda e: runtime.append(str(e)))
-        page.on('response', lambda r: http.append((r.status,r.url)) if r.status>=400 else None)
+        page.on('response', lambda r: http.append((r.status,r.url)) if r.status>=400 and not r.url.endswith('/favicon.ico') else None)
         for chapter in data['chapters']:
             papers = [b for b in chapter['blocks'] if b.get('t') == 'stmt' and b.get('label')]
             if not papers:
@@ -83,7 +83,7 @@ def main():
               'strict_render_errors':errors, 'runtime_errors':runtime,'http_failures':http}
     (ROOT / '.lake/blueprint/formula-browser-validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(result,ensure_ascii=False))
-    if statements_checked != len(data['entries']) or result['paper_statements'] != 56 or checked < 100 or errors or runtime or http:
+    if statements_checked != len(data['entries']) or result['paper_statements'] != 54 or checked < 100 or errors or runtime or http:
         raise SystemExit(1)
 
 

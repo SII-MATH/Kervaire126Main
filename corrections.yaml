@@ -61,7 +61,7 @@ corrections:
   progress: |-
     形式化反证为 [StatementReview.lean](KIP126/ProofTools/GeneralizedMahowald/StatementReview.lean) 中的 `rotated_nu_generalized_mahowald_law_false`，前提与非零性见同目录 `RotatedNuPremises.lean`、`BottomNuInjection.lean`。反证依赖既有登记的上游接口，不调用待证 MH2 或 GL。一般 MH2 的公共接口尚未修改，原待补保留；Main 使用 $l_1=0$ 的特例，本反例针对 $l_1=1$。
 
-    **后续调研核对（2026-10-18）。** 已实际读取 project-math-assistant 群中 4 月 24 日原始 TeX、10 月 16 日复核与 10 月 17 日《广义MH与论文计算认证研究报告》。建议目标已收敛为保留强有限商与双输入层数、交付同一个实际代表及两条像方程的有限 MH；具体候选、完整前提和下游影响见[ProofTools 提案草稿](interface-proposals/ProofTools/20261018-mh-finite-level-target/report.md)。这是研究汇总，未冒充新增独立审查或已通过 Lean 的完整新接口。实际 no-crossing 到代表同步的推论、普通 Adams 方框解码与保留指定目标的经典提升仍须分别证明。
+    **后续调研核对（2026-10-18）。** 已实际读取 project-math-assistant 群中 4 月 24 日原始 TeX、10 月 16 日复核与 10 月 17 日《广义MH与论文计算认证研究报告》。建议目标已收敛为保留强有限商与双输入层数、交付同一个实际代表及两条像方程的有限 MH；具体候选、完整前提和下游影响见[ProofTools 接口提案](interface/proposals/ProofTools/20261018-mh-finite-level-target/report.md)。本次另经独立报告员核对参数、可见层、weight 与源码，复核范围是数学规格和接口边界，不是新候选的 Lean 证明。实际 no-crossing 到代表同步的推论、普通 Adams 方框解码与保留指定目标的经典提升仍须分别证明。
 
     Main 已改接独立的零层 ν 余纤维数值特例；当前一般私有零层证明的范围还要求中间对象为球谱，不能扩大成任意对象的零层定理已交付。现有 public 带 level GL 与有限除 λ 定理不自动恢复旧 MH 的指定零层源及目标，也不自动认证全部 SS 调用。此次不改变公共接口、证明洞清单或上述上游责任。
   history: |-
@@ -69,8 +69,8 @@ corrections:
 
     **当前候选方向。** 王老师修改稿保留输出的 $l_1$ 层。后续研究进一步要求保留强有限商及实际目标商，不先投影到可能截断目标的小商；任意正输入层的推广还必须调整商长、保证可见范围并同步实际代表。经典 extension 另需保留目标的提升，不能由源永久性直接推出。具体数学规格维护于上述接口提案，不将未证候选冒写成 Blueprint 已形式化修正版。
   links:
-  - node: paper:6.12
-    title: Theorem 6.12 · 原文与对应范围
+  - node: sem:ProofTools:nu-zero-layer
+    title: 已证应用特例 · 零层 ν 余纤维 MH
 - id: descent
   title: 扩张下降时，补上早页的长度合法域
   reference: PROPOSITION 6.20 · FIRST ASSERTION
@@ -233,8 +233,6 @@ corrections:
     title: 修正版 · 带 level 的 GL
   - node: sem:ProofTools:finite-lambda-division
     title: 修正版 · 有条件的有限 λ 除法
-  - node: paper:6.1
-    title: Theorem 6.1 · 原接口与缺口
   - node: paper:5.10
     title: Proposition 5.10 · crossing 比较
 - id: two-line

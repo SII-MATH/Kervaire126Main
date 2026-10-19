@@ -29,8 +29,8 @@ def main():
     identity = args.module + '-' + args.id
     if any(r['meta']['issue_id'] == identity for r in read_reports(ROOT)):
         parser.error('Proposal identity already exists')
-    destination = ROOT / 'interface-proposals' / args.module / args.id / 'report.md'
-    template = (ROOT / 'interface-proposals/TEMPLATE.md').read_text().split('---', 2)
+    destination = ROOT / 'interface/proposals' / args.module / args.id / 'report.md'
+    template = (ROOT / 'interface/proposals/TEMPLATE.md').read_text().split('---', 2)
     metadata = yaml.safe_load(template[1])
     metadata.update(issue_id=identity, title=args.title, responsibility_module=args.module,
                     reporter_agent=args.reporter,

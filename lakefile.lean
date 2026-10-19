@@ -11,31 +11,31 @@ require mathlib from git
 
 -- JSON locks participate in Lake traces; changing a lock reruns its check.
 input_file proofObligations where
-  path := "metadata/proof-obligations.json"
+  path := "interface/baselines/proof-obligations.json"
   text := true
 input_file spectralSequenceApi where
-  path := "metadata/spectral-sequence-api.json"
+  path := "interface/baselines/spectral-sequence-api.json"
   text := true
 input_file adamsSyntheticApi where
-  path := "metadata/adams-synthetic-api.json"
+  path := "interface/baselines/adams-synthetic-api.json"
   text := true
 input_file literatureApi where
-  path := "metadata/literature-api.json"
+  path := "interface/baselines/literature-api.json"
   text := true
 input_file e2ComputationApi where
-  path := "metadata/e2-computation-api.json"
+  path := "interface/baselines/e2-computation-api.json"
   text := true
 input_file adamsCalculationsApi where
-  path := "metadata/adams-calculations-api.json"
+  path := "interface/baselines/adams-calculations-api.json"
   text := true
 input_file proofToolsApi where
-  path := "metadata/proof-tools-api.json"
+  path := "interface/baselines/proof-tools-api.json"
   text := true
 input_file mainApi where
-  path := "metadata/main-api.json"
+  path := "interface/baselines/main-api.json"
   text := true
 input_file geometryApi where
-  path := "metadata/geometry-api.json"
+  path := "interface/baselines/geometry-api.json"
   text := true
 
 lean_lib BuildCheckInputs where

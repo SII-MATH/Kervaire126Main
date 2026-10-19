@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blueprint_boundaries
 import blueprint_memo
 import blueprint_proposals
+import blueprint_interfaces
 from blueprint_annotations import sync_authoring_notes
 from blueprint_paper import export_paper, load_paper, prepare_web_blueprint
 from hgraph.graph import Graph
@@ -43,7 +44,7 @@ def stage_workspace():
         if not target.exists():
             target.symlink_to(source, target_is_directory=source.is_dir())
     blueprint_memo.stage_memo(ROOT, project)
-    blueprint_proposals.stage_proposals(ROOT, project)
+    blueprint_interfaces.stage_interfaces(ROOT, project)
     return workspace
 
 
@@ -80,6 +81,7 @@ def export_site(workspace, out, report, boundary_checks):
         export_paper(ROOT, staging, load_paper(ROOT))
         blueprint_memo.export_memo(ROOT, staging)
         blueprint_proposals.export_proposals(ROOT, staging)
+        blueprint_interfaces.export_interfaces(ROOT, staging)
         (staging / 'native-sync.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
         (staging / 'publication.json').write_text(json.dumps({
             'mode': 'native-hgraph', 'boundaries': boundary_checks,
