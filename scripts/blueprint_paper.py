@@ -53,7 +53,24 @@ def load_paper(root):
 
 def reference_targets(root, statements):
     refs = {alias: ('#/Kervaire126#' + row['label'], row['label'].removeprefix('paper:'))
-            for row in statements if row['label'].startswith('paper:') for alias in row['labels']}
+            for row in statements for alias in row['labels']}
+    # Equation labels are deliberately not statement aliases in native hgraph.
+    # Keep them native in the reader; the parent link is also usable by the
+    # corrections tab, whose original-text renderer has no equation navigation.
+    for row in statements:
+        for label in re.findall(r'\\label\{([^}]+)\}', row['body']):
+            refs[label] = (refs[row['label']][0], 'equation in ' + refs[row['label']][1])
+    from hgraph.sync import read_blueprint
+    text = read_blueprint(root / 'blueprint/content.tex')
+    authored, _ = parse_blueprint(text)
+    for proof in re.finditer(r'\\begin\{proof\}(.*?)\\end\{proof\}', text, re.S):
+        parents = [row for row in authored if row['pos'] < proof.start()]
+        if parents:
+            parent = parents[-1]
+            for label in re.findall(r'\\label\{([^}]+)\}', proof[1]):
+                refs[label] = (refs[parent['label']][0], 'proof of ' + refs[parent['label']][1])
+    for figure in paper_figures(root):
+        refs[figure['label']] = ('paper/diagrams/' + figure['stem'] + '.svg', 'AimPaper illustration')
     path = root / 'AimPaper/main.tex'
     if path.exists():
         source = path.read_text()
@@ -61,6 +78,32 @@ def reference_targets(root, statements):
             refs.setdefault(match[1], ('paper/main.tex.html#L'
                 + str(source.count('\n', 0, match.start()) + 1), 'original source'))
     return refs
+
+
+def paper_figures(root):
+    """Read referenced standalone TikZ figures verbatim, including their caption."""
+    path = root / 'AimPaper/main.tex'
+    if not path.exists():
+        return []
+    source = active_tex(path.read_text())
+    from hgraph.sync import read_blueprint
+    authored = read_blueprint(root / 'blueprint/content.tex')
+    referenced = set(re.findall(r'\\ref\{([^}]+)\}', authored))
+    figures = []
+    for match in re.finditer(r'\\begin\{figure\}(?:\[[^\]]*\])?(.*?)\\end\{figure\}', source, re.S):
+        body = match[1]
+        labels = re.findall(r'\\label\{([^}]+)\}', body)
+        if not labels or labels[-1] not in referenced:
+            continue
+        caption = re.search(r'\\caption\s*\{', body)
+        if not caption:
+            raise ValueError('Missing caption for AimPaper figure ' + labels[-1])
+        caption_text, _end = _brace_span(body, body.index('{', caption.start()))
+        figures.append({'label': labels[-1], 'stem': 'figure-' + labels[-1].removeprefix('fig:'),
+                        'raw': body[:caption.start()].strip(),
+                        'caption': caption_text,
+                        'start_line': source.count('\n', 0, match.start()) + 1})
+    return figures
 
 
 def web_bibliography(text):
@@ -165,9 +208,21 @@ def display_body(body, number, reference_targets=None):
     # TeX layout/counter commands are not mathematical content. Retain them in
     # the authored source, omit them from the native browser's text renderer.
     if reference_targets:
+        def figure_clause(match):
+            target = reference_targets.get(match[1])
+            if target and target[0].startswith('paper/diagrams/figure-'):
+                return '\n\n' + r'\ref{' + match[1] + '}\n\n'
+            return match[0]
+        # A standalone image replaces the whole "See Figure ..." clause, so
+        # its final punctuation does not become an isolated line below it.
+        body = re.sub(r'\(?[Ss]ee Figure\s+\\ref\{([^}]+)\}\.?(?:\))?', figure_clause, body)
         def reference(match):
             label = match[1]
             target = reference_targets.get(label)
+            # Native references retain numbering and navigate within the same
+            # reader, including equations inside collapsed proof panels.
+            if target and target[0].startswith('#/Kervaire126#'):
+                return match[0]
             return ('\\href{' + target[0] + '}{' + target[1] + '}') if target else match[0]
         body = re.sub(r'\\ref\{([^}]+)\}', reference, body)
     # Native citations link correctly but omit their optional locator. Keep that
@@ -202,6 +257,24 @@ def inline_diagram_styles(diagrams):
     return '\n'.join(rules) + '\n'
 
 
+def render_paper_svg(root, work, stem, document):
+    """Compile exact source graphics, reusing a content-addressed local cache."""
+    import subprocess
+    input_path = work / (stem + '.tex')
+    input_path.write_text(document)
+    svg = work / (stem + '.svg')
+    stamp = work / (stem + '.sha256')
+    signature = hashlib.sha256((document + (root / 'AimPaper/algtop.sty').read_text()).encode()).hexdigest()
+    if not svg.exists() or not stamp.exists() or stamp.read_text() != signature:
+        for command in (['latex', '-interaction=nonstopmode', '-halt-on-error', '-output-directory=' + str(work), str(input_path)],
+                        ['dvisvgm', '--no-fonts', '--exact', '--bbox=min', '-o', str(svg), str(work / (stem + '.dvi'))]):
+            process = subprocess.run(command, cwd=root / 'AimPaper', capture_output=True, text=True)
+            if process.returncode:
+                raise ValueError('AimPaper diagram rendering failed: ' + process.stdout[-3000:] + process.stderr[-1000:])
+        stamp.write_text(signature)
+    return svg
+
+
 def export_paper(root, out, records):
     target = out / 'paper'
     target.mkdir(parents=True, exist_ok=True)
@@ -213,7 +286,6 @@ def export_paper(root, out, records):
     (target / 'main.tex.html').write_text('<!doctype html><meta charset="utf-8"><title>AimPaper source</title><style>pre>span{display:block}pre>span:target{background:#fff0a8}pre{line-height:1.6;white-space:pre-wrap}</style><h1>AimPaper/main.tex</h1><pre>' + lines + '</pre>')
     # Every original XY diagram is compiled directly from the paper, without
     # transcribing arrows or converting it into a weaker mathematical claim.
-    import subprocess
     diagram_dir = target / 'diagrams'
     diagram_dir.mkdir(exist_ok=True)
     work = root / '.lake/blueprint/paper-diagrams'
@@ -231,23 +303,24 @@ def export_paper(root, out, records):
             stem = r['number'] + '-' + str(i)
             document = (r'\documentclass{article}\usepackage{algtop}\usepackage[all,cmtip]{xy}'
                         r'\usepackage{mathtools}\pagestyle{empty}\begin{document}$$' + diagram + r'$$\end{document}')
-            input_path = work / (stem + '.tex')
-            input_path.write_text(document)
-            svg = work / (stem + '.svg')
-            stamp = work / (stem + '.sha256')
-            signature = hashlib.sha256((document + (root / 'AimPaper/algtop.sty').read_text()).encode()).hexdigest()
-            if not svg.exists() or not stamp.exists() or stamp.read_text() != signature:
-                for command in (['latex', '-interaction=nonstopmode', '-halt-on-error', '-output-directory=' + str(work), str(input_path)],
-                                ['dvisvgm', '--no-fonts', '--exact', '--bbox=min', '-o', str(svg), str(work / (stem + '.dvi'))]):
-                    process = subprocess.run(command, cwd=root / 'AimPaper', capture_output=True, text=True)
-                    if process.returncode:
-                        raise ValueError('AimPaper diagram rendering failed: ' + process.stdout[-3000:] + process.stderr[-1000:])
-                stamp.write_text(signature)
+            svg = render_paper_svg(root, work, stem, document)
             shutil.copyfile(svg, diagram_dir / (stem + '.svg'))
             rendered_diagrams.append((stem, svg))
             page += '<p><img alt="AimPaper ' + r['number'] + ' original commutative diagrams" src="' + stem + '.svg"></p>'
         page += '<p><a href="../main.tex.html#L' + str(r['start_line']) + '">Full source, hypotheses and context</a> · <a href="../2412.10879.pdf">Original paper PDF</a></p>'
         (diagram_dir / (r['number'] + '.html')).write_text(page)
+    # Standalone TikZ floats are outside the theorem-like source records. Keep
+    # the original drawing commands and definitions, rather than redraw them.
+    preamble = source.split(r'\title{', 1)[0]
+    numbers = {label: r['number'] for r in records
+               for label in re.findall(r'\\label\{([^}]+)\}', r['raw'])}
+    for figure in paper_figures(root):
+        caption = re.sub(r'\\ref\{([^}]+)\}', lambda m: numbers[m[1]], figure['caption'])
+        document = (preamble + r'\pagestyle{empty}\begin{document}\thispagestyle{empty}' + figure['raw']
+                    + r'\par\noindent ' + caption + r'\end{document}')
+        svg = render_paper_svg(root, work, figure['stem'], document)
+        shutil.copyfile(svg, diagram_dir / (figure['stem'] + '.svg'))
+        rendered_diagrams.append((figure['stem'], svg))
     # Project presentation only: preserve the pinned native JS/CSS assets.
     (diagram_dir / 'inline.css').write_text(inline_diagram_styles(rendered_diagrams))
     index = out / 'index.html'

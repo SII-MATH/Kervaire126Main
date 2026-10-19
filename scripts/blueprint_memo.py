@@ -15,7 +15,7 @@ import yaml
 
 from hgraph.site import _md_to_html
 from hgraph.sync import _brace_span
-from blueprint_paper import active_tex, source_statements
+from blueprint_paper import active_tex, source_statements, reference_targets
 
 
 TEXT_FIELDS = ('problem', 'counterexample', 'progress', 'history')
@@ -147,7 +147,9 @@ def original_statements(root):
                 references[label] = ('#/Kervaire126#paper:' + number, number)
     for match in re.finditer(r'\\label\{([^}]+)\}', active_tex(source)):
         references.setdefault(match[1], ('paper/main.tex.html#L' + str(source.count('\n', 0, match.start()) + 1), 'original diagram' if match[1].startswith('fig:') else 'original source'))
-    references["eq:dr'"] = ('paper/main.tex.html#L1984', '6.21')
+    from hgraph.sync import parse_blueprint, read_blueprint
+    rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
+    references.update(reference_targets(root, rows))
     return statements, references
 
 
