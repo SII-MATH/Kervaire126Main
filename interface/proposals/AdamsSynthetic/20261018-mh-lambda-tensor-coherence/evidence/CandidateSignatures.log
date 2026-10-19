@@ -1,0 +1,14 @@
+KIP126.InterfaceReview.MHLambdaTensor.LambdaQuotientTensorCompatibility.{u, v} {Syn : Type u} [SyntheticCategory Syn]
+  [HasFunctorialCofiber] (Q : LambdaQuotientSystem Syn) (leftShift : (W : Syn) → (tensorLeft W).CommShift ℤ)
+  (rightShift : (W : Syn) → (tensorRight W).CommShift ℤ) : Type (max u v)
+KIP126.InterfaceReview.MHLambdaTensor.quotientSuspensionIso.{u, v} {Syn : Type u} [SyntheticCategory Syn]
+  [HasFunctorialCofiber] (rightShift : (W : Syn) → (tensorRight W).CommShift ℤ)
+  (quotientIso : (X : Syn) → (n : ℕ) → X ⊗ XModLambdaN (𝟙_ Syn) n ≅ XModLambdaN X n) (X : Syn) (n : ℕ) :
+  XModLambdaN ((shiftFunctor Syn 1).obj X) n ≅ (shiftFunctor Syn 1).obj (XModLambdaN X n)
+KIP126.InterfaceReview.MHLambdaTensor.ExistingSphereTensorPreservesLambda.{u, v} {Syn : Type u}
+  [SyntheticCategory Syn] : Prop
+KIP126.InterfaceReview.MHLambdaTensor.UniversalMayLift.{u, v} {Syn : Type u} [SyntheticCategory Syn]
+  (B : Literature.Route.MayContext Syn) (T U : HoCofiberSequence) (P : Literature.Route.MayPushpullData Syn B T U) :
+  Prop
+KIP126.InterfaceReview.MHLambdaTensor.FixedCompatibilityType : Type 1
+KIP126.InterfaceReview.MHLambdaTensor.FixedUniversalMayType : Prop

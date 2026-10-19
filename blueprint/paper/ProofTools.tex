@@ -594,6 +594,22 @@ Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
 \sketch
 \end{proposition}
 
+\section{The finite-layer generalized Mahowald trick}
+
+% AimPaper: 6.12 theorem 1780 1799
+\begin{theorem}[The finite-layer generalized Mahowald trick]
+\label{paper:6.12}
+\source{Finite-layer revision of AimPaper Theorem 6.12}
+\level{coarse}
+The strong finite-layer assertion in Definition~\ref{sem:ProofTools:mahowald-law} holds for every compatible normalized triangle with exponent sum one. This includes both input levels, the actual no-crossing condition, the fixed strong quotient, and the same common representative and prescribed labels.
+\uses{sem:ProofTools:mahowald-law,sem:ProofTools:mh-common-source,sem:Literature:normalized-finite-quotient-row,paper:6.11}
+\sketch
+Actual no-crossing synchronizes the $h_A$ and $\delta_{A,B}$ representatives. Top-layer uniqueness identifies the latter image with $g_B(b)$. The proved fixed-model finite-quotient horizontal row and a pure triangle construction produce one $c$ with both prescribed image equations; normalized no-return removes its restriction defect. Visible-layer quotient reflection and actual source/image detection then yield the stated strong finite extension.
+\lean{KIP126.ProofTools.Standard.generalizedMahowaldAtLevel}
+% Blueprint note: The complete finite-layer assertion is proved using the fixed Literature row, without a caller-supplied horizontal-row premise. It retains actual no-crossing synchronization, the same common representative, both signed image equations, both exact output detections, the original source cycle qualification and the specified target strong quotient. The proof introduces no local gap or axiom, does not use the frozen old MH or GL law, and still inherits the registered upstream model and comparison obligations.
+% Blueprint note: This replaces the unprovable zero-layer version formerly displayed here. The original Theorem 6.12 remains in AimPaper and in the corrections page. Its frozen historical Lean law is not used as a proof of this revised target.
+\end{theorem}
+
 \section{Descent, indeterminacy and stretching}
 
 % AimPaper: 6.20 proposition 1981 1993

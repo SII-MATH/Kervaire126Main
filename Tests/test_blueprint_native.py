@@ -38,16 +38,25 @@ class ProofToolsBindingTests(unittest.TestCase):
                 self.assertNotEqual(_tex_lean_status(row, states)[0], 'empty')
         # Removed original GL/MH laws must not reappear as mathematical nodes.
         by_label = {r['label']: r for r in rows}
-        removed = {'paper:6.1', 'paper:6.12', 'frontier:ProofTools:003e9deb7ec5',
-                   'sem:ProofTools:leibniz-law', 'sem:ProofTools:mahowald-law',
-                   'thm:e73f481e', 'thm:158d451a'}
+        removed = {'paper:6.1', 'frontier:ProofTools:003e9deb7ec5',
+                   'sem:ProofTools:leibniz-law', 'thm:e73f481e', 'thm:158d451a'}
         self.assertFalse(removed.intersection(label for row in rows for label in row['labels']))
         obsolete = {'KIP126.ProofTools.GeneralizedLeibnizLaw',
                     'KIP126.ProofTools.GeneralizedMahowaldLaw',
                     'KIP126.ProofTools.Standard.generalizedLeibniz',
                     'KIP126.ProofTools.Standard.generalizedMahowald'}
         self.assertFalse(obsolete.intersection(name for row in rows for name in row['lean']))
-        for label in ('sem:ProofTools:generalized-leibniz-at-level',
+        # The revised assertion definition and its complete theorem have distinct
+        # bindings; neither restores the retired zero-layer Mahowald law.
+        self.assertEqual(by_label['sem:ProofTools:mahowald-law']['lean'],
+                         ['KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement'])
+        self.assertEqual(by_label['paper:6.12']['lean'],
+                         ['KIP126.ProofTools.Standard.generalizedMahowaldAtLevel'])
+        for label in ('sem:ProofTools:mahowald-law', 'paper:6.12',
+                      'sem:ProofTools:mh-common-source',
+                      'sem:ProofTools:mh-target-preserving-lift',
+                      'sem:ProofTools:mh-lifted-target-permanent',
+                      'sem:ProofTools:generalized-leibniz-at-level',
                       'sem:ProofTools:nu-zero-layer'):
             self.assertEqual(_tex_lean_status(by_label[label], states)[0], 'lean_ok')
         all_rows, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))

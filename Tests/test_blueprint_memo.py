@@ -26,7 +26,7 @@ class MemoPresentationTests(unittest.TestCase):
                 self.assertIn(memo.markdown(record.get(key, '')), page)
         self.assertNotIn('主目标仍是', page)
         self.assertNotIn('MEMO.md', page)
-        self.assertIn('尚无已公开并证明的完整修正版', page)
+        self.assertIn('修正版完整定理已公开并证明', page)
         self.assertIn('proposals/index.html#ProofTools-20261018-mh-finite-level-target', page)
         self.assertNotIn('以下为原文的完整英文陈述', page)
         self.assertNotIn('直接从 AimPaper 读取', page)
