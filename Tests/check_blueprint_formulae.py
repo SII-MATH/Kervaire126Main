@@ -12,6 +12,7 @@ import re
 from urllib.parse import urljoin
 from playwright.sync_api import sync_playwright
 from hgraph.graph import node_id
+from hgraph.sync import parse_blueprint, read_blueprint
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,6 +26,8 @@ def main():
         parser.error('Provide --url or VSCODE_PROXY_URI')
     base = args.url.rstrip('/') + '/'
     data = json.loads((ROOT / '_site/Kervaire126/data.json').read_text())
+    authored, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))
+    expected_papers = sum(row['label'].startswith('paper:') for row in authored)
     loader = next((ROOT / '_site/assets').glob('katexLoader-*.js')).name
     errors, runtime, http = [], [], []
     checked = 0
@@ -83,7 +86,7 @@ def main():
               'strict_render_errors':errors, 'runtime_errors':runtime,'http_failures':http}
     (ROOT / '.lake/blueprint/formula-browser-validation.json').write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n')
     print(json.dumps(result,ensure_ascii=False))
-    if statements_checked != len(data['entries']) or result['paper_statements'] != 54 or checked < 100 or errors or runtime or http:
+    if statements_checked != len(data['entries']) or result['paper_statements'] != expected_papers or checked < 100 or errors or runtime or http:
         raise SystemExit(1)
 
 

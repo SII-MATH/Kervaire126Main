@@ -176,8 +176,61 @@ class AimPaperPresentationTests(unittest.TestCase):
         self.assertLess(rendered.index('Assume'), rendered.index('paper/diagrams/'))
         self.assertLess(rendered.index('paper/diagrams/'), rendered.index('Then'))
         self.assertNotIn('$$', rendered)
-        self.assertIn(r'\href{#/Kervaire126#paper:1.4}{1.4}', rendered)
+        self.assertIn(r'\ref{original}', rendered)
+        self.assertNotIn(r'\href{#/Kervaire126', rendered)
         self.assertNotIn(r'\xymatrix', rendered)
+
+    def test_all_published_paper_references_resolve_without_source_fallback(self):
+        import re
+        from blueprint_paper import reference_targets, prepare_web_blueprint
+        from hgraph.dashboard import document_refs
+        from hgraph.sync import read_blueprint, parse_blueprint
+        root = Path(__file__).resolve().parents[1]
+        text = read_blueprint(root / 'blueprint/content.tex')
+        rows, _ = parse_blueprint(text)
+        refs = reference_targets(root, rows)
+        expected = {
+            'eq:eae450fe': 'paper:5.4', 'eq:334248d2': 'paper:5.4',
+            'eq:b98be76a': 'paper:5.4', 'eq:a020bad3': 'paper:5.4',
+            'eq:9d45feac': 'paper:2.12', 'eq:36e72616': 'paper:2.12',
+            "eq:dr'": 'paper:6.20',
+            'not:deltaandrho': 'notation:AdamsSynthetic:quotient-boundary-maps',
+        }
+        for label, parent in expected.items():
+            self.assertEqual(refs[label][0], '#/Kervaire126#' + parent)
+        for label in re.findall(r'\\ref\{([^}]+)\}', text):
+            self.assertIn(label, refs)
+            self.assertFalse(refs[label][0].startswith('paper/main.tex.html'), label)
+        with tempfile.TemporaryDirectory() as directory:
+            web = prepare_web_blueprint(root, Path(directory) / 'web')
+            rendered = read_blueprint(web / 'content.tex')
+            native = document_refs(web / 'content.tex')
+            for label in expected:
+                self.assertIn(label, native)
+                self.assertIn(r'\ref{' + label + '}', rendered)
+            self.assertNotIn('}{original source}', rendered)
+            exported, _ = parse_blueprint(rendered)
+            for before, after in zip(rows, exported):
+                self.assertEqual((before['label'], before['lean'], before['uses'], before['sketch']),
+                                 (after['label'], after['lean'], after['uses'], after['sketch']))
+
+    def test_referenced_standalone_figures_preserve_the_original_drawing(self):
+        from blueprint_paper import paper_figures, reference_targets, display_body
+        from hgraph.sync import read_blueprint, parse_blueprint
+        root = Path(__file__).resolve().parents[1]
+        figures = paper_figures(root)
+        self.assertEqual({f['label'] for f in figures},
+                         {'fig:4f154a8', 'fig:f5eae42a', 'fig:66241bf6'})
+        source = (root / 'AimPaper/main.tex').read_text()
+        rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
+        refs = reference_targets(root, rows)
+        for figure in figures:
+            self.assertIn(r'\begin{tikzpicture}', figure['raw'])
+            self.assertIn(figure['caption'], source)
+            self.assertIn('paper/diagrams/' + figure['stem'] + '.svg',
+                          display_body(r'\ref{' + figure['label'] + '}', '5.9', refs))
+        # An unimported reference must still offer an honest source locator.
+        self.assertEqual(refs['sec:synext'][1], 'original source')
 
 
     def test_diagram_conversion_cannot_drop_adjacent_mathematics(self):

@@ -6,8 +6,12 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from playwright.sync_api import sync_playwright
 from hgraph.graph import node_id
+from hgraph.sync import read_blueprint, parse_blueprint
+import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / 'scripts'))
+from blueprint_paper import paper_figures
 
 
 def main():
@@ -17,7 +21,11 @@ def main():
     parser.add_argument('--chromium', default='/root/.cache/ms-playwright/chromium-1228/chrome-linux64/chrome')
     args = parser.parse_args()
     diagrams = sorted((args.site / 'paper/diagrams').glob('*.svg'))
-    assert len(diagrams) == 7, 'Expected all seven original paper diagrams'
+    assert len(diagrams) == 10, 'Expected seven commutative diagrams and three standalone figures'
+    rows, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))
+    figure_owners = {f['stem']: next(row['label'] for row in rows
+                                   if r'\ref{' + f['label'] + '}' in row['body'])
+                     for f in paper_figures(ROOT)}
     failures, checked = [], []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True, executable_path=args.chromium, args=['--no-sandbox'])
@@ -26,7 +34,7 @@ def main():
                 page = browser.new_page(viewport={'width': width, 'height': 1000})
                 page.set_default_timeout(60000)
                 page.on('pageerror', lambda error: failures.append(str(error)))
-                label = 'paper:' + svg.stem.rsplit('-', 1)[0]
+                label = figure_owners.get(svg.stem, 'paper:' + svg.stem.rsplit('-', 1)[0])
                 page.goto(args.url.rstrip('/') + '/#/Kervaire126#' + label, wait_until='domcontentloaded')
                 statement = page.locator('#stmt-' + node_id('bp', label))
                 selector = '#stmt-' + node_id('bp', label) + ' .sbody a.tex-link[href="paper/diagrams/' + svg.name + '"]'
@@ -56,6 +64,8 @@ def main():
                 assert report['loaded'] and svg.name in report['background'], report
                 assert report['display'] == 'block' and report['height'] >= 60, report
                 assert report['width'] <= report['column'] + 1, report
+                if svg.stem.startswith('figure-'):
+                    assert report['height'] < 500, 'Standalone figure retained a paper footer or blank page'
                 assert urlsplit(page.url).path == urlsplit(args.url).path, page.url
                 assert '#/Kervaire126' in page.url and len(page.context.pages) == 1, page.url
                 assert 'see the original commutative diagram' not in statement.inner_text()
