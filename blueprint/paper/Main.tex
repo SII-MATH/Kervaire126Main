@@ -7,7 +7,7 @@
 \label{paper:7.1}
 \label{thm:126survives}
 \level{coarse}
-\textit{(From \cite{LWX126}, Theorem 1.4, Theorem 7.1.)}
+From \cite{LWX126}, Theorem 1.4, Theorem 7.1.\par
 % BEGIN AIMPAPER STATEMENT
 [Theorem~\ref{thm:126survives}] \label{thm:h_6_sq}\label{thm:h62}
     The element $h_6^2$ survives to the $E_\infty$-page in the Adams spectral sequence.
@@ -23,13 +23,18 @@
 % Blueprint note: The original paper presents this conclusion twice. A single displayed node carries paper:1.4 and paper:7.1 as aliases, with one set of dependencies and consumers. Both original statements remain checked verbatim.
 % Blueprint note: Original statements: [Theorem 1.4](paper/main.tex.html#L128), [Theorem 7.1 and its proof](paper/main.tex.html#L2106); article PDF: paper/2412.10879.pdf.
 \end{theorem}
+\begin{proof}
+\textit{(See \cite{LWX126}, Theorem 1.4.)} \href{paper/main.tex.html#L2212}{Original proof}.
+
+From Proposition~\ref{prop:state5false}, at least one of  statements $(3)$ or $(5)$ in Proposition~\ref{prop:possible_h_6_sq} is false. Consequently,  statement $(2)$ is also false, which confirms that statement $(1)$ in Proposition~\ref{prop:possible_h_6_sq} is true.
+\end{proof}
 
 % AimPaper: 1.5 corollary 151 154
 \begin{corollary}[Survivors on the Adams 2-line]
 \label{paper:1.5}
 \source{AimPaper Corollary 1.5}
 \level{coarse}
-\textit{(From \cite{LWX126}, Corollary 1.5.)}
+From \cite{LWX126}, Corollary 1.5.\par
 % BEGIN AIMPAPER STATEMENT
 \label{cor:2line}
     On the Adams 2-line, the only non-trivial elements that survive in the Adams spectral sequence are:
@@ -41,11 +46,13 @@
 % Correspondence: Public correspondence; complete local classification proof using the corrected third-page candidate interface.
 \lean{KIP126.Main.adams_two_line_classification}
 
-\par\emph{Proof.} Write any nonzero second-line class as a standard product using the exhaustive $E_2$ basis. Its third-page continuation restricts it to the corrected Adams--Lin--Leibniz candidates, including $h_0h_4$. Four exceptional mixed products support nonzero outgoing differentials, while HHR excludes squares of index at least seven. Conversely, the remaining products survive by the low-dimensional, Mahowald-family and Kervaire literature inputs, together with the main $h_6^2$ theorem.
 % Blueprint note: This binds a proof of the complete AdamsTwoLineClassification, not its proposition-valued definition or only its stem-126 specialization. The proof has no caller premise or local sorry. Nine new Literature source/comparison obligations, one unbounded E2 basis obligation and one Adams d2-stage calculation obligation were explicitly authorized and separately registered. These upstream gaps remain visible through compiled dependency closure; the complete formalization is not yet transitively closed.
 % Blueprint note: Approved source correction (2026-10-18): The original proof's E3 list omits h0 h4, which reaches E3 before its nonzero d3; see \cite{IWX}, Table 6, p.~222. The corrected public candidate predicate includes it, and Main excludes it using the separately registered Literature input iwx_h0_h4_d3. All square indices likewise remain E3 candidates until the later HHR exclusion. The original final statement above is preserved. The local assembly is complete relative to the corrected upstream interfaces; their source-to-fixed-model proofs remain pending. This does not turn a compilation check into a transitive proof-completion claim.
 % Blueprint note: Original statement: paper/main.tex.html#L151; article PDF: paper/2412.10879.pdf.
 \end{corollary}
+\begin{proof}
+Write any nonzero second-line class as a standard product using the exhaustive $E_2$ basis. Its third-page continuation restricts it to the corrected Adams--Lin--Leibniz candidates, including $h_0h_4$. Four exceptional mixed products support nonzero outgoing differentials, while HHR excludes squares of index at least seven. Conversely, the remaining products survive by the low-dimensional, Mahowald-family and Kervaire literature inputs, together with the main $h_6^2$ theorem.
+\end{proof}
 
 
 
@@ -56,7 +63,7 @@
 \label{paper:7.8}
 \source{AimPaper Proposition 7.8}
 \level{coarse}
-\textit{(From \cite{LWX126}, Proposition 7.8.)}
+From \cite{LWX126}, Proposition 7.8.\par
 % BEGIN AIMPAPER STATEMENT
 \label{prop:possible_h_6_sq}\label{prop:possibleh62}
 Exactly one of the following two statements is true:
@@ -92,13 +99,32 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 
 % Blueprint note: Original statement: paper/main.tex.html#L2181; article PDF: paper/2412.10879.pdf.
 \end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 7.8.)} \href{paper/main.tex.html#L2300}{Original proof}.
+
+Use the total-boundary formula from the quadratic construction,
+\[
+ \delta_1(h_6^2)=\lambda\eta\theta_5^2.
+\]
+The rigidity and boundary-extension comparisons identify the first nonzero detector of this boundary with the first nonzero classical differential on $h_6^2$. The certified sphere computation leaves only $d_{12}(h_6^2)=h_1h_4x_{109,12}$ as a possible nonzero outcome. Theorems on representatives and Lemmas~\ref{paper:7.10} and~\ref{paper:7.11} allow the existential detection conditions to be evaluated at compatible choices.
+
+If conditions (3), (4), and (5) hold, multiplication of the two detection relations gives
+\[
+ \lambda\eta\theta_5^2=\lambda^{10}[h_1h_4x_{109,12}].
+\]
+By Fact~\ref{paper:7.6}, condition (3) excludes the shorter incoming $d_6$ to this target. The boundary is therefore nonzero and gives exactly the stated $d_{12}$.
+
+Conversely the stem-124 computation gives the three possibilities at \ref{sem:Main:square-possibilities}: detection of $\theta_5^2$ by $\lambda^6h_0^2x_{124,8}$, the filtration-13 correction, or divisibility by $\lambda^{10}$. In the latter two cases the $h_1$ product computation places $\eta\theta_5^2$ in filtration at least fifteen. The remaining class in this range is detected by tmf, whereas $\theta_5$ has zero tmf image, so the product is zero. In the first case failure of condition (5) gives the same high-filtration alternative and the same vanishing conclusion. If condition (3) fails, the certified $d_6$ kills the proposed target and the same argument again forces the total boundary to vanish.
+
+Thus failure of any one of (3), (4), or (5) yields permanence by Theorem~\ref{paper:7.3}; their conjunction yields the nonzero $d_{12}$. These alternatives are exclusive and exhaustive. All table, detection and tmf comparisons used here are the existing upstream inputs, not new assumptions on the caller.
+\end{proof}
 
 % AimPaper: 7.9 proposition 2208 2210
 \begin{proposition}[The sixth-differential vanishing excludes the eta extension]
 \label{paper:7.9}
 \source{AimPaper Proposition 7.9}
 \level{coarse}
-\textit{(From \cite{LWX126}, Proposition 7.9.)}
+From \cite{LWX126}, Proposition 7.9.\par
 % BEGIN AIMPAPER STATEMENT
 \label{prop:state5false}
     If statement $(3)$ is true, then statement $(5)$ in Proposition~\ref{prop:possible_h_6_sq} must be false.
@@ -113,13 +139,29 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 
 % Blueprint note: Original statement: paper/main.tex.html#L2208; article PDF: paper/2412.10879.pdf.
 \end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 7.9.)} \href{paper/main.tex.html#L2698}{Original proof}.
+
+\textit{Retained proof route; compare the original argument.} Suppose condition (3) and the eta-extension detection in condition (5) both hold. Lemma~\ref{paper:7.11} permits a compatible representative of the detected $U$ class. Start with an actual member $z$ of the relevant Toda bracket in $Q_9=S^{0,0}/\lambda^9$. The exact target relation and the incoming-differential control give $\lambda^2h_0z\ne0$.
+
+Apply the filtration-seven and filtration-nine corrections described at \ref{sem:Main:weak-representative-route}. The first correction is killed by the multiplied operation. For the second, use the stem-124 product and vanishing estimates from Lemma~\ref{paper:7.11} and the finite-quotient cutoff; do not cancel $\eta$. The corrected representative $y$ satisfies
+\[
+ y\in F^{11}\pi_{125,132}Q_9,\qquad
+ \lambda^2h_0y=\lambda^2h_0z\ne0,
+\]
+and the certified finite-page calculation identifies its detector as $\lambda^4h_0^2x_{125,9,2}$.
+
+Use Lemma~\ref{paper:7.20} to express the required multiple of this representative as a $\nu$ product. The product calculations in Fact~\ref{paper:7.21} leave the two possible stem-122 corrections. In each case their $h_2$ products and the filtration bounds force the relevant multiple of $[h_1h_4x_{109,12}]$ into the image of $\lambda[h_2]$. Passing to its cofiber, identified with $\nu(S^0/\nu)$, would make $h_1h_4x_{109,12}[0]$ the target of a classical differential of length at most five. The certified $\nu$-cofiber computation excludes every such incoming differential, a contradiction.
+
+This argument preserves the nonzero multiplied value. It asserts neither that the corrected $y$ still lies in the original bracket nor the arbitrary-representative unmultiplied relation of Corollary~\ref{paper:7.18}. Thus the pending original statements at Lemma~\ref{paper:7.16} and Corollary~\ref{paper:7.18} are not used to close this proof.
+\end{proof}
 
 % AimPaper: 7.10 lemma 2221 2228
 \begin{lemma}[Independence of the theta choice]
 \label{paper:7.10}
 \source{AimPaper Lemma 7.10}
 \level{coarse}
-\textit{(From \cite{LWX126}, Lemma 7.10.)}
+From \cite{LWX126}, Lemma 7.10.\par
 % BEGIN AIMPAPER STATEMENT
 \label{lem:equistate4}
     The statement $(4)$ in Proposition~\ref{prop:possible_h_6_sq} is equivalent to the following statement $(4')$:
@@ -139,13 +181,20 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 
 % Blueprint note: Original statement: paper/main.tex.html#L2221; article PDF: paper/2412.10879.pdf.
 \end{lemma}
+\begin{proof}
+\textit{(See \cite{LWX126}, Lemma 7.10.)} \href{paper/main.tex.html#L2230}{Original proof}.
+
+Only the implication from one admissible choice to every admissible choice needs proof. The two-primary stem-62 computation of \cite{IWX} places the difference between two classes with the same $h_5^2$ detection in Adams filtration at least six. The selected realization and filtration comparisons transport that estimate to the synthetic choices in this degree. The exponent-two square identity then puts the difference of their squares in filtration at least twelve.
+
+The detector $\lambda^6h_0^2x_{124,8}$ has filtration ten. Adding a term in filtration at least twelve cannot change this leading detector or make it zero. Thus detection for one choice implies the same nonzero detection for every choice. This uses the two-primary subgroup and the same-detection comparison; it makes no exponent-two assertion about the odd-primary part of the ordinary 62-stem.
+\end{proof}
 
 % AimPaper: 7.11 lemma 2244 2252
 \begin{lemma}[Independence of the detected $U$ representative]
 \label{paper:7.11}
 \source{AimPaper Lemma 7.11}
 \level{coarse}
-\textit{(From \cite{LWX126}, Lemma 7.11.)}
+From \cite{LWX126}, Lemma 7.11.\par
 % BEGIN AIMPAPER STATEMENT
 \label{lem:equistate5}
     The statement $(5)$ in Proposition~\ref{prop:possible_h_6_sq} is equivalent to the following statement $(5')$:
@@ -166,6 +215,13 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 
 % Blueprint note: Original statement: paper/main.tex.html#L2244; article PDF: paper/2412.10879.pdf.
 \end{lemma}
+\begin{proof}
+\textit{(See \cite{LWX126}, Lemma 7.11.)} \href{paper/main.tex.html#L2254}{Original proof}.
+
+We only need to show that statement $(5)$ implies statement $(5')$, which is sufficient to show that the indeterminacy of $[h_0^2x_{124,8}]$, or the difference between any two homotopy classes $[h_0^2x_{124,8}]$, when multiplied by $\lambda^3 \eta$, belongs to $\AF \ge 15$, given that $[h_1h_4x_{109,12}]$ has $\AF=14$.
+
+    Since $[h_0^2x_{124,8}]$ has $\AF=10$, the indeterminacy is generated by cycles in $\AF \ge 11$ of stem 124. We observe that classical cycles in $\AF=11, 12$ of stem 124 are all killed by Adams $d_2$ or $d_3$-differentials, and cycles in $\AF=13$ are all annihilated by $h_1$ in Ext. Therefore, we conclude that the indeterminacy, when multiplied by $\lambda^3 \eta$, belongs to $\AF \ge 15$.
+\end{proof}
 
 \section{Local constructions in the ninth lambda quotient}
 
@@ -174,7 +230,7 @@ Furthermore, statement $(2)$ is true if and only if the following three statemen
 \label{paper:7.14}
 \source{AimPaper Lemma 7.14}
 \level{coarse}
-\textit{(From \cite{LWX126}, Lemma 7.14.)}
+From \cite{LWX126}, Lemma 7.14.\par
 % BEGIN AIMPAPER STATEMENT
 \label{lem:x_123_9}\label{lem:x1239}
     There exists a homotopy class 
@@ -203,13 +259,22 @@ $$\lambda^3 \cdot \alpha_1 \cdot [h_0] = 0 \in \pi_{123,123+7} S^{0,0}/\lambda^9
 
 % Blueprint note: Original statement: paper/main.tex.html#L2387; article PDF: paper/2412.10879.pdf.
 \end{lemma}
+\begin{proof}
+\textit{(See \cite{LWX126}, Lemma 7.14.)} \href{paper/main.tex.html#L2405}{Original proof}.
+
+By Fact~\ref{paper:7.13} and the finite-quotient comparison, choose $\alpha_1$ detected by $x_{123,9}+h_0x_{123,8}$ in the length-eleven quotient, and use its restrictions for smaller quotients. The $d_2$ in that fact identifies its $h_1$ product with $h_0^2x_{124,8}$ on the next classical page.
+
+After multiplying by the specified powers of $\lambda$, the stem-124 calculation used in Lemma~\ref{paper:7.11} puts the discrepancy in filtration at least thirteen. Its only possible leading filtration-thirteen term is the indicated $e_0\Delta h_6g$ correction; the competing $h_4x_{109,12}$ term is excluded by its nonzero $d_3$. The relation $h_1e_0\Delta h_6g=0$ and the finite-window comparison give representatives $\alpha_2,\alpha_3$ with $\eta\alpha_2=\lambda\alpha_3$. These are the correction terms in part (1).
+
+For part (2), work first in the length-eleven quotient. The certified $d_7$ on $\lambda^4(x_{123,11,2}+x_{123,11}+h_0h_6B_4)$ and $d_3$ on $\lambda^8h_0^2x_{123,13,2}$ exclude the lower-filtration candidates for $\lambda^3\alpha_1[h_0]$. The quotient infinity-page formula therefore makes this product divisible by $\lambda^{10}$. Its image in the length-nine quotient is zero, which is the required relation. Keeping the larger quotient until this last restriction is essential to the argument.
+\end{proof}
 
 % AimPaper: 7.16 lemma 2470 2474
 \begin{lemma}[Detection of the synthetic Toda bracket]
 \label{paper:7.16}
 \source{AimPaper Lemma 7.16}
 \level{coarse}
-\textit{(From \cite{LWX126}, Lemma 7.16.)}
+From \cite{LWX126}, Lemma 7.16.\par
 % BEGIN AIMPAPER STATEMENT
 \label{lem:toda2ext}
     Assuming that both statements $(3)$ and $(5')$ in Proposition~\ref{prop:possible_h_6_sq} are true, the synthetic Toda bracket
@@ -230,13 +295,22 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 % Blueprint note: Original statement: paper/main.tex.html#L2470; article PDF: paper/2412.10879.pdf.
 % Blueprint note: The original argument also invokes Moss convergence. Its general mapping-spectrum framework is outside the current Main proof route and is not displayed here; this paper entry retains its partial formal correspondence and does not claim that omitted source input has been proved.
 \end{lemma}
+\begin{proof}
+\textit{(See \cite{LWX126}, Lemma 7.16.)} \href{paper/main.tex.html#L2482}{Original proof}.
+
+\textit{Original proof strategy and remaining detection problem.} The relations from Lemma~\ref{paper:7.14} define the displayed Toda bracket. Under (3) and (5'), its $h_0$ multiple has the nonzero target detector supplied by the eta-extension condition. The low-filtration list leaves three possible leading detectors, in filtrations seven, nine, and eleven; the last is $\lambda^4h_0^2x_{125,9,2}$.
+
+The source argument tries to remove filtration seven using a representative killed by $\lambda^2$, and filtration nine using the bracket $\langle\theta_5,2,b\rangle$, where $b$ is detected by $\Delta e_1+C_0+h_0^6h_5^2$, together with $h_5^2b=0$. These removals must preserve membership in the same actual Toda bracket in $Q_9$, not merely preserve one of its multiplied images. A $\lambda^2$-torsion choice does not automatically control its higher-filtration error, and the eta-multiplied equality in the source cannot be cancelled without kernel control.
+
+The available local reduction proves that bracket members are nonzero and that their differences lie in $F^{11}$. A member actually lying in $F^{11}$ would therefore give the full asserted detection for all members. Constructing such a member, equivalently controlling its image under $Q_9\to Q_3$, is still the pending step. The weaker representative construction used for Proposition~\ref{paper:7.9} preserves $\lambda^2h_0$ but does not supply membership in this bracket. This block records the argument and its existing gap; it does not claim a proof of the complete original lemma.
+\end{proof}
 
 % AimPaper: 7.18 corollary 2571 2575
 \begin{corollary}[The $h_0$ extension]
 \label{paper:7.18}
 \source{AimPaper Corollary 7.18}
 \level{coarse}
-\textit{(From \cite{LWX126}, Corollary 7.18.)}
+From \cite{LWX126}, Corollary 7.18.\par
 % BEGIN AIMPAPER STATEMENT
 \label{cor:2ext125}
     Assuming that both statements $(3)$ and $(5')$ in Proposition~\ref{prop:possible_h_6_sq} are true, we have a relation: For any homotopy class $[\lambda^4 h_0^2x_{125,9,2}]$,
@@ -256,13 +330,24 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 \sketch
 % Blueprint note: Original statement: paper/main.tex.html#L2571; article PDF: paper/2412.10879.pdf.
 \end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 7.18.)} \href{paper/main.tex.html#L2577}{Original proof}.
+
+\textit{Original proof strategy and the representative error.} A suitable member $y_0$ of the bracket considered in Lemma~\ref{paper:7.16} is intended to satisfy $h_0y_0=\lambda^6t_0$, with $t_0$ detected by $h_1h_4x_{109,12}$. For another representative $y$ with the same $Y$ detector, the exact identity is
+\[
+ h_0y=\lambda^6t_0+h_0(y-y_0).
+\]
+Higher filtration of $y-y_0$ does not imply that the last term vanishes. In the fixed degree all admissible $T$ representatives have the same $\lambda^6$ image, so changing the target representative cannot absorb an arbitrary nonzero error.
+
+The local reduction identifies the desired exact extension for $y$ with the condition $h_0(y-y_0)=0$. Existing estimates kill this error after multiplication by $\lambda^2$, but do not establish its unmultiplied vanishing for every $y$. This is the remaining responsibility in the original corollary. The multiplied relation used in the retained proof of Proposition~\ref{paper:7.9} is weaker and is not substituted for the statement above.
+\end{proof}
 
 % AimPaper: 7.20 lemma 2617 2620
 \begin{lemma}[The normalized Hopf-element extension]
 \label{paper:7.20}
 \source{AimPaper Lemma 7.20}
 \level{coarse}
-\textit{(From \cite{LWX126}, Lemma 7.20.)}
+From \cite{LWX126}, Lemma 7.20.\par
 % BEGIN AIMPAPER STATEMENT
 \label{lem:nuext125}
     There exists a homotopy class $[\lambda^4 h_1 x_{121,7}] \in \pi_{122,122+4}S^{0,0}/\lambda^9$, such that 
@@ -278,3 +363,21 @@ $$\langle \lambda^3 \alpha_1, [h_0], \eta \rangle \subset \pi_{125,125+7} S^{0,0
 
 % Blueprint note: Original statement: paper/main.tex.html#L2617; article PDF: paper/2412.10879.pdf.
 \end{lemma}
+\begin{proof}
+\textit{(See \cite{LWX126}, Lemma 7.20.)} \href{paper/main.tex.html#L2622}{Original proof}.
+
+Fact~\ref{paper:7.19} and the finite-quotient comparison supply a representative detected by $\lambda^4h_1x_{121,7}$ in the length-nine quotient. To compute its $h_2$ image, use the cofiber triangle $S^3\xrightarrow{\nu}S^0\to S^0/\nu\to S^4$ and its specified top-cell comparison.
+
+The certified cofiber calculation has a class
+\[
+ \bar x=h_1x_{121,7}[4]+x_{126,8}[0]+x_{126,8,2}[0]
+\]
+whose top-cell image is $h_1x_{121,7}$ and whose $d_3$ is $h_0^2x_{125,9,2}[0]$. The bottom-cell inclusion detects $h_0^2x_{125,9,2}$; its $h_2$ nondivisibility prevents it from disappearing under this inclusion. The specific zero-layer $\nu$ comparison at \ref{sem:ProofTools:nu-zero-layer} converts these compatible data into the required finite $h_2$-extension. This is the separately retained numerical comparison, rather than an invocation of the unresolved general zero-layer Mahowald law.
+
+Lift the relation from the length-three to the length-five quotient. The only possible additional filtration-ten correction is excluded by the certified product and finite-page calculations. Push the resulting relation along $\lambda^4: \Sigma^{0,-4}S^{0,0}/\lambda^5\to S^{0,0}/\lambda^9$. Naturality of the multiplication gives exactly
+\[
+ [\lambda^4h_1x_{121,7}][h_2]
+       =\lambda[\lambda^5h_0^2x_{125,9,2}],
+\]
+with representatives in the quotients specified in the statement.
+\end{proof}
