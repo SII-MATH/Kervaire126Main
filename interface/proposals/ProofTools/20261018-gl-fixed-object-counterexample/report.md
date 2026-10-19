@@ -2,7 +2,7 @@
 title: 固定 tmf 与球谱对象上的 GL 反例
 archived_from: local-history/metadata/interface-reviews/ProofTools/20261018-gl-fixed-object-counterexample/report.md
 archived_sha256: 8c453dca1be9778ca6edc8c4788e00ad74cf734d89dca60cce8b799a33ca54ef
-summary: "用户已明确授权撤销两个旧 GL/MH theorem，保留 law 定义、反例证据及已证 AtLevel；已实施源码删除与消费测试迁移，精确接口锁与两模块审计已通过；完整检查按用户后续要求暂缓。"
+summary: "用户已明确授权撤销两个旧 GL/MH theorem，保留 law 定义、反例证据及已证 AtLevel；已实施源码删除与消费测试迁移，精确接口锁与模块审计已通过；完整检查及主分支合并按后续授权执行。"
 issue_id: "ProofTools-20261018-GL-fixed-object-counterexample"
 responsibility_module: "ProofTools"
 targets:

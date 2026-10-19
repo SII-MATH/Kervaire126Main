@@ -1,7 +1,7 @@
 ---
 issue_id: ProofTools-20261018-mh-finite-level-target
 title: MH 形式化目标：强有限商、双输入层数与共同代表
-summary: "用户已明确授权撤销两个旧 GL/MH theorem，保留 law 定义、反例证据及已证 AtLevel；已实施源码删除与消费测试迁移，精确接口锁与两模块审计已通过；完整检查按用户后续要求暂缓。"
+summary: "用户已明确授权撤销两个旧 GL/MH theorem，保留 law 定义、反例证据及已证 AtLevel；已实施源码删除与消费测试迁移，精确接口锁与模块审计已通过；完整检查及主分支合并按后续授权执行。"
 responsibility_module: ProofTools
 targets:
   - KIP126.ProofTools.GeneralizedMahowaldLaw
