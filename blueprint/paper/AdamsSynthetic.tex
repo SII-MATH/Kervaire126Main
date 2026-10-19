@@ -134,6 +134,26 @@ The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w
 \end{definition}
 
 
+\section{Quotient and boundary maps}
+
+\begin{notation}[Quotient and boundary maps]
+\label{notation:AdamsSynthetic:quotient-boundary-maps}
+\label{not:deltaandrho}
+\level{coarse}
+From \cite{LWX126}, Notation 4.1.\par
+There are certain special maps between synthetic spectra that we want to consider. For any $n<m\le \infty$ and a spectrum $X$, we have the following  distinguished triangles of $\HF$-synthetic spectra
+$$\Sus^{0,-n}\nu X/\lambda^{m-n}\fto{\lambda^n} \nu X/\lambda^m\fto{~\rho_{n,m}~} \nu X/\lambda^n\fto{~\delta_{n,m}~} \Sus^{1,-n}\nu X/\lambda^{m-n}.$$
+We simply write $\rho=\rho_{n,m}$, $\delta=\delta_{n,m}$ by abuse of notation if $n,m$ is understood in the context.
+When $m=\infty$, this sequence is interpreted  as
+$$\Sus^{0,-n}\nu X\fto{\lambda^n} \nu X\fto{~\rho~} \nu X/\lambda^n\fto{~\delta~} \Sus^{1,-n}\nu X.$$
+
+Many arguments for finite $m$ implies the corresponding statement when $m=\infty$ because of
+$$\nu X=\varprojlim_{m} \nu X/\lambda^m$$
+as shown in \cite[Proposition A.13]{BHS}.
+
+We also note that our grading for the triangulation translation functor is smashing with $S^{1,0}$, which is consistent with \cite[Appendix A]{BHS} but is different from \cite[Section 7]{BurklundXu}.
+\end{notation}
+
 \section{Finite- and infinite-page extensions}
 
 % AimPaper: 5.4 definition 1301 1317
@@ -160,6 +180,24 @@ From \cite{LWX126}, Definition 5.4.\par
     
     For $r=\infty$, we similar define an $(f,E_\infty)$-extension using the corresponding synthetic $\hat f$-extension.
 % END AIMPAPER STATEMENT
+
+\textit{Coordinate conventions from \cite{LWX126}, Section 5, immediately before Definition 5.4.}
+
+The $E_0$-page of the $\hat f_{r-1}$-ESS is isomorphic to
+$$\begin{aligned}
+    \ESS{\hat f_{r-1}}_0^{s,t,t-k+e(f)}\iso & E_\infty^{s,t,t-k}(\nu X/\lambda^{r-1})\oplus E_\infty^{s,t,t-k+e(f)}(\nu Y/\lambda^{r-1})\\
+    \iso & \big(Z_{r-1-k}^{s,t}(X)/B_{1+k}^{s,t}(X)\big)\oplus \big(Z_{r-1-k+e(f)}^{s,t}(Y)/B_{1+k-e(f)}^{s,t}(Y)\big).
+\end{aligned}$$
+A nontrivial $d^{\hat f_{r-1}}_n$ differential can be interpreted as a map from the subgroup
+\begin{equation}\label{eq:eae450fe}
+  \ZESS{\hat f_{r-1}}_{n-1}^{s,t,t-k}(X) \subset  Z_{r-1-k}^{s,t}(X)/B_{1+k}^{s,t}(X)
+\end{equation}
+to the quotient group
+\begin{equation}\label{eq:334248d2}
+    \big(Z_{r-1-k-n+e(f)}^{s+n,t+n}(Y)/B_{1+k+n-e(f)}^{s+n,t+n}(Y) \big)/\BESS{\hat f_{r-1}}_{n-1}^{s+n,t+n,t-k}(Y).
+\end{equation}
+The differential $d^{\hat f_{r-1}}_n$ is trivial for degree reasons when
+$$n<\AF(f)\text{ or }n>r-2-k+e(f).$$
 \uses{paper:2.3,paper:3.3,sem:AdamsSynthetic:normalized-map}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 1275-1317](paper/main.tex.html#L1275). Define page extensions as ESS differentials of the chosen normalized map on lambda quotients. The coordinate description in the preceding paragraph is explanatory; no theorem about later extensions is used to define the relation.
 
