@@ -92,7 +92,7 @@ For $q>0$ and $0\leq k<q$, let $y\in Z_{q-k}^{s,t}(X)$. Its finite target label 
 \[Z_{q-k}^{s,t}(X)/B_{1+k}^{s,t}(X).\]
 
 The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ to $y$. Let $\alpha\in\pi_{t-s,t}(\nu S^0)$ have first-quotient image equal to this label, using the canonical zero-shift identification. For $q>0$ and $k\geq0$, the finite target label of $y$ in tridegree $(s,t,t-k)$ detects the image of $\lambda^k\alpha$ in $\nu S^0/\lambda^q$.
-\uses{sem:ProofTools:filtration-representatives,sem:ProofTools:finite-strip,sem:Literature:infinite-finite-window,sem:Literature:infinite-lambda,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,sem:AdamsSynthetic:shift-representatives}
+\uses{sem:ProofTools:filtration-representatives,sem:ProofTools:finite-strip,sem:Literature:infinite-finite-window,sem:Literature:infinite-shift,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,sem:AdamsSynthetic:ess-shifts}
 \lean{KIP126.ProofTools.Internal.Mahowald.finite_target_label_iff,KIP126.ProofTools.Internal.Mahowald.sphere_first_quotient_label,KIP126.ProofTools.Internal.Mahowald.sphere_finite_lambda_detects}
 \end{theorem}
 \begin{proof}
@@ -285,7 +285,7 @@ Let $f$ be a map of convergent towers or filtered abelian groups. An extension f
 \uses{paper:2.3}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 344-352](paper/main.tex.html#L344). A crossing is a competing extension from a higher-filtration source, using the extension relation already defined.
 
-% Blueprint note: The generic filtered-map crossing predicate belongs to \ref{sem:SpectralSequence:crossing-transport}. The bindings here are the two stated no-crossing predicates with an arbitrary filtration threshold.
+% Blueprint note: The generic filtered-map crossing predicate belongs to \ref{sem:SpectralSequence:filtered-transport}. The bindings here are the two stated no-crossing predicates with an arbitrary filtration threshold.
 
 % Correspondence: partial.
 % Blueprint note: Public representative-level definitions \texttt{FilteredNoCrossingRange} and \texttt{ExtensionNoCrossingRange} allow arbitrary filtration thresholds. Their comparison with \texttt{DifferentialDatum} and \texttt{HasCrossingAt} for a general classical $f$-extension spectral sequence has not yet been assembled into a complete public bridge, so this correspondence remains partial.
@@ -804,7 +804,7 @@ NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
 NC(\Sigma^{1,-q}F;p,s+r,l).
 \]
 They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
-\uses{sem:AdamsSynthetic:shift-representatives,sem:ProofTools:mh-actual-no-crossing}
+\uses{sem:AdamsSynthetic:ess-shifts,sem:ProofTools:mh-actual-no-crossing}
 \lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
 \end{definition}
 
@@ -1234,7 +1234,7 @@ The conclusion asserts existence of a later extension; it does not prescribe a l
 % Blueprint note: \href{paper/main.tex.html#L2074}{Original Corollary 6.23 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
 \end{corollary}
 \begin{proof}
-\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:ProofTools:finite-strip,sem:ProofTools:extension-representatives}
+\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:ProofTools:extension-representatives}
 \textit{Proof of the finite-page revision; compare \cite{LWX126}, Corollary 6.23.} \href{paper/main.tex.html#L2074}{Original statement and context}.
 
 Use actual representatives of the earlier extension. The prescribed late source and target cycle qualifications supply lifts of their infinite-page labels along quotient reduction. Correct the difference between the chosen early source and a late lift over the finite filtration interval. At each step, a residual source with nonzero target that cannot be lifted would give exactly one of the excluded same-quotient obstructions. Every other residual can be corrected to the next filtration or already has image above the prescribed target filtration. The finite correction theorem and the finite-quotient cutoff therefore supply a late representative with the specified source and target labels. Reading its actual map equation gives the required extension.

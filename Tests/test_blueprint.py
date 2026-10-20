@@ -49,6 +49,35 @@ class AimPaperPresentationTests(unittest.TestCase):
         self.assertFalse(retired.intersection(row['label'] for row in rows))
 
 
+    def test_global_second_line_input_is_not_truncated_to_the_archive(self):
+        from hgraph.sync import parse_blueprint, read_blueprint
+        root = Path(__file__).resolve().parents[1]
+        rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
+        entries = {row['label']: row for row in rows}
+        global_input = entries['sem:E2Computation:two-line-exhaustive']
+        bounded = entries['sem:Computation:bounded-comparison']
+        self.assertEqual(global_input['lean'], ['KIP126.E2Computation.two_line_exhaustive'])
+        self.assertIn('For every integer $t$', global_input['body'])
+        self.assertIn('There is no upper bound', global_input['body'])
+        self.assertIn(r't\leq261', bounded['body'])
+        self.assertIn('multiplicative', bounded['title'])
+
+    def test_signed_quotient_row_keeps_the_actual_comparison_scope(self):
+        from hgraph.sync import parse_blueprint, read_blueprint
+        root = Path(__file__).resolve().parents[1]
+        rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
+        entries = {row['label']: row for row in rows}
+        row = entries['sem:Literature:normalized-finite-quotient-row']
+        self.assertEqual(row['lean'], [
+            'KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row'])
+        self.assertIn('Only one such comparison is required', row['body'])
+        self.assertIn('preserves both structure arrows', row['body'])
+        self.assertIn(r'-\left(Q_q(\Sigma V.f)\,\varepsilon\right)', row['body'])
+        applicability = entries['sem:Literature:bhs-applicability']['body']
+        for condition in ('countable products', 'Milnor map', 'completion witness', 'separated'):
+            self.assertIn(condition, applicability)
+        self.assertIn('some finite power', entries['sem:Literature:selected-lifts']['body'])
+
     def paper_source(self, root, label):
         from hgraph.sync import parse_blueprint, read_blueprint
         matches = [(path, row) for path in (root / 'blueprint/chapters').glob('*.tex')

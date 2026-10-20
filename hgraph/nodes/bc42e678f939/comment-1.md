@@ -6,7 +6,7 @@ created: '2026-10-18T04:35:45'
 date: '2026-10-18T04:35:45'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.851124+00:00'
+updated: '2026-10-20T05:44:00.460886+00:00'
 ---
 Fixed upstream source versions: [KIPSource5aa845241533](https://github.com/SII-MATH/Kervaire126/tree/5aa845241533b763c37a1d5fc70cce9708c4e68e), [KIPSourcebbac1fc05843](https://github.com/SII-MATH/Kervaire126/tree/bbac1fc05843bdf2d56057e6114a38839e939378). Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 
@@ -21,3 +21,7 @@ Clause 7 detailed source attribution: [IWX](https://doi.org/10.1007/s10240-023-0
 Clause 9 detailed source attribution: [IWX](https://doi.org/10.1007/s10240-023-00139-1), Table 6, p.~222, first row (15,2,8), gives motivic d3(h0 h4)=h0 d0. Corollary 1.2, p.~111, and the authors' original classical data [IWXCharts](https://zenodo.org/records/6987157), Adams-classical-E3.csv, physical rows 29 and 27 including the header, directly confirm the nonzero classical source and target. This is the separately authorized additional input needed to correct the omitted E3 candidate h0 h4; it does not assert that this class is a d2 boundary.
 
 Source scope (2026-10-18): All nine statements concern the actual fixed standard classes and actual spectral sequence. Nonzero survival requires a common permanent representative and nonzero E-infinity image. The four differentials quantify over actual E2 target labels and require nonzero page targets; no arbitrary label is substituted. HHR Theorem 1.1 does not specify a differential length or target. Mahowald Theorem 1', p.~249, including the nonboundary argument following Theorem 2, and HHR Theorem 1.1, p.~2, were checked directly. The primary-source references and qualifications above replace indirect AimPaper-only attribution, but all nine source-to-fixed-model Lean proofs remain separately registered upstream obligations. The original 57 AimPaper statement blocks and bibliography are unchanged.
+
+These are the three square inputs also consumed directly by Geometry. Their fixed-model proofs remain registered Literature responsibilities. The detailed primary-source verification and its limitations are retained in the classical second-line theorem in this chapter. The positive geometric index is imposed by Browder, not by deleting the valid j=0 survival input.
+
+These six inputs retain their existing fixed-model proof obligations. They form a separate compiled dependency group from the three square inputs used by Geometry. Source-to-classical comparison and primary-source qualifications are recorded with the classical second-line theorem in this chapter; no proof responsibility is removed by this regrouping.
