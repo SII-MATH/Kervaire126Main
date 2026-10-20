@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/semantic/Main.tex
+authored_source: blueprint/chapters/Main.tex
 blueprint_label: sem:Main:two-line-classification-goal
 created: '2026-10-18T04:06:28'
 date: '2026-10-18T04:06:28'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T04:35:45.832144+00:00'
+updated: '2026-10-20T03:59:04.764489+00:00'
 ---
 Fixed upstream source versions: [KIPSourcebbac1fc05843](https://github.com/SII-MATH/Kervaire126/tree/bbac1fc05843bdf2d56057e6114a38839e939378). Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 

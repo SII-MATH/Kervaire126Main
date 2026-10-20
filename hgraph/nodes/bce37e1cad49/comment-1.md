@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T05:44:00.467329+00:00'
+updated: '2026-10-20T05:53:20.592357+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 813-823](paper/main.tex.html#L813). BHS identifies the Adams and lambda-Bockstein sequences, including lifts and the connecting differential. It is a separate external input, not a consequence asserted from Theorem 3.6 alone.
 

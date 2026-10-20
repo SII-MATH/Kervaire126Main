@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.791161+00:00'
+updated: '2026-10-20T03:59:04.582130+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 113-123](paper/main.tex.html#L113). Browder's geometric criterion applied to the permanence theorem gives the framed 126-dimensional manifold.
 

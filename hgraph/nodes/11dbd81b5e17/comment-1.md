@@ -6,7 +6,7 @@ created: '2026-10-18T08:16:05'
 date: '2026-10-18T08:16:05'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.915064+00:00'
+updated: '2026-10-20T03:59:04.747382+00:00'
 ---
 Source verification (2026-10-18): Source adaptation checked. Symmetric monoidality gives multiplicativity of the canonical Ext comparison, with s,t,s-prime,t-prime nonnegative and stem t-s. Identification with the project’s selected firstQuotient and sphereAlgebra product is still an explicit pending comparison. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022
 

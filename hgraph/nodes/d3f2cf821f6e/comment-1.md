@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.946023+00:00'
+updated: '2026-10-20T03:59:04.863089+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 613-615](paper/main.tex.html#L613). Specialize Corollary 2.15 to an identity upper horizontal map.
 

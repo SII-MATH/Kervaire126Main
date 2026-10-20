@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.942982+00:00'
+updated: '2026-10-20T03:59:04.856892+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 418-430](paper/main.tex.html#L418). Proposition 2.5(3) and the definition of a crossing turn universal representative behavior into the no-crossing criterion.
 

@@ -6,7 +6,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import blueprint_boundaries as boundaries
-from hgraph.sync import parse_blueprint, read_blueprint
+from hgraph.sync import parse_blueprint
 
 ROOT = Path(__file__).resolve().parents[1]
 

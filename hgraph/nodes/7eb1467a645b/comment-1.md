@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.791891+00:00'
+updated: '2026-10-20T03:59:04.583189+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 106-114](paper/main.tex.html#L106). Combine the new dimension-126 case with Browder, the known lower Kervaire squares and HHR's exclusion; historical existence results remain bibliography inputs.
 

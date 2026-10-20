@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.954654+00:00'
+updated: '2026-10-20T03:59:04.881551+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
 

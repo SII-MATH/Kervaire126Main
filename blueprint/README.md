@@ -52,7 +52,8 @@ the follow-up total. All meeting discussion items, including T13, use the same
 discussion status and count toward the follow-up total. The tab supports
 status filters and search and is exported with the existing native website
 pipeline. Optional task `details` sections hold completion explanations or meeting discussion material,
-code excerpts and `code` references (`file` and `declaration`); the exporter
+code excerpts, source `links` (`title` and HTTPS `url`), and `code` references
+(`file` and `declaration`); the exporter
 links these to the current declaration lines in the published sources. A task's
 optional `details_label` names its expandable panel.
 Meeting statuses do not modify mathematical entries or proof states.

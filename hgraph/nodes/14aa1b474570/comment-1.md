@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.946792+00:00'
+updated: '2026-10-20T03:59:04.864586+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 628-630](paper/main.tex.html#L628). Apply the square corollary inductively to obtain commuting maps on every page of the extension spectral sequences.
 

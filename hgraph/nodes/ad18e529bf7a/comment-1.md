@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.953108+00:00'
+updated: '2026-10-20T03:59:04.878254+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1437-1441](paper/main.tex.html#L1437). Define a crossing by an essential page extension with the displayed smaller-page and filtration bounds.
 

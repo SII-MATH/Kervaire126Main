@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.865269+00:00'
+updated: '2026-10-20T03:59:04.675466+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 2110-2140](paper/main.tex.html#L2110). The external BJM/BX criterion is stated using lambda quotients, a detected theta-five and eta. The existing normalization and choice-scope qualifications remain in force.
 
