@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:2.20
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-19T09:21:26.162870+00:00'
+updated: '2026-10-20T04:59:49.948290+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 656-664](paper/main.tex.html#L656). Convergence of the filtered complex and exactness identify permanent cycles with extension boundaries; representatives give the alternative proof.
 

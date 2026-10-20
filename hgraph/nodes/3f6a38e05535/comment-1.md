@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:4.14
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T03:22:15.920848+00:00'
+updated: '2026-10-20T04:59:49.951548+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
 

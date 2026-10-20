@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/Literature.tex
+authored_source: blueprint/chapters/Literature.tex
 blueprint_label: paper:6.11
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.557033+00:00'
+updated: '2026-10-20T04:59:49.864486+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1755-1777](paper/main.tex.html#L1755). May's external tensor-triangulated push-pull result supplies the smash-product diagram; its boundary identity is not proved by a later Mahowald application.
 

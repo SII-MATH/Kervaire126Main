@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:6.23
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T03:22:15.926302+00:00'
+updated: '2026-10-20T04:59:49.957423+00:00'
 ---
 **Formal scope:** complete for the stated finite-page sufficient-condition revision.
 

@@ -48,16 +48,23 @@ class ProofToolsBindingTests(unittest.TestCase):
                     'KIP126.ProofTools.Standard.generalizedLeibniz',
                     'KIP126.ProofTools.Standard.generalizedMahowald'}
         self.assertFalse(obsolete.intersection(name for row in rows for name in row['lean']))
-        # The revised assertion definition and its complete theorem have distinct
-        # bindings; neither restores the retired zero-layer Mahowald law.
-        self.assertEqual(by_label['sem:ProofTools:mahowald-law']['lean'],
-                         ['KIP126.ProofTools.Standard.FiniteMahowaldAtLevelStatement'])
+        # The full assertion now belongs to the theorem, with no extra binding
+        # for its proposition-valued definition or its supporting premises.
+        self.assertNotIn('sem:ProofTools:mahowald-law', by_label)
         self.assertEqual(by_label['paper:6.12']['lean'],
                          ['KIP126.ProofTools.Standard.generalizedMahowaldAtLevel'])
-        for label in ('sem:ProofTools:mahowald-law', 'paper:6.12',
-                      'sem:ProofTools:mh-common-source',
-                      'sem:ProofTools:mh-target-preserving-lift',
+        mah = by_label['paper:6.12']['body']
+        for equation in (r'\rho(c)=h_A(a)', r'f_N(c)=-\lambda^Ab',
+                         r"d_n^{\hat f_r}(\lambda^kx)=[\lambda^{r'-1}y]"):
+            self.assertIn(equation, mah)
+        for label in ('sem:ProofTools:mh-target-preserving-lift',
                       'sem:ProofTools:mh-lifted-target-permanent',
+                      'sem:ProofTools:finite-stretching-law'):
+            self.assertNotIn(label, by_label)
+        for label in ('paper:6.12',
+                      'sem:ProofTools:mh-common-source',
+                      'sem:ProofTools:finite-strip',
+                      'sem:ProofTools:sphere-label-detection',
                       'sem:ProofTools:generalized-leibniz-at-level',
                       'sem:ProofTools:nu-zero-layer'):
             self.assertEqual(_tex_lean_status(by_label[label], states)[0], 'lean_ok')

@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/AdamsSynthetic.tex
+authored_source: blueprint/chapters/AdamsSynthetic.tex
 blueprint_label: paper:3.2
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.546404+00:00'
+updated: '2026-10-20T04:59:49.762083+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 770-772](paper/main.tex.html#L770). Define bigraded spheres by suspension of the synthetic analogue of an ordinary sphere.
 

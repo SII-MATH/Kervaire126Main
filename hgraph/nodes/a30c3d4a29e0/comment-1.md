@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/Literature.tex
+authored_source: blueprint/chapters/Literature.tex
 blueprint_label: paper:3.17
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.555396+00:00'
+updated: '2026-10-20T04:59:49.862947+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 929-940](paper/main.tex.html#L929). Apply synthetic cofiber preservation to the homology-exact triangle and use the suspension comparison for its boundary; the proof is in BHS Lemma 9.15.
 

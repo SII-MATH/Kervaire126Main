@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/AdamsSynthetic.tex
+authored_source: blueprint/chapters/AdamsSynthetic.tex
 blueprint_label: paper:5.4
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.547160+00:00'
+updated: '2026-10-20T04:59:49.762842+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1275-1317](paper/main.tex.html#L1275). Define page extensions as ESS differentials of the chosen normalized map on lambda quotients. The coordinate description in the preceding paragraph is explanatory; no theorem about later extensions is used to define the relation.
 

@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/Main.tex
+authored_source: blueprint/chapters/Main.tex
 blueprint_label: paper:7.16
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-19T06:19:35.728638+00:00'
+updated: '2026-10-20T04:59:49.932511+00:00'
 ---
 The local argument retains its actual upstream dependencies; the final theorem is fully closed only when those dependencies are closed.
 

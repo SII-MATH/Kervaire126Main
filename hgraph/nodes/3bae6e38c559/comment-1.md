@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/AdamsCalculations.tex
+authored_source: blueprint/chapters/AdamsCalculations.tex
 blueprint_label: paper:7.15
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.541145+00:00'
+updated: '2026-10-20T04:59:49.732217+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 2464-2468](paper/main.tex.html#L2464). The stated E5 survival and absence of incoming hits are read from the stem-125 sphere table.
 

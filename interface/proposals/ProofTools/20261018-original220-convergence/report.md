@@ -200,7 +200,7 @@ public theorem extensionBoundary_of_exact (X Y Z : ClassicalObject)
 | `interface/baselines/proof-tools-api.json` | 经授权后更新2.20类型、最终实际公理依赖及完整导出，不能提前改指纹绕门禁。 |
 | `interface/baselines/proof-obligations.json` | 授权改类型时如实同步该既有责任类型；未完成证明仍保留pending。 |
 | `KIP126/ProofTools/InternalAudit.lean`、`Tests/ProofTools/Consumers.lean`、`Tests/test_blueprint_native.py` | 核对名称消费和唯一原statement对应；新增有意义的条件消费/边界检查，不删除已有覆盖。 |
-| `blueprint/paper/ProofTools.tex:paper:2.20`及hgraph附件 | 保留AimPaper原句及其全局条件来源说明，准确写出形式化使用的三个后果，不将条件引理冒充已证原泛型定理。 |
+| `blueprint/chapters/ProofTools.tex:paper:2.20`及hgraph附件 | 保留AimPaper原句及其全局条件来源说明，准确写出形式化使用的三个后果，不将条件引理冒充已证原泛型定理。 |
 | `corrections.yaml` | 相对AimPaper修正的唯一记录源；分类应写形式化漏全局条件，不把本文登记成原文数学反例。本报告不写此共享文件。 |
 | 数学Lean调用方 | 本轮检索未见其他证明体使用该定理；主要消费者为上述#check/审计/蓝图，最终仍需整合后重新检索。 |
 

@@ -289,7 +289,7 @@ May 张量引理只调用固定 Literature 的 `may_pushpull`、shift/exactness�
 
 ## 受影响对象、记录与测试
 
-未来如批准实施，需逐项复查 `GeneralizedMahowaldLaw`、`Standard.generalizedMahowald` 及其 `ProofTools` 公共导出；`metadata/proof-tools-api.json`、`metadata/proof-obligations.json`；`Tests/ProofTools/Consumers.lean` 的旧 law 消费、Interface 锁与 `InternalAudit` 中已有禁用待补依赖审计，以及 Integration、Architecture、Trust 汇总。Blueprint 的 `blueprint/paper/ProofTools.tex` 中 `paper:6.12` 与 semantic law 绑定必须依实际公共实现同步，不能把当前私有 May 引理绑成完整 MH。原始来源与论文修正继续引用既有 bibliography、Blueprint 和 `corrections.yaml`，不在此另立修正版维护源。
+未来如批准实施，需逐项复查 `GeneralizedMahowaldLaw`、`Standard.generalizedMahowald` 及其 `ProofTools` 公共导出；`metadata/proof-tools-api.json`、`metadata/proof-obligations.json`；`Tests/ProofTools/Consumers.lean` 的旧 law 消费、Interface 锁与 `InternalAudit` 中已有禁用待补依赖审计，以及 Integration、Architecture、Trust 汇总。Blueprint 的 `blueprint/chapters/ProofTools.tex` 中 `paper:6.12` 与强有限层命题的绑定必须依实际公共实现同步，不能把当前私有 May 引理绑成完整 MH。原始来源与论文修正继续引用既有 bibliography、Blueprint 和 `corrections.yaml`，不在此另立修正版维护源。
 
 Main 的禁用旧 MH 边界和现有安全特例保持；AdamsCalculations 的具体计算认证仍归该模块，ProofTools 不接管。AdamsSynthetic 和 Literature 的固定对象/比较/文献构造责任继续原归属。本次未修改生产代码、接口锁、待补清单、corrections 或导出。
 

@@ -46,13 +46,21 @@ class NativeProofPresentationTests(unittest.TestCase):
         visible = proof_blocks(text)
         statements, _ = parse_blueprint(text)
         by_label = {row['label']: row for row in statements}
-        for label in ('sem:Main:two-line-known-squares',
-                      'sem:Main:two-line-stem126', 'sem:Main:remark-7.4',
-                      'sem:Main:remark-7.5', 'sem:Main:boundary-formula',
-                      'sem:Main:any-choice-criterion', 'paper:1.5'):
+        for label in ('sem:Main:remark-7.5', 'sem:Main:any-choice-criterion',
+                      'paper:1.5', 'paper:7.8', 'paper:7.9'):
             with self.subTest(label=label):
                 self.assertIn(label, visible)
                 self.assertNotIn(r'\emph{Proof.}', by_label[label]['body'])
+        self.assertIn(r'q_n(a)=0', visible['sem:Main:any-choice-criterion'])
+        self.assertIn(r'\lambda^{10}a', visible['paper:7.8'])
+        self.assertIn(r'\lambda^5\eta(\theta_5 b)=0', visible['paper:7.9'])
+        self.assertNotIn('sem:Main:weak-representative-route', by_label)
+        # The retained incompatibility proof must remain independent of the
+        # two conditional statements now deduced from it.
+        from hgraph.sync import _assoc_proofs
+        _, proofs = parse_blueprint(text)
+        used = set(by_label['paper:7.9']['uses']) | _assoc_proofs(statements, proofs)['paper:7.9']
+        self.assertFalse({'paper:7.16', 'paper:7.18', 'paper:7.9'} & used)
 
     def test_web_copy_keeps_proofs_attached_and_gap_explanations_visible(self):
         from blueprint_paper import prepare_web_blueprint

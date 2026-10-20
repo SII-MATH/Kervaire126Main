@@ -1,13 +1,11 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/semantic/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: sem:ProofTools:nonliftable-or-crossing
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-17T18:17:10'
+updated: '2026-10-20T04:59:49.939159+00:00'
 ---
-Fixed upstream source versions: [KIPSourcebbac1fc05843](https://github.com/SII-MATH/Kervaire126/tree/bbac1fc05843bdf2d56057e6114a38839e939378). Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-
-This disjunction is distinct from the set-difference equivalence printed in Proposition~\ref{paper:6.20}.
+This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.

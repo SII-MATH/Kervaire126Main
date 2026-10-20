@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:2.19
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T14:34:09.111888+00:00'
+updated: '2026-10-20T04:59:49.947550+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 637-646](paper/main.tex.html#L637). The null-composite square proves permanence; the article also gives a representative proof using Proposition 2.5.
 
