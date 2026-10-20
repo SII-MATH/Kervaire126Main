@@ -15,7 +15,7 @@ baseline_commit: ef01dcfd904b51fe2288f0dc3e1eed074591967f
 worktree: /inspire/hdd/global_user/czxs25250150/ops/tmp/main-followup-20261019
 candidate_source_commit: 71e63c47d1be7ebad1589bd08a598179e468f23b
 api_file_and_sha256: interface/baselines/e2-computation-api.json b6da08b20f73640c5f7847d6109ffe3426e5ff760f23f941ceefacf4e3779cdd
-source_file_and_sha256: KIP126/E2Computation/Standard.lean 7b88e15e00019384dbbd46f4fe28bb502fac1d4547a90495b35b12faa65c1f7c
+source_file_and_sha256: KIP126/E2Computation/Standard.lean e3d0c252644f9d216ad1e1fa92b894457b6db112d699dbd2fe2e7d68115186e2
 baseline_source_file_and_sha256: KIP126/E2Computation/Standard.lean 32ab999ceb76b426813841e17e6131c51502f3ad29d7cb25b53ca0d2f98772fa
 reporter_agent: /root/interface_report
 independent_of_discoverer_and_implementer: true
@@ -102,7 +102,7 @@ python3 interface/proposals/E2Computation/migration-coordinate-bindings-20261019
 
 ### 当前源码与构建记录的边界
 
-`Standard.lean` 当前 SHA-256 为 `7b88e15e00019384dbbd46f4fe28bb502fac1d4547a90495b35b12faa65c1f7c`，本报告员已实际读取核对。文件头 `source_file_and_sha256` 指向此当前版本；`baseline_source_file_and_sha256` 和 `evidence/source-audit.json` 中旧哈希明确仅对应 `ef01dcf` 基线。theta 早期审查的旧哈希也保留为历史检查快照，不冒充当前文件。
+独立审查时的 `Standard.lean` SHA-256 为 `7b88e15e00019384dbbd46f4fe28bb502fac1d4547a90495b35b12faa65c1f7c`，既有证据仍对应该审查快照。主线整合版本的 SHA-256 为 `e3d0c252644f9d216ad1e1fa92b894457b6db112d699dbd2fe2e7d68115186e2`：整合者将一处 `@[expose] section` 拆成属性行和 `section` 行，并移去相邻空行，保持后续声明行号不变，使固定 hgraph 原生解析器正确保留命名空间。数学声明、证明正文和公共接口不变；该排版修复由整合者验证，不冒充原报告员的独立检查。文件头 `source_file_and_sha256` 指向整合版本；`baseline_source_file_and_sha256` 和 `evidence/source-audit.json` 中旧哈希仍仅对应 `ef01dcf` 基线。theta 早期审查哈希和生产检查点保留为历史快照。
 
 协调者报告全部八模块公开 exports/types/universes 精确相同，官方 freeze 后八个 API 文件零差异；本报告员另外以 `git diff ef01dcf -- interface/baselines/*-api.json` 独立确认八个文件无差异。协调者还报告 219 个原待补表达式已核对，5 项完成，13 项仅诊断标签发生变化并已审查迁移，当前清单为 214（E2 为 16）。这些全局检查结果注明为协调者提供，不替代本报告的局部独立数学审查，也不表示当前 214 项责任全部完成。
 

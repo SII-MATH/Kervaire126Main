@@ -62378,12 +62378,12 @@ theorem two_squarefree_subsets (a b : σ) (hab : a ≠ b)
 end HistoricalMigration
 
 end
-@[expose] section
+@[expose]
+section
 section FixedSourceComparison
 open CategoryTheory KIP126.AdamsSynthetic.Standard
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
-
 private def migrationSourceT : sourceData.component 14 139 :=
   sourceData.product 1 2 13 137 (sourceData.atom .h1)
     (sourceData.product 1 16 12 121 (sourceData.atom .h4) (sourceData.atom .x_109_12))
