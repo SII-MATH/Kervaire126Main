@@ -163,20 +163,30 @@ corrections:
   - node: paper:6.20
     title: Proposition 6.20 · 下降与不定性
 - id: indeterminacy
-  title: 保留差集时，需要增加晚页 crossing 分支
-  reference: PROPOSITION 6.20 · SECOND ASSERTION
+  title: 限制扩张的不定性与有限页升页充分条件
+  reference: PROPOSITION 6.20 · SECOND ASSERTION / COROLLARY 6.23
   status:
     kind: revised
-    label: 二择版本局部证明完成
+    label: 去差集与二择版本、有限页升页充分条件已证
   original:
     statements:
     - '6.20'
+    - '6.23'
     source_line: 1981
   revision:
     nodes:
+    - paper:6.20
     - sem:ProofTools:nonliftable-or-crossing
+    - paper:6.23
+    definitions:
+    - sem:ProofTools:correction-label
+    - sem:ProofTools:nonliftable-obstruction
+    - sem:ProofTools:finite-stretching-law
+    note: 6.20 的正文为已授权的固定目标、b=0、去差集 iff，下降首句仍由独立节点维护；6.23 的正文为现有 Standard 有限页充分条件。两者绑定各自实际公开定理，原印刷陈述由 AimPaper 来源保留，不把修正版记为原文完整证明。
   problem: |-
     **范围与问题。** 原文允许较低目标 $y'$ 及参数 $b$。若要求保持原目标 $y$，分次迫使 $b=0$；在这个加强版中，再要求短源属于早晚 cycle 的严格差集，并不能由早页 inessential 推出。整体修正不可提升，不保证其首项不可提升且能支持到原 $y$ 的短扩张。
+
+    原 Corollary 6.23 只排除指定的 essential crossings，并只要求目标满足早页循环资格。现有有限页 stretching 定理要求目标满足晚页循环资格，且排除同一早商中源不在实际后商约化像内的所有非零短扩张，包括 inessential 扩张。该加强的充分条件与去差集 iff 是独立结果，不能混同为原印刷推论。
   counterexample: |-
     反例使用 $E=H\mathbb Z_2^\wedge$、$M=H(\mathbb Z/16)$ 的标准连接 $\delta$，取
 
@@ -191,6 +201,8 @@ corrections:
     二择已公开为 [finiteExtension_nonliftableShort_or_lateCrossing](KIP126/ProofTools/Paper/ExtensionCrossingDichotomy.lean:450)，差集分支由同文件的 `FiniteExtensionNonliftableShortTo` 固定。去差集 iff 继续保留；含差集、固定目标且没有 crossing 分支的加强版不标为已证。新二择无 ProofTools 本地证明洞，仍依赖既有上游待补。[最新修改依据](local-history/metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/report.md)与[验证](local-history/metadata/interface-reviews/ProofTools/20261018-prop620-crossing-dichotomy/validation.json)。
 
     **尚未跨越的边界。** 此 crossing 尚未直接识别为 Definition 5.9 的经典有限页 crossing；原文一般 $b$ 版本的完整 iff 也未由上述结果证明。升页推论实际编号为 6.23（6.21 是公式号），其升页存在性不能从已经假定晚页扩张存在的二择直接推出。
+
+    2026-10-20 用户要求按已同意的修改更新 Blueprint 正文并重新绑定。paper:6.20 现明确陈述已授权的固定目标去差集 iff，保留同一早商、实际 correction label、短式源资格与同一个早页目标；paper:6.23 明确陈述现有 `Standard.finitePageExtensionStretching` 的有限页充分条件，展开实际约化像障碍并保留晚页目标循环资格。两处只更新自然语言、绑定及数学依赖，未改 Lean 接口或证明；原文及一般 b、经典 crossing 比较和无穷页的未完成边界继续保留。
   history: |-
     **当前采用的修正二：保留差集，增加晚页 crossing 分支。** 王老师随后提出：若晚页 essential、早页 inessential，却不存在满足差集条件的短源，则应存在 crossing。用户已明确要求形式化此版本。
 
@@ -221,7 +233,9 @@ corrections:
   - node: sem:ProofTools:nonliftable-or-crossing
     title: 修正版 · 短扩张或晚页 crossing
   - node: paper:6.20
-    title: Proposition 6.20 · 原文
+    title: Proposition 6.20 · 固定目标去差集修正版
+  - node: paper:6.23
+    title: Corollary 6.23 · 有限页升页充分条件
 - id: leibniz
   title: 保留 λ level，并为除 λ 增加实际 crossing 条件
   reference: PROPOSITION 5.10 / THEOREM 6.1
