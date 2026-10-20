@@ -5,9 +5,12 @@ import all KIP126.E2Computation
 import all KIP126.E2Computation.Basis
 import all KIP126.E2Computation.Source
 import all KIP126.E2Computation.Standard
+import all KIP126.E2Computation.Internal.RelationCertificate
 import all KIP126.E2Computation.Table.Data
 import all KIP126.E2Computation.Table.Dimensions
 import all KIP126.E2Computation.Table.Internal.SourceExpression
+import all KIP126.E2Computation.Table.Internal.ThetaAnnihilation
+import all KIP126.E2Computation.Table.Internal.H2Annihilation
 import all KIP126.E2Computation.Table.Internal.ZeroDimension
 import all KIP126.E2Computation.Table.Relations
 import all KIP126.E2Computation.Table.Syntax

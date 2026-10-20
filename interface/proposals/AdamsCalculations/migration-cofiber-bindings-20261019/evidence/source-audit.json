@@ -1,0 +1,40 @@
+{
+  "baseline_commit": "ef01dcfd904b51fe2288f0dc3e1eed074591967f",
+  "candidate_source_commit": "71e63c47d1be7ebad1589bd08a598179e468f23b",
+  "evidence_level": "source-inspection-only; no Lean counterexample or build performed",
+  "sha256": {
+    "KIP126/E2Computation/Standard.lean": "32ab999ceb76b426813841e17e6131c51502f3ad29d7cb25b53ca0d2f98772fa",
+    "KIP126/E2Computation/Table.lean": "cc996b6e2361d785b461b1a7c49ff8db1f27e6b717c5e529b2db4a26a261e612",
+    "KIP126/E2Computation/Table/Data.lean": "29f4d25223be25fbdf3154e5d07410ffa64f46c8e113f1845435c5966be73d30",
+    "KIP126/E2Computation/Table/Values.lean": "098a22d9e4da2dda177543b70709a50e383ade4fa6588bd8cbfced628a0fe3d4",
+    "KIP126/AdamsCalculations/Standard.lean": "c11c5482d79dedc6352fa25a72ef74e14727d4e54118dc26d2b03d579f42bd23",
+    "KIP126/AdamsCalculations/Table.lean": "462c984ecf1a3af3d3de59a2a8a76dc0acc49476227a90c98ae2521612100bb9",
+    "interface/baselines/e2-computation-api.json": "b6da08b20f73640c5f7847d6109ffe3426e5ff760f23f941ceefacf4e3779cdd",
+    "interface/baselines/adams-calculations-api.json": "69729c4a1e57c1bbf0e7c81606ffc53a2f0430f3b1869b41dc35fb7a8431443f",
+    "interface/baselines/proof-obligations.json": "2cca5badf30c9d1fbc2485298f7938aa53951d665ebbc7a5d932450b8901b0f4"
+  },
+  "declarations_at_baseline": {
+    "nuCofiberSequence": "public noncomputable abbrev nuCofiberSequence :=\n  model.classical.obj (HasFunctorialCofiber.cofib model.auxiliary.nuMap)",
+    "bottom": "public noncomputable def bottom (s t : ℤ) :\n    model.classical.sphere.Page 2 (s,t) →ₗ[ℤ] nuCofiberSequence.Page 2 (s,t) :=\n  (model.classical.pageMap (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) 2 (s,t)).hom",
+    "topCell": "public noncomputable def topCell : nuCofiberSequence.Page 2 (8,134) := by sorry",
+    "top_comparison": "public theorem top_comparison :\n  ∃ (a3 : (model.classical.obj (Sphere 3)).Page 2 (8,133))\n    (a2 : (model.classical.obj (Sphere 2)).Page 2 (8,132))\n    (a1 : (model.classical.obj (Sphere 1)).Page 2 (8,131)),\n    (model.classicalSuspension (.shift 3 .sphere)).DesuspendsClass 8 134\n      (model.classical.pageMap (HasFunctorialCofiber.cofibδ model.auxiliary.nuMap) 2 (8,134) topCell) a3 ∧\n    (model.classicalSuspension (.shift 2 .sphere)).DesuspendsClass 8 133\n      (model.classical.pageMap\n        ((shiftFunctorAdd' Spectrum (2 : ℤ) 1 3 (by decide)).hom.app SphereSpectrum)\n        2 (8,133) a3) a2 ∧\n    (model.classicalSuspension (.shift 1 .sphere)).DesuspendsClass 8 132\n      (model.classical.pageMap\n        ((shiftFunctorAdd' Spectrum (1 : ℤ) 1 2 (by decide)).hom.app SphereSpectrum)\n        2 (8,132) a2) a1 ∧\n    (model.classicalSuspension .sphere).DesuspendsClass 8 131 a1 X := by sorry",
+    "cofiberSource": "public noncomputable def cofiberSource : nuCofiberSequence.Page 2 (8,134) :=\n  topCell + bottom 8 134 (atom .x_126_8_2) + bottom 8 134 (atom .x_126_8)",
+    "Y": "public noncomputable def Y : model.classical.sphere.Page 2 (11,136) :=\n  product h0Square (atom .x_125_9_2)",
+    "T": "public noncomputable def T : model.classical.sphere.Page 2 (14,139) :=\n  product h1 (product (r := (13,137)) h4 (atom .x_109_12))",
+    "object": "public def object : Raw.Spectrum → Spectrum\n  | .sphere => SphereSpectrum\n  | .nuCofiber => HasFunctorialCofiber.cofib model.auxiliary.nuMap",
+    "sequence": "public abbrev sequence (o : Raw.Spectrum) := model.classical.obj (object o)",
+    "Page": "public abbrev Page (o : Raw.Spectrum) (s t : ℕ) := (sequence o).Page 2 (s,t)",
+    "cofiberBasis": "public def cofiberBasis (s t i : ℕ) : Page .nuCofiber s t := by\n  sorry",
+    "basis": "public def basis : (o : Raw.Spectrum) → (s t i : ℕ) → Page o s t\n  | .sphere, s, t, i => sphereBasis s t i\n  | .nuCofiber, s, t, i => cofiberBasis s t i",
+    "decode": "public def decode (o : Raw.Spectrum) (s t : ℕ) (indices : List ℕ) :\n    Option (Page o s t) :=\n  if Raw.coordinatesValid Raw.degrees o s t indices then\n    some ((indices.map (basis o s t)).sum)\n  else none",
+    "BasisCorrect": "public def BasisCorrect (d : Raw.Degree) : Prop :=\n  ∃ e : Page d.spectrum d.s d.t ≃ₗ[ℤ] (Fin d.monomials.length →₀ ZMod 2),\n    ∀ i, e.symm (Finsupp.single i 1) = basis d.spectrum d.s d.t i.val",
+    "cofiber_basis_correct": "public theorem cofiber_basis_correct (d : Raw.Degree) (hd : d ∈ Raw.degrees)\n    (hs : d.spectrum = .nuCofiber) : BasisCorrect d := by\n  sorry\n\nset_option maxRecDepth 10000 in",
+    "basis_correct": "public theorem basis_correct (d : Raw.Degree) (hd : d ∈ Raw.degrees) : BasisCorrect d := by\n  rcases d with ⟨o,s,t,ms⟩\n  cases o with\n  | sphere =>\n    have hc := basis_count ⟨.sphere,s,t,ms⟩ hd rfl\n    have ht := table_degree_bound ⟨.sphere,s,t,ms⟩ hd\n    dsimp only at hc ht\n    change ∃ e : model.classical.sphere.Page 2 (s,t) ≃ₗ[ℤ] (Fin ms.length →₀ ZMod 2),\n      ∀ i, e.symm (Finsupp.single i 1) = sphereBasis s t i.val\n    rw [← hc]\n    refine ⟨Standard.coordinates s t ht, ?_⟩\n    intro i\n    simp only [sphereBasis, dif_pos ht, dif_pos i.isLt]\n  | nuCofiber => exact cofiber_basis_correct ⟨.nuCofiber,s,t,ms⟩ hd rfl",
+    "cofiber_d3": "public theorem cofiber_d3 : HasNonzeroDifferential nuCofiberSequence 3 (8,134) (11,136)\n    cofiberSource (bottom 11 136 Y) := by sorry",
+    "cofiber_target_to_e6": "public theorem cofiber_target_to_e6 :\n    SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by sorry",
+    "cofiber_target_not_hit_through5": "public theorem cofiber_target_not_hit_through5 :\n    NeverHitOnWindow nuCofiberSequence 2 5 (14,139) (bottom 14 139 T) := by\n  refine ⟨by decide,by decide,?_⟩\n  intro r hr hlast\n  exact no_earlier_hit_of_survival\n    (by rw [model.classical.firstPage]; omega) hr (by omega) cofiber_target_to_e6",
+    "Statement": "public def Statement (c : Raw.Claim) : Prop :=\n  ∃ x, decode c.spectrum c.s c.t c.x = some x ∧\n    match c.kind with\n    | .reaches => ReachesPage (sequence c.spectrum) c.r (c.s,c.t) x\n    | .boundaryBy => IsBoundaryBy (sequence c.spectrum) c.r (c.s,c.t) x\n    | .equation => ∃ y, decode c.spectrum c.ts c.tt c.y = some y ∧\n        HasDifferential (sequence c.spectrum) c.r (c.s,c.t) (c.ts,c.tt) x y\n    | .refutation => ∃ y, decode c.spectrum c.ts c.tt c.y = some y ∧\n        ¬ HasDifferential (sequence c.spectrum) c.r (c.s,c.t) (c.ts,c.tt) x y",
+    "result": "public theorem result (c : Raw.Claim) (hc : c ∈ Raw.claims) : Statement c := by\n  sorry",
+    "bottomMaps": "public def bottomMaps : List BottomMap := [\n  ⟨8, 134, [3], [4]⟩,\n  ⟨8, 134, [2], [3]⟩,\n  ⟨11, 136, [3], [3]⟩,\n  ⟨14, 139, [1], [2]⟩\n]"
+  }
+}

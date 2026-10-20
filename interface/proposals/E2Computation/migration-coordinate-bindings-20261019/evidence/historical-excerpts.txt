@@ -1,0 +1,186 @@
+Source commit: 71e63c47d1be7ebad1589bd08a598179e468f23b
+
+theorem h0_obstruction_rel0 : (generator ⟨0,by decide⟩)*(generator ⟨24,by decide⟩)=0 := by
+  have hr := csv_relation_zero "0,1,24,1" relation_member10
+  have hs : "0,1,24,1".splitOn ";"=["0,1,24,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp00 : "0,1,24,1"≠"" := by decide
+  have hp0 : (("0,1,24,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[0,1,24,1] := by
+    have hs : "0,1,24,1".splitOn ","=["0", "1", "24", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp0,hp00,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+theorem h0_obstruction_rel1 : (generator ⟨0,by decide⟩)*(generator ⟨3,by decide⟩)*(generator ⟨335,by decide⟩)=(generator ⟨0,by decide⟩^2)*(generator ⟨425,by decide⟩) := by
+  have hr := csv_relation_zero "0,1,3,1,335,1;0,2,425,1" relation_member11
+  have hs : "0,1,3,1,335,1;0,2,425,1".splitOn ";"=["0,1,3,1,335,1", "0,2,425,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp00 : "0,1,3,1,335,1"≠"" := by decide
+  have hp0 : (("0,1,3,1,335,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[0,1,3,1,335,1] := by
+    have hs : "0,1,3,1,335,1".splitOn ","=["0", "1", "3", "1", "335", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  have hp10 : "0,2,425,1"≠"" := by decide
+  have hp1 : (("0,2,425,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[0,2,425,1] := by
+    have hs : "0,2,425,1".splitOn ","=["0", "2", "425", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp0,hp00,hp1,hp10,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  simpa [mul_assoc,generator,RawData.generatorCount] using (eq_neg_of_add_eq_zero_left hr).trans (pq_neg_eq_self _)
+
+theorem h2_obstruction_rel0 : (generator ⟨2,by decide⟩)*(generator ⟨407,by decide⟩)=0 := by
+  have hr := csv_relation_zero "2,1,407,1" relation_member12
+  have hs : "2,1,407,1".splitOn ";"=["2,1,407,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp00 : "2,1,407,1"≠"" := by decide
+  have hp0 : (("2,1,407,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[2,1,407,1] := by
+    have hs : "2,1,407,1".splitOn ","=["2", "1", "407", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp0,hp00,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+theorem h2_obstruction_rel1 : (generator ⟨2,by decide⟩)*(generator ⟨79,by decide⟩)=(generator ⟨0,by decide⟩)*(generator ⟨89,by decide⟩) := by
+  have hr := csv_relation_zero "2,1,79,1;0,1,89,1" relation_member0
+  have hs : "2,1,79,1;0,1,89,1".splitOn ";"=["2,1,79,1", "0,1,89,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp00 : "2,1,79,1"≠"" := by decide
+  have hp0 : (("2,1,79,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[2,1,79,1] := by
+    have hs : "2,1,79,1".splitOn ","=["2", "1", "79", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  have hp10 : "0,1,89,1"≠"" := by decide
+  have hp1 : (("0,1,89,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[0,1,89,1] := by
+    have hs : "0,1,89,1".splitOn ","=["0", "1", "89", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp0,hp00,hp1,hp10,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  simpa [mul_assoc,generator,RawData.generatorCount] using (eq_neg_of_add_eq_zero_left hr).trans (pq_neg_eq_self _)
+
+theorem h2_obstruction_rel2 : (generator ⟨0,by decide⟩^3)*(generator ⟨89,by decide⟩)=0 := by
+  have hr := csv_relation_zero "0,3,89,1" relation_member13
+  have hs : "0,3,89,1".splitOn ";"=["0,3,89,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp00 : "0,3,89,1"≠"" := by decide
+  have hp0 : (("0,3,89,1".splitOn ",").map (fun n => n.toNat?.getD 0))=[0,3,89,1] := by
+    have hs : "0,3,89,1".splitOn ","=["0", "3", "89", "1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp0,hp00,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+module
+
+public import KIP126.Computation.LinCoordinates.Certificates.Model.E2.Proofs
+public import KIP126.Computation.LinCoordinates.Certificates.Model.RelationCertificates
+import all KIP126.Computation.LinCoordinates.Certificates.Model.RelationCertificates
+public import Batteries.Tactic.OpenPrivate
+import all Init.Data.String.Legacy
+import all Init.Data.String.Search
+import all Init.Data.String.Slice
+
+@[expose] public section
+
+/-! Pinned relation-table certificates used in the theta--B Massey calculation.
+The shared character transcription is checked against the original artifact;
+these equations concern its presented algebra, with no Adams-page claim. -/
+namespace KIP126.LinE2.RelationCertificates
+open private splitOn_char thetaRelationChunkChars thetaRelationChunk_eq_chars from KIP126.Computation.LinCoordinates.Certificates.Model.RelationCertificates
+set_option maxRecDepth 100000
+
+private theorem theta_relation_member_85 : "18,1,85,1" ∈ RawData.relations := by
+  apply List.mem_append.mpr
+  right
+  apply List.mem_flatMap.mpr
+  refine ⟨RawData.relationChunks[2], Array.getElem_mem_toList (by decide), ?_⟩
+  rw [thetaRelationChunk_eq_chars, show "\n" = String.singleton '\n' from rfl,
+    splitOn_char, String.toList_ofList]
+  apply List.mem_map.mpr
+  exact ⟨"18,1,85,1".toList, by decide +kernel, by simp⟩
+
+theorem theta_massey_h5_mul_85_zero : generator ⟨18,by decide⟩ * generator ⟨85,by decide⟩ = 0 := by
+  have hr := csv_relation_zero "18,1,85,1" theta_relation_member_85
+  have hs : "18,1,85,1".splitOn ";"=["18,1,85,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp0 : "18,1,85,1" ≠ "" := by decide
+  have hp : (("18,1,85,1".splitOn ",").map (fun n => n.toNat?.getD 0)) = [18,1,85,1] := by
+    have hs : "18,1,85,1".splitOn "," = ["18","1","85","1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp,hp0,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+private theorem theta_relation_member_84 : "18,1,84,1" ∈ RawData.relations := by
+  apply List.mem_append.mpr
+  right
+  apply List.mem_flatMap.mpr
+  refine ⟨RawData.relationChunks[2], Array.getElem_mem_toList (by decide), ?_⟩
+  rw [thetaRelationChunk_eq_chars, show "\n" = String.singleton '\n' from rfl,
+    splitOn_char, String.toList_ofList]
+  apply List.mem_map.mpr
+  exact ⟨"18,1,84,1".toList, by decide +kernel, by simp⟩
+
+theorem theta_massey_h5_mul_84_zero : generator ⟨18,by decide⟩ * generator ⟨84,by decide⟩ = 0 := by
+  have hr := csv_relation_zero "18,1,84,1" theta_relation_member_84
+  have hs : "18,1,84,1".splitOn ";"=["18,1,84,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp0 : "18,1,84,1" ≠ "" := by decide
+  have hp : (("18,1,84,1".splitOn ",").map (fun n => n.toNat?.getD 0)) = [18,1,84,1] := by
+    have hs : "18,1,84,1".splitOn "," = ["18","1","84","1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp,hp0,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+private theorem theta_relation_member_69 : "18,1,69,1" ∈ RawData.relations := by
+  apply List.mem_append.mpr
+  right
+  apply List.mem_flatMap.mpr
+  refine ⟨RawData.relationChunks[2], Array.getElem_mem_toList (by decide), ?_⟩
+  rw [thetaRelationChunk_eq_chars, show "\n" = String.singleton '\n' from rfl,
+    splitOn_char, String.toList_ofList]
+  apply List.mem_map.mpr
+  exact ⟨"18,1,69,1".toList, by decide +kernel, by simp⟩
+
+theorem theta_massey_h5_mul_69_zero : generator ⟨18,by decide⟩ * generator ⟨69,by decide⟩ = 0 := by
+  have hr := csv_relation_zero "18,1,69,1" theta_relation_member_69
+  have hs : "18,1,69,1".splitOn ";"=["18,1,69,1"] := by
+    simp +decide [String.splitOn,String.splitOnAux]
+  have hp0 : "18,1,69,1" ≠ "" := by decide
+  have hp : (("18,1,69,1".splitOn ",").map (fun n => n.toNat?.getD 0)) = [18,1,69,1] := by
+    have hs : "18,1,69,1".splitOn "," = ["18","1","69","1"] := by
+      simp +decide [String.splitOn,String.splitOnAux]
+    rw [hs]
+    simp +decide [String.toNat?,String.Slice.toNat?,String.Slice.isNat,
+      String.Slice.forIn_eq_forIn_toList,String.Slice.foldl_eq_foldl_toList]
+  norm_num [relationPolynomial,hs,monomialOfString,hp,hp0,polynomialOfPowers,
+    RawData.generatorCount,generator,map_add,map_mul,map_pow,mul_assoc] at hr
+  exact hr
+
+end KIP126.LinE2.RelationCertificates

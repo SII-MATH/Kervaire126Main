@@ -1,0 +1,36 @@
+{
+  "baseline_commit": "ef01dcfd904b51fe2288f0dc3e1eed074591967f",
+  "candidate_source_commit": "71e63c47d1be7ebad1589bd08a598179e468f23b",
+  "evidence_level": "source-inspection-only; no Lean counterexample or build performed",
+  "sha256": {
+    "KIP126/E2Computation/Standard.lean": "32ab999ceb76b426813841e17e6131c51502f3ad29d7cb25b53ca0d2f98772fa",
+    "KIP126/E2Computation/Source.lean": "e5aa328df5ab4bbf646105eb447fa4a34281955cc5d027ac090b61c0d84c690e",
+    "KIP126/E2Computation/Basis.lean": "cd945a1daeab2cfda5fedf4c6a3710c18480c6f7f915d5d8d9045b192c373ded",
+    "KIP126/E2Computation/Table/Relations.lean": "79db56877ea588ee1e7289a2a0ba46aba163885695953995ebee11eb7602c6f0",
+    "KIP126/E2Computation/Table/ThetaRelations.lean": "99816046843104e5a07d0d06ffdf4f1c8905ae1cd5e4cba1070c08bfc05716a8",
+    "KIP126/E2Computation/Table/Values.lean": "098a22d9e4da2dda177543b70709a50e383ade4fa6588bd8cbfced628a0fe3d4",
+    "KIP126/E2Computation/Table/Internal/SourceExpression.lean": "80055c191a0bb830ff761ab7dae3cafc4e4506674a7ee381bf1172833355a245",
+    "interface/baselines/e2-computation-api.json": "b6da08b20f73640c5f7847d6109ffe3426e5ff760f23f941ceefacf4e3779cdd",
+    "interface/baselines/proof-obligations.json": "2cca5badf30c9d1fbc2485298f7938aa53951d665ebbc7a5d932450b8901b0f4"
+  },
+  "declarations_at_baseline": {
+    "sourceData": "public noncomputable def sourceData : ProgramData.{0} where\n  component := sourceComponent\n  product := sourceProduct\n  unit := sourceUnit\n  atom := sourceAtom",
+    "sourceCoordinates": "public noncomputable def sourceCoordinates (s t : ℕ) (ht : t ≤ 261) :\n    sourceData.component s t ≃ₗ[ℤ] (Fin (archive.basisCount s t) →₀ ZMod 2) := by sorry",
+    "sourceGenerator": "public noncomputable def sourceGenerator (i : Fin archive.generators.count) :\n    sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 :=\n  sourceGeneratorImplementation i",
+    "sourceAtom_agrees": "public theorem sourceAtom_agrees (a : Atom) :\n    (eqToHom (congrArg (fun d : ℕ × ℕ => sourceData.component d.1 d.2)\n      (archive.atom_degree a))) (sourceGenerator (archive.atomIndex a)) = sourceData.atom a := by\n  dsimp only [sourceGenerator, sourceGeneratorImplementation]\n  exact sourceGeneratorAtoms_agrees coordinateGenerator a",
+    "sourceBasis_values": "public theorem sourceBasis_values (s t : ℕ) (ht : t ≤ 261)\n    (i : Fin (archive.basisCount s t)) :\n    (sourceCoordinates s t ht).symm (Finsupp.single i 1) =\n      (archive.basisMonomial s t i).value sourceData sourceGenerator := by sorry",
+    "comparison": "public noncomputable def comparison (s t : ℕ) (ht : t ≤ 261) :\n    sourceData.component s t ≃ₗ[ℤ] model.classical.sphere.Page 2 (s,t) := by sorry",
+    "comparison_product": "public theorem comparison_product (s t s' t' : ℕ) (ht : t+t' ≤ 261)\n    (x : sourceData.component s t) (y : sourceData.component s' t') :\n    comparison (s+s') (t+t') ht (sourceData.product s t s' t' x y) =\n      model.sphereAlgebra.product (s,t) (s',t')\n        (comparison s t (by omega) x) (comparison s' t' (by omega) y) := by sorry",
+    "coordinateGenerator": "private noncomputable def coordinateGenerator (i : Fin archive.generators.count) :\n    sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 :=\n  (sourceCoordinates (archive.generators.degree i).1 (archive.generators.degree i).2\n    (singletonBasisIndex_valid i).1).symm\n      (Finsupp.single ⟨singletonBasisIndex i, (singletonBasisIndex_valid i).2⟩ 1)",
+    "sourceGeneratorImplementation": "private noncomputable def sourceGeneratorImplementation (i : Fin archive.generators.count) :\n    sourceData.component (archive.generators.degree i).1 (archive.generators.degree i).2 :=\n  sourceGeneratorAtoms coordinateGenerator i",
+    "nativeAtom": "private def sourceAtomConstruction (a : Atom) :\n    sourceComponentConstruction a.degree.1 a.degree.2 := by\n  let i := atomIndex a\n  have hi : generators.degree i=a.degree :=\n    congrArg (fun r : ℕ × String × ℕ × ℕ=>r.2.2) (atom_record a)\n  refine ⟨nativeProjection generators.count archiveSourceRelations (MvPolynomial.X i),?_⟩\n  apply Submodule.mem_map.mpr\n  refine ⟨MvPolynomial.X i,?_,rfl⟩\n  have h := MvPolynomial.isWeightedHomogeneous_X (ZMod 2) generators.degree i\n  rw [hi] at h\n  exact h\n\nprivate theorem sourceAtomConstruction_val (a : Atom) :\n    (sourceAtomConstruction a).val = nativeProjection generators.count archiveSourceRelations\n      (MvPolynomial.X (atomIndex a)) := rfl",
+    "sourceBasisSpecification": "public structure SourceBasisSpecification (P : ProgramData.{v}) (A : SphereArchive) where\n  generator : ∀ i : Fin A.generators.count,\n    P.component (A.generators.degree i).1 (A.generators.degree i).2\n  atom_agrees : ∀ a : Atom,\n    (eqToHom (congrArg (fun d : ℕ × ℕ => P.component d.1 d.2) (A.atom_degree a)))\n      (generator (A.atomIndex a)) = P.atom a\n  coordinates : ∀ s t : ℕ, t ≤ 261 →\n    P.component s t ≃ₗ[ℤ] (Fin (A.basisCount s t) →₀ ZMod 2)\n  basis_values : ∀ (s t : ℕ) (ht : t ≤ 261) (i : Fin (A.basisCount s t)),\n    (coordinates s t ht).symm (Finsupp.single i 1) =\n      (A.basisMonomial s t i).value P generator",
+    "h0_obstruction_rel0": "public theorem h0_obstruction_rel0 :\n    ((.mul (.named .h0) (.generator 24 5 36)) : Expression).value = 0 := by\n  sorry",
+    "h0_obstruction_rel1": "public theorem h0_obstruction_rel1 :\n    ((.mul (.mul (.named .h0) (.generator 3 1 8)) (.generator 335 12 130)) : Expression).value = ((.mul (.mul (.named .h0) (.named .h0)) (.generator 425 12 137)) : Expression).value := by\n  sorry",
+    "h2_obstruction_rel0": "public theorem h2_obstruction_rel0 :\n    ((.mul (.named .h2) (.generator 407 13 135)) : Expression).value = 0 := by\n  sorry",
+    "h2_obstruction_rel1": "public theorem h2_obstruction_rel1 :\n    ((.mul (.named .h2) (.named .M_mul_d_0)) : Expression).value = ((.mul (.named .h0) (.generator 89 10 72)) : Expression).value := by\n  sorry",
+    "h2_obstruction_rel2": "public theorem h2_obstruction_rel2 :\n    ((.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 89 10 72)) : Expression).value = 0 := by\n  sorry",
+    "theta_h5_generator85_zero": "public theorem theta_h5_generator85_zero :\n    ((.mul (.named .h5) (.generator 85 7 70)) : Expression).value = 0 := by\n  sorry",
+    "theta_h5_generator84_zero": "public theorem theta_h5_generator84_zero :\n    ((.mul (.named .h5) (.generator 84 7 70)) : Expression).value = 0 := by\n  sorry"
+  }
+}
