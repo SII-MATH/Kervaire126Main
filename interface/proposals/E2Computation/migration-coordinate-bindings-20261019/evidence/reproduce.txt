@@ -1,0 +1,16 @@
+"""Read-only baseline checks; source inspection, not a Lean proof or counterexample."""
+from pathlib import Path
+import hashlib, json, subprocess
+HERE = Path(__file__).resolve().parent
+ROOT = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip())
+data = json.loads((HERE / 'source-audit.json').read_text())
+for path, expected in data['sha256'].items():
+    blob = subprocess.check_output(['git', 'show', data['baseline_commit'] + ':' + path], cwd=ROOT)
+    assert hashlib.sha256(blob).hexdigest() == expected, path
+std = subprocess.check_output(['git', 'show', data['baseline_commit'] + ':KIP126/E2Computation/Standard.lean'], cwd=ROOT, text=True)
+assert 'sourceGeneratorAtoms coordinateGenerator i' in std
+assert '(sourceCoordinates (archive.generators.degree i).1' in std
+refs = subprocess.check_output(['git', 'grep', '-n', 'bottomMaps', data['baseline_commit'], '--', 'KIP126'], cwd=ROOT, text=True).splitlines()
+assert len(refs) == 1 and 'public def bottomMaps' in refs[0], refs
+print('PASS: baseline hashes; generator is coordinate-inverse-backed; bottomMaps has only its data declaration in KIP126.')
+print('No build, no fixed-object counterexample, no proof of interface impossibility.')

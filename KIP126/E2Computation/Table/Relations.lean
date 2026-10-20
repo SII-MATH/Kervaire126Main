@@ -2,6 +2,7 @@ module
 import all KIP126.E2Computation.Table.Internal.ZeroDimension
 public import KIP126.E2Computation.Table.Values
 import all KIP126.E2Computation.Standard
+import all KIP126.E2Computation.Table.Internal.H2Annihilation
 /-! Primitive polynomial identities of the pinned source algebra,
 LinProgram/Model/RelationCertificates.lean and Classes/Proofs.lean
 at bbac1fc05843 (MIT), compared with the same actual sphere E₂.
@@ -72,7 +73,14 @@ public theorem h0_obstruction_rel3 :
 /-- Original certificate at line 433. -/
 public theorem h2_obstruction_rel0 :
     ((.mul (.named .h2) (.generator 407 13 135)) : Expression).value = 0 := by
-  sorry
+  let x := (Standard.comparison 13 135 (by decide)).symm (generatorImage 407 13 135)
+  have h := Standard.comparison_product 1 4 13 135 (by decide)
+    (Standard.sourceData.atom .h2) x
+  rw [Internal.h2SourceZero,map_zero] at h
+  have hx : Standard.comparison 13 135 (by decide) x = generatorImage 407 13 135 :=
+    (Standard.comparison 13 135 (by decide)).apply_symm_apply _
+  rw [hx] at h
+  exact h.symm
 
 /-- Original certificate at line 448. -/
 public theorem h2_obstruction_rel1 :

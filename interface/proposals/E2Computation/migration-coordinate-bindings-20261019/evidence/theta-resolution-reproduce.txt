@@ -1,0 +1,22 @@
+"""Read-only checks supplementing the independent mathematical source review."""
+from pathlib import Path
+import hashlib, json, re, subprocess
+root = Path(subprocess.check_output(['git', 'rev-parse', '--show-toplevel'], text=True).strip())
+evidence = Path(__file__).resolve().parent
+audit = json.loads((evidence / 'theta-resolution-audit.json').read_text())
+for p, expected in audit['sha256'].items():
+    assert hashlib.sha256((root / p).read_bytes()).hexdigest() == expected, p
+s = (root / 'KIP126/E2Computation/Table/Internal/ThetaAnnihilation.lean').read_text()
+t = (root / 'KIP126/E2Computation/Table/ThetaRelations.lean').read_text()
+words = s.split('private def thetaMonomials :')[1].split('private theorem thetaEnumeration')[0]
+assert len(re.findall(r'\[(?:⟨.*?⟩(?:,⟨.*?⟩)*)\]', words)) == 33
+assert len(re.findall(r'^private theorem (thetaRelation\d+)\s*:', s, re.M)) == 20
+assert not re.findall(r'^public .*', s, re.M)
+for w in audit['forbidden_reference_count']:
+    assert not re.search(r'\b' + re.escape(w) + r'\b', s), w
+baseline = subprocess.check_output(['git', 'show', 'ef01dcf:KIP126/E2Computation/Table/ThetaRelations.lean'], cwd=root, text=True)
+for name in ['theta_h5_generator84_zero', 'theta_h5_generator85_zero']:
+    pat = r'public theorem ' + name + r'\s*:(.*?)\s*:= by'
+    assert re.search(pat, baseline, re.S).group(1) == re.search(pat, t, re.S).group(1)
+print('PASS: current-source hashes; 33 listed weighted monomials; 20 native relation helpers; all helper declarations private; no forbidden references; both public theorem signatures unchanged.')
+print('This is source inspection, not Lean compilation or a full axiom-closure audit.')

@@ -1,0 +1,204 @@
+Source commit: 71e63c47d1be7ebad1589bd08a598179e468f23b
+
+structure AdamsComputationTheorems (D : AdamsComparison H M Syn) (L : SphereAdamsClasses H)
+    (G : KIP126.Literature.AdamsSynthetic.TmfDetectionClasses H) where
+  interpretation : E2Interpretation D
+  basis : ∀ d ∈ Raw.degrees, BasisEquivalence interpretation d
+  monomials : ∀ d ∈ Raw.degrees, SphereMonomialComparison interpretation d
+  products : ∀ p ∈ Raw.products, SphereProductComparison interpretation p
+  distinguishedClasses : DistinguishedClassComparison interpretation L G
+  adamsStatements : ∀ c ∈ Raw.claims, AdamsStatement interpretation c
+  cofiberInclusion : ∀ p ∈ Raw.bottomMaps, CofiberInclusionComparison interpretation p
+  cofiberBoundary : CofiberBoundaryComparison interpretation
+
+def CofiberInclusionComparison {D : AdamsComparison H M Syn} (R : E2Interpretation D) (p : Raw.BottomMap) : Prop :=
+  ∃ x y, R.coordinateSum .sphere p.s p.t p.x = some x ∧
+    R.coordinateSum .nuCofiber p.s p.t p.y = some y ∧
+    adamsInternalE2Induced H.unit (HasFunctorialCofiber.cofibι D.hopfAndDetector.nuMap)
+      (p.s,p.t) x = y
+
+/-- The top-cell value is compared via D's actual tower suspension data, not
+an arbitrary degree-shifted linear map. Two canonical shift-addition maps
+and four one-fold desuspensions identify Σ(S³) with S⁰ in degree t-4. -/
+def CofiberBoundaryComparison {D : AdamsComparison H M Syn} (R : E2Interpretation D) : Prop :=
+  ∃ (x : Page D .nuCofiber 8 134) (y : Page D .sphere 8 130)
+    (a3 : E2 H (Sphere 3) 8 133)
+    (a2 : E2 H (Sphere 2) 8 132)
+    (a1 : E2 H (Sphere 1) 8 131),
+    R.coordinateSum .nuCofiber 8 134 [0] = some x ∧
+    R.coordinateSum .sphere 8 130 [0] = some y ∧
+    (D.classicalSuspension (.shift 3 .sphere)).DesuspendsClass 8 134
+      (adamsInternalE2Induced H.unit (HasFunctorialCofiber.cofibδ D.hopfAndDetector.nuMap)
+        (8,134) x) a3 ∧
+    (D.classicalSuspension (.shift 2 .sphere)).DesuspendsClass 8 133
+      (adamsInternalE2Induced H.unit
+        ((shiftFunctorAdd' C (2 : ℤ) 1 3 (by decide)).hom.app SphereSpectrum)
+        (8,133) a3) a2 ∧
+    (D.classicalSuspension (.shift 1 .sphere)).DesuspendsClass 8 132
+      (adamsInternalE2Induced H.unit
+        ((shiftFunctorAdd' C (1 : ℤ) 1 2 (by decide)).hom.app SphereSpectrum)
+        (8,132) a2) a1 ∧
+    (D.classicalSuspension .sphere).DesuspendsClass 8 131 a1 y
+
+theorem cnu_d3 (I : AdamsComputationTheorems D L G) : Derived.CnuDifferential I.interpretation := by
+  have hdecode (s t : ℕ) (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber s t indices = true) :
+      I.interpretation.coordinateSum .nuCofiber s t indices =
+        some ((indices.map (I.interpretation.basis .nuCofiber s t)).sum) := by
+    simp only [E2Interpretation.coordinateSum, hv, ite_true]
+  obtain ⟨x0, hx0, y0, hy0, h0⟩ :=
+    I.adamsStatements _ (List.mem_of_getElem? (i := 657) (by rfl))
+  obtain ⟨x3, hx3, y3, hy3, h3⟩ :=
+    I.adamsStatements _ (List.mem_of_getElem? (i := 34) (by rfl))
+  obtain ⟨x4, hx4, y4, hy4, h4⟩ :=
+    I.adamsStatements _ (List.mem_of_getElem? (i := 33) (by rfl))
+  change Page D .nuCofiber 8 134 at x0 x3 x4
+  change Page D .nuCofiber 11 136 at y0 y3 y4
+  change HasDifferential E 3 (8,134) (11,136) x0 y0 at h0
+  change HasDifferential E 3 (8,134) (11,136) x3 y3 at h3
+  change HasDifferential E 3 (8,134) (11,136) x4 y4 at h4
+  have hx0' : x0 = I.interpretation.basis .nuCofiber 8 134 0 := by
+    have h := Option.some.inj (hx0.symm.trans (hdecode 8 134 [0] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using h
+  have hx3' : x3 = I.interpretation.basis .nuCofiber 8 134 3 := by
+    have h := Option.some.inj (hx3.symm.trans (hdecode 8 134 [3] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using h
+  have hx4' : x4 = I.interpretation.basis .nuCofiber 8 134 4 := by
+    have h := Option.some.inj (hx4.symm.trans (hdecode 8 134 [4] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using h
+  have hy0' : y0 = I.interpretation.basis .nuCofiber 11 136 1 +
+      I.interpretation.basis .nuCofiber 11 136 2 + I.interpretation.basis .nuCofiber 11 136 3 := by
+    have h := Option.some.inj (hy0.symm.trans (hdecode 11 136 [1,2,3] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero, add_assoc] using h
+  have hy3' : y3 = I.interpretation.basis .nuCofiber 11 136 2 := by
+    have h := Option.some.inj (hy3.symm.trans (hdecode 11 136 [2] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using h
+  have hy4' : y4 = I.interpretation.basis .nuCofiber 11 136 1 := by
+    have h := Option.some.inj (hy4.symm.trans (hdecode 11 136 [1] (by decide)))
+    simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using h
+  obtain ⟨e, he⟩ := I.basis _ (List.mem_of_getElem? (i := 43) (by rfl))
+  change (E).Page 2 (11,136) ≃ₗ[ℤ] (Fin 5 →₀ KIP126.Algebra.F2) at e
+  change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = I.interpretation.basis .nuCofiber 11 136 i.val at he
+  have htwo (y : (E).Page 2 (11,136)) : y+y = 0 := by
+    apply e.injective
+    rw [map_add, map_zero]
+    ext i
+    exact CharTwo.add_self_eq_zero ((e y) i)
+  have hne : I.interpretation.basis .nuCofiber 11 136 3 ≠ 0 := by
+    rw [← he ⟨3, by decide⟩]
+    intro hz
+    have h := congrArg e hz
+    simp only [LinearEquiv.apply_symm_apply, map_zero] at h
+    change (Finsupp.single (⟨3, by decide⟩ : Fin 5) (1 : KIP126.Algebra.F2)) = 0 at h
+    exact Finsupp.single_ne_zero.mpr one_ne_zero h
+  have hsum : y0+y3+y4 = I.interpretation.basis .nuCofiber 11 136 3 := by
+    rw [hy0', hy3', hy4']
+    calc
+      _ = (I.interpretation.basis .nuCofiber 11 136 1 + I.interpretation.basis .nuCofiber 11 136 1) +
+          (I.interpretation.basis .nuCofiber 11 136 2 + I.interpretation.basis .nuCofiber 11 136 2) +
+          I.interpretation.basis .nuCofiber 11 136 3 := by abel
+      _ = _ := by rw [htwo, htwo, zero_add, zero_add]
+  have hd := differential_add (differential_add h0 h3) h4
+  rw [hsum] at hd
+  refine ⟨x0+x3+x4, I.interpretation.basis .nuCofiber 11 136 3, ?_, ?_, ?_⟩
+  · rw [hdecode 8 134 [0,3,4] (by decide), hx0', hx3', hx4']
+    simp only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero, add_assoc]
+  · simpa only [List.map_cons, List.map_nil, List.sum_cons, List.sum_nil, add_zero] using
+      hdecode 11 136 [3] (by decide)
+  · obtain ⟨hdeg, xr, yr, hxr, hyr, hd⟩ := hd
+    refine ⟨hdeg, xr, yr, hxr, hyr, hd, ?_⟩
+    obtain ⟨_, z, hz2, hz3⟩ := hyr
+    have hB : ((E).ssData (11,136)).B 1 = ((E).ssData (11,136)).B 0 :=
+      boundaries_succ_of_zero E 2 (by change (2 : ℤ) ≤ 2; omega) (9,135) (cnu_d2_zero I)
+    rw [← hz3]
+    exact page_projection_nonzero _ 0 1 (by simp) hB z (hz2 ▸ hne)
+
+theorem cnu_target_through5 (I : AdamsComputationTheorems D L G) :
+    Derived.CnuTargetThrough5 I.interpretation := by
+  let S := sequence D Raw.Spectrum.nuCofiber
+
+  -- Common representatives and actual boundary subobjects control passage between pages.
+  -- Reconstruct all incoming maps from the complete degree-local bases.
+  -- The nonzero d3 and d4 eliminate two source coordinates; the remaining class reaches page 16.
+  -- At the final target, pages 3--5 add no boundaries, and the page-2 image is coordinate [3].
+  have hdecode (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber 14 139 indices = true) :
+      I.interpretation.coordinateSum .nuCofiber 14 139 indices =
+        some ((indices.map (I.interpretation.basis .nuCofiber 14 139)).sum) := by
+    as_aux_lemma =>
+      simp only [E2Interpretation.coordinateSum,hv,ite_true]
+  have hreach : ReachesPage S 1000 (14,139) (I.interpretation.basis .nuCofiber 14 139 2) := by
+    as_aux_lemma =>
+      obtain ⟨x,hx,h⟩ := I.adamsStatements _ (List.mem_of_getElem? (i := 110) (by rfl))
+      have hx' : x = I.interpretation.basis .nuCofiber 14 139 2 := by
+        as_aux_lemma =>
+          simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+            Option.some.inj (hx.symm.trans (hdecode [2] (by decide)))
+      exact hx' ▸ h
+  obtain ⟨e,he⟩ := I.basis _ (List.mem_of_getElem? (i := 54) (by rfl))
+  change (S).Page 2 (14,139) ≃ₗ[ℤ] (Fin 4 →₀ KIP126.Algebra.F2) at e
+  change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = I.interpretation.basis .nuCofiber 14 139 i.val at he
+  have hn0 : I.interpretation.basis .nuCofiber 14 139 2 ≠ 0 := by
+    as_aux_lemma =>
+      rw [← he ⟨2,by decide⟩]
+      intro hz
+      have hh := congrArg e hz
+      simp only [LinearEquiv.apply_symm_apply,map_zero] at hh
+      change (Finsupp.single (⟨2,by decide⟩ : Fin 4) (1 : KIP126.Algebra.F2)) = 0 at hh
+      exact Finsupp.single_ne_zero.mpr one_ne_zero hh
+  have hn3 : I.interpretation.basis .nuCofiber 14 139 2 ≠ I.interpretation.basis .nuCofiber 14 139 3 := by
+    as_aux_lemma =>
+      rw [← he ⟨2,by decide⟩,← he ⟨3,by decide⟩]
+      intro hz
+      have hh := e.symm.injective hz
+      have hval := congrArg (fun f : Fin 4 →₀ KIP126.Algebra.F2 => f ⟨2,by decide⟩) hh
+      simp at hval
+  have hd4 : (S).d 4 (10,136) = 0 := by
+    as_aux_lemma =>
+      haveI := (cnu_10_136_data I).2.2
+      ext x
+      change (S).d 4 (10,136) x = 0
+      rw [Subsingleton.elim x 0,map_zero]
+  have hB2 : ((S).ssData (14,139)).B 2 = ((S).ssData (14,139)).B 1 :=
+    boundaries_succ_of_zero S 3 (by change (2 : ℤ) ≤ 3; omega) (11,137) (cnu_d2_d3_incoming14_zero I).2
+  have hB3 : ((S).ssData (14,139)).B 3 = ((S).ssData (14,139)).B 2 :=
+    boundaries_succ_of_zero S 4 (by change (2 : ℤ) ≤ 4; omega) (10,136) hd4
+  have hB4 : ((S).ssData (14,139)).B 4 = ((S).ssData (14,139)).B 3 :=
+    boundaries_succ_of_zero S 5 (by change (2 : ℤ) ≤ 5; omega) (9,135) (cnu_d5_incoming14_zero I)
+  have hB : ((S).ssData (14,139)).B 4 = ((S).ssData (14,139)).B 1 := hB4.trans (hB3.trans hB2)
+  obtain ⟨yr,hyr⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 6) (by decide : (6 : ℤ) ≤ 1000) hreach
+  have hne : yr ≠ 0 := by
+    as_aux_lemma =>
+      obtain ⟨_,z,hz2,hz6⟩ := hyr
+      let z1 := (Subobject.ofLE (((S).ssData (14,139)).Z 4) (((S).ssData (14,139)).Z 1)
+        (((S).ssData (14,139)).Z_anti (by simp))) z
+      have hπ1 : ((S).ssData (14,139)).pageπ 1 z1 ≠ 0 := by
+        as_aux_lemma =>
+          intro hz1
+          have hh := (next_projection_zero_iff_incoming S 2
+            (by change (2 : ℤ) ≤ 2; omega) (12,138) z1).mp hz1
+          obtain ⟨a,ha⟩ := hh
+          have hπ2 : (Subobject.ofLE (((S).ssData (14,139)).Z 1) (((S).ssData (14,139)).Z 0)
+              (((S).ssData (14,139)).Z_anti (by simp)) ≫
+              ((S).ssData (14,139)).pageπ 0) z1 = I.interpretation.basis .nuCofiber 14 139 2 := by
+            as_aux_lemma =>
+              dsimp only [z1]
+              rw [← CategoryTheory.comp_apply,← Category.assoc,Subobject.ofLE_comp_ofLE]
+              exact hz2
+          change (S).d 2 (12,138) a = (Subobject.ofLE (((S).ssData (14,139)).Z 1)
+            (((S).ssData (14,139)).Z 0) _ ≫ ((S).ssData (14,139)).pageπ 0) z1 at ha
+          rw [hπ2] at ha
+          rcases cnu_d2_incoming14_image I a with hh | hh
+          · exact hn0 (ha.symm.trans hh)
+          · exact hn3 (ha.symm.trans hh)
+      rw [← hz6]
+      exact page_projection_nonzero _ 1 4 (by simp) hB z hπ1
+  refine ⟨I.interpretation.basis .nuCofiber 14 139 2,?_,⟨yr,hyr,hne⟩,?_⟩
+  · simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using hdecode [2] (by decide)
+  · refine ⟨by decide,by decide,?_⟩
+    intro r hr hr5
+    rintro ⟨q,hdeg,z,y,hy,hyne,hd⟩
+    obtain ⟨x,hx⟩ := page_has_initial_representative hr z
+    have hzero := differential_target_later_zero
+      (by change (2 : ℤ) ≤ r; omega) (by omega : r < 6) ⟨hdeg,z,y,hx,hy,hd⟩
+    exact hne (represents_unique hyr hzero)
