@@ -6,11 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.760556+00:00'
+updated: '2026-10-20T05:44:00.407421+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 277-300](paper/main.tex.html#L277). An essential extension is defined using the differentials and boundary indeterminacy of the extension spectral sequence.
 
-The generic filtered extension relation and its essentiality are defined in \ref{sem:SpectralSequence:extension-equation} and \ref{sem:SpectralSequence:extension-ambiguity}. This entry binds only their specialization to the convergent synthetic map.
+The generic filtered extension relation and its essentiality are defined in \ref{sem:SpectralSequence:extension-equation} and \ref{sem:SpectralSequence:extension-equation}. This entry binds only their specialization to the convergent synthetic map.
 
 **Formal scope:** partial.
 

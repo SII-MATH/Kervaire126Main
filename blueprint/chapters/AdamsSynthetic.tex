@@ -8,13 +8,24 @@ In the statements quoted from \cite{LWX126}, spectra are assumed to be $2$-compl
 
 \section{The fixed classical and synthetic background}
 
-\begin{definition}[The fixed categories and coefficient object]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[The fixed categories, coefficients and cofibers]
 \label{sem:AdamsSynthetic:categories}
 \level{coarse}
 Let $\mathrm{Sp}$ and $\mathrm{Syn}$ be the classical and synthetic stable categories, with functorial cofibers. Equip $\mathrm{Sp}$ with its closed symmetric monoidal structure, and fix the mod-two coefficient object $H\mathbb F_2$ and its unit.
+
+For $f\colon X\to Y$ in $\mathrm{Sp}$, choose a cofiber $C(f)$ with a distinguished triangle $X\xrightarrow f Y\to C(f)\to\Sigma X$. Every commutative square between such maps induces a map of cofibers commuting with the inclusions and boundaries.
+
+Equip $\mathrm{Syn}$ with a preadditive, monoidal, pretriangulated category structure, a zero object, and additive integer suspension. For $p\in\mathbb Z^2$, the fully faithful functor $\Sigma^p$ has comparisons $\Sigma^q\Sigma^p\cong\Sigma^{p+q}$, $\Sigma^{0,0}\cong\operatorname{id}$, and $\Sigma^{n,0}\cong\Sigma^n$. There is a natural transformation $\lambda\colon\Sigma^{0,-1}\to\operatorname{id}$, and natural comparisons $\Sigma^p(X\otimes Y)\cong(\Sigma^pX)\otimes Y$.
+
+For $f\colon X\to Y$ in $\mathrm{Syn}$, choose a cofiber $C(f)$ and a distinguished triangle $X\xrightarrow f Y\to C(f)\to\Sigma X$. A commutative square induces a map of these cofibers commuting with inclusion and boundary.
+
+Choose $H\mathbb F_2\in\mathrm{Sp}$ together with an additive isomorphism $\pi_0H\mathbb F_2\cong\mathbb Z/2$ and $\pi_nH\mathbb F_2=0$ for every nonzero integer $n$. Its coefficient unit $S\to H\mathbb F_2$ is the class corresponding to $1\in\mathbb Z/2$.
+
+The monoidal category $\mathrm{Sp}$ is symmetric and closed. For each $W$, tensoring on the right with $W$ and taking the internal hom $F(W,-)$ commute with integer suspension and preserve distinguished triangles for these suspension comparisons.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.Spectrum,KIP126.AdamsSynthetic.Standard.SyntheticSpectrum,KIP126.AdamsSynthetic.Standard.spectrumCategory,KIP126.AdamsSynthetic.Standard.syntheticCategory,KIP126.AdamsSynthetic.Standard.spectrumCofiber,KIP126.AdamsSynthetic.Standard.syntheticCofiber,KIP126.AdamsSynthetic.Standard.coefficients,KIP126.AdamsSynthetic.Standard.closedBackground}
 \end{definition}
+
 
 \begin{definition}[The synthetic analogue functor]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -25,14 +36,17 @@ Let $\nu\colon\mathrm{Sp}\to\mathrm{Syn}$ be the synthetic analogue functor, tog
 \lean{KIP126.AdamsSynthetic.Standard.nu}
 \end{definition}
 
-\begin{definition}[Realization and recovery]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[Realization, lambda localization and recovery]
 \label{sem:AdamsSynthetic:recovery}
 \level{coarse}
 \uses{sem:AdamsSynthetic:nu}
 Realization $R\colon\mathrm{Syn}\to\mathrm{Sp}$ is left adjoint to the fully faithful spectral Yoneda functor. There is a natural isomorphism $R\nu\cong\operatorname{id}_{\mathrm{Sp}}$.
+
+The full subcategory of $\mathrm{Syn}$ on objects for which $\lambda$ is invertible is reflective. Let $L$ be its reflector. There is an equivalence $\mathrm{Syn}[\lambda^{-1}]\simeq\mathrm{Sp}$ under which $L\nu$ is naturally isomorphic to the inverse equivalence.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.realization,KIP126.AdamsSynthetic.Standard.spectralYoneda,KIP126.AdamsSynthetic.Standard.realizationAdjunction,KIP126.AdamsSynthetic.Standard.spectralYonedaFullyFaithful,KIP126.AdamsSynthetic.Standard.nuRealizationIso,KIP126.AdamsSynthetic.Standard.recovery}
 \end{definition}
+
 
 \begin{definition}[Finite lambda quotients]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -63,38 +77,28 @@ Let $X\to Y\to Z\to\Sigma X$ be a distinguished triangle in $\mathrm{Sp}$. If it
 
 \section{Adams towers, convergence, and finite filtration}
 
-\begin{definition}[Auxiliary maps and a detecting spectrum]
-\label{frontier:AdamsSynthetic:0895d4999173}
-\level{fine}
-\uses{sem:AdamsSynthetic:categories}
-Fix maps $\eta\colon S^1\to S$ and $\nu_3\colon S^3\to S$, a spectrum $D$, and a map $S\to D$. These determine the classical object family $\mathcal C_0$ and the synthetic object family $\mathcal S_0$ defined above.
-\lean{KIP126.AdamsSynthetic.Standard.auxiliary}
-\end{definition}
 
-\begin{definition}[The classical and synthetic Adams systems]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[The fixed object families and their Adams systems]
 \label{sem:AdamsSynthetic:families}
 \level{coarse}
 \uses{sem:AdamsSynthetic:categories,sem:AdamsSynthetic:nu}
+Fix maps $\eta\colon S^1\to S$ and $\nu_3\colon S^3\to S$, a spectrum $D$, and a map $S\to D$. These determine the classical object family $\mathcal C_0$ and the synthetic object family $\mathcal S_0$ used below.
+
 The coefficient units determine functorial classical and synthetic Adams towers. Write $E_r^{s,t}(X)$ for the resulting classical bidegree spectral sequence, and use the synthetic tridegree spectral sequence for objects of $\mathrm{Syn}$.
-\lean{KIP126.AdamsSynthetic.Standard.classical,KIP126.AdamsSynthetic.Standard.family,KIP126.AdamsSynthetic.Standard.classicalTower,KIP126.AdamsSynthetic.Standard.syntheticTower}
+
+For $X\in\mathrm{Sp}$, the Adams spectral sequence begins at $E_2$ and its page-$r$ differential has degree $(r,r-1)$. For $f\colon X\to Y$ and $g\colon Y\to Z$, one has $E(g\circ f)=E(g)\circ E(f)$.
+The synthetic family also begins at $E_2$, with page-$r$ differential degree $(r,r-1,0)$.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 % Blueprint note: The generic coefficient-tower quotient differential, its square-zero law, its next-cycle kernel and its next-boundary image have been proved internally, adapted from \cite{KIPSource8cb35dad5f75}, ClassicalAdams/TowerDifferential and TowerSSData. Per-map tower maps and their spectral-sequence naturality have also been constructed internally. These private results do not yet construct the fixed classical or synthetic functors, their strict identity/composition laws, or the selected tower comparisons. They have no separate formal bindings and do not discharge any Milnor comparison or foundation.
+\lean{KIP126.AdamsSynthetic.Standard.classical,KIP126.AdamsSynthetic.Standard.family,KIP126.AdamsSynthetic.Standard.classicalTower,KIP126.AdamsSynthetic.Standard.syntheticTower,KIP126.AdamsSynthetic.Standard.auxiliary}
 \end{definition}
 
-\begin{theorem}[The classical page and differential conventions]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:synthetic-indices}
-\level{coarse}
-\uses{sem:AdamsSynthetic:families}
-For $X\in\mathrm{Sp}$, the Adams spectral sequence begins at $E_2$ and its page-$r$ differential has degree $(r,r-1)$. For $f\colon X\to Y$ and $g\colon Y\to Z$, one has $E(g\circ f)=E(g)\circ E(f)$.
-\lean{KIP126.AdamsSynthetic.Standard.firstPage,KIP126.AdamsSynthetic.Standard.differentialDegree,KIP126.AdamsSynthetic.Standard.classical_map_comp}
-\end{theorem}
 
 \begin{definition}[Convergence on the object families]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:selected-convergence}
 \level{coarse}
-\uses{sem:AdamsSynthetic:families,frontier:AdamsSynthetic:0895d4999173,sem:AdamsSynthetic:lambda-quotients}
+\uses{sem:AdamsSynthetic:families,sem:AdamsSynthetic:lambda-quotients}
 For $X\in\mathcal C_0$ and $Y\in\mathcal S_0$, the coefficient-unit Adams towers converge to the Adams-filtered homotopy groups of $X$ and $Y$, respectively. Classical suspension identifies the suspended tower with the tower of the suspended object.
 \lean{KIP126.AdamsSynthetic.Standard.classicalConvergence,KIP126.AdamsSynthetic.Standard.classicalSuspension,KIP126.AdamsSynthetic.Standard.convergence}
 \end{definition}
@@ -108,23 +112,28 @@ Let $f$ be a map in $\mathrm{Sp}$ and $s\in\mathbb Z$. The map $f$ has filtratio
 \lean{KIP126.AdamsSynthetic.Standard.factorization_filtration_iff}
 \end{theorem}
 
-\begin{theorem}[Separation for maps of finite spectra]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{theorem}[Support and separation for finite spectra]
 \label{sem:AdamsSynthetic:finite-separation}
 \level{coarse}
-\uses{sem:AdamsSynthetic:filtration-comparison}
+\uses{sem:AdamsSynthetic:filtration-comparison,sem:AdamsSynthetic:families,sem:AdamsSynthetic:selected-convergence}
 Let $f\colon X\to Y$ be a map between finite spectra. If $f$ lies in every integer stage of the Adams filtration, then $f$ is odd torsion. The same assertion holds for the factorization filtration. Consequently, every map between finite spectra which is not odd torsion has an exact finite integer filtration.
+
+For $X\in\mathcal C_0$, one has $E_r^{s,t}(X)=0$ whenever $s<0$. For the sphere, $E_r^{0,t}(S)=0$ for every nonzero $t\geq0$. A sphere homotopy class lying in $F^s$ for every $s\in\mathbb N$ is odd torsion.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.finite_map_separation,KIP126.AdamsSynthetic.Standard.separated_factorization,KIP126.AdamsSynthetic.Standard.finite_filtration_of_not_odd}
 \end{theorem}
+\begin{proof}
+\uses{sem:AdamsSynthetic:filtration-comparison,sem:AdamsSynthetic:families}
+\textit{Proof sketch and comparison scope.}
+The finite-map statement is the separation input for the actual ordinary
+Adams tower. The factorization version follows by the filtration comparison.
+A map which is not odd torsion therefore cannot lie in every stage;
+monotonicity and the lower bound on the filtration give its exact finite
+stage. The support and sphere statements use the same coefficient tower.
+Their source-to-fixed-model constructions remain the registered upstream
+inputs; no stronger separation of untruncated synthetic objects is inferred.
+\end{proof}
 
-\begin{theorem}[Low-filtration support and sphere separation]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:classical-vanishing}
-\level{coarse}
-\uses{sem:AdamsSynthetic:families,sem:AdamsSynthetic:selected-convergence,sem:AdamsSynthetic:finite-separation}
-For $X\in\mathcal C_0$, one has $E_r^{s,t}(X)=0$ whenever $s<0$. For the sphere, $E_r^{0,t}(S)=0$ for every nonzero $t\geq0$. A sphere homotopy class lying in $F^s$ for every $s\in\mathbb N$ is odd torsion.
-\lean{KIP126.AdamsSynthetic.Standard.classical_page_negative,KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero,KIP126.AdamsSynthetic.Standard.classical_sphere_separated}
-\end{theorem}
 
 \begin{theorem}[Separation on finite lambda quotients]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -202,34 +211,41 @@ The bidegree-shift comparison satisfies associativity and both unit laws. It com
 \lean{KIP126.AdamsSynthetic.Standard.biShift_associativity,KIP126.AdamsSynthetic.Standard.biShift_left_unit,KIP126.AdamsSynthetic.Standard.biShift_right_unit,KIP126.AdamsSynthetic.Standard.biShift_lambda_comm,KIP126.AdamsSynthetic.Standard.graded_shiftAdditive}
 \end{theorem}
 
-\begin{definition}[Weight-graded synthetic hom groups]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[The weight-graded Hom enrichment]
 \label{sem:AdamsSynthetic:graded-hom}
 \level{coarse}
 \uses{sem:AdamsSynthetic:categories,sem:AdamsSynthetic:shift-coherence}
 For synthetic spectra $X,Y$, put $\operatorname{Hom}_w(X,Y)=\operatorname{Hom}(\Sigma^{0,w}X,Y)$ and $\operatorname{Hom}_*(X,Y)=\bigoplus_w\operatorname{Hom}_w(X,Y)$. The total hom group is a $\mathbb Z[\lambda]$-module; multiplication by $\lambda$ lowers weight by one through the shift comparison.
+
+Composition on the weight-graded hom groups is $\mathbb Z[\lambda]$-bilinear. On homogeneous summands it is shifted composition. Under the coherent shift identifications, it is associative and the identity maps are left and right units.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.graded_module,KIP126.AdamsSynthetic.Standard.graded_lambda_smul,KIP126.AdamsSynthetic.Standard.gradedEnrichment}
 \end{definition}
 
-\begin{theorem}[Composition in the weight-graded enrichment]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:graded-composition}
-\level{coarse}
-\uses{sem:AdamsSynthetic:graded-hom}
-Composition on the weight-graded hom groups is $\mathbb Z[\lambda]$-bilinear. On homogeneous summands it is shifted composition. Under the coherent shift identifications, it is associative and the identity maps are left and right units.
-\lean{KIP126.AdamsSynthetic.Standard.graded_compose,KIP126.AdamsSynthetic.Standard.graded_compose_homogeneous,KIP126.AdamsSynthetic.Standard.graded_associative,KIP126.AdamsSynthetic.Standard.graded_left_unit,KIP126.AdamsSynthetic.Standard.graded_right_unit}
-\end{theorem}
 
 \section{Comparison, weights, and extension transport}
 
-\begin{definition}[The classical-to-synthetic second-page comparison]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[Classical E2 labels and the first lambda quotient]
 \label{sem:AdamsSynthetic:e2-comparison}
 \level{coarse}
 \uses{sem:AdamsSynthetic:families,sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:selected-convergence}
 The classical-to-synthetic comparison identifies classical $E_2$ classes with synthetic $E_2$ classes at the corresponding weights. The image of the corresponding synthetic $E_2$ label under the quotient page map detects the first $\lambda$-quotient homotopy class. For the sphere, this identification is compatible with the quotient map and powers of $\lambda$ through their detection identities.
+
+For $X\in\mathcal C_0$ and $a,s,t\in\mathbb Z$, there is a $\mathbb Z$-linear isomorphism
+\[
+\pi_{t-s,t+a}\bigl((\Sigma^{0,a}\nu X)/\lambda\bigr)\cong E_2^{s,t}(X).
+\]
+
+For $X\in\mathcal C_0$, $a,s,t\in\mathbb Z$, and $k\in\mathbb N$, there are linear isomorphisms
+\[
+K_{X,a,k}\colon E_2^{s,t}(X)\cong E_2^{s,t,t+a-k}(\Sigma^{0,a}\nu X),\qquad
+K_{S,k}\colon E_2^{s,t}(S)\cong E_2^{s,t,t-k}(S^{0,0}).
+\]
+They commute with maps between objects of $\mathcal C_0$. The sphere comparison agrees with the $X=S$, $a=0$ comparison under $\nu S\cong S^{0,0}$, and the map induced by $\lambda$ sends $K_{X,-1,k}(x)$ to $K_{X,0,k+1}(x)$.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.comparison,KIP126.AdamsSynthetic.Standard.firstQuotient,KIP126.AdamsSynthetic.Standard.first_quotient,KIP126.AdamsSynthetic.Standard.sphere_first_quotient,KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda}
 \end{definition}
+
 
 \begin{theorem}[First-quotient labels and suspension]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -240,32 +256,42 @@ The first-quotient identification commutes with positive weight shift and classi
 \lean{KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift,KIP126.AdamsSynthetic.Standard.firstQuotient_suspension}
 \end{theorem}
 
-\begin{definition}[Normalized synthetic maps]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\begin{definition}[Normalized synthetic lifts]
 \label{sem:AdamsSynthetic:normalized-map}
 \level{coarse}
 \uses{sem:AdamsSynthetic:nu,sem:AdamsSynthetic:filtration-comparison,sem:AdamsSynthetic:selected-convergence}
 For a map $f$ between objects of $\mathcal C_0$, its normalized synthetic lift is obtained from $\nu(f)$ with exponent determined by whether $f$ factors through the first stage of the target Adams tower. Composing this lift with the corresponding power of $\lambda$ gives $\nu(f)$. Every map between objects of $\mathcal S_0$ induces a morphism of converging Adams sequences.
+
+Let $X,Y\in\mathcal C_0$ and $f\colon X\to Y$. Put $\epsilon(f)=1$ if $f$ factors through the first stage of the target Adams tower, and put $\epsilon(f)=0$ otherwise. A normalized lift is a map
+\[
+\widehat f\colon\Sigma^{0,\epsilon(f)}\nu X\longrightarrow\nu Y
+\]
+such that $\widehat f\circ\lambda^{\epsilon(f)}=\nu(f)$, using the positive-target form of the power of $\lambda$.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.normalizedMap,KIP126.AdamsSynthetic.Standard.convergentMap}
 \end{definition}
 
-\begin{definition}[Shift comparisons for synthetic extensions]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+
+\begin{definition}[Shift comparisons on filtrations, pages and representatives]
 \label{sem:AdamsSynthetic:ess-shifts}
 \level{coarse}
 \uses{sem:AdamsSynthetic:selected-convergence,sem:AdamsSynthetic:shift-coherence,sem:AdamsSynthetic:lambda-quotients}
 For objects of $\mathcal S_0$, bidegree shifts induce compatible filtered-homotopy and finite-page identifications. In particular, the shifts $\Sigma^{1,-n}$ give shift comparisons for the extension spectral sequences, including those of finite $\lambda$ quotients.
+
+Let $r\geq2$ be a finite page. Under the synthetic shift comparison, two shifted classes have a common representative if and only if the corresponding unshifted classes do, using the induced filtered map on homotopy groups.
+
+For $X\in\mathcal S_0$ and $p,\delta\in\mathbb Z^2$, there is an isomorphism between the filtered homotopy group in degree $p$ of $X$ and that in degree $p+\delta$ of $\Sigma^\delta X$. It identifies the ambient groups and every filtration stage.
+
+For $X\in\mathcal S_0$, $p,\delta\in\mathbb Z^2$, $s\in\mathbb Z$, and $r\geq2$, there is an isomorphism
+\[
+E_r^{s,p_1+s,p_2}(X)\cong E_r^{s,(p+\delta)_1+s,(p+\delta)_2}(\Sigma^\delta X).
+\]
+
+Let $X\in\mathcal S_0$, $p,\delta\in\mathbb Z^2$, and $\alpha\in\pi_{p_1,p_2}X$. The ambient homomorphism of the filtered shift comparison sends $\alpha$ to its shifted homotopy class in $\pi_{(p+\delta)_1,(p+\delta)_2}(\Sigma^\delta X)$.
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.shift_filtered,KIP126.AdamsSynthetic.Standard.shift_page,KIP126.AdamsSynthetic.Standard.shift_ambient_eq,KIP126.AdamsSynthetic.Standard.essShift,KIP126.AdamsSynthetic.Standard.essShiftSystem}
 \end{definition}
 
-\begin{theorem}[Shift transport of common representatives]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:shift-representatives}
-\level{coarse}
-\uses{sem:AdamsSynthetic:ess-shifts}
-Let $r\geq2$ be a finite page. Under the synthetic shift comparison, two shifted classes have a common representative if and only if the corresponding unshifted classes do, using the induced filtered map on homotopy groups.
-\lean{KIP126.AdamsSynthetic.Standard.shift_representative_iff}
-\end{theorem}
 
 % Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
 \section{Bigraded synthetic spheres}
@@ -347,7 +373,7 @@ From \cite{LWX126}, Definition 2.3.\par
 \uses{paper:2.1}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 277-300](paper/main.tex.html#L277). An essential extension is defined using the differentials and boundary indeterminacy of the extension spectral sequence.
 
-% Blueprint note: The generic filtered extension relation and its essentiality are defined in \ref{sem:SpectralSequence:extension-equation} and \ref{sem:SpectralSequence:extension-ambiguity}. This entry binds only their specialization to the convergent synthetic map.
+% Blueprint note: The generic filtered extension relation and its essentiality are defined in \ref{sem:SpectralSequence:extension-equation} and \ref{sem:SpectralSequence:extension-equation}. This entry binds only their specialization to the convergent synthetic map.
 
 
 % Correspondence: partial.
@@ -384,7 +410,7 @@ Consider $f: X\to Y$, $x\in E_\infty^{s,t}(X)$, $y\in E_\infty^{s+n,t+n}(Y)$ and
 \uses{paper:2.3,sem:SpectralSequence:detection}
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 307-325](paper/main.tex.html#L307). Representatives detected by x and y characterize extensions; the indeterminacy statements follow from the same characterization.
 
-% Blueprint note: This entry binds the representative-existence equivalence for a convergent synthetic map. The independent generic coset and higher-filtration conclusions belong to \ref{sem:SpectralSequence:extension-coset} and \ref{sem:SpectralSequence:higher-filtration}; they are not additional bindings of this statement.
+% Blueprint note: This entry binds the representative-existence equivalence for a convergent synthetic map. The independent generic coset and higher-filtration conclusions belong to \ref{sem:SpectralSequence:extension-equation} and \ref{sem:SpectralSequence:extension-equation}; they are not additional bindings of this statement.
 
 
 % Correspondence: partial.
@@ -470,7 +496,6 @@ $$n<\AF(f)\text{ or }n>r-2-k+e(f).$$
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 1275-1317](paper/main.tex.html#L1275). Define page extensions as ESS differentials of the chosen normalized map on lambda quotients. The coordinate description in the preceding paragraph is explanatory; no theorem about later extensions is used to define the relation.
 
 
-
 % Correspondence: public counterparts; scope is specified below.
 % Blueprint note: The finite- and infinite-page extension definitions are tied to the actual normalized map, cycle labels, degrees, and witnesses.
 % Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
@@ -499,70 +524,6 @@ For every $Y\in\mathrm{Syn}$, let $T_{\mathrm{syn}}(Y)$ be its Adams tower for t
 \lean{KIP126.AdamsSynthetic.Standard.syntheticTower}
 \end{definition}
 
-\begin{definition}[Classical functorial cofibers]
-\label{frontier:AdamsSynthetic:23334467e67d}
-\level{fine}
-For $f\colon X\to Y$ in $\mathrm{Sp}$, choose a cofiber $C(f)$ with a distinguished triangle $X\xrightarrow f Y\to C(f)\to\Sigma X$. Every commutative square between such maps induces a map of cofibers commuting with the inclusions and boundaries.
-\lean{KIP126.AdamsSynthetic.Standard.spectrumCofiber}
-\end{definition}
-
-\begin{definition}[The synthetic Adams functor]
-\label{frontier:AdamsSynthetic:46d2c66c5a63}
-\level{fine}
-Let $E^{\mathrm{syn}}$ be the functor from $\mathrm{Syn}$ to trigraded spectral sequences of abelian groups. Its first page is $E_2$, and its page-$r$ differential has degree $(r,r-1,0)$.
-\lean{KIP126.AdamsSynthetic.Standard.family}
-\end{definition}
-
-\begin{definition}[The classical Adams functor]
-\label{frontier:AdamsSynthetic:48bf5d838430}
-\level{fine}
-Let $E$ be the functor from $\mathrm{Sp}$ to bigraded spectral sequences of abelian groups. Its first page is $E_2$, and its page-$r$ differential has degree $(r,r-1)$.
-\lean{KIP126.AdamsSynthetic.Standard.classical}
-\end{definition}
-
-\begin{definition}[The objects of the classical category]
-\label{frontier:AdamsSynthetic:5833df0c640f}
-\level{fine}
-Let $\mathrm{Sp}$ denote the type of classical spectra, in universe $\mathrm{Type}_1$.
-\lean{KIP126.AdamsSynthetic.Standard.Spectrum}
-\end{definition}
-
-\begin{definition}[The classical stable category]
-\label{frontier:AdamsSynthetic:6793885d9e9c}
-\level{fine}
-Equip $\mathrm{Sp}$ with a category structure with small hom sets, a preadditive structure, integer suspension functors, a monoidal structure, a zero object, and a pretriangulated structure. Each integer suspension functor is additive.
-\lean{KIP126.AdamsSynthetic.Standard.spectrumCategory}
-\end{definition}
-
-\begin{definition}[Recovery by lambda localization]
-\label{frontier:AdamsSynthetic:68731f808d69}
-\level{fine}
-The full subcategory of $\mathrm{Syn}$ on objects for which $\lambda$ is invertible is reflective. Let $L$ be its reflector. There is an equivalence $\mathrm{Syn}[\lambda^{-1}]\simeq\mathrm{Sp}$ under which $L\nu$ is naturally isomorphic to the inverse equivalence.
-\lean{KIP126.AdamsSynthetic.Standard.recovery}
-\end{definition}
-
-\begin{definition}[Homotopy of the first lambda quotient]
-\label{frontier:AdamsSynthetic:740de17a7d73}
-\level{fine}
-For $X\in\mathcal C_0$ and $a,s,t\in\mathbb Z$, there is a $\mathbb Z$-linear isomorphism
-\[
-\pi_{t-s,t+a}\bigl((\Sigma^{0,a}\nu X)/\lambda\bigr)\cong E_2^{s,t}(X).
-\]
-\lean{KIP126.AdamsSynthetic.Standard.firstQuotient}
-\end{definition}
-
-
-
-\begin{definition}[Normalized synthetic lifts]
-\label{frontier:AdamsSynthetic:8e642612876d}
-\level{fine}
-Let $X,Y\in\mathcal C_0$ and $f\colon X\to Y$. Put $\epsilon(f)=1$ if $f$ factors through the first stage of the target Adams tower, and put $\epsilon(f)=0$ otherwise. A normalized lift is a map
-\[
-\widehat f\colon\Sigma^{0,\epsilon(f)}\nu X\longrightarrow\nu Y
-\]
-such that $\widehat f\circ\lambda^{\epsilon(f)}=\nu(f)$, using the positive-target form of the power of $\lambda$.
-\lean{KIP126.AdamsSynthetic.Standard.normalizedMap}
-\end{definition}
 
 \begin{definition}[Classical convergence and suspension]
 \label{frontier:AdamsSynthetic:9a4b26f47efd}
@@ -575,31 +536,6 @@ The isomorphisms identify the class of an infinite cycle represented by a tower 
 \lean{KIP126.AdamsSynthetic.Standard.classicalConvergence,KIP126.AdamsSynthetic.Standard.classicalSuspension}
 \end{definition}
 
-\begin{definition}[Classical and synthetic second-page comparisons]
-\label{frontier:AdamsSynthetic:a5b004b4748d}
-\level{fine}
-For $X\in\mathcal C_0$, $a,s,t\in\mathbb Z$, and $k\in\mathbb N$, there are linear isomorphisms
-\[
-K_{X,a,k}\colon E_2^{s,t}(X)\cong E_2^{s,t,t+a-k}(\Sigma^{0,a}\nu X),\qquad
-K_{S,k}\colon E_2^{s,t}(S)\cong E_2^{s,t,t-k}(S^{0,0}).
-\]
-They commute with maps between objects of $\mathcal C_0$. The sphere comparison agrees with the $X=S$, $a=0$ comparison under $\nu S\cong S^{0,0}$, and the map induced by $\lambda$ sends $K_{X,-1,k}(x)$ to $K_{X,0,k+1}(x)$.
-\lean{KIP126.AdamsSynthetic.Standard.comparison}
-\end{definition}
-
-\begin{definition}[The synthetic stable category]
-\label{frontier:AdamsSynthetic:a9091f3f5cf2}
-\level{fine}
-Equip $\mathrm{Syn}$ with a preadditive, monoidal, pretriangulated category structure, a zero object, and additive integer suspension. For $p\in\mathbb Z^2$, the fully faithful functor $\Sigma^p$ has comparisons $\Sigma^q\Sigma^p\cong\Sigma^{p+q}$, $\Sigma^{0,0}\cong\operatorname{id}$, and $\Sigma^{n,0}\cong\Sigma^n$. There is a natural transformation $\lambda\colon\Sigma^{0,-1}\to\operatorname{id}$, and natural comparisons $\Sigma^p(X\otimes Y)\cong(\Sigma^pX)\otimes Y$.
-\lean{KIP126.AdamsSynthetic.Standard.syntheticCategory}
-\end{definition}
-
-\begin{definition}[Synthetic functorial cofibers]
-\label{frontier:AdamsSynthetic:c264cb4f3291}
-\level{fine}
-For $f\colon X\to Y$ in $\mathrm{Syn}$, choose a cofiber $C(f)$ and a distinguished triangle $X\xrightarrow f Y\to C(f)\to\Sigma X$. A commutative square induces a map of these cofibers commuting with inclusion and boundary.
-\lean{KIP126.AdamsSynthetic.Standard.syntheticCofiber}
-\end{definition}
 
 \begin{definition}[Exact shifts and realization]
 \label{frontier:AdamsSynthetic:d505f4e20090}
@@ -609,19 +545,6 @@ The categories $\mathrm{Sp}$ and $\mathrm{Syn}$ are triangulated. Each bidegree 
 \lean{KIP126.AdamsSynthetic.Standard.exactness}
 \end{definition}
 
-\begin{definition}[The mod-two coefficient object]
-\label{frontier:AdamsSynthetic:e9439d4312f5}
-\level{fine}
-Choose $H\mathbb F_2\in\mathrm{Sp}$ together with an additive isomorphism $\pi_0H\mathbb F_2\cong\mathbb Z/2$ and $\pi_nH\mathbb F_2=0$ for every nonzero integer $n$. Its coefficient unit $S\to H\mathbb F_2$ is the class corresponding to $1\in\mathbb Z/2$.
-\lean{KIP126.AdamsSynthetic.Standard.coefficients}
-\end{definition}
-
-\begin{definition}[The objects of the synthetic category]
-\label{frontier:AdamsSynthetic:eaf500baffc5}
-\level{fine}
-Let $\mathrm{Syn}$ denote the type of synthetic spectra, in universe $\mathrm{Type}_1$.
-\lean{KIP126.AdamsSynthetic.Standard.SyntheticSpectrum}
-\end{definition}
 
 \begin{definition}[Synthetic convergence]
 \label{frontier:AdamsSynthetic:f083536a377e}
@@ -634,64 +557,11 @@ The filtration agrees with the tower filtration after weight desuspension. If an
 \lean{KIP126.AdamsSynthetic.Standard.convergence}
 \end{definition}
 
-\begin{definition}[The closed symmetric tensor structure]
-\label{frontier:AdamsSynthetic:6a2402d27721}
-\level{fine}
-The monoidal category $\mathrm{Sp}$ is symmetric and closed. For each $W$, tensoring on the right with $W$ and taking the internal hom $F(W,-)$ commute with integer suspension and preserve distinguished triangles for these suspension comparisons.
-\lean{KIP126.AdamsSynthetic.Standard.closedBackground}
-\end{definition}
-
-
-
-
-
-
-
-
-
-
-
-\begin{definition}[Filtered synthetic shift comparisons]
-\label{frontier:AdamsSynthetic:63b3daf63e20}
-\level{fine}
-For $X\in\mathcal S_0$ and $p,\delta\in\mathbb Z^2$, there is an isomorphism between the filtered homotopy group in degree $p$ of $X$ and that in degree $p+\delta$ of $\Sigma^\delta X$. It identifies the ambient groups and every filtration stage.
-\lean{KIP126.AdamsSynthetic.Standard.shift_filtered}
-\end{definition}
-
-
-
-
-
-
-
-\begin{definition}[Finite-page synthetic shift comparisons]
-\label{frontier:AdamsSynthetic:f3257e955b3d}
-\level{fine}
-For $X\in\mathcal S_0$, $p,\delta\in\mathbb Z^2$, $s\in\mathbb Z$, and $r\geq2$, there is an isomorphism
-\[
-E_r^{s,p_1+s,p_2}(X)\cong E_r^{s,(p+\delta)_1+s,(p+\delta)_2}(\Sigma^\delta X).
-\]
-\lean{KIP126.AdamsSynthetic.Standard.shift_page}
-\end{definition}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 \begin{theorem}[Detection, products, and exactness of the synthetic analogue]
 \label{frontier:AdamsSynthetic:791f3c0e6a4a}
 \level{fine}
-\uses{frontier:AdamsSynthetic:a5b004b4748d,frontier:AdamsSynthetic:740de17a7d73,sem:AdamsSynthetic:graded-composition,sem:AdamsSynthetic:nu,sem:AdamsSynthetic:selected-convergence}
+\uses{sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:graded-hom,sem:AdamsSynthetic:nu,sem:AdamsSynthetic:selected-convergence}
 For $X\in\mathcal C_0$, $a,s,t\in\mathbb Z$, and $x\in E_2^{s,t}(X)$, the image of $K_{X,a,0}(x)$ under the first-quotient inclusion detects the inverse image of $x$ in $\pi_{t-s,t+a}((\Sigma^{0,a}\nu X)/\lambda)$.
 
 For a distinguished triangle $X\to Y\to Z\to\Sigma X$ whose mod-two homology is short exact in every degree, there is a boundary $\nu Z\to\Sigma\nu X$ making the images of its first two maps a distinguished synthetic triangle.
@@ -701,41 +571,6 @@ For $s,t\in\mathbb Z$, $k\in\mathbb N$, and $\alpha\in\pi_{t-s,t}S^{0,0}$, the c
 For $s,t,s',t',k,l\in\mathbb N$, $x\in E_2^{s,t}(S)$, and $y\in E_2^{s',t'}(S)$, if $K_{S,k}(x)$ detects $\alpha\in\pi_{t-s,t-k}S^{0,0}$ and $K_{S,l}(y)$ detects $\beta\in\pi_{t'-s',t'-l}S^{0,0}$, then $K_{S,k+l}(xy)$ detects $\alpha\beta$ after regrading the degree sums. For $\alpha\in\pi_{m,n}S^{0,0}$ and $\beta\in\pi_{k,l}S^{0,0}$, where $m,n,k,l\in\mathbb Z$, one has $\alpha\beta=(-1)^{mk}\beta\alpha$ after the sum-degree identifications.
 \lean{KIP126.AdamsSynthetic.Standard.first_quotient,KIP126.AdamsSynthetic.Standard.sphereProductCommutative,KIP126.AdamsSynthetic.Standard.nu_preserves_triangle,KIP126.AdamsSynthetic.Standard.multiplicationCompatible,KIP126.AdamsSynthetic.Standard.sphere_homotopy_lambda}
 \end{theorem}
-
-
-
-\begin{theorem}[Infinite filtration of maps between finite spectra]
-\label{frontier:AdamsSynthetic:1ae83419acab}
-\level{fine}
-Let $X,Y$ be finite spectra and $f\colon X\to Y$. If $f$ factors through every integer stage of the Adams tower of $Y$, then $f$ is odd torsion.
-\lean{KIP126.AdamsSynthetic.Standard.finite_map_separation}
-\end{theorem}
-
-
-
-
-
-
-
-
-
-
-
-\begin{theorem}[Shift comparison on ambient homotopy]
-\label{frontier:AdamsSynthetic:b321b7897dca}
-\level{fine}
-Let $X\in\mathcal S_0$, $p,\delta\in\mathbb Z^2$, and $\alpha\in\pi_{p_1,p_2}X$. The ambient homomorphism of the filtered shift comparison sends $\alpha$ to its shifted homotopy class in $\pi_{(p+\delta)_1,(p+\delta)_2}(\Sigma^\delta X)$.
-\lean{KIP126.AdamsSynthetic.Standard.shift_ambient_eq}
-\end{theorem}
-
-
-
-
-
-
-
-
-
 
 
 \begin{theorem}[First-quotient labels under positive weight shift]
