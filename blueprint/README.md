@@ -41,6 +41,22 @@ Within a project, hgraph lazily retains up to six recent main views and three ov
 
 Generated hgraph nodes, edges, web presentation copies and `_site/` are reproducible outputs. Existing native comments and reviews remain attached to their nodes. Historical compiler evidence and retired graph-import material belong under ignored `local-history/`, not in the active export pipeline. The old implementation-index and verification web pages remain retired.
 
+## Meeting task tab
+
+The native **Meeting** custom tab displays the October 13 meeting's original
+T01–T27 tasks, their current status, owners, merge targets and source links.
+`meeting/2026-10-13.yaml` is the authored record; update it when a task changes.
+The exporter derives the counts and page from that record. Merged tasks retain
+their original IDs and link to the receiving task, without counting twice in
+the follow-up total. All meeting discussion items, including T13, use the same
+discussion status and count toward the follow-up total. The tab supports
+status filters and search and is exported with the existing native website
+pipeline. Optional task `details` sections hold completion explanations or meeting discussion material,
+code excerpts and `code` references (`file` and `declaration`); the exporter
+links these to the current declaration lines in the published sources. A task's
+optional `details_label` names its expandable panel.
+Meeting statuses do not modify mathematical entries or proof states.
+
 ## Installation and export
 
 Use the hgraph revision pinned in `requirements-blueprint.txt`; the Lean toolchain and dependency lock are unchanged.
