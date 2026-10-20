@@ -16,25 +16,19 @@ def authoring_notes(root):
     """Read only explicitly marked notes; preserve chapter-wide provenance."""
     root = Path(root)
     result = {}
-    for directory in ('semantic', 'paper'):
-        for path in sorted((root / 'blueprint' / directory).rglob('*.tex')):
-            text = path.read_text()
-            blocks = list(ENV.finditer(text))
-            if not blocks:
-                continue
-            chapter = root / 'blueprint/chapters' / path.name
-            common = NOTE.findall(text[:blocks[0].start()])
-            if chapter.exists():
-                common += NOTE.findall(chapter.read_text().split(r'\input', 1)[0])
-            for block in blocks:
-                labels = re.findall(r'\\label\{([^}]+)\}', block[0])
-                if not labels or labels[0] in result:
-                    continue  # Leave structure warnings to native synchronization.
-                if '% Canonical node:' in block[0]:
-                    continue  # An archived repetition has no second displayed node.
-                notes = list(dict.fromkeys(common + NOTE.findall(block[0])))
-                if notes:
-                    result[labels[0]] = {'path': str(path.relative_to(root)), 'notes': notes}
+    for path in sorted((root / 'blueprint/chapters').glob('*.tex')):
+        text = path.read_text()
+        blocks = list(ENV.finditer(text))
+        if not blocks:
+            continue
+        common = NOTE.findall(text[:blocks[0].start()])
+        for block in blocks:
+            labels = re.findall(r'\\label\{([^}]+)\}', block[0])
+            if not labels or labels[0] in result:
+                continue  # Leave structure warnings to native synchronization.
+            notes = list(dict.fromkeys(common + NOTE.findall(block[0])))
+            if notes:
+                result[labels[0]] = {'path': str(path.relative_to(root)), 'notes': notes}
     return result
 
 

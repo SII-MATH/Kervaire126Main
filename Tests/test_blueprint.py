@@ -6,15 +6,17 @@ import unittest
 
 class AimPaperPresentationTests(unittest.TestCase):
     def test_web_copy_preserves_every_nonpaper_tex_statement(self):
-        from blueprint_paper import prepare_web_blueprint
+        from blueprint_paper import display_body, prepare_web_blueprint
         from hgraph.sync import parse_blueprint, read_blueprint
         root = Path(__file__).resolve().parents[1]
+        authored_files = {path: path.read_bytes() for path in (root / 'blueprint').rglob('*.tex')}
         with tempfile.TemporaryDirectory() as directory:
             web = prepare_web_blueprint(root, Path(directory) / 'web')
             for path in (root / 'blueprint').rglob('*.tex'):
                 if 'generated' in path.relative_to(root / 'blueprint').parts:
                     continue
-                if path.parent.name == 'paper' and '% AimPaper: ' in path.read_text():
+                rows, _ = parse_blueprint(path.read_text())
+                if any(row['label'].startswith('paper:') for row in rows):
                     continue
                 self.assertEqual(path.read_bytes(),
                                  (web / path.relative_to(root / 'blueprint')).read_bytes(),
@@ -22,27 +24,34 @@ class AimPaperPresentationTests(unittest.TestCase):
             authored, _ = parse_blueprint(read_blueprint(root / 'blueprint/content.tex'))
             rendered, _ = parse_blueprint(read_blueprint(web / 'content.tex'))
             self.assertEqual([r['label'] for r in authored], [r['label'] for r in rendered])
+            for before, after in zip(authored, rendered):
+                if not before['label'].startswith('paper:'):
+                    expected = (display_body(before['body'], 'notation')
+                                if before['content_type'] == 'notation' else before['body'])
+                    self.assertEqual(expected, after['body'], before['label'])
+        for path, content in authored_files.items():
+            self.assertEqual(path.read_bytes(), content, f'Rendering changed authored source: {path}')
 
 
-    def test_two_line_corollary_binds_the_complete_proof_and_keeps_its_target_definition(self):
+    def test_two_line_corollary_keeps_the_complete_target_in_its_statement(self):
         from hgraph.sync import parse_blueprint, read_blueprint
         root = Path(__file__).resolve().parents[1]
         _, corollary = self.paper_source(root, 'paper:1.5')
         self.assertEqual(corollary['lean'], ['KIP126.Main.adams_two_line_classification'])
         self.assertFalse(corollary['sketch'])
-        rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/semantic/Main.tex'))
-        target = next(row for row in rows if row['label'] == 'sem:Main:two-line-classification-goal')
-        self.assertEqual(target['content_type'], 'definition')
-        self.assertEqual(set(target['lean']), {'KIP126.Main.AdamsTwoLineListed',
-                                              'KIP126.Main.AdamsTwoLineClassification'})
-        self.assertIn('does not prove', target['body'])
-        partial = next(row for row in rows if row['label'] == 'sem:Main:two-line-known-squares')
-        self.assertEqual(partial['lean'], ['KIP126.Main.adams_two_line_known_squares'])
+        rows, _ = parse_blueprint(read_blueprint(root / 'blueprint/chapters/Main.tex'))
+        self.assertIn(r'L(t,x)', corollary['body'])
+        self.assertIn(r'\forall t\in\mathbb Z', corollary['body'])
+        self.assertIn(r'\Longleftrightarrow\ L(t,x)', corollary['body'])
+        self.assertIn(r'0\leq j\leq6', corollary['body'])
+        retired = {'sem:Main:two-line-classification-goal',
+                   'sem:Main:two-line-known-squares', 'sem:Main:two-line-stem126'}
+        self.assertFalse(retired.intersection(row['label'] for row in rows))
 
 
     def paper_source(self, root, label):
         from hgraph.sync import parse_blueprint, read_blueprint
-        matches = [(path, row) for path in (root / 'blueprint/paper').glob('*.tex')
+        matches = [(path, row) for path in (root / 'blueprint/chapters').glob('*.tex')
                    for row in parse_blueprint(read_blueprint(path))[0]
                    if row['label'] == label]
         self.assertEqual(len(matches), 1, f'Expected one authored source for {label}')
@@ -61,7 +70,7 @@ class AimPaperPresentationTests(unittest.TestCase):
         self.assertTrue(diagram_sources)
         source_path, source_diagram = self.paper_source(root, 'paper:2.12')
         self.assertIn(r'\xymatrix', source_diagram['body'])
-        authored = {path: path.read_bytes() for path in (root / 'blueprint/paper').glob('*.tex')}
+        authored = {path: path.read_bytes() for path in (root / 'blueprint/chapters').glob('*.tex')}
         with tempfile.TemporaryDirectory() as directory:
             destination = prepare_web_blueprint(root, Path(directory) / 'web')
             statements, _ = parse_blueprint(read_blueprint(destination / 'content.tex'))

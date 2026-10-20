@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:2.16
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T14:34:09.108490+00:00'
+updated: '2026-10-20T04:59:49.945253+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 593-595](paper/main.tex.html#L593). Specialize Corollary 2.15 to an identity lower horizontal map.
 

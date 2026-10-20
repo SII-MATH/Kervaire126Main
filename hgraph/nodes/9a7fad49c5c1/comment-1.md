@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/SpectralSequence.tex
+authored_source: blueprint/chapters/SpectralSequence.tex
 blueprint_label: paper:2.1
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.585011+00:00'
+updated: '2026-10-20T04:59:49.991645+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 253-271](paper/main.tex.html#L253). Filter the two-term complex by Adams filtration to form the extension spectral sequence.
 

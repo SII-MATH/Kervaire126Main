@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/AdamsSynthetic.tex
+authored_source: blueprint/chapters/AdamsSynthetic.tex
 blueprint_label: paper:2.3
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.544559+00:00'
+updated: '2026-10-20T04:59:49.760556+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 277-300](paper/main.tex.html#L277). An essential extension is defined using the differentials and boundary indeterminacy of the extension spectral sequence.
 

@@ -138,7 +138,7 @@ def original_statements(root):
     source = (root / 'AimPaper/main.tex').read_text()
     actual = {(r['kind'], r['start_line'], r['end_line']): r for r in source_statements(source)}
     statements, references = {}, {}
-    for path in sorted((root / 'blueprint/paper').rglob('*.tex')):
+    for path in sorted((root / 'blueprint/chapters').glob('*.tex')):
         for match in re.finditer(r'^% AimPaper: (\d+\.\d+) (\w+) (\d+) (\d+)$', path.read_text(), re.M):
             number, kind, start, end = match.groups()
             row = actual[(kind, int(start), int(end))]

@@ -230,7 +230,7 @@ lake env lean local-history/metadata/interface-reviews/Main/20261018-gray-toda-a
 
 ## 下游影响
 
-- **直接目标：** `blueprint/paper/Main.tex` 中 `paper:7.16` 和 `paper:7.18`，以及各 hgraph 原生节点附件；目前必须保留真实未完成边界。
+- **直接目标：** `blueprint/chapters/Main.tex` 中 `paper:7.16` 和 `paper:7.18`，以及各 hgraph 原生节点附件；目前必须保留真实未完成边界。
 - **现有私有接口：** `SectionSeven/Predicates.lean` 的 `FiniteDetected`、`ModuleTripleToda`、`AnyYH0Extension`，`AlphaOneProperties` 及 `AnyYTarget.anyy_bracket_exact_target`。本报告不改它们。
 - **现有已完成公共 Main：** `metadata/main-api.json` 没有这两个完整定理；本报告不要求改任何旧条目。公共 `Paper.FiniteDetected` 的含义也不应为避开误差而缩小。
 - **已有 Main 后续证明：** `SectionSeven/NuTarget.lean` 使用 bracket 精确目标，再用 `main_weak_high_representative` 和 `weak_y_detected_of_f11_and_nonzero`，之后走 `nu_target_full_of_nonzero`；它没有调用这两个尚不存在的完整定理。因此本次问题不自动推翻已经采用弱代表路线的 Main 最终证明。不得反向调用该最终证明来伪装完成这两个灰节点。
@@ -258,7 +258,7 @@ lake env lean local-history/metadata/interface-reviews/Main/20261018-gray-toda-a
 
 - **通过：** `KIP126.Main.Paper.lemma_toda2ext` 的本地直接责任消除。完整 kernel 类型指纹为 `299194068720801273`，宇宙参数为 `[]`。
 - **通过：** `KIP126.Main.Paper.corollary_2ext125` 的本地直接责任消除。完整 kernel 类型指纹为 `2927248977343468461`，宇宙参数为 `[]`。
-- **通过：** `sem:Main:weak-representative-route` 绑定既有公共 `KIP126.Main.eta_extension_excluded_of_d6_vanishes`。该声明实际定义在 `KIP126/Main/H6SquarePermanent.lean:16`，列入 Main 接口锁，kernel 类型指纹为 `17210897524146462465`，宇宙参数为 `[]`。节点正文明确陈述同一互斥结论，不绑定私有代表构造或辅助证明。
+- **通过：** `paper:7.9` 绑定既有公共 `KIP126.Main.eta_extension_excluded_of_d6_vanishes`，保留的代表修正路线现直接写在该命题的证明中。该声明实际定义在 `KIP126/Main/H6SquarePermanent.lean:16`，列入 Main 接口锁，kernel 类型指纹为 `17210897524146462465`，宇宙参数为 `[]`。节点正文明确陈述同一互斥结论，不绑定私有代表构造或辅助证明。
 
 两项条件定理的 `public theorem` 到 `:= by` 之前的完整源码签名与本次基线逐字相同，SHA-256 分别为 `6eb2f57ffbb8fcb37359f23559f656ee5cd76597c1ea600f3d7e167d9c86458e` 和 `b1f9999282174941e545a5cc0cd4cdbe51e321ad28ec0a4defd6812e6a3ed30d`；kernel 指纹及宇宙与未更改的 `interface/baselines/main-api.json` 逐项相符。所有 Q11→Q9 关联、同一 bracket 的非空性及全成员量词、任意 Y 检测源、允许随源变化的 T 代表和精确未乘额外 λ 的等式均保留。
 

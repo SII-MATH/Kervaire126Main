@@ -1,4 +1,383 @@
 \chapter{SpectralSequence --- Spectral Sequences and Extensions}
 Let $C$ be an abelian category. Spectral sequences in $C$ have pages given by cycle and boundary quotients, and converge by identifying their infinity pages with associated graded objects of filtered targets. For a filtered map, extension relations record equations between filtered representatives; bounded filtrations yield an extension spectral sequence.
-\input{../semantic/SpectralSequence.tex}
-\input{../paper/SpectralSequence.tex}
+
+
+% Curated mathematical exposition. Public declarations remain the type authority.
+
+\section{Pages, representatives, and functoriality}
+
+\begin{definition}[A spectral sequence in an abelian category]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:sequence}
+\level{coarse}
+Let $C$ be an abelian category and let the grading group be additive. A spectral sequence consists of nested cycle and boundary subobjects, their quotient pages, differentials of the specified degree with square zero, and compatible identifications of successor pages with homology. The same ambient data determine $E_\infty$.
+% Blueprint note: This abstract definition does not construct a concrete Adams model.
+\lean{KIP126.Core.SpectralSequence}
+\end{definition}
+
+\begin{definition}[Adams pages and extension lengths]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:indices}
+\level{coarse}
+An Adams page carries an integer value $r\geq2$. An extension length is a nonnegative integer and may be zero. A page-level convention relates the page index, cycle level, and quotient exponent compatibly with successors. An extension length $n$ determines an Adams page when $n\geq2$.
+\lean{KIP126.Core.SpectralSequence.AdamsPage,KIP126.Core.SpectralSequence.ExtensionLength,KIP126.Core.SpectralSequence.PageLevelConvention,KIP126.Core.SpectralSequence.AdamsPage.toExtensionLength,KIP126.Core.SpectralSequence.ExtensionLength.toAdamsPage}
+\end{definition}
+
+\begin{definition}[Morphisms of spectral sequences]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:morphism}
+\level{coarse}
+A morphism preserves the ambient cycle and boundary towers and commutes with the differential. Its maps on finite pages and on $E_\infty$ are induced by this same underlying morphism.
+\lean{KIP126.Core.SpectralSequence.SpectralSequenceMorphism,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.eInftyMap}
+\end{definition}
+
+\begin{theorem}[Naturality on pages and at infinity]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:naturality}
+\level{coarse}
+The induced page and infinity maps preserve identities and composition. On every page the induced map commutes with the actual differential.
+\lean{KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap_id,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap_comp,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.eInftyMap_id,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.eInftyMap_comp,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap_comm_d}
+\end{theorem}
+
+\begin{definition}[A label represented on a later page]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:representatives}
+\level{coarse}
+For a module-valued spectral sequence, $x\in E_2^p$ represents $x_r\in E_r^p$ if one cycle representative projects to both classes. Reaching $E_r$ means such a representative exists; surviving to $E_r$ additionally requires $x_r\neq0$.
+\lean{KIP126.Core.SpectralSequence.RepresentsOnPage,KIP126.Core.SpectralSequence.ReachesPage,KIP126.Core.SpectralSequence.SurvivesTo}
+\end{definition}
+
+\begin{theorem}[Uniqueness and transport of representatives]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:representatives-unique}
+\level{coarse}
+A fixed $E_2$ label has at most one represented class on a specified later page. Spectral-sequence morphisms transport representatives and differential equations through their induced page maps.
+\lean{KIP126.Core.SpectralSequence.RepresentsOnPage.unique,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.representsOnPage,KIP126.Core.SpectralSequence.SpectralSequenceMorphism.hasDifferential}
+\end{theorem}
+
+\begin{definition}[Cycles, boundaries, and incoming hits]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:cycles-boundaries}
+\level{coarse}
+A page-$r$ cycle is an element $x_r\in\ker d_r$, and a page-$r$ boundary is an element of $\operatorname{im}d_r$. A second-page label is a boundary by page $r$ if it lifts from the boundary subobject at page $r+1$; it is a final boundary if it lifts from $B_\infty$. An incoming hit on page $r$ is a differential whose represented target is nonzero.
+\lean{KIP126.Core.SpectralSequence.IsPageCycle,KIP126.Core.SpectralSequence.IsPageBoundary,KIP126.Core.SpectralSequence.IsBoundaryBy,KIP126.Core.SpectralSequence.IsFinalBoundary,KIP126.Core.SpectralSequence.HitOnPage}
+\end{definition}
+
+\begin{definition}[Differentials between named labels]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:differential}
+\level{coarse}
+For $x\in E_2^p$ and $y\in E_2^q$, the relation $d_r(x)=y$ means that $q=p+\deg(d_r)$ and that there exist classes $x_r,y_r$ represented by $x,y$, respectively, satisfying $d_r(x_r)=y_r$. The differential is nonzero when $y_r\neq0$. Differential vanishing on $x$ means that every page-$r$ class represented by $x$ has zero outgoing differential; this condition also holds when $x$ has no page-$r$ representative.
+\lean{KIP126.Core.SpectralSequence.HasDifferential,KIP126.Core.SpectralSequence.HasNonzeroDifferential,KIP126.Core.SpectralSequence.DifferentialVanishesOn}
+\end{definition}
+
+\begin{theorem}[Consequences of a nonzero differential]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:nonzero-differential}
+\level{coarse}
+A nonzero differential gives nonzero representatives of both source and target on its page, hits the specified target, and implies that the actual differential morphism is nonzero.
+\lean{KIP126.Core.SpectralSequence.HasNonzeroDifferential.source_survives,KIP126.Core.SpectralSequence.HasNonzeroDifferential.target_survives,KIP126.Core.SpectralSequence.HasNonzeroDifferential.hit_target,KIP126.Core.SpectralSequence.HasNonzeroDifferential.d_ne_zero}
+\end{theorem}
+
+\section{Finite-page calculations and permanent cycles}
+
+\begin{definition}[Survival on a finite window]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:windows}
+\level{coarse}
+Let $2\leq a\leq b$. A label is a cycle on the window $[a,b]$ if, for every integer $r$ in this interval, it represents a class $x_r$ with $d_r(x_r)=0$. It survives on this window if it represents a nonzero class on every page in the interval. It is never hit on this window if no page in the interval has a nonzero incoming differential with that represented target.
+\lean{KIP126.Core.SpectralSequence.IsCycleOnWindow,KIP126.Core.SpectralSequence.SurvivesOnWindow,KIP126.Core.SpectralSequence.NeverHitOnWindow}
+\end{definition}
+
+\begin{definition}[Permanent cycles and nonzero survival]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:permanent}
+\level{coarse}
+A permanent cycle is an $E_2$ label with a common representative in $Z_\infty$. Nonzero survival requires that this representative have nonzero image in $E_\infty$. In both cases the infinite-cycle representative projects to the original $E_2$ label.
+\lean{KIP126.Core.SpectralSequence.IsPermanentCycle,KIP126.Core.SpectralSequence.NonzeroSurvival}
+\end{definition}
+
+\begin{theorem}[Stabilization after vanishing differentials]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:stabilization}
+\level{coarse}
+If all outgoing differentials at a fixed degree vanish from page $N$ onward, its cycle tower stabilizes there. If the corresponding incoming differential morphisms vanish, its boundary tower stabilizes as well. The page $N$ must be at least the initial page.
+\lean{KIP126.Core.SpectralSequence.cycles_top_eq_of_d_eq_zero,KIP126.Core.SpectralSequence.boundaries_top_eq_of_d_eq_zero}
+\end{theorem}
+
+\begin{theorem}[From a finite page to infinity]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:permanence-from-finite}
+\level{coarse}
+Let $N\geq r_0$. If a label reaches page $N$ and $d_r$ is zero on its degree for every $r\geq N$, it is a permanent cycle. If it survives nontrivially to $N$ and the incoming differential morphisms are also zero for every $r\geq N$, it has nonzero survival at infinity.
+\lean{KIP126.Core.SpectralSequence.isPermanentCycle_of_reachesPage,KIP126.Core.SpectralSequence.nonzeroSurvival_of_survivesTo}
+\end{theorem}
+
+\begin{theorem}[The third page as a differential quotient]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:page-three}
+\level{coarse}
+Let $E$ be a module-valued spectral sequence with initial page $r_0\leq2$. A second-page class reaches $E_3$ if and only if it is a $d_2$ cycle. Two represented third-page classes agree if and only if their second-page difference lies in the image of the incoming $d_2$. A second-page label is a boundary by page two if and only if it lies in that image. Every third-page class has a second-page label.
+\lean{KIP126.Core.SpectralSequence.PageThree.reachesPage_iff_d2_eq_zero,KIP126.Core.SpectralSequence.PageThree.equal_iff_sub_mem_d2_range,KIP126.Core.SpectralSequence.PageThree.isBoundaryBy_iff_mem_d2_range,KIP126.Core.SpectralSequence.PageThree.exists_representative}
+\end{theorem}
+
+\begin{theorem}[Calculating from complete representatives]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:representative-expansion}
+\level{coarse}
+Let $E$ be a spectral sequence of abelian groups, let $r\geq2$, and suppose $E_2^p\cong(\mathbb F_2)^N$ has basis $b_0,\ldots,b_{N-1}$. Suppose each $b_i$ represents $a_i\in E_r^p$. Then every page-$r$ class is a sum of a subfamily of the $a_i$. If $d_r(a_i)=0$ for every $i$, then $d_r=0$ in degree $p$. More generally, for a $\mathbb Z$-linear isomorphism $e:A\cong(\mathbb F_2)^N$, every $a\in A$ is the sum of the basis vectors whose coordinates under $e$ are nonzero.
+\lean{KIP126.Core.SpectralSequence.FinitePageCalculus.page_eq_sum_of_complete_representatives,KIP126.Core.SpectralSequence.FinitePageCalculus.d_zero_of_complete_representatives,KIP126.Core.SpectralSequence.FinitePageCalculus.finite_basis_expansion}
+\end{theorem}
+
+\begin{theorem}[Nonzero representatives on the successor page]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:successor-nonzero}
+\level{coarse}
+Suppose the same label already has represented classes on page $r$ and on page $r+1$, with $r$ at least two and at least the initial page. The successor-page representative is nonzero if the page-$r$ representative is not an incoming differential target. It is also nonzero if the page-$r$ representative is nonzero and the relevant incoming morphism vanishes.
+\lean{KIP126.Core.SpectralSequence.FinitePageCalculus.represents_next_nonzero_of_not_incoming,KIP126.Core.SpectralSequence.FinitePageCalculus.represents_next_nonzero_of_incoming_zero}
+\end{theorem}
+
+\begin{theorem}[Small finite-page frames]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:finite-frames}
+\level{coarse}
+Let $E$ be a spectral sequence of abelian groups with $r_0\leq2$.
+\begin{enumerate}
+\item Suppose $E_2^p\cong(\mathbb F_2)^3$ has basis $b_0,b_1,b_2$, $r>2$, $b_1$ represents $a\in E_r^p$, $b_2$ represents zero there, and $d_2(b_0)\neq0$. Then every element of $E_r^p$ is either zero or $a$.
+\item Suppose $E_2^p\cong(\mathbb F_2)^4$ has basis $b_0,b_1,b_2,b_3$, and $E_2^{p+\deg(d_2)}\cong(\mathbb F_2)^2$ has a basis containing $c_0$, with $d_2(b_0)=d_2(b_1)=c_0$ and $d_2(b_2)=d_2(b_3)=0$. If $b_0+b_1,b_2,b_3$ represent $a,b,c\in E_4^p$, respectively, then every element of $E_4^p$ is one of $0,c,b,b+c,a,a+c,a+b,a+b+c$.
+\item For any $r\geq r_0$, if $\ker(d_r:E_r^p\to E_r^{p+\deg(d_r)})=0$, then $E_{r+1}^p=0$.
+\end{enumerate}
+\lean{KIP126.Core.SpectralSequence.FinitePageCalculus.choice_frame_of_three_basis,KIP126.Core.SpectralSequence.FinitePageCalculus.fourth_frame_of_four_basis,KIP126.Core.SpectralSequence.FinitePageCalculus.next_page_zero_of_kernel}
+\end{theorem}
+
+\begin{theorem}[A differential target becomes zero later]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:finite-hit}
+\level{coarse}
+Suppose $r\geq r_0$ and $d_r(x)=y$ between represented second-page labels in degrees $p$ and $q=p+\deg(d_r)$. The represented page-$r$ target is a cycle. For every $t>r$, the label $y$ represents zero on page $t$.
+\lean{KIP126.Core.SpectralSequence.FinitePageCalculus.differential_target_cycle,KIP126.Core.SpectralSequence.FinitePageCalculus.differential_target_later_zero}
+\end{theorem}
+
+\section{Filtrations, convergence, and detection}
+
+\begin{definition}[A decreasing filtration and its associated graded]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:filtration}
+\level{coarse}
+A filtration consists of decreasing subobjects $F^s A^k$. Its associated graded is the cokernel of $F^{s+1}A^k\longrightarrow F^sA^k$, with its canonical quotient map. Filtration-preserving maps induce the corresponding maps on associated graded objects.
+\lean{KIP126.Core.SpectralSequence.Filtration,KIP126.Core.SpectralSequence.Filtration.associatedGraded,KIP126.Core.SpectralSequence.Filtration.toAssociatedGraded,KIP126.Core.SpectralSequence.FilteredMorphism,KIP126.Core.SpectralSequence.FilteredMorphism.inducedGrMap}
+\end{definition}
+
+\begin{definition}[Boundedness, exhaustion, and separation]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:bounded}
+\level{coarse}
+A bounded filtration has explicit lower and upper bounds in each degree. Lower boundedness implies exhaustion, and upper boundedness implies the Hausdorff property, for the same filtration.
+\lean{KIP126.Core.SpectralSequence.Filtration.IsBounded,KIP126.Core.SpectralSequence.Filtration.IsBoundedBelow,KIP126.Core.SpectralSequence.Filtration.IsBoundedAbove,KIP126.Core.SpectralSequence.Filtration.IsExhaustive,KIP126.Core.SpectralSequence.Filtration.IsHausdorff,KIP126.Core.SpectralSequence.Filtration.IsBoundedBelow.toIsExhaustive,KIP126.Core.SpectralSequence.Filtration.IsBoundedAbove.toIsHausdorff}
+\end{definition}
+
+\begin{definition}[The quotient tower of a filtration]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:completion}
+\level{coarse}
+The quotients $A^k/F^sA^k$, their transition morphisms, and the canonical cone form the quotient tower. A completion witness identifies the original object with the limit of this specified tower.
+\lean{KIP126.Core.SpectralSequence.Filtration.quotientAt,KIP126.Core.SpectralSequence.Filtration.quotientTransition,KIP126.Core.SpectralSequence.Filtration.quotientTower,KIP126.Core.SpectralSequence.Filtration.quotientTowerCone,KIP126.Core.SpectralSequence.Filtration.CompletionWitness}
+\end{definition}
+
+\begin{definition}[Convergence to a specified filtered object]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:convergence}
+\level{coarse}
+Convergence consists of a bijective reindexing of degrees and isomorphisms $E_\infty^p\cong\operatorname{gr}^{s}A^k$ for that reindexing $p\mapsto(s,k)$. A converging spectral sequence packages the same sequence, filtered target, and comparison.
+\lean{KIP126.Core.SpectralSequence.Convergence,KIP126.Core.SpectralSequence.ConvergingSS}
+\end{definition}
+
+\begin{definition}[Detection in an associated graded quotient]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:detection}
+\level{coarse}
+An infinity-page class detects a filtered representative when its convergence image equals the associated graded quotient of that representative. A convergence morphism preserves the filtered target and commutes with these specified infinity-page identifications.
+\lean{KIP126.Core.SpectralSequence.Detects,KIP126.Core.SpectralSequence.ConvergenceMorphism}
+\end{definition}
+
+\begin{theorem}[Differences of detected representatives]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:detected-difference}
+\level{coarse}
+Let $T$ be an object of the abelian category, and let $x,x' : T\to F^sA^k$ be filtered representatives. If $y:T\to E_\infty^p$ detects both, where $p$ reindexes to $(s,k)$, then $x-x'$ factors through $F^{s+1}A^k$. Conversely, if $y$ detects $x$ and this factorization exists, then $y$ detects $x'$. The zero infinity-page class detects $x$ if and only if $x$ factors through $F^{s+1}A^k$. For module-valued filtrations, a filtered element has zero associated graded image if and only if its ambient image belongs to $F^{s+1}A^k$.
+\lean{KIP126.Core.SpectralSequence.detect_difference,KIP126.Core.SpectralSequence.detect_zero,KIP126.Core.SpectralSequence.Filtration.toAssociatedGraded_eq_zero_iff}
+\end{theorem}
+
+\begin{theorem}[Vanishing associated graded pieces]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:graded-vanishing}
+\level{coarse}
+A zero associated graded piece makes two successive filtration subobjects equal. If all associated graded pieces in a specified interval vanish, the filtration levels at its endpoints agree.
+\lean{KIP126.Core.SpectralSequence.Filtration.eq_succ_of_associatedGraded_isZero,KIP126.Core.SpectralSequence.Filtration.eq_of_associatedGraded_isZero}
+\end{theorem}
+
+\section{Differential relations and filtered-map extensions}
+
+\begin{definition}[Differential relations on ambient representatives]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:ambient-differential}
+\level{coarse}
+The ambient differential relation expresses the actual page differential through representatives in its cycle subobjects. The full set of possible targets is recorded as a boundary coset; essentiality excludes zero from that coset.
+\lean{KIP126.Core.SpectralSequence.DifferentialRelation,KIP126.Core.SpectralSequence.DifferentialTargetCoset,KIP126.Core.SpectralSequence.EssentialDifferentialRelation}
+\end{definition}
+
+\begin{theorem}[The complete differential target coset]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:differential-coset}
+\level{coarse}
+Once a differential relation from $x$ to $y$ is known, another target $z$ satisfies the same relation exactly when it lies in the complete target coset of $y$. Essentiality is equivalently the exclusion of zero from the target coset.
+\lean{KIP126.Core.SpectralSequence.DifferentialRelation.mem_targetCoset_iff,KIP126.Core.SpectralSequence.DifferentialRelation.targets_sub_factors_boundary,KIP126.Core.SpectralSequence.essentialDifferentialRelation_iff_zero_not_mem}
+\end{theorem}
+
+\begin{definition}[Extensions of one specified filtered map]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:extension-equation}
+\level{coarse}
+Let $f:A\to B$ preserve filtrations $F,G$, and let $T$ be an object of the abelian category. A length-$n$ extension from $x:T\to\operatorname{gr}^s A$ to $y:T\to\operatorname{gr}^{s+n}B$ consists of $n\geq0$ and lifts $a:T\to F^sA$, $b:T\to G^{s+n}B$ with associated graded images $x,y$ such that $f\circ i_F\circ a=i_G\circ b$, where $i_F,i_G$ are the ambient inclusions.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.Relation}
+\end{definition}
+
+\begin{definition}[Target indeterminacy and essential extensions]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:extension-ambiguity}
+\level{coarse}
+The target indeterminacy consists of targets of extensions from the zero source label for this same map and length. The target coset is obtained by translating that set. An extension is essential if its full target coset excludes zero.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.TargetIndeterminacy,KIP126.Core.SpectralSequence.FilteredMapExtension.TargetCoset,KIP126.Core.SpectralSequence.FilteredMapExtension.Essential}
+\end{definition}
+
+\begin{theorem}[All targets of the same extension source]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:extension-coset}
+\level{coarse}
+Extension relations are closed under addition and subtraction. For a known extension from $x$ to $y$, the full coset of $y$ consists exactly of all targets of $x$. Such an extension is essential exactly when $x$ has no zero target.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.Relation.add,KIP126.Core.SpectralSequence.FilteredMapExtension.Relation.sub,KIP126.Core.SpectralSequence.FilteredMapExtension.Relation.mem_targetCoset_iff,KIP126.Core.SpectralSequence.FilteredMapExtension.essential_iff}
+\end{theorem}
+
+\begin{theorem}[Indeterminacy from higher source filtration]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:higher-filtration}
+\level{coarse}
+For a test object $T$, a morphism $y:T\to\operatorname{gr}^{s+n}B$ belongs to the target indeterminacy if and only if $n\geq0$ and there are lifts $a:T\to F^{s+1}A$ and $b:T\to G^{s+n}B$ such that $f\circ i_F\circ a=i_G\circ b$ and $b$ has associated graded image $y$.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.mem_indeterminacy_iff}
+\end{theorem}
+
+\begin{theorem}[Length-zero extensions]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:length-zero}
+\level{coarse}
+At length zero, the extension relation is the equation for the induced associated graded map together with existence of a source lift. When the test object is projective, that lifting condition follows from the quotient epimorphism.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.relation_zero_iff,KIP126.Core.SpectralSequence.FilteredMapExtension.relation_zero_iff_of_projective}
+\end{theorem}
+
+\begin{definition}[The bounded extension spectral sequence]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:bounded-ess}
+\level{coarse}
+For the same filtered map $f$, assume that both actual filtrations are bounded. Its extension spectral sequence begins on page zero and has differential degree $(n,-1)$ at page $n$ in the grading of the two-term complex. Its source and target ambient objects are the corresponding associated graded pieces of the original filtrations.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.sequence,KIP126.Core.SpectralSequence.FilteredMapExtension.sequence_firstPage,KIP126.Core.SpectralSequence.FilteredMapExtension.sequence_diffDeg,KIP126.Core.SpectralSequence.FilteredMapExtension.sourceIso,KIP126.Core.SpectralSequence.FilteredMapExtension.targetIso}
+\end{definition}
+
+\begin{theorem}[ESS differentials are extension equations]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:ess-equation}
+\level{coarse}
+For bounded source and target filtrations, a nonnegative length $n$, and a projective test object, the actual differential relation in the bounded extension spectral sequence is equivalent to the representative extension equation for the original filtered map.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.differentialRelation_iff}
+\end{theorem}
+
+\begin{definition}[Transport by levelwise filtered isomorphisms]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:filtered-transport}
+\level{coarse}
+A filtered-piece isomorphism identifies the ambient objects and every filtration level, compatibly with inclusion. A transport of filtered maps consists of such isomorphisms on source and target making the actual ambient square commute.
+\lean{KIP126.Core.SpectralSequence.FilteredPieceIso,KIP126.Core.SpectralSequence.FilteredPieceIso.gradedIso,KIP126.Core.SpectralSequence.FilteredMapTransport}
+\end{definition}
+
+\begin{theorem}[Transport preserves extensions and their full ambiguity]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:extension-transport}
+\level{coarse}
+Levelwise filtered transport preserves representative equations, extension relations, complete target indeterminacy, target cosets, and essentiality. These representative-level statements do not require bounded filtrations.
+\lean{KIP126.Core.SpectralSequence.FilteredMapTransport.representative_equation_iff,KIP126.Core.SpectralSequence.FilteredMapTransport.relation_iff,KIP126.Core.SpectralSequence.FilteredMapTransport.indeterminacy_iff,KIP126.Core.SpectralSequence.FilteredMapTransport.targetCoset_iff,KIP126.Core.SpectralSequence.FilteredMapTransport.essential_iff}
+\end{theorem}
+
+\begin{theorem}[Transport of crossings and ESS differentials]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:crossing-transport}
+\level{coarse}
+A crossing is a higher-source-filtration essential extension whose target level crosses the selected bound. Such crossings are preserved by filtered transport. If all four filtrations are bounded and the test object is projective, transport also preserves the differential relation in the extension spectral sequences.
+\lean{KIP126.Core.SpectralSequence.FilteredMapTransport.NoCrossing,KIP126.Core.SpectralSequence.FilteredMapTransport.noCrossing_iff,KIP126.Core.SpectralSequence.FilteredMapTransport.differentialRelation_iff}
+\end{theorem}
+
+\section{Products and converging multiplicative structures}
+
+\begin{definition}[Pairings of spectral sequences]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:pairing}
+\level{coarse}
+A pairing is bilinear on every page, has a specified parity and compatible differential degrees, obeys the signed Leibniz rule, and descends through the actual common-cycle successor-page relation.
+\lean{KIP126.Core.SpectralSequence.SSPairing,KIP126.Core.SpectralSequence.GradingParity,KIP126.Core.SpectralSequence.NextPageRelation}
+\end{definition}
+
+\begin{definition}[Products from finite pages to the abutment]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:converging-pairing}
+\level{coarse}
+A converging pairing ties the finite-page products to one product on common infinite cycles, its induced $E_\infty$ product, the filtered abutment product, and the associated graded product. All comparisons use the same convergence isomorphisms.
+\lean{KIP126.Core.SpectralSequence.ConvergingSSPairing}
+\end{definition}
+
+\begin{definition}[A common-cycle unit]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:unit}
+\level{coarse}
+Unit data consist of an infinite cycle in degree zero and a filtration-zero abutment representative with the same associated graded image. Their projections give the specified unit classes on every finite page, on $E_\infty$, and in the abutment.
+\lean{KIP126.Core.SpectralSequence.ConvergingSSUnit,KIP126.Core.SpectralSequence.ConvergingSSUnit.page,KIP126.Core.SpectralSequence.ConvergingSSUnit.eInfty,KIP126.Core.SpectralSequence.ConvergingSSUnit.abutment}
+\end{definition}
+
+\begin{definition}[Morphisms of converging sequences]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:SpectralSequence:converging-category}
+\level{coarse}
+A converging-sequence morphism includes both a full spectral-sequence morphism and a convergence morphism, with identical action on $E_\infty$. Identity and composition define a category of converging spectral sequences.
+\lean{KIP126.Core.SpectralSequence.ConvergingSequence,KIP126.Core.SpectralSequence.ConvergingSequenceMorphism,KIP126.Core.SpectralSequence.ConvergingSequenceMorphism.id,KIP126.Core.SpectralSequence.ConvergingSequenceMorphism.comp}
+\end{definition}
+
+% Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{The extension spectral sequence}
+
+% AimPaper: 2.1 definition 264 271
+\begin{definition}[The extension spectral sequence]
+\label{paper:2.1}
+\source{AimPaper Definition 2.1}
+\level{coarse}
+From \cite{LWX126}, Definition 2.1.\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:ess}
+  For a map $f: X\to Y$, we define an $f$-extension spectral sequence (denoted $f$-ESS) as the spectral sequence derived from filtering the above chain complex according to the Adams filtration on $\pi_*$. The $E_0$-page of this spectral sequence is isomorphic to the direct sum of $E_\infty$-pages of the Adams spectral sequences of $X$ and $Y$: 
+  $$\ESS{f}_0^{s,t} \cong E_\infty^{s,t}(X) \oplus E_\infty^{s,t}(Y) \Longrightarrow \Ker(\pi_*f)\oplus \Coker(\pi_*f)$$
+  where the $d_0$-differential is induced by $f$ on the $E_\infty$-pages.
+  
+  Differentials in this spectral sequence has the form
+  $$d_n^{f}: \ESS{f}_n^{s,t}\to \ESS{f}_n^{s+n, t+n}.$$
+% END AIMPAPER STATEMENT
+\uses{sem:SpectralSequence:filtration,sem:SpectralSequence:sequence}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 253-271](paper/main.tex.html#L253). Filter the two-term complex by Adams filtration to form the extension spectral sequence.
+
+% Blueprint note: The direct binding is the bounded extension spectral sequence construction. The separate theorem identifying its differentials with extension equations is stated in \ref{sem:SpectralSequence:ess-equation}.
+
+
+% Correspondence: partial.
+% Blueprint note: The extension spectral sequence of the same filtered map is constructed under \texttt{IsBounded} hypotheses on the source and target filtrations. A dedicated construction for an arbitrary classical map $f$, together with the full abutment comparison in the paper, is not yet supplied.
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Core.SpectralSequence.FilteredMapExtension.sequence}.
+\lean{KIP126.Core.SpectralSequence.FilteredMapExtension.sequence}
+
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L264; paper/2412.10879.pdf.
+\end{definition}
+

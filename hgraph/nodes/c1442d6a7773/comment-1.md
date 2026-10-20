@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:4.10
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.577237+00:00'
+updated: '2026-10-20T04:59:49.950793+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
 

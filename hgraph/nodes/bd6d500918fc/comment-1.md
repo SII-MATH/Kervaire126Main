@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/ProofTools.tex
+authored_source: blueprint/chapters/ProofTools.tex
 blueprint_label: paper:2.6
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T14:34:09.103760+00:00'
+updated: '2026-10-20T04:59:49.941440+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 332-339](paper/main.tex.html#L332). Factor f into positive-filtration maps, then apply Proposition 2.5(1) to rule out shorter extension differentials.
 

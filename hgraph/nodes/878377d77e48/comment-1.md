@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/AdamsSynthetic.tex
+authored_source: blueprint/chapters/AdamsSynthetic.tex
 blueprint_label: paper:2.5
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.545391+00:00'
+updated: '2026-10-20T04:59:49.761303+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 307-325](paper/main.tex.html#L307). Representatives detected by x and y characterize extensions; the indeterminacy statements follow from the same characterization.
 

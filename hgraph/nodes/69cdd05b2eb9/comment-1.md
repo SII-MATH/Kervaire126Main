@@ -1,12 +1,12 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/paper/Literature.tex
+authored_source: blueprint/chapters/Literature.tex
 blueprint_label: paper:3.20
 created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-18T08:16:05.556189+00:00'
+updated: '2026-10-20T04:59:49.863724+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 946-971](paper/main.tex.html#L946). Rewrite the lifted triangle using the normalized maps and their filtration-shift convention; rotations cover the three possible positions.
 

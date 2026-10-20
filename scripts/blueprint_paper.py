@@ -42,7 +42,7 @@ def load_paper(root):
     originals = {(r['kind'], r['start_line'], r['end_line']): r
                  for r in source_statements(source)}
     records = []
-    for path in sorted((root / 'blueprint/paper').rglob('*.tex')):
+    for path in sorted((root / 'blueprint/chapters').glob('*.tex')):
         for number, kind, start, end in re.findall(
                 r'^% AimPaper: (\d+\.\d+) (\w+) (\d+) (\d+)$', path.read_text(), re.M):
             original = originals.get((kind, int(start), int(end)))
@@ -138,12 +138,8 @@ def prepare_web_blueprint(root, destination):
         relative = path.relative_to(root / 'blueprint')
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
-        if path.parent.name == 'paper' and path.suffix == '.tex' and '% AimPaper: ' in path.read_text():
-            blocks = re.split(r'(?=^% AimPaper: )', path.read_text(), flags=re.M)
-            for index in range(1, len(blocks)):
-                number = re.match(r'% AimPaper: (\d+\.\d+)', blocks[index])[1]
-                blocks[index] = display_body(blocks[index], number, refs)
-            target.write_text(''.join(blocks))
+        if path.suffix == '.tex':
+            target.write_text(display_chapter(path.read_text(), refs))
         elif path.suffix == '.bib':
             target.write_text(web_bibliography(path.read_text()))
         else:
@@ -151,6 +147,25 @@ def prepare_web_blueprint(root, destination):
             # a previous shared-filesystem copy contained a NUL-filled prefix.
             target.write_bytes(path.read_bytes())
     return destination
+
+
+def display_chapter(text, refs):
+    """Render paper statements and their proofs within an ordinary chapter."""
+    number = None
+
+    def render(match):
+        nonlocal number
+        if match[1] != 'proof':
+            label = re.search(r'\\label\{([^}]+)\}', active_tex(match[0]))
+            paper = re.fullmatch(r'paper:(\d+\.\d+)', label[1]) if label else None
+            if not paper and match[1] == 'notation':
+                paper = re.search(r'From\s+\\cite\{LWX126\},\s+Notation\s+(\d+\.\d+)',
+                                  active_tex(match[0]))
+            number = paper[1] if paper else None
+        return display_body(match[0], number, refs) if number else match[0]
+
+    return re.sub(r'\\begin\{(' + CORE + r'|remark|notation|proof)\}.*?\\end\{\1\}',
+                  render, text, flags=re.S)
 
 
 

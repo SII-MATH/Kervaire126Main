@@ -96,7 +96,6 @@ corrections:
     nodes:
     - paper:6.12
     definitions:
-    - sem:ProofTools:mahowald-law
     - sem:ProofTools:mh-actual-no-crossing
     note: 修正版完整定理已公开并证明。Literature 构造实际有限商正合行及同时保持两条指定箭头的同一余纤维同构；ProofTools 的 generalizedMahowaldAtLevel 直接消费该定理，不再要求调用方给 hRows。原标签、实际 no-crossing、共同代表、两条带符号像和强有限商结论完整保留；没有新增公理或证明洞，既有上游待补责任继续保留。
   problem: |-
@@ -118,7 +117,7 @@ corrections:
 
     令 $x=b=d_2(h_4)=h_0h_3^2\ne0$，其余标签为零，则 $l_1=1$、$r=r'=3$。前提只看到 $b\bmod B_2=0$；而 $\operatorname{Ext}_{\mathcal A}^{2,13}=0$ 保证 $j_2(b)\ne0$，故底层 $d_0^{\hat j_2}(b)\ne0$，阻止所需的 $d_1$。Definition 5.4 的源位于第零层，只模 $B_1=0$，不能改读成经典 $E_3$ 中的零类。
   progress: |-
-    **完整带层修正版。** 获准采用的完整陈述由 Blueprint 的强有限层 MH 定义及 Theorem 6.12 维护；公开 Lean theorem 为 `KIP126.ProofTools.Standard.generalizedMahowaldAtLevel`。它构造同一 $a,b,c$，保留全部指定输入检测、严格 $\delta$ 方程、两条带符号像、两条原标签输出检测、原 $x$ 的 cycle 资格和原指定 $y$ 的强有限商延拓，没有消去 $\lambda$ 层，也没有增加水平行假设。目标研究与授权记录见 [ProofTools 接口提案](interface/proposals/ProofTools/20261018-mh-finite-level-target/report.md)。
+    **完整带层修正版。** 获准采用的完整陈述由 Blueprint 的 Theorem 6.12 维护；公开 Lean theorem 为 `KIP126.ProofTools.Standard.generalizedMahowaldAtLevel`。它构造同一 $a,b,c$，保留全部指定输入检测、严格 $\delta$ 方程、两条带符号像、两条原标签输出检测、原 $x$ 的 cycle 资格和原指定 $y$ 的强有限商延拓，没有消去 $\lambda$ 层，也没有增加水平行假设。目标研究与授权记录见 [ProofTools 接口提案](interface/proposals/ProofTools/20261018-mh-finite-level-target/report.md)。
 
     **指定商映射的实际正合性。** `KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row` 在同一标准模型、同一相容 normalized triangle 和任意 $q>0$ 上给出保实际 quotient inclusion 的悬挂同构及字面 signed distinguished row。私有 cone 构造保留同一个悬挂比较和同一个余纤维同构，同时满足两条指定结构方程。证明从三八面体、有限源负 Hom 窗口、同一误差的有限胞腔 ghost 幂零及严格 tail 比较构造，不把逐球面为零直接当作全局箭头为零，不调用旧一般 MH／GL，不引入新公理、证明洞或上游结果包。最小 Literature 授权及独立审查见[该接口提案](interface/proposals/Literature/20261018-mh-finite-quotient-horizontal-row/report.md)。
 
@@ -178,11 +177,7 @@ corrections:
     - paper:6.20
     - sem:ProofTools:nonliftable-or-crossing
     - paper:6.23
-    definitions:
-    - sem:ProofTools:correction-label
-    - sem:ProofTools:nonliftable-obstruction
-    - sem:ProofTools:finite-stretching-law
-    note: 6.20 的正文为已授权的固定目标、b=0、去差集 iff，下降首句仍由独立节点维护；6.23 的正文为现有 Standard 有限页充分条件。两者绑定各自实际公开定理，原印刷陈述由 AimPaper 来源保留，不把修正版记为原文完整证明。
+    note: 6.20 的正文为已授权的固定目标、b=0、去差集 iff，下降首句仍由独立节点维护；6.23 的正文为现有 Standard 有限页充分条件。修正标签和同商障碍条件直接展开在对应命题中。两者绑定各自实际公开定理，原印刷陈述由 AimPaper 来源保留，不把修正版记为原文完整证明。
   problem: |-
     **范围与问题。** 原文允许较低目标 $y'$ 及参数 $b$。若要求保持原目标 $y$，分次迫使 $b=0$；在这个加强版中，再要求短源属于早晚 cycle 的严格差集，并不能由早页 inessential 推出。整体修正不可提升，不保证其首项不可提升且能支持到原 $y$ 的短扩张。
 
@@ -252,10 +247,8 @@ corrections:
     - sem:ProofTools:generalized-leibniz-at-level
     - sem:ProofTools:finite-lambda-division
     definitions:
-    - sem:ProofTools:level-source-label
     - sem:ProofTools:level-finite-extension
-    - sem:ProofTools:level-no-crossing
-    - sem:ProofTools:finite-lambda-kernel-no-crossing
+    note: 带层源、扩张和实际三边 crossing 在同一设置中定义；目标核 crossing 条件直接写入有限 λ 除法定理。合并展示不改变 Lean 接口，也不补上原 Proposition 5.10 的比较缺口。
   problem: |-
     **原文与问题。** Proposition 5.10（`prop:cross-f-Er`）从交换的 λ 方块直接提升扩张，但除以 λ 后的像可能出现低滤过 λ-torsion，不能保证所需的像滤过。此问题也影响 Theorem 6.1（`thm:e73f481e`）原文的无 crossing 前提；本轮已独立核验一个满足完整 GL 前提的一般实际谱反例，而不只是反驳其证明中的某一步。
   counterexample: |-
@@ -362,13 +355,13 @@ corrections:
     source_line: 2698
   revision:
     nodes:
-    - sem:Main:weak-representative-route
+    - paper:7.9
   problem: |-
     **原文编号与调整范围。** Proposition 7.9 的原证明（第 2698–2778 行）通过 Lemma 7.16 的指定 Toda 括号检测及 Corollary 7.18 的任意代表精确 $h_0$ 扩张，再结合 Proposition 7.20 的 $\nu$ 扩张、Fact 7.21 的乘法计算和 $\nu$ 余纤维存活窗口导出矛盾。两个局部缺口分别见本页 Lemma 7.16 与 Corollary 7.18 条目；它们没有构成满足全部原始前提的定理反例。
 
     当前保留 Proposition 7.9 的原结论和完整数学前提：$d_6(x_{126,8,4}+x_{126,8})=0$，以及存在由 $h_0^2x_{124,8}$ 非零检测的 $u$，使 $\lambda^3\eta u$ 被 $\lambda^6h_1h_4x_{109,12}$ 检测。不额外假设新的第 126 茎计算结论。
   progress: |-
-    **已采用的新路线。** Blueprint 节点 `sem:Main:weak-representative-route` 说明：从实际括号成员的精确关系出发，剥除低滤过项时只保留非零的 $\lambda^2h_0$ 值，取得所需高滤过检测代表，再接回 Proposition 7.20、Fact 7.21 及余纤维矛盾，终点仍为 `paper:7.9`。这不声称新代表仍在原括号中，也不声称已经证明 Corollary 7.18 对任意代表的未乘 $\lambda^2$ 精确关系。私有辅助步骤不另作公开 Lean 绑定。
+    **已采用的新路线。** Blueprint 的 `paper:7.9` 证明说明：从实际括号成员的精确关系出发，剥除低滤过项时只保留非零的 $\lambda^2h_0$ 值，取得所需高滤过检测代表，再接回 Proposition 7.20、Fact 7.21 及余纤维矛盾，终点仍为原 Proposition 7.9。这不声称新代表仍在原括号中，也不声称已经证明 Corollary 7.18 对任意代表的未乘 $\lambda^2$ 精确关系。私有辅助步骤不另作公开 Lean 绑定。
 
     **原文中复用的输入。** 滤过九修正所需的消失推导复用 Lemma 7.11 证明中的第 124 茎滤过 11、12 消失及滤过 13 的 $h_1$ 乘积计算，以及 Lemma 7.16 已使用的 $h_5^2b=0$。辅助 Toda 括号改用余纤维、商代数和第一商乘法比较构造。相关结构原文定位为 Remark 3.4、Propositions 3.11–3.12；具体上游范围由下列 Blueprint 节点维护。
 
@@ -380,10 +373,8 @@ corrections:
 
     完整来源、固定对象与同签名依赖核验见 `local-history/interface-reviews/2026-10-18-upstream-fidelity/`。原证明的两项局部缺口核验见 `local-history/interface-reviews/2026-10-18-main-paper-proofs/`；审计证据不代替正式生产证明。
   links:
-  - node: sem:Main:weak-representative-route
-    title: 采用路线 · 保留非零 λ²h₀ 值的代表修正
   - node: paper:7.9
-    title: Proposition 7.9 · 保持原结论的反证终点
+    title: Proposition 7.9 · 保留非零 λ²h₀ 值的代表修正及反证
   - node: paper:7.11
     title: Lemma 7.11 · 代表独立性及复用的滤过计算
   - node: paper:7.16

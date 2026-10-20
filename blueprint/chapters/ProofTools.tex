@@ -1,4 +1,1243 @@
 \chapter{ProofTools — Representatives, extensions and comparison laws}
 Fix a model $D$ of the classical and synthetic Adams systems. All maps, quotient objects, filtrations and page labels in each statement are taken in this model. In the statements quoted from \cite{LWX126}, spectra are $2$-completed, connective and of finite type.
-\input{../semantic/ProofTools.tex}
-\input{../paper/ProofTools.tex}
+
+% Curated mathematical exposition; compiled dependencies and status are supplied by the publisher.
+
+\section{Common labels and representative calculus}
+
+\begin{definition}[Common labels and differential equations]
+\label{sem:ProofTools:common-labels}
+\level{coarse}
+For a classical spectrum $X$, a common label in bidegree $(s,t)$ is an element of $E_2^{s,t}(X)$. For $c\geq1$, it is a level-$c$ cycle, respectively boundary, if it lies in $Z_c^{s,t}(X)$, respectively $B_c^{s,t}(X)$. A permanent label is an element of $Z_\infty^{s,t}(X)$; the zero label is included.
+
+For $c\geq1$, labels $x,y\in E_2^{s,t}(X)$ are congruent at level $c$ if $x-y\in B_c^{s,t}(X)$. For $r\geq2$, the equation $d_r(x)=y$ means that $x$ and $y$ represent classes on page $r$ and their classes satisfy the Adams differential equation, with source bidegree $(s,t)$ and target bidegree $(s+r,t+r-1)$. The target may be zero.
+\lean{KIP126.ProofTools.Ambient,KIP126.ProofTools.IsCycle,KIP126.ProofTools.IsBoundary,KIP126.ProofTools.IsPermanent,KIP126.ProofTools.Congruent,KIP126.ProofTools.DifferentialAt}
+\end{definition}
+
+For $r\geq2$, a common label lies in $Z_{r-1}$ if and only if it reaches page $r$. If $x$ represents $x_r$ on page $r$ and $y-x\in B_{r-1}$, then $y$ represents $x_r$. If $d_r(x)=y$ and $y'-y\in B_{r-1}$, then $d_r(x)=y'$.
+
+For $c\geq1$, $B_c\subseteq Z_c$, and $B_1=0$. If a common label represents zero on page $r\geq2$, it lies in $B_{r-1}$. Projection of a common cycle to the initial page recovers its $E_2$-label.
+
+\begin{theorem}[Filtration, associated grades and detection]
+\label{sem:ProofTools:filtration-representatives}
+\level{coarse}
+For a convergent synthetic Adams tower on $X$, let
+\[E_\infty^{s,m+s,w}(X)\cong\operatorname{gr}^s\pi_{m,w}X\]
+be its convergence isomorphism.
+
+Every element of $F^s\pi_{m,w}X$ has a representative in the filtration subobject $F^sX$. If $g:X\to Y$ is a map of convergent towers, then
+\[g_*\bigl(F^s\pi_{m,w}X\bigr)\subseteq F^s\pi_{m,w}Y.\]
+
+Let $g:X\to Y$ be a map of convergent towers, $a\in F^s\pi_{m,w}X$ and $b\in F^s\pi_{m,w}Y$. If $g_*(a)=b$, their associated-graded classes satisfy $g_\infty([a])=[b]$. Conversely, this graded equality implies
+\[b-g_*(a)\in F^{s+1}\pi_{m,w}Y.\]
+If $g_\infty$ is injective in this degree and $g_*(a)\in F^{s+1}\pi_{m,w}Y$, then $a\in F^{s+1}\pi_{m,w}X$.
+
+Let $g:X\to Y$ be a map of convergent towers. If $x$ detects $\alpha$ on $X$, then $g_2(x)$ detects $g_*(\alpha)$ on $Y$. Conversely, suppose that $g_\infty$ is injective in filtration $s$, that $x$ represents an infinite-page class, and that $\alpha\in F^s\pi_{m,w}X$. If $g_2(x)$ detects $g_*(\alpha)$, then $x$ detects $\alpha$.
+\uses{sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration,sem:SpectralSequence:detection,sem:AdamsSynthetic:families}
+\lean{KIP126.ProofTools.Internal.filtration_representative_exists,KIP126.ProofTools.Internal.map_preserves_filtration,KIP126.ProofTools.Internal.grade_natural,KIP126.ProofTools.Internal.grade_difference,KIP126.ProofTools.Internal.next_filtration_of_infinity_injective,KIP126.ProofTools.Internal.detects_map,KIP126.ProofTools.Internal.detects_reflect}
+\end{theorem}
+\begin{proof}
+Filtration classes are images of the corresponding tower stages, so they have representatives there and a map of towers preserves them. The kernel of passage from $F^s$ to its associated grade is $F^{s+1}$. Applying this observation to $b-g_*(a)$ proves naturality and the next-filtration ambiguity; injectivity on the associated grade gives the stated reflection.
+
+Under the convergence isomorphisms, detection is precisely equality of associated-graded classes. Naturality transports that equality, and the assumed injectivity reflects it. The induced page maps compose by functoriality, and send an infinite-page representative to a representative of its image. These are statements about the specified convergent towers.
+\end{proof}
+
+\begin{theorem}[Representatives for a tower extension equation]
+\label{sem:ProofTools:extension-representatives}
+\level{coarse}
+Let $g:X\to Y$ be a map of convergent towers. Fix $(m,w)$ and classes $x\in E_\infty^{s,m+s,w}(X)$ and $y\in E_\infty^{s+n,m+s+n,w}(Y)$. An extension equation of length $n$ from $x$ to $y$ holds if and only if $n\geq0$ and there are representatives
+\[a\in F^s\pi_{m,w}X,\qquad b\in F^{s+n}\pi_{m,w}Y,\qquad g_*(a)=b\]
+whose associated-graded classes correspond to $x$ and $y$ under the convergence isomorphisms.
+\uses{sem:ProofTools:filtration-representatives,paper:2.3}
+\lean{KIP126.ProofTools.Internal.tower_extension_iff}
+% Blueprint note: This is the representative criterion for the specified towers. Identifying an arbitrary classical extension spectral sequence with this tower construction remains a separate comparison; this entry does not assert that comparison.
+\end{theorem}
+\begin{proof}
+Unpack the extension relation in the filtered homotopy groups of the two towers. Its source and target grades are represented by $a$ and $g_*(a)$ in the displayed filtrations; conversely such representatives give the extension equation. The convergence identifications translate these grades into the specified infinite-page classes.
+\end{proof}
+
+\section{Finite filtration correction and quotient windows}
+
+\begin{theorem}[Finite correction of a residual]
+\label{sem:ProofTools:finite-correction}
+\level{coarse}
+Let $A,A',B$ be abelian groups, $N\in\mathbb N$, and $\rho:A'\to A$ and $g:A\to B$ homomorphisms, let $E_k\leq A$, $L_k\leq A'$ with $L$ decreasing, and let $T\leq B$. Suppose that for each $s\leq k<s+N$, a residual $\delta\in E_k$ can either be corrected by some $\varepsilon\in L_k$ so that $\delta-\rho\varepsilon\in E_{k+1}$, or already satisfies $g\delta\in T$. Suppose also that $g(E_{s+N})\subseteq T$. If $\alpha_0-\rho\alpha\in E_s$, there is $\alpha'$ with
+\[\alpha'-\alpha\in L_s,\qquad g(\alpha_0-\rho\alpha')\in T.\]
+\lean{KIP126.ProofTools.finite_filtration_correction}
+% Blueprint note: The argument uses only a finite interval; it constructs neither a completion nor a compatible infinite lift.
+\end{theorem}
+\begin{proof}
+Induct over the finite interval. If the current residual already has image in $T$, keep the current correction. Otherwise subtract the supplied $\rho\varepsilon$ and add $\varepsilon$ to the source representative, thereby moving the residual to the next filtration. Since $L$ decreases, every accumulated change lies in $L_s$. At the terminal stage the hypothesis on $g(E_{s+N})$ puts its image in $T$. This proves both conclusions without an infinite limiting process.
+\end{proof}
+
+\begin{theorem}[Finite quotient windows and restriction]
+\label{sem:ProofTools:finite-strip}
+\level{coarse}
+For $q>0$, the infinite page of $\nu X/\lambda^q$ vanishes outside $0\leq t-w<q$. Every $\alpha\in\pi_{t-s,t}(\nu X/\lambda^q)$ has filtration at least $s$. If $q\leq m+s-w$, an element of $\pi_{m,w}(\nu X/\lambda^q)$ in filtration at least $s$ is zero.
+
+For $0<i\leq j$ and $t-w<i$, the quotient reduction $\rho:\nu X/\lambda^j\to\nu X/\lambda^i$ induces an injective map on the infinite-page component in tridegree $(s,t,w)$.
+\uses{sem:Literature:infinite-finite-window,sem:Literature:infinite-restriction,sem:AdamsSynthetic:finite-quotient-separation,sem:ProofTools:filtration-representatives}
+\lean{KIP126.ProofTools.Internal.Mahowald.finite_infinity_zero_outside,KIP126.ProofTools.Internal.Mahowald.finite_bottom_filtration,KIP126.ProofTools.Internal.Mahowald.finite_high_filtration_zero,KIP126.ProofTools.Internal.rho_infty_injective}
+\end{theorem}
+\begin{proof}
+The finite-window comparison gives the stated support of the infinite page. Vanishing associated grades identify successive filtration subgroups; iterating over a finite interval gives the corresponding filtration bounds. Finite-quotient separation then gives the asserted zero subgroup above the upper edge of the strip. This separation is used only for the finite quotient.
+
+In the retained strip, the two quotient windows have the same boundary denominator, and reduction is induced by inclusion of the classical cycle groups. It is therefore injective. Equivalently, filtration reflection can be checked one associated grade at a time over the finite interval; no injectivity of the whole homotopy map is asserted.
+\end{proof}
+
+\begin{theorem}[Finite target labels and sphere detection]
+\label{sem:ProofTools:sphere-label-detection}
+\level{coarse}
+For $q>0$ and $0\leq k<q$, let $y\in Z_{q-k}^{s,t}(X)$. Its finite target label at weight $t-k$ represents $e\in E_\infty^{s,t,t-k}(\nu X/\lambda^q)$ if and only if the finite-window comparison carries $e$ to the class of $y$ in
+\[Z_{q-k}^{s,t}(X)/B_{1+k}^{s,t}(X).\]
+
+The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ to $y$. Let $\alpha\in\pi_{t-s,t}(\nu S^0)$ have first-quotient image equal to this label, using the canonical zero-shift identification. For $q>0$ and $k\geq0$, the finite target label of $y$ in tridegree $(s,t,t-k)$ detects the image of $\lambda^k\alpha$ in $\nu S^0/\lambda^q$.
+\uses{sem:ProofTools:filtration-representatives,sem:ProofTools:finite-strip,sem:Literature:infinite-finite-window,sem:Literature:infinite-lambda,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,sem:AdamsSynthetic:shift-representatives}
+\lean{KIP126.ProofTools.Internal.Mahowald.finite_target_label_iff,KIP126.ProofTools.Internal.Mahowald.sphere_first_quotient_label,KIP126.ProofTools.Internal.Mahowald.sphere_finite_lambda_detects}
+\end{theorem}
+\begin{proof}
+The finite-window isomorphism identifies a specified finite target label with precisely the displayed classical cycle coset. At the first quotient the fixed sphere comparison recovers the original label. Naturality of quotient projection and multiplication by $\lambda$ transports this detection to each indicated weight and finite quotient. The statement retains the specified label and does not impose nonzero detection on its image.
+\end{proof}
+
+\section{Actual crossings and the finite-layer Mahowald construction}
+
+\begin{definition}[Actual essential no-crossing]
+\label{sem:ProofTools:mh-actual-no-crossing}
+\level{coarse}
+Fix a map $F:U\to V$ of convergent synthetic Adams towers and one stem and weight $(p,w)$. For a source filtration $s$ and length $a$, actual no-crossing means
+\[
+\text{there is no essential }d_{v-u}^{F}(\xi)=\eta
+\quad\text{with }s<u\leq v\leq s+a
+\]
+in this same map and bidegree. Essentiality is taken in the actual extension spectral sequence, including all shorter extension images. The diagonal $u=v$ is included.
+\uses{sem:AdamsSynthetic:selected-convergence,sem:SpectralSequence:filtration}
+\lean{KIP126.ProofTools.Internal.Mahowald.ActualNoCrossing}
+\end{definition}
+
+\begin{theorem}[A common source from actual no-crossing]
+\label{sem:ProofTools:mh-common-source}
+\level{coarse}
+Let $F:U\to V$ and $G:U\to W$ be maps of convergent towers with the same source convergence. Fix the same stem and weight, and suppose
+\[
+d_a^F(\xi)=\eta,\qquad d_b^G(\xi)=\zeta.
+\]
+If either equation has actual no-crossing in its full higher-source triangle, then there are actual representatives $u,v,w$ of $\xi,\eta,\zeta$, respectively, with
+\[F(u)=v,\qquad G(u)=w.\]
+The representatives lie in filtrations $s,s+a,s+b$. Zero labels, inessential input equations, and length zero are allowed.
+\uses{sem:ProofTools:mh-actual-no-crossing,sem:ProofTools:filtration-representatives,sem:ProofTools:finite-correction}
+\lean{KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative}
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Choose representatives for the two given extension equations. Their source representatives differ in the next source filtration. Synchronize them over the finite higher-source triangle: a first nonzero image grade of a residual that cannot be removed gives an essential crossing of the edge on which actual no-crossing is assumed. The finite correction argument therefore supplies a common source while retaining the two prescribed image grades. The same argument includes diagonal extensions and zero labels; essentiality of the input equations is not used.
+\end{proof}
+
+Assume that suspension and bigraded shifts are coherent with the homotopy functors. The canonical isomorphism
+\[\Sigma^{1,-q}Q\cong\Sigma(\Sigma^{0,-q}Q)\]
+identifies the induced suspension and bigraded-shift maps. The inverse and composition isomorphisms for shifts induce the corresponding inverse and composition maps on homotopy groups.
+For all integers $m,n,k,l$ and $f,g\in\pi_{m,n}X$, suspension invariance is additive:
+\[
+\operatorname{susp}_{k,l}(f+g)=\operatorname{susp}_{k,l}(f)+\operatorname{susp}_{k,l}(g)
+\quad\text{in }\pi_{m+k,n+l}(\Sigma^{k,l}X).
+\]
+
+\begin{theorem}[The zero-layer nu-cofiber Mahowald instance]
+\label{sem:ProofTools:nu-zero-layer}
+\level{coarse}
+In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y\in E_2^{11,136}(S^0)$, $\bar x\in E_2^{8,134}(C\nu)$ and permanent $\bar y\in E_2^{11,136}(C\nu)$. Require $x\in Z_2$, $y\in Z_1$, $\bar x\in Z_2$, the actual suspension label for $x$, the length-zero connecting extension on page $3$, $d_3(\bar x)=\bar y$, its specified no-crossing alternative, and the length-zero bottom-cell extension on page $2$. Then $x\in Z_3$ and there is an actual $\nu$-extension of length $3$ on page $4$ from $x$ to some $y'$ with $y'-y\in B_3$.
+\uses{sem:Literature:nu-cofiber,sem:Literature:connected-homology,sem:AdamsSynthetic:shift-coherence,sem:AdamsSynthetic:ess-shifts,sem:ProofTools:common-labels,sem:ProofTools:filtration-representatives,sem:ProofTools:extension-representatives,sem:ProofTools:sphere-label-detection,sem:ProofTools:finite-strip,paper:5.4}
+\lean{KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer}
+% Blueprint note: The instance has its own proof. Its fixed-model constructions and comparison inputs retain their registered upstream obligations.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Use the actual quotient-boundary diagram of the fixed $\nu$ cofiber, with its specified suspension comparison. The classical $d_3$ supplies the boundary equation, and the two length-zero extensions supply the connecting and bottom-cell equations. The no-crossing alternative synchronizes the required representatives. In this particular finite diagram, the quotient-window bounds identify the source as a $Z_3$ label and identify the resulting length-three extension target modulo $B_3$. Thus the extension is on page $4$ with the stated congruence. This is an independent argument for this numerical instance, not cancellation of a $\lambda$ power in the general Mahowald theorem.
+\end{proof}
+
+\section{Representative criteria and finite-page restriction}
+
+\begin{theorem}[Descent of finite-page extensions in the valid length range]
+\label{sem:ProofTools:finite-extension-descent}
+\level{coarse}
+A page-range revision of \cite{LWX126}, Proposition 6.20, first assertion, with the page--length domain of Definition 5.4.\par
+
+In the fixed model, let $X,Y$ be classical objects and $f:X\to Y$ a map, and put $e=e(f)$. Take finite pages $r_{\rm early},r_{\rm late}\in\mathbb N$, integers $n,s,t$, and common labels
+\[
+x\in E_2^{s,t}(X),\qquad y\in E_2^{s+n,t+n}(Y).
+\]
+Suppose that
+\[
+2\leq r_{\rm early}\leq r_{\rm late},\qquad
+n\leq r_{\rm early}-2+e,
+\]
+and that there is an extension, in the sense of Definition 5.4,
+\[
+d_n^{f,E_{r_{\rm late}}}(x)=y.
+\]
+Then the same map and the same specified labels admit the earlier-page extension
+\[
+d_n^{f,E_{r_{\rm early}}}(x)=y.
+\]
+The late extension includes the lower length bound $e\leq n$ and the cycle conditions
+\[
+x\in Z_{r_{\rm late}-1}^{s,t}(X),\qquad
+y\in Z_{r_{\rm late}-1-n+e}^{s+n,t+n}(Y).
+\]
+The conclusion includes the corresponding earlier-page cycle conditions. The extension need not be essential; no crossing hypothesis is imposed.
+\uses{paper:5.4}
+\lean{KIP126.ProofTools.Paper.finiteExtension_descends}
+% Blueprint note: This corrects the unrestricted first assertion of Proposition 6.20. It imposes no essentiality or crossing premise and retains the registered upstream obligations.
+\end{theorem}
+\begin{proof}
+Apply quotient reduction to the source and target of the late normalized extension equation. Naturality gives the equation in the earlier quotient. The explicit upper bound $n\le r_{\rm early}-2+e$ places it in the valid length window of Definition~\ref{paper:5.4}; the late cycle conditions supply the corresponding early cycles. Reading the reduced equation gives the stated early extension, with the same map and labels.
+\end{proof}
+
+\begin{theorem}[The tower representative criterion]
+\label{sem:ProofTools:representative-criterion}
+\level{coarse}
+From \cite{LWX126}, Proposition 2.10.\par
+
+Fix a map of convergent towers and an extension equation of length $n$ from $x$ to $y$ in filtrations $s$ and $s+n$, and a threshold $u\leq s+n$. Absence of higher-source extensions whose target lies between $u$ and $s+n$ is equivalent to the following condition: every representative $a$ of $x$ whose image has filtration at least $u$ has image representing the specified $y$ in filtration $s+n$. For threshold $u=s$, the image-filtration premise is automatic. If $y=0$, the conclusion says that every such image has filtration at least $s+n+1$. A map increasing every filtration by at least $n$ satisfies this criterion.
+\uses{sem:ProofTools:extension-representatives,paper:2.7,sem:ProofTools:finite-correction}
+\lean{KIP126.ProofTools.Paper.extension_noCrossingRange_iff,KIP126.ProofTools.Paper.extension_noCrossing_iff,KIP126.ProofTools.Paper.extension_zero_noCrossing_iff,KIP126.ProofTools.Paper.extension_noCrossing_of_filtration_bound}
+% Blueprint note: The bindings here are the four tower representative forms. The filtered-group forms remain at Proposition 2.10. No new comparison with an arbitrary classical extension spectral sequence is asserted.
+\end{theorem}
+\begin{proof}
+Use representatives as in the proof of Proposition~\ref{paper:2.10}. If two representatives of the source have different image grades in the specified range, their difference is in higher source filtration and produces a crossing; a first nonzero grade is obtained over the finite interval. Conversely, adding a representative of a crossing source preserves the original source grade but changes the required target grade. This proves the equivalence. The zero-target case and the filtration-bound case follow by reading the target grade as a zero associated-graded class.
+\end{proof}
+
+\begin{theorem}[A nonliftable short extension or a late crossing]
+\label{sem:ProofTools:nonliftable-or-crossing}
+\level{coarse}
+Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
+\uses{sem:ProofTools:extension-representatives,sem:ProofTools:finite-strip,paper:6.20}
+\lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
+% Blueprint note: This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Use the fixed-target shorter-extension criterion in the early quotient. If its higher source has no corresponding later cycle label, it is the first alternative. Otherwise lift the source label and compare the actual image with the fixed late target. Their nonzero discrepancy has a first grade in the finite higher-source range and gives the second alternative, an actual late crossing. Thus imposing the cycle-set difference requires retaining the crossing branch.
+\end{proof}
+
+\section{Generalized Leibniz at an explicit lambda level}
+
+\begin{definition}[Level extensions and the quotient-boundary square]
+\label{sem:ProofTools:level-finite-extension}
+\level{coarse}
+Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
+\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
+The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
+
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
+\[2\le n,\qquad e\le m\le n-2+e,\]
+and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
+at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
+\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
+Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
+The extension need not be essential, and zero labels are allowed.
+
+For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. For the further lengths $r,l$, with $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
+\[
+NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
+NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
+\uses{sem:AdamsSynthetic:shift-representatives,sem:ProofTools:mh-actual-no-crossing}
+\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
+\end{definition}
+
+\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
+\label{sem:ProofTools:generalized-leibniz-at-level}
+\level{coarse}
+A level-indexed revision of \cite{LWX126}, Theorem 6.1.\par
+
+The proof follows the quotient-boundary square argument of that theorem, with crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
+\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
+Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
+\[
+x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
+x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
+y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
+\]
+Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
+and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
+\[
+\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
+\land NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+Then the classical Adams differential is
+\[d_{r+l-m}(y)=y_\infty.\]
+There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
+\uses{sem:ProofTools:level-finite-extension,paper:2.12,paper:4.6}
+\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
+% Blueprint note: This is the authorized level-indexed revision. It neither restores the retired original GL theorem nor identifies the old crossing predicates with the actual conditions. Its proof inherits the registered upstream construction and comparison obligations.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Form the actual quotient-boundary square at $q=n+k-1$ and weight $t+e-k$. The classical differential constructs its left extension. Propagate the given infinite extension to the bottom edge at level $r-n$. These constructions retain the specified source and target labels. Apply the filtered-square extension theorem using the assumed no-crossing alternative on the left or top edge and the assumed actual bottom no-crossing. The resulting boundary equation, read through the weighted boundary comparison, is the classical differential $d_{r+l-m}(y)=y_\infty$. All steps occur at the displayed levels, so no upper bound on $k$ or cancellation of $\lambda$ is used.
+\end{proof}
+
+Every original finite extension $d_m^{f,E_n}(x)=y$ supplies the level-zero finite extension in quotient $n-1$. The actual map equation and its prescribed source and target are retained through the proved representative comparisons. No additional cycle or crossing premise is required. This result does not compare the two sets of no-crossing hypotheses.
+
+\section{Conditional division by lambda}
+
+\begin{theorem}[Finite lambda division preserving the actual source and image]
+\label{sem:ProofTools:finite-lambda-division}
+\level{coarse}
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. Fix $0<i<q$, $p=(t-s,t+e)$ and a target filtration $N$. In the actual lambda square put
+\[
+A'=\Sigma^{0,-i}(A/\lambda^{q-i}),\quad
+B'=\Sigma^{0,-i}(B/\lambda^{q-i}),\quad
+F'=\Sigma^{0,-i}F_{q-i}.
+\]
+Let $L_A:A'\to A/\lambda^q$ and $L_B:B'\to B/\lambda^q$ be the actual finite lambda maps. The extra crossing condition states that, for every
+\[s+i\le u\le v<N,\]
+an essential extension $d_{v-u}^{F'}(\xi)=\eta$ at $p$ has target satisfying
+\[\operatorname{gr}_v(L_B)(\eta)\ne0.\]
+The initial source row $u=s+i$ is included, while the terminal target row $v=N$ is excluded. This rules out essential smaller-layer targets killed by lambda; it neither requires injectivity on the entire graded target nor follows merely from absence of positive-length extensions of the lambda map itself.
+
+Assume $s+i\le N$ and the additional target-kernel crossing condition. If an actual representative
+\[a\in F^{s+i}\pi_{t-s,t+e}(A/\lambda^q)\]
+has $F_q(a)\in F^N\pi_{t-s,t+e}(B/\lambda^q)$, there exists
+\[b\in F^{s+i}\pi_{t-s,t+e}(A')\]
+such that
+\[L_A(b)=a,\qquad L_B(F'(b))=F_q(a),\qquad F'(b)\in F^N\pi_{t-s,t+e}(B').\]
+Thus division preserves the specified actual source and image and reflects the requested target filtration. The smaller-layer source class is the class of the constructed $b$; no independently selected smaller source is prescribed, and kernel ambiguity at the final target grade is allowed.
+\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:AdamsSynthetic:lambda-quotients}
+\lean{KIP126.ProofTools.Standard.finiteLambdaDivision}
+% Blueprint note: The extra condition includes the initial source row and excludes the terminal target row. This sufficient-condition theorem does not prove the original Proposition 5.10 equivalence. Registered upstream obligations remain.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Lift the actual source along the finite $\lambda^i$ map. Correct this lift over the finite source and target filtration intervals. A first lower target grade killed by the large-quotient lambda map would give an essential smaller-layer extension forbidden by the stated kernel condition. Finite correction therefore raises the smaller-layer image to $F^N$ while retaining the actual large-layer source and image. The two displayed map equations follow from the actual lambda square. No predetermined smaller source label or injectivity at the terminal target grade is needed.
+\end{proof}
+
+% Native hgraph authoring; revised entries retain their original AimPaper source locators.
+% Source locators for the corrections tab; no Blueprint statements are retained.
+% AimPaper: 6.1 theorem 1606 1621
+% AimPaper: 6.12 theorem 1780 1799
+\section{No-crossing criteria for filtered extensions}
+
+% AimPaper: 2.6 corollary 327 330
+\begin{corollary}[Vanishing below the Adams filtration]
+\label{paper:2.6}
+\source{AimPaper Corollary 2.6}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.6.\par
+% BEGIN AIMPAPER STATEMENT
+If the Adams filtration of $f$ is $k$, then
+    $d^f_i=0$ for $i<k$.
+% END AIMPAPER STATEMENT
+\uses{paper:2.5,sem:AdamsSynthetic:filtration-comparison}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 332-339](paper/main.tex.html#L332). Factor f into positive-filtration maps, then apply Proposition 2.5(1) to rule out shorter extension differentials.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L327; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.adamsFiltrationVanishing}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proof lifts the map along the actual target Adams tower and proves that filtration adds under composition. Every shorter extension target has zero associated grade.
+\lean{KIP126.ProofTools.Paper.adamsFiltrationVanishing}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.6.)} \href{paper/main.tex.html#L332}{Original proof}.
+
+When $k>0$, it is clear that $d^f_0=0$, which means that for any $s$ and $[x]\in F_s\pi_*(X)$, we have $f([x])\in F_{s+1}\pi_*(Y)$. Since $\AF(f)=k$, we know that there exist $k$ maps
+    $$X=X_0\fto{f_1}X_1\fto{f_2}\cdots\fto{f_k}X_k=Y$$
+    such that each $f_i$ induces trivial map in $\HF$-homology (hence $\AF(f_i)>0$) and $f$ is homotopic to the composition $f_k\circ \cdots\circ f_1.$
+    Then for any $s$ and $[x]\in F_s\pi_*(X)$, inductively we have
+    $$f_1([x])\in F_{s+1}\pi_*(X_1)$$
+    $$f_2\circ f_1([x])\in F_{s+2}\pi_*(X_2)$$
+    $$\cdots$$
+    $$f([x])=f_k\circ\cdots\circ f_1([x])\in F_{s+k}\pi_*(X_k)=F_{s+k}\pi_*(Y).$$
+    By Proposition \ref{prop:8154e6f1}.(1) this means that $d_i^fx=0$ for any $x\in E_\infty^{*,*}(X)$ and $i<k$.
+\end{proof}
+
+% AimPaper: 2.7 definition 344 352
+\begin{definition}[Crossings of extensions]
+\label{paper:2.7}
+\source{AimPaper Definition 2.7}
+\level{coarse}
+From \cite{LWX126}, Definition 2.7.\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:98skj23}
+\begin{enumerate}[leftmargin=*]
+    \item For $x\in E_\infty^{s,t}(X)$, we say that the an $f$-extension $d_n^{f}(x)=y$ has a crossing that hits Adams filtration $p$ for some $p \leq s+n$, if there exists an element $x^\prime\in E_\infty^{s+a,t+a}(X)$ with $a>0$ and an $f$-extension $d_m^{f}(x^\prime)=y^\prime$ for $0\neq y^\prime\in E^{s+a+m, t+a+m}_\infty(Y)$ such that
+    $$p = \textup{AF}(y^\prime) = s+a+m\le \textup{AF}(y) = s+n.$$
+    \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing that hits the range AF $\ge p$ if there does not exist an element $x^\prime\in E_\infty^{s+a,t+a}(X)$ with $a>0$ and an $f$-extension $d_m^{f}(x^\prime)=y^\prime$ for $0\neq y^\prime\in E^{s+a+m, t+a+m}_\infty(Y)$ such that
+    $$p\le \textup{AF}(y^\prime) = s+a+m\le \textup{AF}(y) = s+n.$$
+    \item We say that an $f$-extension $d_n^{f}(x)=y$ has no crossing if it has no crossing that hits the range AF$\ge \AF(x) + 1$.
+\end{enumerate}
+% END AIMPAPER STATEMENT
+
+Let $f$ be a map of convergent towers or filtered abelian groups. An extension from source filtration $s$ to target filtration $s+n$ has no higher-source crossing over $[u,s+n]$ if every extension with source filtration greater than $s$ and target filtration in $[u,s+n]$ has zero target label. All extensions, including inessential ones, occur in this quantification.
+\uses{paper:2.3}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 344-352](paper/main.tex.html#L344). A crossing is a competing extension from a higher-filtration source, using the extension relation already defined.
+
+% Blueprint note: The generic filtered-map crossing predicate belongs to \ref{sem:SpectralSequence:crossing-transport}. The bindings here are the two stated no-crossing predicates with an arbitrary filtration threshold.
+
+% Correspondence: partial.
+% Blueprint note: Public representative-level definitions \texttt{FilteredNoCrossingRange} and \texttt{ExtensionNoCrossingRange} allow arbitrary filtration thresholds. Their comparison with \texttt{DifferentialDatum} and \texttt{HasCrossingAt} for a general classical $f$-extension spectral sequence has not yet been assembled into a complete public bridge, so this correspondence remains partial.
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.ProofTools.Paper.FilteredNoCrossingRange}, \texttt{KIP126.ProofTools.Paper.ExtensionNoCrossingRange}.
+\lean{KIP126.ProofTools.Paper.FilteredNoCrossingRange,KIP126.ProofTools.Paper.ExtensionNoCrossingRange}
+
+\sketch
+% Blueprint note: Original statement and context: paper/main.tex.html#L344; paper/2412.10879.pdf.
+\end{definition}
+
+% AimPaper: 2.10 proposition 408 416
+\begin{proposition}[Characterization of extensions without crossings]
+\label{paper:2.10}
+\source{AimPaper Proposition 2.10}
+\level{coarse}
+From \cite{LWX126}, Proposition 2.10.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:i8r47oe}
+    An $f$-extension from $x$ to $y$ has no crossing in the range $\AF\ge p$ if and only if for all $[x]\in \{x\}$ such that $\AF(f[x])\ge p$ we have $f[x]\in \{y\}$. In particular, we have
+    \begin{enumerate}
+        \item An $f$-extension from $x$ to $y$ has no crossing if and only if for all $[x]\in \{x\}$ we have $f[x]\in \{y\}$.
+        \item An $f$-extension $d_n^{f}(x)=0$ has no crossing if and only if for all $[x]\in \{x\}$,
+        $$\AF(f[x]) >\AF(x)+n.$$
+        \item If $\AF(f)=n$, then all $d^f_n$-differentials have no crossing in the $f$-ESS.
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+\uses{paper:2.5,paper:2.7}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 418-430](paper/main.tex.html#L418). Proposition 2.5(3) and the definition of a crossing turn universal representative behavior into the no-crossing criterion.
+
+% Correspondence: public counterpart, within the scope described below.
+% Blueprint note: The full representative-level equivalence and its three clauses are public for arbitrary filtered abelian groups. An $E_\infty$ formulation for the same synthetic map is also available. This does not establish the missing general classical $f$-extension spectral sequence construction in Definition~2.1.
+% Blueprint note: Formal counterparts: \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossingRange\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_zero\_extension\_noCrossing\_iff} \item \texttt{KIP126.ProofTools.Paper.filtered\_extension\_noCrossing\_of\_filtration\_bound}
+\lean{KIP126.ProofTools.Paper.filtered_extension_noCrossingRange_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_zero_extension_noCrossing_iff,KIP126.ProofTools.Paper.filtered_extension_noCrossing_of_filtration_bound}
+
+% Blueprint note: Original statement and context: paper/main.tex.html#L408; paper/2412.10879.pdf.
+\end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 2.10.)} \href{paper/main.tex.html#L418}{Original proof}.
+
+First we prove the only if part. Assume by contradiction that there exists $[x]\in \{x\}$ such that $f[x]=[y']\notin \{y\}$ is detected by $y'\in E_\infty(Y)$ with $\AF(y')\ge p$. Then there is an $f$ extension from $x$ to $y'$. By Proposition \ref{prop:8154e6f1}~(3), $y'$ (if $\AF(y)>\AF(y')$)  or $y-y'$ (if $\AF(y)=\AF(y')$) or $y$ (if $\AF(y)<\AF(y')$) should be hit by a shorter $d^f$ differential. This shorter differential is a crossing of the $f$-extension from $x$ to $y$ that hits $\AF\ge p$, which is a contradiction. Now we prove the if part. Assume that the $f$-extension has a crossing from $x'$ to $y'$ with $p\le \AF(y')\le \AF(y)$. Then there exists $[x']\in \{x'\}$ such that $f([x'])\in \{y'\}$. Note that $[x]+[x']\in \{x\}$ since $\AF(x')>\AF(x)$, we have
+    $$f([x]+[x'])=f([x])+f([x'])=[y]+[y']\in\begin{cases}
+        \{y'\} & \text{ if } \AF(y')<\AF(y)\\
+        \{y+y'\} & \text{ if } \AF(y')=\AF(y).\\
+    \end{cases}$$
+    However, by assumption we should have $f([x]+[x'])\in \{y\}$ and it is contradictory to the equation above in either case.
+
+    Hence the main statement is true.  Part (1) (2) are special cases of the main statement and Part (3) holds for degree reasons.
+\end{proof}
+
+\section{Commutative squares and extension comparison}
+
+% AimPaper: 2.12 theorem 461 481
+\begin{theorem}[The extension theorem for a commutative square]
+\label{paper:2.12}
+\source{AimPaper Theorem 2.12}
+\level{coarse}
+From \cite{LWX126}, Theorem 2.12.\par
+% BEGIN AIMPAPER STATEMENT
+\label{thm:4114f70c}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }$$
+    Suppose $m,n,l\ge 0$, $0<k\le m+l-n$,
+    $$\begin{array}{ll}
+        x\in E^{s,t}_\infty(X) & y\in E^{s+n,t+n}_\infty(Y),\\
+        z\in E^{s+m,t+m}_\infty(Z) & w\in E^{s+m+l,t+m+l}_\infty(W),
+    \end{array}$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing,
+        \item $d^{g}_{l}(z)=w$, and has no crossing that hits the range AF $\ge s+n+k$,
+        \item $d^{q}_{k-1} y=0$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l-n}(y)=w$. (See Figure \ref{fig:4f154a8}.)
+% END AIMPAPER STATEMENT
+\uses{paper:2.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 483-505](paper/main.tex.html#L483). Use the representative criterion to choose a common source and transport its images around the commutative square.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L461; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionSquare}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proved finite-filtration representative criterion synchronizes the two source edges. The zero $q$-extension puts the same representative above $s+n+k$; only the stated threshold no-crossing condition for $g$ is then used.
+\lean{KIP126.ProofTools.Paper.extensionSquare}
+\end{theorem}
+\begin{proof}
+\textit{(See \cite{LWX126}, Theorem 2.12.)} \href{paper/main.tex.html#L483}{Original proof}.
+
+First we find a representative $[x]$ of $x$ such that
+    \begin{equation}\label{eq:9d45feac}
+        p[x]\in \{z\}
+    \end{equation}
+    and
+    \begin{equation}\label{eq:36e72616}
+        f[x]\in \{y\}.
+    \end{equation}
+    If (1) has no crossing, by (2) we can pick $[x]\in \{x\}$ such that (\ref{eq:9d45feac}) holds;
+    If (2) has no crossing, by (1) we can pick $[x]\in \{x\}$ such that  (\ref{eq:36e72616}) holds.
+    In both cases the other equation also holds because of the no crossing condition.
+
+    By (5), (\ref{eq:36e72616}) and Proposition~\ref{prop:i8r47oe}~(2) we know that $qf[x]$ has AF $\ge s+n+k$. Since the diagram on the Adams $E_\infty$-pages commutes, we have
+    $$AF(gp[x])=AF(qf[x])\ge s+n+k.$$
+    Combining with (4), (\ref{eq:9d45feac}) and Proposition~\ref{prop:i8r47oe} we have
+    $$gp[x]\in \{w\}.$$
+    Therefore, $qf[x]\in \{w\}$ and by (\ref{eq:36e72616}) there is a $q$-extension from $y$ to $w$.
+\end{proof}
+
+% AimPaper: 2.15 corollary 555 574
+\begin{corollary}[A square of extensions without crossings]
+\label{paper:2.15}
+\source{AimPaper Corollary 2.15}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.15.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:0012nik}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }$$
+    Suppose $m,n,l\ge 0$, 
+    $$\begin{array}{ll}
+        x\in E^{s,t}_\infty(X) & y\in E^{s+n,t+n}_\infty(Y),\\
+        z\in E^{s+m,t+m}_\infty(Z) & w\in E^{s+m+l,t+m+l}_\infty(W),
+    \end{array}$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing,
+        \item $d^{g}_{l}(z)=w$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l-n}(y)=w$.
+% END AIMPAPER STATEMENT
+\uses{paper:2.12}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 555-574](paper/main.tex.html#L555). Specialize the square theorem to the full no-crossing hypothesis on the lower extension.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L555; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.noCrossingExtensionSquare}. The public statement is proved without changing its type or premises.
+% Blueprint note: The proved filtered-group no-crossing criterion is specialized directly to the actual classical Adams tower. It synchronizes a common source representative and the lower target, and the same commutative square gives the right extension. No synthetic-to-classical comparison or additional premise is needed.
+\lean{KIP126.ProofTools.Paper.noCrossingExtensionSquare}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.15.)} \href{paper/main.tex.html#L555}{Original statement and context}.
+
+Choose one representative $[x]$ for which both $f[x]$ and $p[x]$ have the prescribed detectors $y$ and $z$. Such a common choice exists because one of these two extensions has no crossing: choose a representative for the other extension, and apply Proposition~\ref{paper:2.10} to the crossing-free one.
+
+The crossing-free $g$-extension then implies that $gp[x]$ is detected by $w$. Homotopy commutativity gives $qf[x]=gp[x]$. Thus $f[x]$, detected by $y$, has $q$-image detected by $w$, which is exactly the required extension. Its length is the filtration difference $(s+m+l)-(s+n)=m+l-n$.
+\end{proof}
+
+% AimPaper: 2.16 corollary 576 591
+\begin{corollary}[Extensions in a commutative triangle]
+\label{paper:2.16}
+\source{AimPaper Corollary 2.16}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.16.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:166dc180}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[dr]_{p} & Y\ar[d]^{q}\\
+    & Z
+    }$$
+    Suppose $n,m\ge 0$, 
+    $$x\in E^{s,t}_\infty(X), ~y\in E^{s+n,t+n}_\infty(Y), ~z\in E^{s+m,t+m}_\infty(Z)$$
+    and
+    \begin{enumerate}
+        \item $d^{f}_{n}(x)=y$,
+        \item $d^{p}_{m}(x)=z$,
+        \item the differential in (1) or the differential in (2) has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m-n}(y)=z$.
+% END AIMPAPER STATEMENT
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 593-595](paper/main.tex.html#L593). Specialize Corollary 2.15 to an identity lower horizontal map.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L576; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionTriangle}. The public statement is proved without changing its type or premises.
+% Blueprint note: The common-source representative criterion proves the third extension directly. The conclusion keeps length $m-n$, including the signed-length cases of the fixed statement.
+\lean{KIP126.ProofTools.Paper.extensionTriangle}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.16.)} \href{paper/main.tex.html#L593}{Original proof}.
+
+This is a special case of Corollary \ref{cor:0012nik} when $Z=W$ and $g=id_Z$.
+\end{proof}
+
+% AimPaper: 2.17 corollary 597 611
+\begin{corollary}[Composition of extensions]
+\label{paper:2.17}
+\source{AimPaper Corollary 2.17}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.17.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:290d35ce}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[d]_{p}\ar[dr]^{q} & \\
+    Z\ar[r]_{g} & W
+    }$$
+    Suppose $n,m\ge 0$, 
+    $$x\in E^{s,t}_\infty(X), ~z\in E^{s+m,t+m}_\infty(Y), ~w\in E^{s+m+l,t+m+l}_\infty(W)$$
+    and
+    \begin{enumerate}
+        \item $d^{p}_{m}(x)=z$,
+        \item $d^{g}_{l}(z)=w$, and has no crossing.
+    \end{enumerate}
+    Then $d^{q}_{m+l}(x)=w$.
+% END AIMPAPER STATEMENT
+\uses{paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 613-615](paper/main.tex.html#L613). Specialize Corollary 2.15 to an identity upper horizontal map.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L597; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionComposition}. The public statement is proved without changing its type or premises.
+% Blueprint note: The printed occurrence of $Y$ for $z$ is read as $Z$, as forced by the diagram; the unused $n$ and the printed $n,m\ge0$ are retained without adding $l\ge0$. See the statement-typing correction record.
+% Blueprint note: Apply the lower no-crossing criterion to the actual image of a source representative, then use the composite equality. No additional condition $l\ge0$ is imposed.
+\lean{KIP126.ProofTools.Paper.extensionComposition}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.17.)} \href{paper/main.tex.html#L613}{Original proof}.
+
+This is a special case of Corollary \ref{cor:0012nik} when $X=Y$ and $f=id_X$.
+\end{proof}
+
+\section{Functoriality and exactness of extension spectral sequences}
+
+% AimPaper: 2.18 corollary 617 626
+\begin{corollary}[Morphisms of extension spectral sequences]
+\label{paper:2.18}
+\source{AimPaper Corollary 2.18}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.18.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:e7b20ae2}
+    Consider a homotopy commutative diagram of spectra
+    $$\xymatrix{
+    X \ar[r]^{f}\ar[d]_{p} & Y\ar[d]^{q}\\
+    Z \ar[r]_{g} & W
+    }.$$
+    Assume $\ESS{p}_0^{*,*}=\ESS{p}_r^{*,*}$ and $\ESS{q}_0^{*,*}=\ESS{q}_r^{*,*}$ for some $r\ge 0$. Then 
+    $$(d^p_r, d^q_r): E_\infty^{*,*}(X)\oplus E_\infty^{*,*}(Y)\to E_\infty^{*,*}(Z)\oplus E_\infty^{*,*}(W)$$
+    induces a map from the $f$-ESS to the $g$-ESS.
+% END AIMPAPER STATEMENT
+\uses{paper:2.15,paper:2.1}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 628-630](paper/main.tex.html#L628). Apply the square corollary inductively to obtain commuting maps on every page of the extension spectral sequences.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L617; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism}. The public statement is proved without changing its type or premises.
+% Blueprint note: Finite induction on the preceding vanishing extension relations proves a filtration shift by $r$. The unique degree-$r$ extension values form additive maps whose exact graphs are the $p$- and $q$-relations; the same homotopy representative and square preserve every $f$-extension relation. This proves the fixed statement in its full representative presentation; the separate construction of a classical ESS remains scoped in Definition 2.1.
+\lean{KIP126.ProofTools.Paper.extensionSpectralSequenceMorphism}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.18.)} \href{paper/main.tex.html#L628}{Original proof}.
+
+Since $\ESS{p}_0^{*,*}=\ESS{p}_r^{*,*}$ and $\ESS{q}_0^{*,*}=\ESS{q}_r^{*,*}$, we know that $d^p_r$, $d^q_r$ have no crossings. By Corollary \ref{cor:0012nik}, we have $d^g_0\circ d^p_r = d^q_r\circ d^f_0$ and therefore $(d^p_r, d^q_r)$ induces a map from $\ESS{f}_1^{*,*}$ to $\ESS{g}_1^{*,*}$. Inductively we can apply Corollary \ref{cor:0012nik} again and show that $(d^p_r, d^q_r)$ induces a map from $\ESS{f}_n^{*,*}$ to $\ESS{g}_n^{*,*}$ and $d^g_n\circ d^p_r = d^q_r\circ d^f_n$ for all $n$.
+\end{proof}
+
+% AimPaper: 2.19 corollary 632 635
+\begin{corollary}[Permanent cycles from a null composite]
+\label{paper:2.19}
+\source{AimPaper Corollary 2.19}
+\level{coarse}
+From \cite{LWX126}, Corollary 2.19.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:aed3d1a4}
+    If the composition $g\circ f$ of two maps $f:X\to Y$, $g:Y\to Z$ is trivial, and $d_n^f(x)=y$ for $x\in E_\infty^{s,t}(X)$ and $y\in E_\infty^{s+n,t+n}(Y)$, then $y$ is a permanent cycle in the $g$-ESS, i.e., we have
+    $d^g_m(y)=0$ for all $m\ge 0$.
+% END AIMPAPER STATEMENT
+\uses{paper:2.15,paper:2.5}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 637-646](paper/main.tex.html#L637). The null-composite square proves permanence; the article also gives a representative proof using Proposition 2.5.
+
+% Correspondence: fixed original representative-form statement proved.
+% Blueprint note: Original statement and context: paper/main.tex.html#L632; paper/2412.10879.pdf.
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.permanentCycle\_of\_nullComposite}. The public statement is proved without changing its type or premises.
+% Blueprint note: The original extension supplies a single representative in the actual image of $f$. Its composite with $g$ is zero, so that same representative witnesses every zero outgoing extension.
+\lean{KIP126.ProofTools.Paper.permanentCycle_of_nullComposite}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 2.19.)} \href{paper/main.tex.html#L637}{Original proof}.
+
+By Proposition~\ref{paper:2.5}, choose a representative $[x]$ for which $[y]=f[x]$ is detected by $y$. The null composite gives $g[y]=gf[x]=0$. This same representative therefore has zero image in every filtration quotient. By the representative definition of the extension spectral sequence, every outgoing $g$-extension differential on $y$ vanishes.
+\end{proof}
+
+% AimPaper: 2.20 proposition 648 654
+\begin{proposition}[Exactness and extension boundaries]
+\label{paper:2.20}
+\source{AimPaper Proposition 2.20}
+\level{coarse}
+From \cite{LWX126}, Proposition 2.20.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cfe810af}
+    Suppose that the sequence of spectra
+    $$X\fto{f}Y\fto{g}Z$$
+    induces a sequence of homotopy groups
+    $$\pi_*X\fto{\pi_*f}\pi_*Y\fto{\pi_*g}\pi_*Z$$
+    that is exact in $\pi_*Y$. Then all permanent cycles in $E^{*,*}_\infty(Y)$ of the $g$-ESS are boundaries in the $f$-ESS.
+% END AIMPAPER STATEMENT
+\uses{paper:2.1,paper:2.5,sem:SpectralSequence:completion,sem:AdamsSynthetic:selected-convergence}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 656-664](paper/main.tex.html#L656). Convergence of the filtered complex and exactness identify permanent cycles with extension boundaries; representatives give the alternative proof.
+
+As throughout \cite{LWX126}, spectra are understood to be 2-completed,
+connective and of finite type. The Lean binding expresses the same
+conclusion through the representative criterion of
+Proposition~\ref{paper:2.5}, with completeness of the middle homotopy
+filtration, finite nonnegative filtration quotients and separation of the
+target filtration explicit in its background inputs. Permanence still
+permits a different representative on each page; zero labels are included.
+The fixed Standard model's realization of this completed background and
+its convergence hypotheses remains an upstream task, tracked in
+issue 31.
+% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form theorem. The explicit background inputs are retained; this binding does not assert their construction for the fixed Standard model.
+% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
+\lean{KIP126.ProofTools.Paper.extensionBoundary_of_exact}
+\end{proposition}
+\begin{proof}
+\uses{paper:2.5,sem:SpectralSequence:completion,sem:AdamsSynthetic:selected-convergence}
+\textit{(See \cite{LWX126}, Proposition 2.20.)} \href{paper/main.tex.html#L656}{Original proof}.
+
+The representative argument makes the convergence step explicit. Fix
+$y\in E_\infty^{s,d+s}(Y)$. For each integer $k$, let $S_k$ consist of the
+residue classes in $\pi_dY/F^k\pi_dY$ represented by some $b$ representing
+$y$ with $g_*b\in F^k\pi_dZ$. Permanence makes every $S_k$ nonempty.
+The finite nonnegative quotients also make every integer-indexed quotient
+finite, and the quotient transitions carry $S_l$ into $S_k$ for $k\leq l$.
+The finite inverse-system principle gives a compatible family of such
+residues. Completeness lifts it to one element $b\in\pi_dY$.
+
+The residue at $k=s+1$ shows that $b$ still represents $y$. For every
+$n\geq0$, its residue at $n$ agrees with that of a representative whose
+image lies in $F^n\pi_dZ$. Filtration preservation then puts $g_*b$ in
+$F^n\pi_dZ$ as well. Separation gives $g_*b=0$, and homotopy exactness
+supplies $c\in\pi_dX$ with $f_*c=b$. At $a=\min(0,s)$ the source Adams
+filtration is the whole homotopy group, so $c$ defines an
+associated-graded class $x$. Proposition~\ref{paper:2.5} gives the required
+$f$-extension from $x$ to $y$, so $y$ is an $f$-extension boundary.
+\end{proof}
+
+\section{Synthetic boundary maps and extension differentials}
+
+% AimPaper: 4.2 proposition 1025 1029
+\begin{proposition}[Extensions for $\lambda^n$ and $\rho$]
+\label{paper:4.2}
+\source{AimPaper Proposition 4.2}
+\level{coarse}
+From \cite{LWX126}, Proposition 4.2.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:9770ae6e} 
+The only nonzero differentials in the extension spectral sequences for the maps $\lambda^n$ and $\rho$ from Notation~\ref{not:deltaandrho} are the $d_0$'s:
+$$d^{\lambda^n}_0=\lambda^n \ \text{and} \ d^{\rho}_0=\rho.$$ 
+As a result, these $d_0$'s have no crossings.
+% END AIMPAPER STATEMENT
+\uses{paper:3.11,paper:3.12,paper:2.19}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1030-1050](paper/main.tex.html#L1030). The infinite-page quotient formulas make the lambda/rho sequence exact; the null-composite result rules out higher extensions.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The finite-quotient and infinite versions concern the same actual maps $\lambda$ and $\rho$: they exclude essential extensions of positive length, identify the actual $d_0$ equations, and establish the absence of crossings.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.lambda\_rho\_extension\_collapse\_infinite}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.lambda_rho_extension_collapse_finite,KIP126.ProofTools.Paper.lambda_rho_extension_collapse_infinite}
+
+% Blueprint note: The original article number is 4.2; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1025}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 4.2.)} \href{paper/main.tex.html#L1030}{Original proof}.
+
+Compute the three associated graded groups in the cofiber sequence using Propositions~\ref{paper:3.11} and~\ref{paper:3.12}. Write $k=t-w$. Outside $0\le k<m$ the middle group vanishes. For $0\le k<n$, the $\lambda^n$ source group vanishes and $\rho$ is the inclusion of the relevant cycle subquotients. For $n\le k<m$, the $\rho$ target group vanishes and $\lambda^n$ is the quotient map from a smaller boundary quotient onto the middle group. Thus the sequence of associated graded groups is exact in the middle in every degree.
+
+The two composites are zero. Corollary~\ref{paper:2.19} makes the image of each preceding map a permanent cycle for the next extension spectral sequence. Since each nonzero graded $\lambda^n$ map is surjective and each nonzero graded $\rho$ map is injective in these ranges, no positive-length extension remains. Hence the only differentials are the indicated $d_0$ maps, which have no crossings. The untruncated case uses $Z_\infty$ in the same calculation.
+\end{proof}
+
+For $n>0$, the absolute connecting map of the quotient triangle is
+\[\delta_n:\nu X/\lambda^n\longrightarrow\Sigma^{1,-n}\nu X.\]
+For $0<n<m$, its finite version has target $\Sigma^{1,-n}(\nu X/\lambda^{m-n})$. Using the suspension isomorphism of the quotient triangle, the source label of $x$ is $\lambda^a x$ in the $n$-th quotient. For a classical differential of length $r=k+1$ and $n\leq a+k$, its target label is the shifted $\lambda^{a+k-n}y$; the finite label is its image under the target quotient projection. A crossing of the absolute boundary on page $p$ is an essential extension in that same boundary ESS, with source filtration $u$ and target filtration $v$ satisfying $s<u\leq v\leq s+r$.
+
+% AimPaper: 4.6 proposition 1068 1086
+\begin{proposition}[Boundary extensions from Adams differentials]
+\label{paper:4.6}
+\source{AimPaper Proposition 4.6}
+\level{coarse}
+From \cite{LWX126}, Proposition 4.6.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:6de7d130}
+    Suppose in the classical Adams spectral sequence of $X$ we have $d_r(x)=y$, where $x\in Z_{r-1}^{s,t}(X)$ and $y\in Z_\infty^{s+r,t+r-1}(X)$. Consider the map
+    $$\delta:\nu X/\lambda^n\to \Sus^{1,-n}\nu X/\lambda^{m-n}.$$
+    \begin{enumerate}
+        \item If $r\ge n+1$, then we view $x$ as an element of 
+        $$E_\infty^{s,t,t}(\nu X/\lambda^n)\iso Z_n^{s,t}(X),$$
+        and $\lambda^{r-n-1} y$ as an element of 
+        $$E_\infty^{s+r,t+r-1, t+n}(\nu X/\lambda^{m-n})\iso Z_{m-r+1}^{s+r,t+r-1}(X)/B_{r-n}^{s+r,t+r-1}(X).$$
+        We then have
+        $$d^{\delta}_r(x)=\lambda^{r-n-1}y,$$
+        which is trivial if $r>m$.
+        \item If $r<n+1$, then we view $\lambda^{n+1-r}x$ as an element of 
+        $$E_\infty^{s,t,t-n-1+r}(\nu X/\lambda^n)\iso Z^{s,t}_{r-1}(X)/B^{s,t}_{n+2-r}(X),$$
+        and $y$ as an element of 
+        $$E_\infty^{s+r,t+r-1, t+r-1}(\nu X)\iso Z_\infty^{s+r,t+r-1}(X).$$
+        In this case, we have
+        $$d^{\delta}_r(\lambda^{n+1-r}x)=y.$$
+    \end{enumerate}
+% END AIMPAPER STATEMENT
+\uses{paper:3.8,paper:3.11,paper:3.12,paper:4.2,paper:2.16,paper:2.17}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The four public statements cover both ranges of differential lengths, for finite and absolute $\delta$-extensions.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_above\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_prop46\_below\_finite}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_above_finite,KIP126.ProofTools.Paper.syntheticDeltaExtension_prop46_below_finite}
+
+% Blueprint note: The original article number is 4.6; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1068}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 4.6.)} \href{paper/main.tex.html#L1087}{Original proof}.
+
+First take $m=\infty$ and write $\delta_n=\delta_{n,\infty}$. For $n=1$, Theorem~\ref{paper:3.8} identifies the connecting-map extension with the classical Adams differential. Induct on $n$, using the triangle comparing the quotients of lengths $n-1$ and $n$ and multiplication by $\lambda$.
+
+For $r\le n$, the commutative-triangle extension rule transports the induction hypothesis to $\lambda^{n+1-r}x$ and gives target $y$. For $r\ge n+1$, the comparison gives $\lambda d_r^{\delta_n}(x)=\lambda^{r-n}y$ modulo classical $B_{r-1}$. The possible ambiguity in dividing this particular equality by $\lambda$ is contained in $B_{r-n+1}\subseteq B_{r-1}$, by the explicit infinity-page subquotients. This yields $d_r^{\delta_n}(x)=\lambda^{r-n-1}y$ in the required quotient, rather than an unrestricted cancellation theorem.
+
+Induction on the differential length identifies $B_{r-1}$ here with the sum of the earlier $\delta_n$-extension images: each earlier classical boundary gives its corresponding boundary extension, and the same comparison gives the converse. Finally $\delta_{n,m}$ is $\delta_n$ followed by restriction to the finite target quotient. Proposition~\ref{paper:4.2} and the composition rule transport both formulas to that quotient. The target is zero when its $\lambda$-exponent reaches the quotient length, giving the stated vanishing range.
+\end{proof}
+
+% AimPaper: 4.10 corollary 1138 1144
+\begin{corollary}[$\lambda$ multiples of boundary extensions]
+\label{paper:4.10}
+\source{AimPaper Corollary 4.10}
+\level{coarse}
+From \cite{LWX126}, Corollary 4.10.\par
+% BEGIN AIMPAPER STATEMENT
+\label{cor:2a636737}
+    For $x,y,\delta$ in Proposition \ref{prop:6de7d130} we always have
+    \begin{equation}\label{eq:841425e9}
+        d^{\delta}_r(\lambda^ax)=\lambda^{a+r-n-1}y
+    \end{equation}
+    if $0\le a\le n$ and $0\le a+r-n-1<m-n$ (the differential is trivial if $a$ exceeds this range).
+% END AIMPAPER STATEMENT
+\uses{paper:4.6,paper:4.2}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1138-1150](paper/main.tex.html#L1138). Multiply the boundary-extension formulas by lambda; the following remark identifies the complete classical differential coset.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The public statements cover the full valid range of weights, the zero endpoint $a=n$, and vanishing when the source or target lies outside the strip.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_absolute}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaExtension\_finite}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaSource\_vanishes}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget\_vanishes}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.syntheticDeltaExtension_absolute,KIP126.ProofTools.Paper.syntheticDeltaExtension_finite,KIP126.ProofTools.Paper.syntheticDeltaSource_vanishes,KIP126.ProofTools.Paper.syntheticDeltaFiniteTarget_vanishes}
+
+% Blueprint note: The original article number is 4.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1138}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{corollary}
+\begin{proof}
+\textit{(See \cite{LWX126}, Corollary 4.10.)} \href{paper/main.tex.html#L1138}{Original statement and context}.
+
+Apply multiplication by $\lambda^a$ to the boundary-extension formulas of Proposition~\ref{paper:4.6}. Naturality of the quotient cofiber sequence makes this multiplication commute with the connecting map; Proposition~\ref{paper:4.2} ensures that it introduces no additional positive-length extension. The source label is multiplied by $\lambda^a$ and the target label becomes $\lambda^{a+r-n-1}y$.
+
+The two labels must lie in the source and target windows of Proposition~\ref{paper:3.12}. These are exactly the ranges displayed in the statement. Beyond those windows the relevant layer vanishes, so the corresponding extension is trivial. The quotient interpretation of the labels, including earlier boundaries, is the one fixed in Proposition~\ref{paper:4.6}.
+\end{proof}
+
+\section{Crossings of Adams differentials}
+
+% AimPaper: 4.14 definition 1165 1173
+\begin{definition}[Crossings of Adams differentials]
+\label{paper:4.14}
+\source{AimPaper Definition 4.14}
+\level{coarse}
+From \cite{LWX126}, Definition 4.14.\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:classicalcrossdiff}
+    Suppose $r\ge n+1$ and $d_r(x)=y$, where
+    $$x\in E_2^{s,t}(X), \hspace{0.5cm} y\in E_2^{s+r,t+r-1}(X).$$
+    A crossing of $d_r(x)=y$ on the $E_{n+1}$-page refers to an essential Adams differential
+    $$d_{r-a-b}(x^\prime)=y^\prime,$$
+    where
+    $$x^\prime\in E_2^{s+a,t+a}(X), \hspace{.5cm} y^\prime\in E_2^{s+r-b,t+r-b-1}(X),$$
+    with $0<a\le n-1$ and $0\le b\le r-n-1$. See Figure \ref{fig:f5eae42a}.
+% END AIMPAPER STATEMENT
+\uses{sem:SpectralSequence:differential,sem:SpectralSequence:cycles-boundaries}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1165-1173](paper/main.tex.html#L1165). Define a classical crossing by a shorter essential Adams differential in the specified filtration rectangle.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The bound definition uses the direction of classical differential crossings and the valid page range specified in the article. It is distinct from Moss crossings. The separate no-crossing predicate is not defined in this entry and is not bound here.
+\lean{KIP126.ProofTools.HasCrossingOn}
+
+% Blueprint note: The original article number is 4.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1165}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{definition}
+
+% AimPaper: 4.16 proposition 1218 1224
+\begin{proposition}[Adams crossings and boundary-extension crossings]
+\label{paper:4.16}
+\source{AimPaper Proposition 4.16}
+\level{coarse}
+From \cite{LWX126}, Proposition 4.16.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cross-dr-En}
+    The Adams differential $d_r(x)=y$ has a crossing on the $E_{n+1}$-page if and only if the corresponding $\delta_n$-extension
+    $$d^{\delta_n}_r(x)=\lambda^{r-n-1}y$$
+    for
+    $$\delta_{n}:\nu X/\lambda^{n}\to \Sus^{1,-n}\nu X$$
+    has a crossing.
+% END AIMPAPER STATEMENT
+\uses{paper:4.14,paper:2.7,paper:3.11,paper:3.12,paper:4.6,paper:4.10}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1225-1234](paper/main.tex.html#L1225). Translate extension crossings through the infinity-page quotient coordinates and the lambda-multiple boundary formula.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The public theorem gives the equivalence between classical crossings and crossings in the actual $\delta$-extension spectral sequence throughout the range $2\leq\mathrm{page}\leq r$.
+% Blueprint note: This entry is bound to the existing Lean declarations. Its status reports their local completion; the scope of correspondence with the article is specified above.
+% Blueprint note: Bound declarations (private names are resolved through stable source references without changing their visibility):
+% Blueprint note: \begin{itemize}
+% Blueprint note: \item \texttt{KIP126.ProofTools.Paper.classical\_crossing\_iff\_delta\_crossing}
+% Blueprint note: \end{itemize}
+\lean{KIP126.ProofTools.Paper.classical_crossing_iff_delta_crossing}
+
+% Blueprint note: The original article number is 4.16; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1218}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 4.16.)} \href{paper/main.tex.html#L1225}{Original proof}.
+
+By Propositions \ref{prop:30e8b746}, \ref{prop:59f111f} and \ref{prop:6de7d130}, a crossing of $d^{\delta_n}_r(x)=\lambda^{r-n-1}y$ takes the form
+    $$d^{\delta_n}_{r-a-b}(\lambda^a x')=\lambda^{r-n-1-b}y',$$
+    where $0<a\le n-1$, $0\le b\le r-n-1$,
+    $$\lambda^a x'\in E_\infty^{s+a,t+a,t}(\nu X/\lambda^n)\iso Z_{n-a}^{s+a,t+a}(X)/B_{1+a}^{s+a,t+a}(X),$$
+    and
+    $$y'\in E_\infty^{s+r-b, t+r-b-1}(\nu X).$$
+    By Corollary \ref{cor:2a636737}, we see that this crossing corresponds to the classical Adams differential
+    $$d_{r-a-b}(x')=y'.$$
+\end{proof}
+
+\section{Extension witnesses on finite and infinite pages}
+
+% AimPaper: 5.9 definition 1437 1441
+\begin{definition}[Crossings of $E_r$-extensions]
+\label{paper:5.9}
+\source{AimPaper Definition 5.9}
+\level{coarse}
+From \cite{LWX126}, Definition 5.9.\par
+% BEGIN AIMPAPER STATEMENT
+\label{def:41d51149}
+    A crossing of the $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ in (\ref{eq:b98be76a}) is defined as an essential $(f, E_{r-a})$-extension from some $x'\in Z_{r-1-a}^{s+a,t+a}(X)$ to 
+    $$y'\in Z_{r-1-n+b+e(f)}^{s+n-b,t+n-b}(Y)\backslash B_{1+n-b-e(f)}^{s+n-b,t+n-b}(Y)$$
+    (where $\backslash$ denotes the difference of sets and it means that $y'$ should survive to the classical Adams $E_{r-n+b+e(f)}$ page while it should not be hit by an Adams differential of length at most $1+n-b-e(f)$) for $0<a \le r-2$ and $0\le b\le n-a-e(f)$. See Figure \ref{fig:66241bf6}.
+% END AIMPAPER STATEMENT
+\uses{paper:5.4}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1437-1441](paper/main.tex.html#L1437). Define a crossing by an essential page extension with the displayed smaller-page and filtration bounds.
+
+% Correspondence: public counterparts; scope is specified below.
+% Blueprint note: The binding describes the finite-page crossing defined above. The separate infinite-page and no-crossing predicates are not defined in this entry and are not bound here.
+\lean{KIP126.ProofTools.FiniteHasCrossing}
+
+% Blueprint note: The original article number is 5.9; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1437}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+\end{definition}
+
+% AimPaper: 5.10 proposition 1515 1517
+\begin{proposition}[Crossings of $E_r$-extensions and synthetic extensions]
+\label{paper:5.10}
+\source{AimPaper Proposition 5.10}
+\level{coarse}
+From \cite{LWX126}, Proposition 5.10.\par
+% BEGIN AIMPAPER STATEMENT
+\label{prop:cross-f-Er}
+    An $(f,E_r)$-extension $d_{n}^{f,E_r}(x)=y$ (\ref{eq:b98be76a}) has a crossing if and only if the synthetic $\hat f_{r-1}$-extension $d_{n}^{\hat f_{r-1}}(x)=\lambda^{n-e(f)} y$ (\ref{eq:a020bad3}) has a crossing.
+% END AIMPAPER STATEMENT
+\uses{paper:5.9,paper:2.7,paper:3.12,paper:4.2,paper:2.15}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
+
+% Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. The direct formal binding below is a statement-only theorem with a registered pending proof; the local supporting results do not discharge it.
+
+% Correspondence: original statement registered; proof pending.
+% Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved. The available division theorem additionally requires target $\lambda$-kernel no-crossing and is specialized to the standard model; it does not prove this original equivalence with its fixed premises.
+
+\sketch
+% Blueprint note: The original article number is 5.10; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1515}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+% Blueprint note: Original-statement interface: \texttt{KIP126.ProofTools.Paper.finiteCrossing\_iff\_syntheticCrossing}. The statement is public; its proof and any required comparison remain pending.
+\lean{KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing}
+\end{proposition}
+\begin{proof}
+\textit{(See \cite{LWX126}, Proposition 5.10.)} \href{paper/main.tex.html#L1519}{Original proof}.
+
+\textit{Original argument and unresolved step.} The article writes a crossing in the large quotient in the form
+\[
+ d_{n-a-b}^{\widehat f_{r-1}}(\lambda^a x')
+   =\lambda^{n-b-e(f)}y'.
+\]
+It then uses the naturality square for multiplication by $\lambda^a$ to try to divide this extension and obtain an extension in the quotient of length $r-1-a$. The resulting boundary ambiguity is compared with $B_{1+n-b-e(f)}$, and essentiality is intended to identify the two crossing conditions.
+
+Naturality of the square does not by itself preserve the required image filtration after division: low-filtration $\lambda$-torsion can occur. Thus the printed argument is not a proof of the general equivalence as stated. The separate result at \ref{sem:ProofTools:finite-lambda-division} imposes the actual kernel no-crossing condition needed to preserve the same source and image. The issue and authorization boundary remain in the canonical AimPaper corrections record; the original comparison remains pending.
+\end{proof}
+
+% AimPaper: 5.14 proposition 1581 1587
+\begin{proposition}[From infinity-page extensions to homotopy extensions]
+\label{paper:5.14}
+\source{AimPaper Proposition 5.14}
+\level{coarse}
+From \cite{LWX126}, Proposition 5.14.\par
+% BEGIN AIMPAPER STATEMENT
+Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
+    Then
+    $$d^{f,E_\infty}_n(x)=y$$
+    implies that
+    $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
+% END AIMPAPER STATEMENT
+\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11,paper:2.5,sem:Literature:realization-coordinates,sem:Literature:lambda-inversion-adams-comparison,sem:Literature:lambda-inversion-detection}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
+
+As throughout \cite{LWX126}, spectra are understood to be 2-completed,
+connective and of finite type. The Lean binding expresses the extension
+equation by the representative criterion of Proposition~\ref{paper:2.5}:
+$x$ detects one $a$ and $y$ detects $f_*a$. Realization coordinates and
+the actual Adams-tower comparison of
+Definition~\ref{sem:Literature:lambda-inversion-adams-comparison} make the
+lambda-inversion background explicit. Zero labels, boundary labels and
+inessential extensions remain allowed. Constructing these comparison
+data for the fixed Standard model remains an upstream task, tracked in
+issue 31.
+% Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+% Blueprint note: The printed boundary group on $Y$ has index $(s,t)$ although $y$ has degree $(s+n,t+n)$. The typed conclusion uses the latter degree and keeps zero and inessential extensions. See the statement-typing correction record.
+% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form transport. The realization coordinates and actual comparison remain explicit inputs; the binding does not assert that the Standard comparison producer has been constructed.
+% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
+\lean{KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension}
+\end{proposition}
+\begin{proof}
+\uses{sem:ProofTools:extension-representatives,sem:Literature:lambda-inversion-detection,sem:Literature:lambda-inversion-adams-comparison,sem:AdamsSynthetic:normalized-map,paper:3.11,paper:2.5}
+\textit{(See \cite{LWX126}, Proposition 5.14.)} \href{paper/main.tex.html#L1589}{Original proof}.
+
+Invert $\lambda$ in the filtered synthetic map $\widehat f$. The comparison with the classical map $f$ induces a morphism of extension spectral sequences. On the starting page, Proposition~\ref{paper:3.11} sends a label in $Z_\infty/B_{1+t-w}$ to its class in $Z_\infty/B_\infty=E_\infty$.
+
+For the formal representative transport, put $e=e(f)$ and $w=t+e$.
+The actual extension equation gives one representative
+$\beta\in\pi_{t-s,w}(\Sigma^{0,e}\nu X)$ whose image under $\hat f$
+has the specified target detection. Apply the detection transport theorem
+to this same $\beta$ and to $\hat f_*\beta$. The prescribed $E_2$
+comparisons return precisely $x$ and $y$.
+
+Realization of the normalized factorization, followed by cancellation of
+the invertible realized lambda map, gives
+\[
+\theta_Y\circ\operatorname{Re}(\hat f)
+ =f\circ\theta_{\Sigma^{0,e}\nu X}.
+\]
+Thus the first realized representative is $a$, and the second is exactly
+$f_*a$. The sphere-coordinate transport accounts for
+$(t+n)-(s+n)=t-s$. By Proposition~\ref{paper:2.5}, these detections give
+the classical $f$-extension in the conclusion. The target is taken in its
+own bidegree $(s+n,t+n)$, as required for the quotient by its boundary
+group. Localization can enlarge the boundary indeterminacy, so the
+resulting extension need not be essential. The argument includes zero
+and boundary labels and imposes no nonvanishing or essentiality condition.
+\end{proof}
+
+\section{The finite-layer generalized Mahowald trick}
+
+% AimPaper: 6.12 theorem 1780 1799
+\begin{theorem}[The finite-layer generalized Mahowald trick]
+\label{paper:6.12}
+\source{A finite-layer revision of AimPaper, Theorem 6.12}
+\level{coarse}
+A finite-layer revision of \cite{LWX126}, Theorem 6.12.\par
+Fix one classical triangle $X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X$ and its compatible normalized synthetic triangle. Write $Q_DW=\nu W/\lambda^D$, retaining the fixed normalization and suspension comparisons in every map. Put
+\[
+\begin{gathered}
+n_1=n-e_f\geq1,\quad m_1=m-e_g\geq0,\\
+k=l-e_h\geq0,\quad r=n+m+l,\qquad e_f+e_g+e_h=1.
+\end{gathered}
+\]
+For $i,j\geq0$ with $j<n_1$, set
+\[
+\begin{gathered}
+A=n_1+k+i-j,\quad B=m_1+j+1,\quad N=A+B=r+i,\\
+K=i+k,\quad J=A+j,\quad Q=N-K=r-k.
+\end{gathered}
+\]
+Thus $0\leq i,K<A$, $0\leq j<B$, and $0\leq J<N$. Take classical labels in the prescribed bidegrees
+\[
+\begin{gathered}
+\bar x\in Z_{r-1}^{s,t}(Z),\quad \bar y\in Z_\infty^{s+r,t+r-1}(Z),\\
+x\in Z_{n_1-j}^{s+l,t+l-1}(X),\quad y\in Z_{m_1+1}^{s+l+n,t+l+n-1}(Y),
+\end{gathered}
+\]
+with $d_r\bar x=\bar y$. Write the normalized vertices as $U=\Sigma^{0,e_f}\nu X$, $V=\nu Y$, and $W=\Sigma^{0,-e_g}\nu Z$. Choose actual suspension--quotient isomorphisms
+\[
+\varepsilon_X^D:Q_D(\Sigma U)\cong\Sigma Q_DU\quad(D=A,N),\qquad
+\varepsilon_Y^N:Q_N(\Sigma V)\cong\Sigma Q_NV.
+\]
+Each must commute with its quotient inclusion. Compatibility with reduction $Q_N\to Q_A$ on bigraded sphere representatives follows internally from these inclusion squares and the finite no-return comparison; it is not an extra hypothesis. The assertion below is quantified over these choices. The map $h_A$ uses $\varepsilon_X^A$, and the output uses $\varepsilon_X^N,\varepsilon_Y^N$; a comparison preserving only objects is insufficient. Finite source labels are transported by these actual shifts and quotients, using the intrinsic finite source label rather than an independently chosen positive-shift $E_2$ identification.
+
+Their actual finite infinite-page classes must support the following three equations in the indicated fixed maps:
+\[
+\begin{gathered}
+d_l^{h_A}(\lambda^i\bar x)=\lambda^Kx,\\
+d_r^{\delta_{A,B}}(\lambda^i\bar x)=\lambda^{B-1}\bar y,\\
+d_m^{g_B}(\lambda^jy)=\lambda^{B-1}\bar y.
+\end{gathered}
+\]
+The first two equations use the same infinite-page source class. The last two use the same top-layer target class. The $h$ target is related to the specified $x$ by the fixed actual suspension comparison. Assume actual no-crossing on either $h_A$ or $\delta_{A,B}$: the entire triangle $s<u\leq v\leq s+l$ or $s<u\leq v\leq s+r$, respectively. Both are at the same actual stem and weight. In unshifted $Z$ coordinates this is $(t-s,t-i)$; in the normalized third vertex it is $(t-s,t-i-e_g)$.
+
+Then there exist the same actual representatives $a,b,c$, with
+\[
+\begin{gathered}
+a\text{ detecting }\lambda^i\bar x,\\
+h_A(a)\text{ detecting }\lambda^Kx,\\
+\delta_{A,B}(a)=g_B(b)\text{ detecting }\lambda^{B-1}\bar y,\\
+b\text{ detecting }\lambda^jy,
+\end{gathered}
+\]
+\[
+\rho(c)=h_A(a),\qquad f_N(c)=-\lambda^Ab,
+\]
+such that $c$ detects $\lambda^Kx$ and its actual $f_N$ image detects $\lambda^Jy$. Equivalently for the resulting page relation,
+\[
+x\in Z_Q,\qquad d_n^{\hat f_N}(\lambda^Kx)=[\lambda^Jy].
+\]
+The source label lies in $Z_Q/B_{K+1}$; the target lies in $Z_{m_1+1}/B_{J+1}$ modulo shorter actual $\hat f_N$ extension images. The actual representatives are retained in addition to this quotient relation. At $i=j=0$ the output is in the strong quotient $Q_r$:
+\[
+\begin{gathered}
+x\in Z_{n+m+e_h},\\
+d_n^{\hat f_r}(\lambda^kx)=[\lambda^{r'-1}y],\quad r'=n_1+k+1.
+\end{gathered}
+\]
+A zero target label means a higher filtration, not a zero homotopy image. No power of $\lambda$ is cancelled.
+\uses{sem:ProofTools:mh-actual-no-crossing,sem:ProofTools:sphere-label-detection,sem:ProofTools:mh-common-source,sem:Literature:normalized-finite-quotient-row,paper:3.20,paper:6.11}
+\sketch
+\lean{KIP126.ProofTools.Standard.generalizedMahowaldAtLevel}
+% Blueprint note: The complete finite-layer assertion is proved using the fixed Literature row, without a caller-supplied horizontal-row premise. It retains actual no-crossing synchronization, the same common representative, both signed image equations, both exact output detections, the original source cycle qualification and the specified target strong quotient. The proof introduces no local gap or axiom, does not use the frozen old MH or GL law, and still inherits the registered upstream model and comparison obligations.
+% Blueprint note: This replaces the unprovable zero-layer version formerly displayed here. The original Theorem 6.12 remains in AimPaper and in the corrections page. The historical Lean law is not used as a proof of this revised target. A classical extension would additionally require an appropriate target-preserving full lift; source permanence alone does not provide it.
+\end{theorem}
+\begin{proof}
+\textit{(See \cite{LWX126}, Theorem 6.12.)} \href{paper/main.tex.html#L1860}{Original Mahowald argument (before the finite-layer correction)}.
+
+\textit{Proof of the finite-layer revision.} Fix the compatible normalized triangle and the data of the theorem. Actual no-crossing gives one representative $a$ for which the prescribed $h_A$ image and the $\delta_{A,B}$ image have the required detections. This synchronization is the common-source construction at \ref{sem:ProofTools:mh-common-source}; it does not replace either specified label.
+
+Top-layer uniqueness identifies the boundary image of this $a$ with $g_B(b)$ for the chosen representative $b$. Apply the fixed finite-quotient horizontal row of \ref{sem:Literature:normalized-finite-quotient-row} and the triangle construction of Lemma~\ref{paper:6.11}. They produce a single $c$ satisfying both prescribed signed image equations. The comparison of the cofiber objects preserves both structure arrows and the same suspension comparison, so these are equations in the required quotients.
+
+The normalized no-return argument removes the restriction defect of $c$. Visible-layer quotient reflection and the source/image detection comparisons then identify its two output detectors and retain the cycle qualification of the original source. Reading the second image equation in the specified strong quotient gives the finite extension in the conclusion. No $\lambda$ layer is cancelled, and the target is not projected to a smaller quotient. This proves the revised assertion relative to its registered upstream model and comparison inputs; it does not prove the zero-layer statement printed in the original Theorem 6.12.
+\end{proof}
+
+\section{Descent, indeterminacy and stretching}
+
+% AimPaper: 6.20 proposition 1981 1993
+\begin{proposition}[Fixed-target indeterminacy after restriction]
+\label{paper:6.20}
+\source{A fixed-target revision of AimPaper Proposition 6.20, second assertion}
+\level{coarse}
+A fixed-target revision of \cite{LWX126}, Proposition 6.20, second assertion, with the late-cycle exclusion removed.\par
+\label{prop:dec738d3}
+Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and take finite pages $r',r\in\mathbb N$ and integers $n,s,t$ with
+\[
+2\le r'\le r,\qquad e\le n\le r'-2+e.
+\]
+Fix common labels
+\[
+x\in Z_{r-1}^{s,t}(X),\qquad y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
+\]
+and witnesses $W_r,W_{r'}$ for $d_n^{f,E_r}(x)=y$ and
+\begin{equation}\label{eq:dr'}
+d_n^{f,E_{r'}}(x)=y.
+\end{equation}
+Both witnesses include the full cycle and length qualifications of Definition~\ref{paper:5.4}; the earlier relation is supplied by \ref{sem:ProofTools:finite-extension-descent}. Suppose that $W_r$ is essential.
+
+Put $q=r'-1$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and let $F_q:A/\lambda^q\to B/\lambda^q$ be the actual normalized map. Retain the target class
+\[
+\bar y_{r'}\in E_\infty^{s+n,t+n,t+e}(B/\lambda^q)
+\]
+of the chosen witness $W_{r'}$, represented by the specified label $\lambda^{n-e}y$. Then the extension in (\ref{eq:dr'}) is inessential if and only if there exist
+\[
+a\in\mathbb N,\qquad 0<a\le n-e,\qquad
+x'\in Z_{r'-1-a}^{s+a,t+a}(X),
+\]
+and a class $z\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q)$ represented by the actual correction label $\lambda^a x'$, transported by the shift comparison and quotient isomorphism into the normalized source quotient at weight $t+e$, such that in this same extension spectral sequence
+\[
+d_{n-a}^{F_q}(z)=\bar y_{r'}.
+\]
+This is the full extension relation, including its source qualification. The shorter extension may be inessential and its source class may be zero. No exclusion from the later cycle set is imposed; the target is the original specified target, with $b=0$.
+\uses{paper:5.4,sem:ProofTools:finite-extension-descent,sem:ProofTools:extension-representatives}
+\lean{KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
+% Correspondence: complete for the authorized fixed-target revision of the second assertion.
+% Blueprint note: The revised first assertion remains stated and bound at sem:ProofTools:finite-extension-descent. The separate difference-preserving alternative is sem:ProofTools:nonliftable-or-crossing. Neither result proves the original unrestricted set-difference equivalence with general b. The local proof inherits the registered upstream obligations.
+% Blueprint note: \href{paper/main.tex.html#L1981}{Original Proposition 6.20 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
+\end{proposition}
+\begin{proof}
+\textit{Proof of the fixed-target revision; compare \cite{LWX126}, Proposition 6.20.} \href{paper/main.tex.html#L1995}{Original argument}.
+
+The page--length domain condition $n\le r'-2+e$ allows restriction to the earlier page. Essentiality of the late witness implies that the specified early target is nonzero. The representative criterion for inessentiality in the actual early ESS identifies an inessential extension with an extension to that same target from a source in higher filtration. The minimal-length bound gives $0<a\le n-e$. The finite-window comparison expresses this higher source by a classical label $x'\in Z_{r'-1-a}$ and its actual correction label, retaining the same quotient, stem and weight. This proves the forward implication, including the source qualification.
+
+Conversely, the shorter extension puts the same target in the earlier ESS's shorter-extension indeterminacy, so $W_{r'}$ is inessential. No claim that $x'$ fails to lift to the later cycle set is needed. Imposing that exclusion requires the separate late-crossing alternative at \ref{sem:ProofTools:nonliftable-or-crossing}; the original general-$b$ equivalence remains outside this revision.
+\end{proof}
+
+% AimPaper: 6.23 corollary 2074 2081
+\begin{corollary}[Finite-page stretching with a same-quotient obstruction]
+\label{paper:6.23}
+\source{A finite-page sufficient-condition revision of AimPaper Corollary 6.23}
+\level{coarse}
+A finite-page sufficient-condition revision of \cite{LWX126}, Corollary 6.23.\par
+\label{cor:dfc6043e}
+Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and let $r',r\in\mathbb N$ and $n,s,t\in\mathbb Z$ satisfy
+\[
+2\le r'\le r,\qquad e\le n\le r'-2+e.
+\]
+Suppose that the specified labels satisfy the later-page cycle conditions
+\[
+x\in Z_{r-1}^{s,t}(X),\qquad
+y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
+\]
+and that there is an earlier-page extension $d_n^{f,E_{r'}}(x)=y$.
+
+Let $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $q=r'-1$. Assume that there is no nonliftable obstruction in the same early quotient. Explicitly, exclude every pair $a,b\in\mathbb N$ with
+\[
+0<a\le r'-2,\qquad a+b\le n,
+\]
+and classes
+\[
+\xi\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q),\qquad
+0\ne\eta\in E_\infty^{s+n-b,t+n-b,t+e}(B/\lambda^q),
+\]
+such that $\xi$ is outside the image of the actual quotient reduction
+\[
+\rho_\infty:E_\infty^{s+a,t+a,t+e}(A/\lambda^{r-1})
+\longrightarrow E_\infty^{s+a,t+a,t+e}(A/\lambda^q)
+\]
+and, in the same earlier-quotient ESS at stem $t-s$ and weight $t+e$,
+\[
+d_{n-a-b}^{\hat f_q}(\xi)=\eta.
+\]
+These obstructions include inessential extensions, $b=0$ and length zero; source nonliftability refers to the actual $\rho_\infty$ image, not to a difference of classical cycle sets. Then the same labels admit the later-page extension
+\[
+d_n^{f,E_r}(x)=y.
+\]
+The conclusion asserts existence of a later extension; it does not prescribe a lift of an arbitrarily chosen strict representative or a compatible infinite tower.
+\lean{KIP126.ProofTools.Standard.finitePageExtensionStretching}
+% Correspondence: complete for the stated finite-page sufficient-condition revision.
+% Blueprint note: This revision strengthens the printed hypotheses by requiring the later target cycle qualification and excluding all specified nonzero same-quotient obstructions. It does not assert the original essential-crossing-only criterion or the case r=infinity. Its local proof is independent of the revised Proposition 6.20 and inherits registered upstream obligations.
+% Blueprint note: \href{paper/main.tex.html#L2074}{Original Corollary 6.23 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
+\end{corollary}
+\begin{proof}
+\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:ProofTools:finite-strip,sem:ProofTools:extension-representatives}
+\textit{Proof of the finite-page revision; compare \cite{LWX126}, Corollary 6.23.} \href{paper/main.tex.html#L2074}{Original statement and context}.
+
+Use actual representatives of the earlier extension. The prescribed late source and target cycle qualifications supply lifts of their infinite-page labels along quotient reduction. Correct the difference between the chosen early source and a late lift over the finite filtration interval. At each step, a residual source with nonzero target that cannot be lifted would give exactly one of the excluded same-quotient obstructions. Every other residual can be corrected to the next filtration or already has image above the prescribed target filtration. The finite correction theorem and the finite-quotient cutoff therefore supply a late representative with the specified source and target labels. Reading its actual map equation gives the required extension.
+
+This is an independent representative proof of the finite sufficient condition, not a contrapositive of the revised Proposition~\ref{paper:6.20}. It proves the stated revision, not the full printed corollary with only essential crossings excluded or an infinite later page.
+\end{proof}
