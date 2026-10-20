@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.950003+00:00'
+updated: '2026-10-20T03:59:04.871774+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1087-1131](paper/main.tex.html#L1087). Start with the Bockstein comparison, induct on the quotient length using lambda and restriction triangles, and reduce the finite target by composition of extensions.
 

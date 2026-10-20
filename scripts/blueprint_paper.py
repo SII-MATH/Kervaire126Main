@@ -5,7 +5,6 @@ proof states. All such semantics belong to native hgraph.
 """
 import hashlib
 import html
-from pathlib import Path
 import re
 import shutil
 import xml.etree.ElementTree as ET

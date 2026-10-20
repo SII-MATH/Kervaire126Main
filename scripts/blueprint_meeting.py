@@ -57,6 +57,13 @@ def render_details(task, root):
     sections = []
     for section in task['details']:
         references = []
+        for reference in section.get('links', []):
+            url = reference['url']
+            if urlsplit(url).scheme != 'https' or not urlsplit(url).netloc:
+                raise ValueError('Expected an HTTPS meeting detail source')
+            references.append('<li><a href="' + html.escape(url, quote=True) +
+                              '" target="_blank" rel="noopener noreferrer">' +
+                              html.escape(reference['title']) + ' ↗</a></li>')
         for reference in section.get('code', []):
             relative = Path(reference['file'])
             if relative.is_absolute() or '..' in relative.parts or relative.suffix != '.lean':
@@ -64,7 +71,7 @@ def render_details(task, root):
             declaration = reference['declaration']
             pattern = re.compile(r'^\s*(?:public\s+)?(?:noncomputable\s+)?'
                                  r'(?:def|abbrev|theorem|structure)\s+' +
-                                 re.escape(declaration) + r'(?=\s|[(:])')
+                                 re.escape(declaration) + r'(?=\s|[(:]|$)')
             lines = (Path(root) / relative).read_text().splitlines()
             line = next((i for i, text in enumerate(lines, 1) if pattern.match(text)), None)
             if line is None:

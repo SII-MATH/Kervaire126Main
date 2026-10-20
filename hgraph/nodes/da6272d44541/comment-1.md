@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.957423+00:00'
+updated: '2026-10-20T03:59:04.887100+00:00'
 ---
 **Formal scope:** complete for the stated finite-page sufficient-condition revision.
 

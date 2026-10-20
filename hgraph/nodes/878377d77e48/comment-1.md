@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T05:44:00.408478+00:00'
+updated: '2026-10-20T05:53:20.538892+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 307-325](paper/main.tex.html#L307). Representatives detected by x and y characterize extensions; the indeterminacy statements follow from the same characterization.
 

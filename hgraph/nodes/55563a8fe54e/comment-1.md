@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.733843+00:00'
+updated: '2026-10-20T03:59:04.490988+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 2683-2696](paper/main.tex.html#L2683). Both permanent-cycle inputs are extracted from the stem-122 table before the proof of Proposition 7.9.
 

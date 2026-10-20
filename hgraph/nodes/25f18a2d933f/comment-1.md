@@ -6,7 +6,7 @@ created: '2026-10-18T03:48:13'
 date: '2026-10-18T03:48:13'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.873755+00:00'
+updated: '2026-10-20T03:59:04.688846+00:00'
 ---
 Source verification (2026-10-18): Source adaptation checked. The cited papers concern the usual classical spectrum or its 2-primary/2-completed version. Recognition of the fixed project category, Adams tower, coefficient object, and selected Lean constants is a separate, currently pending formal comparison; this audit does not prove it. Primary references: [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): Section0.1,p1;Section1.2,p64; Author preliminary version of AMS Mathematical Surveys and Monographs 253 (2021), downloaded 2026-10-18; printed page numbers cited, PDF index = printed page + 17 in the body.
 

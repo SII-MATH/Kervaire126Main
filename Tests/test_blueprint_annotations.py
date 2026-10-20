@@ -1,6 +1,5 @@
 """Authoring metadata must stay accessible without entering mathematical prose."""
 from pathlib import Path
-import importlib.util
 import sys
 import tempfile
 import unittest

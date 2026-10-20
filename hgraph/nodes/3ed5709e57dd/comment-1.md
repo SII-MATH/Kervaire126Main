@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.866050+00:00'
+updated: '2026-10-20T03:59:04.677276+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 117-126](paper/main.tex.html#L117). Browder is an external input; standard Adams classes and permanence specify its criterion, rather than proving the geometric bridge.
 

@@ -6,7 +6,7 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T04:59:49.956547+00:00'
+updated: '2026-10-20T03:59:04.885558+00:00'
 ---
 **Formal scope:** complete for the authorized fixed-target revision of the second assertion.
 
