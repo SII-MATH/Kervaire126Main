@@ -154,7 +154,7 @@ In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y
 Use the actual quotient-boundary diagram of the fixed $\nu$ cofiber, with its specified suspension comparison. The classical $d_3$ supplies the boundary equation, and the two length-zero extensions supply the connecting and bottom-cell equations. The no-crossing alternative synchronizes the required representatives. In this particular finite diagram, the quotient-window bounds identify the source as a $Z_3$ label and identify the resulting length-three extension target modulo $B_3$. Thus the extension is on page $4$ with the stated congruence. This is an independent argument for this numerical instance, not cancellation of a $\lambda$ power in the general Mahowald theorem.
 \end{proof}
 
-\section{Representative criteria and finite-page restriction}
+\section{Finite-page restriction}
 
 \begin{theorem}[Descent of finite-page extensions in the valid length range]
 \label{sem:ProofTools:finite-extension-descent}
@@ -191,95 +191,6 @@ The conclusion includes the corresponding earlier-page cycle conditions. The ext
 \begin{proof}
 Apply quotient reduction to the source and target of the late normalized extension equation. Naturality gives the equation in the earlier quotient. The explicit upper bound $n\le r_{\rm early}-2+e$ places it in the valid length window of Definition~\ref{paper:5.4}; the late cycle conditions supply the corresponding early cycles. Reading the reduced equation gives the stated early extension, with the same map and labels.
 \end{proof}
-
-\begin{theorem}[The tower representative criterion]
-\label{sem:ProofTools:representative-criterion}
-\level{coarse}
-From \cite{LWX126}, Proposition 2.10.\par
-
-Fix a map of convergent towers and an extension equation of length $n$ from $x$ to $y$ in filtrations $s$ and $s+n$, and a threshold $u\leq s+n$. Absence of higher-source extensions whose target lies between $u$ and $s+n$ is equivalent to the following condition: every representative $a$ of $x$ whose image has filtration at least $u$ has image representing the specified $y$ in filtration $s+n$. For threshold $u=s$, the image-filtration premise is automatic. If $y=0$, the conclusion says that every such image has filtration at least $s+n+1$. A map increasing every filtration by at least $n$ satisfies this criterion.
-\uses{sem:ProofTools:extension-representatives,paper:2.7,sem:ProofTools:finite-correction}
-\lean{KIP126.ProofTools.Paper.extension_noCrossingRange_iff,KIP126.ProofTools.Paper.extension_noCrossing_iff,KIP126.ProofTools.Paper.extension_zero_noCrossing_iff,KIP126.ProofTools.Paper.extension_noCrossing_of_filtration_bound}
-% Blueprint note: The bindings here are the four tower representative forms. The filtered-group forms remain at Proposition 2.10. No new comparison with an arbitrary classical extension spectral sequence is asserted.
-\end{theorem}
-\begin{proof}
-Use representatives as in the proof of Proposition~\ref{paper:2.10}. If two representatives of the source have different image grades in the specified range, their difference is in higher source filtration and produces a crossing; a first nonzero grade is obtained over the finite interval. Conversely, adding a representative of a crossing source preserves the original source grade but changes the required target grade. This proves the equivalence. The zero-target case and the filtration-bound case follow by reading the target grade as a zero associated-graded class.
-\end{proof}
-
-\begin{theorem}[A nonliftable short extension or a late crossing]
-\label{sem:ProofTools:nonliftable-or-crossing}
-\level{coarse}
-Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
-\uses{sem:ProofTools:extension-representatives,sem:ProofTools:finite-strip,paper:6.20}
-\lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
-% Blueprint note: This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.
-\end{theorem}
-\begin{proof}
-\textit{Proof sketch in the fixed model.}
-Use the fixed-target shorter-extension criterion in the early quotient. If its higher source has no corresponding later cycle label, it is the first alternative. Otherwise lift the source label and compare the actual image with the fixed late target. Their nonzero discrepancy has a first grade in the finite higher-source range and gives the second alternative, an actual late crossing. Thus imposing the cycle-set difference requires retaining the crossing branch.
-\end{proof}
-
-\section{Generalized Leibniz at an explicit lambda level}
-
-\begin{definition}[Level extensions and the quotient-boundary square]
-\label{sem:ProofTools:level-finite-extension}
-\level{coarse}
-Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
-\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
-The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
-
-Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
-\[2\le n,\qquad e\le m\le n-2+e,\]
-and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
-\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
-at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
-\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
-Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
-The extension need not be essential, and zero labels are allowed.
-
-For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. For the further lengths $r,l$, with $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
-\[
-NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
-NC(\Sigma^{1,-q}F;p,s+r,l).
-\]
-They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
-\uses{sem:AdamsSynthetic:shift-representatives,sem:ProofTools:mh-actual-no-crossing}
-\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
-\end{definition}
-
-\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
-\label{sem:ProofTools:generalized-leibniz-at-level}
-\level{coarse}
-A level-indexed revision of \cite{LWX126}, Theorem 6.1.\par
-
-The proof follows the quotient-boundary square argument of that theorem, with crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
-\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
-Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
-\[
-x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
-x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
-y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
-\]
-Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
-\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
-and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
-\[
-\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
-\land NC(\Sigma^{1,-q}F;p,s+r,l).
-\]
-Then the classical Adams differential is
-\[d_{r+l-m}(y)=y_\infty.\]
-There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
-\uses{sem:ProofTools:level-finite-extension,paper:2.12,paper:4.6}
-\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
-% Blueprint note: This is the authorized level-indexed revision. It neither restores the retired original GL theorem nor identifies the old crossing predicates with the actual conditions. Its proof inherits the registered upstream construction and comparison obligations.
-\end{theorem}
-\begin{proof}
-\textit{Proof sketch in the fixed model.}
-Form the actual quotient-boundary square at $q=n+k-1$ and weight $t+e-k$. The classical differential constructs its left extension. Propagate the given infinite extension to the bottom edge at level $r-n$. These constructions retain the specified source and target labels. Apply the filtered-square extension theorem using the assumed no-crossing alternative on the left or top edge and the assumed actual bottom no-crossing. The resulting boundary equation, read through the weighted boundary comparison, is the classical differential $d_{r+l-m}(y)=y_\infty$. All steps occur at the displayed levels, so no upper bound on $k$ or cancellation of $\lambda$ is used.
-\end{proof}
-
-Every original finite extension $d_m^{f,E_n}(x)=y$ supplies the level-zero finite extension in quotient $n-1$. The actual map equation and its prescribed source and target are retained through the proved representative comparisons. No additional cycle or crossing premise is required. This result does not compare the two sets of no-crossing hypotheses.
 
 \section{Conditional division by lambda}
 
@@ -384,6 +295,20 @@ Let $f$ be a map of convergent towers or filtered abelian groups. An extension f
 \sketch
 % Blueprint note: Original statement and context: paper/main.tex.html#L344; paper/2412.10879.pdf.
 \end{definition}
+
+\begin{theorem}[The tower representative criterion]
+\label{sem:ProofTools:representative-criterion}
+\level{coarse}
+From \cite{LWX126}, Proposition 2.10.\par
+
+Fix a map of convergent towers and an extension equation of length $n$ from $x$ to $y$ in filtrations $s$ and $s+n$, and a threshold $u\leq s+n$. Absence of higher-source extensions whose target lies between $u$ and $s+n$ is equivalent to the following condition: every representative $a$ of $x$ whose image has filtration at least $u$ has image representing the specified $y$ in filtration $s+n$. For threshold $u=s$, the image-filtration premise is automatic. If $y=0$, the conclusion says that every such image has filtration at least $s+n+1$. A map increasing every filtration by at least $n$ satisfies this criterion.
+\uses{sem:ProofTools:extension-representatives,paper:2.7,sem:ProofTools:finite-correction}
+\lean{KIP126.ProofTools.Paper.extension_noCrossingRange_iff,KIP126.ProofTools.Paper.extension_noCrossing_iff,KIP126.ProofTools.Paper.extension_zero_noCrossing_iff,KIP126.ProofTools.Paper.extension_noCrossing_of_filtration_bound}
+% Blueprint note: The bindings here are the four tower representative forms. The filtered-group forms remain at Proposition 2.10. No new comparison with an arbitrary classical extension spectral sequence is asserted.
+\end{theorem}
+\begin{proof}
+Use representatives as in the proof of Proposition~\ref{paper:2.10}. If two representatives of the source have different image grades in the specified range, their difference is in higher source filtration and produces a crossing; a first nonzero grade is obtained over the finite interval. Conversely, adding a representative of a crossing source preserves the original source grade but changes the required target grade. This proves the equivalence. The zero-target case and the filtration-bound case follow by reading the target grade as a zero associated-graded class.
+\end{proof}
 
 % AimPaper: 2.10 proposition 408 416
 \begin{proposition}[Characterization of extensions without crossings]
@@ -855,6 +780,68 @@ Apply multiplication by $\lambda^a$ to the boundary-extension formulas of Propos
 The two labels must lie in the source and target windows of Proposition~\ref{paper:3.12}. These are exactly the ranges displayed in the statement. Beyond those windows the relevant layer vanishes, so the corresponding extension is trivial. The quotient interpretation of the labels, including earlier boundaries, is the one fixed in Proposition~\ref{paper:4.6}.
 \end{proof}
 
+\section{Generalized Leibniz at an explicit lambda level}
+
+\begin{definition}[Level extensions and the quotient-boundary square]
+\label{sem:ProofTools:level-finite-extension}
+\level{coarse}
+Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
+\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
+The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
+
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
+\[2\le n,\qquad e\le m\le n-2+e,\]
+and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
+at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
+\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
+Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
+The extension need not be essential, and zero labels are allowed.
+
+For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. For the further lengths $r,l$, with $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
+\[
+NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
+NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
+\uses{sem:AdamsSynthetic:shift-representatives,sem:ProofTools:mh-actual-no-crossing}
+\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
+\end{definition}
+
+\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
+\label{sem:ProofTools:generalized-leibniz-at-level}
+\level{coarse}
+A level-indexed revision of \cite{LWX126}, Theorem 6.1.\par
+
+The proof follows the quotient-boundary square argument of that theorem, with crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
+\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
+Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
+\[
+x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
+x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
+y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
+\]
+Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
+and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
+\[
+\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
+\land NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+Then the classical Adams differential is
+\[d_{r+l-m}(y)=y_\infty.\]
+There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
+\uses{sem:ProofTools:level-finite-extension,paper:2.12,paper:4.6}
+\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
+% Blueprint note: This is the authorized level-indexed revision. It neither restores the retired original GL theorem nor identifies the old crossing predicates with the actual conditions. Its proof inherits the registered upstream construction and comparison obligations.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Form the actual quotient-boundary square at $q=n+k-1$ and weight $t+e-k$. The classical differential constructs its left extension. Propagate the given infinite extension to the bottom edge at level $r-n$. These constructions retain the specified source and target labels. Apply the filtered-square extension theorem using the assumed no-crossing alternative on the left or top edge and the assumed actual bottom no-crossing. The resulting boundary equation, read through the weighted boundary comparison, is the classical differential $d_{r+l-m}(y)=y_\infty$. All steps occur at the displayed levels, so no upper bound on $k$ or cancellation of $\lambda$ is used.
+\end{proof}
+
+Every original finite extension $d_m^{f,E_n}(x)=y$ supplies the level-zero finite extension in quotient $n-1$. The actual map equation and its prescribed source and target are retained through the proved representative comparisons. No additional cycle or crossing premise is required. This result does not compare the two sets of no-crossing hypotheses.
+
 \section{Crossings of Adams differentials}
 
 % AimPaper: 4.14 definition 1165 1173
@@ -1185,6 +1172,19 @@ This is the full extension relation, including its source qualification. The sho
 The page--length domain condition $n\le r'-2+e$ allows restriction to the earlier page. Essentiality of the late witness implies that the specified early target is nonzero. The representative criterion for inessentiality in the actual early ESS identifies an inessential extension with an extension to that same target from a source in higher filtration. The minimal-length bound gives $0<a\le n-e$. The finite-window comparison expresses this higher source by a classical label $x'\in Z_{r'-1-a}$ and its actual correction label, retaining the same quotient, stem and weight. This proves the forward implication, including the source qualification.
 
 Conversely, the shorter extension puts the same target in the earlier ESS's shorter-extension indeterminacy, so $W_{r'}$ is inessential. No claim that $x'$ fails to lift to the later cycle set is needed. Imposing that exclusion requires the separate late-crossing alternative at \ref{sem:ProofTools:nonliftable-or-crossing}; the original general-$b$ equivalence remains outside this revision.
+\end{proof}
+
+\begin{theorem}[A nonliftable short extension or a late crossing]
+\label{sem:ProofTools:nonliftable-or-crossing}
+\level{coarse}
+Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
+\uses{sem:ProofTools:extension-representatives,sem:ProofTools:finite-strip,paper:6.20}
+\lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
+% Blueprint note: This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Use the fixed-target shorter-extension criterion in the early quotient. If its higher source has no corresponding later cycle label, it is the first alternative. Otherwise lift the source label and compare the actual image with the fixed late target. Their nonzero discrepancy has a first grade in the finite higher-source range and gives the second alternative, an actual late crossing. Thus imposing the cycle-set difference requires retaining the crossing branch.
 \end{proof}
 
 % AimPaper: 6.23 corollary 2074 2081
