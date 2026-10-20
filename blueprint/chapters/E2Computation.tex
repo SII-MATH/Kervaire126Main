@@ -147,6 +147,22 @@ Define $P=h_6Md_0\in E_2^{11,133}$, $Q=h_5x_{91,11}\in E_2^{12,134}$ and $C=e_0\
 \lean{KIP126.Computation.Standard.P,KIP126.Computation.Standard.Q,KIP126.Computation.Standard.correction,KIP126.Computation.Standard.highClass}
 \end{definition}
 
+\section{The unbounded second-line basis}
+\begin{theorem}[Exhaustive standard products on the Adams second line]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:E2Computation:two-line-exhaustive}
+\level{coarse}
+From \cite{Adams60}, Theorem 2.5.1(2), p.~45.\par
+
+For every integer $t$ and nonzero $x\in E_2^{2,t}(S^0)$, there are natural numbers $i\leq j$ and a bidegree equation
+\[
+ (1,2^i)+(1,2^j)=(2,t)
+\]
+such that $x$ equals the corresponding transport of $H_{i,j}$. There is no upper bound on $t$, $i$ or $j$.
+\lean{KIP126.E2Computation.two_line_exhaustive}
+% Blueprint note: Original source checked directly: \cite{Adams60}, Theorem 2.5.1(2), pp.~44--45, gives the second-line basis h_j h_i for j>=i>=0 and j!=i+1. \cite{LinExt4}, Theorem 1.2, p.~460, recalls this earlier result and is not its original source. Distinct ordered power-of-two pairs have distinct sums, so each nonzero homogeneous element over F2 is a single basis product. The theorem is adapted to integer grading, actual page products and their degree transports. Identification of the abstract Ext basis with the project's fixed E2 product remains the registered E2Computation obligation; this source check does not prove it. The finite archive bound t<=261 is not extrapolated. Primary text: [Adams](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Adams-HI1.pdf), Theorem 2.5.1(2), p.45.
+\end{theorem}
+
 \begin{theorem}[The h6-square line]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:Computation:square-line}
@@ -156,67 +172,10 @@ From \cite{LinProgram}, archived sphere $E_2$ basis.\par
 The class $h_6^2$ is nonzero and every $x\in E_2^{2,128}$ satisfies $x=0$ or $x=h_6^2$.
 \lean{KIP126.Computation.Standard.square_nonzero,KIP126.Computation.Standard.square_exhaustive}
 \end{theorem}
-
-\section{Products, divisibility and E2 vanishing}
-
-\begin{definition}[The source label for the seventh differential]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:E2Computation:d7-label}
-\level{coarse}
-\uses{sem:Computation:standard-atoms,sem:Computation:products-and-powers}
-From \cite{LinProgram}, archived sphere coordinates.\par
-
-Define the second-page class
-\[A=x_{123,11,2}+x_{123,11}+h_0h_6[B_4]\in E_2^{11,134}.\]
-Its later differential is stated in \ref{sem:Computation:d7-source}.
-\lean{KIP126.Computation.Standard.d7Source}
-\end{definition}
-
-\begin{definition}[The two target labels in bidegree (9,134)]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:E2Computation:d3-labels}
-\level{coarse}
-\uses{sem:Computation:standard-atoms,sem:Computation:products-and-powers}
-From \cite{LinProgram}, archived sphere coordinates.\par
-
-Define
-\[B=h_5x_{94,8},\qquad B'=h_5x_{94,8}+h_6b\in E_2^{9,134}.\]
-The differential alternative involving them is stated in
-\ref{sem:Computation:d3-candidates}.
-\lean{KIP126.Computation.Standard.d3Candidate,KIP126.Computation.Standard.d3OtherCandidate}
-\end{definition}
-
-\begin{theorem}[Product relations for the named classes]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Computation:products-vanishing}
-\level{coarse}
-\uses{sem:Computation:v-x-y,sem:Computation:p-q-correction,sem:Computation:named-basis-identities,sem:Computation:theta-product-certificates}
-From \cite{LinProgram}, archived product relations.\par
-The actual sphere products satisfy
-\[h_5^2b=0,\qquad Xh_2=0,\qquad h_1C=0.\]
-Furthermore $Ph_2$ and $Qh_2$ are boundaries by page $2$, in the sense of Definition~\ref{sem:SpectralSequence:cycles-boundaries}.
-\lean{KIP126.Computation.Standard.h5Square_b_zero,KIP126.Computation.Standard.x_h2_zero,KIP126.Computation.Standard.h1_correction_zero}
-\end{theorem}
-
-\begin{theorem}[Nondivisibility of T and Y]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Computation:nondivisibility}
-\level{coarse}
-\uses{sem:Computation:w-t-u,sem:Computation:v-x-y,sem:Computation:actual-coordinates,sem:Computation:obstruction-certificates}
-From \cite{LinProgram}, archived product calculation.\par
-There is no $a\in E_2^{13,138}$ with $h_0a=T$, no $a\in E_2^{13,135}$ with $h_2a=T$, and no $a\in E_2^{10,132}$ with $h_2a=Y$.
-\lean{KIP126.Computation.Standard.t_not_h0_multiple,KIP126.Computation.Standard.t_not_h2_multiple,KIP126.Computation.Standard.y_not_h2_multiple}
-\end{theorem}
-
-\begin{theorem}[The required vanishing components]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Computation:vanishing-regions}
-\level{coarse}
-\uses{sem:Computation:actual-coordinates}
-From \cite{LinProgram}, archived sphere $E_2$ dimensions.\par
-The actual components $E_2^{s,s+125}$ for $0\leq s\leq4$ are zero. Here zero means that the corresponding additive module is a subsingleton.
-\lean{KIP126.Computation.Standard.e2_stem125_low}
-\end{theorem}
+\begin{proof}
+\uses{sem:E2Computation:two-line-exhaustive}
+The certified coordinate module in bidegree $(2,128)$ has one basis vector, represented by $h_6^2$, so this class is nonzero. For a nonzero $x$, apply Theorem~\ref{sem:E2Computation:two-line-exhaustive}: it is a transported product $h_i h_j$ with $i\le j$ and $2^i+2^j=128$. This forces $i=j=6$. The standard-class calibration identifies that product with $h_6^2$.
+\end{proof}
 
 \section{The nu-cofiber and detector E2 comparisons}
 
@@ -340,23 +299,70 @@ The following products vanish:
 
 
 
-\section{The unbounded second-line basis}
-\begin{theorem}[Exhaustive standard products on the Adams second line]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:E2Computation:two-line-exhaustive}
-\level{coarse}
-From \cite{Adams60}, Theorem 2.5.1(2), p.~45.\par
 
-For every integer $t$ and nonzero $x\in E_2^{2,t}(S^0)$, there are natural numbers $i\leq j$ and a bidegree equation
-\[
- (1,2^i)+(1,2^j)=(2,t)
-\]
-such that $x$ equals the corresponding transport of $H_{i,j}$. There is no upper bound on $t$, $i$ or $j$.
-\lean{KIP126.E2Computation.two_line_exhaustive}
-% Blueprint note: Original source checked directly: \cite{Adams60}, Theorem 2.5.1(2), pp.~44--45, gives the second-line basis h_j h_i for j>=i>=0 and j!=i+1. \cite{LinExt4}, Theorem 1.2, p.~460, recalls this earlier result and is not its original source. Distinct ordered power-of-two pairs have distinct sums, so each nonzero homogeneous element over F2 is a single basis product. The theorem is adapted to integer grading, actual page products and their degree transports. Identification of the abstract Ext basis with the project's fixed E2 product remains the registered E2Computation obligation; this source check does not prove it. The finite archive bound t<=261 is not extrapolated. Primary text: [Adams](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Adams-HI1.pdf), Theorem 2.5.1(2), p.45.
-\end{theorem}
 
 % The AimPaper computational facts involve higher Adams pages and are presented in AdamsCalculations.
+
+\section{Products, divisibility and E2 vanishing}
+
+\begin{definition}[The source label for the seventh differential]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:E2Computation:d7-label}
+\level{coarse}
+\uses{sem:Computation:standard-atoms,sem:Computation:products-and-powers}
+From \cite{LinProgram}, archived sphere coordinates.\par
+
+Define the second-page class
+\[A=x_{123,11,2}+x_{123,11}+h_0h_6[B_4]\in E_2^{11,134}.\]
+Its later differential is stated in \ref{sem:Computation:d7-source}.
+\lean{KIP126.Computation.Standard.d7Source}
+\end{definition}
+
+\begin{definition}[The two target labels in bidegree (9,134)]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:E2Computation:d3-labels}
+\level{coarse}
+\uses{sem:Computation:standard-atoms,sem:Computation:products-and-powers}
+From \cite{LinProgram}, archived sphere coordinates.\par
+
+Define
+\[B=h_5x_{94,8},\qquad B'=h_5x_{94,8}+h_6b\in E_2^{9,134}.\]
+The differential alternative involving them is stated in
+\ref{sem:Computation:d3-candidates}.
+\lean{KIP126.Computation.Standard.d3Candidate,KIP126.Computation.Standard.d3OtherCandidate}
+\end{definition}
+
+\begin{theorem}[Product relations for the named classes]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Computation:products-vanishing}
+\level{coarse}
+\uses{sem:Computation:v-x-y,sem:Computation:p-q-correction,sem:Computation:named-basis-identities,sem:Computation:theta-product-certificates}
+From \cite{LinProgram}, archived product relations.\par
+The actual sphere products satisfy
+\[h_5^2b=0,\qquad Xh_2=0,\qquad h_1C=0.\]
+Furthermore $Ph_2$ and $Qh_2$ are boundaries by page $2$, in the sense of Definition~\ref{sem:SpectralSequence:cycles-boundaries}.
+\lean{KIP126.Computation.Standard.h5Square_b_zero,KIP126.Computation.Standard.x_h2_zero,KIP126.Computation.Standard.h1_correction_zero}
+\end{theorem}
+
+\begin{theorem}[Nondivisibility of T and Y]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Computation:nondivisibility}
+\level{coarse}
+\uses{sem:Computation:w-t-u,sem:Computation:v-x-y,sem:Computation:actual-coordinates,sem:Computation:obstruction-certificates}
+From \cite{LinProgram}, archived product calculation.\par
+There is no $a\in E_2^{13,138}$ with $h_0a=T$, no $a\in E_2^{13,135}$ with $h_2a=T$, and no $a\in E_2^{10,132}$ with $h_2a=Y$.
+\lean{KIP126.Computation.Standard.t_not_h0_multiple,KIP126.Computation.Standard.t_not_h2_multiple,KIP126.Computation.Standard.y_not_h2_multiple}
+\end{theorem}
+
+\begin{theorem}[The required vanishing components]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Computation:vanishing-regions}
+\level{coarse}
+\uses{sem:Computation:actual-coordinates}
+From \cite{LinProgram}, archived sphere $E_2$ dimensions.\par
+The actual components $E_2^{s,s+125}$ for $0\leq s\leq4$ are zero. Here zero means that the corresponding additive module is a subsingleton.
+\lean{KIP126.Computation.Standard.e2_stem125_low}
+\end{theorem}
 
 \section{Coordinates and algebraic relations on the E2 page}
 % Authored mathematical statements for the fixed E2 computation construction and proof groups.

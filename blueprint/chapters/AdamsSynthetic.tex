@@ -43,6 +43,15 @@ For $X\in\mathrm{Syn}$ and $n\geq0$, let $X/\lambda^n$ be the cofiber of $\lambd
 \lean{KIP126.AdamsSynthetic.Standard.quotients}
 \end{definition}
 
+\begin{theorem}[Cofiber homology and a cardinality bound]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:AdamsSynthetic:homology-exact}
+\level{coarse}
+\uses{sem:AdamsSynthetic:categories}
+Mod-two homology of a cofiber sequence is exact at the cofiber term, with boundary induced by the cofiber map to the suspension. Suppose that every finite subset of the two adjacent homology groups has cardinality at most $n_X$ and $n_Y$, respectively. Then every finite subset of the cofiber homology group has cardinality at most $n_Xn_Y$.
+\lean{KIP126.AdamsSynthetic.Standard.homology_exact,KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound}
+\end{theorem}
+
 \begin{theorem}[When nu preserves a cofiber triangle]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:nu-exactness}
@@ -53,6 +62,14 @@ Let $X\to Y\to Z\to\Sigma X$ be a distinguished triangle in $\mathrm{Sp}$. If it
 \end{theorem}
 
 \section{Adams towers, convergence, and finite filtration}
+
+\begin{definition}[Auxiliary maps and a detecting spectrum]
+\label{frontier:AdamsSynthetic:0895d4999173}
+\level{fine}
+\uses{sem:AdamsSynthetic:categories}
+Fix maps $\eta\colon S^1\to S$ and $\nu_3\colon S^3\to S$, a spectrum $D$, and a map $S\to D$. These determine the classical object family $\mathcal C_0$ and the synthetic object family $\mathcal S_0$ defined above.
+\lean{KIP126.AdamsSynthetic.Standard.auxiliary}
+\end{definition}
 
 \begin{definition}[The classical and synthetic Adams systems]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -109,15 +126,6 @@ For $X\in\mathcal C_0$, one has $E_r^{s,t}(X)=0$ whenever $s<0$. For the sphere,
 \lean{KIP126.AdamsSynthetic.Standard.classical_page_negative,KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero,KIP126.AdamsSynthetic.Standard.classical_sphere_separated}
 \end{theorem}
 
-\begin{theorem}[Cofiber homology and a cardinality bound]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:homology-exact}
-\level{coarse}
-\uses{sem:AdamsSynthetic:categories}
-Mod-two homology of a cofiber sequence is exact at the cofiber term, with boundary induced by the cofiber map to the suspension. Suppose that every finite subset of the two adjacent homology groups has cardinality at most $n_X$ and $n_Y$, respectively. Then every finite subset of the cofiber homology group has cardinality at most $n_Xn_Y$.
-\lean{KIP126.AdamsSynthetic.Standard.homology_exact,KIP126.AdamsSynthetic.Standard.cofiber_homology_card_bound}
-\end{theorem}
-
 \begin{theorem}[Separation on finite lambda quotients]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:finite-quotient-separation}
@@ -152,6 +160,27 @@ d_{s+1,t}(d_{s,t}(x))=0.
 \lean{KIP126.AdamsSynthetic.Milnor.differential_squared}
 \end{theorem}
 
+\begin{definition}[The second page in Milnor coordinates]
+\label{frontier:AdamsSynthetic:8b66ee46e41e}
+\level{fine}
+For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the group on the right is the cohomology of the normalized Milnor cobar complex.
+\uses{sem:AdamsSynthetic:milnor-differential-square-zero,sem:AdamsSynthetic:families}
+\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv}
+% Blueprint note: The completed standardHi definition now uses this comparison. Its construction remains a registered upstream obligation, and no representative-level source recognition is claimed here.
+\end{definition}
+
+\begin{definition}[The sphere second-page algebra]
+\label{frontier:AdamsSynthetic:f05463b82afe}
+\level{fine}
+\uses{sem:AdamsSynthetic:families}
+Each group $E_2^{s,t}(S)$ is an $\mathbb F_2$-module. The sphere second page has a $\mathbb Z$-bilinear product
+\[
+E_2^p(S)\times E_2^q(S)\longrightarrow E_2^{p+q}(S)
+\]
+and a unit in degree $(0,0)$. Under the identifications of equal degree sums, the product is associative and the unit is both a left and a right identity.
+\lean{KIP126.AdamsSynthetic.Standard.sphereAlgebra}
+\end{definition}
+
 \begin{definition}[The standard sphere classes]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:standard-classes}
@@ -163,6 +192,15 @@ Let $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$ be the fixed 
 \end{definition}
 
 \section{Weight-graded hom groups and products}
+
+\begin{theorem}[Coherence of synthetic shifts and lambda]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:AdamsSynthetic:shift-coherence}
+\level{coarse}
+\uses{sem:AdamsSynthetic:categories}
+The bidegree-shift comparison satisfies associativity and both unit laws. It commutes with $\lambda$ under the sum-degree identifications, and the bidegree-shift functors are additive.
+\lean{KIP126.AdamsSynthetic.Standard.biShift_associativity,KIP126.AdamsSynthetic.Standard.biShift_left_unit,KIP126.AdamsSynthetic.Standard.biShift_right_unit,KIP126.AdamsSynthetic.Standard.biShift_lambda_comm,KIP126.AdamsSynthetic.Standard.graded_shiftAdditive}
+\end{theorem}
 
 \begin{definition}[Weight-graded synthetic hom groups]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -211,15 +249,6 @@ For a map $f$ between objects of $\mathcal C_0$, its normalized synthetic lift i
 \lean{KIP126.AdamsSynthetic.Standard.normalizedMap,KIP126.AdamsSynthetic.Standard.convergentMap}
 \end{definition}
 
-\begin{theorem}[Coherence of synthetic shifts and lambda]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:AdamsSynthetic:shift-coherence}
-\level{coarse}
-\uses{sem:AdamsSynthetic:categories}
-The bidegree-shift comparison satisfies associativity and both unit laws. It commutes with $\lambda$ under the sum-degree identifications, and the bidegree-shift functors are additive.
-\lean{KIP126.AdamsSynthetic.Standard.biShift_associativity,KIP126.AdamsSynthetic.Standard.biShift_left_unit,KIP126.AdamsSynthetic.Standard.biShift_right_unit,KIP126.AdamsSynthetic.Standard.biShift_lambda_comm,KIP126.AdamsSynthetic.Standard.graded_shiftAdditive}
-\end{theorem}
-
 \begin{definition}[Shift comparisons for synthetic extensions]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:ess-shifts}
@@ -239,6 +268,36 @@ Let $r\geq2$ be a finite page. Under the synthetic shift comparison, two shifted
 \end{theorem}
 
 % Native hgraph authoring; original AimPaper statements are checked verbatim against AimPaper/main.tex.
+\section{Bigraded synthetic spheres}
+
+% AimPaper: 3.2 definition 770 772
+\begin{definition}[Bigraded synthetic spheres]
+\label{paper:3.2}
+\source{AimPaper Definition 3.2}
+\level{coarse}
+From \cite{LWX126}, Definition 3.2.\par
+
+% BEGIN AIMPAPER STATEMENT
+[{\cite[Definition 4.6]{Pst}}]
+The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w}\nu (S^w)$.
+% END AIMPAPER STATEMENT
+\uses{sem:AdamsSynthetic:nu}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 770-772](paper/main.tex.html#L770). Define bigraded spheres by suspension of the synthetic analogue of an ordinary sphere.
+
+% Blueprint note: The object definition belongs to AdamsSynthetic. The separate low-weight comparison isomorphisms are stated in \ref{sem:Literature:low-sphere-comparisons}; they do not formalize the all-integral definition here.
+
+
+% Correspondence: partial.
+% Blueprint note: Bigraded spheres are public objects; \texttt{Smn} is defined by applying \texttt{biShift} to the unit. The comparison with $\Sigma^{s-w}\nu(S^w)$ for every integer $w$ in the paper is not supplied as a single directly exported equality or isomorphism theorem.
+% Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Synthetic.Context.Smn}.
+\lean{KIP126.Synthetic.Context.Smn}
+
+\sketch
+% Blueprint note: Source verification (2026-10-18): Partial source correspondence. The immutable raw statement is exactly Pstragowski’s definition as restated by AimPaper, but the direct binding here is only Smn. The three nu-sphere isomorphisms in weights 1, 2, 3 are separate Literature results. They do not establish the general all-integral formula; retain its existing partial/sketch status. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
+% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Definition 3.2, quoting \cite{Pst}, Definition 4.6; the current binding is partial.)
+\end{definition}
+
 \section{Lambda and its quotient objects}
 
 % AimPaper: 3.3 definition 774 782
@@ -343,37 +402,6 @@ Part (1) is straightforward from the setup of the extension spectral sequence an
 \end{proof}
 
 
-\section{Bigraded synthetic spheres}
-
-% AimPaper: 3.2 definition 770 772
-\begin{definition}[Bigraded synthetic spheres]
-\label{paper:3.2}
-\source{AimPaper Definition 3.2}
-\level{coarse}
-From \cite{LWX126}, Definition 3.2.\par
-
-% BEGIN AIMPAPER STATEMENT
-[{\cite[Definition 4.6]{Pst}}]
-The bigraded spheres $S^{s,w}$ are the synthetic spectra defined by $\Sigma^{s-w}\nu (S^w)$.
-% END AIMPAPER STATEMENT
-\uses{sem:AdamsSynthetic:nu}
-% Blueprint note: Mathematical dependency review: [AimPaper source, lines 770-772](paper/main.tex.html#L770). Define bigraded spheres by suspension of the synthetic analogue of an ordinary sphere.
-
-% Blueprint note: The object definition belongs to AdamsSynthetic. The separate low-weight comparison isomorphisms are stated in \ref{sem:Literature:low-sphere-comparisons}; they do not formalize the all-integral definition here.
-
-
-% Correspondence: partial.
-% Blueprint note: Bigraded spheres are public objects; \texttt{Smn} is defined by applying \texttt{biShift} to the unit. The comparison with $\Sigma^{s-w}\nu(S^w)$ for every integer $w$ in the paper is not supplied as a single directly exported equality or isomorphism theorem.
-% Blueprint note: \par This entry is bound to the existing Lean declarations below. Its status reports their local completion; the scope of the paper correspondence is qualified by the preceding note.
-% Blueprint note: Direct formal counterparts: \texttt{KIP126.Synthetic.Context.Smn}.
-\lean{KIP126.Synthetic.Context.Smn}
-
-\sketch
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. The immutable raw statement is exactly Pstragowski’s definition as restated by AimPaper, but the direct binding here is only Smn. The three nu-sphere isomorphisms in weights 1, 2, 3 are separate Literature results. They do not establish the general all-integral formula; retain its existing partial/sketch status. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
-% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Definition 3.2, quoting \cite{Pst}, Definition 4.6; the current binding is partial.)
-\end{definition}
-
-
 \section{Quotient and boundary maps}
 
 \begin{notation}[Quotient and boundary maps]
@@ -456,14 +484,6 @@ $$n<\AF(f)\text{ or }n>r-2-k+e(f).$$
 \section{Adams towers and synthetic comparison}
 % Mathematical authoring for the existing AdamsSynthetic frontier groups.
 \section{Adams constructions and their identities}
-
-\begin{definition}[Auxiliary maps and a detecting spectrum]
-\label{frontier:AdamsSynthetic:0895d4999173}
-\level{fine}
-\uses{sem:AdamsSynthetic:categories}
-Fix maps $\eta\colon S^1\to S$ and $\nu_3\colon S^3\to S$, a spectrum $D$, and a map $S\to D$. These determine the classical object family $\mathcal C_0$ and the synthetic object family $\mathcal S_0$ defined above.
-\lean{KIP126.AdamsSynthetic.Standard.auxiliary}
-\end{definition}
 
 \begin{definition}[Classical coefficient-unit towers]
 \label{frontier:AdamsSynthetic:14d5e6606bc5}
@@ -574,15 +594,6 @@ Equip $\mathrm{Syn}$ with a preadditive, monoidal, pretriangulated category stru
 \lean{KIP126.AdamsSynthetic.Standard.syntheticCategory}
 \end{definition}
 
-\begin{definition}[The second page in Milnor coordinates]
-\label{frontier:AdamsSynthetic:8b66ee46e41e}
-\level{fine}
-For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the group on the right is the cohomology of the normalized Milnor cobar complex.
-\uses{sem:AdamsSynthetic:milnor-differential-square-zero,sem:AdamsSynthetic:families}
-\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv}
-% Blueprint note: The completed standardHi definition now uses this comparison. Its construction remains a registered upstream obligation, and no representative-level source recognition is claimed here.
-\end{definition}
-
 \begin{definition}[Synthetic functorial cofibers]
 \label{frontier:AdamsSynthetic:c264cb4f3291}
 \level{fine}
@@ -610,18 +621,6 @@ Choose $H\mathbb F_2\in\mathrm{Sp}$ together with an additive isomorphism $\pi_0
 \level{fine}
 Let $\mathrm{Syn}$ denote the type of synthetic spectra, in universe $\mathrm{Type}_1$.
 \lean{KIP126.AdamsSynthetic.Standard.SyntheticSpectrum}
-\end{definition}
-
-\begin{definition}[The sphere second-page algebra]
-\label{frontier:AdamsSynthetic:f05463b82afe}
-\level{fine}
-\uses{sem:AdamsSynthetic:families}
-Each group $E_2^{s,t}(S)$ is an $\mathbb F_2$-module. The sphere second page has a $\mathbb Z$-bilinear product
-\[
-E_2^p(S)\times E_2^q(S)\longrightarrow E_2^{p+q}(S)
-\]
-and a unit in degree $(0,0)$. Under the identifications of equal degree sums, the product is associative and the unit is both a left and a right identity.
-\lean{KIP126.AdamsSynthetic.Standard.sphereAlgebra}
 \end{definition}
 
 \begin{definition}[Synthetic convergence]

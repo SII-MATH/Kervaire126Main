@@ -213,6 +213,44 @@ Under $\mathit{tmf}\cong D$, the images of these classes satisfy the same differ
 
 \section{Synthetic rigidity and finite quotients}
 
+% AimPaper: 3.6 theorem 799 807
+\begin{theorem}[Synthetic Adams pages and differentials]
+\label{paper:3.6}
+\source{AimPaper Theorem 3.6}
+\level{coarse}
+From \cite{LWX126}, Theorem 3.6.\par
+
+\href{paper/main.tex.html#L799}{Source text}.
+% BEGIN AIMPAPER STATEMENT
+[{\cite[Theorem A.8]{BHS}}] \label{thm:rigid}
+    The synthetic Adams spectral sequence for $\nu X$
+     $$\SynSS_2^{s,t,w}(\nu X)\Longrightarrow \pi_{t-s,w}(\nu X)$$
+     has an $E_2$-page
+    $$\SynSS_2^{*,*,*}(\nu X) \cong E_2^{*,*}(X)\otimes \mathbb{F}_2[\lambda]$$
+    with differentials
+    $$d_r: \SynSS_r^{s,t,w}\to \SynSS_r^{s+r,t+r-1,w}.$$
+    Here $E_2^{*,*}(X) \cong \Ext_A^{*,*}(X)$ is the classical Adams $E_2$-page of $X$. An element in $E_2^{s,t}(X)$ is viewed as having tridegree $(s, t, t)$ in $\SynSS_2^{s,t,t}(\nu X)$, and $\lambda$ is in tridegree $(0, 0, -1)$. Given a classical Adams differential $d_r^{\mathrm{cl}}(x)=y$, the corresponding synthetic differential is $d_r(x)=\lambda^{r-1}y$, which is $\lambda$-linear, and all synthetic Adams differentials arise in this way.
+% END AIMPAPER STATEMENT
+\uses{paper:3.3,sem:AdamsSynthetic:families}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 799-807](paper/main.tex.html#L799). BHS supplies the polynomial-lambda Adams page and its differential rule for the synthetic analogue.
+
+
+% Correspondence: public correspondence with the scope stated below
+% Blueprint note: The public statements separate page coordinates, the free-lambda range, and differential rigidity. Their object scope is the project ClassicalObject closure; it is not a claim about every arbitrary external spectrum.
+% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.nuPage\_e2}, \texttt{KIP126.Literature.Standard.bhs\_differentials}.
+\lean{KIP126.Literature.Standard.nuPage_e2,KIP126.Literature.Standard.bhs_differentials}
+
+% Blueprint note: Source verification (2026-10-18): Original source text. From refers to the immutable AimPaper body, not to a claim that all clauses are already covered by the selected Lean bindings. Bound free comparison statements cover part of the full rigidity theorem, with their existing proof obligations. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Theorem 3.6 and Remark 3.7; pages local PDF p. 16; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
+% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Theorem 3.6; adapted there from \cite{BHS}, Theorem A.8, with the regrading in Remark 3.7.)
+\end{theorem}
+\begin{proof}
+\textit{(See \cite{LWX126}, Theorem 3.6.)} \href{paper/main.tex.html#L799}{Original statement and context}.
+
+Apply \cite{BHS}, Theorem A.8, to the $H\mathbb F_2$-synthetic analogue of $X$. Translate the BHS coordinates $(s,k,\omega)$ to the present coordinates by $k=t-s$ and $\omega=w-(t-s)$, and rename $\tau$ as $\lambda$. The free polynomial description then places a classical class in tridegree $(s,t,t)$ and $\lambda$ in tridegree $(0,0,-1)$.
+
+The BHS differential degree becomes $(r,r-1,0)$. Consequently a classical differential $d_r(x)=y$ becomes $d_r(x)=\lambda^{r-1}y$: the indicated power is exactly what preserves weight. The theorem also gives $\lambda$-linearity and exhausts the synthetic differentials. This is a page-and-differential comparison; convergence to untruncated homotopy groups requires its separate hypotheses.
+\end{proof}
+
 \begin{definition}[Weight coordinates on the synthetic Adams pages]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:Literature:nu-page-coordinates}
@@ -489,6 +527,10 @@ For $0<i\le j$ and $0\le t-w<i$, restriction $\nu X/\lambda^j\to\nu X/\lambda^i$
 % Blueprint note: Source verification (2026-10-18): Source adaptation checked. BHS Corollary A.9 gives the untruncated E-infinity subquotient, and Corollary A.11 gives the finite quotient. All formula indices transform by s-omega=t-w. The finite formula holds for q>=1 in BHS, while AimPaper Proposition 3.12 explicitly states q>=2. Additive equivalences are viewed as Z-linear without a change of scalar structure. Matching a specific E2 representative to its quotient class requires the canonical label-compatible presentation, not an arbitrary abstract isomorphism. Zero labels are permitted in subgroup and quotient statements. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.11(1)-(3) and its proof; Notation A.10; pages arXiv PDF p. 73; published p. 308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.9(1)-(4), including its final surjectivity sentence; pages arXiv PDF pp. 72-73; published pp. 307-308; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [LWX126](https://arxiv.org/html/2412.10879v2#S3): Remark 3.14; pages local PDF p. 17; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked
 % Blueprint note: Detailed source attribution: (From \cite{BHS}, Corollary A.11 and its proof, and \cite{LWX126}, Remark 3.14.)
 \end{proposition}
+\begin{proof}
+\uses{sem:Literature:lambda-inversion}
+Use the label-compatible infinite-page windows in the statement. The comparison obtained by inverting $\lambda$ in Definition~\ref{sem:Literature:lambda-inversion} identifies their common $E_2$ labels and commutes with the differentials. In the free range its page map is an isomorphism, so every second-page synthetic label comes from a classical label. The label presentations then identify restriction and quotient projection with the natural maps on the corresponding cycle/boundary quotients. The fixed-model comparison inputs retain their registered proof obligations.
+\end{proof}
 
 \section{Cofibers, filtered lifts, and normalized triangles}
 
@@ -532,51 +574,6 @@ For the classical triangle $S^3\xrightarrow{\nu}S^0\to C\nu\to S^4$, the normali
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. Example 6.19 supplies the exponent values and the Ext h2 operation. The first-quotient label of normalizedNu and distinguishedness of the three already selected maps are separate obligations. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Example 6.19; Proposition 3.20; pages 38–39; 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [LWX126](https://arxiv.org/abs/2412.10879): Notation 3.19; Proposition 3.20; pages 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
 % Blueprint note: Detailed source attribution: (A normalized synthetic revision of \cite{LWX126}, Example 6.19 and Proposition 3.20; the selected-map comparisons remain explicit obligations.)
 \end{proposition}
-
-\begin{theorem}[The signed finite quotient row of a normalized triangle]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Literature:normalized-finite-quotient-row}
-\level{coarse}
-\source{Derived in the fixed synthetic model}
-\uses{sem:Literature:normalized-cofiber,sem:AdamsSynthetic:lambda-quotients}
-Fix a classical triangle $T$ in the selected object family, with its prescribed
-normalization exponents $e_f+e_g+e_h=1$. Assume that its actual normalized
-triangle $V$ is distinguished. For $q>0$, write
-$Q_qA=\operatorname{cofib}(\lambda_A^q)$ and let $\iota_A:A\to Q_qA$
-be the selected inclusion. All quotient maps below are the selected maps
-on these same cofibers. There is an isomorphism
-\[
-\varepsilon:Q_q(\Sigma V_2)\cong\Sigma Q_qV_2,
-\qquad
-\iota_{\Sigma V_2}\varepsilon=\Sigma\iota_{V_2},
-\]
-for which the row
-\[
-Q_qV_2\xrightarrow{Q_q(V.g)}Q_qV_3
-\xrightarrow{Q_q(V.h)}Q_q(\Sigma V_1)
-\xrightarrow{-\left(Q_q(\Sigma V.f)\,\varepsilon\right)}
-\Sigma Q_qV_2
-\]
-is distinguished. Only one such comparison is required; no global claim
-is made for every inclusion-compatible comparison.
-For a fixed $\varepsilon$, distinguishedness of this precise row is
-equivalent to constructing an isomorphism
-\[
-e:\operatorname{cofib}\bigl(Q_q(V.g)\bigr)\cong Q_q(\Sigma V_1)
-\]
-that preserves both structure arrows:
-\[
-\iota_{Q_q(V.g)}e=Q_q(V.h),\qquad
-e\bigl[-Q_q(\Sigma V.f)\varepsilon\bigr]=\delta_{Q_q(V.g)}.
-\]
-An isomorphism of the third objects alone does not satisfy this criterion.
-\lean{KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row}
-% Blueprint note: Both the signed row and an actual cofiber isomorphism preserving the two displayed structure arrows are proved with the same suspension comparison. The public binding is the complete row theorem; private constructions have no separate bindings. This proof adds no axiom or proof gap and retains the existing upstream model and comparison obligations. It does not assert exactness for every quotient functor choice or uniqueness of positive lifts from arbitrary detector sources.
-\end{theorem}
-\begin{proof}
-\uses{sem:Literature:nu-cofiber,sem:Literature:tmf-convergence,sem:Literature:realization-coordinates,sem:Literature:selected-lifts,sem:Literature:finite-quotient-labels}
-The exponent sum and degreewise finite connective homology exclude a triangle whose three vertices are detector shifts. Hence one vertex has a finite sphere-cell construction. At a finite first vertex, the negative finite-quotient Hom window identifies the octahedral first arrow with the selected quotient map. Lambda-localization and finite-source reflection make the correction to the third vertical arrow invertible. The discrepancy in the second quotient arrow is a sphere ghost whose square factors through a finite sphere-cell quotient; the finite ghost bound makes the required correction invertible. The finite quotient at the first vertex is annihilated by the same lambda power, which forces the prescribed boundary arrow. Rotation and a finite-cell comparison provide the required inclusion-compatible suspension isomorphism when the finite vertex occupies either other position.
-\end{proof}
 
 \section{Bockstein lifts and completion hypotheses}
 
@@ -697,6 +694,53 @@ Let $X$ belong to the chosen classical object family. A lift $a$ of a common per
 % Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
 \end{proposition}
 
+\section{Normalized finite quotient triangles}
+
+\begin{theorem}[The signed finite quotient row of a normalized triangle]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Literature:normalized-finite-quotient-row}
+\level{coarse}
+\source{Derived in the fixed synthetic model}
+\uses{sem:Literature:normalized-cofiber,sem:AdamsSynthetic:lambda-quotients}
+Fix a classical triangle $T$ in the selected object family, with its prescribed
+normalization exponents $e_f+e_g+e_h=1$. Assume that its actual normalized
+triangle $V$ is distinguished. For $q>0$, write
+$Q_qA=\operatorname{cofib}(\lambda_A^q)$ and let $\iota_A:A\to Q_qA$
+be the selected inclusion. All quotient maps below are the selected maps
+on these same cofibers. There is an isomorphism
+\[
+\varepsilon:Q_q(\Sigma V_2)\cong\Sigma Q_qV_2,
+\qquad
+\iota_{\Sigma V_2}\varepsilon=\Sigma\iota_{V_2},
+\]
+for which the row
+\[
+Q_qV_2\xrightarrow{Q_q(V.g)}Q_qV_3
+\xrightarrow{Q_q(V.h)}Q_q(\Sigma V_1)
+\xrightarrow{-\left(Q_q(\Sigma V.f)\,\varepsilon\right)}
+\Sigma Q_qV_2
+\]
+is distinguished. Only one such comparison is required; no global claim
+is made for every inclusion-compatible comparison.
+For a fixed $\varepsilon$, distinguishedness of this precise row is
+equivalent to constructing an isomorphism
+\[
+e:\operatorname{cofib}\bigl(Q_q(V.g)\bigr)\cong Q_q(\Sigma V_1)
+\]
+that preserves both structure arrows:
+\[
+\iota_{Q_q(V.g)}e=Q_q(V.h),\qquad
+e\bigl[-Q_q(\Sigma V.f)\varepsilon\bigr]=\delta_{Q_q(V.g)}.
+\]
+An isomorphism of the third objects alone does not satisfy this criterion.
+\lean{KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row}
+% Blueprint note: Both the signed row and an actual cofiber isomorphism preserving the two displayed structure arrows are proved with the same suspension comparison. The public binding is the complete row theorem; private constructions have no separate bindings. This proof adds no axiom or proof gap and retains the existing upstream model and comparison obligations. It does not assert exactness for every quotient functor choice or uniqueness of positive lifts from arbitrary detector sources.
+\end{theorem}
+\begin{proof}
+\uses{sem:Literature:nu-cofiber,sem:Literature:tmf-convergence,sem:Literature:realization-coordinates,sem:Literature:selected-lifts,sem:Literature:finite-quotient-labels}
+The exponent sum and degreewise finite connective homology exclude a triangle whose three vertices are detector shifts. Hence one vertex has a finite sphere-cell construction. At a finite first vertex, the negative finite-quotient Hom window identifies the octahedral first arrow with the selected quotient map. Lambda-localization and finite-source reflection make the correction to the third vertical arrow invertible. The discrepancy in the second quotient arrow is a sphere ghost whose square factors through a finite sphere-cell quotient; the finite ghost bound makes the required correction invertible. The finite quotient at the first vertex is annihilated by the same lambda power, which forces the prescribed boundary arrow. Rotation and a finite-cell comparison provide the required inclusion-compatible suspension isomorphism when the finite vertex occupies either other position.
+\end{proof}
+
 \section{The Kervaire survival criterion}
 
 \begin{definition}[The distinguished synthetic theta-five for the criterion]
@@ -741,6 +785,47 @@ The total boundary of the first-quotient class labeled $h_6^2$ is
 % Blueprint note: Source verification (2026-10-18): Source adaptation checked. This is the project-selected BX source choice, not a claim for every class with the same label. BX uses bidegree (stem, Adams filtration); the project uses (stem, weight), with weight = stem + filtration. Thus the source theta in degree (62,2) is displayed here in degree (62,64), and the source total boundary target is regraded to the project shift (1,-1). The finite statement retains r >= 1. Source-to-model identification and the registered Lean proof obligations remain separate from this citation check. Primary references: [BurklundXu](https://arxiv.org/pdf/2302.11869v3): Proposition 7.19 and its proof; Theorem 7.20 and its proof; pages 54; arXiv:2302.11869v3, 9 November 2024; accepted version [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution
 % Blueprint note: Detailed source attribution: (From \cite{BurklundXu}, proof of Proposition 7.19; regraded as in \cite{LWX126}, Remark 7.5.)
 \end{theorem}
+
+\section{Multiplicative comparison inputs}
+
+\begin{definition}[Algebra structures on the positive lambda quotients]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Literature:quotient-algebras}
+\level{coarse}
+\uses{sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:graded-hom}
+From \cite{LWX126}, Remark 3.4.\par
+
+For each $q>0$, equip $S^{0,0}/\lambda^q$ with a commutative algebra structure in the symmetric synthetic category whose unit is the quotient inclusion. Its multiplication and the sphere tensor comparison induce a bigraded product. Multiplication by a projected sphere class equals the sphere action.
+\lean{KIP126.Literature.Standard.quotientSyntheticSymmetric,KIP126.Literature.Standard.quotientAlgebra,KIP126.Literature.Standard.quotientAlgebra_commutative,KIP126.Literature.Standard.quotientAlgebra_unit,KIP126.Literature.Standard.quotientAlgebraProduct,KIP126.Literature.Standard.quotientAlgebra_sphere_action}
+% Blueprint note: Source verification (2026-10-18): Source adaptation checked. The all-positive-power E-infinity assertion is explicitly Remark 3.4 of AimPaper. BHSmot B.5 directly concerns the first special fiber and C.22 has cellular/completion qualifications; no invented numbered all-q theorem is claimed. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Remark 3.4; pages 15; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [BHSmot](https://arxiv.org/pdf/2010.10325v2): Definition B.3; Lemma B.5; Proposition C.2; Proposition C.22; pages 69–70, 75; arXiv:2010.10325v2, 30 June 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.2; Remark 4.5; Definition 4.6; pages 38–39; arXiv:1803.01804v3, 10 November 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
+% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Remark 3.4; see \cite{BHSmot}, Definition B.3, Lemma B.5, and Proposition C.22, and \cite{Pst}, Proposition 4.2.)
+\end{definition}
+
+\begin{proposition}[The first quotient identifies products with Ext products]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Literature:first-quotient-products}
+\level{coarse}
+\uses{sem:Literature:quotient-algebras,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,frontier:AdamsSynthetic:f05463b82afe}
+From \cite{Pst}, Theorem 4.46 and Lemma 4.56.\par
+
+Under the first-quotient equivalence, multiplication of classes in bidegrees $(t-s,t)$ and $(t'-s',t')$ is the classical sphere $E_2$ product in bidegree $(s+s',t+t')$. The action of an untruncated sphere class on a first-quotient class agrees with the same product.
+\lean{KIP126.Literature.Standard.sphereFirstQuotient,KIP126.Literature.Standard.quotientAlgebra_first_quotient,KIP126.Literature.Standard.first_quotient_action}
+% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Symmetric monoidality gives multiplicativity of the canonical Ext comparison, with s,t,s-prime,t-prime nonnegative and stem t-s. Identification with the project’s selected firstQuotient and sphereAlgebra product is still an explicit pending comparison. This packages the already selected sphere first-quotient equivalence; its external origin is the source Ext comparison, while this exact additive equivalence is project data. The Lean proof composes quotientAlgebra_sphere_action with quotientAlgebra_first_quotient. It is not a further external theorem or a completed upstream comparison. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022
+% Blueprint note: Detailed source attribution: (From \cite{Pst}, Theorem 4.46 and Lemma 4.56, using the first-quotient algebra of Corollary 4.30.)
+\end{proposition}
+
+\begin{proposition}[Filtration and detection of actual products]
+% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
+\label{sem:Literature:filtered-product-detection}
+\level{coarse}
+\uses{frontier:AdamsSynthetic:791f3c0e6a4a,sem:AdamsSynthetic:selected-convergence,sem:Literature:finite-quotient-labels}
+A selected-model revision of \cite{Moss}, Section 1; \cite{BHS}, Remark 9.5.\par
+
+A sphere class of filtration at least $s$ acting on a class of filtration at least $s'$ gives a class of filtration at least $s+s'$. On each positive finite quotient, if the two classes are detected by specified $E_2$ labels, their action is detected by the product of those labels, with the corresponding degree identifications. The classical product of detected sphere classes is likewise detected by the product of their classical $E_2$ labels.
+\lean{KIP126.Literature.Standard.action_filtration,KIP126.Literature.Standard.finite_action,KIP126.Literature.Standard.classical_product_detection}
+% Blueprint note: Source verification (2026-10-18): Partial source correspondence. The three bindings are general comparison statements for the project-selected Adams towers, not a single numbered theorem in AimPaper. Moss Section 1 supplies composition pairings in classical Adams systems, while BHS Remark 9.5 and the canonical towers in Appendix A explain the synthetic monoidal setting. The exact compatibility of the selected finite-quotient E2 coordinates, action and abutment for every positive quotient length, and the action-filtration statement on all shifts and iterated quotients, must still be supplied. No upper bound is inserted into the frozen formal range; this citation check does not silently narrow it to the paper examples. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [BHS](https://arxiv.org/pdf/1910.14116v3): Remark 9.5; Theorem A.8; Corollary A.9(1); Notation A.10, Corollary A.11; Proposition A.20, relations (0), (9), and Remark A.22; pages 32, 72–73, 78–79; published Acta page mapping supplied in bhs_pages/proposals.json; arXiv:1910.14116v3, as independently retrieved by the BHS audit worker [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution
+% Blueprint note: Detailed source attribution: (A selected-model revision of the multiplicative framework of \cite{Moss}, Section 1, and \cite{BHS}, Remark 9.5 and Appendix A; the selected filtration and finite-quotient comparisons remain explicit obligations.)
+\end{proposition}
 
 \section{May push-pull and secondary operations}
 
@@ -837,48 +922,6 @@ For every $\theta\in\pi_{62,64}S^{0,0}$ with $2\theta=0$,
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. Toda Corollary 3.7 gives the uniform classical order-two symmetric-bracket law. Baues--Muro Definition 1.2, relation (T6), and Theorem 1.3 supply the connective-ring-spectrum version with the image of the stable Hopf element. To apply it in the synthetic category, one uses the canonical stable enrichment (or the corresponding square-zero mapping module) and identifies that Hopf element in pi_(1,0) with lambda^2 eta using BHS Proposition A.20. AimPaper proof of Lemma 7.16 uses the displayed synthetic formula for theta-five. The bound Lean statement is broader: every theta in pi_(62,64) killed by two, without a theta-five detection hypothesis. The cited uniform law explains this extension, but the canonical-enrichment and selected-Hopf-class comparison is an additional source-to-project obligation, not a quoted assertion of Lemma 7.16. Primary references: [Toda1962](https://webhomes.maths.ed.ac.uk/~v1ranick/papers/toda.pdf): Corollary 3.7; pages 31 (right-hand page of PDF page 18); Composition Methods in Homotopy Groups of Spheres, original book scan [BauesMuro2009](https://idus.us.es/server/api/core/bitstreams/57be0e00-a434-4786-b7e3-83a7eeed4e7a/content): Definition 1.2, relation (T6), and Theorem 1.3; pages 3 in the author manuscript; Author manuscript arXiv:math/0612450v1, 15 December 2006; published Comm. Algebra 37 (2009), 56–82 [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution [BHS](https://arxiv.org/pdf/1910.14116v3): Remark 9.5; Theorem A.8; Corollary A.9(1); Notation A.10, Corollary A.11; Proposition A.20, relations (0), (9), and Remark A.22; pages 32, 72–73, 78–79; published Acta page mapping supplied in bhs_pages/proposals.json; arXiv:1910.14116v3, as independently retrieved by the BHS audit worker
 % Blueprint note: Detailed source attribution: (A synthetic revision of \cite{Toda1962}, Corollary 3.7, and \cite{BauesMuro2009}, Definition 1.2 (T6) and Theorem 1.3; used synthetically in \cite{LWX126}, proof of Lemma 7.16. The uniform synthetic comparison remains to be checked.)
 \end{theorem}
-
-\section{Multiplicative comparison inputs}
-
-\begin{definition}[Algebra structures on the positive lambda quotients]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Literature:quotient-algebras}
-\level{coarse}
-\uses{sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:graded-hom}
-From \cite{LWX126}, Remark 3.4.\par
-
-For each $q>0$, equip $S^{0,0}/\lambda^q$ with a commutative algebra structure in the symmetric synthetic category whose unit is the quotient inclusion. Its multiplication and the sphere tensor comparison induce a bigraded product. Multiplication by a projected sphere class equals the sphere action.
-\lean{KIP126.Literature.Standard.quotientSyntheticSymmetric,KIP126.Literature.Standard.quotientAlgebra,KIP126.Literature.Standard.quotientAlgebra_commutative,KIP126.Literature.Standard.quotientAlgebra_unit,KIP126.Literature.Standard.quotientAlgebraProduct,KIP126.Literature.Standard.quotientAlgebra_sphere_action}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. The all-positive-power E-infinity assertion is explicitly Remark 3.4 of AimPaper. BHSmot B.5 directly concerns the first special fiber and C.22 has cellular/completion qualifications; no invented numbered all-q theorem is claimed. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Remark 3.4; pages 15; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [BHSmot](https://arxiv.org/pdf/2010.10325v2): Definition B.3; Lemma B.5; Proposition C.2; Proposition C.22; pages 69–70, 75; arXiv:2010.10325v2, 30 June 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.2; Remark 4.5; Definition 4.6; pages 38–39; arXiv:1803.01804v3, 10 November 2022 [Pst](https://arxiv.org/pdf/1803.01804v3): Definition 4.6; pages 39; arXiv:1803.01804v3, 10 November 2022
-% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Remark 3.4; see \cite{BHSmot}, Definition B.3, Lemma B.5, and Proposition C.22, and \cite{Pst}, Proposition 4.2.)
-\end{definition}
-
-\begin{proposition}[The first quotient identifies products with Ext products]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Literature:first-quotient-products}
-\level{coarse}
-\uses{sem:Literature:quotient-algebras,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts,frontier:AdamsSynthetic:f05463b82afe}
-From \cite{Pst}, Theorem 4.46 and Lemma 4.56.\par
-
-Under the first-quotient equivalence, multiplication of classes in bidegrees $(t-s,t)$ and $(t'-s',t')$ is the classical sphere $E_2$ product in bidegree $(s+s',t+t')$. The action of an untruncated sphere class on a first-quotient class agrees with the same product.
-\lean{KIP126.Literature.Standard.sphereFirstQuotient,KIP126.Literature.Standard.quotientAlgebra_first_quotient,KIP126.Literature.Standard.first_quotient_action}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Symmetric monoidality gives multiplicativity of the canonical Ext comparison, with s,t,s-prime,t-prime nonnegative and stem t-s. Identification with the project’s selected firstQuotient and sphereAlgebra product is still an explicit pending comparison. This packages the already selected sphere first-quotient equivalence; its external origin is the source Ext comparison, while this exact additive equivalence is project data. The Lean proof composes quotientAlgebra_sphere_action with quotientAlgebra_first_quotient. It is not a further external theorem or a completed upstream comparison. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Corollary 4.30; Theorem 4.46; Lemma 4.56; pages 46, 50–51, 54; arXiv:1803.01804v3, 10 November 2022
-% Blueprint note: Detailed source attribution: (From \cite{Pst}, Theorem 4.46 and Lemma 4.56, using the first-quotient algebra of Corollary 4.30.)
-\end{proposition}
-
-\begin{proposition}[Filtration and detection of actual products]
-% Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
-\label{sem:Literature:filtered-product-detection}
-\level{coarse}
-\uses{frontier:AdamsSynthetic:791f3c0e6a4a,sem:AdamsSynthetic:selected-convergence,sem:Literature:finite-quotient-labels}
-A selected-model revision of \cite{Moss}, Section 1; \cite{BHS}, Remark 9.5.\par
-
-A sphere class of filtration at least $s$ acting on a class of filtration at least $s'$ gives a class of filtration at least $s+s'$. On each positive finite quotient, if the two classes are detected by specified $E_2$ labels, their action is detected by the product of those labels, with the corresponding degree identifications. The classical product of detected sphere classes is likewise detected by the product of their classical $E_2$ labels.
-\lean{KIP126.Literature.Standard.action_filtration,KIP126.Literature.Standard.finite_action,KIP126.Literature.Standard.classical_product_detection}
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. The three bindings are general comparison statements for the project-selected Adams towers, not a single numbered theorem in AimPaper. Moss Section 1 supplies composition pairings in classical Adams systems, while BHS Remark 9.5 and the canonical towers in Appendix A explain the synthetic monoidal setting. The exact compatibility of the selected finite-quotient E2 coordinates, action and abutment for every positive quotient length, and the action-filtration statement on all shifts and iterated quotients, must still be supplied. No upper bound is inserted into the frozen formal range; this citation check does not silently narrow it to the paper examples. Primary references: [Moss](https://gdz.sub.uni-goettingen.de/download/pdf/PPN266833020_0115/LOG_0047.pdf): Section 1; Theorem (1.2) and conditions (1.3); pages 283–285; Original Math. Z. 115 (1970), 283–310; GDZ digitized journal scan LOG_0047 [BHS](https://arxiv.org/pdf/1910.14116v3): Remark 9.5; Theorem A.8; Corollary A.9(1); Notation A.10, Corollary A.11; Proposition A.20, relations (0), (9), and Remark A.22; pages 32, 72–73, 78–79; published Acta page mapping supplied in bhs_pages/proposals.json; arXiv:1910.14116v3, as independently retrieved by the BHS audit worker [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution
-% Blueprint note: Detailed source attribution: (A selected-model revision of the multiplicative framework of \cite{Moss}, Section 1, and \cite{BHS}, Remark 9.5 and Appendix A; the selected filtration and finite-quotient comparisons remain explicit obligations.)
-\end{proposition}
-
 
 \section{Classical inputs for the Adams second line}
 \begin{definition}[Products of standard one-line classes]
@@ -1021,44 +1064,6 @@ This is the specialization of \cite{Pst}, Lemma 4.23, to $E=H\mathbb F_2$. That 
 \end{proof}
 
 \section{Adams rigidity and lambda-Bockstein comparison}
-
-% AimPaper: 3.6 theorem 799 807
-\begin{theorem}[Synthetic Adams pages and differentials]
-\label{paper:3.6}
-\source{AimPaper Theorem 3.6}
-\level{coarse}
-From \cite{LWX126}, Theorem 3.6.\par
-
-\href{paper/main.tex.html#L799}{Source text}.
-% BEGIN AIMPAPER STATEMENT
-[{\cite[Theorem A.8]{BHS}}] \label{thm:rigid}
-    The synthetic Adams spectral sequence for $\nu X$
-     $$\SynSS_2^{s,t,w}(\nu X)\Longrightarrow \pi_{t-s,w}(\nu X)$$
-     has an $E_2$-page 
-    $$\SynSS_2^{*,*,*}(\nu X) \cong E_2^{*,*}(X)\otimes \mathbb{F}_2[\lambda]$$
-    with differentials
-    $$d_r: \SynSS_r^{s,t,w}\to \SynSS_r^{s+r,t+r-1,w}.$$
-    Here $E_2^{*,*}(X) \cong \Ext_A^{*,*}(X)$ is the classical Adams $E_2$-page of $X$. An element in $E_2^{s,t}(X)$ is viewed as having tridegree $(s, t, t)$ in $\SynSS_2^{s,t,t}(\nu X)$, and $\lambda$ is in tridegree $(0, 0, -1)$. Given a classical Adams differential $d_r^{\mathrm{cl}}(x)=y$, the corresponding synthetic differential is $d_r(x)=\lambda^{r-1}y$, which is $\lambda$-linear, and all synthetic Adams differentials arise in this way.
-% END AIMPAPER STATEMENT
-\uses{paper:3.3,sem:AdamsSynthetic:families}
-% Blueprint note: Mathematical dependency review: [AimPaper source, lines 799-807](paper/main.tex.html#L799). BHS supplies the polynomial-lambda Adams page and its differential rule for the synthetic analogue.
-
-
-% Correspondence: public correspondence with the scope stated below
-% Blueprint note: The public statements separate page coordinates, the free-lambda range, and differential rigidity. Their object scope is the project ClassicalObject closure; it is not a claim about every arbitrary external spectrum.
-% Blueprint note: Direct formal counterparts: \texttt{KIP126.Literature.Standard.nuPage\_e2}, \texttt{KIP126.Literature.Standard.bhs\_differentials}.
-\lean{KIP126.Literature.Standard.nuPage_e2,KIP126.Literature.Standard.bhs_differentials}
-
-% Blueprint note: Source verification (2026-10-18): Original source text. From refers to the immutable AimPaper body, not to a claim that all clauses are already covered by the selected Lean bindings. Bound free comparison statements cover part of the full rigidity theorem, with their existing proof obligations. Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [LWX126](https://arxiv.org/html/2412.10879v2#S3): Theorem 3.6 and Remark 3.7; pages local PDF p. 16; arXiv:2412.10879v2, 22 February 2025; local AimPaper/main.tex and PDF also checked [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
-% Blueprint note: Detailed source attribution: (From \cite{LWX126}, Theorem 3.6; adapted there from \cite{BHS}, Theorem A.8, with the regrading in Remark 3.7.)
-\end{theorem}
-\begin{proof}
-\textit{(See \cite{LWX126}, Theorem 3.6.)} \href{paper/main.tex.html#L799}{Original statement and context}.
-
-Apply \cite{BHS}, Theorem A.8, to the $H\mathbb F_2$-synthetic analogue of $X$. Translate the BHS coordinates $(s,k,\omega)$ to the present coordinates by $k=t-s$ and $\omega=w-(t-s)$, and rename $\tau$ as $\lambda$. The free polynomial description then places a classical class in tridegree $(s,t,t)$ and $\lambda$ in tridegree $(0,0,-1)$.
-
-The BHS differential degree becomes $(r,r-1,0)$. Consequently a classical differential $d_r(x)=y$ becomes $d_r(x)=\lambda^{r-1}y$: the indicated power is exactly what preserves weight. The theorem also gives $\lambda$-linearity and exhausts the synthetic differentials. This is a page-and-differential comparison; convergence to untruncated homotopy groups requires its separate hypotheses.
-\end{proof}
 
 % AimPaper: 3.8 theorem 813 823
 \begin{theorem}[The Adams and $\lambda$-Bockstein spectral sequences]
