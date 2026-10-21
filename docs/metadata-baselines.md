@@ -12,6 +12,26 @@
 
 数学说明和论文对应按章维护在 `blueprint/chapters/<模块>.tex`；接口范围说明是 hgraph 原生节点附件。出处使用 bibliography，固定代码提交见 `blueprint/source-snapshots.bib`。完整类型文本、依赖关系和完成状态由 Lean 捕获与 hgraph 导出，不在基线中重复维护。目标修正、问题成因、反例与状态集中记录在根目录 `corrections.yaml`，原始及修正陈述只引用 AimPaper 和 Blueprint 节点；维护方式见 [修正记录](corrections.md)。
 
+## 按模块跟踪审计输入
+
+`proof-obligations.json` 仍是唯一人工维护的许可待补清单。默认构建通过
+`scripts/project-proof-obligations.py` 校验完整清单，再按实际定义源模块生成
+`.lake/audit-inputs/<模块>.json`；这些文件完全派生，不入库、不接受新的责任。
+每个模块的 `Checks.Registry.<模块>` 由独立 Lake library 跟踪，只依赖本片内容。
+生成器只在内容改变时原子替换文件，Lake 将输出文件的内容哈希作为下游输入，
+不会把全局清单的哈希传递给所有审计。
+
+七份使用待补清单的 InternalAudit 保留原有完整证明体、精确指纹、公理和依赖边界检查；
+SpectralSequence 继续独立执行无洞审计。各片完整保留本模块所有条目，按条目的
+`module` 源归属分区，不按 `KIP126.Computation.*` 等保留名称判断。
+Main 片还保留根名单及 ProofTools 边界；ProofTools 片只保留其消费的边界。
+修改该共同边界会合理地重跑两份审计，修改其他模块的单个待补条目只使该模块的片变化。
+全局 summary 和未分配元数据由生成器严格校验，不复制到每片。
+
+旧 `Checks.Registry` 全清单入口作为显式兼容入口保留，默认数学审计不再导入它。
+源码清单检查每次验证全局数据和各审计的本模块输入接线；完整 `lake build`
+继续包含全部原有审计和测试。缓存命中时只重放旧日志，不重新执行 Lean 审计。
+
 ## 前端展示
 
 hgraph 的 **Interfaces → Baselines** 区域由 `scripts/blueprint_interfaces.py` 从上述十份基线直接生成，提供模块概览、声明与生成导出搜索、许可证明洞、Main／ProofTools 审计边界、改名对应和原始 JSON 下载。源码陈述与局部上下文使用 hgraph 原生 Lean 解析器读取，属于未经 elaboration 的源码展示，不替代编译后的完整类型。页签只读，不另维护接口数据库，也不新增数学章节、绑定或状态规则。公理列表表示锁中许可的依赖；包含 `sorryAx` 可能来自上游，无该项也不表示本次网页导出已通过完整构建。

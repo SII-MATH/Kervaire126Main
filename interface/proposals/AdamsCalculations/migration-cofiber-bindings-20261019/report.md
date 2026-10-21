@@ -1,7 +1,7 @@
 ---
 issue_id: AdamsCalculations-migration-cofiber-bindings-20261019
 title: Cν 旧坐标证明到固定 bottom 与 topCell 的内部连接
-summary: 两项 Cν 生产直接洞保留；本轮固定 bottom(T) 到达 E6 的部分路线已内核验证，完整生存目标仍缺同一代表的非零；d3 仍需实际源靶解释。保持原接口。
+summary: cofiber_target_to_e6 已在原接口下生产补证，当前上游产物的整文件检查通过；最终API核对与默认完整构建通过，独立实际依赖审计通过并保留登记上游。cofiber_d3 仍待补，不请求接口修改。
 responsibility_module: AdamsCalculations
 targets:
   - KIP126.Computation.Standard.cofiber_d3
@@ -10,14 +10,15 @@ baseline_commit: ef01dcfd904b51fe2288f0dc3e1eed074591967f
 worktree: /inspire/hdd/global_user/czxs25250150/ops/tmp/main-followup-20261019
 candidate_source_commit: 71e63c47d1be7ebad1589bd08a598179e468f23b
 api_file_and_sha256: interface/baselines/adams-calculations-api.json 69729c4a1e57c1bbf0e7c81606ffc53a2f0430f3b1869b41dc35fb7a8431443f
-source_file_and_sha256: KIP126/AdamsCalculations/Standard.lean c11c5482d79dedc6352fa25a72ef74e14727d4e54118dc26d2b03d579f42bd23
+source_file_and_sha256: KIP126/AdamsCalculations/Standard.lean 58c34f82bb4f9ca30176f815be15ba045f8a9b1b4462d4b44258e7cfa39f98ab
+baseline_source_file_and_sha256: KIP126/AdamsCalculations/Standard.lean c11c5482d79dedc6352fa25a72ef74e14727d4e54118dc26d2b03d579f42bd23
 reporter_agent: /root/interface_report
 independent_of_discoverer_and_implementer: true
-evidence_level: 独立源码及完整前提核验；本轮读取已内核验证的 exact-bottom E6 continuation 部分路线，不是完整非零生存证明；无实际 Cν 反例
+evidence_level: 独立源码与完整前提核验；完整E6生存证明已生产集成、当前无overlay整文件检查退出0；最终公共API、默认完整构建与独立实际依赖审计通过并保留登记上游，无实际Cν反例
 status: pending-human-review
 human_decision: null
-blocking: cofiber_d3 仍需实际源靶/非零E3桥；cofiber_target_to_e6 的固定 bottom(T) 已有到达E6部分证明，尚缺非零；登记上游接口可直接调用。
-resolution: E2Computation 完成原已指定 Cν 基底、底胞和顶胞内部连接；AdamsCalculations 移植有限页证明；不改变模块责任。
+blocking: cofiber_d3 仍需实际源靶/非零E3桥；cofiber_target_to_e6 已补到同一E6代表非零，完整构建与实际依赖审计通过；登记上游责任保留。
+resolution: E6生存通过同一首商正合性、有限基数与微分自然性内部证明完成，不要求新增坐标接口；d3继续原对象内部连接，不改变模块责任。
 ---
 
 # Cν 固定类迁移审查报告
@@ -30,9 +31,37 @@ Blueprint 的约定为 mod-two Adams 页，`(s,t)` 的 stem 为 `t-s`；LWX126 �
 
 两个最终目标归 AdamsCalculations；基底、E₂ 底胞映射和顶胞 lift 的构造仍归 E2Computation。此报告放在最终目标所属模块，**不代表**把 E₂ 责任移交下游，也不要求下游重新构造固定 Adams 系统。
 
-## 2026-10-20 复盘：固定 bottom(T) 已有 E₆ 代表，非零仍待补
+## 2026-10-20 路线集成阶段：完整 E₆ 生存已生产补证，最终验证通过且继承登记上游
 
-本轮未改生产源码、API 或清单；仍有 214 项登记责任。这两个完整公共目标的直接 `sorry` 均保留，既有人审 `pending-human-review`/`human_decision: null` 不变，不请求接口变更。上轮五项已补和传递上游责任不变。最新 main `06159aa` 的文档变化不改变数学 Lean/API/清单基线；当前 worktree 保留上轮未推的五项证明。
+本次状态更新由独立报告员 `/root/route_status_report` 核对。集成基线为 `ef1c6c718075659f68c6beaf0aae09937d2a4c25`；当前 `AdamsCalculations/Standard.lean` 的 SHA-256 为 `58c34f82bb4f9ca30176f815be15ba045f8a9b1b4462d4b44258e7cfa39f98ab`。报告员独立逐字比较两个公共目标的完整源码类型，与基线相同。`cofiber_target_to_e6` 的直接 `sorry` 已替换为私有证明调用，`cofiber_d3` 仍保留原直接洞；实际 Cν、ν 映射、bottom、指定 topCell、Y、T 以及模块责任均未改变。
+
+完整新证明绕开了旧坐标绑定。它从 `normalized_finite_quotient_horizontal_row` 的真实首商 distinguished triangle，对同一 `nuRouteTriangle`、指数和、原三角与正商长度逐项应用正合性。经固定首商/移位比较，相关三项 Hom 群基数分别为 **8、16、至多2**。中间正合性给第一箭头像等于第二箭头核；核基数至少8且是8元源群的满像，故第一箭头单射。再通过已证首商自然性，将这一单射性运输到**字面上的实际 bottom E₂ 映射**，没有换 cofiber、映射或基底，也不需先标定 Qν=h₂。
+
+随后沿实际 inclusion 运输球谱 d₂ 行，借 bottom 单射及 Cν 已登记的完整 d₂ 像，识别该像的非零基方向；用同一球谱 T 的既有边界避让排除 bottom(T) 被 d₂ 击中。已有永久代表沿 actual bottom 给出同一 E₆ 代表存在，再分别排除 d₃、d₄、d₅ 的 incoming，将同一代表的非零保持到 E₆。结论恰是原 **`SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T)`**，不再只是 `ReachesPage`。此路线不借 G89、h₂ 非整除、`cofiber_d3`、Y 或 Main 的目标后果。
+
+报告员独立读取上述生产证明、基数引理及末尾同一代表链条；读取了 worker/两位审查员的证据和协调者当前无 overlay 的整文件检查日志，日志无 error，协调者记录退出0。整文件副本与生产源码 SHA 相同，实际核验摘要为本地 `cofiber-current-integration.json`。此前旧匹配 overlay 的探针及源码/依赖审计仅作为早期预检保留，不冒充当前产物检查。报告员未亲自编译，实际当前产物检查由协调者执行。
+
+当前状态为 **`resolved-by-fixed-interface-proof`**。包含全部十一项的八数学入口构建、八模块完整公开捕获、原214项 kernel 表达式核对及默认完整 `lake build` 均已通过；清单现为203。独立实际十一目标依赖审计已通过并保留登记上游，准确范围见下节。首商、范畴、比较、cofiber基底和 `Table.result` 等已登记传递责任持续保留，不能将本地目标完成称为全证明信任闭合。
+
+`cofiber_d3` 的固定源靶代表及 E₃ 靶非零尚未完成。正在研究的另一次数正合性/矩阵秩路线不能仅凭非零或维数确定指定 topCell 的唯一坐标；本报告不将其标为已证明，也不请求接口变更。证据摘要见 [本轮证据](evidence/reassessment-20261020.json)。大型日志保留于 Git 忽略的本地会话目录，不伪造网页链接。
+
+### 本轮最终捕获、清单与完整构建通过
+
+本轮最终公开捕获和清单核对现已完成：八个数学入口普通导入后的全部导出、完整渲染类型、宇宙参数及实际定义源模块均与原基线精确相同，八份 API 锁文件逐字节不变。报告员独立比较了八份锁与 `ef1c6c7`；实际捕获和原214项 kernel 表达式比对由协调者执行，报告员读取其结果。原214项完整 kernel 类型全相同，恰好11项直接责任完成；其余43项仅 Lean 的诊断 sorry 标签变化，经完整表达式解析比较后才刷新证明体指纹，其余待补字段未改。清单现为 **203**（AdamsCalculations 5、AdamsSynthetic 72、E2Computation 15、Literature 110、ProofTools 1；133项证明、70项构造）。本地责任完成仍继承登记上游，不能称为无 `sorryAx` 闭合。
+
+包含全部十一项的八数学入口构建已通过3436任务；源码清单核验554个项目文件及35个消费/审计文件，依赖方向和私有导入边界通过。默认完整 `lake build` 已实际退出0，以 **`Build completed successfully (3580 jobs).`** 结束，全部既有消费、八模块信任审计、`Tests.Trust`、Main 公开根/ProofTools边界/Nu9回归均保留并通过。该构建由协调者执行，报告员独立读取最终成功日志；独立实际十一目标闭包随后已通过，准确范围见下一节。准确摘要见本报告既有证据 JSON；大型当前日志为 Git 忽略的本地会话材料。
+
+### 本轮独立实际依赖闭包终验通过
+
+独立证明审计员使用本轮当前已构建产物的全源码正文 collector，实际退出0，捕获 **8442** 个项目常量和本轮全部 **11** 个目标；随后按最终203项清单的 analyzer 全通过。报告员实际读取并逐项核对 `closure-summary.json`、`closure-summary.log`、`project-dependency-cycle-check.json` 与 collector 日志，没有重跑审计，也没有用旧 overlay 预检代替此次结果。
+
+十一项完整 kernel 类型表达式、类型指纹、宇宙、公开导出及实际源模块责任与原基线相同，十一项本地直接洞均已消除。全部可达直接洞同时在原214项和当前203项清单登记，完整类型原样；真实项目公理、synthetic sorry、缺失项目正文依赖、目标循环及 Main/Geometry 反向依赖均为0。完整项目依赖图8442节点全部可拓扑移除，无循环残余。
+
+最终结论为 **`passed-with-registered-upstream-obligations`**：本地固定接口补证及其实际依赖登记通过验收，**不表示全证明的未证输入已经闭合**。同一实际闭包中，E6 生存仍继承58项登记上游、product detection 38项、bx 等价34项、六个 BHS 包装各30项、sourceReplacement flatness 6项、rel2 33项；各目标仍含 `sorryAx`。这些计数是各自可达上游集合大小，不能相加作为全仓责任数。准确摘要和当前源/证据哈希见 [本轮证据](evidence/reassessment-20261020.json)，旧阶段证据继续保留。
+
+## 2026-10-20 盘点阶段：固定 bottom(T) 已有 E₆ 代表（历史记录）
+
+盘点阶段未改生产源码、API 或清单，当时仍登记 214 项，上轮五项尚未提交；以下原 partial 源码与核验范围保留为历史记录。后续五项形成 `ef1c6c7` 提交，路线集成阶段状态以上节为准。当时这两个完整公共目标的直接 `sorry` 均保留，既有人审 `pending-human-review`/`human_decision: null` 不变，不请求接口变更。
 
 已独立读取本轮 `local-history/reports/comprehensive-proof-inventory-20261020/adams-prooftools/PartialRoutes.lean`：第一个完整 partial 声明是
 
@@ -50,13 +79,13 @@ ReachesPage nuCofiberSequence 6 (14,139) (bottom 14 139 T)
 
 准确本地来源为 Git 忽略的 `local-history/reports/comprehensive-proof-inventory-20261020/independent-review/report.md`、`six-reasons.json`，以及 `local-history/reports/comprehensive-proof-inventory-20261020/adams-prooftools/report.md`、`PartialRoutes.lean`。本报告只保存 [本轮摘要与文件哈希](evidence/reassessment-20261020.json) 和 [小型源码证据](evidence/reassessment-20261020-partial-routes.lean)；不平行复制全球盘点和其他模块候选。
 
-上轮默认完整构建和扩展审计对未变输入复用，结论仍为 `passed-with-registered-upstream-obligations`；它没有消除这两个直接洞。本轮报告员仅源码/证据复核与提案校验，没有运行全量构建、改源码或写共享缓存。
+盘点阶段数学输入未变，复用上轮默认完整构建和扩展审计，结论为 `passed-with-registered-upstream-obligations`；它没有消除这两个直接洞。路线集成阶段的上游输入已变化，旧构建不能充当新输入的最终验收，当前官方构建状态以上节为准。报告员只进行源码/证据复核与提案校验，没有运行全量构建、改数学源码或写共享缓存。
 
 ## 原接口、背景与问题成因
 
 本报告员与候选发现者/实现者独立。完整检查当前实际定义、旧证书及其 `AdamsComputationTheorems` 条件，确认历史 `cnu_d3` 与 `cnu_target_through5` 是对一个带条件的解释 `I` 的推导，不能把 `I` 的条件作为已经被迁入的证明。
 
-两个当前完整原签名如下，处在固定模型和范畴，无额外宇宙变量或外部参数：
+两个完整原签名如下，处在固定模型和范畴，无额外宇宙变量或外部参数。以下基线 `sorry` 仅作历史展示；当前 E6 目标的生产证明以上节为准：
 ```lean
 public theorem cofiber_d3 : HasNonzeroDifferential nuCofiberSequence 3 (8,134) (11,136)
     cofiberSource (bottom 11 136 Y) := by sorry
@@ -207,7 +236,7 @@ python3 interface/proposals/AdamsCalculations/migration-cofiber-bindings-2026101
 
 传递依赖：当前 `cofiberBasis`、`cofiber_basis_correct`、`topCell`、`top_comparison`、`Table.result` 都列于待补清单；球谱识别还依赖 `sourceCoordinates`、`sourceBasis_values`、`comparison`、`comparison_product`。迁移完两个定理的本地证明不等于这些上游责任全部已消除。未使用两个目标自身或 Main 的 Mahowald/CofiberRigidity 后果来构造坐标连接，没有靠 `False.elim` 取证。本次未发现所审查候选路线中的必然循环；未作全仓库一致性审计。
 
-## 方案及精确差异
+## 方案及精确差异（旧坐标充分方案保留，E6 已由替代方案补证）
 
 优先保留两个公开签名：候选签名就是上述原签名，前提、结论强弱、实际 Cν/ν 映射、指定 topCell、bottom 与类关联**全部差异为零**。
 
@@ -229,7 +258,7 @@ Standard.bottom 14 139 (Table.basis .sphere 14 139 1) =
 
 内部方案：E2Computation 完成 `topCell`/`cofiberBasis` 原已指定的实际构造，证明以上等式和 `top_comparison`，或证明现有固定实现与该构造相等。AdamsCalculations 用现有 `Table.result`、`basis_correct` 接口直接移植有限页证明，不引入旧 `AdamsComputationTheorems` 参数包。E₂ 只研究实际 E₂ 输入，不得反过来依赖目标 d₃ 或 E₆ 生存来选择基底/顶胞；旧坐标标签应由独立 E₂ 识别确定。
 
-替代方案：在实际 Cν 上用自然性、cofiber exactness、指定 lift 的结构以及现有上游事实直接证明两个目标，绕开全部坐标对应；仍需处理 lift 差异及非零存活，不能只控制连接像。若只能证明所有允许 lift 有相同所需微分，则给出明确差异项的 d₃ 消失和源代表条件，也可避免顶胞严格等式。两种替代均未在本报告中完成。
+替代方案：在实际 Cν 上用自然性、cofiber exactness、指定 lift 的结构以及现有上游事实直接证明两个目标，绕开全部坐标对应；仍需处理 lift 差异及非零存活，不能只控制连接像。若只能证明所有允许 lift 有相同所需微分，则给出明确差异项的 d₃ 消失和源代表条件，也可避免顶胞严格等式。其中 E6 生存的结构替代路线本轮已完整实现并通过当前产物局部检查，见本报告集成阶段；d3 的替代路线仍未完成。
 
 未提出公共接口调整候选，因为没有证据显示它不可避免。把 `top_comparison` 增强为额外公开坐标绑定、把两项目标改写成坐标目标或增加“绑定存在”假设都会改变公开范围或对象语义，当前均未授权，也不是本报告建议的默认修复。
 
@@ -238,7 +267,7 @@ Standard.bottom 14 139 (Table.basis .sphere 14 139 1) =
 | 范围 | 影响与责任 |
 | --- | --- |
 | E₂ 输入 | `cofiberBasis`、`cofiber_basis_correct`、`topCell`、`top_comparison` 及其私有桥归 E2Computation；不得移动到 AdamsCalculations 或 Main |
-| 两个最终目标 | `AdamsCalculations/Standard.lean` 原有责任保持；`Table.result` 可正常作为上游已登记输入消费 |
+| 两个最终目标 | `AdamsCalculations/Standard.lean` 原有责任保持；E6 本地责任已固定接口解决且实际审计通过，d3 仍待补；`Table.result` 可正常消费且其上游责任保留 |
 | 直接推论 | `cofiber_target_not_hit_through5` 已由 `cofiber_target_to_e6` 推出，签名无需变更 |
 | Main 调用 | `Main/Internal/NuThree/Mahowald.lean` 调用 `cofiber_d3` 与 `top_comparison`；`Main/SectionSeven/CofiberRigidity.lean` 调用生存，继续保留上游依赖 |
 | 记录/接口锁 | `e2-computation-api.json`、`adams-calculations-api.json` 类型与导出冻结；真实补证后只由协调者更新实际公理/待补状态，不增加结果包或假设 |
@@ -247,9 +276,9 @@ Standard.bottom 14 139 (Table.basis .sphere 14 139 1) =
 
 ## 阻塞范围与继续项
 
-仅阻塞把旧坐标证明未经固定对象改写就标作这两个当前目标已完成。可以独立继续有限页线性代数/边界控制引理、表格输入和基底责任、四条底胞识别与指定 topCell 的 E₂ 构造。E2 非整除的原生系数泛函路线及其他不消费此桥的任务可继续；报告等待不构成全局暂停。
+仅阻塞把旧坐标证明未经固定对象改写就标作 `cofiber_d3` 已完成；E6 已有保接口完整结构证明且完整构建/实际依赖审计通过。可以独立继续有限页线性代数/边界控制引理、表格输入和基底责任、四条底胞识别与指定 topCell 的 E₂ 构造。E2 非整除的原生系数泛函路线及其他不消费此桥的任务可继续；报告等待不构成全局暂停。
 
-已确认：对象与 ν 映射一致；原表格有四条数据行；旧证明确有 inclusion/boundary 输入；当前相关类型没有直接记录这些特定命名识别。未决：cofiber_d3 的实际源靶及 E₃ 非零、cofiber_target_to_e6 同一已到达 E₆ 代表的非零、以及传递上游责任；部分到达页路线已验证，仍未生产集成。**不以未完工判定命题为假。**
+已确认：对象与 ν 映射一致；原表格有四条数据行；旧证明确有 inclusion/boundary 输入；当前相关类型没有直接记录这些特定命名识别。未决：cofiber_d3 的实际源靶及 E₃ 非零，以及传递上游责任。E6 新生产证明的完整构建与独立实际依赖审计均已通过。E6 同一代表非零已由完整结构证明给出并集成，不再列为缺失数学步骤。**不以未完工判定命题为假。**
 
 ## 人类审核记录
 

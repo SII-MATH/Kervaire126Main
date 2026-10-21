@@ -34,33 +34,40 @@ open scoped BigOperators
 The generator `(slot,j)` denotes `ξ_(j+1)` in that slot. -/
 public abbrev TensorPower (s : ℕ) := MvPolynomial (Fin s × ℕ) F2
 
+set_option backward.privateInPublic true in
 /-- Milnor's grading, independent of the tensor slot. -/
 def weight {s : ℕ} (a : Fin s × ℕ) : ℕ := 2 ^ (a.2 + 1) - 1
 
+set_option backward.privateInPublic true in
 /-- Include the convention `ξ₀ = 1` in the polynomial formula. -/
 def xi {s : ℕ} (slot : Fin s) : ℕ → TensorPower s
   | 0 => 1
   | j + 1 => MvPolynomial.X (slot, j)
 
+set_option backward.privateInPublic true in
 /-- The Milnor coproduct, inserted at the specified adjacent tensor slots. -/
 def coproductGenerator {s : ℕ} (slot : Fin s) (j : ℕ) : TensorPower (s + 1) :=
   ∑ i ∈ Finset.range (j + 2),
     xi slot.castSucc (j + 1 - i) ^ (2 ^ i) * xi slot.succ i
 
+set_option backward.privateInPublic true in
 /-- Apply the coproduct in one tensor slot. -/
 def splitSlot {s : ℕ} (slot : Fin s) : TensorPower s →ₐ[F2] TensorPower (s + 1) :=
   MvPolynomial.aeval fun a =>
     if a.1 = slot then coproductGenerator slot a.2
     else MvPolynomial.X (if a.1 < slot then a.1.castSucc else a.1.succ, a.2)
 
+set_option backward.privateInPublic true in
 /-- Insert the coaugmentation at the left end. -/
 def insertLeft (s : ℕ) : TensorPower s →ₐ[F2] TensorPower (s + 1) :=
   MvPolynomial.rename fun a => (a.1.succ, a.2)
 
+set_option backward.privateInPublic true in
 /-- Insert the coaugmentation at the right end. -/
 def insertRight (s : ℕ) : TensorPower s →ₐ[F2] TensorPower (s + 1) :=
   MvPolynomial.rename fun a => (a.1.castSucc, a.2)
 
+set_option backward.privateInPublic true in
 /-- Augment one slot by sending all its positive-degree generators to zero. -/
 def augmentSlot {s : ℕ} (slot : Fin s) : TensorPower s →ₐ[F2] TensorPower s :=
   MvPolynomial.aeval fun a => if a.1 = slot then 0 else MvPolynomial.X a
@@ -70,6 +77,7 @@ def augmentSlot {s : ℕ} (slot : Fin s) : TensorPower s →ₐ[F2] TensorPower 
   MvPolynomial.weightedHomogeneousSubmodule F2 weight t ⊓
     ⨅ slot : Fin s, LinearMap.ker (augmentSlot slot).toLinearMap
 
+set_option backward.privateInPublic true in
 /-- The characteristic-two cobar differential before restriction to normalized cochains. -/
 def differentialPolynomial (s : ℕ) : TensorPower s →ₗ[F2] TensorPower (s + 1) :=
   (insertLeft s).toLinearMap + (insertRight s).toLinearMap +

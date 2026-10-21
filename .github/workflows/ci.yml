@@ -61,6 +61,9 @@ jobs:
       - name: Test CI cache and event policy
         run: python3 -m unittest discover -s Tests -p 'test_ci_cache.py'
 
+      - name: Test module-local audit inputs
+        run: python3 -m unittest discover -s Tests -p 'test_audit_obligation_inputs.py'
+
       - name: Restore pinned dependencies
         id: dependencies
         continue-on-error: true

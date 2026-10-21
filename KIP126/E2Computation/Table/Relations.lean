@@ -3,6 +3,7 @@ import all KIP126.E2Computation.Table.Internal.ZeroDimension
 public import KIP126.E2Computation.Table.Values
 import all KIP126.E2Computation.Standard
 import all KIP126.E2Computation.Table.Internal.H2Annihilation
+import all KIP126.E2Computation.Table.Internal.SourceExpression
 /-! Primitive polynomial identities of the pinned source algebra,
 LinProgram/Model/RelationCertificates.lean and Classes/Proofs.lean
 at bbac1fc05843 (MIT), compared with the same actual sphere E₂.
@@ -87,10 +88,34 @@ public theorem h2_obstruction_rel1 :
     ((.mul (.named .h2) (.named .M_mul_d_0)) : Expression).value = ((.mul (.named .h0) (.generator 89 10 72)) : Expression).value := by
   sorry
 
+set_option backward.isDefEq.respectTransparency false in
+set_option maxRecDepth 100000 in
+set_option maxHeartbeats 3000000 in
+open Standard Internal in
 /-- Original certificate at line 470. -/
 public theorem h2_obstruction_rel2 :
     ((.mul (.mul (.mul (.named .h0) (.named .h0)) (.named .h0)) (.generator 89 10 72)) : Expression).value = 0 := by
-  sorry
+  have h := h2_obstruction_rel1
+  rw [value_comparison _ (by decide), value_comparison _ (by decide)] at h
+  have hs := (comparison 11 73 (by decide)).injective h
+  have hv := congrArg Subtype.val hs
+  let g := (sourceValue (.generator 89 10 72)).val
+  change sourceH2X ⟨2,by decide⟩ * sourceH2X ⟨79,by decide⟩ = sourceH2X ⟨0,by decide⟩ * g at hv
+  have hz : sourceH2X ⟨0,by decide⟩ ^ 3 * g = 0 := by
+    calc
+      _ = sourceH2X ⟨0,by decide⟩ ^ 2 * (sourceH2X ⟨2,by decide⟩ * sourceH2X ⟨79,by decide⟩) := by rw [hv]; ring
+      _ = -(sourceH2X ⟨1,by decide⟩ ^ 3) * sourceH2X ⟨79,by decide⟩ := by
+        have he := eq_neg_of_add_eq_zero_right sourceH2Relation2
+        calc
+          _ = (sourceH2X ⟨0,by decide⟩ ^ 2 * sourceH2X ⟨2,by decide⟩) * sourceH2X ⟨79,by decide⟩ := by ring
+          _ = _ := by rw [he]
+      _ = -(sourceH2X ⟨1,by decide⟩ * (sourceH2X ⟨1,by decide⟩ ^ 2 * sourceH2X ⟨79,by decide⟩)) := by ring
+      _ = 0 := by rw [sourceH2Relation859]; simp
+  rw [value_comparison _ (by decide)]
+  apply (comparison 13 75 (by decide)).map_eq_zero_iff.mpr
+  apply Subtype.ext
+  change (sourceH2X ⟨0,by decide⟩ * sourceH2X ⟨0,by decide⟩) * sourceH2X ⟨0,by decide⟩ * g = 0
+  simpa only [pow_succ,pow_zero,mul_one,one_mul] using hz
 
 /-- Original certificate at line 108. -/
 public theorem h1_h2_zero :

@@ -174,7 +174,7 @@ import all KIP126.ProofTools.StretchingRepresentatives
 import all KIP126.ProofTools.SyntheticProgramRules
 
 
-public meta import Checks.Registry
+public meta import Checks.Registry.ProofTools
 import Lean
 
 /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually
@@ -184,7 +184,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.ProofTools.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let expected : Array Json ← entries.filterM fun (row : Json) => do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"
