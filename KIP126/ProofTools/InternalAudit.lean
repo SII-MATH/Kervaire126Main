@@ -10,6 +10,14 @@ import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
+import all KIP126.ProofTools.Paper.NumericalExamples
+import all KIP126.ProofTools.Paper.NuNumericalExtensions
+import all KIP126.ProofTools.Paper.NuCofiberNumericalDifferential
+import all KIP126.ProofTools.Paper.DoublingNumericalExtensions
+import all KIP126.ProofTools.Paper.DoublingCrossing
+import all KIP126.ProofTools.Paper.DoublingMaximalLift
+import all KIP126.ProofTools.StandardSpecializations
+import all KIP126.ProofTools.DoublingWarning
 import all KIP126.ProofTools
 import all KIP126.ProofTools.MahowaldLeibniz
 import all KIP126.ProofTools.MahowaldLeibniz.FiniteCore
@@ -163,6 +171,7 @@ import all KIP126.ProofTools.Representatives
 import all KIP126.ProofTools.Standard
 import all KIP126.ProofTools.Stretching
 import all KIP126.ProofTools.StretchingRepresentatives
+import all KIP126.ProofTools.SyntheticProgramRules
 
 
 public meta import Checks.Registry.ProofTools
@@ -221,6 +230,50 @@ run_cmd do
   -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift must stay independent of the retired GL/MH claims.
   let provedTools := #[
+    `KIP126.ProofTools.Standard.paper6_8_complete_crossing_warning,
+    `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_native_actual_zero_image,
+    `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_actual_maximal_zero_image_lift,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_long_inessential,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_nonzero_inessential_output,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_has_paper_crossing,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_lowered_actual_crossing,
+    `KIP126.ProofTools.Standard.cutoffLeibnizSquare,
+    `KIP126.ProofTools.Standard.ssCutoffSquareAtLevel,
+    `KIP126.ProofTools.Standard.ssLeibnizAtLevelZero,
+    `KIP126.ProofTools.Standard.ssMahowaldZeroInputLevels,
+    `KIP126.ProofTools.Standard.paper6_7_classical_d3,
+    `KIP126.ProofTools.Standard.paper6_19_finite_nu_extension,
+    `KIP126.ProofTools.Standard.paper6_24_infinite_nu_extension,
+    `KIP126.ProofTools.Standard.paper6_19_actual_cofiber_d2,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_full_two_representatives,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.finite_two_h4_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_long_nonzero_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_short_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_short_essential,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_long_zero_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_crossing_warning,
+    `KIP126.ProofTools.Paper.NuCofiberNumericalDifferential.paper6_19_actual_cofiber_d2,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_24_full_nu_representatives,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_24_infinite_nu_extension,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_19_finite_nu_extension,
+    `KIP126.ProofTools.Paper.NumericalExamples.p_record,
+    `KIP126.ProofTools.Paper.NumericalExamples.d0_record,
+    `KIP126.ProofTools.Paper.NumericalExamples.h0p_basis,
+    `KIP126.ProofTools.Paper.NumericalExamples.h0d0_basis,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_7_classical_d3,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_7_classical,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_classical_d3,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_not_vanishing,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_not_zero,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_19_classical_d2_no_crossing,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_19_top_page_two_no_crossing,
+    `KIP126.ProofTools.Internal.ProgramRules.four_edge_cutoff,
+    `KIP126.ProofTools.Internal.ProgramRules.quotientBoundaryCutoff,
+    `KIP126.ProofTools.Internal.ProgramRules.cutoffLeibnizSquare,
+    `KIP126.ProofTools.Internal.ProgramRules.ssCutoffSquareAtLevel,
+    `KIP126.ProofTools.Internal.ProgramRules.cutoff_boundary_exponents,
+    `KIP126.ProofTools.Internal.ProgramRules.ssLeibnizAtLevelZero,
+    `KIP126.ProofTools.Internal.ProgramRules.ssMahowaldZeroInputLevels,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_surjectivity_image_eq,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_collapsed_image_eq,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.last_layer_surjectivity_implies_target_boundary,
@@ -777,7 +830,9 @@ run_cmd do
     let some info := env.find? name | throwError "Missing proof dependency: {name}"
     let some idx := env.getModuleIdxFor? name | continue
     let mod := env.header.moduleNames[idx.toNat]!
-    unless (`KIP126).isPrefixOf mod do continue
+    -- Expand this module's full bodies. Upstream bodies are checked by their
+    -- own InternalAudit; ordinary imports need not expose upstream private lemmas.
+    unless (`KIP126.ProofTools).isPrefixOf mod do continue
     let body := info.value? (allowOpaque := true)
     if (`KIP126.ProofTools).isPrefixOf mod &&
         (info.type.hasSorry || body.any (·.hasSorry)) then
