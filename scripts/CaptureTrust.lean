@@ -408,6 +408,7 @@ import all KIP126.ProofTools.LambdaDivision
 import all KIP126.ProofTools.Language
 import all KIP126.ProofTools.Laws
 import all KIP126.ProofTools.LevelLanguage
+import all KIP126.ProofTools.MahowaldLeibniz
 import all KIP126.ProofTools.Operations
 import all KIP126.ProofTools.Paper.ClassicalKernelCompactness
 import all KIP126.ProofTools.Paper.Crossing

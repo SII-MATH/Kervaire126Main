@@ -37,6 +37,33 @@ open KIP126.Kervaire.Route KIP126.ProofTools
 open KIP126.AdamsSynthetic
 open KIP126.AdamsSynthetic.Standard (model)
 
+-- Mahowald--Leibniz composition uses the actual normalized first-quotient
+-- operation, including zero.
+-- Check its zero and additive behavior through ordinary public imports.
+example (T : TriangleData model.auxiliary)
+    (hef : normalizedExponent model.classicalTower T.f = 1) (s t : ℤ) :
+    Standard.cofiberFirstQuotientBoundary T hef s t 0 = 0 := by
+  have hz {m m' w w' : ℤ} {V : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum}
+      (hm : m=m') (hw : w=w') :
+      KIP126.Synthetic.Context.homotopyRegrade (X := V) hm hw 0 = 0 := by
+    subst m'; subst w'; rfl
+  simp [Standard.cofiberFirstQuotientBoundary, hz]
+
+example (T : TriangleData model.auxiliary)
+    (hef : normalizedExponent model.classicalTower T.f = 1) (s t : ℤ)
+    (x x' : Ambient model T.X (s,t)) :
+    Standard.cofiberFirstQuotientBoundary T hef s t (x+x') =
+      Standard.cofiberFirstQuotientBoundary T hef s t x +
+      Standard.cofiberFirstQuotientBoundary T hef s t x' := by
+  have ha {m m' w w' : ℤ} {V : KIP126.AdamsSynthetic.Standard.SyntheticSpectrum}
+      (hm : m=m') (hw : w=w')
+      (a b : KIP126.Synthetic.Context.BiHom m w V) :
+      KIP126.Synthetic.Context.homotopyRegrade hm hw (a+b) =
+        KIP126.Synthetic.Context.homotopyRegrade hm hw a +
+        KIP126.Synthetic.Context.homotopyRegrade hm hw b := by
+    subst m'; subst w'; rfl
+  simp [Standard.cofiberFirstQuotientBoundary, ha, Preadditive.add_comp]
+
 /-- Proposition 2.20 is callable with source completeness and finite quotients,
 target separation, and exactness at the middle group supplied explicitly. -/
 example (X Y Z : ClassicalObject)
