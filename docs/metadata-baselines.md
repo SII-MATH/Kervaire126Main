@@ -91,3 +91,9 @@ Blueprint 保留 AimPaper 原文，将两项条件形式化绑定到单独明确
 用户随后授权完整检查通过后合并。整合 `origin/main` 的 E₂ 补证（PR #28）时，逐声明三方合并许可清单，保留上游十二项责任的完成及原有精确指纹；全仓许可责任从本任务的 231 项进一步减为 219 项，其中 E2Computation 为 21 项、ProofTools 仍只有 5.10，Main 为零。这十二项完成属于上游工作。本任务的已批准条件、未完成边界与公共声明保持不变。
 
 同时保留 main 的 Blueprint 原生证明展示和读者引用更新。Main 的两个完成证明各放入独立的原生 proof 块，原直接方法的历史缺口继续保留，避免重复或嵌套证明。完整检查覆盖默认 `lake build`、源码清单、全部 Python 测试及原生 Blueprint 导出；Release 缓存按最终干净提交和完整构建输入指纹同步。
+
+## 标准类结构与唯一主定理接口迁移（2026-10-21）
+
+用户已批准 `StandardSphereClasses` 增加整族非零字段、固定实例填入证明，以及 `Main.h6_sq_permanent` 改为接收同一固定系统上的标准类结构；对外只保留这一个主定理版本。E2Computation 新增 `h6_exhaustive`，其余消费者传入固定实例。接口锁记录实际类型、结构生成声明及固定实例字段的编译器证明辅助项；数学说明和证明依赖见对应 Blueprint 条目，完成背景的上游范围仍见原提案及 issue #31。
+
+源码插入改变了 Background 的 29 项和 E2 Standard 后部的 5 项既有 `sorry` 诊断标签。独立审核从与 HEAD 全部 670 个构建输入匹配的 Release 缓存加载旧模块，并逐项核对这两个文件共 38 项责任：旧类型和证明体指纹精确匹配原锁，新旧完整 kernel 类型、宇宙和责任集合不变；仅替换 Lean 识别的诊断标签参数后，完整证明表达式逐字相同，标签仍指向未改动的原 `sorry` 文本。因此只迁移上述 34 项证明体指纹，不改变类型、状态、数量或审计规则。完整证据保留在忽略的 `local-history/metadata/interface-reviews/20261021-standard-classes-hole-labels/`。

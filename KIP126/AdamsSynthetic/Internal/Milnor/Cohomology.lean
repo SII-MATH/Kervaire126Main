@@ -170,6 +170,33 @@ theorem hiClass_eq_zero_iff (i : ℕ) :
       ∃ b : cochains 0 (2 ^ i), differential 0 (2 ^ i) b = hiCochain i :=
   classOfCycle_succ_eq_zero_iff 0 (2 ^ i) _ _
 
+/-- The two coaugmentations from the empty tensor power coincide, so their
+sum vanishes over F₂; there are no internal coproduct summands. -/
+private theorem differential_zero_degree (t : ℕ) (x : cochains 0 t) :
+    differential 0 t x = 0 := by
+  have he : insertLeft 0 = insertRight 0 := by
+    unfold insertLeft insertRight
+    congr 1
+    funext a
+    exact Fin.elim0 a.1
+  apply Subtype.ext
+  change differentialPolynomial 0 x.val = 0
+  simp [differentialPolynomial, he, CharTwo.add_self_eq_zero]
+
+private theorem hiCochain_ne_zero (i : ℕ) : hiCochain i ≠ 0 := by
+  intro h
+  have hv := congrArg Subtype.val h
+  change MvPolynomial.X ((0, 0) : Fin 1 × ℕ) ^ (2 ^ i) = 0 at hv
+  exact (pow_ne_zero (2 ^ i)
+    (MvPolynomial.X_ne_zero (R := F2) ((0, 0) : Fin 1 × ℕ))) hv
+
+/-- The displayed Milnor generator cannot be a boundary: its polynomial is
+nonzero and every incoming degree-zero differential vanishes. -/
+private theorem hiClass_ne_zero (i : ℕ) : hiClass i ≠ 0 := by
+  intro h
+  obtain ⟨b, hb⟩ := (hiClass_eq_zero_iff i).mp h
+  exact hiCochain_ne_zero i (hb.symm.trans (differential_zero_degree _ b))
+
 /-- Exact boundary criterion for the specified concatenation square. -/
 theorem hiSquareClass_eq_zero_iff (i : ℕ) :
     hiSquareClass i = 0 ↔ ∃ b : cochains 1 (2 ^ (i + 1)),

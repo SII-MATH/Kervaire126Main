@@ -62772,6 +62772,52 @@ private theorem two_power_sum_eq_128 (i j : ℕ) (hij : i ≤ j)
   have hi : i ≤ 7 := hij.trans hj
   interval_cases i <;> interval_cases j <;> norm_num at *
 
+/-- The actual sphere E₂ group in bidegree `(1,64)` has one nonzero
+element, namely the designated standard `h₆`. -/
+public theorem h6_exhaustive (x : model.classical.sphere.Page 2 (1,64)) :
+    x = 0 ∨ x = h6 := by
+  have hn : archive.basisCount 1 64 = 1 := rfl
+  let e := coordinates 1 64 (by decide)
+  let j : Fin (archive.basisCount 1 64) := ⟨0, by omega⟩
+  have unique (i : Fin (archive.basisCount 1 64)) : i = j := by
+    apply Fin.ext
+    have hi := i.isLt
+    dsimp [j]
+    omega
+  have oneCoordinate (f : Fin (archive.basisCount 1 64) →₀ ZMod 2) :
+      f = 0 ∨ f = Finsupp.single j 1 := by
+    have hlt := ZMod.val_lt (f j)
+    have h : (f j).val = 0 ∨ (f j).val = 1 := by omega
+    rcases h with h | h
+    · left
+      apply Finsupp.ext
+      intro i
+      have hi : i = j := unique i
+      subst i
+      apply ZMod.val_injective 2
+      simpa using h
+    · right
+      apply Finsupp.ext
+      intro i
+      have hi : i = j := unique i
+      subst i
+      rw [Finsupp.single_eq_same]
+      apply ZMod.val_injective 2
+      simpa only [ZMod.val_one] using h
+  by_cases hx : x = 0
+  · exact Or.inl hx
+  right
+  have hex : e x ≠ 0 := fun hz => hx (e.injective (hz.trans (map_zero e).symm))
+  have heh : e h6 ≠ 0 := by
+    intro hz
+    exact model.standardClasses.hi_ne_zero 6
+      (e.injective (hz.trans (map_zero e).symm))
+  rcases oneCoordinate (e x) with h | h
+  · exact (hex h).elim
+  rcases oneCoordinate (e h6) with h' | h'
+  · exact (heh h').elim
+  exact e.injective (h.trans h'.symm)
+
 public theorem square_exhaustive (x : model.classical.sphere.Page 2 (2,128)) :
     x = 0 ∨ x = h6Square := by
   by_cases hx : x = 0

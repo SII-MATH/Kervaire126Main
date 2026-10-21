@@ -8,6 +8,7 @@ public import KIP126.AdamsSynthetic.Configuration
 public import KIP126.SpectralSequence
 import all KIP126.AdamsSynthetic.Internal.Milnor.Cohomology
 public import KIP126.AdamsSynthetic.Source
+import all KIP126.AdamsSynthetic.Source
 
 /-! The fixed classical and synthetic background used in this project.
 Every unfinished construction is named at its mathematical boundary; the
@@ -71,7 +72,20 @@ The fixed comparison remains a registered construction obligation.
 Its source recognition is separate; the pullback does not complete it.
 No source comparison is completed. -/
 public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := (sphereE2_milnorEquiv 1 (2 ^ i)).symm (milnorHiClass i)
-public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
+
+private theorem standardHi_ne_zero (i : ℕ) : standardHi i ≠ 0 := by
+  intro h
+  have hz : milnorHiClass i = 0 := by
+    calc
+      milnorHiClass i = sphereE2_milnorEquiv 1 (2 ^ i) (standardHi i) :=
+        ((sphereE2_milnorEquiv 1 (2 ^ i)).apply_symm_apply _).symm
+      _ = sphereE2_milnorEquiv 1 (2 ^ i) 0 := congrArg _ h
+      _ = 0 := (sphereE2_milnorEquiv 1 (2 ^ i)).map_zero
+  exact Milnor.hiClass_ne_zero i hz
+
+public def standardClasses : StandardSphereClasses classical sphereAlgebra where
+  hi := standardHi
+  hi_ne_zero := by exact standardHi_ne_zero
 public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry
 public def classicalSuspension (X : ClassicalObject) :
     ClassicalTowerSuspension classicalTower (X.obj auxiliary) := by sorry

@@ -51,7 +51,7 @@ public theorem adams_two_line_known_squares (j : ℕ) (hj : j = 5 ∨ j = 6) :
       (model.standardClasses.standardHiSquare j) := by
   rcases hj with rfl | rfl
   · exact ⟨KIP126.Literature.Standard.h5Square_permanent, square_listed 5 (by decide)⟩
-  · exact ⟨h6_sq_permanent, square_listed 6 (by decide)⟩
+  · exact ⟨h6_sq_permanent model.standardClasses, square_listed 6 (by decide)⟩
 
 /-- In stem 126 the classification is already complete: the only nonzero
 surviving E₂ class is h₆². This uses the fixed E₂ exhaustive-basis input. -/
@@ -69,7 +69,7 @@ public theorem adams_two_line_stem126 (x : model.classical.sphere.Page 2 (2,128)
       exact False.elim (hnz (by simpa only [map_zero] using h))
     · exact he
   · rintro rfl
-    exact h6_sq_permanent
+    exact h6_sq_permanent model.standardClasses
 
 private theorem survival_regrade {p q : ℤ × ℤ} (h : p = q)
     (x : ActualE2At model.classical p) :
@@ -134,7 +134,7 @@ private theorem listed_pair_survives (i j : ℕ)
       rcases hcases with rfl | rfl | rfl
       · exact KIP126.Literature.Standard.mahowald_tangora_h4_square_permanent
       · exact KIP126.Literature.Standard.h5Square_permanent
-      · exact h6_sq_permanent
+      · exact h6_sq_permanent model.standardClasses
 
 private theorem surviving_pair_listed (i j : ℕ) (hij : i ≤ j)
     (hx : NonzeroSurvival model.classical.sphere (hiDegree i + hiDegree j)

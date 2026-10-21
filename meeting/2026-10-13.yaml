@@ -1,6 +1,6 @@
 title: 形式化证明研讨会 · 会后待办
 date: '2026-10-13'
-updated: '2026-10-20'
+updated: '2026-10-21'
 sources:
   card: https://applink.feishu.cn/client/chat/open?openChatId=oc_0757f47818759dc02c05b8dd370aa649&position=1430
   checklist: https://yaf2qum85lq.feishu.cn/docx/X7RSdu2Szoyo5YxHtGBc8kaknHc
@@ -30,8 +30,8 @@ tasks:
     status: completed
   - id: T07
     title: 标准 hᵢ 的抽象输入、性质及数据标签对应
-    status: to_discuss
-    note: 页、次数、主证明所需性质与数据标签对应已核对；上会讨论并确认抽象输入边界。
+    status: in_progress
+    note: 整族 hᵢ 非零的结构规格、唯一结构版主定理及消费者迁移已完成并通过完整构建；底层来源识别仍待上游，保留进行中状态。
     details_label: 查看上会讨论材料与代码依据
     details:
       - title: 页与次数：实际球面的 E₂ 元素
@@ -48,17 +48,15 @@ tasks:
             declaration: standardHiSquare
       - title: 抽象规格与固定实例分别是什么
         body: >-
-          StandardSphereClasses 是要求提供每个 hᵢ 的结构类型。
-          standardClasses 是填好 standardHi 的具体实例；固定 model 的 standardClasses 字段保存这个实例。
+          StandardSphereClasses 要求提供每个 hᵢ 及 hi_ne_zero。
+          standardClasses 填入 standardHi 和从既有 Milnor cocycle 导出的非零证明；固定 model 的 standardClasses 字段保存这个实例。
           当前 standardHi 通过 sphereE2_milnorEquiv 的逆映射选定 Milnor 标准类。
-          主证明直接使用 model.standardClasses，不需要调用者另外构造这些元素或先证明 Milnor 比较。
+          主定理接收同一固定实际 E₂ 上的任意标准类族 H；现有下游代入 model.standardClasses，不需要先证明 Milnor 比较。
         snippet: |-
           public structure StandardSphereClasses (A : ClassicalAdamsFamily C)
               (_P : SphereE2Algebra A) where
             hi : ∀ i : ℕ, ActualE2At A (hiDegree i)
-
-          public def standardClasses :
-              StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
+            hi_ne_zero : ∀ i : ℕ, hi i ≠ 0
         code:
           - file: KIP126/AdamsSynthetic/Sphere.lean
             declaration: StandardSphereClasses
@@ -73,7 +71,7 @@ tasks:
           SphereE2Algebra 提供这个 E₂ 页的标量、乘法、单位及代数规律。
           standardH6Square_eq_product 明确 h₆² 是同一个 h₆ 的乘积；square_nonzero 提供它在 E₂ 上非零。
           文献接口提供 h₁ 对 η、h₂ 对经典 ν 的检测，以及合成 η 的首个 λ 商标签和 h₅² 的非零永久存活。
-          StandardSphereClasses 本身只指定元素，不暗中假设所有 hᵢ 或其平方非零、也不假设它们全部永久存活。
+          StandardSphereClasses 显式要求每个 hᵢ 非零；平方非零与永久存活仍由相应定理证明，不作为该结构的字段。
         code:
           - file: KIP126/AdamsSynthetic/Sphere.lean
             declaration: SphereE2Algebra
@@ -115,18 +113,18 @@ tasks:
             declaration: h6_square
       - title: 主证明消费的是同一个 h₆²
         body: >-
-          Main.h6_sq_permanent 的目标就是固定 model.classical.sphere 上、次数 (2,128) 的
-          model.standardClasses.standardH6Square。主证明中的数据基底识别使用 atom_h6
-          和 standardH6Square_eq_product，非零输入使用 square_nonzero。
+          Main.h6_sq_permanent 的目标是固定 model.classical.sphere 上、次数 (2,128) 的
+          H.hi 6 与自身的实际乘积非零永久存活。h6_exhaustive 与 H.hi_ne_zero 6
+          将任意 H.hi 6 识别为固定 h₆，再调用保留为私有核心的原主证明。
           最终永久存活是 Main 的证明结论，没有被装进 hᵢ 的输入规格。
         code:
           - file: KIP126/Main/H6SquarePermanent.lean
             declaration: h6_sq_permanent
-      - title: 已核对范围与上会讨论点
+      - title: 已确认范围与剩余上游责任
         body: >-
           已核对源码与现有公开接口，并用固定 Lean 工具链通过普通导入检查：页和次数、实例的定义相等、六个标签对应、平方及非零性质均可直接消费。
-          上会确认：是否认可当前 StandardSphereClasses 指定元素、各上游接口分别提供性质与标签标定的交付方式。
-          Milnor 比较、相关乘法比较及部分文献性质仍保留已有待补责任，按上游输入使用；本次不要求补齐这些底层证明，也没有修改数学接口或新增公理。
+          2026-10-21 用户确认采用整族 hi_ne_zero 结构规格和单一结构版主定理；本轮公共消费与完整信任审计已通过。
+          Milnor 比较、相关乘法比较及部分文献性质仍保留已有待补责任，按上游输入使用；固定完成模型尚未构造，本轮不新建底层工具，也不新增公理或待补责任。
         code:
           - file: KIP126/AdamsSynthetic/Standard/Background.lean
             declaration: sphereE2_milnorEquiv
