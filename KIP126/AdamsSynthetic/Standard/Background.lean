@@ -6,8 +6,12 @@ public import KIP126.AdamsSynthetic.Families
 public import KIP126.AdamsSynthetic.Sphere
 public import KIP126.AdamsSynthetic.Configuration
 public import KIP126.SpectralSequence
+public import KIP126.AdamsSynthetic.Internal.Milnor.Cohomology
+public import KIP126.AdamsSynthetic.Internal.Milnor.Hi
+public import KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Grading
 import all KIP126.AdamsSynthetic.Internal.Milnor.Cohomology
 public import KIP126.AdamsSynthetic.Source
+import all KIP126.AdamsSynthetic.Source
 
 /-! The fixed classical and synthetic background used in this project.
 Every unfinished construction is named at its mathematical boundary; the
@@ -20,8 +24,8 @@ open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence
 open KIP126.Kervaire.Route
 noncomputable section
 
-/-- The category of spectra; its concrete model is a deferred construction. -/
-public def Spectrum : Type 1 := by sorry
+/-- The ordinary stable localization of the concrete prespectrum source. -/
+public def Spectrum : Type 1 := ClassicalSource
 /-- The category of HF₂-synthetic spectra; its construction is deferred. -/
 public def SyntheticSpectrum : Type 1 := by sorry
 public instance spectrumCategory : StableHomotopyCategory.{1,0} Spectrum := by sorry
@@ -66,11 +70,52 @@ public def sphereE2_milnorEquiv (s t : ℕ) :
       MilnorCohomology s t := by
   sorry
 
+/- In cohomological degree zero, the two coaugmentations cancel over F₂. -/
+set_option backward.privateInPublic true in
+private theorem milnorDifferentialZeroColumn (t : ℕ) (b : Milnor.cochains 0 t) :
+    Milnor.differential 0 t b = 0 := by
+  apply Subtype.ext
+  change Milnor.differentialPolynomial 0 b.val = 0
+  have hrename : (fun a : Fin 0 × ℕ => (a.1.succ, a.2)) =
+      (fun a : Fin 0 × ℕ => (a.1.castSucc, a.2)) := by
+    funext a
+    exact Fin.elim0 a.1
+  simp [Milnor.differentialPolynomial, Milnor.insertLeft, Milnor.insertRight, hrename,
+    CharTwo.add_self_eq_zero]
+
+/- The specified polynomial is nonzero and cannot be an incoming degree-zero boundary. -/
+set_option backward.privateInPublic true in
+private theorem milnorHiClass_nonzero (i : ℕ) : milnorHiClass i ≠ 0 := by
+  change Milnor.hiClass i ≠ 0
+  intro hz
+  obtain ⟨b, hb⟩ := (Milnor.hiClass_eq_zero_iff i).mp hz
+  rw [milnorDifferentialZeroColumn] at hb
+  have hp : Milnor.hiPolynomial i = 0 := by
+    have h := congrArg Subtype.val hb
+    exact h.symm
+  exact (pow_ne_zero _ (MvPolynomial.X_ne_zero (0,0) :
+    (MvPolynomial.X (0,0) : Milnor.TensorPower 1) ≠ 0)) hp
+
+set_option backward.privateInPublic true in
+/-- The original specified pullback, with its cobar nonvanishing proved internally.
+The value remains definitionally the original Milnor comparison pullback. -/
+private noncomputable def standardHiConstruction (i : ℕ) :
+    {x : ActualE2At classical (hiDegree i) // x ≠ 0} := by
+  refine ⟨(sphereE2_milnorEquiv 1 (2 ^ i)).symm (milnorHiClass i), ?_⟩
+  change (sphereE2_milnorEquiv 1 (2 ^ i)).symm (milnorHiClass i) ≠ 0
+  intro hz
+  apply milnorHiClass_nonzero i
+  have he := congrArg (sphereE2_milnorEquiv 1 (2 ^ i)) hz
+  simpa only [LinearEquiv.apply_symm_apply, map_zero] using he
+
+set_option backward.privateInPublic true in
 /-- Pull back the specified Milnor cocycles to the actual sphere E₂.
 The fixed comparison remains a registered construction obligation.
 Its source recognition is separate; the pullback does not complete it.
 No source comparison is completed. -/
-public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) := (sphereE2_milnorEquiv 1 (2 ^ i)).symm (milnorHiClass i)
+public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) :=
+  (standardHiConstruction i).val
+
 public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
 public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry
 public def classicalSuspension (X : ClassicalObject) :

@@ -1,0 +1,463 @@
+FILE KIP126/SpectralSequence/Basic/Data.lean
+SHA256 c967487d051db344d8419be39775f108c1c10570c96721cf01cb9ca60121ff3e
+LINES 122-175
+122:   /-- Page differential. -/
+123:   d : (r : ℤ) → (k : ι) →
+124:     ((ssData k).page ↑(r - r₀).toNat ⟶
+125:       (ssData (k + diffDeg r)).page ↑(r - r₀).toNat)
+126:
+127: /-- The page object derived from a `PreSS`. -/
+128: @[reducible] public noncomputable def PreSS.Page
+129:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+130:     (E : PreSS C ι) (r : ℤ) (k : ι) : C :=
+131:   (E.ssData k).page ↑(r - E.r₀).toNat
+132:
+133: /-- A bare family of maps between the ambient objects of two `SSData` families. -/
+134: public structure UnderlyingMorphism
+135:     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
+136:     (D D' : ι → SSData C) where
+137:   /-- Map on each ambient object. -/
+138:   φ : ∀ (k : ι), (D k).V ⟶ (D' k).V
+139:
+140: /-- A morphism preserving the cycle and boundary towers. -/
+141: public structure SSDataMorphism
+142:     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
+143:     (D D' : ι → SSData C) extends UnderlyingMorphism ι D D' where
+144:   /-- The ambient maps preserve cycles. -/
+145:   preserves_Z : ∀ (k : ι) (r : WithTop ℕ),
+146:     ∃ (lift : Subobject.underlying.obj ((D k).Z r) ⟶
+147:       Subobject.underlying.obj ((D' k).Z r)),
+148:       lift ≫ ((D' k).Z r).arrow = ((D k).Z r).arrow ≫ φ k
+149:   /-- The ambient maps preserve boundaries. -/
+150:   preserves_B : ∀ (k : ι) (r : WithTop ℕ),
+151:     ∃ (lift : Subobject.underlying.obj ((D k).B r) ⟶
+152:       Subobject.underlying.obj ((D' k).B r)),
+153:       lift ≫ ((D' k).B r).arrow = ((D k).B r).arrow ≫ φ k
+154:
+155: /-- Forget the preservation witnesses of an `SSDataMorphism`. -/
+156: def SSDataMorphism.toUnderlying
+157:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+158:     {D D' : ι → SSData C} (f : SSDataMorphism ι D D') :
+159:     UnderlyingMorphism ι D D' where
+160:   φ := f.φ
+161:
+162: /-- Identity on the ambient objects and their cycle and boundary towers. -/
+163: public def SSDataMorphism.id
+164:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι] (D : ι → SSData C) :
+165:     SSDataMorphism ι D D where
+166:   φ := fun _ => 𝟙 _
+167:   preserves_Z := fun _ _ => ⟨𝟙 _, by simp⟩
+168:   preserves_B := fun _ _ => ⟨𝟙 _, by simp⟩
+169:
+170: /-- Composition of ambient maps preserving both towers. -/
+171: public def SSDataMorphism.comp
+172:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+173:     {D D' D'' : ι → SSData C}
+174:     (f : SSDataMorphism ι D D') (g : SSDataMorphism ι D' D'') :
+175:     SSDataMorphism ι D D'' where
+LINES 220-275
+220: public structure PreSSMorphism
+221:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+222:     (E E' : PreSS C ι) extends SSDataMorphism ι E.ssData E'.ssData where
+223:   /-- Ordinary morphisms use the same displayed page numbering. -/
+224:   r₀_eq : E.r₀ = E'.r₀
+225:   /-- Ordinary morphisms preserve the differential degree on each page. -/
+226:   diffDeg_eq : E.diffDeg = E'.diffDeg
+227:   /-- The induced maps on pages commute with the differentials. -/
+228:   comm_d : ∀ (r : ℤ) (k : ι),
+229:     toSSDataMorphism.pageMapAt r₀_eq r k ≫ E'.d r k =
+230:       E.d r k ≫ toSSDataMorphism.pageMapAt r₀_eq r (k + E.diffDeg r) ≫
+231:         eqToHom (by rw [diffDeg_eq])
+232:
+233: /-- Forget differential compatibility from a `PreSSMorphism`. -/
+234: public def PreSSMorphism.ssDataMorphism
+235:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+236:     {E E' : PreSS C ι} (f : PreSSMorphism E E') :
+237:     SSDataMorphism ι E.ssData E'.ssData where
+238:   φ := f.φ
+239:   preserves_Z := f.preserves_Z
+240:   preserves_B := f.preserves_B
+241:
+242: /-- The canonical page map of a pre-spectral-sequence morphism. -/
+243: public noncomputable def PreSSMorphism.pageMap
+244:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+245:     {E E' : PreSS C ι} (f : PreSSMorphism E E') (r : ℤ) (k : ι) :
+246:     E.Page r k ⟶ E'.Page r k :=
+247:   f.toSSDataMorphism.pageMapAt f.r₀_eq r k
+248:
+249: end KIP126.Core.SpectralSequence
+250:
+251: namespace KIP126.Core
+252:
+253: open CategoryTheory CategoryTheory.Limits
+254:
+255: universe u v w
+256:
+257: /-- A nested-subobject spectral sequence. -/
+258: public structure SpectralSequence (C : Type u) [Category.{v} C] [Abelian C]
+259:     (ι : Type w) [AddCommGroup ι] [DecidableEq ι]
+260:     extends SpectralSequence.PreSS C ι where
+261:   /-- Every page differential squares to zero. -/
+262:   d_comp_d : ∀ (r : ℤ) (k : ι), d r k ≫ d r (k + diffDeg r) = 0
+263:   /-- The kernel of `d_r` is the image of `Z_(r+1)` on page `r`. -/
+264:   Z_succ : ∀ (r : ℤ) (k : ι) (_ : r₀ ≤ r),
+265:     let n := (r - r₀).toNat
+266:     kernelSubobject (d r k) =
+267:       imageSubobject (Subobject.ofLE
+268:         ((ssData k).Z ↑(n + 1)) ((ssData k).Z ↑n)
+269:         ((ssData k).Z_anti (by exact_mod_cast Nat.le_succ n)) ≫
+270:         (ssData k).pageπ ↑n)
+271:   /-- The image of `d_r` is the image of `B_(r+1)` on page `r`. -/
+272:   B_succ : ∀ (r : ℤ) (k : ι) (_ : r₀ ≤ r),
+273:     let n := (r - r₀).toNat
+274:     imageSubobject (d r k) =
+275:       imageSubobject (Subobject.ofLE
+LINES 395-429
+395: public structure SpectralSequenceMorphism
+396:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+397:     (E E' : SpectralSequence C ι) where
+398:   /-- Map on each ambient object. -/
+399:   φ : ∀ (k : ι), (E.ssData k).V ⟶ (E'.ssData k).V
+400:   /-- The ambient maps preserve cycles. -/
+401:   preserves_Z : ∀ (k : ι) (r : WithTop ℕ),
+402:     ∃ (lift : Subobject.underlying.obj ((E.ssData k).Z r) ⟶
+403:       Subobject.underlying.obj ((E'.ssData k).Z r)),
+404:       lift ≫ ((E'.ssData k).Z r).arrow = ((E.ssData k).Z r).arrow ≫ φ k
+405:   /-- The ambient maps preserve boundaries. -/
+406:   preserves_B : ∀ (k : ι) (r : WithTop ℕ),
+407:     ∃ (lift : Subobject.underlying.obj ((E.ssData k).B r) ⟶
+408:       Subobject.underlying.obj ((E'.ssData k).B r)),
+409:       lift ≫ ((E'.ssData k).B r).arrow = ((E.ssData k).B r).arrow ≫ φ k
+410:   /-- Ordinary morphisms have the same displayed page numbering. -/
+411:   r₀_eq : E.r₀ = E'.r₀
+412:   /-- Ordinary morphisms have the same differential degrees. -/
+413:   diffDeg_eq : E.diffDeg = E'.diffDeg
+414:   /-- The canonical quotient maps commute with the differentials. -/
+415:   comm_d : ∀ (r : ℤ) (k : ι),
+416:     let f : SSDataMorphism ι E.ssData E'.ssData :=
+417:       { φ := φ, preserves_Z := preserves_Z, preserves_B := preserves_B }
+418:     f.pageMapAt (E := E.toPreSS) (E' := E'.toPreSS) r₀_eq r k ≫ E'.d r k =
+419:       E.d r k ≫ f.pageMapAt (E := E.toPreSS) (E' := E'.toPreSS)
+420:         r₀_eq r (k + E.diffDeg r) ≫ eqToHom (by rw [diffDeg_eq])
+421:
+422: /-- Forget the differential law without changing the ambient map. -/
+423: public def SpectralSequenceMorphism.toSSDataMorphism
+424:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+425:     {E E' : SpectralSequence C ι} (f : SpectralSequenceMorphism E E') :
+426:     SSDataMorphism ι E.ssData E'.ssData where
+427:   φ := f.φ
+428:   preserves_Z := f.preserves_Z
+429:   preserves_B := f.preserves_B
+
+FILE KIP126/SpectralSequence/Basic/Predicates.lean
+SHA256 432fd6f621b9fae8437e7472d35afd40ffad02f530c582caaf0a1cbd1ba08e1d
+LINES 1-29
+1: module
+2:
+3: public import KIP126.SpectralSequence.Basic.Data
+4: import all KIP126.SpectralSequence.Basic.Data
+5:
+6: @[expose] section
+7:
+8: /-!
+9: # Predicates for nested-subobject spectral sequences
+10: -/
+11:
+12: namespace KIP126.Core.SpectralSequence
+13:
+14: universe u v w
+15:
+16: open CategoryTheory
+17:
+18: variable {C : Type u} [Category.{v} C] [Abelian C]
+19:
+20: /-- A spectral sequence degenerates at `N` when all differentials from page `N` vanish. -/
+21: public def DegeneratesAt
+22:     {ι : Type w} [AddCommGroup ι] [DecidableEq ι]
+23:     (E : SpectralSequence C ι) (N : ℤ) : Prop :=
+24:   ∀ (r : ℤ), N ≤ r → ∀ (k : ι), E.d r k = 0
+25:
+26: end KIP126.Core.SpectralSequence
+
+FILE KIP126/AdamsSynthetic/Families.lean
+SHA256 d420b57a76393978dfb3eb63d8b9c6dace3b80a24ce4ba1639ea97574a3fe145
+LINES 1-81
+1: module
+2:
+3: public import KIP126.AdamsSynthetic.Context
+4: public import KIP126.SpectralSequence
+5: public import KIP126.SpectralSequence.Basic.Category.Proofs
+6:
+7: @[expose] section
+8:
+9: /-! Given Adams systems. Every page and induced map is evaluated from one
+10: functor; declaring these records does not select or construct an instance. -/
+11:
+12: open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+13:
+14: universe u v u'
+15:
+16: namespace KIP126.Classical.Adams
+17:
+18: public abbrev Bidegree := ℤ × ℤ
+19:
+20: public structure ClassicalAdamsFamily (C : Type u) [StableHomotopyCategory.{u, v} C] where
+21:   functor : C ⥤ KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) Bidegree
+22:   firstPage : ∀ X, (functor.obj X).r₀ = 2
+23:   differentialDegree : ∀ X r, (functor.obj X).diffDeg r = (r, r - 1)
+24:
+25: namespace ClassicalAdamsFamily
+26: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+27:
+28: public abbrev obj (A : ClassicalAdamsFamily C) (X : C) := A.functor.obj X
+29: public abbrev sphere (A : ClassicalAdamsFamily C) := A.obj SphereSpectrum
+30:
+31: public def map (A : ClassicalAdamsFamily C) {X Y : C} (f : X ⟶ Y) :
+32:     A.obj X ⟶ A.obj Y := A.functor.map f
+33:
+34: @[simp] public theorem map_id (A : ClassicalAdamsFamily C) (X : C) :
+35:     A.map (𝟙 X) = 𝟙 (A.obj X) := A.functor.map_id X
+36:
+37: @[simp] public theorem map_comp (A : ClassicalAdamsFamily C) {X Y Z : C}
+38:     (f : X ⟶ Y) (g : Y ⟶ Z) : A.map (f ≫ g) = A.map f ≫ A.map g :=
+39:   A.functor.map_comp f g
+40:
+41: public noncomputable def pageMap (A : ClassicalAdamsFamily C) {X Y : C}
+42:     (f : X ⟶ Y) (r : ℤ) (p : Bidegree) :
+43:     (A.obj X).Page r p ⟶ (A.obj Y).Page r p := (A.map f).pageMap r p
+44:
+45: end ClassicalAdamsFamily
+46: end KIP126.Classical.Adams
+47:
+48: namespace KIP126.Synthetic.SpectralSequence
+49:
+50: public abbrev Tridegree := ℤ × ℤ × ℤ
+51: public def syntheticAdamsRawShift (r : ℤ) : Tridegree := (r, r - 1, 0)
+52: public abbrev SyntheticAdamsSpectralSequence :=
+53:   KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) Tridegree
+54:
+55: public structure SyntheticAdamsSS where
+56:   sequence : SyntheticAdamsSpectralSequence.{v}
+57:   firstPage : sequence.r₀ = 2
+58:   differentialDegree : ∀ r : ℤ, sequence.diffDeg r = syntheticAdamsRawShift r
+59:
+60: namespace SyntheticAdamsSS
+61: public noncomputable abbrev Page (A : SyntheticAdamsSS.{v}) (r : ℤ) (i : Tridegree) :=
+62:   A.sequence.Page r i
+63: public noncomputable abbrev E₂ (A : SyntheticAdamsSS.{v}) := A.Page 2
+64: public noncomputable abbrev E₃ (A : SyntheticAdamsSS.{v}) := A.Page 3
+65:
+66: public noncomputable def d (A : SyntheticAdamsSS.{v}) (r : ℤ) (i : Tridegree) :
+67:     A.Page r i ⟶ A.Page r (i + syntheticAdamsRawShift r) :=
+68:   A.sequence.d r i ≫ eqToHom (by rw [A.differentialDegree])
+69: end SyntheticAdamsSS
+70:
+71: public structure SyntheticAdamsFamily (Syn : Type u) [SyntheticCategory.{u, v} Syn] where
+72:   functor : Syn ⥤ KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) Tridegree
+73:   firstPage : ∀ X, (functor.obj X).r₀ = 2
+74:   differentialDegree : ∀ X r, (functor.obj X).diffDeg r = syntheticAdamsRawShift r
+75:
+76: namespace SyntheticAdamsFamily
+77: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+78:
+79: public def obj (F : SyntheticAdamsFamily Syn) (X : Syn) : SyntheticAdamsSS.{v} where
+80:   sequence := F.functor.obj X
+81:   firstPage := F.firstPage X
+
+FILE KIP126/AdamsSynthetic/Tower.lean
+SHA256 027eabd3ab8420f4383def8129058bb8105017fbc3b9ceb760b99db03ac51f20
+LINES 1-20
+1: module
+2:
+3: public import KIP126.AdamsSynthetic.Families
+4: public import KIP126.SpectralSequence.Convergence.Data
+5: public import Mathlib.Algebra.Category.ModuleCat.Subobject
+6:
+7: @[expose] section
+8:
+9: /-! Given coefficient towers, with the full representative-level comparison.
+10: No tower is recursively constructed here. The spectral sequence comparison
+11: retains all finite cycles, boundaries, and the actual differential relation. -/
+12: namespace KIP126.AdamsSynthetic
+13: open CategoryTheory CategoryTheory.Limits CategoryTheory.MonoidalCategory
+14: open KIP126.StableHomotopy KIP126.Synthetic.Context
+15: open KIP126.Core.SpectralSequence KIP126.Synthetic.SpectralSequence
+16: universe u v
+17: noncomputable section
+18: set_option backward.isDefEq.respectTransparency false
+19: variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+20:   [HasFunctorialCofiber (C := C)] {H : C} (unit : SphereSpectrum ⟶ H)
+LINES 98-132
+98: /-- Comparison with a given page-two spectral sequence. Its ambient is the
+99: actual Z₂ in the tower's first page, and all Z/B subobjects are constrained.
+100: The last equation is the actual lift-and-cofiber differential, not a freely
+101: chosen page map. Both zero and nonzero representatives are included. -/
+102: public structure TowerSequencePresentation {X : C} (T : AbstractAdamsTower unit X)
+103:     (D : (ℤ × ℤ) → SSData (ModuleCat.{v} ℤ))
+104:     (d : ∀ (r : ℤ) (p : ℤ × ℤ), (D p).page (↑(r - 2).toNat : WithTop ℕ) ⟶
+105:       (D (p + (r, r - 1))).page (↑(r - 2).toNat : WithTop ℕ)) where
+106:   ambient : ∀ p, (D p).V ≅ ModuleCat.of ℤ (T.cycles 2 (by decide) p)
+107:   cycles : ∀ p (n : ℕ) (a : (D p).V),
+108:     a ∈ (ModuleCat.subobjectModule _ ((D p).Z n)) ↔
+109:       ((ambient p).hom a).val ∈ T.cycles (n + 2) (by omega) p
+110:   boundaries : ∀ p (n : ℕ) (a : (D p).V),
+111:     a ∈ (ModuleCat.subobjectModule _ ((D p).B n)) ↔
+112:       ((ambient p).hom a).val ∈ T.boundaries (n + 2) (by omega) p
+113:   differential : ∀ (r : ℤ) (hr : 2 ≤ r) (p : ℤ × ℤ)
+114:       (z : (Subobject.underlying.obj ((D p).Z (↑(r - 2).toNat : WithTop ℕ)) : ModuleCat ℤ))
+115:       (a : HomotopyGroup (p.2 - p.1 - 1) (T.stageAt (p.1 + r)))
+116:       (z' : (Subobject.underlying.obj ((D (p + (r, r - 1))).Z (↑(r - 2).toNat : WithTop ℕ)) : ModuleCat ℤ)),
+117:     T.connecting p (((ambient p).hom (((D p).Z _).arrow z)).val) =
+118:       a ≫ T.mapAt (show p.1 + 1 ≤ p.1 + r by omega) →
+119:     (((ambient (p + (r, r - 1))).hom (((D (p + (r, r - 1))).Z _).arrow z')).val) =
+120:       T.layerMap (p + (r, r - 1))
+121:         (Eq.mp (congrArg (fun m => HomotopyGroup m (T.stageAt (p.1 + r)))
+122:           (by dsimp; omega : p.2 - p.1 - 1 = (p + (r, r - 1)).2 - (p + (r, r - 1)).1)) a) →
+123:     d r p ((D p).pageπ _ z) = (D (p + (r, r - 1))).pageπ _ z'
+124:
+125: namespace TowerSequencePresentation
+126: variable {unit} {X : C} {T : AbstractAdamsTower unit X}
+127:   {D : (ℤ × ℤ) → SSData (ModuleCat.{v} ℤ)}
+128:   {d : ∀ (r : ℤ) (p : ℤ × ℤ), (D p).page (↑(r - 2).toNat : WithTop ℕ) ⟶
+129:       (D (p + (r, r - 1))).page (↑(r - 2).toNat : WithTop ℕ)}
+130: public def infiniteRepresentativeE1 (P : TowerSequencePresentation unit T D d)
+131:     (p : ℤ × ℤ) (z : (Subobject.underlying.obj ((D p).Z ⊤) : ModuleCat ℤ)) : T.FirstPage p :=
+132:   ((P.ambient p).hom (((D p).Z ⊤).arrow z)).val
+LINES 158-180
+158: public def normalizedDifferential
+159:     (E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ))
+160:     (h0 : E.r₀ = 2) (hd : ∀ r, E.diffDeg r = (r, r - 1))
+161:     (r : ℤ) (p : ℤ × ℤ) :
+162:     (E.ssData p).page (↑(r - 2).toNat : WithTop ℕ) ⟶
+163:       (E.ssData (p + (r, r - 1))).page (↑(r - 2).toNat : WithTop ℕ) :=
+164:   eqToHom (by simp only [h0]) ≫
+165:     E.d r p ≫ eqToHom (by simp only [h0, hd])
+166:
+167: /-- One coefficient tower on each object, with representative-level naturality
+168: for the same Adams functor. Concrete tower construction is left to a producer. -/
+169: public structure ClassicalTowerPresentation
+170:     (A : KIP126.Classical.Adams.ClassicalAdamsFamily C) where
+171:   tower : ∀ X, AbstractAdamsTower unit X
+172:   map : ∀ {X Y : C} (f : X ⟶ Y), TowerMap unit (tower X) (tower Y) f
+173:   sequence : ∀ X, TowerSequencePresentation unit (tower X) (A.obj X).ssData
+174:     (normalizedDifferential (A.obj X) (A.firstPage X) (A.differentialDegree X))
+175:   natural : ∀ {X Y : C} (f : X ⟶ Y) (p : ℤ × ℤ) (a : ((A.obj X).ssData p).V),
+176:     (((sequence Y).ambient p).hom ((A.map f).φ p a)).val =
+177:       (((sequence X).ambient p).hom a).val ≫ (map f).layer p.1
+178:
+179: section Synthetic
+180: variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+LINES 191-210
+191:         syntheticAdamsRawShift, Prod.fst_add, Prod.snd_add]
+192:       congr 2
+193:       exact Prod.ext rfl (Prod.ext rfl (add_zero w)))
+194:
+195: /-- The chosen synthetic family is the same coefficient tower in every fixed
+196: weight. The comparison includes all cycles/boundaries and actual differentials;
+197: its naturality is tied to the actual stage and cofiber maps. -/
+198: public structure SyntheticTowerPresentation (F : SyntheticAdamsFamily Syn) where
+199:   tower : ∀ X, AbstractAdamsTower synUnit X
+200:   map : ∀ {X Y : Syn} (f : X ⟶ Y), TowerMap synUnit (tower X) (tower Y) f
+201:   sequence : ∀ (X : Syn) (w : ℤ), TowerSequencePresentation synUnit
+202:     (tower ((SyntheticCategory.biShift (0, -w)).obj X))
+203:     (fun p => (F.obj X).sequence.ssData (p.1,p.2,w))
+204:     (fixedWeightDifferential (F.obj X) w)
+205:   /-- Naturality on E₂: raw first-page representatives may differ by a
+206:   genuine initial boundary. This retains the source `natural_e2` contract
+207:   without imposing a stronger equality before quotienting. -/
+208:   natural_e2 : ∀ {X Y : Syn} (f : X ⟶ Y) (w : ℤ) (p : ℤ × ℤ)
+209:       (a : ((F.obj X).sequence.ssData (p.1,p.2,w)).V),
+210:     (((sequence Y w).ambient p).hom ((F.map f).φ (p.1,p.2,w) a)).val -
+
+FILE KIP126/AdamsSynthetic/Internal/Source/AdamsSequence.lean
+SHA256 477501c13034692659d9ed47eab6857daa09b669d0a7dbaac2c09cae59b528d4
+LINES 666-690
+666: private noncomputable def towerD (T : AbstractAdamsTower unit X) (r : ℤ) (p : ℤ × ℤ) :
+667:     (towerSSData T p).page (↑(r - 2).toNat : WithTop ℕ) ⟶
+668:       (towerSSData T (p + (r,r-1))).page (↑(r - 2).toNat : WithTop ℕ) :=
+669:   if hr : 2 ≤ r then (towerDifferential_exists T r hr p).choose else 0
+670:
+671: private theorem towerD_rule (T : AbstractAdamsTower unit X) (r : ℤ) (hr : 2 ≤ r)
+672:     (p : ℤ × ℤ) : TowerDifferentialRule T r hr p (towerD T r p) := by
+673:   simpa only [towerD, dif_pos hr] using (towerDifferential_exists T r hr p).choose_spec
+674:
+675: private theorem towerD_pageπ (T : AbstractAdamsTower unit X) (r : ℤ)
+676:     (hr : 2 ≤ r) (p : ℤ × ℤ)
+677:     (z : (Subobject.underlying.obj ((towerSSData T p).Z (↑(r-2).toNat : WithTop ℕ)) : ModuleCat ℤ)) :
+678:     towerD T r p ((towerSSData T p).pageπ _ z) = differentialValue T r hr p z := by
+679:   apply towerD_rule T r hr p z (cycleLiftAt T r hr p z)
+680:     (layerCycle T (p+(r,r-1)) (r-2).toNat
+681:       (degreeCast (by dsimp; omega : p.2-p.1-1 = (p+(r,r-1)).2-(p+(r,r-1)).1)
+682:         (cycleLiftAt T r hr p z)))
+683:   · exact (cycleLiftAt_spec T r hr p z).symm
+684:   · exact (cycleRep_layerCycle T _ _ _).trans (by rw [degreeCast_apply])
+685:
+686: private noncomputable def towerPreSS (T : AbstractAdamsTower unit X) :
+687:     PreSS (ModuleCat.{v} ℤ) (ℤ × ℤ) where
+688:   r₀ := 2
+689:   ssData := towerSSData T
+690:   diffDeg r := (r,r-1)
+LINES 895-910
+895: private noncomputable def towerSequence (T : AbstractAdamsTower unit X) :
+896:     KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ) where
+897:   toPreSS := towerPreSS T
+898:   d_comp_d := towerD_comp T
+899:   Z_succ := towerD_kernel T
+900:   B_succ := towerD_image T
+901:
+902: private noncomputable def towerSequencePresentation (T : AbstractAdamsTower unit X) :
+903:     TowerSequencePresentation unit T (towerSequence T).ssData
+904:       (normalizedDifferential (towerSequence T) rfl (fun _ => rfl)) where
+905:   ambient p := Iso.refl (ModuleCat.of ℤ (cycleAmbient T p))
+906:   cycles := towerSSData_cycles T
+907:   boundaries := towerSSData_boundaries T
+908:   differential r hr p := towerD_rule T r hr p
+909:
+910: private noncomputable def canonicalSequence (unit : SphereSpectrum ⟶ H) (X : C) :
+
+FILE KIP126/AdamsSynthetic/Standard/Source.lean
+SHA256 0eb657f1fd81085f2b2477d1eb44cc2b730e2877d30ba372aed5c930afe228f8
+LINES 100-129
+100:   sourceReplacementFlatness_of_recognition sourceRecognition sourceReplacement
+101:     sourceDerivedSmashRecognition
+102:
+103: /-- The recursive fiber tower of the specified coefficient unit. -/
+104: @[no_expose] public def canonicalAdamsTower (X : Spectrum) :
+105:     AbstractAdamsTower coefficients.unit X := Internal.Source.canonicalTower coefficients.unit X
+106:
+107: /-- Its nested-subobject spectral sequence, with actual finite cycles and
+108: boundaries and their intersection/union at infinity. -/
+109: @[no_expose] public def canonicalAdamsSequence (X : Spectrum) :
+110:     KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) (ℤ × ℤ) :=
+111:   Internal.Source.canonicalSequence coefficients.unit X
+112:
+113: /-- Full comparison: the ambient maps, every page and differential, and
+114: infinite cycles/boundaries are identified. E₂ alone would not suffice. -/
+115: public def classical_canonicalIso (X : Spectrum) :
+116:     classical.obj X ≅ canonicalAdamsSequence X := by
+117:   sorry
+118:
+119: public abbrev canonicalSphereSequence := canonicalAdamsSequence (SphereSpectrum : Spectrum)
+120: public abbrev classicalSphere_sourceIso : classical.sphere ≅ canonicalSphereSequence :=
+121:   classical_canonicalIso SphereSpectrum
+122:
+123: /-- Permanent nonzero survival transports with the same infinite
+124: representative, rather than merely a vector-space isomorphism on E₂. -/
+125: public theorem nonzeroSurvival_source_iff (p : ℤ × ℤ) (x : classical.sphere.Page 2 p) :
+126:     NonzeroSurvival canonicalSphereSequence p
+127:       (classicalSphere_sourceIso.hom.pageMap 2 p x) ↔
+128:         NonzeroSurvival classical.sphere p x :=
+129:   Internal.Source.nonzeroSurvival_iso_iff classicalSphere_sourceIso p x
+
+FILE KIP126/Literature/Standard.lean
+SHA256 a1c0f66c88a7c4127dfda64f1f85e5131cf3c2411350a6efcc954520b6aa5729
+LINES 1839-1846
+1839: /-- Source or comparison proof remains to be supplied. -/
+1840: public theorem degeneration :
+1841:   ∀ (X : ClassicalObject) (N : ℤ),
+1842:     DegeneratesAt (model.classical.obj (X.obj model.auxiliary)) N →
+1843:     DegeneratesAt (model.family.nu model.nu (X.obj model.auxiliary)).sequence N := by
+1844:   sorry
+1845:
+1846: /-- Source or comparison proof remains to be supplied. -/
+
