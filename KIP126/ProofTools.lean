@@ -7,6 +7,7 @@ public import KIP126.ProofTools.GeneralizedMahowald.ActualNoCrossing
 public import KIP126.ProofTools.GeneralizedMahowald.ClassicalLift
 public import KIP126.ProofTools.GeneralizedMahowald.FiniteLevelStatement
 public import KIP126.ProofTools.GeneralizedMahowald.FiniteLevelAssembly
+public import KIP126.ProofTools.MahowaldLeibniz
 public import KIP126.ProofTools.Operations
 public import KIP126.ProofTools.Paper.ExtensionRepresentatives
 public import KIP126.ProofTools.Paper.ExtensionDescent
