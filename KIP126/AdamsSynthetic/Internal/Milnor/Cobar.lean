@@ -45,6 +45,7 @@ end
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Predicates.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 /-- A normalized cochain is a cocycle when its cobar differential is zero. -/
 def IsCycle {s t : ℕ} (x : cochains s t) : Prop :=
   differential s t x = 0

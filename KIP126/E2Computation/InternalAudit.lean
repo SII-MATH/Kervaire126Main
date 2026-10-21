@@ -18,7 +18,22 @@ import all KIP126.E2Computation.Table.ThetaRelations
 import all KIP126.E2Computation.Table.Values
 import all KIP126.E2Computation.Table
 
-public meta import Checks.Registry
+import all KIP126.E2Computation.Internal.ArchiveData
+import all KIP126.E2Computation.Internal.FixedRelations
+import all KIP126.E2Computation.Internal.GeneratorCertificates
+import all KIP126.E2Computation.Internal.H2Certificate
+import all KIP126.E2Computation.Internal.H2Enumeration
+import all KIP126.E2Computation.Internal.MonomialEnumeration
+import all KIP126.E2Computation.Internal.NativeAlgebra
+import all KIP126.E2Computation.Internal.RelationCertificates
+import all KIP126.E2Computation.Internal.RelationCertificates.Shard0
+import all KIP126.E2Computation.Internal.RelationCertificates.Shard1
+import all KIP126.E2Computation.Internal.RelationCertificates.Shard2
+import all KIP126.E2Computation.Internal.RelationCertificates.Shard3
+import all KIP126.E2Computation.Internal.TInvariant
+import all KIP126.E2Computation.Internal.ThetaCertificate
+
+public meta import Checks.Registry.E2Computation
 import Lean
 
 /-! Trust audit for fixed upstream declarations. Only the exact individually
@@ -28,7 +43,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.E2Computation.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let env ← getEnv
   let expected : Array Json ← entries.filterM fun (row : Json) => do

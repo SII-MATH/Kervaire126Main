@@ -833,10 +833,45 @@ private def weightMapImplementation : ∀ (X : ClassicalObject) (s t w₁ w₂ :
 
 
 set_option backward.privateInPublic true in
+private def weightMapSourceEquality (F : Tridegree → ModuleCat ℤ)
+    (s t w : ℤ) : F (s,t,w) = F (s,(t-s)+s,w) := by
+  exact congrArg F (by ext <;> simp)
+
+set_option backward.privateInPublic true in
+private def weightMapTargetEquality (F : Tridegree → ModuleCat ℤ)
+    (s t w₁ w₂ : ℤ) (hw : w₁ ≤ w₂) :
+    let k : ℕ := (w₂-w₁).toNat
+    let δ : ℤ × ℤ := (0,-(k:ℤ))
+    let p : ℤ × ℤ := (t-s,w₂)
+    F (s,(p+δ).1+s,(p+δ).2) = F (s,t,w₁) := by
+  dsimp only
+  apply congrArg F
+  have hk : w₂ - (((w₂-w₁).toNat : ℕ) : ℤ) = w₁ := by
+    rw [Int.toNat_of_nonneg (sub_nonneg.mpr hw)]
+    omega
+  ext <;> simp_all only [Prod.fst_add, Prod.snd_add, add_zero, sub_add_cancel]
+  omega
+
+set_option backward.privateInPublic true in
 /-- Actual weight lowering: shift the fixed filtered homotopy, then apply the same λ power. -/
 public def weight_map : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ) (_hw : w₁ ≤ w₂) (_ht : w₂ ≤ t),
     ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₂)).eInfty ⟶
-      ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₁)).eInfty := weightMapImplementation
+      ((model.family.obj (model.nu.functor.obj (X.obj model.auxiliary))).sequence.ssData (s,t,w₁)).eInfty := by
+  intro X s t w₁ w₂ hw ht
+  let k : ℕ := (w₂-w₁).toNat
+  let δ : ℤ × ℤ := (0,-(k:ℤ))
+  let p : ℤ × ℤ := (t-s,w₂)
+  let A := model.nu.functor.obj (X.obj model.auxiliary)
+  let F : Tridegree → ModuleCat ℤ := fun q => ((model.family.obj A).sequence.ssData q).eInfty
+  let G : Tridegree → ModuleCat ℤ := fun q =>
+    ((model.family.obj ((SyntheticCategory.biShift δ).obj A)).sequence.ssData q).eInfty
+  let sh := towerInfinityIso (model.convergence (.nu X))
+    (model.convergence (.shift δ (.nu X))) (shift_filtered δ (.nu X) p) s
+  let e : ((model.family.obj A).sequence.ssData (s,t,w₂)).eInfty ≅
+      ((model.family.obj ((SyntheticCategory.biShift δ).obj A)).sequence.ssData (s,t,w₁)).eInfty :=
+    eqToIso (weightMapSourceEquality F s t w₂) ≪≫ sh ≪≫
+      eqToIso (weightMapTargetEquality G s t w₁ w₂ hw)
+  exact e.hom ≫ (model.family.map (lambdaPow k A)).eInftyMap (s,t,w₁)
 
 /-- Fixed NuInfinityWeightMaps.representative; construction or proof deferred to its owning module. -/
 public theorem weight_representative : ∀ (X : ClassicalObject) (s t w₁ w₂ : ℤ)
