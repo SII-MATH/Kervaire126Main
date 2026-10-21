@@ -22,7 +22,7 @@ private theorem h6_square_no_outgoing (r : ℤ) (hr : 2 ≤ r)
   intro hd
   apply Internal.nonzero_differential_not_permanent (E := model.classical.sphere)
     (by rw [model.classical.firstPage KIP126.StableHomotopy.SphereSpectrum]; exact hr)
-    hd h6_sq_permanent
+    hd (h6_sq_permanent model.standardClasses)
 
 /-- The former differential-reduction target, on the fixed standard system.
 The proof follows the final theorem and is not part of its dependency chain. -/
@@ -35,13 +35,14 @@ private theorem only_d12_differential_reduction :
       HasNonzeroDifferential model.classical.sphere 12 (2,128) (14,139)
         model.standardClasses.standardH6Square y) ↔ H6SquareSupportsD12) ∧
     (¬ H6SquareSupportsD12 ↔ H6SquarePermanent) := by
-  have hn : ¬ H6SquareSupportsD12 := fun hd => (d12_necessary hd).1 h6_sq_permanent
+  have hn : ¬ H6SquareSupportsD12 := fun hd =>
+    (d12_necessary hd).1 (h6_sq_permanent model.standardClasses)
   refine ⟨fun r hr _ y => h6_square_no_outgoing r hr _ y, ?_, ?_⟩
   · constructor
     · rintro ⟨y, hy⟩
       exact False.elim (h6_square_no_outgoing 12 (by decide) _ y hy)
     · intro hd
       exact False.elim (hn hd)
-  · exact ⟨fun _ => h6_sq_permanent, fun _ => hn⟩
+  · exact ⟨fun _ => h6_sq_permanent model.standardClasses, fun _ => hn⟩
 
 end KIP126.Main

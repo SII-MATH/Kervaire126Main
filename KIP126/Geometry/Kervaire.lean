@@ -29,7 +29,7 @@ private theorem square_survives_iff (j : ℕ) :
       rcases cases with rfl | rfl | rfl
       · exact KIP126.Literature.Standard.mahowald_tangora_h4_square_permanent
       · exact KIP126.Literature.Standard.h5Square_permanent
-      · exact KIP126.Main.h6_sq_permanent
+      · exact KIP126.Main.h6_sq_permanent model.standardClasses
 
 private theorem admissible_dimensions (n : ℕ) :
     (∃ j : ℕ, 1 ≤ j ∧ j ≤ 6 ∧ n = 2 ^ (j + 1) - 2) ↔
@@ -49,7 +49,8 @@ private theorem admissible_dimensions (n : ℕ) :
 /-- AimPaper Theorem 1.1: a closed smooth stably framed manifold of
 Kervaire invariant one exists in dimension 126. -/
 public theorem kervaire_invariant_one_126 : KervaireInvariantOneExists 126 := by
-  exact (browder_iff 126).mpr ⟨6, by decide, by decide, KIP126.Main.h6_sq_permanent⟩
+  exact (browder_iff 126).mpr
+    ⟨6, by decide, by decide, KIP126.Main.h6_sq_permanent model.standardClasses⟩
 
 /-- AimPaper Corollary 1.2: precisely the six stated dimensions admit a
 closed smooth stably framed manifold of Kervaire invariant one. -/
