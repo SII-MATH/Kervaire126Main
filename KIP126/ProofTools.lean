@@ -17,3 +17,5 @@ public import KIP126.ProofTools.Paper.Crossing
 public import KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 public import KIP126.ProofTools.Paper.SyntheticExtensions
 public import KIP126.ProofTools.Paper.OriginalStatements
+public import KIP126.ProofTools.StandardSpecializations
+public import KIP126.ProofTools.DoublingWarning
