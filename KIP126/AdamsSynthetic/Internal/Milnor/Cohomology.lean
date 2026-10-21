@@ -27,10 +27,12 @@ namespace KIP126.AdamsSynthetic.Milnor
 /- Adapted from MilnorCohomology/Complex/Data.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 /-- The kernel of the explicit coproduct differential in bidegree `(s,t)`. -/
 def cycles (s t : ℕ) : Submodule F2 (cochains s t) :=
   LinearMap.ker (differential s t)
 
+set_option backward.privateInPublic true in
 /-- The incoming image, with no incoming cochains in homological degree zero.
 In degree `s+1` this is exactly `range (differential s t)`. -/
 def boundaries : (s t : ℕ) → Submodule F2 (cochains s t)
@@ -51,6 +53,7 @@ noncomputable section
 @[simp] theorem boundaries_succ (s t : ℕ) :
     boundaries (s + 1) t = LinearMap.range (differential s t) := rfl
 
+set_option backward.privateInPublic true in
 /-- The independently stated square-zero law for the fixed polynomial
 differential supplies this inclusion. -/
 theorem boundaries_le_cycles (s t : ℕ) : boundaries s t ≤ cycles s t := by
@@ -66,18 +69,22 @@ end
 noncomputable section
 
 
+set_option backward.privateInPublic true in
 /-- The actual incoming boundaries, included into the cycle module using the
 square-zero theorem for this fixed polynomial differential. -/
 def boundariesInCycles (s t : ℕ) : Submodule F2 (cycles s t) :=
   LinearMap.range (Submodule.inclusion (boundaries_le_cycles s t))
 
+set_option backward.privateInPublic true in
 /-- Normalized cobar cohomology as an F₂-module quotient. -/
 abbrev Cohomology (s t : ℕ) := (cycles s t) ⧸ boundariesInCycles s t
 
+set_option backward.privateInPublic true in
 /-- The canonical linear map from actual cycles to their cohomology classes. -/
 def classOf (s t : ℕ) : cycles s t →ₗ[F2] Cohomology s t :=
   (boundariesInCycles s t).mkQ
 
+set_option backward.privateInPublic true in
 /-- The class of a specified closed normalized cochain. -/
 def classOfCycle {s t : ℕ} (x : cochains s t) (hx : differential s t x = 0) :
     Cohomology s t :=
@@ -108,6 +115,7 @@ theorem unitCochain_isCycle : IsCycle unitCochain := by
 /-- The cohomological unit is the class of the specified constant polynomial. -/
 def unitClass : Cohomology 0 0 := classOfCycle unitCochain unitCochain_isCycle
 
+set_option backward.privateInPublic true in
 /-- The class represented by `[ξ₁^(2^i)]`, not an independently chosen element. -/
 def hiClass (i : ℕ) : Cohomology 1 (2 ^ i) :=
   classOfCycle (hiCochain i) (hiCochain_isCycle i)
@@ -123,11 +131,13 @@ end
 noncomputable section
 
 
+set_option backward.privateInPublic true in
 @[simp] theorem mem_boundariesInCycles {s t : ℕ} (x : cycles s t) :
     x ∈ boundariesInCycles s t ↔ x.val ∈ boundaries s t := by
   rw [boundariesInCycles, Submodule.range_inclusion]
   rfl
 
+set_option backward.privateInPublic true in
 /-- The quotient kills precisely the incoming cobar boundaries. -/
 theorem classOf_eq_zero_iff {s t : ℕ} (x : cycles s t) :
     classOf s t x = 0 ↔ x.val ∈ boundaries s t :=
@@ -140,6 +150,7 @@ theorem classOf_eq_iff {s t : ℕ} (x y : cycles s t) :
       x.val - y.val ∈ boundaries s t :=
   (Submodule.Quotient.eq _).trans (mem_boundariesInCycles (x - y))
 
+set_option backward.privateInPublic true in
 theorem classOfCycle_eq_zero_iff {s t : ℕ} (x : cochains s t)
     (hx : differential s t x = 0) :
     classOfCycle x hx = 0 ↔ x ∈ boundaries s t :=
@@ -151,6 +162,7 @@ theorem classOfCycle_zero_eq_zero_iff (t : ℕ) (x : cochains 0 t)
     classOfCycle x hx = 0 ↔ x = 0 := by
   simpa only [boundaries_zero, Submodule.mem_bot] using classOfCycle_eq_zero_iff x hx
 
+set_option backward.privateInPublic true in
 /-- In positive cohomological degree, zero means an actual preceding cochain
 whose differential is the specified representative. -/
 theorem classOfCycle_succ_eq_zero_iff (s t : ℕ) (x : cochains (s + 1) t)
@@ -164,38 +176,12 @@ theorem classOf_differential (s t : ℕ) (x : cochains s t) :
     classOfCycle (differential s t x) (differential_squared s t x) = 0 :=
   (classOfCycle_succ_eq_zero_iff s t _ _).mpr ⟨x, rfl⟩
 
+set_option backward.privateInPublic true in
 /-- Exact boundary criterion for the specified standard generator. -/
 theorem hiClass_eq_zero_iff (i : ℕ) :
     hiClass i = 0 ↔
       ∃ b : cochains 0 (2 ^ i), differential 0 (2 ^ i) b = hiCochain i :=
   classOfCycle_succ_eq_zero_iff 0 (2 ^ i) _ _
-
-/-- The two coaugmentations from the empty tensor power coincide, so their
-sum vanishes over F₂; there are no internal coproduct summands. -/
-private theorem differential_zero_degree (t : ℕ) (x : cochains 0 t) :
-    differential 0 t x = 0 := by
-  have he : insertLeft 0 = insertRight 0 := by
-    unfold insertLeft insertRight
-    congr 1
-    funext a
-    exact Fin.elim0 a.1
-  apply Subtype.ext
-  change differentialPolynomial 0 x.val = 0
-  simp [differentialPolynomial, he, CharTwo.add_self_eq_zero]
-
-private theorem hiCochain_ne_zero (i : ℕ) : hiCochain i ≠ 0 := by
-  intro h
-  have hv := congrArg Subtype.val h
-  change MvPolynomial.X ((0, 0) : Fin 1 × ℕ) ^ (2 ^ i) = 0 at hv
-  exact (pow_ne_zero (2 ^ i)
-    (MvPolynomial.X_ne_zero (R := F2) ((0, 0) : Fin 1 × ℕ))) hv
-
-/-- The displayed Milnor generator cannot be a boundary: its polynomial is
-nonzero and every incoming degree-zero differential vanishes. -/
-private theorem hiClass_ne_zero (i : ℕ) : hiClass i ≠ 0 := by
-  intro h
-  obtain ⟨b, hb⟩ := (hiClass_eq_zero_iff i).mp h
-  exact hiCochain_ne_zero i (hb.symm.trans (differential_zero_degree _ b))
 
 /-- Exact boundary criterion for the specified concatenation square. -/
 theorem hiSquareClass_eq_zero_iff (i : ℕ) :

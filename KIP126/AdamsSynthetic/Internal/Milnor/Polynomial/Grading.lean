@@ -22,6 +22,7 @@ namespace KIP126.AdamsSynthetic.Milnor
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Polynomial/Predicates.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 /-- A polynomial is a normalized cochain of internal degree `t`. -/
 def IsCochain {s : ℕ} (t : ℕ) (x : TensorPower s) : Prop :=
   x ∈ cochains s t

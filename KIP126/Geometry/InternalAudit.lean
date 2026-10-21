@@ -2,7 +2,7 @@ module
 
 import all KIP126.Geometry
 import all KIP126.Geometry.Kervaire
-public meta import Checks.Registry
+public meta import Checks.Registry.Geometry
 import Lean
 
 /-! Full-body audit of every Geometry declaration, including private lemmas.
@@ -12,7 +12,7 @@ remain permitted only in their own modules and are retained in the Blueprint.
 open Lean Elab Command
 set_option maxHeartbeats 0
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.Geometry.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   for row in entries do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"

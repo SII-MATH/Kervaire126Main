@@ -1,0 +1,194 @@
+KIP126.ProofTools.Standard.QuotientBoundaryCutoffStatement (A B : KIP126.Kervaire.Route.SyntheticObject)
+  (g :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+        (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        A)
+      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+        (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        B))
+  (q : ℕ) : Prop
+'KIP126.ProofTools.Standard.QuotientBoundaryCutoffStatement' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]
+KIP126.ProofTools.Standard.cutoffLeibnizSquare (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        X)
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        Y))
+  (q : ℕ) :
+  KIP126.ProofTools.Standard.QuotientBoundaryCutoffStatement
+    (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f)
+    (KIP126.Kervaire.Route.SyntheticObject.nu Y)
+    (KIP126.AdamsSynthetic.NormalizedSyntheticMap.map.{1, 0, 1}
+      (KIP126.Kervaire.Route.ModelData.normalizedMap.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X Y f))
+    q
+'KIP126.ProofTools.Standard.cutoffLeibnizSquare' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]
+KIP126.ProofTools.Standard.ssCutoffSquareAtLevel (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        X)
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        Y))
+  (page level : ℕ) (_hpage : LE.le.{0} 2 page) :
+  KIP126.ProofTools.Standard.QuotientBoundaryCutoffStatement
+    (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f)
+    (KIP126.Kervaire.Route.SyntheticObject.nu Y)
+    (KIP126.AdamsSynthetic.NormalizedSyntheticMap.map.{1, 0, 1}
+      (KIP126.Kervaire.Route.ModelData.normalizedMap.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X Y f))
+    (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)
+'KIP126.ProofTools.Standard.ssCutoffSquareAtLevel' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]
+KIP126.ProofTools.Standard.ssLeibnizAtLevelZero (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        X)
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        Y))
+  (page : ℕ) (b M L s t : ℤ)
+  (x : ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X (Prod.mk.{0, 0} s t)))
+  (y :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s M) (HAdd.hAdd.{0, 0, 0} t M))))
+  (u :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s b) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1))))
+  (v :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s b) L)
+          (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1) L))))
+  (hpage : LE.le.{0} 2 page) (hpageb : LE.le.{0} (↑page) b)
+  (hM :
+    LE.le.{0}
+      (↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+          f))
+      M)
+  (hMUpper :
+    LE.le.{0} M
+      (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (↑page) 2)
+        ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+            f)))
+  (hL :
+    LE.le.{0}
+      (↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+          f))
+      L)
+  (hu :
+    KIP126.ProofTools.IsPermanent.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X
+      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s b) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1)) u)
+  (hv :
+    KIP126.ProofTools.IsPermanent.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s b) L)
+        (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1) L))
+      v)
+  (hdx :
+    KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X b (Prod.mk.{0, 0} s t)
+      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s b) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1)) x u)
+  (hFinite : KIP126.ProofTools.Standard.LevelFiniteExtension X Y f page 0 M s t x y)
+  (hInfinity :
+    KIP126.Kervaire.Route.InfiniteExtension.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f L
+      (HAdd.hAdd.{0, 0, 0} s b) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1) u v)
+  (hsource :
+    KIP126.ProofTools.Standard.LevelBoundaryNoCrossing X Y f page 0 b s t ∨
+      KIP126.ProofTools.Standard.LevelFiniteNoCrossing X Y f page 0 M s t)
+  (hbottom : KIP126.ProofTools.Standard.LevelBottomNoCrossing X Y f page 0 b L s t) :
+  KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+    (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} b L) M)
+    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s M) (HAdd.hAdd.{0, 0, 0} t M))
+    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s b) L)
+      (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t b) 1) L))
+    y v
+'KIP126.ProofTools.Standard.ssLeibnizAtLevelZero' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]
+KIP126.ProofTools.Standard.FiniteMahowaldZeroInputStatement
+  (T :
+    KIP126.Kervaire.Route.TriangleData.{1, 0}
+      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))
+  (he :
+    Eq.{1}
+      (HAdd.hAdd.{0, 0, 0}
+        (HAdd.hAdd.{0, 0, 0}
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T))
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.g.{1, 0} T)))
+        ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+            (KIP126.Kervaire.Route.TriangleData.h.{1, 0} T)))
+      1) :
+  Prop
+'KIP126.ProofTools.Standard.FiniteMahowaldZeroInputStatement' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]
+KIP126.ProofTools.Standard.ssMahowaldZeroInputLevels
+  (T :
+    KIP126.Kervaire.Route.TriangleData.{1, 0}
+      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))
+  (he :
+    Eq.{1}
+      (HAdd.hAdd.{0, 0, 0}
+        (HAdd.hAdd.{0, 0, 0}
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T))
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.g.{1, 0} T)))
+        ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+            (KIP126.Kervaire.Route.TriangleData.h.{1, 0} T)))
+      1) :
+  KIP126.ProofTools.Standard.FiniteMahowaldZeroInputStatement T he
+'KIP126.ProofTools.Standard.ssMahowaldZeroInputLevels' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]

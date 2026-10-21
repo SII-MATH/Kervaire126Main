@@ -3,9 +3,19 @@
 from pathlib import Path
 import json
 import re
+import subprocess
+import sys
 
 root = Path(__file__).resolve().parent.parent
 errors = []
+# Validate the complete canonical ledger even when every Lean audit is cached.
+# Module projections are derived inputs, never independently maintained locks.
+ledger_check = subprocess.run(
+    [sys.executable, str(root / 'scripts/project-proof-obligations.py'), '--check'],
+    capture_output=True, text=True,
+)
+if ledger_check.returncode:
+    errors.append('Invalid proof obligation ledger: ' + ledger_check.stderr.strip())
 mathematical_entries = {
     'SpectralSequence': 'KIP126.SpectralSequence',
     'AdamsSynthetic': 'KIP126.AdamsSynthetic',
@@ -148,6 +158,12 @@ for module, entry in entries.items():
     if not audit.is_file():
         errors.append(f'{module} InternalAudit is missing')
         continue
+    ledger_imports = [name for _, name in imports(audit)
+                      if name == 'Checks.Registry' or name.startswith('Checks.Registry.')]
+    expected_ledger_imports = ([] if module == 'SpectralSequence'
+                               else ['Checks.Registry.' + module])
+    if ledger_imports != expected_ledger_imports:
+        errors.append(f'{module} audit ledger input is not module-local: {ledger_imports}')
     imported = {name for all_, name in imports(audit) if all_ and name.startswith('KIP126.')}
     if expected != imported:
         errors.append(f'{module} audit source mismatch: missing {sorted(expected - imported)}, '

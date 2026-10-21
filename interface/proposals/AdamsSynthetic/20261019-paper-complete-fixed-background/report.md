@@ -32,7 +32,7 @@ implementation_status: bounded-interface-implemented-and-validated-foundations-d
 
 ## 当前范围
 
-**2026-10-21 获批的有界接口改动已实现并通过完整验证。** 本轮把标准类整族非零性纳入结构，并将唯一对外主定理统一为该结构上的直接平方陈述；同时在本报告明确完成背景的精确规格和上游责任。当前尚未构造完成范畴、配套合成模型或实际来源比较，不能据此把现有 `Standard` 宣布为已完成迁移。具体授权、下游范围和验证边界见文末。以下原报告及其历史审核记录保留，描述的是当时的提案与决定，不代替本次实际实施结果。
+**2026-10-21 获批的有界接口改动及与最新 main 的整合均已通过完整验证。** 本轮把标准类整族非零性纳入结构，并将唯一对外主定理统一为该结构上的直接平方陈述；同时在本报告明确完成背景的精确规格和上游责任。当前尚未构造完成范畴、配套合成模型或实际来源比较，不能据此把现有 `Standard` 宣布为已完成迁移。具体授权、下游范围和分阶段验证边界见文末。以下原报告及其历史审核记录保留，描述的是当时的提案与决定，不代替本次实际实施结果。
 
 ## 2026-10-19 原提案问题（历史）
 
@@ -211,4 +211,14 @@ hcomp₂由Literature在实际完成语境构造；其完整字段沿用[已有5
 
 因此，即使把普通源和完成源责任合并到同一个记录、使 `sorry` 数量不变，也会增加独立数学构造责任；本轮不作这种替换。完成范畴在全部 ambient 上的精确定义、与当前 HF₂ 上同调局部化的一致范围、配套 `Syn₂`、实际单位与 λ 商的比较均仍待上游确定。不能无条件混同 HF₂ nilpotent completion、Moore(2) completion 和现有局部化。
 
-本次实施基于 `f17969a0c7839f7d47d550d5e8f8a0a0aa2ffe91`，工作树为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/adams-complete-main-statement-20261021`。本补记记录获准范围及源码／完整类型的复核；原报告的 baseline、独立 reporter、来源证据和历史状态均予保留，不把旧证据冒充对本次 Lean 修改的独立编译核验。**本轮有界接口改动已实现并通过完整验证。** 三份接口锁与编译捕获一致：AdamsSynthetic 增加非零字段和必要生成证明，E2Computation 只增加 `h6_exhaustive`，Main 只改变唯一主定理的结构参数；其他五份 API、所有既有宇宙参数和公理依赖保持不变。完整捕获包含 23,852 项项目声明，原有 214 项待补责任精确保留，没有新增项目公理或失败占位。默认 `lake build` 通过全部 3609 项任务，Main、Geometry 无本地证明洞的审计与精确 Main／ProofTools 边界均通过；源码清单、49 项 Blueprint 测试和 7 项元数据测试通过。34 项既有诊断标签指纹经独立 kernel 表达式核对后迁移，未改变证明责任，方法见 `docs/metadata-baselines.md`。这些是本次实现与核验结果，不改写原报告的独立证据等级；`status=partially-approved` 不表示完成背景已经实现，[issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31) 仍保留上述上游边界，Blueprint 阅读顺序调整也仍留待后续。
+本次实施基于 `f17969a0c7839f7d47d550d5e8f8a0a0aa2ffe91`，工作树为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/adams-complete-main-statement-20261021`。本补记记录获准范围及源码／完整类型的复核；原报告的 baseline、独立 reporter、来源证据和历史状态均予保留，不把旧证据冒充对本次 Lean 修改的独立编译核验。
+
+**整合 main 之前的历史验证（提交 `1962133`）。** 当时三份接口锁与编译捕获一致：AdamsSynthetic 增加非零字段和必要生成证明，E2Computation 只增加 `h6_exhaustive`，Main 只改变唯一主定理的结构参数；其他五份 API、所有既有宇宙参数和公理依赖保持不变。完整捕获包含 23,852 项项目声明，原有 214 项待补责任精确保留，没有新增项目公理或失败占位。默认 `lake build` 通过全部 3609 项任务，Main、Geometry 无本地证明洞的审计与精确 Main／ProofTools 边界均通过；源码清单、49 项 Blueprint 测试和 7 项元数据测试通过。34 项既有诊断标签指纹经独立 kernel 表达式核对后迁移，未改变证明责任，方法见 `docs/metadata-baselines.md`。这些数字仅描述该提交，不表示下述整合树已经通过相同检查。
+
+**与最新 main 的整合（完整验证通过）。** 结构版改动已与 `origin/main` 的 `fa6c729` 整合。上游已独立完成 15 项责任，许可待补总数为 199 项；不把这些补证计入本次迁移。固定 `standardClasses` 的非零字段直接复用上游 `standardHiConstruction` 的 `.property`，移除本任务重复添加的 Milnor 证明；相对于该 main，本次公共接口变化仍限于 AdamsSynthetic、E2Computation 和 Main 三份锁，且不新增证明洞。
+
+整合后的精确诊断标签核验已通过：核对 Background 的 28 项与 E2 Standard 的 9 项，共 37 项剩余责任，原始完整类型、宇宙、模块归属及标签归一化后的完整 kernel 证明体均相同。仅迁移 18 项诊断标签导致的证明体指纹（Background 在 `standardClasses` 之后的 13 项、E2 Standard 的 5 项）；`fa6c729` 全部 199 项责任、状态和审计边界精确保留，没有恢复上游完成的 15 项。证据见忽略的 `local-history/metadata/interface-reviews/20261021-standard-classes-merge-fa6c729-hole-labels/`。
+
+整合后的默认 `lake build` 已通过全部 3644 项任务，源码清单覆盖 606 个项目源文件和 35 个消费／审计文件。Main 审计覆盖 1922 项声明、Geometry 覆盖 6 项声明，均无本地证明洞；ProofTools 审计覆盖 5708 项声明，保留唯一既有待补责任，34 项 Main／ProofTools 边界均无本地证明洞，没有项目公理。独立全项目信任捕获已通过，共 24,855 项项目声明；更新器责任复核结果与现有 199 项清单完全相等，没有新增项目公理或失败占位。三份新公开捕获分别包含 AdamsSynthetic 1789 项、E2Computation 706 项、Main 34 项声明，名称、完整类型、宇宙与公理依赖均与接口锁及全项目捕获精确一致。93 项 Python 单元测试和原生 Blueprint 导出通过，导出包含 241 个数学条目、10,024 项 Lean 声明；保留 1,921 条原生警告，未改变既有非致命策略。
+
+以上实施与核验记录不改写原报告的独立证据等级；`status=partially-approved` 不表示完成背景已经实现，[issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31) 仍保留上述上游边界，Blueprint 阅读顺序调整也仍留待后续。
