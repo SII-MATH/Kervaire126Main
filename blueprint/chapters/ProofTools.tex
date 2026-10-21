@@ -1,16 +1,28 @@
 \chapter{ProofTools — Representatives, extensions and comparison laws}
 Fix a model $D$ of the classical and synthetic Adams systems. All maps, quotient objects, filtrations and page labels in each statement are taken in this model. In the statements quoted from \cite{LWX126}, spectra are $2$-completed, connective and of finite type.
 
-% Curated mathematical exposition; compiled dependencies and status are supplied by the publisher.
+For the level-indexed rules, page-extension comparisons and the
+composition theorem, $D$ is the fixed Standard model and the classical
+objects belong to its selected family. Statements about general filtered
+groups or convergent towers specify their own data explicitly.
+
+The page-extension language is fixed in
+Definitions~\ref{paper:5.4} and~\ref{sem:AdamsSynthetic:page-extension-levels}.
+We compare zero-level and positive-level relations with their actual maps,
+weights and target indeterminacies. The level-indexed Leibniz and Mahowald
+rules are followed by the classical composition theorem under finite-layer
+surjectivity. Its proof stays in finite quotients. The original
+infinite-extension applications and the warnings about crossing conditions
+are treated separately below.
 
 \section{Common labels and representative calculus}
 
 \begin{definition}[Common labels and differential equations]
 \label{sem:ProofTools:common-labels}
 \level{coarse}
-For a classical spectrum $X$, a common label in bidegree $(s,t)$ is an element of $E_2^{s,t}(X)$. For $c\geq1$, it is a level-$c$ cycle, respectively boundary, if it lies in $Z_c^{s,t}(X)$, respectively $B_c^{s,t}(X)$. A permanent label is an element of $Z_\infty^{s,t}(X)$; the zero label is included.
+For a classical spectrum $X$, a common label in bidegree $(s,t)$ is an element of $E_2^{s,t}(X)$. For $c\geq1$, it is a cycle through $d_c$, respectively a boundary through $d_c$, if it lies in $Z_c^{s,t}(X)$, respectively $B_c^{s,t}(X)$. A permanent label is an element of $Z_\infty^{s,t}(X)$; the zero label is included. The index $c$ is distinct from the lambda level of a synthetic label.
 
-For $c\geq1$, labels $x,y\in E_2^{s,t}(X)$ are congruent at level $c$ if $x-y\in B_c^{s,t}(X)$. For $r\geq2$, the equation $d_r(x)=y$ means that $x$ and $y$ represent classes on page $r$ and their classes satisfy the Adams differential equation, with source bidegree $(s,t)$ and target bidegree $(s+r,t+r-1)$. The target may be zero.
+For $c\geq1$, labels $x,y\in E_2^{s,t}(X)$ are congruent modulo $B_c$ if $x-y\in B_c^{s,t}(X)$. For $r\geq2$, the equation $d_r(x)=y$ means that $x$ and $y$ represent classes on page $r$ and their classes satisfy the Adams differential equation, with source bidegree $(s,t)$ and target bidegree $(s+r,t+r-1)$. The target may be zero.
 \lean{KIP126.ProofTools.Ambient,KIP126.ProofTools.IsCycle,KIP126.ProofTools.IsBoundary,KIP126.ProofTools.IsPermanent,KIP126.ProofTools.Congruent,KIP126.ProofTools.DifferentialAt}
 \end{definition}
 
@@ -99,7 +111,7 @@ The first-quotient comparison carries the first label of $y\in E_2^{s,t}(S^0)$ t
 The finite-window isomorphism identifies a specified finite target label with precisely the displayed classical cycle coset. At the first quotient the fixed sphere comparison recovers the original label. Naturality of quotient projection and multiplication by $\lambda$ transports this detection to each indicated weight and finite quotient. The statement retains the specified label and does not impose nonzero detection on its image.
 \end{proof}
 
-\section{Actual crossings and the finite-layer Mahowald construction}
+\section{Actual crossings and common representatives}
 
 \begin{definition}[Actual essential no-crossing]
 \label{sem:ProofTools:mh-actual-no-crossing}
@@ -124,6 +136,8 @@ d_a^F(\xi)=\eta,\qquad d_b^G(\xi)=\zeta.
 If either equation has actual no-crossing in its full higher-source triangle, then there are actual representatives $u,v,w$ of $\xi,\eta,\zeta$, respectively, with
 \[F(u)=v,\qquad G(u)=w.\]
 The representatives lie in filtrations $s,s+a,s+b$. Zero labels, inessential input equations, and length zero are allowed.
+
+The shared representative is also the issue emphasized by \cite{LWX126}, Remark 6.18, in its discussion of a Mahowald rule without crossing hypotheses. Two separately witnessed input relations do not specify a common representative with both prescribed images. The conclusion here produces that common representative under the stated actual no-crossing alternative; it does not assert a rule with that hypothesis omitted.
 \uses{sem:ProofTools:mh-actual-no-crossing,sem:ProofTools:filtration-representatives,sem:ProofTools:finite-correction}
 \lean{KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative}
 \end{theorem}
@@ -141,94 +155,6 @@ For all integers $m,n,k,l$ and $f,g\in\pi_{m,n}X$, suspension invariance is addi
 \quad\text{in }\pi_{m+k,n+l}(\Sigma^{k,l}X).
 \]
 
-\begin{theorem}[The zero-layer nu-cofiber Mahowald instance]
-\label{sem:ProofTools:nu-zero-layer}
-\level{coarse}
-In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y\in E_2^{11,136}(S^0)$, $\bar x\in E_2^{8,134}(C\nu)$ and permanent $\bar y\in E_2^{11,136}(C\nu)$. Require $x\in Z_2$, $y\in Z_1$, $\bar x\in Z_2$, the actual suspension label for $x$, the length-zero connecting extension on page $3$, $d_3(\bar x)=\bar y$, its specified no-crossing alternative, and the length-zero bottom-cell extension on page $2$. Then $x\in Z_3$ and there is an actual $\nu$-extension of length $3$ on page $4$ from $x$ to some $y'$ with $y'-y\in B_3$.
-\uses{sem:Literature:nu-cofiber,sem:Literature:connected-homology,sem:AdamsSynthetic:shift-coherence,sem:AdamsSynthetic:ess-shifts,sem:ProofTools:common-labels,sem:ProofTools:filtration-representatives,sem:ProofTools:extension-representatives,sem:ProofTools:sphere-label-detection,sem:ProofTools:finite-strip,paper:5.4}
-\lean{KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer}
-% Blueprint note: The instance has its own proof. Its fixed-model constructions and comparison inputs retain their registered upstream obligations.
-\end{theorem}
-\begin{proof}
-\textit{Proof sketch in the fixed model.}
-Use the actual quotient-boundary diagram of the fixed $\nu$ cofiber, with its specified suspension comparison. The classical $d_3$ supplies the boundary equation, and the two length-zero extensions supply the connecting and bottom-cell equations. The no-crossing alternative synchronizes the required representatives. In this particular finite diagram, the quotient-window bounds identify the source as a $Z_3$ label and identify the resulting length-three extension target modulo $B_3$. Thus the extension is on page $4$ with the stated congruence. This is an independent argument for this numerical instance, not cancellation of a $\lambda$ power in the general Mahowald theorem.
-\end{proof}
-
-\section{Finite-page restriction}
-
-\begin{theorem}[Descent of finite-page extensions in the valid length range]
-\label{sem:ProofTools:finite-extension-descent}
-\level{coarse}
-A page-range revision of \cite{LWX126}, Proposition 6.20, first assertion, with the page--length domain of Definition 5.4.\par
-
-In the fixed model, let $X,Y$ be classical objects and $f:X\to Y$ a map, and put $e=e(f)$. Take finite pages $r_{\rm early},r_{\rm late}\in\mathbb N$, integers $n,s,t$, and common labels
-\[
-x\in E_2^{s,t}(X),\qquad y\in E_2^{s+n,t+n}(Y).
-\]
-Suppose that
-\[
-2\leq r_{\rm early}\leq r_{\rm late},\qquad
-n\leq r_{\rm early}-2+e,
-\]
-and that there is an extension, in the sense of Definition 5.4,
-\[
-d_n^{f,E_{r_{\rm late}}}(x)=y.
-\]
-Then the same map and the same specified labels admit the earlier-page extension
-\[
-d_n^{f,E_{r_{\rm early}}}(x)=y.
-\]
-The late extension includes the lower length bound $e\leq n$ and the cycle conditions
-\[
-x\in Z_{r_{\rm late}-1}^{s,t}(X),\qquad
-y\in Z_{r_{\rm late}-1-n+e}^{s+n,t+n}(Y).
-\]
-The conclusion includes the corresponding earlier-page cycle conditions. The extension need not be essential; no crossing hypothesis is imposed.
-\uses{paper:5.4}
-\lean{KIP126.ProofTools.Paper.finiteExtension_descends}
-% Blueprint note: This corrects the unrestricted first assertion of Proposition 6.20. It imposes no essentiality or crossing premise and retains the registered upstream obligations.
-\end{theorem}
-\begin{proof}
-Apply quotient reduction to the source and target of the late normalized extension equation. Naturality gives the equation in the earlier quotient. The explicit upper bound $n\le r_{\rm early}-2+e$ places it in the valid length window of Definition~\ref{paper:5.4}; the late cycle conditions supply the corresponding early cycles. Reading the reduced equation gives the stated early extension, with the same map and labels.
-\end{proof}
-
-\section{Conditional division by lambda}
-
-\begin{theorem}[Finite lambda division preserving the actual source and image]
-\label{sem:ProofTools:finite-lambda-division}
-\level{coarse}
-Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. Fix $0<i<q$, $p=(t-s,t+e)$ and a target filtration $N$. In the actual lambda square put
-\[
-A'=\Sigma^{0,-i}(A/\lambda^{q-i}),\quad
-B'=\Sigma^{0,-i}(B/\lambda^{q-i}),\quad
-F'=\Sigma^{0,-i}F_{q-i}.
-\]
-Let $L_A:A'\to A/\lambda^q$ and $L_B:B'\to B/\lambda^q$ be the actual finite lambda maps. The extra crossing condition states that, for every
-\[s+i\le u\le v<N,\]
-an essential extension $d_{v-u}^{F'}(\xi)=\eta$ at $p$ has target satisfying
-\[\operatorname{gr}_v(L_B)(\eta)\ne0.\]
-The initial source row $u=s+i$ is included, while the terminal target row $v=N$ is excluded. This rules out essential smaller-layer targets killed by lambda; it neither requires injectivity on the entire graded target nor follows merely from absence of positive-length extensions of the lambda map itself.
-
-Assume $s+i\le N$ and the additional target-kernel crossing condition. If an actual representative
-\[a\in F^{s+i}\pi_{t-s,t+e}(A/\lambda^q)\]
-has $F_q(a)\in F^N\pi_{t-s,t+e}(B/\lambda^q)$, there exists
-\[b\in F^{s+i}\pi_{t-s,t+e}(A')\]
-such that
-\[L_A(b)=a,\qquad L_B(F'(b))=F_q(a),\qquad F'(b)\in F^N\pi_{t-s,t+e}(B').\]
-Thus division preserves the specified actual source and image and reflects the requested target filtration. The smaller-layer source class is the class of the constructed $b$; no independently selected smaller source is prescribed, and kernel ambiguity at the final target grade is allowed.
-\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:AdamsSynthetic:lambda-quotients}
-\lean{KIP126.ProofTools.Standard.finiteLambdaDivision}
-% Blueprint note: The extra condition includes the initial source row and excludes the terminal target row. This sufficient-condition theorem does not prove the original Proposition 5.10 equivalence. Registered upstream obligations remain.
-\end{theorem}
-\begin{proof}
-\textit{Proof sketch in the fixed model.}
-Lift the actual source along the finite $\lambda^i$ map. Correct this lift over the finite source and target filtration intervals. A first lower target grade killed by the large-quotient lambda map would give an essential smaller-layer extension forbidden by the stated kernel condition. Finite correction therefore raises the smaller-layer image to $F^N$ while retaining the actual large-layer source and image. The two displayed map equations follow from the actual lambda square. No predetermined smaller source label or injectivity at the terminal target grade is needed.
-\end{proof}
-
-% Native hgraph authoring; revised entries retain their original AimPaper source locators.
-% Source locators for the corrections tab; no Blueprint statements are retained.
-% AimPaper: 6.1 theorem 1606 1621
-% AimPaper: 6.12 theorem 1780 1799
 \section{No-crossing criteria for filtered extensions}
 
 % AimPaper: 2.6 corollary 327 330
@@ -780,68 +706,6 @@ Apply multiplication by $\lambda^a$ to the boundary-extension formulas of Propos
 The two labels must lie in the source and target windows of Proposition~\ref{paper:3.12}. These are exactly the ranges displayed in the statement. Beyond those windows the relevant layer vanishes, so the corresponding extension is trivial. The quotient interpretation of the labels, including earlier boundaries, is the one fixed in Proposition~\ref{paper:4.6}.
 \end{proof}
 
-\section{Generalized Leibniz at an explicit lambda level}
-
-\begin{definition}[Level extensions and the quotient-boundary square]
-\label{sem:ProofTools:level-finite-extension}
-\level{coarse}
-Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
-\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
-The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
-
-Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
-\[2\le n,\qquad e\le m\le n-2+e,\]
-and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
-\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
-at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
-\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
-Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
-The extension need not be essential, and zero labels are allowed.
-
-For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. For the further lengths $r,l$, with $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
-\[
-NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
-NC(\Sigma^{1,-q}F;p,s+r,l).
-\]
-They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
-\uses{sem:AdamsSynthetic:ess-shifts,sem:ProofTools:mh-actual-no-crossing}
-\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
-\end{definition}
-
-\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
-\label{sem:ProofTools:generalized-leibniz-at-level}
-\level{coarse}
-A level-indexed revision of \cite{LWX126}, Theorem 6.1.\par
-
-The proof follows the quotient-boundary square argument of that theorem, with crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
-\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
-Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
-\[
-x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
-x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
-y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
-\]
-Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
-\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
-and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
-\[
-\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
-\land NC(\Sigma^{1,-q}F;p,s+r,l).
-\]
-Then the classical Adams differential is
-\[d_{r+l-m}(y)=y_\infty.\]
-There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
-\uses{sem:ProofTools:level-finite-extension,paper:2.12,paper:4.6}
-\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
-% Blueprint note: This is the authorized level-indexed revision. It neither restores the retired original GL theorem nor identifies the old crossing predicates with the actual conditions. Its proof inherits the registered upstream construction and comparison obligations.
-\end{theorem}
-\begin{proof}
-\textit{Proof sketch in the fixed model.}
-Form the actual quotient-boundary square at $q=n+k-1$ and weight $t+e-k$. The classical differential constructs its left extension. Propagate the given infinite extension to the bottom edge at level $r-n$. These constructions retain the specified source and target labels. Apply the filtered-square extension theorem using the assumed no-crossing alternative on the left or top edge and the assumed actual bottom no-crossing. The resulting boundary equation, read through the weighted boundary comparison, is the classical differential $d_{r+l-m}(y)=y_\infty$. All steps occur at the displayed levels, so no upper bound on $k$ or cancellation of $\lambda$ is used.
-\end{proof}
-
-Every original finite extension $d_m^{f,E_n}(x)=y$ supplies the level-zero finite extension in quotient $n-1$. The actual map equation and its prescribed source and target are retained through the proved representative comparisons. No additional cycle or crossing premise is required. This result does not compare the two sets of no-crossing hypotheses.
-
 \section{Crossings of Adams differentials}
 
 % AimPaper: 4.14 definition 1165 1173
@@ -913,9 +777,82 @@ By Propositions \ref{prop:30e8b746}, \ref{prop:59f111f} and \ref{prop:6de7d130},
     $$d_{r-a-b}(x')=y'.$$
 \end{proof}
 
-\section{Extension witnesses on finite and infinite pages}
+\section{Page extensions at zero and positive lambda levels}
 
-% AimPaper: 5.9 definition 1437 1441
+\begin{definition}[Level extensions and the quotient-boundary square]
+\label{sem:ProofTools:level-finite-extension}
+\level{coarse}
+Following the arbitrary-level quotient windows preceding Definition 5.4 of \cite{LWX126}, fix a quotient exponent $q$, a normalization shift $e$, a level $k\in\mathbb N$, and $x\in E_2^{s,t}(X)$. The normalized finite source label is the image of the native label $\lambda^k x$ under the actual $(0,e)$ shift and the inverse quotient-shift comparison, in tridegree
+\[(s,t,t+e-k)\quad\text{of}\quad (\Sigma^{0,e}\nu X)/\lambda^q.\]
+The chosen comparison respects both quotient inclusion and absolute boundary. This specifies an actual source label without assuming a new calibration of the existing comparison at positive shift and positive level.
+
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. For $n,k\in\mathbb N$, put $q=n+k-1$. A level-$k$ finite extension of length $m$ from $x\in E_2^{s,t}(X)$ to $y\in E_2^{s+m,t+m}(Y)$ consists of the bounds
+\[2\le n,\qquad e\le m\le n-2+e,\]
+and actual infinite-page source and target classes, represented by the normalized label $\lambda^k x$ and the quotient projection of $\lambda^{k+m-e}y$, which satisfy
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y\]
+at fixed stem and weight $(t-s,t+e-k)$. The respective native windows are
+\[Z_{n-1}^{s,t}(X)/B_{k+1}^{s,t}(X),\qquad
+Z_{n-1-m+e}^{s+m,t+m}(Y)/B_{k+m-e+1}^{s+m,t+m}(Y).\]
+The extension need not be essential, and zero labels are allowed.
+We abbreviate it by $\mathcal E^f_{q,k}(m;x,y)$, with the coordinate
+convention of Definition~\ref{sem:AdamsSynthetic:page-extension-levels}.
+Its complete target indeterminacy includes the shorter images of this
+same finite map; it is not determined by nonvanishing of the chosen
+classical target alone.
+
+For an actual filtered map $g$ and fixed stem/weight $p$, write $NC(g;p,b,h)$ if there is no essential extension $d_{v-u}^g(\xi)=\eta$ for any $b<u\le v\le b+h$ and any associated-graded classes $\xi,\eta$. Essentiality is taken modulo the complete target indeterminacy of that actual map. For the further lengths $r,l$, with $A,B,F,q$ as above and $p=(t-s,t+e-k)$, the three predicates are respectively
+\[
+NC(F_q;p,s,m),\qquad NC(\delta_q^A;p,s,r),\qquad
+NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+They refer to the top, left and bottom maps in the quotient-boundary square. The bottom condition is tested on the propagated infinite extension, at its actual level $r-n$; it is not inferred from a zero-level no-crossing condition.
+\uses{sem:AdamsSynthetic:page-extension-levels,sem:AdamsSynthetic:ess-shifts,sem:ProofTools:mh-actual-no-crossing}
+\lean{KIP126.ProofTools.Standard.levelFiniteSourceLabel,KIP126.ProofTools.Standard.LevelFiniteExtension,KIP126.ProofTools.Standard.LevelFiniteNoCrossing,KIP126.ProofTools.Standard.LevelBoundaryNoCrossing,KIP126.ProofTools.Standard.LevelBottomNoCrossing}
+\end{definition}
+
+
+\begin{theorem}[From a page extension to its level-zero representative form]
+\label{sem:ProofTools:extension-level-zero}
+\level{coarse}
+A representative comparison for Definition 5.4 of \cite{LWX126} in the
+fixed model.\par
+Let $f:X\to Y$, $n\in\mathbb N$ with $n\geq2$, and
+$m,s,t\in\mathbb Z$. Suppose that the specified labels
+$x\in E_2^{s,t}(X)$ and $y\in E_2^{s+m,t+m}(Y)$ support the
+finite extension $d_m^{f,E_n}(x)=y$. Then they support
+\[
+\mathcal E^f_{n-1,0}(m;x,y).
+\]
+The same actual map equation and source and target labels are retained.
+No additional cycle or crossing premise is required. This assertion
+does not identify the two sets of no-crossing hypotheses.
+\uses{paper:5.4,sem:ProofTools:level-finite-extension}
+\lean{KIP126.ProofTools.Standard.finiteExtensionAtLevelZero}
+% Correspondence: the bound result proves the stated zero-level implication. A converse, arbitrary-level stabilization and transport of crossing predicates are not asserted by this entry.
+\end{theorem}
+\begin{proof}
+Choose the actual source and target witnesses in the page extension.
+The zero-level shift and quotient comparisons identify their labels
+with the level-zero labels in the preceding definition. Transporting
+these two representative equalities retains the same extension equation.
+The page and length bounds are already part of the given witness.
+\end{proof}
+
+Fixing $n$ and increasing $k$ replaces the quotient exponent $n-1$
+by $n+k-1$ and the weight by $t+e-k$. This is different from quotient
+reduction at fixed weight, and different again from division by
+$\lambda$. Each operation must retain its specified labels before it
+can be used in an extension argument. Neither this zero-level comparison
+nor naturality alone supplies preservation of essentiality or actual
+no-crossing at arbitrary levels.
+
+\section{Crossing comparisons and conditional lambda division}
+
+The classical candidate definition and the actual no-crossing predicates
+have different quantifiers. We retain the original comparison and its
+mathematical boundary, then state the conditional division result that
+preserves actual source and image data.
+
 \begin{definition}[Crossings of $E_r$-extensions]
 \label{paper:5.9}
 \source{AimPaper Definition 5.9}
@@ -939,6 +876,7 @@ From \cite{LWX126}, Definition 5.9.\par
 \end{definition}
 
 % AimPaper: 5.10 proposition 1515 1517
+
 \begin{proposition}[Crossings of $E_r$-extensions and synthetic extensions]
 \label{paper:5.10}
 \source{AimPaper Proposition 5.10}
@@ -954,6 +892,15 @@ From \cite{LWX126}, Proposition 5.10.\par
 % Blueprint note: The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. The direct formal binding below is a statement-only theorem with a registered pending proof; the local supporting results do not discharge it.
 
 % Correspondence: original statement registered; proof pending.
+\textit{Scope of the original comparison.}
+This is the original zero-level comparison, retained for source
+correspondence. Its general validity has counterexamples recorded in the
+AimPaper corrections; it is not used as an established implication in
+the level-indexed rules or in the finite-layer surjectivity composition.
+The available conditional replacement is
+Theorem~\ref{sem:ProofTools:finite-lambda-division}, which retains
+actual representatives and a target-kernel hypothesis rather than
+asserting this equivalence.
 % Blueprint note: Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved. The available division theorem additionally requires target $\lambda$-kernel no-crossing and is specialized to the standard model; it does not prove this original equivalence with its fixed premises.
 
 \sketch
@@ -975,69 +922,322 @@ It then uses the naturality square for multiplication by $\lambda^a$ to try to d
 Naturality of the square does not by itself preserve the required image filtration after division: low-filtration $\lambda$-torsion can occur. Thus the printed argument is not a proof of the general equivalence as stated. The separate result at \ref{sem:ProofTools:finite-lambda-division} imposes the actual kernel no-crossing condition needed to preserve the same source and image. The issue and authorization boundary remain in the canonical AimPaper corrections record; the original comparison remains pending.
 \end{proof}
 
-% AimPaper: 5.14 proposition 1581 1587
-\begin{proposition}[From infinity-page extensions to homotopy extensions]
-\label{paper:5.14}
-\source{AimPaper Proposition 5.14}
-\level{coarse}
-From \cite{LWX126}, Proposition 5.14.\par
-% BEGIN AIMPAPER STATEMENT
-Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
-    Then
-    $$d^{f,E_\infty}_n(x)=y$$
-    implies that
-    $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
-% END AIMPAPER STATEMENT
-\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11,paper:2.5,sem:Literature:realization-coordinates,sem:Literature:lambda-inversion-adams-comparison,sem:Literature:lambda-inversion-detection}
-% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
 
-As throughout \cite{LWX126}, spectra are understood to be 2-completed,
-connective and of finite type. The Lean binding expresses the extension
-equation by the representative criterion of Proposition~\ref{paper:2.5}:
-$x$ detects one $a$ and $y$ detects $f_*a$. Realization coordinates and
-the actual Adams-tower comparison of
-Definition~\ref{sem:Literature:lambda-inversion-adams-comparison} make the
-lambda-inversion background explicit. Zero labels, boundary labels and
-inessential extensions remain allowed. Constructing these comparison
-data for the fixed Standard model remains an upstream task, tracked in
-issue 31.
-% Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
-% Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
-% Blueprint note: The printed boundary group on $Y$ has index $(s,t)$ although $y$ has degree $(s+n,t+n)$. The typed conclusion uses the latter degree and keeps zero and inessential extensions. See the statement-typing correction record.
-% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form transport. The realization coordinates and actual comparison remain explicit inputs; the binding does not assert that the Standard comparison producer has been constructed.
-% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
-\lean{KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension}
+
+\begin{theorem}[Finite lambda division preserving the actual source and image]
+\label{sem:ProofTools:finite-lambda-division}
+\level{coarse}
+Let $f:X\to Y$, $e=e(f)$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $F:A\to B$ be the normalized map. Fix $0<i<q$, $p=(t-s,t+e)$ and a target filtration $N$. In the actual lambda square put
+\[
+A'=\Sigma^{0,-i}(A/\lambda^{q-i}),\quad
+B'=\Sigma^{0,-i}(B/\lambda^{q-i}),\quad
+F'=\Sigma^{0,-i}F_{q-i}.
+\]
+Let $L_A:A'\to A/\lambda^q$ and $L_B:B'\to B/\lambda^q$ be the actual finite lambda maps. The extra crossing condition states that, for every
+\[s+i\le u\le v<N,\]
+an essential extension $d_{v-u}^{F'}(\xi)=\eta$ at $p$ has target satisfying
+\[\operatorname{gr}_v(L_B)(\eta)\ne0.\]
+The initial source row $u=s+i$ is included, while the terminal target row $v=N$ is excluded. This rules out essential smaller-layer targets killed by lambda; it neither requires injectivity on the entire graded target nor follows merely from absence of positive-length extensions of the lambda map itself.
+
+Assume $s+i\le N$ and the additional target-kernel crossing condition. If an actual representative
+\[a\in F^{s+i}\pi_{t-s,t+e}(A/\lambda^q)\]
+has $F_q(a)\in F^N\pi_{t-s,t+e}(B/\lambda^q)$, there exists
+\[b\in F^{s+i}\pi_{t-s,t+e}(A')\]
+such that
+\[L_A(b)=a,\qquad L_B(F'(b))=F_q(a),\qquad F'(b)\in F^N\pi_{t-s,t+e}(B').\]
+Thus division preserves the specified actual source and image and reflects the requested target filtration. The smaller-layer source class is the class of the constructed $b$; no independently selected smaller source is prescribed, and kernel ambiguity at the final target grade is allowed.
+\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:AdamsSynthetic:lambda-quotients}
+\lean{KIP126.ProofTools.Standard.finiteLambdaDivision}
+% Blueprint note: The extra condition includes the initial source row and excludes the terminal target row. This sufficient-condition theorem does not prove the original Proposition 5.10 equivalence. Registered upstream obligations remain.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Lift the actual source along the finite $\lambda^i$ map. Correct this lift over the finite source and target filtration intervals. A first lower target grade killed by the large-quotient lambda map would give an essential smaller-layer extension forbidden by the stated kernel condition. Finite correction therefore raises the smaller-layer image to $F^N$ while retaining the actual large-layer source and image. The two displayed map equations follow from the actual lambda square. No predetermined smaller source label or injectivity at the terminal target grade is needed.
+\end{proof}
+
+% Native hgraph authoring; revised entries retain their original AimPaper source locators.
+% Source locators for the corrections tab; no Blueprint statements are retained.
+% AimPaper: 6.1 theorem 1606 1621
+% AimPaper: 6.12 theorem 1780 1799
+
+\section{Restriction, indeterminacy and finite stretching}
+
+Restriction, changes in essentiality, and stretching are separate
+questions. The following results use zero-level page extensions with
+their stated domains. Positive-level versions require the corresponding
+label comparisons; none of these results is an automatic transport
+of all crossing information.
+
+\begin{theorem}[Descent of finite-page extensions in the valid length range]
+\label{sem:ProofTools:finite-extension-descent}
+\level{coarse}
+A page-range revision of \cite{LWX126}, Proposition 6.20, first assertion, with the page--length domain of Definition 5.4.\par
+
+In the fixed model, let $X,Y$ be classical objects and $f:X\to Y$ a map, and put $e=e(f)$. Take finite pages $r_{\rm early},r_{\rm late}\in\mathbb N$, integers $n,s,t$, and common labels
+\[
+x\in E_2^{s,t}(X),\qquad y\in E_2^{s+n,t+n}(Y).
+\]
+Suppose that
+\[
+2\leq r_{\rm early}\leq r_{\rm late},\qquad
+n\leq r_{\rm early}-2+e,
+\]
+and that there is an extension, in the sense of Definition 5.4,
+\[
+d_n^{f,E_{r_{\rm late}}}(x)=y.
+\]
+Then the same map and the same specified labels admit the earlier-page extension
+\[
+d_n^{f,E_{r_{\rm early}}}(x)=y.
+\]
+The late extension includes the lower length bound $e\leq n$ and the cycle conditions
+\[
+x\in Z_{r_{\rm late}-1}^{s,t}(X),\qquad
+y\in Z_{r_{\rm late}-1-n+e}^{s+n,t+n}(Y).
+\]
+The conclusion includes the corresponding earlier-page cycle conditions. The extension need not be essential; no crossing hypothesis is imposed.
+
+\textit{Level comparison.}
+This assertion uses zero-level page extensions. At fixed positive
+level $k$, the corresponding quotients would have lengths
+$r_{\rm late}+k-1$ and $r_{\rm early}+k-1$, at the same weight
+$t+e-k$. A positive-level restriction must compare the prescribed
+source and target labels along that actual reduction. The zero-level
+result does not assert this additional representative comparison,
+or preservation of essentiality or no-crossing.
+\uses{paper:5.4}
+\lean{KIP126.ProofTools.Paper.finiteExtension_descends}
+% Blueprint note: This corrects the unrestricted first assertion of Proposition 6.20. It imposes no essentiality or crossing premise and retains the registered upstream obligations.
+\end{theorem}
+\begin{proof}
+Apply quotient reduction to the source and target of the late normalized extension equation. Naturality gives the equation in the earlier quotient. The explicit upper bound $n\le r_{\rm early}-2+e$ places it in the valid length window of Definition~\ref{paper:5.4}; the late cycle conditions supply the corresponding early cycles. Reading the reduced equation gives the stated early extension, with the same map and labels.
+\end{proof}
+
+
+
+% AimPaper: 6.20 proposition 1981 1993
+\begin{proposition}[Fixed-target indeterminacy after restriction]
+\label{paper:6.20}
+\source{A fixed-target revision of AimPaper Proposition 6.20, second assertion}
+\level{coarse}
+A fixed-target revision of \cite{LWX126}, Proposition 6.20, second assertion, with the late-cycle exclusion removed.\par
+\label{prop:dec738d3}
+Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and take finite pages $r',r\in\mathbb N$ and integers $n,s,t$ with
+\[
+2\le r'\le r,\qquad e\le n\le r'-2+e.
+\]
+Fix common labels
+\[
+x\in Z_{r-1}^{s,t}(X),\qquad y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
+\]
+and witnesses $W_r,W_{r'}$ for $d_n^{f,E_r}(x)=y$ and
+\begin{equation}\label{eq:dr'}
+d_n^{f,E_{r'}}(x)=y.
+\end{equation}
+Both witnesses include the full cycle and length qualifications of Definition~\ref{paper:5.4}; the earlier relation is supplied by \ref{sem:ProofTools:finite-extension-descent}. Suppose that $W_r$ is essential.
+
+Put $q=r'-1$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and let $F_q:A/\lambda^q\to B/\lambda^q$ be the actual normalized map. Retain the target class
+\[
+\bar y_{r'}\in E_\infty^{s+n,t+n,t+e}(B/\lambda^q)
+\]
+of the chosen witness $W_{r'}$, represented by the specified label $\lambda^{n-e}y$. Then the extension in (\ref{eq:dr'}) is inessential if and only if there exist
+\[
+a\in\mathbb N,\qquad 0<a\le n-e,\qquad
+x'\in Z_{r'-1-a}^{s+a,t+a}(X),
+\]
+and a class $z\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q)$ represented by the actual correction label $\lambda^a x'$, transported by the shift comparison and quotient isomorphism into the normalized source quotient at weight $t+e$, such that in this same extension spectral sequence
+\[
+d_{n-a}^{F_q}(z)=\bar y_{r'}.
+\]
+This is the full extension relation, including its source qualification. The shorter extension may be inessential and its source class may be zero. No exclusion from the later cycle set is imposed; the target is the original specified target, with $b=0$.
+
+\textit{Level comparison.}
+At level $k$, the same question belongs in the early quotient
+$q=r'+k-1$ and weight $t+e-k$, retaining its actual target class.
+The general representative criterion for inessentiality still concerns
+a higher-filtration source mapping to that target. Expressing it by
+classical correction labels requires the level-$k$ windows, their
+boundary denominators and the comparison with the later quotient.
+The present theorem proves the displayed zero-level fixed-target
+criterion. It does not prove the original general-$b$ equivalence
+with the later-cycle exclusion, nor its arbitrary-level extension.
+\uses{paper:5.4,sem:ProofTools:finite-extension-descent,sem:ProofTools:extension-representatives}
+\lean{KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
+% Correspondence: complete for the authorized fixed-target revision of the second assertion.
+% Blueprint note: The revised first assertion remains stated and bound at sem:ProofTools:finite-extension-descent. The separate difference-preserving alternative is sem:ProofTools:nonliftable-or-crossing. Neither result proves the original unrestricted set-difference equivalence with general b. The local proof inherits the registered upstream obligations.
+% Blueprint note: \href{paper/main.tex.html#L1981}{Original Proposition 6.20 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
 \end{proposition}
 \begin{proof}
-\uses{sem:ProofTools:extension-representatives,sem:Literature:lambda-inversion-detection,sem:Literature:lambda-inversion-adams-comparison,sem:AdamsSynthetic:normalized-map,paper:3.11,paper:2.5}
-\textit{(See \cite{LWX126}, Proposition 5.14.)} \href{paper/main.tex.html#L1589}{Original proof}.
+\textit{Proof of the fixed-target revision; compare \cite{LWX126}, Proposition 6.20.} \href{paper/main.tex.html#L1995}{Original argument}.
 
-Invert $\lambda$ in the filtered synthetic map $\widehat f$. The comparison with the classical map $f$ induces a morphism of extension spectral sequences. On the starting page, Proposition~\ref{paper:3.11} sends a label in $Z_\infty/B_{1+t-w}$ to its class in $Z_\infty/B_\infty=E_\infty$.
+The page--length domain condition $n\le r'-2+e$ allows restriction to the earlier page. Essentiality of the late witness implies that the specified early target is nonzero. The representative criterion for inessentiality in the actual early ESS identifies an inessential extension with an extension to that same target from a source in higher filtration. The minimal-length bound gives $0<a\le n-e$. The finite-window comparison expresses this higher source by a classical label $x'\in Z_{r'-1-a}$ and its actual correction label, retaining the same quotient, stem and weight. This proves the forward implication, including the source qualification.
 
-For the formal representative transport, put $e=e(f)$ and $w=t+e$.
-The actual extension equation gives one representative
-$\beta\in\pi_{t-s,w}(\Sigma^{0,e}\nu X)$ whose image under $\hat f$
-has the specified target detection. Apply the detection transport theorem
-to this same $\beta$ and to $\hat f_*\beta$. The prescribed $E_2$
-comparisons return precisely $x$ and $y$.
+Conversely, the shorter extension puts the same target in the earlier ESS's shorter-extension indeterminacy, so $W_{r'}$ is inessential. No claim that $x'$ fails to lift to the later cycle set is needed. Imposing that exclusion requires the separate late-crossing alternative at \ref{sem:ProofTools:nonliftable-or-crossing}; the original general-$b$ equivalence remains outside this revision.
+\end{proof}
 
-Realization of the normalized factorization, followed by cancellation of
-the invertible realized lambda map, gives
+\begin{theorem}[A nonliftable short extension or a late crossing]
+\label{sem:ProofTools:nonliftable-or-crossing}
+\level{coarse}
+Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
+\uses{sem:ProofTools:extension-representatives,sem:ProofTools:finite-strip,paper:6.20}
+\lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
+% Blueprint note: This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Use the fixed-target shorter-extension criterion in the early quotient. If its higher source has no corresponding later cycle label, it is the first alternative. Otherwise lift the source label and compare the actual image with the fixed late target. Their nonzero discrepancy has a first grade in the finite higher-source range and gives the second alternative, an actual late crossing. Thus imposing the cycle-set difference requires retaining the crossing branch.
+\end{proof}
+
+% AimPaper: 6.23 corollary 2074 2081
+\begin{corollary}[Finite-page stretching with a same-quotient obstruction]
+\label{paper:6.23}
+\source{A finite-page sufficient-condition revision of AimPaper Corollary 6.23}
+\level{coarse}
+A finite-page sufficient-condition revision of \cite{LWX126}, Corollary 6.23.\par
+\label{cor:dfc6043e}
+Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and let $r',r\in\mathbb N$ and $n,s,t\in\mathbb Z$ satisfy
 \[
-\theta_Y\circ\operatorname{Re}(\hat f)
- =f\circ\theta_{\Sigma^{0,e}\nu X}.
+2\le r'\le r,\qquad e\le n\le r'-2+e.
 \]
-Thus the first realized representative is $a$, and the second is exactly
-$f_*a$. The sphere-coordinate transport accounts for
-$(t+n)-(s+n)=t-s$. By Proposition~\ref{paper:2.5}, these detections give
-the classical $f$-extension in the conclusion. The target is taken in its
-own bidegree $(s+n,t+n)$, as required for the quotient by its boundary
-group. Localization can enlarge the boundary indeterminacy, so the
-resulting extension need not be essential. The argument includes zero
-and boundary labels and imposes no nonvanishing or essentiality condition.
+Suppose that the specified labels satisfy the later-page cycle conditions
+\[
+x\in Z_{r-1}^{s,t}(X),\qquad
+y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
+\]
+and that there is an earlier-page extension $d_n^{f,E_{r'}}(x)=y$.
+
+Let $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $q=r'-1$. Assume that there is no nonliftable obstruction in the same early quotient. Explicitly, exclude every pair $a,b\in\mathbb N$ with
+\[
+0<a\le r'-2,\qquad a+b\le n,
+\]
+and classes
+\[
+\xi\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q),\qquad
+0\ne\eta\in E_\infty^{s+n-b,t+n-b,t+e}(B/\lambda^q),
+\]
+such that $\xi$ is outside the image of the actual quotient reduction
+\[
+\rho_\infty:E_\infty^{s+a,t+a,t+e}(A/\lambda^{r-1})
+\longrightarrow E_\infty^{s+a,t+a,t+e}(A/\lambda^q)
+\]
+and, in the same earlier-quotient ESS at stem $t-s$ and weight $t+e$,
+\[
+d_{n-a-b}^{\hat f_q}(\xi)=\eta.
+\]
+These obstructions include inessential extensions, $b=0$ and length zero; source nonliftability refers to the actual $\rho_\infty$ image, not to a difference of classical cycle sets. Then the same labels admit the later-page extension
+\[
+d_n^{f,E_r}(x)=y.
+\]
+The conclusion asserts existence of a later extension; it does not prescribe a lift of an arbitrarily chosen strict representative or a compatible infinite tower.
+
+\textit{Level comparison.}
+For a fixed positive level $k$, the analogous finite problem uses
+$q'=r'+k-1$, $q=r+k-1$ and weight $t+e-k$.
+Its obstruction must still be stated using the actual map
+$\rho_\infty$ and all the indicated nonzero shorter relations in
+the same early quotient. Merely replacing every exponent in the
+zero-level formula by an exponent plus $k$ does not establish the
+label comparisons. No such arbitrary-level extension, and no
+case with $r=\infty$, is supplied by the bound finite theorem.
+\lean{KIP126.ProofTools.Standard.finitePageExtensionStretching}
+% Correspondence: complete for the stated finite-page sufficient-condition revision.
+% Blueprint note: This revision strengthens the printed hypotheses by requiring the later target cycle qualification and excluding all specified nonzero same-quotient obstructions. It does not assert the original essential-crossing-only criterion or the case r=infinity. Its local proof is independent of the revised Proposition 6.20 and inherits registered upstream obligations.
+% Blueprint note: \href{paper/main.tex.html#L2074}{Original Corollary 6.23 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
+\end{corollary}
+\begin{proof}
+\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:ProofTools:extension-representatives}
+\textit{Proof of the finite-page revision; compare \cite{LWX126}, Corollary 6.23.} \href{paper/main.tex.html#L2074}{Original statement and context}.
+
+Use actual representatives of the earlier extension. The prescribed late source and target cycle qualifications supply lifts of their infinite-page labels along quotient reduction. Correct the difference between the chosen early source and a late lift over the finite filtration interval. At each step, a residual source with nonzero target that cannot be lifted would give exactly one of the excluded same-quotient obstructions. Every other residual can be corrected to the next filtration or already has image above the prescribed target filtration. The finite correction theorem and the finite-quotient cutoff therefore supply a late representative with the specified source and target labels. Reading its actual map equation gives the required extension.
+
+This is an independent representative proof of the finite sufficient condition, not a contrapositive of the revised Proposition~\ref{paper:6.20}. It proves the stated revision, not the full printed corollary with only essential crossings excluded or an infinite later page.
+\end{proof}
+
+\section{Generalized Leibniz with actual level conditions}
+
+\begin{theorem}[Generalized Leibniz with an arbitrary lambda level]
+\label{sem:ProofTools:generalized-leibniz-at-level}
+\level{coarse}
+A level-indexed revision of \cite{LWX126}, Theorem 6.1.\par
+
+The proof follows the quotient-boundary square argument of that theorem, with crossing hypotheses imposed on the actual level edges. In the fixed model, let $f:X\to Y$, $e=e(f)$, and
+\[2\le n\le r,\qquad e\le m\le n-2+e,\qquad l\ge e.\]
+Let $k\in\mathbb N$ be arbitrary, $q=n+k-1$, and $p=(t-s,t+e-k)$. Take
+\[
+x\in E_2^{s,t}(X),\quad y\in E_2^{s+m,t+m}(Y),\quad
+x_\infty\in Z_\infty^{s+r,t+r-1}(X),\quad
+y_\infty\in Z_\infty^{s+r+l,t+r+l-1}(Y).
+\]
+Suppose $d_r(x)=x_\infty$, there is the level-$k$ finite extension
+\[d_m^{F_q}(\lambda^k x)=\lambda^{k+m-e}y,\]
+and the existing zero-level infinite extension $d_l^F(x_\infty)=\lambda^{l-e}y_\infty$. Suppose also
+\[
+\bigl(NC(\delta_q^A;p,s,r)\lor NC(F_q;p,s,m)\bigr)
+\land NC(\Sigma^{1,-q}F;p,s+r,l).
+\]
+Then the classical Adams differential is
+\[d_{r+l-m}(y)=y_\infty.\]
+There is no upper bound on $k$. The left edge and the propagated bottom edge are constructed in the proof; they are not extra caller premises.
+
+\textit{Zero-level specialization and the original rule.}
+At $k=0$, the finite equation is in quotient $n-1$. The preceding
+representative comparison supplies this equation from an original
+$(f,E_n)$-extension. The actual no-crossing hypotheses above must still
+be verified on the indicated maps and weight. The original Theorem 6.1
+instead uses classical crossing predicates; the unrestricted comparison
+in Proposition~\ref{paper:5.10} cannot replace those verifications.
+Thus the zero-level specialization is a corrected rule with actual
+crossing conditions, not a proof of the original unrestricted statement.
+The original statement and its counterexamples are retained in the
+article and the AimPaper corrections.
+\uses{sem:ProofTools:level-finite-extension,paper:2.12,paper:4.6}
+\lean{KIP126.ProofTools.Standard.generalizedLeibnizAtLevel}
+% Blueprint note: This is the authorized level-indexed revision. It neither restores the retired original GL theorem nor identifies the old crossing predicates with the actual conditions. Its proof inherits the registered upstream construction and comparison obligations.
+\end{theorem}
+\begin{proof}
+\textit{Proof sketch in the fixed model.}
+Form the actual quotient-boundary square at $q=n+k-1$ and weight $t+e-k$. The classical differential constructs its left extension. Propagate the given infinite extension to the bottom edge at level $r-n$. These constructions retain the specified source and target labels. Apply the filtered-square extension theorem using the assumed no-crossing alternative on the left or top edge and the assumed actual bottom no-crossing. The resulting boundary equation, read through the weighted boundary comparison, is the classical differential $d_{r+l-m}(y)=y_\infty$. All steps occur at the displayed levels, so no upper bound on $k$ or cancellation of $\lambda$ is used.
+
+More explicitly, the left equation has source $\lambda^kx$ and
+target $\lambda^{r-n}x_\infty$ under the actual boundary shift.
+The top equation is the displayed level-$k$ finite extension.
+The infinite input propagates to the bottom by $\lambda^{r-n}$;
+its source and target are transported into the shifted bottom map,
+rather than by adding $k$ independently to every exponent.
+Setting $k=0$ gives the same argument at zero level. It makes no
+comparison with the classical crossing candidates of the original rule.
+The finite-layer surjectivity composition below uses a finite
+naturality square instead of assuming this rule's infinite input.
+\end{proof}
+
+
+\begin{remark}[A cutoff version of the Leibniz square]
+\label{paper:6.5}
+\level{coarse}
+From \cite{LWX126}, Remark 6.5 and Theorem 2.12.\par
+In the quotient-boundary square used for the Leibniz argument, let $x,y,z,w$ be the four specified infinite-page labels at a common stem and weight, with top, left and bottom extension lengths $m,r,l$. The four-edge theorem permits a cutoff $c$ with
+\[
+0<c\le r+l-m.
+\]
+Besides the three input extensions and no crossing on the top or left edge, it suffices to require that the bottom extension has no crossing hitting filtration at least $s+m+c$, and that the right edge has an extension of length $c-1$ from $y$ to zero with no crossing. Then the right edge has an extension of length $r+l-m$ from $y$ to $w$.
+
+This is the extension-square generalization proposed in the remark. Reading its right edge as a specified classical Adams differential additionally requires the boundary and label comparisons for that square; the cutoff does not by itself supply them. At positive lambda level the
+same four-edge statement must be instantiated at the actual quotient
+and weight of the level square, including the right-edge zero extension.
+At level zero it remains this cutoff specialization; no arbitrary-level
+classical differential theorem is asserted solely by choosing $c$.
+\uses{paper:2.12}
+% Correspondence: informal specialization of the four-edge theorem; no Lean binding is asserted.
+\end{remark}
+\begin{proof}
+Apply Theorem~\ref{paper:2.12} to the actual quotient-boundary square, with its top length $m$, left length $r$ and bottom length $l$. Its right-edge zero extension raises the common composite to filtration $s+m+c$; the bottom no-crossing condition in that range identifies the composite's target with $w$. This gives the asserted right-edge extension. This argument retains the right-edge zero-extension hypothesis, rather than merely dropping part of the bottom no-crossing condition.
 \end{proof}
 
 \section{The finite-layer generalized Mahowald trick}
+
+The layer parameters remain visible in the inputs and the output.
+The external May input is instantiated in the actual quotient diagram;
+it is not replaced by a second, level-indexed May theorem.
 
 % AimPaper: 6.12 theorem 1780 1799
 \begin{theorem}[The finite-layer generalized Mahowald trick]
@@ -1107,6 +1307,20 @@ d_n^{\hat f_r}(\lambda^kx)=[\lambda^{r'-1}y],\quad r'=n_1+k+1.
 \end{gathered}
 \]
 A zero target label means a higher filtration, not a zero homotopy image. No power of $\lambda$ is cancelled.
+
+\textit{Relation with the zero-level statement.}
+Setting $i=j=0$ leaves the output lambda level $k=l-e_h$.
+Only when $k=0$ as well does this output lie at level zero.
+For $k>0$, the quotient has length $r$ and the source denominator
+is $B_{k+1}$; the original statement would require a specified
+zero-level source in the smaller quotient of length $r-k$.
+It also requires the prescribed target modulo $B_{r'}$ there.
+Neither assertion follows by cancelling $\lambda^k$.
+The conditional division theorem retains actual source and image
+equations under its extra kernel condition, but does not select
+arbitrary low-layer source and target labels.
+The original formula and the failure of its unrestricted division
+are recorded in the article and the AimPaper corrections.
 \uses{sem:ProofTools:mh-actual-no-crossing,sem:ProofTools:sphere-label-detection,sem:ProofTools:mh-common-source,sem:Literature:normalized-finite-quotient-row,paper:3.20,paper:6.11}
 \sketch
 \lean{KIP126.ProofTools.Standard.generalizedMahowaldAtLevel}
@@ -1123,121 +1337,1324 @@ Top-layer uniqueness identifies the boundary image of this $a$ with $g_B(b)$ for
 The normalized no-return argument removes the restriction defect of $c$. Visible-layer quotient reflection and the source/image detection comparisons then identify its two output detectors and retain the cycle qualification of the original source. Reading the second image equation in the specified strong quotient gives the finite extension in the conclusion. No $\lambda$ layer is cancelled, and the target is not projected to a smaller quotient. This proves the revised assertion relative to its registered upstream model and comparison inputs; it does not prove the zero-layer statement printed in the original Theorem 6.12.
 \end{proof}
 
-\section{Descent, indeterminacy and stretching}
+\section{The finite-quotient core and classical composition}
 
-% AimPaper: 6.20 proposition 1981 1993
-\begin{proposition}[Fixed-target indeterminacy after restriction]
-\label{paper:6.20}
-\source{A fixed-target revision of AimPaper Proposition 6.20, second assertion}
+\begin{theorem}[Finite-quotient Mahowald comparison at a specified level]
+\label{sem:ProofTools:ml-finite-core}
 \level{coarse}
-A fixed-target revision of \cite{LWX126}, Proposition 6.20, second assertion, with the late-cycle exclusion removed.\par
-\label{prop:dec738d3}
-Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and take finite pages $r',r\in\mathbb N$ and integers $n,s,t$ with
+A project derivation from the finite May construction in
+Lemma~\ref{paper:6.11}, the compatible normalized finite rows, and finite
+Bockstein comparison. The May input remains the external result in
+\ref{paper:3.20}; it is not a separate level-indexed classical theorem.\par
+Work with the mod-$2$ Adams spectral sequence of $2$-complete, connective,
+finite-type spectra, fixed coherent synthetic and finite Bockstein comparisons,
+and separated finite-quotient filtrations.
+Fix one actual cofiber triangle
 \[
-2\le r'\le r,\qquad e\le n\le r'-2+e.
+ X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X
 \]
-Fix common labels
+with its compatible normalized triangle, and write
+$e_f+e_g+e_h=1$, with each exponent in $\{0,1\}$.
+Absorb the classical suspensions into the three objects. The first-quotient
+operations of the normalized arrows then have degrees
 \[
-x\in Z_{r-1}^{s,t}(X),\qquad y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
+ f_1:(e_f,e_f),\qquad g_1:(e_g,e_g),\qquad h_1:(e_h,e_h-1).
 \]
-and witnesses $W_r,W_{r'}$ for $d_n^{f,E_r}(x)=y$ and
-\begin{equation}\label{eq:dr'}
-d_n^{f,E_{r'}}(x)=y.
-\end{equation}
-Both witnesses include the full cycle and length qualifications of Definition~\ref{paper:5.4}; the earlier relation is supplied by \ref{sem:ProofTools:finite-extension-descent}. Suppose that $W_r$ is essential.
+When an exponent is zero this is the ordinary page map (with the displayed
+desuspension for $h$). When it is one this is the actual normalized
+first-quotient operation. These are not three freely chosen matrices.
+All finite quotient rows, restriction maps, lambda inclusions, boundary
+maps and graded comparisons below use these same arrows and coherent shifts.
 
-Put $q=r'-1$, $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and let $F_q:A/\lambda^q\to B/\lambda^q$ be the actual normalized map. Retain the target class
+Put $Q_nW=\nu W/\lambda^n$. Fix integers $S,T$, a level $c\geq0$ and
+an integer $K\geq2$, and set $p=c+K$. Suppose
 \[
-\bar y_{r'}\in E_\infty^{s+n,t+n,t+e}(B/\lambda^q)
+ z\in Z_{K-1}^{S-e_h,T-e_h+1}(Z),\qquad
+ u=h_1z\in E_2^{S,T}(X),\qquad
+ v\in E_2^{S+e_f+K-1,T+e_f+K-1}(Y),
 \]
-of the chosen witness $W_{r'}$, represented by the specified label $\lambda^{n-e}y$. Then the extension in (\ref{eq:dr'}) is inessential if and only if there exist
+and the actual classical differential is
 \[
-a\in\mathbb N,\qquad 0<a\le n-e,\qquad
-x'\in Z_{r'-1-a}^{s+a,t+a}(X),
+ d_Kz=g_1v\pmod{B_{K-1}(Z)}.
 \]
-and a class $z\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q)$ represented by the actual correction label $\lambda^a x'$, transported by the shift comparison and quotient isomorphism into the normalized source quotient at weight $t+e$, such that in this same extension spectral sequence
+The cycle qualification of its target is part of this page equation.
+Define the actual homotopy groups
 \[
-d_{n-a}^{F_q}(z)=\bar y_{r'}.
+ A=\pi_{T-S,T-c}Q_pX,\qquad
+ H=\pi_{T-S+1,T-c+1-e_h}Q_pZ,\qquad
+ B=\pi_{T-S,T-c+e_f}Q_pY.
 \]
-This is the full extension relation, including its source qualification. The shorter extension may be inessential and its source class may be zero. No exclusion from the later cycle set is imposed; the target is the original specified target, with $b=0$.
-\uses{paper:5.4,sem:ProofTools:finite-extension-descent,sem:ProofTools:extension-representatives}
-\lean{KIP126.ProofTools.Paper.finiteExtension_inessential_iff_shorter}
-% Correspondence: complete for the authorized fixed-target revision of the second assertion.
-% Blueprint note: The revised first assertion remains stated and bound at sem:ProofTools:finite-extension-descent. The separate difference-preserving alternative is sem:ProofTools:nonliftable-or-crossing. Neither result proves the original unrestricted set-difference equivalence with general b. The local proof inherits the registered upstream obligations.
-% Blueprint note: \href{paper/main.tex.html#L1981}{Original Proposition 6.20 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
-\end{proposition}
+Write $\widehat f_p:A\to B$ and $h_p:H\to A$ for the induced normalized
+maps, retaining their shifts and the fixed suspension comparison.
+Let $\iota_pv\in B$ be the image of the specified first-quotient label
+under the actual top-layer inclusion
+$\Sigma^{0,-(p-1)}Q_1Y\to Q_pY$; its label is $\lambda^{p-1}v$.
+Then there exists an actual representative $a_M\in F^SA$ such that
+\[
+ \operatorname{gr}^{S}(a_M)=[\lambda^cu],\qquad
+ \widehat f_p(a_M)=\iota_pv.
+\tag{M}
+\]
+In particular $u\in Z_K(X)$; no nonzero-label hypothesis is imposed.
+If, in addition, the actual higher-filtration ambiguity satisfies
+\[
+ \widehat f_p(F^{S+1}A)=0,
+\tag{A}
+\]
+then every specified $a\in F^SA$ with
+$\operatorname{gr}^{S}(a)=[\lambda^cu]$ satisfies
+\[
+ \widehat f_p(a)=\iota_pv.
+\tag{Cores}
+\]
+This is an equality in the length-$p$ quotient, with its original target.
+There is no infinite-lift or target-permanence hypothesis.
+The zero-level version is the specialization $c=0$, $p=K$.
+The general level is obtained by the actual coefficient inclusion
+$\Sigma^{0,-c}Q_K\to Q_{c+K}$, retaining both labels; it does not
+assert a reverse implication obtained by cancelling $\lambda^c$.
+\uses{paper:3.20,paper:6.11,sem:AdamsSynthetic:normalized-map,sem:AdamsSynthetic:lambda-quotients,sem:Literature:normalized-finite-quotient-row,sem:Literature:infinite-finite-window}
+% Correspondence: The complete fixed-model classical-input core is proved internally by finite_quotient_mahowald_leibniz_core. Its three exhaustive normalization cases retain the original triangle, construct the specified-label Bockstein lift and actual May representative, prove u is a K-cycle, and give the exact image of every same-label representative under (A). The actual shift comparisons and signed top target are retained in each case; finite_may_signed_target_eq_top_at_level identifies that actual target with the single highest-layer inclusion, using highest-layer uniqueness. These private proofs inherit registered upstream obligations and have no public Blueprint binding.
+\end{theorem}
 \begin{proof}
-\textit{Proof of the fixed-target revision; compare \cite{LWX126}, Proposition 6.20.} \href{paper/main.tex.html#L1995}{Original argument}.
+\uses{paper:3.8,paper:4.6,paper:6.11,sem:Literature:normalized-finite-quotient-row,sem:Literature:infinite-finite-window,sem:ProofTools:finite-strip,sem:ProofTools:sphere-label-detection}
+First construct a lift of the \emph{specified} $z$ to $Q_{K-1}Z$ whose
+adjacent boundary is exactly $g_1v$ in $Q_1Z$. Finite Bockstein comparison
+first supplies a lift with boundary label $w$. The input page equation
+says $w-g_1v\in B_{K-1}$. Each earlier $d_r$ boundary, $2\leq r<K$,
+is the adjacent boundary of a $Q_{r-1}$ representative. Its image under
+$\lambda^{K-r}:Q_{r-1}\to Q_{K-1}$ has zero first-quotient restriction
+and the same adjacent boundary label. Adding these correction classes
+therefore changes $w$ to $g_1v$ while retaining $z$ exactly.
+Equivalently, the adjacent boundary of the kernel of first-quotient
+restriction has label space $B_{K-1}$. For $K=2$ this correction space
+is $B_1=0$.
 
-The page--length domain condition $n\le r'-2+e$ allows restriction to the earlier page. Essentiality of the late witness implies that the specified early target is nonzero. The representative criterion for inessentiality in the actual early ESS identifies an inessential extension with an extension to that same target from a source in higher filtration. The minimal-length bound gives $0<a\le n-e$. The finite-window comparison expresses this higher source by a classical label $x'\in Z_{r'-1-a}$ and its actual correction label, retaining the same quotient, stem and weight. This proves the forward implication, including the source qualification.
+First apply the finite May construction to this actual boundary square
+with quotient lengths $K-1$ and $1$, in the same normalized triangle.
+It constructs a single $a_0$ in $Q_KX$ whose restriction is the normalized
+$h$ image of the chosen lift and whose normalized $f$ image is
+$\iota_Kv$. The triangle convention may put a minus sign on the latter;
+it disappears on the image of the mod-$2$ first-quotient label.
 
-Conversely, the shorter extension puts the same target in the earlier ESS's shorter-extension indeterminacy, so $W_{r'}$ is inessential. No claim that $x'$ fails to lift to the later cycle set is needed. Imposing that exclusion requires the separate late-crossing alternative at \ref{sem:ProofTools:nonliftable-or-crossing}; the original general-$b$ equivalence remains outside this revision.
+The finite-window comparison and naturality for the normalized $h$
+map identify the first-quotient label of $a_0$ with $h_1z=u$.
+Restriction is injective on the retained bottom grade, so finite
+filtration reflection puts $a_0$ in $F^S$, identifies its specified
+grade, and qualifies $u$ in $Z_K$. This includes the zero-label case.
+Now apply the actual coefficient inclusion
+$\Sigma^{0,-c}Q_KX\to Q_{c+K}X$ to $a_0$, and call its image $a_M$.
+Naturality with the same normalized arrows and the finite label
+comparison carry the two labels to $\lambda^cu$ and
+$\lambda^{c+K-1}v$. The latter is the highest target grade.
+Its actual representative equals the single top-layer inclusion
+$\iota_pv$: their difference has filtration at least
+$S+e_f+K$, where the target finite quotient is zero.
+Thus this identification is an equality of actual homotopy classes,
+not just an agreement of leading labels.
+Hence $a_M$ has precisely the degree, leading term
+and image asserted in (M). For $c=0$ this operation is the identity.
+This also explains why a positive $e_h$ requires normalized graded
+naturality, rather than an assertion about an ordinary classical page map.
+A positive $e_g$ acts here on $Q_1Y$; it introduces no additional survival
+requirement on $v$.
+
+Finally, two representatives of the same associated grade differ by an
+element of $F^{S+1}A$. Apply (A) to $a-a_M$ and use additivity:
+$\widehat f_p(a)-\widehat f_p(a_M)=0$. Equation (M) gives the specified
+image in (Cores), without changing either representative or cancelling
+any power of $\lambda$.
 \end{proof}
 
-\begin{theorem}[A nonliftable short extension or a late crossing]
-\label{sem:ProofTools:nonliftable-or-crossing}
+\begin{lemma}[Two finite criteria for annihilating the ambiguity]
+\label{sem:ProofTools:ml-ambiguity-criteria}
 \level{coarse}
-Consider finite witnesses for the same $f,x,y,n$ on pages $r_{\rm early}\leq r_{\rm late}$. If the late witness is essential and the early one is inessential, then either a shorter early extension retains the original target and has a source in the earlier cycle set but outside the later cycle set, or the same late normalized extension spectral sequence has a nonzero higher-source crossing in the specified range. The first branch uses the actual correction label with $b=0$ and all length and cycle bounds.
-\uses{sem:ProofTools:extension-representatives,sem:ProofTools:finite-strip,paper:6.20}
-\lean{KIP126.ProofTools.Paper.finiteExtension_nonliftableShort_or_lateCrossing}
-% Blueprint note: This disjunction is distinct from the original general-b set-difference equivalence. Its correction-label branch has b=0 and the original specified target; registered upstream obligations remain.
+A finite-filtration consequence of \ref{sem:ProofTools:finite-correction}.\par
+In the notation of \ref{sem:ProofTools:ml-finite-core}, the finite-window
+comparison identifies, for $0\leq j<K$,
+\[
+ \operatorname{gr}^{S+j}A
+ =Z_{K-j}^{S+j,T+j}(X)/B_{c+j+1},\qquad F^{S+K}A=0.
+\]
+The highest target grade is $S+e_f+K-1$, and
+$F^{S+e_f+K}B=0$.
+Either of the following is sufficient for (A).
+
+\emph{Surjective graded lifts.} For each $1\leq j<K$ and
+$a\in F^{S+j}A$, there exists
+$b\in F^{S+j-e_h}H$ such that
+\[
+ a-h_p(b)\in F^{S+j+1}A.
+\]
+
+\emph{Collapsed intermediate grades.} For $1\leq j<K-1$ the grade
+$\operatorname{gr}^{S+j}A$ is zero, and the map induced by $\widehat f_p$
+from the entire last grade $\operatorname{gr}^{S+K-1}A$ to
+$\operatorname{gr}^{S+e_f+K-1}B$ is zero.
+The latter criterion does not require the last source grade to vanish
+or to come from $h_p$.
+\uses{sem:ProofTools:ml-finite-core,sem:ProofTools:finite-strip,sem:Literature:infinite-finite-window}
+% Correspondence: The finite induction, the two specified-image comparisons, and their exact j=1,...,K-1 versus j=1,...,K-2 ranges are proved in the internal MahowaldLeibniz/FiniteCore lemmas. Their application still requires the stated actual graded comparisons, not just abstract matrices.
+\end{lemma}
+\begin{proof}
+\uses{sem:ProofTools:finite-correction}
+For the first criterion, start with $a_1\in F^{S+1}A$. Choose successive
+corrections $b_j$ so that $a_{j+1}=a_j-h_p(b_j)\in F^{S+j+1}A$.
+After $K-1$ steps $a_K=0$, hence
+$a_1=h_p(\sum_{j=1}^{K-1}b_j)$. The actual triangle gives
+$\widehat f_ph_p=0$, so $\widehat f_p(a_1)=0$.
+For the second criterion, the intermediate zero grades give
+$F^{S+1}A=F^{S+K-1}A$. The zero map on the last grade sends this subgroup
+into $F^{S+e_f+K}B$, which is zero by the finite strip and separation.
+For $K=2$ there are no intermediate grades; the last-grade condition
+alone is still required.
+\end{proof}
+
+\begin{theorem}[Mahowald--Leibniz composition under finite-layer surjectivity]
+\label{sem:ProofTools:cprime}
+\level{coarse}
+A project derivation using the finite Mahowald construction, the finite
+Bockstein comparison of \cite[Theorem A.1 and Corollary A.11]{BHS},
+and the finite correction argument. This is not a numbered statement
+of \cite{LWX126}.\par
+Work with the mod-$2$ Adams spectral sequence of $2$-complete, connective,
+finite-type spectra, with the usual coherent synthetic comparisons and
+separated finite-quotient filtrations. Fix one actual cofiber triangle
+\[
+X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X,
+\qquad e_f=1,\quad e_g=e_h=0.
+\]
+Here $e_f=1$ means positive Adams filtration, not necessarily filtration
+exactly one. Use the compatible normalized synthetic lift of this same
+triangle. Its homology short exact sequence
+\[
+0\longrightarrow H_*Y\xrightarrow{g_*}H_*Z
+ \xrightarrow{h_*}\Sigma H_*X\longrightarrow0
+\]
+defines the Ext connecting homomorphism
+\[
+\partial_{g,h}:E_2^{s,t}(X)\longrightarrow E_2^{s+1,t+1}(Y).
+\]
+Write $g_2$ for the ordinary $E_2$ map of $g$, and $h_2$ for the ordinary
+$E_2$ map of $h$ followed by desuspension, so that $h_2$ lowers internal
+degree by one. The operation $\partial_{g,h}$ is the first-quotient
+operation of the compatible normalized $\widehat f$, not the ordinary
+$E_2(f)$, which is zero. The actual short exact sequence is essential:
+two abstract matrices $g_2,h_2$ alone do not specify $\partial_{g,h}$.
+
+Use $Z_r,B_r\subseteq E_2$ for cycles and boundaries through $d_r$,
+with $Z_1=E_2$ and $B_1=0$; all boundary labels are allowed.
+Let $R,K\geq2$ be integers, $s,t\in\mathbb Z$, and put
+\[
+S=s+R,\qquad T=t+R-1,\qquad D=R+K-1.
+\]
+Suppose
+\[
+x\in Z_{R-1}^{s,t}(X),\qquad
+z\in Z_{K-1}^{S,T+1}(Z),\qquad
+v\in E_2^{S+K,T+K}(Y),
+\]
+with the following actual page equations, including qualification of
+their target labels on the indicated pages:
+\[
+d_Rx=h_2z\pmod{B_{R-1}^{S,T}(X)},\qquad
+d_Kz=g_2v\pmod{B_{K-1}^{S+K,T+K}(Z)}.
+\]
+For every $1\leq j\leq K-1$, assume the finite-layer surjectivity condition
+\[
+Z_{K-j}^{S+j,T+j}(X)
+=h_2\bigl(Z_{K-j}^{S+j,T+j+1}(Z)\bigr)
+ +B_{R+j-1}^{S+j,T+j}(X).
+\tag{Surj}
+\]
+Then the specified class $y=\partial_{g,h}(x)$ satisfies
+\[
+y\in Z_{D-1}^{s+1,t+1}(Y),\qquad
+d_Dy=v\pmod{B_{D-1}^{S+K,T+K}(Y)}.
+\]
+No $f$-extension, nonzero $y$, survival of $y$, or permanence of $v$
+is an input. In particular, if $y=0$, then $v\in B_{D-1}$.
+If $v\notin B_{D-1}$, the resulting differential and the source class
+on $E_D$ are nonzero.
+
+\textit{Relation with the level-indexed rules.}
+The output is a classical Adams differential; the intermediate lambda
+level in the proof is fixed by $c=R-2$. The index $j$ in (Surj)
+runs through a finite set of higher filtration grades, rather than
+being another freely chosen lambda level of the output.
+The theorem does not assume an $f$-extension or an infinite lift.
+Its finite Mahowald instance has an $h$ edge of length zero, for which
+the actual crossing triangle $s<u\leq v\leq s$ is empty.
+The remaining ambiguity is eliminated by (Surj), not by an
+unrestricted comparison between classical and synthetic crossings.
+Thus this classical composition does not require first proving the
+original infinite-extension application of Example~\ref{paper:6.24}.
+The cited May input remains a general external lemma; only its
+finite-quotient instance is used here.
+\uses{sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:normalized-map,paper:3.20,sem:Literature:normalized-finite-quotient-row}
+% Blueprint note: Mahowald--Leibniz composition under finite-layer surjectivity is a project-derived classical assertion. The fixed-model proposition FiniteLayerSurjectivityMahowaldLeibnizStatement is proved internally by finite_layer_surj_statement, retaining the two actual input differentials and every surjectivity layer. Its output uses the selected normalized first-quotient operation. Identifying that operation with the Ext boundary of the same homology short exact sequence remains a separate comparison. The private proof inherits registered upstream construction and comparison obligations; it is not a new public interface or a direct Lean binding for this Ext-formulated theorem.
+\end{theorem}
+\begin{proof}
+\uses{sem:ProofTools:ml-finite-core,sem:ProofTools:ml-ambiguity-criteria,paper:4.6,sem:Literature:infinite-finite-window,sem:ProofTools:finite-strip}
+Set $c=R-2$ and $p=c+K=R+K-2$. The actual quotient boundary of the
+first-quotient label of $x$, after undoing its displayed suspension, gives
+\[
+ a_\delta\in A=\pi_{t-s-1,t+1}Q_pX.
+\]
+The finite Bockstein comparison for the given $d_R$ puts it in $F^SA$
+and gives the specified leading grade $[\lambda^ch_2z]$.
+Theorem~\ref{sem:ProofTools:ml-finite-core}, applied to the second
+classical differential, constructs $a_M$ with that same grade and
+$\widehat f_pa_M=\iota_pv$.
+
+For $1\leq j<K$, finite-window comparison identifies the actual graded
+$h_p$ map with
+\[
+ h_2:Z_{K-j}^{S+j,T+j+1}(Z)/B_{c+j+1}
+       \longrightarrow Z_{K-j}^{S+j,T+j}(X)/B_{c+j+1}.
+\]
+Since $c+j+1=R+j-1$, (Surj) is exactly its surjectivity.
+Lift each graded preimage to an actual representative in the same
+filtration of $H$. The first criterion of
+\ref{sem:ProofTools:ml-ambiguity-criteria} gives (A), including the
+$j=K-1$ layer with denominator $B_p$. Thus
+$\widehat f_pa_\delta=\iota_pv$.
+
+The coherent quotient-boundary square identifies the left side with
+$\delta_Y(\partial^Q_fx)$. Its equality with $\iota_pv$ decodes as
+follows. Reduction to $Q_{p-1}Y$ kills this top-layer image; exactness
+therefore lifts $y=\partial^Q_fx$ to $Q_pY$, giving $y\in Z_p$.
+For a lift with adjacent boundary label $v_0$, naturality gives
+$\iota_pv_0=\iota_pv$. The kernel of the actual top-layer inclusion
+on these labels is $B_p$, by the finite-window comparison and vanishing
+above the top filtration. Hence $v_0-v\in B_p$, and the adjacent
+Bockstein criterion gives $d_{p+1}y=v$ modulo $B_p$.
+The compatible first-quotient/Ext comparison identifies
+$\partial^Q_f$ with $\partial_{g,h}$ of the same triangle.
+The output bidegree is $(S+K,T+K)$, as required.
+No target permanence or prior survival of $y$ was used.
+\end{proof}
+
+\begin{theorem}[Classical composition with collapsed intermediate layers]
+\label{sem:ProofTools:ml-classical-nc}
+\level{coarse}
+A project derivation from \ref{sem:ProofTools:ml-finite-core}, with the
+classical conditions (NC1) and (NC2) in \cite[Section 2]{MLConditions1020}.
+The normalized maps and their coherent finite-quotient meaning are made
+explicit here.\par
+Use the triangle, normalized exponents and first-quotient operations of
+\ref{sem:ProofTools:ml-finite-core}, allowing all three positions of the
+positive exponent. Let $R,K\geq2$, $x\in Z_{R-1}^{s,t}(X)$,
+$S=s+R$, $T=t+R-1$ and $p=R+K-2$. Suppose
+\[
+ z\in Z_{K-1}^{S-e_h,T-e_h+1}(Z),\quad
+ u=h_1z\in E_2^{S,T}(X),\quad
+ v\in E_2^{S+e_f+K-1,T+e_f+K-1}(Y),
+\]
+where $u=h_1z$ is an equality of the specified $E_2$ labels, and
+\[
+ d_Rx=u\pmod{B_{R-1}(X)},\qquad
+ d_Kz=g_1v\pmod{B_{K-1}(Z)}.
+\]
+Assume the whole-space conditions
+\[
+ Z_{K-j}^{S+j,T+j}(X)\subseteq B_{R+j-1}^{S+j,T+j}(X)
+ \quad(1\leq j<K-1),
+\tag{NC1}
+\]
+and
+\[
+ f_1\bigl(E_2^{S+K-1,T+K-1}(X)\bigr)
+ \subseteq B_p^{S+e_f+K-1,T+e_f+K-1}(Y).
+\tag{NC2}
+\]
+Then the specified $y=f_1x\in E_2^{s+e_f,t+e_f}(Y)$ satisfies
+\[
+ y\in Z_p(Y),\qquad d_{p+1}y=v\pmod{B_p(Y)}.
+\]
+For $K=2$, (NC1) is empty and (NC2) still concerns the entire final
+$E_2$ source. For $e_f=1,e_g=e_h=0$, this is the branch directly
+comparable with \ref{sem:ProofTools:cprime}. The other two branches use
+a normalized first-quotient operation on $g$ or $h$, respectively;
+ordinary page maps cannot be substituted for those operations.
+\uses{sem:ProofTools:ml-finite-core}
+% Correspondence: The private classical_nc_composition proves ClassicalNCCompositionStatement for the selected fixed model, covering all three positions of the positive exponent. Each branch consumes its complete finite core, derives (A) from NC1 and the entire final NC2 condition, and decodes the same specified source and target. Actual normalized first-quotient operations are calibrated to ordinary page maps only when their exponent is zero. No representative, output-survival, or finite-square conclusion is added as a caller premise. This internal proof inherits registered upstream obligations and has no public Blueprint binding.
+\end{theorem}
+\begin{proof}
+\uses{sem:ProofTools:ml-finite-core,sem:ProofTools:ml-ambiguity-criteria,paper:4.6,sem:Literature:infinite-finite-window,sem:ProofTools:finite-strip}
+Take $c=R-2$ and the same specified $a_\delta$ and constructed $a_M$
+as in the proof of \ref{sem:ProofTools:cprime}, now retaining the general
+normalized shifts. Their difference lies in $F^{S+1}A$.
+The quotient formula has denominator $B_{c+j+1}=B_{R+j-1}$, so (NC1)
+annihilates the intermediate associated grades and gives
+\[
+ F^{S+1}A=F^{S+K-1}A.
+\]
+At the last layer, the source label space is $E_2/B_p$.
+Normalized graded naturality identifies the map on that layer with
+$f_1$ modulo the same $B_p$ in the highest target grade
+$S+e_f+K-1$. By (NC2) this map is zero. Its actual image is therefore
+in $F^{S+e_f+K}B=0$. This is precisely the second criterion of
+\ref{sem:ProofTools:ml-ambiguity-criteria}, giving (A).
+The core yields $\widehat f_pa_\delta=\iota_pv$.
+The coherent boundary square and the same finite Bockstein decoding
+then give $y\in Z_p$ and $d_{p+1}y=v$ modulo $B_p$.
+The argument retains all three arrows, including the normalized
+$g$ or $h$ operation when its exponent is positive.
+\end{proof}
+
+\begin{proposition}[The last-layer distinction between the two criteria]
+\label{sem:ProofTools:ml-last-layer}
+\level{coarse}
+A project comparison of \ref{sem:ProofTools:cprime} and
+\ref{sem:ProofTools:ml-classical-nc}.\par
+In their common $e_f=1,e_g=e_h=0$ branch, put
+\[
+ U=E_2^{S+K-1,T+K-1}(X),\quad B_X=B_p(X),\quad B_Y=B_p(Y)
+\]
+in the corresponding source and target bidegrees, and let $\partial=f_1$.
+Exactness gives $\ker\partial=\operatorname{im}h_2$.
+The last Surj condition is equivalent to
+\[
+ \partial U=\partial B_X,
+\]
+whereas (NC2) only says $\partial U\subseteq B_Y$.
+Naturality gives $\partial B_X\subseteq B_Y$, so last-layer Surj implies
+(NC2). Under (NC2), last-layer Surj is equivalent to lifting all the
+relevant target boundaries through the source boundary group:
+\[
+ \operatorname{im}\partial\cap B_Y=\partial B_X.
+\]
+In general the difference is measured by
+\[
+ \frac{\partial^{-1}(B_Y)}{\operatorname{im}h_2+B_X}
+ \cong\frac{\operatorname{im}\partial\cap B_Y}{\partial B_X}.
+\]
+For an intermediate layer, (NC1) implies the corresponding Surj
+condition by taking the $h_2$ preimage to be zero. The reverse implication
+need not hold: a nonboundary cycle can have a cycle-qualified $h_2$
+preimage. These comparisons alone establish neither implication between
+the complete packages. The reverse last-layer implication requires the
+displayed boundary-lifting condition.
+\uses{sem:ProofTools:cprime,sem:ProofTools:ml-classical-nc}
+\end{proposition}
+\begin{proof}
+If $a=h_2z+b$ with $b\in B_X$, then $\partial a=\partial b$.
+Conversely, if $\partial a=\partial b$ for such a $b$, exactness gives
+$a-b=h_2z$. This proves the first equivalence. The restriction of
+$\partial$ to $\partial^{-1}(B_Y)$ is onto
+$\operatorname{im}\partial\cap B_Y$; taking its quotient by the
+preimage of $\partial B_X$ gives the displayed isomorphism.
+The intermediate-layer statement follows directly from the specified
+cycle-qualified formulation of Surj.
+\end{proof}
+
+\begin{definition}[The fixed-model Mahowald--Leibniz assertion under finite-layer surjectivity]
+\label{sem:ProofTools:cprime-model}
+\level{coarse}
+Fix a triangle in the selected classical object family of the Standard
+model, with $e_f=1$ and $e_g=e_h=0$.
+Define $\partial^{Q}_{f}$ by transporting the actual map
+\[
+Q_1(\Sigma^{0,1}\nu X)\xrightarrow{Q_1(\widehat f)}Q_1(\nu Y)
+\]
+through the fixed first-quotient comparisons; its degree is $(1,1)$.
+Define $\mathrm{Surj}(T,R,K,s,t)$ by (Surj) in
+Theorem~\ref{sem:ProofTools:cprime}, using the actual $E_2$ map of $h$
+and the fixed tower desuspension relation.
+Define $\mathrm{ML}_{\mathrm{surj}}(T)$ to be the following proposition:
+if the selected normalized triangle is distinguished, then, for every
+$R,K\geq2$, $s,t$, and $x,z,v$ satisfying the two input cycle
+qualifications, the two actual page equations and $\mathrm{Surj}$ of
+that theorem, the class $y=\partial^Q_f(x)$ lies in $Z_{R+K-2}$ and
+satisfies $d_{R+K-1}y=v$ with exactly its displayed bidegree.
+This definition imposes no nonvanishing condition on $y$.
+
+There are two distinct proof obligations in this description.
+First, prove the fixed-model proposition using the constructed
+$\partial^Q_f$, the two classical input differentials and (Surj).
+Second, identify
+\[
+\partial^Q_f=\partial_{g,h}
+\]
+for the same actual homology short exact sequence, so that its output
+is the connecting class specified in the classical theorem.
+The operation is already defined from the selected normalized map;
+the comparison with the Ext connecting homomorphism is not supplied
+by that definition.
+
+The finite constructions and residual correction now give an internal
+proof of the fixed-model proposition. The Ext comparison remains
+separate. The definitions bound below specify the proposition and its
+operations; its proof is a private theorem, rather than one of these
+definitions. For a concrete application one must also provide its
+actual input differentials, compatible triangle and every layer of
+(Surj); an asserted output alone is not evidence for these inputs.
+\uses{sem:ProofTools:cprime,sem:AdamsSynthetic:first-quotient-shifts,sem:AdamsSynthetic:normalized-map}
+\lean{KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary,KIP126.ProofTools.Standard.MahowaldLeibnizFiniteLayerSurjectivity,KIP126.ProofTools.Standard.FiniteLayerSurjectivityMahowaldLeibnizStatement}
+% Correspondence: All three bound declarations are definitions. The proposition is restricted to the selected classical object family and explicitly retains compatibility of the selected normalized triangle. Its maps and desuspension are fixed model data, not caller-supplied arbitrary operations. The separate private finite_layer_surj_statement proves this proposition with no additional caller hypotheses. This binding itself is not a proof binding and does not claim the general Ext-boundary comparison.
+\end{definition}
+
+\begin{proposition}[Lifting a specified family of finite representatives]
+\label{sem:ProofTools:ml-representative-family-lift}
+\level{coarse}
+An additive exactness criterion for the extra lifting step needed by
+classical extensions and permanence outputs.\par
+Let $q:D\to A$ and $\delta:A\to C$ be actual homomorphisms of abelian
+groups with $\ker\delta=\operatorname{im}q$. Let $V\leq A$ be the
+subgroup of permitted corrections preserving the specified source and
+image labels, and fix $a_0\in A$. Then
+\[
+ (a_0+V)\cap\operatorname{im}q\ne\varnothing
+ \quad\Longleftrightarrow\quad \delta(a_0)\in\delta(V).
+\]
+If $q$ is restriction from the full synthetic homotopy group, this
+constructs a full lift of a corrected representative in the prescribed
+family. If $q$ is only a restriction between two finite quotients, it
+constructs only that one finite lift. Neither interpretation assumes
+permanence of the output label.
+\uses{sem:AdamsSynthetic:lambda-quotients}
+% Correspondence: The exact additive equivalence is proved by the private representative_family_has_lift_iff_boundary_mem lemma. Applying it to ss requires the actual q, delta and permitted subgroup V; no such identification is implied by that abstract lemma.
+\end{proposition}
+\begin{proof}
+If $q(d)=a_0+v$, then $0=\delta(a_0)+\delta(v)$, so
+$\delta(a_0)=\delta(-v)\in\delta(V)$. Conversely, write
+$\delta(a_0)=\delta(v)$ with $v\in V$. Then
+$\delta(a_0-v)=0$, and exactness gives $q(d)=a_0-v$ for some $d$.
+Since $-v\in V$, this is a lift of a representative in the specified family.
+\end{proof}
+
+\section{Mathematical conditions of the synthetic computation rules}
+
+\begin{remark}[Mathematical rules used by the synthetic computation routines]
+\label{sem:ProofTools:ml-ss-scope}
+\level{coarse}
+A mathematical transcription of the synthetic routines of
+\cite{LinProgram,LWXZenodo}, using the fixed source-code release and
+retaining its source-level conditions.
+
+The differential rule has the shape
+\[
+d_bx=u,\qquad x\longmapsto y,\qquad u\longmapsto v
+\quad\Longrightarrow\quad d_{b+L-M}y=v,
+\]
+where $M$ and $L$ are the two image filtration shifts. Its intended
+mathematical explanation is the quotient-boundary square of generalized
+Leibniz, including the cutoff of Remark~\ref{paper:6.5}. Hidden images
+are sought by the Mahowald pattern: take an $h$ preimage, use a
+differential, and take a $g$ preimage, with length relation $r=n+l+m$.
+Classical extensions and permanent-cycle outputs additionally concern
+full representatives and the realization of Proposition~\ref{paper:5.14}.
+
+The following entries specify the actual partial-data conditions, rather
+than replacing them with an assumed true extension. The two soundness
+assertions state the mathematical conclusions used by the routines;
+neither assertion is proved here. In particular, identifying a rule's
+intended theorem does not establish that every source-level test supplies
+that theorem's hypotheses.
+
+The routines do not enumerate the complete sufficient-condition packages
+of \ref{sem:ProofTools:cprime} or \ref{sem:ProofTools:ml-classical-nc}.
+Their staircase labels encode cycle, boundary and differential information.
+They are not the lambda levels of \ref{sem:ProofTools:ml-finite-core}.
+No Lean binding or new admitted mathematical input is introduced by this
+transcription.
+% Blueprint note: The fixed source is source code.zip in Zenodo record 14875701 (archive SHA-256 dd784541626f4d693c35f3ca84d4a67e83758ac463aabe58ab6c9cc92be22a15), also available locally at /inspire/hdd/global_user/czxs25250150/tmp/lwx-source/SSeqCpp-master. Its ss/category.cpp, ss/main.h and ss/deduce.cpp are byte-identical to the copies in /inspire/hdd/global_user/czxs25250150/ops/tmp/ss-program-2412150-top-input-20261019. Their SHA-256 hashes are be9e6cd3632ab6ec3905528b0b30a8c4d0d986c13a318d24a48f3e396bc8ae9a, 535a72430caed39826d8ab41e8beb3fa7286835309928a98b0247e7eb9b38eb5 and f299dbdadf8c8efde296adacb048f679fd927d611e910c615775d42ebced3fec. Source locators below refer to this fixed version, not a moving repository HEAD.
+\end{remark}
+
+\begin{definition}[Partial Adams data and candidate subspaces]
+\label{sem:ProofTools:ss-partial-adams-data}
+\level{coarse}
+From the staircase and linear-algebra conventions of \cite{LinProgram}.
+
+Fix the actual $E_2$ spaces $V_W^d=E_2^d(W)$ over $\mathbb F_2$,
+where $d=(s,t)$, with their specified coordinates. Regard their finite
+coordinate spaces as subspaces of the common space
+$\mathbb F_2^{(\mathbb N)}$ of finitely supported coordinate vectors.
+This convention permits the same raw vector to be assigned different
+degrees; it does not supply a map between the corresponding $E_2$ spaces.
+Every label, including
+a zero vector, carries its assigned degree $d$; its filtration coordinate
+below is $s(d)$, not an intrinsic filtration assigned to zero.
+In every degree take
+an ordered staircase basis $e_1,\ldots,e_m$ with nondecreasing integer
+labels $\ell_i$. A row also carries a coordinate vector $\Delta_i$, or
+the information that this vector is not yet determined. Put
+\[
+N=10000,\qquad R=1000,\qquad P=N-R,
+\qquad D_W^d(<a)=\langle e_i:\ell_i<a\rangle.
+\]
+These integers encode the source conventions; $R$ is the permanent-page
+sentinel, not a theorem identifying an arbitrary finite page with infinity.
+A label $r<N/2$ records a boundary with a specified or undetermined
+$d_r$ preimage. A label $N-r>P$ records a class reaching $E_r$ with its
+$d_r$ specified or undetermined. The label $P$ records a permanent cycle.
+Zero and an undetermined vector are distinct.
+
+For $v\ne0$, let $\ell(v)$ be the largest label used in its staircase
+basis expansion. Define $\Gamma(v)$ by summing the $\Delta_i$ only over
+the terms in that largest-label block; it is undefined if any used
+column of that block is undetermined. Put $\ell(0)=-1$ and
+$\Gamma(0)=0$. Thus $\Gamma$ is a partially specified map on the
+associated grades of the recorded flag with raw coordinate output.
+On a boundary block of label $r$, its output is the coordinate vector
+of a preimage in degree $d-(r,r-1)$, not an outgoing differential.
+
+For a complete correct state, with $E_r=Z_{r-1}/B_{r-1}$, the finite
+page conventions give, only in the encoded nonsentinel range $2\le r<R$,
+\[
+D(<r)=B_{r-1},\qquad D(<N-r)=Z_r.
+\]
+The correctly interpreted permanent and boundary blocks separately give
+\[
+D(<P)=B_\infty,\qquad D(<P+1)=Z_\infty.
+\]
+For partial data, $D$ denotes the recorded subspace itself; it must not
+be replaced by a complete cycle or boundary space without a comparison.
+
+Say that degree $d=(s,t)$ has an undetermined incoming possibility of
+length at most $b$ if, for some $2\le a\le\min(b,s)$, degree
+$d-(a,a-1)$ has a staircase row whose column is undetermined and whose
+label is at least $N-a$. Define $U_W^d$ as follows. Remove the largest
+terminal sequence of whole equal-label blocks such that every removed
+label is at least $P+1$, every column is determined, and, for a block
+of label $N-r$, its target degree $d+(r,r-1)$ has no undetermined
+incoming possibility of length at most $r-1$. Then $U_W^d$ is the span
+of the remaining initial basis segment. This is the candidate space
+used by the image rule; it is not defined to be $Z_\infty$.
+
+For each recorded subspace $C$, let $R_C$ denote its specified
+Gaussian-elimination remainder map. For each matrix $A$, fix the
+elimination selector $\sigma_A$ in the source's basis order. It is a
+right inverse on $\operatorname{im}A$; its elimination formula is also
+defined on inputs outside that image, without asserting
+$A\sigma_A(v)=v$ there. All uses below retain the indicated degrees
+and the specified coordinates.
+% Blueprint note: Fixed source: ss/main.h:20--25; ss/staircase.cpp:58--101; ss/ss.cpp:13--42 and :193--242; src/linalg.cpp:86--210. In particular, the image-membership assertion in GetImage is debug-only. The comparison of the recorded flag with actual Z/B data is part of the soundness problem, not an additional input containing the desired outputs.
+\end{definition}
+
+\begin{definition}[The recorded differential range and crossing bound]
+\label{sem:ProofTools:ss-cutoff-data}
+\level{coarse}
+From the range queries of \cite{LinProgram}.
+
+Use the data of \ref{sem:ProofTools:ss-partial-adams-data}. For a
+coordinate vector $v$, define its recorded differential range
+$\mathcal R(v)=(r_0,w_0)$ by
+\[
+\mathcal R(v)=
+\begin{cases}
+(R-1,0),&\ell(v)<N/2,\\
+(N-\ell(v),\Gamma(v)),&\ell(v)\ge N/2\text{ and }\Gamma(v)
+  \text{ is defined},\\
+(N-\ell(v)-1,0),&\ell(v)\ge N/2\text{ and }\Gamma(v)
+  \text{ is undefined}.
+\end{cases}
+\]
+An undetermined $d_r$ therefore supplies only the preceding zero range,
+not a claim that $d_r=0$. A boundary or zero vector uses the sentinel
+zero range.
+
+Let $\ell_{\max}(d)$ be the largest label in a nonempty degree. For
+an integer $E$, define the recorded crossing bound
+\[
+\chi_E(d)=\min\left(
+\{R\}\cup
+\left\{j+N-\ell_{\max}(d+(j,j)):
+\begin{array}{c}
+1\le j\le E-2,\\
+\ell_{\max}(d+(j,j))>N/2
+\end{array}\right\}\right).
+\]
+Empty degree components contribute nothing. This uses the earliest
+differential page not excluded by the recorded labels at a higher
+filtration; it does not require a known nonzero crossing differential.
+In particular, $\chi_E(d)\le b$ does not certify the existence of an
+actual crossing. The degrees used in this formula have their given
+$E_2$ coordinate spaces and declared zero spaces; bounds of the
+computed tables are not mathematical hypotheses of the rule.
+\uses{sem:ProofTools:ss-partial-adams-data}
+% Blueprint note: Fixed source: ss/ss.cpp:258--279 (GetCrossR) and ss/cofseq.cpp:899--913 (GetRAndDiff). The former does not inspect the differential columns. The formula records its mathematical degree scan; availability and table-cutoff exits are excluded from this mathematical transcription.
+\end{definition}
+
+\begin{definition}[Finite recursive image certificates]
+\label{sem:ProofTools:ss-image-certificate}
+\level{coarse}
+A branchwise mathematical transcription of the image tests in
+\cite{LinProgram}.
+
+Fix one cofiber triangle and its specified degree-shifted $E_2$ matrices
+\[
+H:V_Z\longrightarrow V_X,\qquad F:V_X\longrightarrow V_Y,
+\qquad G:V_Y\longrightarrow V_Z.
+\]
+Write $\delta_F,\delta_G,\delta_H$ for their bidegree shifts and
+$s(d),t(d)$ for the coordinates of a degree. Rotation of the triangle
+specifies the matrices for recursive uses. All subspaces, selectors
+and partial queries are those of
+\ref{sem:ProofTools:ss-partial-adams-data}.
+
+The relation
+\[
+\mathcal I_f(x;\ell,a,c)\rightsquigarrow(d_y,y)
+\]
+means that there is a finite derivation tree satisfying the following
+clauses. The inputs are $x\in V_X^{d_x}$, its requested status $\ell$,
+an ambiguity threshold $a$, and a crossing target threshold $c$.
+The relation is defined by these algebraic clauses, not by the
+existence of a true topological extension.
+
+\textit{Ordinary-image clause.}
+Let $y_0=F(x)$ and $d_0=d_x+\delta_F$. If
+\[
+y_0\ne0,\qquad \ell(y_0)\ge s(d_0)-a,
+\]
+there is the leaf conclusion $(d_y,y)=(d_0,y_0)$. The subsequent kernel
+and crossing clauses do not apply to this leaf.
+
+\textit{Hidden-image source clauses.}
+Otherwise construct $z,u,d_z$ in one of the following ways.
+If $F(x)=0$, put
+\[
+d_z=d_x-\delta_H,\qquad z=\sigma_H(x),\qquad u=\Gamma(z),
+\]
+and require $u$ to be defined and $\ell(z)>\ell$. Here $H$ is evaluated
+on the staircase basis in its prescribed order. The assertion $H(z)=x$
+is supplied by the actual matrix exactness
+$\ker F=\operatorname{im}H$ when that comparison has been established;
+it is not a separate image-membership test in this branch.
+
+If $y_0=F(x)\ne0$ but $\ell(y_0)<s(d_0)-a$, require $w=\Gamma(y_0)$
+to be defined, and put
+\[
+\begin{gathered}
+d_w=d_0-(\ell(y_0),\ell(y_0)-1),\qquad
+d_z=d_w+\delta_G,\\
+z=G(w)\ne0,\qquad u=\Gamma(z)\text{ defined}.
+\end{gathered}
+\]
+Require
+\[
+\ell(z)>\ell-(s(d_x)-s(d_z)),
+\]
+a recursive certificate
+\[
+\mathcal I_h(z;\ell(z),-1,0)\rightsquigarrow(d_x,x_1),
+\]
+and the exact recorded congruence
+\[
+x_1-x\in D_X^{d_x}(<\ell).
+\]
+For complete data and $\ell=N-b$, this is congruence modulo $Z_b$,
+so it preserves the $d_b$ value, rather than specifying the same
+$E_b$ class. For boundary status $\ell=b$, its denominator is instead
+$B_{b-1}$.
+
+\textit{Target equation and ambiguity clauses.}
+For either hidden-image source, set
+\[
+q=N-\ell(z),\quad d_u=d_z+(q,q-1),\quad d_y=d_u-\delta_G,
+\quad C=D_Z^{d_u}(<q),\quad A=R_C\circ G.
+\]
+Here the raw output $u=\Gamma(z)$ is reassigned to degree $d_u$.
+A typed certificate requires its coordinate indices to be valid in
+$V_Z^{d_u}$, as for every other degree assignment in these clauses.
+For a boundary status, this is a different degree from the preimage
+degree $d_z-(\ell(z),\ell(z)-1)$. Reusing the raw coordinates neither
+defines a natural map between these degrees nor establishes $u=d_qz$;
+the outgoing-differential interpretation has to be justified where used.
+Require exactly one of the following according to the input status:
+\[
+\begin{array}{ll}
+\ell\le P:
+ &u\in A(U_Y^{d_y}),\qquad
+   \ker(A|_{U_Y^{d_y}})\subseteq D_Y^{d_y}(<s(d_y)-a),\\[2pt]
+\ell>P:
+ &u\in\operatorname{im}A,\qquad
+   s(d_y)\ge c\ \Longrightarrow\ \ker A=0.
+\end{array}
+\]
+In the first case choose $y=\sigma_{A|_{U_Y^{d_y}}}(u)$; in the
+second choose $y=\sigma_A(u)$. Thus the tested equation is
+\[
+R_C(G(y))=u.
+\]
+The right-hand side is not replaced by $R_C(u)$: the specified target
+must already be a normal representative in this equation. In the
+first case the selector uses the staircase basis of $U_Y^{d_y}$;
+in the second it uses the original coordinate basis of the entire
+$E_2$ space. For complete data the first kernel bound reads
+$\ker(A|_{U_Y^{d_y}})\subseteq B_{s(d_y)-a-1}$.
+
+\textit{Crossing clause.}
+This clause is imposed only if $s(d_y)\ge c$. For each
+\[
+s(d_x)<s'<s(d_y)-s(\delta_F),\qquad
+d'=(s',s'+t(d_x)-s(d_x)),
+\]
+and each staircase basis vector $e_i\in V_X^{d'}$ with $\ell_i\ge\ell$,
+require either a child certificate
+\[
+\mathcal I_f(e_i;\ell_i,a,R)\rightsquigarrow(d'_y,y'),
+\]
+or the following immediate stopping condition:
+\[
+F(e_i)=0,\qquad z_i=\sigma_H(e_i),\qquad
+\Gamma(z_i)\text{ defined},\qquad \ell(z_i)\le\ell_i.
+\]
+This exception concerns that candidate itself; a failure inherited
+from one of its recursive calls is not an allowed stop.
+For a child certificate whose target satisfies
+$c\le s(d'_y)\le s(d_y)$, impose
+\[
+\begin{cases}
+\text{no such child is allowed},&\ell>P,\\
+y'=0\text{ or }y'\notin U_Y^{d'_y},&\ell\le P.
+\end{cases}
+\]
+The first case also excludes a zero returned vector at a target degree
+in that range. These are tests on the indicated basis vectors; the
+definition does not silently quantify over all their linear combinations.
+All recursive certificates are finite. No termination theorem or
+topological soundness statement is built into this definition.
+\uses{sem:ProofTools:ss-partial-adams-data}
+% Blueprint note: Fixed source: ss/category.cpp:541--710. Ordinary leaf: 559--564; recursive nonzero-image branch: 569--595; zero-image branch and immediate status stop: 598--622; target and kernel conditions: 624--671; crossing clauses: 673--705. The sole immediate failure allowed by the crossing loop is return 12, not wrapped recursive failures. At line 696 a nonzero candidate lying in U is rejected; reversing that membership would change the rule.
+% Correspondence: This is an unbound mathematical definition of the tested finite data. It neither asserts a given-label synthetic extension for every successful node nor supplies the normalization and label comparisons needed for such an assertion.
+\end{definition}
+
+\begin{conjecture}[Soundness assertion for the recorded Adams differential rule]
+\label{sem:ProofTools:ss-adams-soundness}
+\level{coarse}
+The mathematical assertion used by the differential routine of
+\cite{LinProgram}; its correctness under the following tested conditions
+remains to be proved.
+
+Fix actual spectra in a cofiber triangle, their specified normalized
+maps and $E_2$ coordinates. Let the current partial Adams data correctly
+record the already established cycles, boundaries, differential values
+and permanent labels. All coordinates and partial queries below have
+their specified degrees; no desired new differential is part of this
+data-correctness assumption.
+
+Suppose an input relation $d_bx=u$, with $2\le b<R$, is recorded with $u\ne0$ as a
+coordinate vector. This does not impose nonvanishing of its class on
+the page. Put
+\[
+c_0=\begin{cases}
+0,&\chi_b(d_x)\le b,\\
+R,&\chi_b(d_x)>b,
+\end{cases}
+\]
+and suppose there is a finite certificate
+\[
+\mathcal I_f(x;N-b,-1,c_0)\rightsquigarrow(d_y,y).
+\]
+Let $M=s(d_y)-s(d_x)$, let $\mathcal R(y)=(r_0,w_0)$, and set
+\[
+\kappa=\min\left(
+\chi_{M-s(\delta_F)+2}(d_y),\quad
+r_0+\mathbf 1_{w_0=0}\right).
+\]
+Suppose also that
+\[
+\mathcal I_f(u;b,s(d_y),s(d_y)+\kappa)
+ \rightsquigarrow(d_v,v),\qquad s(d_v)\ge s(d_y)+\kappa.
+\]
+Then, with $n=s(d_v)-s(d_y)$, the asserted mathematical conclusion includes
+\[
+n\ge2,\qquad d_v=d_y+(n,n-1),
+\]
+the cycle qualifications needed to define $[y]$ and $[v]$ on $E_n$,
+and the relation
+\[
+d_n([y])=[v]
+\]
+in the actual Adams spectral sequence of $Y$. Equivalently, if
+$s(d_v)=s(d_x)+b+L$, its length is $n=b+L-M$.
+\uses{sem:ProofTools:ss-image-certificate,sem:ProofTools:ss-cutoff-data}
+% Blueprint note: Fixed source: ss/category.cpp:496--515 and ss/deduce.cpp:246--272. The immediate propagation hook has an extra short-page restriction, but the latter routine scans other known finite differentials, so that restriction is not a shared mathematical hypothesis. Logging and duplicate-output tests are omitted. This conjecture records the inference used by the code, not a proved replacement for the generalized Leibniz theorem.
+% Correspondence: No Lean binding. No proof or assumption of this soundness assertion has been added to the formal development.
+\end{conjecture}
+\begin{proof}
+\textit{Pending argument; source derivation only.}
+The two image calls and the cutoff calculation give exactly the displayed
+premises: the second call treats $u$ as a recorded $d_b$ boundary, and
+its target must have filtration at least $s(d_y)+\kappa$. Taking the
+difference of the two output filtrations gives the asserted page $n$.
+This explains the source's inference but does not prove its mathematical
+soundness.
+
+To prove it by the quotient-boundary square of
+\ref{sem:ProofTools:generalized-leibniz-at-level} and
+Remark~\ref{paper:6.5}, one must construct the appropriate common
+representatives from the finite certificates. In particular, the
+recursive congruence modulo the recorded $Z_b$ subspace is weaker than
+equality of the original $E_b$ labels; the allowed kernel can disappear
+only modulo the boundary precision requested by the second call; and
+the basis tests and stopping exception have not been proved equivalent
+to the actual no-crossing hypotheses. Replacing each certificate by an
+assumed true extension would hide these pending steps.
+\end{proof}
+
+\begin{conjecture}[Soundness assertion for classical extension and permanent-cycle outputs]
+\label{sem:ProofTools:ss-classical-soundness}
+\level{coarse}
+The mathematical assertion used by the cofiber-extension routine of
+\cite{LinProgram}; its correctness under the following tested conditions
+remains to be proved.
+
+Use actual spectra, maps and correct partial Adams data as in
+\ref{sem:ProofTools:ss-adams-soundness}. Assume also the established
+data invariant that the cofiber-extension table represents known
+Adams permanent classes and their classical extension information.
+Take a source $x$ in that table whose outgoing extension remains
+undetermined. Its permanence is inherited from this table invariant,
+not inferred from the image routine's status argument.
+
+Suppose there is a finite certificate
+\[
+\mathcal I_f(x;P,-1,0)\rightsquigarrow(d_v,v),
+\]
+and put
+\[
+n=s(d_v)-s(d_x),\qquad n\ne s(\delta_F),\qquad
+v_0=R_{D_Y^{d_v}(<P)}(v).
+\]
+The asserted mathematical output includes the length and degree conditions
+\[
+n\ge0,\qquad
+d_v=d_x+\bigl(n,n+t(\delta_F)-s(\delta_F)\bigr),
+\]
+and the classical homotopy extension
+\[
+d_n^f\bigl(x+B_\infty^{d_x}(X)\bigr)
+ =v_0+B_\infty^{d_v}(Y).
+\]
+For $v_0\ne0$ the routine additionally asserts $v_0\in Z_\infty$.
+If $v_0=0$, a zero extension remains an allowed output. Nonzero
+remainder modulo the currently recorded boundaries does not assert
+that the final $E_\infty$ class is nonzero.
+\uses{sem:ProofTools:ss-image-certificate,sem:ProofTools:ss-partial-adams-data}
+% Blueprint note: Fixed source: ss/deduce.cpp:293--311. The comparison n != s(delta_F) is the exact test; it is not replaced by a stronger inequality. The target is reduced modulo recorded Adams boundaries before the outputs are written. The table invariant has actual supporting paths in ss/cofseq.cpp:234--286, :336--374 and :801--829; a complete invariant proof for all producing and loading paths is not claimed here. The value d_999=0 is the program's permanence encoding, not a general implication from a finite survival page to infinity.
+% Correspondence: No Lean binding. This is an unproved correctness assertion, not a new admitted literature result or a formal proof obligation added to the locked registry.
+\end{conjecture}
+\begin{proof}
+\textit{Pending argument; source derivation only.}
+The source selects an undetermined entry of the cofiber-extension table,
+calls the image rule in permanent mode, excludes the ordinary-image
+length, and reduces its target modulo the recorded boundary space.
+It records a permanent-cycle output for a nonzero remainder and a
+classical extension for the resulting target, including zero.
+
+A mathematical proof must show that these particular finite certificate
+conditions construct a full representative with the prescribed source
+and image detections. The family-lifting criterion
+\ref{sem:ProofTools:ml-representative-family-lift} identifies an exact
+lifting question once its actual maps and permitted correction family
+are supplied. The realization in Proposition~\ref{paper:5.14} then
+transports a full extension. Neither the finite Mahowald relation nor
+the permanence of $x$ alone supplies the required target-preserving
+full lift. That construction and the table invariant remain pending.
+\end{proof}
+
+\begin{remark}[Remaining comparisons for the computation rules]
+\label{sem:ProofTools:ss-soundness-boundary}
+\level{coarse}
+The source transcription separates several mathematical comparisons
+that have not been completed by writing the preceding conditions.
+First, the recorded matrices, flag subspaces, selectors and normal
+representatives must be identified with the actual normalized triangle
+and the indicated cycle and boundary information. This includes the
+use of $\ker F=\operatorname{im}H$ when selecting an $H$ preimage and
+the distinction between the two meanings of $\Gamma$.
+
+Second, the recursive congruences and the allowed target kernels must
+be transported into the appropriate representative relations. A
+successful image certificate is not, by definition, a fine
+$(f,E_\infty)$-extension with its original target label. Third, the
+tests on basis vectors, their label restrictions and their sole
+stopping exception must be related to all the actual ambiguities
+required by the square or Mahowald argument. Finally, classical and
+permanent-cycle outputs require the full lifting and realization
+comparison described above.
+
+The surjectivity and (NC1)--(NC2) theorems provide other sufficient
+conditions for a finite composition. Applying either to the program
+requires a proof connecting the particular certificate conditions to
+its hypotheses; no such implication follows merely from the presence
+of image and kernel computations. These unresolved comparisons neither
+establish a counterexample to the program nor certify its correctness.
+\uses{sem:ProofTools:ss-image-certificate,sem:ProofTools:ss-adams-soundness,sem:ProofTools:ss-classical-soundness}
+% Correspondence: The entries in this section document a mathematical interpretation and its unproved soundness assertions. They have no formal bindings and do not change the existing interface or permitted-hole baselines.
+\end{remark}
+
+\section{Numerical extensions and their level qualifications}
+
+These are applications at specified maps, degrees and pages.
+For each example, existence of the extension, essentiality, and absence
+of crossing are separate assertions. The general level-indexed rules
+do not themselves supply all the numerical inputs.
+
+\begin{proposition}[Page extensions for nu and multiplication by two]
+\label{paper:5.8}
+\label{exam:extonEn}
+\level{coarse}
+From \cite{LWX126}, Example 5.8.\par
+For $f=\nu:S^3\to S^0$, with $e(f)=1$, the article gives the following extensions:
+\[
+\begin{aligned}
+d_1^{f,E_2}(h_5)&=h_2h_5,\\
+d_2^{f,E_3}(h_0h_4^2)&=h_0p,\\
+d_2^{f,E_\infty}(h_0h_4^2)&=h_0p.
+\end{aligned}
+\]
+The $E_3$ relation means that a representative of $h_0h_4^2$ in $S^{3,4}/\lambda^2$ has $[h_2]$-image detecting $\lambda h_0p$ in $S^{0,0}/\lambda^2$. The $E_\infty$ relation requires representatives in the full synthetic spheres with the same specified source and image detections.
+
+For $f=2:S^0\to S^0$, normalized by $\lambda[h_0]=2$, the article gives
+\[
+d_2^{f,E_\infty}(h_0h_3^2)=0,
+\qquad d_1^{f,E_\infty}(d_0)=h_0d_0.
+\]
+The latter extension is essential and makes
+\[
+d_2^{f,E_\infty}(h_0h_3^2)=h_0d_0
+\]
+inessential. Thus two target labels can describe the same full extension coset.
+\uses{paper:5.4,paper:5.7,sem:Literature:hopf-classes,sem:Literature:synthetic-h-zero}
+% Correspondence: the original example is recorded without a Lean binding. The finite nu relation is explained at paper:6.19; its infinite lift is a separate assertion at paper:6.24, not a consequence of quotient reduction alone.
+\end{proposition}
+\begin{proof}
+\uses{paper:6.19,paper:6.24}
+\textit{Source argument and scope.} The first relation is the $E_2$ product with the detector $h_2$ of $\nu$. The article derives the second relation by its nu-cofiber calculation in Example~\ref{paper:6.19}, and proposes the passage to the third relation in Example~\ref{paper:6.24}. The latter passage needs a target-preserving full lift; finite-quotient equations alone do not prove it.
+
+For multiplication by two, the article's low synthetic calculation gives a representative of $h_0h_3^2$ annihilated by $[h_0]$. The shorter essential extension from $d_0$ to $h_0d_0$ puts the latter label in the length-two target indeterminacy. This records the original numerical claims and their representative meaning; their complete fixed-model calculation and the infinite-lift bridge are not supplied by a formal binding here.
+
+\textit{The level-indexed questions for the four examples.}
+For $a\geq0$, the finite versions of (1) and (2) ask respectively for
+\[
+\mathcal E^\nu_{a+1,a}(1;h_5,h_2h_5),\qquad
+\mathcal E^\nu_{a+2,a}(2;h_0h_4^2,h_0p).
+\]
+The suspension of the source labels is the same as in the original
+$\nu:S^3\to S^0$ examples. The infinite versions in (3) and (4)
+instead ask for representatives in the full normalized map, with
+source label multiplied by $\lambda^a$ and target label multiplied
+by $\lambda^{a+n-e(f)}$. Such equations require their actual
+representatives; equations in each finite quotient separately do not
+supply them. In (4), whether the transported shorter extension
+remains essential is an additional target-coset calculation.
+These are the precise level questions for the numerical claims,
+not an assertion that all of their inputs have been formally produced.
+\end{proof}
+
+% AimPaper: 5.9 definition 1437 1441
+
+\begin{proposition}[Crossings in the nu and multiplication-by-two examples]
+\label{paper:5.13}
+\label{exam:Ercross}
+\level{coarse}
+From \cite{LWX126}, Example 5.13.\par
+The following are the crossing assertions for the maps and labels of Example~\ref{paper:5.8}, using the classical definition in \ref{paper:5.9}. Assume the displayed extension relations exist; in the fourth case assume the displayed length-one extension is essential. The assertions concern their crossings, rather than establishing existence of the input extensions:
+\begin{enumerate}
+\item For $f=\nu:S^3\to S^0$, $d_1^{f,E_2}(h_5)=h_2h_5$ has no crossing.
+\item For the same $f$, $d_2^{f,E_3}(h_0h_4^2)=h_0p$ has no crossing.
+\item The corresponding $d_2^{f,E_\infty}(h_0h_4^2)=h_0p$ has no crossing.
+\item For $f=2:S^0\to S^0$, the essential extension $d_1^{f,E_\infty}(d_0)=h_0d_0$ crosses both the length-two relation with target zero and the inessential length-two relation with target $h_0d_0$.
+\end{enumerate}
+These are assertions about the displayed maps, labels and pages, not claims that no-crossing automatically persists at every lambda level.
+\uses{paper:5.9}
+% Correspondence: no Lean binding. The original classical crossing checks are distinct from actual synthetic no-crossing in a different quotient or weight.
+\end{proposition}
+\begin{proof}
+\textit{Source checks and comparison boundary.} The first relation is in the minimal-length range. For the second, the only classical crossing candidate has $a=1,b=0$ in Definition~\ref{paper:5.9}; its source is generated by $h_0^2h_4^2$ and its proposed target by $h_0p$. The product $h_2h_0^2h_4^2=0$ excludes that candidate. The article gives the analogous check for the infinite relation and the explicit shorter extension in the fourth case.
+
+The alternative synthetic argument printed in the article invokes Proposition~\ref{paper:5.10}. Its general crossing comparison has the division issue explained there. Consequently this example does not supply an unproved conversion of the classical checks into the actual no-crossing hypotheses of the level-indexed Leibniz theorem.
+
+At level $a$, the first two finite examples have quotient exponents
+$a+1$ and $a+2$. Their actual crossing questions concern the maps
+and weights of those quotients. The two infinite examples concern
+the full map at the shifted weight. A transported short relation
+need not remain essential, and disappearance of one target under
+$\lambda$ does not exclude every other essential crossing.
+The original four checks therefore neither prove all-level
+no-crossing nor constitute a new general crossing comparison.
+\end{proof}
+
+% AimPaper: 5.14 proposition 1581 1587
+
+\begin{proposition}[The nu-cofiber calculation of a finite extension]
+\label{paper:6.19}
+\label{exam:Mahowald}
+\level{coarse}
+From \cite{LWX126}, Example 6.19.\par
+Consider
+\[
+S^3\xrightarrow{\nu}S^0\xrightarrow{i}C\nu\xrightarrow{q}S^4,
+\qquad (e(\nu),e(i),e(q))=(1,0,0).
+\]
+In Atiyah--Hirzebruch notation, $a[4]$ has top-cell image $a$ and $b[0]$ denotes the bottom-cell image of $b$. The input data are
+\[
+\begin{aligned}
+d_0^{q,E_2}(h_0h_4^2[4])&=h_0h_4^2,\\
+d_2(h_0h_4^2[4])&=h_0p[0],\\
+d_0^{i,E_2}(h_0p)&=h_0p[0],
+\end{aligned}
+\]
+where $h_0p[0]$ is a permanent cycle. The classical $d_2$ and the length-zero $q$-extension have no crossing in the sense used in the article. With
+\[
+n=2,\quad m=l=0,\quad n_1=1,\quad m_1=l_1=0,
+\quad r=r'=2,
+\]
+the claimed output is that $h_0h_4^2\in E_2^{3,36}(S^3)$ survives to $E_3$ and
+\[
+d_2^{\nu,E_3}(h_0h_4^2)=h_0p,
+\qquad h_0p\in E_2^{5,38}(S^0).
+\]
+\uses{paper:5.4,sem:Literature:nu-cofiber,paper:4.14}
+% Correspondence: the original numerical application is unbound. This n=2 example is distinct from the existing n=3 Main zero-layer theorem.
+\end{proposition}
+\begin{proof}
+\uses{paper:6.12}
+\textit{Original specialization and remaining comparison.} The homology short exact sequence gives the top- and bottom-cell Ext maps. The article supplies the displayed cofiber $d_2$ as an independent secondary-Steenrod-algebra computation. Substituting the displayed parameters into its Mahowald argument gives the finite extension and source survival.
+
+For the finite-layer revision at Theorem~\ref{paper:6.12}, the input layers $i,j$ and the retained output layer $k=l-e(q)$ are all zero. Its conclusion is in the strong quotient of length $2$ and therefore has exactly the required $E_3$ page and target boundary denominator. One must still identify the three displayed inputs with the actual finite maps and produce their actual no-crossing alternative; the original classical checks do not prove that conversion through the unresolved general comparison of Proposition~\ref{paper:5.10}. This proof panel records the specialization and that boundary, without claiming a completed formal calculation of its inputs.
+
+For positive input level $a$, the corresponding finite target relation
+is $\mathcal E^\nu_{2+a,a}(2;h_0h_4^2,h_0p)$.
+Applying the level-indexed Mahowald theorem requires the associated
+actual input representatives and their comparisons; the zero-level
+calculation alone is not their formal producer.
+The separate theorem below has length three and different bidegrees.
+It does not establish this length-two numerical example.
+\end{proof}
+
+
+\begin{theorem}[The zero-layer nu-cofiber Mahowald instance]
+\label{sem:ProofTools:nu-zero-layer}
+\level{coarse}
+In the fixed cofiber triangle for $\nu$, take labels $x\in E_2^{8,133}(S^3)$, $y\in E_2^{11,136}(S^0)$, $\bar x\in E_2^{8,134}(C\nu)$ and permanent $\bar y\in E_2^{11,136}(C\nu)$. Require $x\in Z_2$, $y\in Z_1$, $\bar x\in Z_2$, the actual suspension label for $x$, the length-zero connecting extension on page $3$, $d_3(\bar x)=\bar y$, its specified no-crossing alternative, and the length-zero bottom-cell extension on page $2$. Then $x\in Z_3$ and there is an actual $\nu$-extension of length $3$ on page $4$ from $x$ to some $y'$ with $y'-y\in B_3$.
+\uses{sem:Literature:nu-cofiber,sem:Literature:connected-homology,sem:AdamsSynthetic:shift-coherence,sem:AdamsSynthetic:ess-shifts,sem:ProofTools:common-labels,sem:ProofTools:filtration-representatives,sem:ProofTools:extension-representatives,sem:ProofTools:sphere-label-detection,sem:ProofTools:finite-strip,paper:5.4}
+\lean{KIP126.ProofTools.Internal.Mahowald.main_nu_mahowald_zero_layer}
+% Blueprint note: The instance has its own proof. Its fixed-model constructions and comparison inputs retain their registered upstream obligations.
 \end{theorem}
 \begin{proof}
 \textit{Proof sketch in the fixed model.}
-Use the fixed-target shorter-extension criterion in the early quotient. If its higher source has no corresponding later cycle label, it is the first alternative. Otherwise lift the source label and compare the actual image with the fixed late target. Their nonzero discrepancy has a first grade in the finite higher-source range and gives the second alternative, an actual late crossing. Thus imposing the cycle-set difference requires retaining the crossing branch.
+Use the actual quotient-boundary diagram of the fixed $\nu$ cofiber, with its specified suspension comparison. The classical $d_3$ supplies the boundary equation, and the two length-zero extensions supply the connecting and bottom-cell equations. The no-crossing alternative synchronizes the required representatives. In this particular finite diagram, the quotient-window bounds identify the source as a $Z_3$ label and identify the resulting length-three extension target modulo $B_3$. Thus the extension is on page $4$ with the stated congruence. This is an independent argument for this numerical instance, not cancellation of a $\lambda$ power in the general Mahowald theorem.
 \end{proof}
 
-% AimPaper: 6.23 corollary 2074 2081
-\begin{corollary}[Finite-page stretching with a same-quotient obstruction]
-\label{paper:6.23}
-\source{A finite-page sufficient-condition revision of AimPaper Corollary 6.23}
+\section{Classical realization and the original infinite-extension route}
+
+The following full-object comparison and applications concern the
+original route through an infinite extension. A compatible full lift
+contains more information than a relation in one finite quotient.
+This route is distinct from the finite-layer surjectivity composition,
+whose proof uses only finite quotients and a finite correction.
+
+\begin{proposition}[From infinity-page extensions to homotopy extensions]
+\label{paper:5.14}
+\source{AimPaper Proposition 5.14}
 \level{coarse}
-A finite-page sufficient-condition revision of \cite{LWX126}, Corollary 6.23.\par
-\label{cor:dfc6043e}
-Work in the fixed Standard model. Let $f:X\to Y$, put $e=e(f)$, and let $r',r\in\mathbb N$ and $n,s,t\in\mathbb Z$ satisfy
-\[
-2\le r'\le r,\qquad e\le n\le r'-2+e.
-\]
-Suppose that the specified labels satisfy the later-page cycle conditions
-\[
-x\in Z_{r-1}^{s,t}(X),\qquad
-y\in Z_{r-1-n+e}^{s+n,t+n}(Y),
-\]
-and that there is an earlier-page extension $d_n^{f,E_{r'}}(x)=y$.
+From \cite{LWX126}, Proposition 5.14.\par
+% BEGIN AIMPAPER STATEMENT
+Consider $f: X\to Y$, $x\in Z_\infty^{s,t}(X)$ and $y\in Z_\infty^{s+n,t+n}(Y)$.
+    Then
+    $$d^{f,E_\infty}_n(x)=y$$
+    implies that
+    $$d^{f}_n(x+B_\infty^{s,t}(X))=y+B_\infty^{s,t}(Y).$$
+% END AIMPAPER STATEMENT
+\uses{paper:5.4,sem:Literature:lambda-inversion,paper:3.11,paper:2.5,sem:Literature:realization-coordinates,sem:Literature:lambda-inversion-adams-comparison,sem:Literature:lambda-inversion-detection}
+% Blueprint note: Mathematical dependency review: [AimPaper source, lines 1589-1597](paper/main.tex.html#L1589). Inverting lambda gives a map from the synthetic ESS to the classical ESS and sends the infinity-page extension to its homotopy extension.
 
-Let $A=\Sigma^{0,e}\nu X$, $B=\nu Y$, and $q=r'-1$. Assume that there is no nonliftable obstruction in the same early quotient. Explicitly, exclude every pair $a,b\in\mathbb N$ with
-\[
-0<a\le r'-2,\qquad a+b\le n,
-\]
-and classes
-\[
-\xi\in E_\infty^{s+a,t+a,t+e}(A/\lambda^q),\qquad
-0\ne\eta\in E_\infty^{s+n-b,t+n-b,t+e}(B/\lambda^q),
-\]
-such that $\xi$ is outside the image of the actual quotient reduction
-\[
-\rho_\infty:E_\infty^{s+a,t+a,t+e}(A/\lambda^{r-1})
-\longrightarrow E_\infty^{s+a,t+a,t+e}(A/\lambda^q)
-\]
-and, in the same earlier-quotient ESS at stem $t-s$ and weight $t+e$,
-\[
-d_{n-a-b}^{\hat f_q}(\xi)=\eta.
-\]
-These obstructions include inessential extensions, $b=0$ and length zero; source nonliftability refers to the actual $\rho_\infty$ image, not to a difference of classical cycle sets. Then the same labels admit the later-page extension
-\[
-d_n^{f,E_r}(x)=y.
-\]
-The conclusion asserts existence of a later extension; it does not prescribe a lift of an arbitrarily chosen strict representative or a compatible infinite tower.
-\lean{KIP126.ProofTools.Standard.finitePageExtensionStretching}
-% Correspondence: complete for the stated finite-page sufficient-condition revision.
-% Blueprint note: This revision strengthens the printed hypotheses by requiring the later target cycle qualification and excluding all specified nonzero same-quotient obstructions. It does not assert the original essential-crossing-only criterion or the case r=infinity. Its local proof is independent of the revised Proposition 6.20 and inherits registered upstream obligations.
-% Blueprint note: \href{paper/main.tex.html#L2074}{Original Corollary 6.23 and its context} · \href{paper/2412.10879.pdf}{Article PDF}. The original text remains in AimPaper and in the corrections tab.
-\end{corollary}
+As throughout \cite{LWX126}, spectra are understood to be 2-completed,
+connective and of finite type. The Lean binding expresses the extension
+equation by the representative criterion of Proposition~\ref{paper:2.5}:
+$x$ detects one $a$ and $y$ detects $f_*a$. Realization coordinates and
+the actual Adams-tower comparison of
+Definition~\ref{sem:Literature:lambda-inversion-adams-comparison} make the
+lambda-inversion background explicit. Zero labels, boundary labels and
+inessential extensions remain allowed. Constructing these comparison
+data for the fixed Standard model remains an upstream task, tracked in
+issue 31.
+
+\textit{Positive levels and finite quotients.}
+A full-object equation at level $k$ uses source $\lambda^kx$
+and target $\lambda^{k+n-e}y$ at weight $t+e-k$.
+Comparing it with the classical equation requires the detection
+transport at that weight and the normalized-map comparison.
+The formal binding here transports the displayed zero-level
+infinite extension with the explicit comparison data.
+A finite-quotient equation at any level is different: it first
+requires a lift preserving both specified detections before this
+full-object transport can be applied.
+% Blueprint note: The original article number is 5.14; other numbering is generated by the blueprint. Throughout the article, spectra are assumed to be 2-completed, connective, and of finite type. Read this statement together with its original context.
+% Blueprint note: \href{paper/main.tex.html#L1581}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
+% Blueprint note: The printed boundary group on $Y$ has index $(s,t)$ although $y$ has degree $(s+n,t+n)$. The typed conclusion uses the latter degree and keeps zero and inessential extensions. See the statement-typing correction record.
+% Blueprint note: The AimPaper statement is retained verbatim and directly binds its proved representative-form transport. The realization coordinates and actual comparison remain explicit inputs; the binding does not assert that the Standard comparison producer has been constructed.
+% Blueprint note: The deferred completed-background migration is tracked in [issue 31](https://github.com/SII-MATH/Kervaire126Main/issues/31).
+\lean{KIP126.ProofTools.Paper.infiniteExtension_to_classicalExtension}
+\end{proposition}
 \begin{proof}
-\uses{sem:ProofTools:finite-correction,sem:ProofTools:finite-strip,sem:ProofTools:extension-representatives}
-\textit{Proof of the finite-page revision; compare \cite{LWX126}, Corollary 6.23.} \href{paper/main.tex.html#L2074}{Original statement and context}.
+\uses{sem:ProofTools:extension-representatives,sem:Literature:lambda-inversion-detection,sem:Literature:lambda-inversion-adams-comparison,sem:AdamsSynthetic:normalized-map,paper:3.11,paper:2.5}
+\textit{(See \cite{LWX126}, Proposition 5.14.)} \href{paper/main.tex.html#L1589}{Original proof}.
 
-Use actual representatives of the earlier extension. The prescribed late source and target cycle qualifications supply lifts of their infinite-page labels along quotient reduction. Correct the difference between the chosen early source and a late lift over the finite filtration interval. At each step, a residual source with nonzero target that cannot be lifted would give exactly one of the excluded same-quotient obstructions. Every other residual can be corrected to the next filtration or already has image above the prescribed target filtration. The finite correction theorem and the finite-quotient cutoff therefore supply a late representative with the specified source and target labels. Reading its actual map equation gives the required extension.
+Invert $\lambda$ in the filtered synthetic map $\widehat f$. The comparison with the classical map $f$ induces a morphism of extension spectral sequences. On the starting page, Proposition~\ref{paper:3.11} sends a label in $Z_\infty/B_{1+t-w}$ to its class in $Z_\infty/B_\infty=E_\infty$.
 
-This is an independent representative proof of the finite sufficient condition, not a contrapositive of the revised Proposition~\ref{paper:6.20}. It proves the stated revision, not the full printed corollary with only essential crossings excluded or an infinite later page.
+For the formal representative transport, put $e=e(f)$ and $w=t+e$.
+The actual extension equation gives one representative
+$\beta\in\pi_{t-s,w}(\Sigma^{0,e}\nu X)$ whose image under $\hat f$
+has the specified target detection. Apply the detection transport theorem
+to this same $\beta$ and to $\hat f_*\beta$. The prescribed $E_2$
+comparisons return precisely $x$ and $y$.
+
+Realization of the normalized factorization, followed by cancellation of
+the invertible realized lambda map, gives
+\[
+\theta_Y\circ\operatorname{Re}(\hat f)
+ =f\circ\theta_{\Sigma^{0,e}\nu X}.
+\]
+Thus the first realized representative is $a$, and the second is exactly
+$f_*a$. The sphere-coordinate transport accounts for
+$(t+n)-(s+n)=t-s$. By Proposition~\ref{paper:2.5}, these detections give
+the classical $f$-extension in the conclusion. The target is taken in its
+own bidegree $(s+n,t+n)$, as required for the quotient by its boundary
+group. Localization can enlarge the boundary indeterminacy, so the
+resulting extension need not be essential. The argument includes zero
+and boundary labels and imposes no nonvanishing or essentiality condition.
+\end{proof}
+
+\begin{remark}[What the classical comparison forgets]
+\label{paper:5.15}
+\level{coarse}
+From \cite{LWX126}, Remark 5.15.\par
+An $(f,E_\infty)$-extension contains synthetic information beyond its image in the classical $f$-extension spectral sequence. Proposition~\ref{paper:5.14} sends specified synthetic labels to their classes modulo $B_\infty$. Its classical output does not specify the original lambda layer, the finer synthetic target coset, or a chosen synthetic representative and its image. The comparison is therefore used in the stated direction; a target-preserving synthetic lift is additional data.
+\uses{paper:5.14,paper:5.7,sem:Literature:lambda-inversion}
+\end{remark}
+\begin{proof}
+The comparison inverts $\lambda$ and sends the permanent labels to their $Z_\infty/B_\infty$ classes. The intermediate synthetic boundary quotients and lambda-torsion information are not specified by those classes. Recovering the original representative and its prescribed image consequently requires a lift, rather than just the classical equation.
+\end{proof}
+
+
+
+\begin{proposition}[The infinite-page nu-extension used in the Leibniz example]
+\label{paper:6.24}
+\label{exam:stretchext}
+\level{coarse}
+From \cite{LWX126}, Example 6.24.\par
+For $f=\nu:S^3\to S^0$, the finite relation of Example~\ref{paper:6.19},
+\[
+d_2^{f,E_3}(h_0h_4^2)=h_0p,
+\]
+is asserted in the article to extend to
+\[
+d_2^{f,E_\infty}(h_0h_4^2)=h_0p.
+\]
+The latter means that representatives in the full synthetic spheres have the prescribed source and image detections; it is stronger than the equation in the quotient by $\lambda^2$ alone.
+\uses{paper:5.4}
+% Correspondence: original application recorded without a Lean binding. The infinite lifting step is not supplied by the current finite-page stretching theorem.
+\end{proposition}
+\begin{proof}
+\uses{paper:6.19,paper:5.13}
+\textit{Source argument and unresolved infinite step.} The article uses its Corollary 6.23 with later page $\infty$, citing the no-crossing check in Example~\ref{paper:5.13}. The revised Corollary~\ref{paper:6.23} displayed here proves a finite-page sufficient condition with a stronger same-quotient obstruction exclusion and a later target-cycle qualification. It therefore does not by itself justify this infinite-page application.
+
+To complete this route one must produce a target-preserving full lift, or an appropriately compatible tower of finite lifts and a proved passage to the full synthetic objects. Separate choices of extensions in every finite quotient are not such a tower. The assertion is retained here as the original application's precise outstanding bridge, rather than as a consequence already proved by finite stretching.
+
+At a positive lambda level the same requirement is a full lift with
+both detectors transported to that weight. Arbitrary finite-level
+existence still does not provide a compatible tower. This is an
+outstanding bridge of the original infinite-extension route, not
+an input to the finite-layer surjectivity composition.
+\end{proof}
+
+\begin{proposition}[A classical d-three obtained by the Leibniz argument]
+\label{paper:6.7}
+\label{exam:Leibnizyes}
+\level{coarse}
+From \cite{LWX126}, Example 6.7.\par
+For $f=\nu:S^3\to S^0$, consider
+\[
+\begin{gathered}
+x=h_5\in E_2^{1,35}(S^3),\qquad
+y=h_2h_5\in E_2^{2,36}(S^0),\\
+x_\infty=h_0h_4^2\in Z_\infty^{3,36}(S^3),\qquad
+y_\infty=h_0p\in Z_\infty^{5,38}(S^0).
+\end{gathered}
+\]
+The article applies the classical input and the two extensions
+\[
+d_2(h_5)=h_0h_4^2,\qquad
+d_1^{f,E_2}(h_5)=h_2h_5,\qquad
+d_2^{f,E_\infty}(h_0h_4^2)=h_0p
+\]
+with their specified no-crossing conditions to obtain
+\[
+d_3(h_2h_5)=h_0p.
+\]
+Its parameters are $n=r=2$, $m=1$, $l=2$, $e(f)=1$, $s=1$ and $t=35$.
+\uses{paper:5.4,paper:4.14}
+% Correspondence: the original numerical conclusion is unbound. The source argument and the actual hypotheses of the revised GL theorem are distinguished in the proof.
+\end{proposition}
+\begin{proof}
+\uses{paper:5.8,paper:5.13,paper:6.24,sem:Literature:one-line-differentials,sem:ProofTools:generalized-leibniz-at-level}
+\textit{Source argument and scope of the revised tool.} The classical differential is the Hopf-invariant-one differential. The finite extension is the product with $h_2$; the infinite extension is the assertion of Example~\ref{paper:6.24}. The article's length formula gives $r+l-m=3$.
+
+To use Theorem~\ref{sem:ProofTools:generalized-leibniz-at-level} instead of the original rule, at level zero one must verify actual top-or-left no-crossing in the quotient of length $1$ and actual no-crossing on the propagated infinite bottom edge. The classical checks of Example~\ref{paper:5.13} are not automatically those conditions. Thus the displayed numerical conclusion and its original proposed derivation are recorded without claiming that the finite-to-infinite bridge and crossing comparisons have already been formally closed.
+
+An application of the finite-layer surjectivity composition would be
+a separate derivation: it must identify the first-quotient connecting
+class with the specified $h_2h_5$, produce its two classical
+differentials and verify every instance of (Surj) in the actual
+$\nu$ triangle. Neither the existence of that general composition
+statement nor the original no-crossing check verifies these
+numerical conditions. This entry does not assert that this
+alternative application has already been completed.
+\end{proof}
+
+\section{Why crossing and representative choices matter}
+
+The article's criticisms and representative-choice examples explain
+why crossing information cannot be discarded. They are not additional
+positive theorems obtained merely by introducing a lambda level.
+
+\begin{proposition}[A crossing obstructing a Leibniz conclusion]
+\label{paper:6.8}
+\label{paper:6.6}
+\label{paper:6.9}
+\label{paper:6.10}
+\label{exam:Leibnizno}
+\label{rem:chuaerror}
+\level{coarse}
+From \cite{LWX126}, Example 6.8 and Remarks 6.6, 6.9--6.10.\par
+Let $f=2:S^0\to S^0$, normalized by $[h_0]$. At
+\[
+n=r=2,\quad m=1,\quad l=2,\quad e(f)=1,\quad s=1,\quad t=16,
+\]
+the input relations are
+\[
+d_2(h_4)=h_0h_3^2,\qquad
+d_1^{f,E_2}(h_4)=h_0h_4,\qquad
+d_2^{f,E_\infty}(h_0h_3^2)=0.
+\]
+The bottom relation has the essential crossing
+\[
+d_1^{f,E_\infty}(d_0)=h_0d_0.
+\]
+Consequently, omitting the bottom no-crossing hypothesis from the original Leibniz rule would give the incorrect conclusion $d_3(h_0h_4)=0$.
+
+The same shorter extension also makes
+\[
+d_2^{f,E_\infty}(h_0h_3^2)=h_0d_0
+\]
+inessential. Applying a rule without the required crossing control to these two choices would give the conflicting outputs
+\[
+d_3(h_0h_4)=0,\qquad d_3(h_0h_4)=h_0d_0.
+\]
+The issue persists if one merely chooses a lift with maximally lambda-divisible image: the article gives two lifts of $h_0h_3^2$, one with $[h_0]$-image zero and another with image $[h_0d_0]$. The first is the maximal choice in the sense discussed there, yet it would yield the incorrect zero conclusion. A maximal-image choice is not a replacement for the crossing hypothesis.
+\uses{paper:5.4,paper:5.7,paper:5.8,paper:5.13}
+% Correspondence: this is the original concrete warning, with its target-coset and maximal-lift explanations combined. No Lean binding or general theorem about every positive lambda level is asserted. The Chua locators are those discussed in AimPaper, not an independent reformulation of all hypotheses of that work.
+\end{proposition}
+\begin{proof}
+\uses{sem:Literature:one-line-differentials}
+\textit{The article's counterexample.} The first finite relation is multiplication by $h_0$ on $E_2$. The two infinite target labels differ by the shorter extension image $h_0d_0$, so they describe the same full target coset at length two. This shorter essential extension is precisely the excluded bottom crossing. Dropping that exclusion would assign incompatible differential targets; choosing the representative whose image is zero does not remove the crossing.
+
+This argument concerns the specified zero-layer example. Transporting its relations to another quotient or weight does not by itself preserve essentiality or no-crossing, so it is not a claim of the same counterexample at every retained level.
 \end{proof}

@@ -33,7 +33,7 @@ class NativeProofPresentationTests(unittest.TestCase):
         targets = [row for row in statements
                    if row['label'].startswith('paper:')
                    and row['content_type'] != 'definition']
-        self.assertEqual(len(targets), 47)
+        self.assertEqual(len(targets), 56)
         for row in targets:
             with self.subTest(label=row['label']):
                 self.assertIn(row['label'], visible)

@@ -11,6 +11,35 @@ import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
 import all KIP126.ProofTools
+import all KIP126.ProofTools.MahowaldLeibniz
+import all KIP126.ProofTools.MahowaldLeibniz.FiniteCore
+import all KIP126.ProofTools.MahowaldLeibniz.FixedModel
+import all KIP126.ProofTools.MahowaldLeibniz.Bockstein
+import all KIP126.ProofTools.MahowaldLeibniz.Filtration
+import all KIP126.ProofTools.MahowaldLeibniz.CoefficientShift
+import all KIP126.ProofTools.MahowaldLeibniz.CoreAtLevel
+import all KIP126.ProofTools.MahowaldLeibniz.TerminalSquare
+import all KIP126.ProofTools.MahowaldLeibniz.LastLayer
+import all KIP126.ProofTools.MahowaldLeibniz.LastLayerNative
+import all KIP126.ProofTools.MahowaldLeibniz.OrdinaryLastLayer
+import all KIP126.ProofTools.MahowaldLeibniz.MayTarget
+import all KIP126.ProofTools.MahowaldLeibniz.Corollaries
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveBranches
+import all KIP126.ProofTools.MahowaldLeibniz.NativeImageSquare
+import all KIP126.ProofTools.MahowaldLeibniz.TerminalSource
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveHBranch
+import all KIP126.ProofTools.MahowaldLeibniz.ClassicalStatements
+import all KIP126.ProofTools.MahowaldLeibniz.TerminalOrdinary
+import all KIP126.ProofTools.MahowaldLeibniz.CommonCore
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveGCorollary
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveFirstCore
+import all KIP126.ProofTools.MahowaldLeibniz.OrdinaryImageSquare
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveGCore
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveHCore
+import all KIP126.ProofTools.MahowaldLeibniz.ClassicalComposition
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveGSource
+import all KIP126.ProofTools.MahowaldLeibniz.PositiveHCorollary
+import all KIP126.ProofTools.MahowaldLeibniz.TopTarget
 import all KIP126.ProofTools.ConvergenceOperations
 import all KIP126.ProofTools.DetectionOperations
 import all KIP126.ProofTools.FiltrationOperations
@@ -192,6 +221,59 @@ run_cmd do
   -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift must stay independent of the retired GL/MH claims.
   let provedTools := #[
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_surjectivity_image_eq,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_collapsed_image_eq,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.last_layer_surjectivity_implies_target_boundary,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.last_layer_target_boundary_implies_surjectivity,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.representative_family_has_lift_iff_boundary_mem,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.differential_iff_specified_finite_lift,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_top_detected_zero_iff_boundary,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_bockstein_terminal_decode,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.differential_detects_first_finite_boundary,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_filtration_collapse_of_middle_conditions,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_ordinary_h_filtered,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.classical_second_differential_may,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_source_detects,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_image_of_same_source_and_annihilation,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_normalized_annihilation,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_native_annihilation,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_same_source_image,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_coefficient_shift_detects_pair,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_coefficient_shift_layer_detects,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.cofiberFirstQuotientBoundary_native_label,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.suspendedFirstFiniteBoundary_normalized_natural,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.classical_second_differential_may_at_level,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.normalizedFirstMap_last_layer_zero,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.pdf_conditions_native_annihilation,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.pdf_conditions_same_native_source_image,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_same_x_label_image,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_classical_second_image,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.ordinary_map_pdf_annihilation,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.normalized_boundary_image_decode,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.shifted_classical_differential_lift,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.pdf_conditions_classical_second_image,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_first_finite_boundary_target_detects,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.actual_first_finite_boundary_source_detects,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_signed_target_at_level,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_classical_corollary,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.pdf_conditions_classical_corollary,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_operation_negative_lift_label,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_h_classical_second_may,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_h_classical_second_may_at_level,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_second_differential_may,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.ordinary_first_finite_boundary_source_detects,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.ordinary_normalized_boundary_image_decode,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_first_finite_core,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_third_finite_core,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_layer_surj_statement,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_f_classical_nc_statement,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_g_classical_second_may_at_level,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_h_classical_nc_statement,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_g_classical_nc_statement,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_second_finite_core,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_quotient_mahowald_leibniz_core,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.classical_nc_composition,
+    `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_signed_target_eq_top_at_level,
     `KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative,
     `KIP126.ProofTools.Internal.Mahowald.finite_may_first_image_and_second_factor,
     `KIP126.ProofTools.Internal.Mahowald.finite_rho_lift_label_and_cycles,
