@@ -14,20 +14,31 @@ def environment_key(root):
 
 def prepare(root, cache):
     lake = root / '.lake'
-    marker = lake / 'runner-environment'
     expected = environment_key(root)
+    cache = cache.resolve()
+    cache.mkdir(parents=True, exist_ok=True)
+    target = cache / expected
+    if target.is_symlink():
+        raise ValueError('Persistent cache environment must be an independent directory')
     if lake.is_symlink():
-        raise ValueError('CI .lake must be an independent directory')
-    if lake.exists() and (not marker.exists() or marker.read_text().strip() != expected):
-        # Never delete a previous build; it may still be useful after switching back.
+        actual = lake.resolve()
+        if actual.parent != cache or len(actual.name) != 64 or any(c not in '0123456789abcdef' for c in actual.name):
+            raise ValueError('CI .lake cannot point outside the dedicated environment cache')
+        if actual != target:
+            lake.unlink()
+    elif lake.exists():
+        # Migrate the initial independently seeded directory out of checkout.
         import time
-        cache.mkdir(parents=True, exist_ok=True)
+        marker = lake / 'runner-environment'
         old = marker.read_text().strip() if marker.exists() else 'unclassified'
-        if len(old) != 64 or any(c not in '0123456789abcdef' for c in old):
-            old = 'unclassified'
-        lake.rename(cache / (old + '-' + str(time.time_ns())))
-    lake.mkdir(exist_ok=True)
-    marker.write_text(expected + '\n')
+        if old == expected and not target.exists():
+            lake.rename(target)
+        else:
+            lake.rename(cache / ('previous-' + str(time.time_ns())))
+    target.mkdir(exist_ok=True)
+    (target / 'runner-environment').write_text(expected + '\n')
+    if not lake.is_symlink():
+        lake.symlink_to(target, target_is_directory=True)
     print('Persistent CI cache environment:', expected)
 
 

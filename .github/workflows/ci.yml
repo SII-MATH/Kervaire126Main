@@ -60,7 +60,7 @@ jobs:
       - name: Prepare isolated persistent cache
         if: runner.environment == 'self-hosted'
         run: |
-          git clean -ffdx -e .lake/
+          git clean -ffdx -e .lake -e .lake/
           python3 .github/runner/prepare-cache.py
           elan show
 

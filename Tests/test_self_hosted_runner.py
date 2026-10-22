@@ -54,6 +54,26 @@ class PersistentCacheTests(unittest.TestCase):
             cache.prepare(root, archives)
             self.assertFalse(artifact.exists())
             self.assertEqual(next(archives.glob('*/artifact')).read_text(), 'compiled')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives)
+            self.assertEqual(artifact.read_text(), 'compiled')
+
+    def test_checkout_recreation_does_not_delete_persistent_build(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            archives = Path(temporary) / 'archives'
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives)
+            (root / '.lake/artifact').write_text('compiled')
+            # Checkout's directory removal must only remove the symlink.
+            import shutil
+            shutil.rmtree(root)
+            root.mkdir()
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives)
+            self.assertEqual((root / '.lake/artifact').read_text(), 'compiled')
 
     def test_symlink_cannot_redirect_into_development_cache(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -63,3 +83,20 @@ class PersistentCacheTests(unittest.TestCase):
             (root / '.lake').symlink_to(root / 'development')
             with self.assertRaises(ValueError):
                 cache.prepare(root, root / 'archives')
+
+    def test_source_cleanup_preserves_cache_link_and_removes_stale_files(self):
+        import subprocess
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            subprocess.run(['git', 'add', 'lean-toolchain', 'lake-manifest.json'], cwd=root, check=True)
+            cache.prepare(root, Path(temporary) / 'archives')
+            (root / '.lake/artifact').write_text('compiled')
+            (root / 'stale.tmp').write_text('old source')
+            subprocess.run(['git', 'clean', '-ffdx', '-e', '.lake', '-e', '.lake/'],
+                           cwd=root, check=True, capture_output=True)
+            self.assertTrue((root / '.lake').is_symlink())
+            self.assertEqual((root / '.lake/artifact').read_text(), 'compiled')
+            self.assertFalse((root / 'stale.tmp').exists())

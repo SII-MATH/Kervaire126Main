@@ -10,8 +10,8 @@ inventory check and full `lake build`, including the existing trust audits.
 The runner runs as the dedicated, non-login Linux account `kip-ci`, with its own
 home at `/inspire/hdd/global_user/czxs25250150/kip126-ci`. It has no developer GitHub
 credentials. Its pinned Lean installation, runner registration, workspace and
-all writable caches live under that home. No dependency/build directory is
-symlinked to the development checkout. Bootstrap copies use independent files
+all writable caches live under that home. The checkout links `.lake` only to its own persistent environment cache;
+no dependency/build directory links to the development checkout. Bootstrap copies use independent files
 or copy-on-write copies, never hard links.
 
 There is one registered runner and thus one executing job at a time. Its entire
@@ -33,10 +33,12 @@ registration. They cannot write root-owned host policy or developer files.
 
 ## Persistent cache
 
-Checkout retains `.lake` and removes other untracked files before the Lean job.
-The toolchain and dependency lock identify a cache environment. On an environment
-change, the previous `.lake` is archived under `~/cache/environments/` rather than
-reused as a current environment. Within one environment, Lake validates traces
+The actual `.lake` directory lives under `~/cache/environments/<environment>/`,
+outside checkout; checkout contains only a validated symlink to it. Recreating
+the repository therefore cannot delete the cache. Other untracked checkout files
+are removed before the Lean job. The toolchain and dependency lock identify an
+environment. Switching environments retains the previous cache and reconnects
+the appropriate one, including when returning to an earlier lock. Within one environment, Lake validates traces
 and rebuilds changed inputs and their dependents. Partial compilation survives
 cancellation without an upload/download round trip. Hosted jobs retain the
 existing Actions/Release restoration path.
