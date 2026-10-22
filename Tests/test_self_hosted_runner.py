@@ -16,9 +16,22 @@ def load(name, filename):
 
 policy = load('runner_policy', 'job-start.py')
 cache = load('runner_cache', 'prepare-cache.py')
+blueprint_policy = load('blueprint_policy', 'blueprint-job-start.py')
 
 
 class AdmissionTests(unittest.TestCase):
+    def test_blueprint_slot_only_accepts_main_export(self):
+        env = {'GITHUB_REPOSITORY': policy.REPOSITORY,
+               'GITHUB_WORKFLOW_REF': policy.REPOSITORY + '/.github/workflows/pages.yml@refs/heads/main',
+               'GITHUB_EVENT_NAME': 'push', 'GITHUB_REF': 'refs/heads/main'}
+        self.assertTrue(blueprint_policy.allowed(env, {'ref': 'refs/heads/main'}))
+        for key, value in [('GITHUB_REF', 'refs/heads/develop'),
+                           ('GITHUB_EVENT_NAME', 'pull_request'),
+                           ('GITHUB_REPOSITORY', 'foreign/repo'),
+                           ('GITHUB_WORKFLOW_REF', policy.REPOSITORY + '/.github/workflows/ci.yml@refs/heads/main')]:
+            self.assertFalse(blueprint_policy.allowed({**env, key: value}, {'ref': 'refs/heads/main'}))
+        self.assertTrue(blueprint_policy.allowed({**env, 'GITHUB_EVENT_NAME': 'workflow_dispatch'}, {}))
+
     def env(self, event):
         return {'GITHUB_REPOSITORY': policy.REPOSITORY, 'GITHUB_EVENT_NAME': event,
                 'GITHUB_WORKFLOW_REF': policy.REPOSITORY + '/.github/workflows/ci.yml@refs/pull/1/merge'}
@@ -40,6 +53,33 @@ class AdmissionTests(unittest.TestCase):
 
 
 class PersistentCacheTests(unittest.TestCase):
+    def test_source_variants_keep_independent_builds_and_shared_locked_dependencies(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            archives = Path(temporary) / 'archives'
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives, 'a' * 64)
+            (root / '.lake/build').mkdir()
+            (root / '.lake/build/result').write_text('version A')
+            (root / '.lake/packages/dependency').write_text('locked dependency')
+            cache.prepare(root, archives, 'b' * 64)
+            self.assertFalse((root / '.lake/build').exists())
+            self.assertEqual((root / '.lake/packages/dependency').read_text(), 'locked dependency')
+            (root / '.lake/build').mkdir()
+            (root / '.lake/build/result').write_text('version B')
+            cache.prepare(root, archives, 'a' * 64)
+            self.assertEqual((root / '.lake/build/result').read_text(), 'version A')
+            cache.prepare(root, archives, 'b' * 64)
+            self.assertEqual((root / '.lake/build/result').read_text(), 'version B')
+
+    def test_corrupt_fingerprint_cannot_escape_cache(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            with self.assertRaises(ValueError):
+                cache.prepare(root, root / 'cache', '../development')
+
     def test_matching_environment_keeps_files_and_lock_change_archives_them(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / 'checkout'; root.mkdir()

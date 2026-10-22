@@ -54,9 +54,16 @@ class InterfacePageTests(unittest.TestCase):
         self.assertIsNotNone(match)
         workflow = yaml.safe_load((ROOT / '.github/workflows/pages.yml').read_text())
         steps = workflow['jobs']['export']['steps']
-        checkout = [step for step in steps if step.get('with', {}).get('repository') == 'SII-MATH/hgraph']
-        self.assertEqual(len(checkout), 1)
-        self.assertEqual(checkout[0]['with']['ref'], match[1])
+        self.assertEqual(workflow['jobs']['export']['runs-on'], 'kip126-blueprint')
+        self.assertTrue(any(step.get('run') == 'python .github/runner/check-blueprint-env.py'
+                            for step in steps))
+        import importlib.util
+        spec = importlib.util.spec_from_file_location('blueprint_env', ROOT / '.github/runner/check-blueprint-env.py')
+        environment = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(environment)
+        self.assertEqual(environment.PIN, match[1])
+        self.assertFalse(any('apt-get' in step.get('run', '') or 'pip install' in step.get('run', '')
+                             for step in steps))
 
     def test_layout_has_one_canonical_source(self):
         self.assertTrue((ROOT / 'interface/baselines').is_dir())
