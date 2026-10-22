@@ -18,7 +18,7 @@ def main():
     data = json.loads((ROOT / '_site/Kervaire126/data.json').read_text())
     cases = {
         'eq:eae450fe': 'paper:5.4', 'eq:334248d2': 'paper:5.4',
-        'eq:b98be76a': 'paper:5.9', 'eq:a020bad3': 'paper:5.10',
+        'eq:b98be76a': 'paper:5.9', 'eq:a020bad3': 'paper:5.4',
         'eq:9d45feac': 'paper:2.12', 'eq:36e72616': 'paper:2.12',
         "eq:dr'": 'paper:6.20', 'not:deltaandrho': 'paper:4.2',
     }

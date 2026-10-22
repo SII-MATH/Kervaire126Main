@@ -19,6 +19,20 @@ import all KIP126.ProofTools.Paper.DoublingMaximalLift
 import all KIP126.ProofTools.StandardSpecializations
 import all KIP126.ProofTools.DoublingWarning
 import all KIP126.ProofTools
+import all KIP126.ProofTools.BlueprintTheorems
+import all KIP126.ProofTools.ExtBoundaryComparison
+import all KIP126.ProofTools.ExtBoundaryComparison.HomologySES
+import all KIP126.ProofTools.LastLayerComparison
+import all KIP126.ProofTools.LastLayerComparison.Boundary
+import all KIP126.ProofTools.LastLayerComparison.Actual
+import all KIP126.ProofTools.LastLayerComparison.ExactnessCoordinates
+import all KIP126.ProofTools.Paper.NuCrossingExamples
+import all KIP126.ProofTools.FiniteLifting.DifferentialTransport
+import all KIP126.ProofTools.FiniteLifting.ClassicalLift
+import all KIP126.ProofTools.FiniteLifting.CutoffDifferential
+import all KIP126.ProofTools.FiniteLifting.LevelSourceLift
+import all KIP126.ProofTools.FiniteLifting.LevelClassicalLift
+import all KIP126.ProofTools.FiniteLevelConsequences
 import all KIP126.ProofTools.MahowaldLeibniz
 import all KIP126.ProofTools.MahowaldLeibniz.FiniteCore
 import all KIP126.ProofTools.MahowaldLeibniz.FixedModel
@@ -230,6 +244,13 @@ run_cmd do
   -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift must stay independent of the retired GL/MH claims.
   let provedTools := #[
+    `KIP126.ProofTools.Standard.cutoffAdamsDifferentialAtLevel,
+    `KIP126.ProofTools.Standard.finiteLevelExtensionToClassical,
+    `KIP126.ProofTools.Internal.FiniteLifting.cutoffAdamsDifferentialAtLevel,
+    `KIP126.ProofTools.Internal.FiniteLifting.finiteLevelExtensionToClassical,
+    `KIP126.ProofTools.Internal.ExtBoundaryComparison.HomologySES.positive_normalized_homology_zero,
+    `KIP126.ProofTools.Internal.ExtBoundaryComparison.HomologySES.positive_normalized_rotated_homology_short_exact,
+    `KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibnizExt,
     `KIP126.ProofTools.Standard.paper6_8_complete_crossing_warning,
     `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_native_actual_zero_image,
     `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_actual_maximal_zero_image_lift,
@@ -325,6 +346,25 @@ run_cmd do
     `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_g_classical_nc_statement,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_second_finite_core,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_quotient_mahowald_leibniz_core,
+    `KIP126.ProofTools.Standard.representativeFamilyLift_iff,
+    `KIP126.ProofTools.Standard.finiteQuotientMahowaldLeibnizCore,
+    `KIP126.ProofTools.Standard.finiteSurjectiveAmbiguityZero,
+    `KIP126.ProofTools.Standard.finiteCollapsedAmbiguityZero,
+    `KIP126.ProofTools.Standard.classicalNCComposition,
+    `KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibniz,
+    `KIP126.ProofTools.lastLayerComparison,
+    `KIP126.ProofTools.lastLayerObstructionIsomorphism,
+    `KIP126.ProofTools.intermediateLayerSurjectivity,
+    `KIP126.ProofTools.intermediateLayerSurjectivity_not_converse,
+    `KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_preservesBoundaries,
+    `KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_exact,
+    `KIP126.ProofTools.Standard.classicalTriangleHMapHom_spec,
+    `KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerComparison,
+    `KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerSurjectivity_iff,
+    `KIP126.ProofTools.Standard.paper5_8_nu_e2_extension,
+    `KIP126.ProofTools.Standard.paper5_13_nu_e2_no_crossing,
+    `KIP126.ProofTools.Standard.paper5_13_nu_e3_no_crossing,
+    `KIP126.ProofTools.Standard.paper5_13_nu_infinite_no_crossing,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.classical_nc_composition,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_signed_target_eq_top_at_level,
     `KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative,

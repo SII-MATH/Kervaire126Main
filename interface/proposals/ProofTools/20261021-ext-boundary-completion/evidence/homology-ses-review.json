@@ -1,0 +1,53 @@
+{
+  "reviewer_agent": "/root/ext_ses_report_update",
+  "review_date_utc": "2026-10-21T16:33:28.994176+00:00",
+  "source_file": "KIP126/ProofTools/ExtBoundaryComparison/HomologySES.lean",
+  "source_sha256": "d9e0b3d402301d5581ac9373ecaf26b147df2e96b044882a4541cd3d83ebf61d",
+  "independent_of_discoverer_and_implementer": true,
+  "fixed_scope": {
+    "baseline_commit": "fa6c729fe2f1b251ef6ead8838a0fbbb0975f8aa",
+    "blueprint_header_first_7_lines_unchanged": true,
+    "original_scope": "Composition statements use the fixed Standard model and selected classical object family.",
+    "header_first_7_lines": [
+      "\\chapter{ProofTools — Representatives, extensions and comparison laws}",
+      "Fix a model $D$ of the classical and synthetic Adams systems. All maps, quotient objects, filtrations and page labels in each statement are taken in this model. In the statements quoted from \\cite{LWX126}, spectra are $2$-completed, connective and of finite type.",
+      "",
+      "For the level-indexed rules, page-extension comparisons and the",
+      "composition theorem, $D$ is the fixed Standard model and the classical",
+      "objects belong to its selected family. Statements about general filtered",
+      "groups or convergent towers specify their own data explicitly."
+    ]
+  },
+  "checks": [
+    {
+      "command": "lake env lean -o /tmp/ext-ses-report-independent.olean KIP126/ProofTools/ExtBoundaryComparison/HomologySES.lean",
+      "exit_code": 0,
+      "stdout_stderr": "empty"
+    },
+    {
+      "command": "lake env lean -o /tmp/ext-ses-report-probe.olean interface/proposals/ProofTools/20261021-ext-boundary-completion/evidence/HomologySESReview.lean",
+      "exit_code": 0,
+      "output": "homology-ses-review.log",
+      "local_actual_body_closure_sizes": [
+        6,
+        5,
+        12
+      ],
+      "new_module_proofs_private": true,
+      "local_axioms_or_sorry": false,
+      "depends_on_other_ProofTools_result": false
+    }
+  ],
+  "inherited_upstream_obligation_examples": [
+    "KIP126.AdamsSynthetic.Standard.coefficients",
+    "KIP126.AdamsSynthetic.Standard.classicalTower",
+    "KIP126.AdamsSynthetic.Standard.closedBackground",
+    "KIP126.AdamsSynthetic.Standard.factorization_filtration_iff"
+  ],
+  "evidence_limits": [
+    "No complete transitive project trust closure is claimed; inherited sorryAx is present.",
+    "Underlying group short exactness does not construct the actual Steenrod comodules.",
+    "The actual comodule SES, E2/Ext coordinates and Q1/Ext boundary identity remain incomplete.",
+    "No public interface change, counterexample or human authorization is asserted."
+  ]
+}

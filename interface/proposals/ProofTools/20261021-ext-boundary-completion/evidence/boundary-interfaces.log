@@ -1,0 +1,294 @@
+@[reducible] def KIP126.AdamsSynthetic.FirstQuotientComparison.{u, v, w} : {C : Type u} →
+  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →
+    [KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →
+      {Syn : Type w} →
+        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →
+          [KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →
+            KIP126.Classical.Adams.ClassicalAdamsFamily.{u, v} C →
+              KIP126.Synthetic.Context.NuFunctorData.{u, v, w, v} C Syn →
+                KIP126.Kervaire.Route.AuxiliaryData.{u, v} C → Type v :=
+fun {C} [KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] [KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}]
+    {Syn} [KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] [KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] A
+    N aux =>
+  (X : KIP126.Kervaire.Route.ClassicalObject) →
+    (a s t : ℤ) →
+      LinearEquiv.{0, 0, v, v} (RingHom.id.{0} ℤ)
+        (KIP126.Synthetic.Context.BiHom.{w, v} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} t a)
+          (KIP126.Synthetic.Context.XModLambdaN.{w, v}
+            (CategoryTheory.Functor.obj.{v, v, w, w}
+              (KIP126.Synthetic.Context.SyntheticCategory.biShift.{w, v} (Prod.mk.{0, 0} 0 a))
+              (CategoryTheory.Functor.obj.{v, v, u, w} (KIP126.Synthetic.Context.NuFunctorData.functor.{u, v, w, v} N)
+                (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v} aux X)))
+            1))
+        ↑(KIP126.Core.SpectralSequence.Page.{v + 1, v, 0}
+            (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{u, v} A
+              (KIP126.Kervaire.Route.ClassicalObject.obj.{u, v} aux X))
+            2 (Prod.mk.{0, 0} s t))
+def KIP126.AdamsSynthetic.HomologyShortExact.{u, v} : {C : Type u} →
+  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →
+    KIP126.StableHomotopy.ModTwoCoefficients.{u, v} C → CategoryTheory.Pretriangulated.Triangle.{v, u} C → Prop :=
+fun {C} [KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] H T =>
+  ∀ (n : ℤ),
+    Function.Injective.{v + 1, v + 1}
+        ⇑(KIP126.StableHomotopy.inducedMap.{u, v}
+            (CategoryTheory.MonoidalCategoryStruct.whiskerLeft.{v, u}
+              (KIP126.StableHomotopy.ModTwoCoefficients.object.{u, v} H)
+              (CategoryTheory.Pretriangulated.Triangle.mor₁.{v, u} T))
+            n) ∧
+      Function.Exact.{v, v, v}
+          ⇑(KIP126.StableHomotopy.inducedMap.{u, v}
+              (CategoryTheory.MonoidalCategoryStruct.whiskerLeft.{v, u}
+                (KIP126.StableHomotopy.ModTwoCoefficients.object.{u, v} H)
+                (CategoryTheory.Pretriangulated.Triangle.mor₁.{v, u} T))
+              n)
+          ⇑(KIP126.StableHomotopy.inducedMap.{u, v}
+              (CategoryTheory.MonoidalCategoryStruct.whiskerLeft.{v, u}
+                (KIP126.StableHomotopy.ModTwoCoefficients.object.{u, v} H)
+                (CategoryTheory.Pretriangulated.Triangle.mor₂.{v, u} T))
+              n) ∧
+        Function.Surjective.{v + 1, v + 1}
+          ⇑(KIP126.StableHomotopy.inducedMap.{u, v}
+              (CategoryTheory.MonoidalCategoryStruct.whiskerLeft.{v, u}
+                (KIP126.StableHomotopy.ModTwoCoefficients.object.{u, v} H)
+                (CategoryTheory.Pretriangulated.Triangle.mor₂.{v, u} T))
+              n)
+def KIP126.Literature.NormalizedTriangleCompatible.{u, v, w} : {C : Type u} →
+  [inst : KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] →
+    [inst_1 : KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}] →
+      {Syn : Type w} →
+        [inst_2 : KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] →
+          [inst_3 : KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] →
+            (D : KIP126.Kervaire.Route.Model.{u, v, w} C Syn) →
+              (T :
+                  KIP126.Kervaire.Route.TriangleData.{u, v}
+                    (KIP126.Kervaire.Route.ModelData.auxiliary.{u, v, w}
+                      (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))) →
+                Eq.{1}
+                    (HAdd.hAdd.{0, 0, 0}
+                      (HAdd.hAdd.{0, 0, 0}
+                        ↑(KIP126.AdamsSynthetic.normalizedExponent.{u, v}
+                            (KIP126.Kervaire.Route.ModelData.classicalTower.{u, v, w}
+                              (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))
+                            (KIP126.Kervaire.Route.TriangleData.f.{u, v} T))
+                        ↑(KIP126.AdamsSynthetic.normalizedExponent.{u, v}
+                            (KIP126.Kervaire.Route.ModelData.classicalTower.{u, v, w}
+                              (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))
+                            (KIP126.Kervaire.Route.TriangleData.g.{u, v} T)))
+                      ↑(KIP126.AdamsSynthetic.normalizedExponent.{u, v}
+                          (KIP126.Kervaire.Route.ModelData.classicalTower.{u, v, w}
+                            (KIP126.Kervaire.Route.Model.toModelData.{u, v, w} D))
+                          (KIP126.Kervaire.Route.TriangleData.h.{u, v} T)))
+                    1 →
+                  Prop :=
+fun {C} [KIP126.StableHomotopy.StableHomotopyCategory.{u, v} C] [KIP126.StableHomotopy.HasFunctorialCofiber.{u, v}]
+    {Syn} [KIP126.Synthetic.Context.SyntheticCategory.{w, v} Syn] [KIP126.StableHomotopy.HasFunctorialCofiber.{w, v}] D
+    T he =>
+  Membership.mem.{max w v, max v w} CategoryTheory.Pretriangulated.distinguishedTriangles.{v, w}
+    (KIP126.Literature.normalizedTriangle.{u, v, w} D T he)
+def KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary : (T :
+    KIP126.Kervaire.Route.TriangleData.{1, 0}
+      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))) →
+  Eq.{1}
+      (KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T))
+      1 →
+    (s t : ℤ) →
+      ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+            (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) (Prod.mk.{0, 0} s t)) →
+        ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+            (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T)
+            (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s 1) (HAdd.hAdd.{0, 0, 0} t 1))) :=
+fun T hef s t x =>
+  have F :=
+    Eq.mp.{1} ⋯
+      (KIP126.AdamsSynthetic.NormalizedSyntheticMap.map.{1, 0, 1}
+        (KIP126.Kervaire.Route.ModelData.normalizedMap.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)
+          (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T)
+          (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T)));
+  have a :=
+    (LinearEquiv.symm.{0, 0, 0, 0}
+        (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)
+          (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) 1 s t))
+      x;
+  have b :=
+    CategoryTheory.CategoryStruct.comp.{0, 1} a
+      (CategoryTheory.CategoryStruct.comp.{0, 1} (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0} F 1)
+        (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}
+          (CategoryTheory.NatTrans.app.{0, 0, 1, 1}
+            (CategoryTheory.Iso.inv.{1, 1} KIP126.Synthetic.Context.SyntheticCategory.biShift_zero.{1, 0})
+            (CategoryTheory.Functor.obj.{0, 0, 1, 1}
+              (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}
+                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))
+              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+                (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T))))
+          1));
+  (KIP126.Kervaire.Route.ModelData.firstQuotient.{1, 0, 1}
+      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)
+      (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T) 0 (HAdd.hAdd.{0, 0, 0} s 1) (HAdd.hAdd.{0, 0, 0} t 1))
+    (KIP126.Synthetic.Context.homotopyRegrade.{1, 0} ⋯ ⋯ b)
+def KIP126.ProofTools.Standard.FiniteLayerSurjectivityMahowaldLeibnizStatement : (T :
+    KIP126.Kervaire.Route.TriangleData.{1, 0}
+      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))) →
+  Eq.{1}
+      (KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T))
+      1 →
+    Eq.{1}
+        (KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+          (KIP126.Kervaire.Route.TriangleData.g.{1, 0} T))
+        0 →
+      Eq.{1}
+          (KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+            (KIP126.Kervaire.Route.TriangleData.h.{1, 0} T))
+          0 →
+        Prop :=
+fun T hef heg heh =>
+  KIP126.Literature.NormalizedTriangleCompatible.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T ⋯ →
+    ∀ (R K : ℕ),
+      LE.le.{0} 2 R →
+        LE.le.{0} 2 K →
+          ∀ (s t : ℤ)
+            (x :
+              ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                  (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) (Prod.mk.{0, 0} s t)))
+            (z :
+              ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                  (KIP126.Kervaire.Route.TriangleData.Z.{1, 0} T)
+                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) (HAdd.hAdd.{0, 0, 0} t ↑R))))
+            (v :
+              ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                  (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T)
+                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) ↑K)
+                    (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t ↑R) ↑K) 1)))),
+            KIP126.ProofTools.IsCycle.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) (HSub.hSub.{0, 0, 0} (↑R) 1) (Prod.mk.{0, 0} s t) x →
+              KIP126.ProofTools.IsCycle.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                  (KIP126.Kervaire.Route.TriangleData.Z.{1, 0} T) (HSub.hSub.{0, 0, 0} (↑K) 1)
+                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) (HAdd.hAdd.{0, 0, 0} t ↑R)) z →
+                (∃ u,
+                    KIP126.AdamsSynthetic.ClassicalTowerSuspension.DesuspendsClass.{1, 0}
+                        (KIP126.Kervaire.Route.ModelData.classicalSuspension.{1, 0, 1}
+                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)
+                          (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T))
+                        (HAdd.hAdd.{0, 0, 0} s ↑R) (HAdd.hAdd.{0, 0, 0} t ↑R)
+                        ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}
+                            (KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap.{1, 0, 0}
+                              (CategoryTheory.Functor.map.{0, 0, 1, 1}
+                                (KIP126.Classical.Adams.ClassicalAdamsFamily.functor.{1, 0}
+                                  (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}
+                                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                      KIP126.AdamsSynthetic.Standard.model)))
+                                (KIP126.Kervaire.Route.TriangleData.h.{1, 0} T))
+                              2 (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) (HAdd.hAdd.{0, 0, 0} t ↑R))))
+                          z)
+                        u ∧
+                      KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                        (KIP126.Kervaire.Route.TriangleData.X.{1, 0} T) (↑R) (Prod.mk.{0, 0} s t)
+                        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t ↑R) 1)) x
+                        u) →
+                  KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                      (KIP126.Kervaire.Route.TriangleData.Z.{1, 0} T) (↑K)
+                      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) (HAdd.hAdd.{0, 0, 0} t ↑R))
+                      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) ↑K)
+                        (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t ↑R) ↑K) 1))
+                      z
+                      ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}
+                          (KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap.{1, 0, 0}
+                            (CategoryTheory.Functor.map.{0, 0, 1, 1}
+                              (KIP126.Classical.Adams.ClassicalAdamsFamily.functor.{1, 0}
+                                (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}
+                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                    KIP126.AdamsSynthetic.Standard.model)))
+                              (KIP126.Kervaire.Route.TriangleData.g.{1, 0} T))
+                            2
+                            (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) ↑K)
+                              (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t ↑R) ↑K) 1))))
+                        v) →
+                    KIP126.ProofTools.Standard.MahowaldLeibnizFiniteLayerSurjectivity T R K s t →
+                      have y := KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary T hef s t x;
+                      KIP126.ProofTools.IsCycle.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                          (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T)
+                          (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} ↑R ↑K) 2)
+                          (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s 1) (HAdd.hAdd.{0, 0, 0} t 1)) y ∧
+                        KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model
+                          (KIP126.Kervaire.Route.TriangleData.Y.{1, 0} T)
+                          (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} ↑R ↑K) 1)
+                          (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s 1) (HAdd.hAdd.{0, 0, 0} t 1))
+                          (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s ↑R) ↑K)
+                            (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t ↑R) ↑K) 1))
+                          y v
+KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row
+  (T :
+    KIP126.Kervaire.Route.TriangleData.{1, 0}
+      (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+        (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)))
+  (he :
+    Eq.{1}
+      (HAdd.hAdd.{0, 0, 0}
+        (HAdd.hAdd.{0, 0, 0}
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.f.{1, 0} T))
+          ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.TriangleData.g.{1, 0} T)))
+        ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+            (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+            (KIP126.Kervaire.Route.TriangleData.h.{1, 0} T)))
+      1)
+  (hT : KIP126.Literature.NormalizedTriangleCompatible.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T he) (q : ℕ)
+  (hq : LT.lt.{0} 0 q) :
+  have N := KIP126.Literature.normalizedTriangle.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model T he;
+  ∃ esusp,
+    Eq.{1}
+        (CategoryTheory.CategoryStruct.comp.{0, 1}
+          (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0}
+            (CategoryTheory.Functor.obj.{0, 0, 1, 1}
+              (CategoryTheory.shiftFunctor.{0, 1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum 1)
+              (CategoryTheory.Pretriangulated.Triangle.obj₂.{0, 1} N))
+            q)
+          (CategoryTheory.Iso.hom.{0, 1} esusp))
+        (CategoryTheory.Functor.map.{0, 0, 1, 1}
+          (CategoryTheory.shiftFunctor.{0, 1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum 1)
+          (KIP126.Synthetic.Context.XModLambdaN.incl.{1, 0} (CategoryTheory.Pretriangulated.Triangle.obj₂.{0, 1} N)
+            q)) ∧
+      Membership.mem.{1, 1} CategoryTheory.Pretriangulated.distinguishedTriangles.{0, 1}
+        (CategoryTheory.Pretriangulated.Triangle.mk.{0, 1}
+          (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0} (CategoryTheory.Pretriangulated.Triangle.mor₂.{0, 1} N) q)
+          (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0} (CategoryTheory.Pretriangulated.Triangle.mor₃.{0, 1} N) q)
+          (Neg.neg.{0}
+            (CategoryTheory.CategoryStruct.comp.{0, 1}
+              (KIP126.Synthetic.Context.XModLambdaN.map.{1, 0}
+                (CategoryTheory.Functor.map.{0, 0, 1, 1}
+                  (CategoryTheory.shiftFunctor.{0, 1, 0} KIP126.AdamsSynthetic.Standard.SyntheticSpectrum 1)
+                  (CategoryTheory.Pretriangulated.Triangle.mor₁.{0, 1} N))
+                q)
+              (CategoryTheory.Iso.hom.{0, 1} esusp))))
+KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv (s t : ℕ) :
+  LinearEquiv.{0, 0, 0, 0} (RingHom.id.{0} ℤ)
+    (↑(KIP126.Core.SpectralSequence.Page.{1, 0, 0}
+        (KIP126.Classical.Adams.ClassicalAdamsFamily.sphere.{1, 0} KIP126.AdamsSynthetic.Standard.classical) 2
+        (Prod.mk.{0, 0} ↑s ↑t)))
+    (KIP126.AdamsSynthetic.MilnorCohomology s t)
+'KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary' depends on axioms: [propext,
+ sorryAx.{u},
+ Classical.choice.{u},
+ Quot.sound.{u}]

@@ -66,6 +66,8 @@ import all KIP126.AdamsSynthetic.Internal.Source.Sphere
 import all KIP126.AdamsSynthetic.Internal.Source.SurvivalTransport
 import all KIP126.AdamsSynthetic.Source
 import all KIP126.AdamsSynthetic.Standard.Source
+import all KIP126.AdamsSynthetic.Standard.Ext
+import all KIP126.AdamsSynthetic.Internal.SteenrodComodules
 
 
 public meta import Checks.Registry.AdamsSynthetic

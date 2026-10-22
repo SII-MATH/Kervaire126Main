@@ -6,6 +6,6 @@ created: '2026-10-21T05:06:27'
 date: '2026-10-21T05:06:27'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-21T05:06:27'
+updated: '2026-10-21T16:07:35.678977+00:00'
 ---
-**Formal scope:** The finite induction, the two specified-image comparisons, and their exact j=1,...,K-1 versus j=1,...,K-2 ranges are proved in the internal MahowaldLeibniz/FiniteCore lemmas. Their application still requires the stated actual graded comparisons, not just abstract matrices.
+**Formal scope:** The public theorems prove that the entire higher-filtration ambiguity has zero image under the two displayed criteria. The collapsed-grade theorem retains the target's terminal zero filtration and the image in that filtration, rather than asking its caller to supply actual image vanishing. The actual graded comparisons in the applications remain those specified in the statement.

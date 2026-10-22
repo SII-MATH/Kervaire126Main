@@ -28,6 +28,7 @@ import all KIP126.Literature.Standard.FiniteQuotientMiddle
 import all KIP126.Literature.Standard.FiniteQuotientNaturality
 import all KIP126.Literature.Standard.FiniteQuotientNoReturn
 import all KIP126.Literature.Standard.FiniteQuotientNormalized
+import all KIP126.Literature.Standard.ExtBoundary
 import all KIP126.Literature.Standard.FiniteQuotientObjectCases
 import all KIP126.Literature.Standard.FiniteQuotientPositive
 import all KIP126.Literature.Standard.FiniteQuotientRecognition

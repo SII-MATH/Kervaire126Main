@@ -856,6 +856,119 @@ An isomorphism of the third objects alone does not satisfy this criterion.
 The exponent sum and degreewise finite connective homology exclude a triangle whose three vertices are detector shifts. Hence one vertex has a finite sphere-cell construction. At a finite first vertex, the negative finite-quotient Hom window identifies the octahedral first arrow with the selected quotient map. Lambda-localization and finite-source reflection make the correction to the third vertical arrow invertible. The discrepancy in the second quotient arrow is a sphere ghost whose square factors through a finite sphere-cell quotient; the finite ghost bound makes the required correction invertible. The finite quotient at the first vertex is annihilated by the same lambda power, which forces the prescribed boundary arrow. Rotation and a finite-cell comparison provide the required inclusion-compatible suspension isomorphism when the finite vertex occupies either other position.
 \end{proof}
 
+\begin{theorem}[First-quotient operation and the same homology Ext boundary]
+\label{sem:Literature:first-quotient-ext-boundary}
+\level{coarse}
+A selected-triangle comparison derived from
+\cite[Theorem 9.12(5) and Corollary 9.13]{BHS}, using
+\cite[Lemma 4.29, Theorem 4.54 and Lemma 4.56]{Pst}.\par
+Use the actual homology-comodule functor and Ext coordinates of
+\ref{sem:AdamsSynthetic:coefficient-ext}. Fix a distinguished classical
+triangle in the selected object family
+\[
+X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X,
+\qquad e_f=1,\quad e_g=e_h=0.
+\]
+Assume that its selected normalized synthetic triangle is compatible,
+namely that the actual three selected arrows form the distinguished
+triangle
+\[
+\Sigma^{0,1}\nu X\xrightarrow{\widehat f}\nu Y
+\xrightarrow{\nu g}\nu Z\xrightarrow{\widetilde h}
+\Sigma^{1,1}\nu X,
+\]
+where $\widetilde h$ uses the fixed comparison for $\nu(\Sigma X)$.
+Assume also that the same actual homology sequence is short exact in
+every integer degree. Since exactness of graded $A_*$-comodules is
+detected on the underlying graded vector spaces, this gives the same
+short exact sequence of graded comodules
+\[
+\mathcal S:\quad
+0\longrightarrow\mathcal H(Y)\xrightarrow{\mathcal H(g)}
+\mathcal H(Z)\xrightarrow{\mathcal H(h)}
+\Sigma_{\mathrm{int}}\mathcal H(X)\longrightarrow0,
+\]
+where the last map includes the fixed suspension comparison.
+
+Write $Q_1W=\nu W/\lambda$. For $s,t\in\mathbb Z$ and
+$x\in E_2^{s,t}(X)$, shift its fixed first-quotient label by $(0,1)$,
+use the quotient--shift comparison to regard it as a class in
+$\pi_{t-s,t+1}(\Sigma^{0,1}\nu X/\lambda)$, and apply
+$Q_1\widehat f$. Read the result in $E_2^{s+1,t+1}(Y)$ and denote it
+by $\partial_f^Q(x)$. Let
+\[
+\partial_{\mathcal S}:E_2^{s,t}(X)\longrightarrow
+E_2^{s+1,t+1}(Y)
+\]
+be the genuine Ext connecting homomorphism of $\mathcal S$, transported
+through $\Phi_Y$ and the specified suspended coordinates
+$\Phi_X^{\Sigma,s,t}=\Phi_{\Sigma X}^{s,t+1}\sigma_{2,X}$.
+Then
+\[
+\partial_f^Q(x)=\partial_{\mathcal S}(x).
+\]
+This identifies the operation using the actual short exact sequence,
+including its comodule maps. The ordinary $E_2(f)$ is zero and is not
+this connecting homomorphism.
+\uses{sem:AdamsSynthetic:coefficient-ext,sem:AdamsSynthetic:homology-ext-boundary,sem:AdamsSynthetic:normalized-map,sem:AdamsSynthetic:first-quotient-shifts,sem:Literature:normalized-finite-quotient-row}
+\lean{KIP126.Literature.Standard.firstQuotient_ext_boundary}
+% Correspondence: Degreewise short exactness of the actual homology maps is the explicit mathematical premise of this upstream comparison. Exactness in the actual graded-comodule category supplies the displayed SES; no additional caller-supplied comodule certificate is required. Deriving degreewise short exactness from positive Adams filtration in the application belongs to ProofTools and is not a backward chapter dependency. The fixed-model source-to-special-fiber and Ext comparisons remain upstream construction/comparison responsibilities; the argument below explains the mathematical source theorem and does not construct their underlying foundations. In particular the Ext boundary is defined by the same genuine comodule SES, not by renaming the first-quotient operation.
+\end{theorem}
+\begin{proof}
+\uses{sem:AdamsSynthetic:coefficient-ext,sem:AdamsSynthetic:homology-ext-boundary,sem:Literature:normalized-finite-quotient-row}
+Apply the first-quotient row theorem to the selected normalized
+triangle. With its prescribed inclusion-compatible suspension
+comparison, rotation gives the distinguished row
+\[
+Q_1Y\longrightarrow Q_1Z\longrightarrow
+\Sigma^{1,1}Q_1X\xrightarrow{-\Sigma(Q_1\widehat f)}
+\Sigma Q_1Y.
+\]
+The displayed minus sign is the rotation sign; quotient--shift
+comparisons in this formula are the fixed ones from the row theorem.
+Put $C_\lambda=S^{0,0}/\lambda$. The fixed quotient/free-module and
+suspension comparisons identify this row with the underlying row
+obtained by applying the exact free $C_\lambda$-module functor to the
+original normalized triangle. By \cite[Theorem 9.12(5)]{BHS}, the
+special-fiber comparison sends these module objects and arrows to the
+same homology-comodule objects and maps. Equivalently, one may use
+\cite[Theorem 4.54]{Pst}: the first quotients are in the heart by
+\cite[Lemma 4.29]{Pst}, hence are hypercomplete, and the $C_\lambda$-module
+comparison with $D(\mathcal A)$ is exact and t-exact. Thus the first
+three vertices of the transported row are
+\[
+\mathcal H(Y),\qquad\mathcal H(Z),\qquad
+\Sigma_{\mathrm{int}}\mathcal H(X),
+\]
+all in the abelian heart. In particular the $(1,1)$ synthetic shift
+here is internal suspension, not cohomological suspension.
+
+Compare this distinguished row with the canonical derived triangle of
+the same short exact sequence $\mathcal S$. The first two arrows agree.
+The triangle axiom supplies a morphism between the triangles which is
+the identity on their first two vertices. Its third component is an
+endomorphism $\theta$ of $\Sigma_{\mathrm{int}}\mathcal H(X)$ satisfying
+$\theta\mathcal H(h)=\mathcal H(h)$. Full faithfulness of the heart
+identifies $\theta$ with a comodule endomorphism. Since
+$\mathcal H(h)$ is an epimorphism in the heart, $\theta=1$.
+The remaining square therefore identifies the third arrow with the
+canonical connecting morphism of $\mathcal S$ in $D(\mathcal A)$.
+This also shows why arbitrary choices of a lambda division do not
+affect this first-quotient operation once the same compatible triangle
+and its two homology maps have been fixed.
+
+Apply derived Hom from the shifted unit comodule. The connecting map is
+composition with that canonical morphism, hence is the usual Ext
+connecting homomorphism of $\mathcal S$.
+The natural coordinates of \cite[Corollary 9.13]{BHS}, or
+\cite[Lemma 4.56]{Pst}, identify it with the operation on first-quotient
+labels. Reversing the rotation gives the displayed negative of
+$\partial_f^Q$; all the groups are $\mathbb F_2$-vector spaces, so this
+minus sign is equal to plus. The shift sends $(s,t)$ to
+$(s+1,t+1)$, as required. No choice of a lift of $x$ to an untruncated
+synthetic object is involved.
+\end{proof}
+
 \section{The Kervaire survival criterion}
 
 \begin{definition}[The distinguished synthetic theta-five for the criterion]
