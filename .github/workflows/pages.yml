@@ -58,6 +58,19 @@ jobs:
       - name: Export authored Blueprint with native hgraph
         run: python scripts/publish-blueprint.py
 
+      - name: Include native live-server project snapshot
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          import shutil
+          workspace = Path('.lake/blueprint/workspace')
+          runtime = Path('_site/.hgraph-runtime')
+          runtime.mkdir()
+          shutil.copy2(workspace / 'config.yaml', runtime / 'config.yaml')
+          shutil.copytree(workspace / 'site', runtime / 'site')
+          shutil.copytree(workspace / 'Kervaire126', runtime / 'Kervaire126')
+          PYTHON
+
       - name: Upload website only
         uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
         with:
