@@ -26,6 +26,10 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
+          clean: false
+
+      - name: Clean source while retaining native diagram cache
+        run: git clean -ffdx -e .lake -e .lake/
 
       - name: Verify preinstalled pinned export tools
         run: python .github/runner/check-blueprint-env.py
