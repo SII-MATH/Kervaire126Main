@@ -15,6 +15,7 @@ import time
 OPS = Path('/inspire/hdd/global_user/czxs25250150/ops')
 PERSISTENT = OPS.parent / 'kip126-web'
 CI_HOME = Path('/var/lib/kip126-web')
+TOOLS = Path('/opt/kip126-blueprint-tools')
 HERE = Path(__file__).resolve().parent
 STATE = HERE / 'runtime'
 USER = 'kip-web'
@@ -72,8 +73,8 @@ def watch():
     cpus = sorted(os.sched_getaffinity(0))[12:16] or sorted(os.sched_getaffinity(0))[:4]
     env = {
         'HOME': str(CI_HOME), 'USER': USER, 'LOGNAME': USER, 'LANG': 'C.UTF-8',
-        'PATH': str(CI_HOME / 'tools/venv/bin') + ':/usr/local/bin:/usr/bin:/bin',
-        'BLUEPRINT_TOOLS': str(CI_HOME / 'tools'), 'LEAN_NUM_THREADS': '2',
+        'PATH': str(TOOLS / 'venv/bin') + ':/usr/local/bin:/usr/bin:/bin',
+        'BLUEPRINT_TOOLS': str(TOOLS), 'LEAN_NUM_THREADS': '2',
         'MATHLIB_NO_CACHE_ON_UPDATE': '1', 'TMPDIR': str(CI_HOME / 'tmp'),
         'https_proxy': 'http://127.0.0.1:7890', 'http_proxy': 'http://127.0.0.1:7890',
         'no_proxy': 'localhost,127.0.0.1',
@@ -146,7 +147,7 @@ def main():
                 os.chown(directory, user.pw_uid, user.pw_gid)
                 for name in files:
                     os.chown(Path(directory) / name, user.pw_uid, user.pw_gid)
-        tools = CI_HOME / 'tools'
+        tools = TOOLS
         if not (tools / 'toolchain.json').exists():
             tools.mkdir(exist_ok=True)
             subprocess.run(['/usr/bin/python3', '-m', 'venv', str(tools / 'venv')], check=True)
