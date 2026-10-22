@@ -682,6 +682,43 @@ For the classical triangle $S^3\xrightarrow{\nu}S^0\to C\nu\to S^4$, the normali
 
 \section{Bockstein lifts and completion hypotheses}
 
+From \cite{BHS}, Definition A.12 and Proposition A.13, specialized to
+$E=H\mathbb F_2$.\par
+\begin{theorem}[Nilpotent completeness and lambda completeness]
+\label{sem:Literature:lambda-completeness}
+\level{coarse}
+In the source category of $H\mathbb F_2$-synthetic spectra, the following
+are equivalent for a spectrum $X$:
+\begin{enumerate}
+\item $X$ is $H\mathbb F_2$-nilpotent complete.
+\item $\nu X$ is $\nu H\mathbb F_2$-nilpotent complete.
+\item $\nu X$ is $\lambda$-complete: the canonical map
+\[
+\nu X\longrightarrow\operatorname*{holim}_{m\geq1}
+       \bigl((S^{0,0}/\lambda^m)\otimes\nu X\bigr)
+\]
+is an equivalence.
+\end{enumerate}
+Under the source tensor/cofiber identification, the objects on the right
+are $\nu X/\lambda^m$. The limit uses the canonical transition maps and
+the canonical cone, rather than only the individual quotient objects.
+\uses{sem:AdamsSynthetic:nu,sem:AdamsSynthetic:lambda-quotients}
+% Correspondence: Source theorem only, with no direct Lean binding. The finite quotient interface supplies neither a homotopy-limit comparison nor a recognition of nilpotent completeness for the project's fixed ordinary source. The existing complete-background proposal tracks that source-to-model boundary; this entry adds no axiom or registered proof hole. BHS uses tau for the class denoted lambda here.
+% Blueprint note: The deferred fixed-background comparison is tracked in the existing [complete-background proposal](proposals/index.html#AdamsSynthetic-20261019-paper-complete-fixed-background). A proof of the finite cofiber triangle is not a proof of this theorem.
+\end{theorem}
+\begin{proof}
+\textit{Source proof.} Compare the canonical classical and synthetic
+Adams towers using the spectral Yoneda functor and its connective covers.
+Right completeness of the homological t-structure identifies the
+vanishing of their residual homotopy limits. Finite lambda quotients
+are synthetically nilpotent complete, and
+$\nu H\mathbb F_2\otimes\nu X$ is lambda-complete, by
+\cite{BHS}, Lemmas A.14--A.15. Applying these two facts to the canonical
+Adams resolution gives the equivalence with lambda completeness.
+This is the argument in the source category; its recognition in the
+project's fixed model remains separate.
+\end{proof}
+
 \begin{theorem}[Finite lifts and the Bockstein differential]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:Literature:finite-bockstein}
