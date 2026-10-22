@@ -195,11 +195,13 @@ def active_build(root):
     return False
 
 
-def install_build(staged, root, backup):
+def install_build(staged, root, backup, *, allowed_lake=None):
     if active_build(root):
         raise ValueError('Active Lean/Lake build; refusing to replace project cache')
     target = root / '.lake/build'
-    if target.is_symlink() or (root / '.lake').is_symlink():
+    lake = root / '.lake'
+    if target.is_symlink() or (lake.is_symlink() and
+            (allowed_lake is None or lake.resolve() != allowed_lake.resolve())):
         raise ValueError('Refusing symlink cache destinations')
     target.parent.mkdir(parents=True, exist_ok=True)
     moved = False
@@ -278,6 +280,22 @@ def restore_release():
     inputs = build_inputs()
     toolchain = (ROOT / 'lean-toolchain').read_text().strip()
     manifest_hash = sha256((ROOT / 'lake-manifest.json').read_bytes())
+    allowed_lake = None
+    if (ROOT / '.lake').is_symlink():
+        # The self-hosted slot deliberately keeps .lake outside checkout.
+        # Admit only its exact environment/input directory, never an arbitrary
+        # link (in particular, never a developer or another source's cache).
+        digest = hashlib.sha256()
+        for name in ('lean-toolchain', 'lake-manifest.json'):
+            digest.update(name.encode() + b'\0' + (ROOT / name).read_bytes() + b'\0')
+        expected = (Path.home().resolve() / 'cache/environments' / digest.hexdigest() /
+                    'inputs' / inputs['fingerprint'])
+        if (os.environ.get('RUNNER_ENVIRONMENT') != 'self-hosted' or
+                (ROOT / '.lake').resolve() != expected.resolve() or
+                expected.resolve() != expected or
+                (expected / 'runner-build-inputs').read_text().strip() != inputs['fingerprint']):
+            raise ValueError('Self-hosted cache link does not match current environment/build inputs')
+        allowed_lake = expected
     prefix = 'build-cache-'
     suffix = f'-{platform.system().lower()}-{platform.machine()}'
     checked = 0
@@ -338,7 +356,8 @@ def restore_release():
                 extract_archive(archive, staged)
                 # The restored Actions cache is only a baseline; no build has run yet.
                 # Keep it in place until every validation succeeds, then back it up.
-                install_build(staged / '.lake/build', ROOT, directory / 'previous-build')
+                install_build(staged / '.lake/build', ROOT, directory / 'previous-build',
+                              allowed_lake=allowed_lake)
                 print(f'Restored exact-input Release cache: {tag}; full lake build still required')
                 return
             except (KeyError, OSError, ValueError, subprocess.SubprocessError, tarfile.TarError) as error:
