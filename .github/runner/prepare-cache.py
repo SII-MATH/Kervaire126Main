@@ -4,6 +4,7 @@ import hashlib
 import os
 from pathlib import Path
 import importlib.util
+import subprocess
 
 
 def environment_key(root):
@@ -27,6 +28,7 @@ def prepare(root, cache, fingerprint=None):
     cache.mkdir(parents=True, exist_ok=True)
     environment = cache / expected
     target = environment if fingerprint is None else environment / 'inputs' / fingerprint
+    baseline = None
     if fingerprint is not None and (len(fingerprint) != 64 or any(c not in '0123456789abcdef' for c in fingerprint)):
         raise ValueError('Invalid build input fingerprint')
     if target.is_symlink():
@@ -39,6 +41,8 @@ def prepare(root, cache, fingerprint=None):
         hashes = parts if len(parts) == 1 else (parts[0], parts[-1])
         if not valid or any(len(p) != 64 or any(c not in '0123456789abcdef' for c in p) for p in hashes):
             raise ValueError('CI .lake cannot point outside the dedicated environment cache')
+        if parts[0] == expected and actual != target and (actual / 'build').is_dir():
+            baseline = actual / 'build'
         if actual != target:
             lake.unlink()
     elif lake.exists():
@@ -51,6 +55,14 @@ def prepare(root, cache, fingerprint=None):
         else:
             lake.rename(cache / ('previous-' + str(time.time_ns())))
     target.mkdir(parents=True, exist_ok=True)
+    restore = not (target / 'build').exists()
+    if restore and fingerprint is not None and baseline is not None:
+        if baseline.is_symlink():
+            raise ValueError('Incremental baseline must be an independent build directory')
+        # A new source can still incrementally reuse prior artifacts. Copy-on-
+        # write cloning retains both source caches; no shared writable outputs.
+        subprocess.run(['cp', '-a', '--reflink=auto', str(baseline), str(target / 'build')], check=True)
+        print('Independent incremental baseline:', baseline)
     if fingerprint is not None:
         packages = environment / 'packages'
         packages.mkdir(exist_ok=True)
@@ -61,7 +73,6 @@ def prepare(root, cache, fingerprint=None):
     if not lake.is_symlink():
         lake.symlink_to(target, target_is_directory=True)
     print('Persistent CI cache environment:', expected)
-    restore = not (target / 'build').exists()
     if output := os.environ.get('GITHUB_OUTPUT'):
         with open(output, 'a') as stream:
             stream.write('restore_release=' + str(restore).lower() + '\n')

@@ -41,7 +41,9 @@ branches cannot replace one another's outputs. Previous and partial project buil
 remain available. Dependencies are shared only within the dedicated account and
 locked environment, independently of development caches.
 
-When an input cache is absent, the self-hosted runner now tries the existing
+When an input cache is absent, an independent copy-on-write copy of the previous
+same-environment build provides an incremental baseline while preserving both
+source versions. The self-hosted runner also tries the existing
 verified Release restoration path before building. A populated cache is reused
 without downloading it again. Full `lake build` and the existing trust audits
 still run for every selected event. Release publication policy in `AGENTS.md`
