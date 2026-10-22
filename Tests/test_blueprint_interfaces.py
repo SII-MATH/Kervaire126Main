@@ -55,7 +55,8 @@ class InterfacePageTests(unittest.TestCase):
         workflow = yaml.safe_load((ROOT / '.github/workflows/pages.yml').read_text())
         steps = workflow['jobs']['export']['steps']
         self.assertEqual(workflow['jobs']['export']['runs-on'], 'kip126-blueprint')
-        self.assertTrue(any(step.get('run') == 'python .github/runner/check-blueprint-env.py'
+        self.assertTrue(any('.github/runner/check-blueprint-env.py' in step.get('run', '') and
+                            'GITHUB_PATH' in step.get('run', '')
                             for step in steps))
         import importlib.util
         spec = importlib.util.spec_from_file_location('blueprint_env', ROOT / '.github/runner/check-blueprint-env.py')

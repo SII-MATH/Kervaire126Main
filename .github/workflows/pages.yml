@@ -32,7 +32,9 @@ jobs:
         run: git clean -ffdx -e .lake -e .lake/
 
       - name: Verify preinstalled pinned export tools
-        run: python .github/runner/check-blueprint-env.py
+        run: |
+          "$BLUEPRINT_TOOLS/venv/bin/python" .github/runner/check-blueprint-env.py
+          echo "$BLUEPRINT_TOOLS/venv/bin" >> "$GITHUB_PATH"
 
       - name: Test native synchronization and retained chapter boundaries
         run: python -m unittest discover -s Tests -p 'test_blueprint*.py'
