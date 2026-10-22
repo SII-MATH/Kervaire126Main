@@ -5,6 +5,7 @@ public import KIP126.AdamsSynthetic.Standard.Filtration
 public import KIP126.AdamsSynthetic.AdamsFiltration
 public import KIP126.AdamsSynthetic.Internal.SteenrodComodules
 import all KIP126.AdamsSynthetic.Internal.SteenrodComodules
+import all KIP126.AdamsSynthetic.Internal.SteenrodComodules.Abelian
 import Mathlib.RingTheory.Flat.Basic
 /-! The minimal coefficient-Ext source used by finite-layer composition.
 The homology source and comparisons are registered upstream boundaries.
@@ -34,8 +35,8 @@ public def SteenrodComodule : Type 1 := GradedSteenrodComodule
   inferInstanceAs (Preadditive GradedSteenrodComodule)
 
 private def canonicalComoduleAbelian :
-    {A : Abelian SteenrodComodule // A.toPreadditive = steenrodComodulePreadditive} := by
-  sorry
+    {A : Abelian SteenrodComodule // A.toPreadditive = steenrodComodulePreadditive} :=
+  ⟨comoduleAbelian, rfl⟩
 
 /-- The canonical abelian structure on the actual graded comodule category.
 Its construction is an upstream responsibility, not an assumption of composition. -/

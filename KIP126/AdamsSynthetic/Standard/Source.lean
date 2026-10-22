@@ -8,10 +8,13 @@ Source comparisons with SII-MATH/Kervaire126, commit
 -/
 
 public import KIP126.AdamsSynthetic.Standard
+import all KIP126.AdamsSynthetic.Standard.Background
 public import KIP126.AdamsSynthetic.Source
 public import Mathlib.CategoryTheory.Localization.Predicate
 import all KIP126.AdamsSynthetic.Source
 import all KIP126.AdamsSynthetic.Internal.Source.DerivedSmash
+import all KIP126.AdamsSynthetic.Internal.Source.Replacement.Spectra.Prespectrum.Replacement.Cubical.Proofs
+import all KIP126.AdamsSynthetic.Internal.Source.Replacement.Spectra.Prespectrum.Replacement.Cubical.Good.Proofs
 import all KIP126.AdamsSynthetic.Internal.Source.PointSetRecognition
 import all KIP126.AdamsSynthetic.Internal.Source.AdamsSequence
 import all KIP126.AdamsSynthetic.Internal.Source.MilnorComparison
@@ -46,10 +49,19 @@ public def sourceCofiberRecognition :
     ClassicalSourceCofiberRecognition sourceRecognition := by
   sorry
 
+set_option backward.privateInPublic true in
+private theorem sourceReplacementNonempty : Nonempty ClassicalSourceReplacementData := by
+  exact ⟨{
+    replacement := KIP126.AdamsSynthetic.Source.Prespectrum.cubicalReplacementFunctor
+    comparison := KIP126.AdamsSynthetic.Source.Prespectrum.cubicalReplacementComparison
+    good X := KIP126.AdamsSynthetic.Source.Prespectrum.cubicalReplacementFunctor_level_isGood X
+    stable X := KIP126.AdamsSynthetic.Source.Prespectrum.cubicalReplacementComparison_stableEquivalence X }⟩
+
+set_option backward.privateInPublic true in
 /-- A levelwise good replacement of the same actual prespectra, with a
 specified natural stable equivalence to the identity. -/
-public def sourceReplacement : ClassicalSourceReplacementData := by
-  sorry
+public def sourceReplacement : ClassicalSourceReplacementData :=
+  Classical.choice sourceReplacementNonempty
 
 /-- Recognition of the fixed tensor on all actual prespectra by their
 replacement followed by the actual even/odd diagonal smash. -/
@@ -100,22 +112,6 @@ public theorem sourceReplacement_flat : ClassicalSourceReplacementFlatness sourc
   sourceReplacementFlatness_of_recognition sourceRecognition sourceReplacement
     sourceDerivedSmashRecognition
 
-/-- The recursive fiber tower of the specified coefficient unit. -/
-@[no_expose] public def canonicalAdamsTower (X : Spectrum) :
-    AbstractAdamsTower coefficients.unit X := Internal.Source.canonicalTower coefficients.unit X
-
-/-- Its nested-subobject spectral sequence, with actual finite cycles and
-boundaries and their intersection/union at infinity. -/
-@[no_expose] public def canonicalAdamsSequence (X : Spectrum) :
-    KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) (ℤ × ℤ) :=
-  Internal.Source.canonicalSequence coefficients.unit X
-
-/-- Full comparison: the ambient maps, every page and differential, and
-infinite cycles/boundaries are identified. E₂ alone would not suffice. -/
-public def classical_canonicalIso (X : Spectrum) :
-    classical.obj X ≅ canonicalAdamsSequence X := by
-  sorry
-
 public abbrev canonicalSphereSequence := canonicalAdamsSequence (SphereSpectrum : Spectrum)
 public abbrev classicalSphere_sourceIso : classical.sphere ≅ canonicalSphereSequence :=
   classical_canonicalIso SphereSpectrum
@@ -127,27 +123,6 @@ public theorem nonzeroSurvival_source_iff (p : ℤ × ℤ) (x : classical.sphere
       (classicalSphere_sourceIso.hom.pageMap 2 p x) ↔
         NonzeroSurvival classical.sphere p x :=
   Internal.Source.nonzeroSurvival_iso_iff classicalSphere_sourceIso p x
-
-/-- Actual connecting-map/cofiber first differential, in nonnegative
-Milnor coordinates. No first differential is chosen as extra input. -/
-@[no_expose] public def canonicalFirstDifferential (s t : ℕ) :
-    (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ)) →ₗ[ℤ]
-      (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage
-        (((s + 1 : ℕ) : ℤ), (t : ℤ)) :=
-  Internal.Source.towerFirstDifferentialNat (canonicalAdamsTower SphereSpectrum) s t
-
-/-- Coordinates of the actual coefficient-tower first page. Their
-construction is pending; the following formula fixes their differential. -/
-public def milnorCoordinates (s t : ℕ) :
-    (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]
-      MilnorCochains s t := by
-  sorry
-
-public theorem milnorCoordinates_differential (s t : ℕ)
-    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ))) :
-    milnorCoordinates (s + 1) t (canonicalFirstDifferential s t x) =
-      milnorDifferential s t (milnorCoordinates s t x) := by
-  sorry
 
 /-- Actual tower cycles map to exactly the cocycles of the specified
 polynomial differential. This follows from exactness and the same d₁ formula. -/
@@ -177,7 +152,10 @@ public theorem sphereE2_milnor_classOfCycle (s t : ℕ)
       (classicalSphere_sourceIso.inv.pageMap 2 _ (canonicalE2ClassOfCycle s t x hx)) =
         milnorClassOfCycle (milnorCoordinates s t x)
           ((milnorCoordinates_cycle s t x).mp hx) := by
-  sorry
+  exact (congrArg (fun e => e
+    (classicalSphere_sourceIso.inv.pageMap 2 _ (canonicalE2ClassOfCycle s t x hx)))
+      (sphereE2_milnorEquiv_eq_constructed s t)).trans
+    (milnorComparisonSphereEquiv_classOfCycle s t x hx)
 
 /-- All standard hᵢ are the specified polynomial cocycles under the same
 fixed comparison. -/
@@ -229,20 +207,33 @@ public theorem sphereUnit_milnor :
     milnorCup_unit_right_zero] at h
   exact h.symm
 
+private theorem standardH6Square_comparison
+    (compare : ∀ s t : ℕ,
+      classical.sphere.Page 2 ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ] MilnorCohomology s t)
+    (H : StandardSphereClasses classical sphereAlgebra)
+    (hi_rule : ∀ i : ℕ, compare 1 (2 ^ i) (H.hi i) = milnorHiClass i)
+    (product_rule : ∀ (s t s' t' : ℕ)
+    (x : classical.sphere.Page 2 ((s : ℤ), (t : ℤ)))
+    (y : classical.sphere.Page 2 ((s' : ℤ), (t' : ℤ))),
+    compare (s + s') (t + t')
+      ((eqToHom (congrArg (classical.sphere.Page 2)
+        (show ((s : ℤ), (t : ℤ)) + ((s' : ℤ), (t' : ℤ)) =
+          (((s + s' : ℕ) : ℤ), ((t + t' : ℕ) : ℤ)) by
+            ext <;> simp)))
+        (sphereAlgebra.product _ _ x y)) =
+      milnorCup (compare s t x) (compare s' t' y)) :
+    compare 2 128 H.standardH6Square = milnorHiSquareClass 6 := by
+  have hprod := product_rule 1 64 1 64 H.standardH6 H.standardH6
+  have hh : compare 1 64 H.standardH6 = milnorHiClass 6 := hi_rule 6
+  exact (congrArg (compare 2 128) H.standardH6Square_eq_product).trans
+    (hprod.trans ((congrArg₂ (fun (x y : MilnorCohomology 1 64) => milnorCup x y)
+      hh hh).trans (Milnor.hiSquare_eq_cup 6).symm))
+
 /-- The actual Main square is the cup square of the specified ξ₁⁶⁴ cocycle. -/
 public theorem standardH6Square_milnor :
-    sphereE2_milnorEquiv 2 128 standardH6Square = milnorHiSquareClass 6 := by
-  have h := sphereProduct_milnor 1 64 1 64 standardH6 standardH6
-  simp only [standardH6Square_eq_product] at ⊢
-  change sphereE2_milnorEquiv 2 128
-    (sphereAlgebra.product (1,64) (1,64) standardH6 standardH6) = _
-  change sphereE2_milnorEquiv 2 128
-    (sphereAlgebra.product (1,64) (1,64) standardH6 standardH6) = _ at h
-  rw [h]
-  have hh : sphereE2_milnorEquiv 1 64 standardH6 = milnorHiClass 6 :=
-    standardHi_milnor 6
-  rw [hh]
-  exact (Milnor.hiSquare_eq_cup 6).symm
+    sphereE2_milnorEquiv 2 128 standardH6Square = milnorHiSquareClass 6 :=
+  standardH6Square_comparison sphereE2_milnorEquiv standardClasses
+    standardHi_milnor sphereProduct_milnor
 
 /-- The actual fixed classical functor on the ordinary concrete source. -/
 public def sourceClassical : ClassicalSource ⥤

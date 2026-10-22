@@ -674,11 +674,43 @@ For a triangle in the chosen classical object family, let its normalized arrows 
 A normalized synthetic revision of \cite{LWX126}, Example 6.19.\par
 
 For the classical triangle $S^3\xrightarrow{\nu}S^0\to C\nu\to S^4$, the normalized exponent of $\nu$ is one and those of the bottom- and top-cell maps are zero. The normalized $\nu$ has first-quotient label $h_2$, and the triangle of normalized arrows is distinguished.
-% Blueprint note: The compatibility of this particular normalized triangle retains its separate comparison obligation.
+% Blueprint note: Distinguishedness of this particular selected normalized triangle is proved from the rotated synthetic lift and the suspension square for the same Hopf map. Its first-quotient identification with h_2 remains a separate obligation.
 \lean{KIP126.Literature.Standard.nuCofiber_nu_exponent,KIP126.Literature.Standard.nuCofiber_bottom_exponent,KIP126.Literature.Standard.nuCofiber_top_exponent,KIP126.Literature.Standard.nuCofiber_normalized_label,KIP126.Literature.Standard.nuCofiber_triangle,KIP126.Literature.Standard.nuCofiber_exponent_sum,KIP126.Literature.Standard.nuCofiber_distinguished,KIP126.Literature.Standard.normalizedNu}
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. Example 6.19 supplies the exponent values and the Ext h2 operation. The first-quotient label of normalizedNu and distinguishedness of the three already selected maps are separate obligations. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Example 6.19; Proposition 3.20; pages 38–39; 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [LWX126](https://arxiv.org/abs/2412.10879): Notation 3.19; Proposition 3.20; pages 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
-% Blueprint note: Detailed source attribution: (A normalized synthetic revision of \cite{LWX126}, Example 6.19 and Proposition 3.20; the selected-map comparisons remain explicit obligations.)
+% Blueprint note: Source verification (2026-10-18): Partial source correspondence. Example 6.19 supplies the exponent values and the Ext h2 operation. The first-quotient label of normalizedNu remains an obligation. Distinguishedness of the three already selected maps has been derived from the rotated lift, the fixed suspension square and the prescribed normalized-map comparisons. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Example 6.19; Proposition 3.20; pages 38–39; 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf [LWX126](https://arxiv.org/abs/2412.10879): Notation 3.19; Proposition 3.20; pages 19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
+% Blueprint note: Detailed source attribution: (A normalized synthetic revision of \cite{LWX126}, Example 6.19 and Proposition 3.20; the first-quotient label remains pending.)
 \end{proposition}
+\begin{proof}[Proof of the distinguished-triangle clause]
+\uses{sem:Literature:cofiber-and-lift,sem:Literature:normalized-cofiber,sem:Literature:hopf-classes,sem:Literature:selected-lifts,sem:AdamsSynthetic:filtration-comparison,sem:AdamsSynthetic:categories}
+The suspension-square construction follows
+\cite{KIPMainSourcec60fbbbb93ee},
+\texttt{Main/AdamsSynthetic/NuSource/Suspension.lean}.
+Rotate the actual cofiber triangle of the Hopf map. Its positive Adams
+filtration makes the induced map on mod-two homology zero. The homology
+long exact sequence therefore gives a short exact sequence on the
+rotated triangle, and the rotated connecting map has filtration at
+least one. The synthetic triangle-lift theorem supplies one
+connecting arrow with both the required factorization and
+distinguishedness. Inverse rotation gives a candidate first arrow on
+the prescribed three objects.
+
+To identify this arrow, use the suspension square for the same Hopf
+map and the fixed comparisons between the synthetic and classical
+spheres. The square follows by normalizing the rotated lifts and
+comparing their realizations. In the needed sphere bidegree,
+realization is injective: its kernel is lambda torsion, while the
+first-quotient vanishing makes the relevant lambda maps injective.
+The absence of maps from the sphere back to its positive suspension
+removes the remaining normalization ambiguity. The resulting arrow
+agrees with the chosen normalized Hopf map; the exponent-zero bottom
+and top arrows agree by their prescribed comparisons. Transporting
+the inverse-rotated triangle along these identifications proves the
+claim, with the rotation signs retained.
+
+This proof uses the existing triangle-lift, realization-kernel and
+filtration comparisons. It does not identify the first-quotient label
+of the normalized Hopf map with $h_2$.
+\end{proof}
+
 
 \section{Bockstein lifts and completion hypotheses}
 
@@ -691,11 +723,35 @@ From \cite{BHS}, Theorem A.1(1) and Corollary A.11.\par
 
 Let $q>0$ and $x\in E_2^{s,t}(X)$. The label $x$ reaches $E_{q+1}$ if and only if its first-quotient class lifts to $\nu X/\lambda^q$. Here reaching a page allows zero and boundaries. A suitable lift has Bockstein label representing $d_{q+1}x$ in bidegree $(s+q+1,t+q)$, where the Bockstein is the boundary of this quotient tower.
 \lean{KIP126.Literature.Standard.bhs_finite_lift,KIP126.Literature.Standard.bhs_bockstein}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Finite-quotient result: write q for BHS r, identify tau with lambda, and use stem k=t-s. Reaching E_(q+1) means d_2 through d_q vanish; zero and earlier boundaries are allowed. Unlike the untruncated conclusion, the finite case extends to arbitrary spectra via Corollary A.11 and Lemma A.14, as in the proof of Theorem A.1(1). Over F_2 the sign in A.1(1c) disappears. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(1a)–(1c); Corollary A.11; Lemma A.14; proof of Theorem 9.19(1); pages PDF pp. 70, 73–75; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [LWX126](https://arxiv.org/abs/2412.10879): Theorem 3.8(1)–(2); pages PDF p. 16; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf; exact local source snapshot
+% Blueprint note: Source verification (2026-10-18): Source adaptation checked. Finite-quotient result: write q for BHS r, identify tau with lambda, and use stem k=t-s. Reaching E_(q+1) means d_2 through d_q vanish; zero and earlier boundaries are allowed. Unlike the untruncated conclusion, the finite case extends to arbitrary spectra via Corollary A.11 and Lemma A.14, as in the proof of Theorem A.1(1). Over F_2 the sign in A.1(1c) disappears. The finite-lift equivalence is proved from the fixed finite windows, first-quotient detection and actual restriction maps. The Bockstein differential comparison remains a separate obligation; the cited source does not discharge the retained window and model comparisons. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(1a)–(1c); Corollary A.11; Lemma A.14; proof of Theorem 9.19(1); pages PDF pp. 70, 73–75; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [LWX126](https://arxiv.org/abs/2412.10879): Theorem 3.8(1)–(2); pages PDF p. 16; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf; exact local source snapshot
 % Blueprint note: Detailed source attribution: (From \cite{BHS}, Theorem A.1(1), Corollary A.11 and Lemma A.14; \cite{LWX126}, Theorem 3.8.)
 % Blueprint note: Detailed source attribution: (From \cite{BHS}, Theorem A.1(1a)--(1b), Corollary A.11 and Lemma A.14; \cite{LWX126}, Theorem 3.8.)
 % Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1(1c) and its proof, Corollary A.11 and Lemma A.14; \cite{LWX126}, Theorem 3.8(2).)
 \end{theorem}
+\begin{proof}[Proof of the finite-lift clause]
+\uses{sem:Literature:infinite-finite-window,sem:AdamsSynthetic:finite-quotient-separation,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:selected-convergence,sem:AdamsSynthetic:lambda-quotients}
+At weight $t$, the infinite page of $\nu X/\lambda^q$ is the
+subquotient $Z_q^{s,t}(X)/B_1^{s,t}(X)$. A label belongs to $Z_q$
+exactly when it has a representative on $E_{q+1}$, including a zero
+representative. Every such infinite class has an actual representative
+in filtration $s$, since the associated graded projection is surjective.
+
+For $q=1$, the infinite page vanishes in all filtrations above $s$
+in stem $t-s$ and weight $t$. Finite-quotient separation therefore
+makes filtration $s+1$ zero. Two homotopy classes detected by the same
+label in this first quotient are consequently equal. Apply this to
+the prescribed first-quotient class and the restriction of the chosen
+$\lambda^q$-quotient representative. Naturality for the actual
+restriction map proves that its image is precisely the required label.
+
+Conversely, every class of bidegree $(t-s,t)$ in the finite quotient
+has filtration at least $s$, because its infinite page vanishes below
+that filtration. Choose a cycle label for its associated graded class
+using the same finite window. The first-quotient uniqueness just proved
+identifies that label with the specified $x$. Thus $x\in Z_q$, proving
+that it reaches $E_{q+1}$. The argument includes $q=1$ and uses the
+fixed restrictions throughout; it does not prove the Bockstein clause.
+\end{proof}
 
 \begin{theorem}[Classical and synthetic differentials with common labels]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -745,9 +801,16 @@ From \cite{BHS}, Theorem A.1(2a).\par
 
 Assume the complete-source hypotheses. Let $r\ge1$, and let a synthetic class $a$ have first-quotient label $x$. If $x$ has a common permanent representative and survives nontrivially to $E_{r+1}$, then $\lambda^{r-1}a\ne0$.
 \lean{KIP126.Literature.Standard.bhs_realization_lifetime}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
+% Blueprint note: Source verification (2026-10-18): Source adaptation checked. BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The fixed-family lifetime statement is now derived from the selected-model window and detection comparisons; this complete-source formulation follows by specialization, retaining its stated hypotheses. The upstream window and model comparisons are not discharged by the citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Detailed source attribution: (From \cite{BHS}, Theorem A.1(2a), equivalently Theorem 9.19(2a).)
 \end{theorem}
+\begin{proof}
+\uses{sem:Literature:selected-realization}
+Apply the lifetime clause of the selected-model realization comparison
+to the same object, first-quotient lift and nonzero continuation. The
+additional complete-source hypotheses are retained in this formulation.
+\end{proof}
+
 
 \begin{theorem}[Detection and prescribed realization on a complete source]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -769,9 +832,15 @@ From \cite{BHS}, Theorem A.1(3a).\par
 
 Assume the complete-source hypotheses. If $r\ge2$ and a classical label $y$ has a common infinite-cycle representative and is hit on page $r$, then $y$ has a synthetic lift $a$ with $\lambda^{r-1}a=0$.
 \lean{KIP126.Literature.Standard.bhs_realization_boundary_lift}
-% Blueprint note: Source verification (2026-10-18): Source adaptation checked. BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
+% Blueprint note: Source verification (2026-10-18): Source adaptation checked. BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The selected-model boundary lift is now derived from the fixed windows, detection and lambda-divisibility comparisons; this formulation follows by specialization with its complete-source hypotheses retained. The cited result does not discharge those upstream comparisons. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Detailed source attribution: (From \cite{BHS}, Theorem A.1(3a), equivalently Theorem 9.19(3a).)
 \end{theorem}
+\begin{proof}
+\uses{sem:Literature:selected-realization}
+Apply the boundary-lift clause of the selected-model comparison to the
+same permanent label and actual incoming differential. This retains
+the complete-source hypotheses in the present formulation.
+\end{proof}
 
 \begin{proposition}[The source-to-selected-model infinite-lift comparisons]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
@@ -781,17 +850,28 @@ Assume the complete-source hypotheses. If $r\ge2$ and a classical label $y$ has 
 A selected-model revision of \cite{BHS}, Theorem A.1 and Corollary A.19.\par
 
 For $X$ in the chosen classical object family, a classical label has a common infinite-cycle representative if and only if it is the first-quotient image of an untruncated class on $\nu X$. For a class of bidegree $(m,w)$ and $w-m\le s$, Adams filtration at least $s$ is equivalent to divisibility by $\lambda^{m+s-w}$ from weight $m+s$. A class on an object in the chosen synthetic family has zero realization if and only if some finite power of $\lambda$ annihilates it.
-% Blueprint note: The filtration--lambda clause is proved from the fixed infinite-page windows, finite-quotient separation and cofiber exactness. The permanent-lift and realization-kernel clauses remain separate obligations; no assertion that every selected object satisfies the complete-source hypotheses is made.
+% Blueprint note: The permanent-lift and filtration--lambda clauses are proved from the fixed infinite-page windows, first-quotient detection, finite-quotient separation and cofiber exactness. The realization-kernel clause remains a separate obligation; no assertion that every selected object satisfies the complete-source hypotheses is made.
 \lean{KIP126.Literature.Standard.selected_permanent_lift,KIP126.Literature.Standard.selected_filtration_lambda,KIP126.Literature.Standard.selected_realization_kernel}
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. The realization-kernel clause is a consequence of the full synthetic category's localization telescope; its transport to this project's realization is a separate pending comparison. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.33; Proposition 4.40; Remark 4.41; pages PDF pp. 46–49; arXiv:1803.01804v3, 10 November 2022; not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1, the permanent-cycle paragraph, and Corollary A.19; \cite{Pst}, Remark 4.41. Source-to-selected-model comparison pending.)
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Corollary A.19. Source-to-selected-model comparison pending.)
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1, the permanent-cycle paragraph and its proof on pp. 76--77 (arXiv v3). Source-to-selected-model comparison pending.)
+% Blueprint note: The source statements in BHS assume E-nilpotent completeness and strong convergence. The first two clauses here are derived from the specified selected-model windows and detection comparisons; membership in the selected family does not establish source completeness. Realization-kernel comparison remains pending: the source proof uses the full synthetic category's localization telescope, which must be compared with the project's actual realization. References: \cite{BHS}, Theorem A.1, permanent-cycle paragraph and proof of Theorem 9.19(2)--(4), and Corollary A.19; \cite{Pst}, Propositions 4.33 and 4.40 and Remark 4.41.
 \end{proposition}
-\begin{proof}[Proof of the filtration--$\lambda$ clause]
-\uses{sem:Literature:infinite-nu-window,sem:Literature:infinite-finite-window,sem:AdamsSynthetic:finite-quotient-separation,sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:selected-convergence}
+\begin{proof}[Proof of the permanent-lift and filtration--$\lambda$ clauses]
+\uses{sem:Literature:infinite-nu-window,sem:Literature:infinite-finite-window,sem:AdamsSynthetic:finite-quotient-separation,sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:selected-convergence,sem:AdamsSynthetic:e2-comparison}
+First consider a permanent label $x\in E_2^{s,t}(X)$. The infinite-page
+window at weight $t$ gives an infinite class on $\nu X$ with this
+label. Lift its associated graded class to a class $a$ in filtration
+$s$. In $\nu X/\lambda$, the infinite page vanishes above filtration
+$s$ in this stem and weight. Separation makes filtration $s+1$ zero,
+so naturality and first-quotient detection identify the actual
+projection of $a$ with the prescribed first-quotient class of $x$.
+
+Conversely, an arbitrary class $a\in\pi_{t-s,t}(\nu X)$ has
+filtration at least $s$ by the above-diagonal vanishing of its infinite
+page. Choose a permanent label for its associated graded class via
+the same infinite window. Projection and the preceding uniqueness in
+the first quotient identify this label with the given $x$, since the
+fixed first-quotient comparison is injective. This proves the
+permanent-lift equivalence on the same objects, including zero labels.
+
 Put $k=m+s-w\ge0$. The infinite-page window of $\nu X$ vanishes when
 $t<w$, so every class of bidegree $(m,m+s)$ has filtration at least
 $s$. Precomposition by $\lambda^k$ preserves this filtration, proving
@@ -808,9 +888,9 @@ the quotient projection is zero because $\lambda^0$ is an isomorphism,
 and the same exactness argument applies. Nonpositive filtrations are
 covered by the zeroth tower stage and monotonicity.
 
-This argument retains the fixed window and finite-quotient separation
-inputs. It proves neither the permanent-lift clause nor the
-realization-kernel clause, which remain pending.
+These arguments retain the fixed windows, first-quotient detection and
+finite-quotient separation inputs. They do not prove the
+realization-kernel clause, which remains pending.
 \end{proof}
 
 \begin{proposition}[The selected-model realization comparisons]
@@ -821,15 +901,61 @@ realization-kernel clause, which remain pending.
 A selected-model revision of \cite{BHS}, Theorem A.1(2)--(3).\par
 
 Let $X$ belong to the chosen classical object family. A lift $a$ of a common permanent label $x$ surviving nontrivially to $E_{r+1}$ satisfies $\lambda^{r-1}a\ne0$ for $r\ge1$. If $x$ is a nonzero permanent label, it detects $\operatorname{Re}(a)$; each prescribed classical class detected by $x$ is the realization of such a lift. If a common infinite-cycle label $y$ is hit on page $r\ge2$, it has a lift annihilated by $\lambda^{r-1}$.
-% Blueprint note: The producer must compare completed source objects with the exact selected objects. No blanket completeness assertion replaces those comparison responsibilities.
+% Blueprint note: The lifetime and torsion boundary-lift clauses are proved from the actual first-quotient detection, infinite-page windows, filtered lambda transport and filtration--lambda divisibility. Detection after realization and a lift with prescribed realization remain separate comparison obligations. No blanket completeness assertion replaces them.
 \lean{KIP126.Literature.Standard.selected_realization_lifetime,KIP126.Literature.Standard.selected_realization_detection,KIP126.Literature.Standard.selected_realization_prescribed_lift,KIP126.Literature.Standard.selected_realization_boundary_lift}
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1(2a),(2b),(3a),(3b). Source-to-selected-model comparison pending.)
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1(3a). Source-to-selected-model comparison pending.)
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1(3b). Source-to-selected-model comparison pending.)
+% Blueprint note: The source result in BHS assumes E-nilpotent completeness and strong convergence. The lifetime and boundary-lift clauses here are instead derived from the specified selected-model window, detection and lambda-divisibility comparisons, which remain their upstream inputs. The two clauses involving actual realization still require comparison with the same selected objects and realization; membership in the selected family does not establish source completeness. References: \cite{BHS}, Theorem A.1(2a),(2b),(3a),(3b), equivalently Theorem 9.19(2)--(3).
 \end{proposition}
+\begin{proof}[Proof of the lifetime and boundary-lift clauses]
+\uses{sem:Literature:infinite-nu-window,sem:Literature:infinite-finite-window,sem:Literature:infinite-restriction,sem:Literature:infinite-shift,sem:Literature:selected-lifts,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:selected-convergence,sem:AdamsSynthetic:ess-shifts}
+The filtered-detection argument is adapted from
+\cite{KIPMainSourcec60fbbbb93ee},
+\texttt{Main/ExtensionLaws/GeneralizedMahowald/Proofs.lean}.
+Write $a\in\pi_{t-s,t}(\nu X)$, using the prescribed zero-shift
+isomorphism. The vanishing of the infinite page above the diagonal
+places $a$ in filtration $s$. At weight $t$, projection
+$\nu X\to\nu X/\lambda$ is injective on the infinite page: in the
+window coordinates it is the inclusion of permanent cycles into the
+finite-cycle quotient with the same boundary subgroup. The
+first-quotient detection comparison and naturality of the convergence
+identification therefore show that $a$ is detected by the infinite
+class of the given label $x$.
+
+Set $k=r-1$. Filtered shift and the actual map $\lambda^k$ transport
+this detection to weight $t-k$. The window comparison sends its
+infinite class to
+\[
+[x]\in Z_\infty^{s,t}(X)/B_{1+t-(t-k)}^{s,t}(X)
+     =Z_\infty^{s,t}(X)/B_r^{s,t}(X).
+\]
+If $\lambda^k a=0$, its associated graded class is zero, so
+$x\in B_r^{s,t}(X)$. Such a label represents zero on $E_{r+1}$,
+contradicting the supplied nonzero continuation. When $r=1$,
+$\lambda^0$ is the specified identity comparison; the same argument
+at weight $t$ contradicts nonzero survival on $E_2$.
+
+For the boundary-lift clause, put $k=r-1>0$ and choose a lift
+$\alpha\in\pi_{t-s,t}(\nu X)$ of the given permanent label $y$.
+The actual differential hitting $y$ places it in $B_r^{s,t}(X)$.
+Consequently $\lambda^k\alpha$ has zero infinite-page class in
+weight $t-k$, and detection raises its filtration to at least $s+1$.
+The filtration--$\lambda$ comparison now supplies
+$\beta\in\pi_{t-s,t+1}(\nu X)$ with
+\[
+\lambda^{k+1}\beta=\lambda^k\alpha.
+\]
+Set $a=\alpha-\lambda\beta$. Cofiber exactness makes the
+first-quotient image of $\lambda\beta$ zero, so $a$ has the same
+prescribed label $y$. Coherence and additivity of the actual lambda
+maps give $\lambda^k a=0$. The fixed zero-shift comparison transports
+this class to the object in the statement.
+
+The lifetime argument uses the supplied permanent representative;
+the boundary construction uses the permanent-lift and
+filtration--$\lambda$ clauses already proved. Neither argument
+identifies an actual realization with a classical detected class.
+Detection after realization and prescribed realization remain pending.
+\end{proof}
+
 
 \section{Normalized finite quotient triangles}
 
@@ -1730,8 +1856,8 @@ A normalized synthetic revision of \cite{LWX126}, Example 6.19; \cite{BHS}, Theo
 \item For every $X$ in the chosen classical family and $r\ge2$, $E_r^{s,t,w}(\nu X)=0$ when $t<w$.
 \end{enumerate}
 \lean{KIP126.Literature.Standard.nuCofiber_normalized_label,KIP126.Literature.Standard.finite_quotient_component_retained,KIP126.Literature.Standard.nuCofiber_triangle,KIP126.Literature.Standard.above_diagonal}
-% Blueprint note: Source verification (2026-10-18): Partial source correspondence. This mixed entry contains four independent claims. The page statements are verified after regrading BHS (s,k,omega) to project (s,t,w), where k=t-s and omega=w-k. The Hopf-nu first label and distinguishedness of the three already selected normalized arrows require explicit object/arrow comparisons; existence of some normalized triangle does not identify arbitrary chosen lifts. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution [BHS](https://arxiv.org/pdf/1910.14116v3): Remark 9.5; Theorem A.8; Corollary A.9(1); Notation A.10, Corollary A.11; Proposition A.20, relations (0), (9), and Remark A.22; pages 32, 72–73, 78–79; published Acta page mapping supplied in bhs_pages/proposals.json; arXiv:1910.14116v3, as independently retrieved by the BHS audit worker
-% Blueprint note: Detailed source attribution: (A normalized synthetic revision of \cite{LWX126}, Example 6.19 and Proposition 3.20, and \cite{BHS}, Theorem A.8, Corollary A.9(1), Notation A.10 and Corollary A.11. The selected-map comparisons remain explicit obligations.)
+% Blueprint note: Source verification (2026-10-18): Partial source correspondence. This mixed entry contains four independent claims. The page statements are verified after regrading BHS (s,k,omega) to project (s,t,w), where k=t-s and omega=w-k. The Hopf-nu first label remains pending. Distinguishedness of the three selected normalized arrows is proved by the rotated-lift and suspension-square comparison; it is not inferred merely from existence of some normalized triangle. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Theorem 7.3, Remarks 7.4–7.5; Example 5.8(4); proof of Lemma 7.16; pages 42, 28, 49–50; Repository AimPaper/main.tex and AimPaper/2412.10879.pdf snapshot; no unstated version substitution [BHS](https://arxiv.org/pdf/1910.14116v3): Remark 9.5; Theorem A.8; Corollary A.9(1); Notation A.10, Corollary A.11; Proposition A.20, relations (0), (9), and Remark A.22; pages 32, 72–73, 78–79; published Acta page mapping supplied in bhs_pages/proposals.json; arXiv:1910.14116v3, as independently retrieved by the BHS audit worker
+% Blueprint note: Detailed source attribution: (A normalized synthetic revision of \cite{LWX126}, Example 6.19 and Proposition 3.20, and \cite{BHS}, Theorem A.8, Corollary A.9(1), Notation A.10 and Corollary A.11. The first-quotient label remains pending, while the selected Hopf-nu triangle comparison is proved.)
 \end{theorem}
 
 
@@ -1858,8 +1984,8 @@ $\Delta h_1g\ne0$.
 % Blueprint note: Clause 3: Smash connectivity with HF2; all integer connectivity bounds. This verifies the mathematical source and the stated adaptation, not the pending comparison with the fixed project model. No Lean proof obligation is discharged by this audit. Primary references: [SchwedeSymmetricSpectra](https://www.math.uni-bonn.de/~schwede/SymSpec-v3.pdf): Proposition II.5.22; Example I.1.14; Definition II.6.21; pages [16, 17, 264, 265, 278, 279] [EKMM](https://www.math.uchicago.edu/~may/BOOKS/EKMM.pdf): Proposition IV.1.2(i), after shifting X by -(n+1); pages [72]
 % Blueprint note: Clause 4: The quaternionic Hopf map supplies a nonzero surviving h2. This verifies the mathematical source and the stated adaptation, not the pending comparison with the fixed project model. No Lean proof obligation is discharged by this audit. Primary references: [Adams58](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/Adams-SS.pdf): Lemma 2.3 and the following m=0 paragraph; pages 184 [Adams60](https://www.maths.ed.ac.uk/~v1ranick/papers/adams1.pdf): Section 1.1, after Theorem 1.1.1; pages 20
 % Blueprint note: Clause 5: Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): paragraph immediately before Notation A.7; proof of Theorem A.8; pages arXiv PDF p. 72; published p. 307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
-% Blueprint note: Clause 6: BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
-% Blueprint note: Clause 7: BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
+% Blueprint note: Clause 6: BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The fixed-family lifetime statement is derived from the selected-model window and detection comparisons; its complete-source specialization retains the stated hypotheses. The cited result does not discharge those upstream comparisons. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
+% Blueprint note: Clause 7: The lifetime and boundary-lift clauses are proved from the fixed first-quotient, infinite-page and lambda-divisibility comparisons. The realization-detection and prescribed-realization clauses remain pending on the same selected objects. The BHS completeness hypotheses are not inferred from membership in that family. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Clause 8: BHS factors a map of filtration k. The interface uses the actual target Adams-tower lower-bound predicate and negative-target shifts; identifying that predicate with source Adams filtration is part of model recognition. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Lemma 9.15 and its proof; pages 34–35; arXiv:1910.14116v3, 10 May 2022 [LWX126](https://arxiv.org/abs/2412.10879): Propositions 3.16–3.17; Remark 3.18; pages 18–19; Repository-frozen AimPaper/main.tex and AimPaper/2412.10879.pdf
 % Blueprint note: Clause 9: BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Clause 10: BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
@@ -1875,7 +2001,7 @@ $\Delta h_1g\ne0$.
 % Blueprint note: Clause 20: Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344 [BHS](https://arxiv.org/pdf/1910.14116v3): paragraph immediately before Notation A.7; proof of Theorem A.8; pages arXiv PDF p. 72; published p. 307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344
 % Blueprint note: Clause 21: BHS assumes E-nilpotent completeness and a strongly convergent E-based Adams spectral sequence (Definitions 9.16–9.17). BHSObjectApplicability is the project's explicit Adams-tower encoding of these hypotheses, not a quoted definition from BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Clause 22: Specialization to mod-two homology and the project’s precise nu and coefficient functors; no finiteness, connectivity, or completeness premise is introduced. Primary references: [Pst](https://arxiv.org/pdf/1803.01804v3): Lemma 4.23; pages 43; arXiv:1803.01804v3, 10 November 2022
-% Blueprint note: Clause 23: BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
+% Blueprint note: Clause 23: The lifetime and boundary-lift clauses are proved from the fixed first-quotient, infinite-page and lambda-divisibility comparisons. The realization-detection and prescribed-realization clauses remain pending on the same selected objects. The BHS completeness hypotheses are not inferred from membership in that family. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2a), equivalently Theorem 9.19(2a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(2b) and (3b), equivalently Theorem 9.19(2b),(3b); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1(3a), equivalently Theorem 9.19(3a); pages PDF pp. 70, 77 (also p. 36); arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Clause 24: The cited papers concern the usual classical spectrum or its 2-primary/2-completed version. Recognition of the fixed project category, Adams tower, coefficient object, and selected Lean constants is a separate, currently pending formal comparison; this audit does not prove it. Primary references: [BR21](https://www.sas.rochester.edu/mth/sites/doug-ravenel/otherpapers/rognes-bruner-tmf-book.pdf): BR21 Proposition1.4;Table1.1,p56;Remark1.5,pp56–57;Figure1.10,p57; IWX Table4,p215,row(45,9,24) [IWX](https://www.numdam.org/item/10.1007/s10240-023-00139-1.pdf): BR21 Proposition1.4;Table1.1,p56;Remark1.5,pp56–57;Figure1.10,p57; IWX Table4,p215,row(45,9,24)
 % Blueprint note: Clause 25: Project normalized eta factors nu eta by one lambda; realization inverts lambda and sends nu eta to the same classical eta. This verifies the mathematical source and the stated adaptation, not the pending comparison with the fixed project model. No Lean proof obligation is discharged by this audit. Primary references: [LWX126](https://arxiv.org/abs/2412.10879): Proposition 3.16; Notation 3.19; Notation 7.2; pages [18, 19, 42] [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.40 and Remark 4.41; pages 49
 % Blueprint note: Clause 26: Write the BHS coordinates as (s,k,omega) and the project coordinates as (s,t,w). The translation is k=t-s and omega=w-(t-s); tau is renamed lambda. Hence s-omega=t-w, and the BHS differential degree (r,-1,1) becomes (r,r-1,0). This verifies the mathematical source and its stated regrading, not the outstanding Lean comparison with the fixed project model. Existing Lean proof and transitive-dependency status must remain unchanged. Spectral-sequence page and E-infinity subquotient statements here do not assert convergence to untruncated homotopy groups; BHS Convention A.5 allows an arbitrary spectrum for Theorem A.8 and Corollaries A.9/A.11. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.8; Notation A.6; pages arXiv PDF pp. 71-72; published pp. 306-307; arXiv:1910.14116v3, 10 May 2022; checked against Acta Math. 231 (2023), 205-344

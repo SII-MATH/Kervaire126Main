@@ -22,6 +22,7 @@ For $f\colon X\to Y$ in $\mathrm{Syn}$, choose a cofiber $C(f)$ and a distinguis
 Choose $H\mathbb F_2\in\mathrm{Sp}$ together with an additive isomorphism $\pi_0H\mathbb F_2\cong\mathbb Z/2$ and $\pi_nH\mathbb F_2=0$ for every nonzero integer $n$. Its coefficient unit $S\to H\mathbb F_2$ is the class corresponding to $1\in\mathbb Z/2$.
 
 The monoidal category $\mathrm{Sp}$ is symmetric and closed. For each $W$, tensoring on the right with $W$ and taking the internal hom $F(W,-)$ commute with integer suspension and preserve distinguished triangles for these suspension comparisons.
+% Blueprint note: On the actual prespectrum source, a functorial cubical replacement Q and its natural comparison Q -> Id are constructed, following \cite{KIPMainSourcec60fbbbb93ee}, Spectra/Prespectrum/Replacement/Cubical. Attaching all free cubical boundary lifting problems and taking the sequential colimit gives Q; compactness factors each problem through a finite stage, proving that this same comparison is a stable equivalence. Its levels are compactly generated, well based and of based CW type. Recognition of the selected stable category and its tensor by this source remain separate obligations; the replacement construction does not identify the fixed background with a completed stable category.
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \lean{KIP126.AdamsSynthetic.Standard.Spectrum,KIP126.AdamsSynthetic.Standard.SyntheticSpectrum,KIP126.AdamsSynthetic.Standard.spectrumCategory,KIP126.AdamsSynthetic.Standard.syntheticCategory,KIP126.AdamsSynthetic.Standard.spectrumCofiber,KIP126.AdamsSynthetic.Standard.syntheticCofiber,KIP126.AdamsSynthetic.Standard.coefficients,KIP126.AdamsSynthetic.Standard.closedBackground}
 \end{definition}
@@ -172,11 +173,41 @@ d_{s+1,t}(d_{s,t}(x))=0.
 \begin{definition}[The second page in Milnor coordinates]
 \label{frontier:AdamsSynthetic:8b66ee46e41e}
 \level{fine}
-For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the group on the right is the cohomology of the normalized Milnor cobar complex.
+For $s,t\in\mathbb N$, there is a $\mathbb Z$-linear isomorphism
+$\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$, where the
+right-hand side is the cohomology of the normalized Milnor cobar complex.
+
+This comparison descends from the prescribed coordinates $\chi_{s,t}$
+on the actual first page of the canonical sphere tower. Write $\iota$
+for the fixed isomorphism from the selected classical sphere sequence
+to this canonical sequence, and $\kappa(z)$ for the actual second-page
+class of a canonical first-page cycle $z$. Then
+\[
+\Phi_{s,t}\bigl(\iota^{-1}\kappa(z)\bigr)=[\chi_{s,t}(z)].
+\]
 \uses{sem:AdamsSynthetic:milnor-differential-square-zero,sem:AdamsSynthetic:families}
-\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv}
-% Blueprint note: The completed standardHi definition now uses this comparison. Its construction remains a registered upstream obligation, and no representative-level source recognition is claimed here.
+\lean{KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv,KIP126.AdamsSynthetic.Standard.sphereE2_milnor_classOfCycle}
+% Blueprint note: The quotient comparison and its compatibility with actual cycle representatives are proved. The fixed classical-to-canonical sequence isomorphism, the first-page Milnor coordinates and their differential compatibility remain upstream obligations, as do the fixed category, cofiber, coefficient and classical-system constructions. Product compatibility remains a separate obligation; no source-completion identification is asserted.
 \end{definition}
+\begin{proof}[Construction and representative compatibility]
+\uses{sem:AdamsSynthetic:milnor-differential-square-zero,sem:AdamsSynthetic:families}
+The actual second-page boundaries in the canonical sphere tower are
+exactly the image of its first differential. At filtration zero the
+preceding stage is in the constant negative part of the tower, whose
+structure map is the identity, so both boundary descriptions vanish.
+In positive filtration the connecting-map exact sequence identifies
+the two boundary descriptions, with the degree transports retained.
+
+The prescribed first-page coordinates intertwine the differentials.
+They therefore identify the cycle submodules and the boundary
+submodules with those of the normalized cobar complex. The actual
+second-page projection and the cobar cohomology projection are
+surjective maps from these identified cycles with the same kernel.
+Their quotient comparison is consequently an isomorphism. Precompose
+with the second-page component of $\iota$ to obtain $\Phi$. Its action
+on $\kappa(z)$ is the displayed formula by the defining quotient
+identity and cancellation of the two components of $\iota$.
+\end{proof}
 
 \begin{definition}[The sphere second-page algebra]
 \label{frontier:AdamsSynthetic:f05463b82afe}
@@ -212,7 +243,7 @@ boundary. They therefore give the fixed standard sphere class family.
 Define $h_6^2\in E_2^{2,128}(S)$ as the product of $h_6$ with itself.
 \uses{frontier:AdamsSynthetic:8b66ee46e41e,frontier:AdamsSynthetic:f05463b82afe}
 \lean{KIP126.Classical.Adams.StandardSphereClasses,KIP126.AdamsSynthetic.Standard.standardClasses,KIP126.AdamsSynthetic.Standard.standardHi,KIP126.AdamsSynthetic.Standard.standardH6,KIP126.AdamsSynthetic.Standard.standardH6Square,KIP126.AdamsSynthetic.Standard.standardH6Square_eq_product}
-% Blueprint note: The standardHi definition and the nonzero field of standardClasses are proved by pullback along the existing fixed comparison. The polynomial square-zero foundation is proved directly from the Milnor coproduct formula. Construction of the fixed comparison, its representative-level source recognition and its product compatibility remain separate registered obligations. This construction does not identify the fixed background with the paper's 2-completed system.
+% Blueprint note: The standardHi definition and the nonzero field of standardClasses are proved by pullback along the existing fixed comparison. The polynomial square-zero foundation is proved directly from the Milnor coproduct formula. The fixed quotient comparison and its representative-level compatibility are proved from the retained canonical-source and first-page coordinate comparisons; product compatibility remains a separate registered obligation. This construction does not identify the fixed background with the paper's 2-completed system.
 \end{definition}
 
 \section{Weight-graded hom groups and products}
@@ -291,6 +322,18 @@ $(\Sigma_{\mathrm{int}}^aM)_n=M_{n-a}$ for internal suspension;
 this is distinct from cohomological suspension in
 $D(\mathcal A)$.
 
+The abelian structure is obtained directly on these objects. For a
+comodule map, take the underlying linear kernel with its intersected
+homogeneous pieces and the quotient by the underlying image with its
+induced grading. A graded splitting over $\mathbb F_2$ lifts the
+kernel coaction; the quotient coaction descends through the cokernel.
+The coaction identities follow after the corresponding injective or
+surjective tensor maps. Finite biproducts use the underlying products
+and their homogeneous pieces. The forgetful functor preserves these
+kernels and cokernels and reflects isomorphisms, so the coimage-to-image
+comparison is an isomorphism. This establishes the abelian structure
+without any homology-recognition or Adams-to-Ext comparison input.
+
 The homology functor $\mathcal H:\mathrm{Sp}\to\mathcal A$ is the
 actual mod-two homology functor. Its degree-$n$ underlying vector space
 is $\pi_n(H\wedge X)$, and its map on $u:X\to Y$ is
@@ -340,7 +383,7 @@ first-quotient coordinates:
 \]
 \uses{sem:AdamsSynthetic:categories,sem:AdamsSynthetic:families,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts}
 \lean{KIP126.AdamsSynthetic.Standard.SteenrodComodule,KIP126.AdamsSynthetic.Standard.homologyComodule,KIP126.AdamsSynthetic.Standard.ClassicalExt,KIP126.AdamsSynthetic.Standard.e2ExtEquiv,KIP126.AdamsSynthetic.Standard.suspendedE2ExtEquiv}
-% Correspondence: This fixes the actual coefficient-comodule objects, maps, spectral coaction, and genuine derived Ext coordinates needed for the composition theorem. The canonical abelian structure, selected-model homology recognition, and E2/Ext comparison are three registered upstream construction responsibilities; a degreewise vector-space identification alone does not supply the coaction. The suspended coordinates are exactly the E2 suspension followed by the comparison on the suspended spectrum. No global equivalence of synthetic spectra with a derived category, or construction of the foundations behind this source interface, is asserted here.
+% Correspondence: This fixes the actual coefficient-comodule objects, maps, spectral coaction, and genuine derived Ext coordinates needed for the composition theorem. The canonical abelian structure is constructed on this actual graded comodule category. Selected-model homology recognition and the E2/Ext comparison remain independent construction responsibilities; a degreewise vector-space identification alone does not supply the coaction. The suspended coordinates are exactly the E2 suspension followed by the comparison on the suspended spectrum. No global equivalence of synthetic spectra with a derived category, or construction of the foundations behind this source interface, is asserted here.
 \end{definition}
 
 \begin{lemma}[Homology short exact sequences and their Ext boundaries]
@@ -366,7 +409,7 @@ and the specified suspended coordinates put the source in
 $\operatorname{Ext}^{s,t+1}_{A_*}(\mathbb F_2,\mathcal H(\Sigma X))$.
 \uses{sem:AdamsSynthetic:coefficient-ext}
 \lean{KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex,KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex_shortExact,KIP126.AdamsSynthetic.Standard.cofiberExtBoundary}
-% Correspondence: Ext and composition with the actual SES extension class are defined using mathlib's derived localization. Degreewise exactness is lifted to the graded comodule short complex by the proof below; the canonical abelian structure and actual homology recognition remain registered construction responsibilities. No synthetic operation or composition theorem is used to define this boundary.
+% Correspondence: Ext and composition with the actual SES extension class are defined using mathlib's derived localization. Degreewise exactness is lifted to the graded comodule short complex by the proof below; the canonical abelian structure is constructed, while actual homology recognition remains a registered construction responsibility. No synthetic operation or composition theorem is used to define this boundary.
 \end{lemma}
 \begin{proof}
 Naturality of the fixed homology recognition transports the assumed
