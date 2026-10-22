@@ -144,7 +144,7 @@ public def mappingConvergence (X Y : Spectrum)
     (hX : IsFiniteSpectrum X) (hY : IsFiniteSpectrum Y) :
     ClassicalTowerConvergence classicalTower (mappingSpectrum closedBackground X Y) := by sorry
 
-public def mappingSystem :
+public noncomputable def mappingSystem :
     MappingSpectrumSystem closedBackground classicalTower (IsFiniteSpectrum (C := Spectrum)) :=
   ⟨mappingConvergence⟩
 

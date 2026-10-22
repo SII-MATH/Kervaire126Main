@@ -12,6 +12,9 @@ public import KIP126.AdamsSynthetic.Internal.Milnor.Polynomial.Grading
 import all KIP126.AdamsSynthetic.Internal.Milnor.Cohomology
 public import KIP126.AdamsSynthetic.Source
 import all KIP126.AdamsSynthetic.Source
+import all KIP126.AdamsSynthetic.Internal.Source.AdamsSequence
+import all KIP126.AdamsSynthetic.Internal.Source.MilnorComparison
+import Mathlib.LinearAlgebra.Isomorphisms
 
 /-! The fixed classical and synthetic background used in this project.
 Every unfinished construction is named at its mathematical boundary; the
@@ -60,15 +63,282 @@ public def auxiliary : AuxiliaryData Spectrum := by sorry
 /-- Multiplication on the actual sphere E₂, not an independent formal algebra. -/
 public def sphereAlgebra : SphereE2Algebra classical := by sorry
 
+/-- The recursive fiber tower of the specified coefficient unit. -/
+@[no_expose] public def canonicalAdamsTower (X : Spectrum) :
+    AbstractAdamsTower coefficients.unit X := Internal.Source.canonicalTower coefficients.unit X
+
+/-- Its nested-subobject spectral sequence, with actual finite cycles and
+boundaries and their intersection/union at infinity. -/
+@[no_expose] public def canonicalAdamsSequence (X : Spectrum) :
+    KIP126.Core.SpectralSequence (ModuleCat.{0} ℤ) (ℤ × ℤ) :=
+  Internal.Source.canonicalSequence coefficients.unit X
+
+/-- Full comparison: the ambient maps, every page and differential, and
+infinite cycles/boundaries are identified. E₂ alone would not suffice. -/
+public def classical_canonicalIso (X : Spectrum) :
+    classical.obj X ≅ canonicalAdamsSequence X := by
+  sorry
+
+/-- Actual connecting-map/cofiber first differential, in nonnegative
+Milnor coordinates. No first differential is chosen as extra input. -/
+@[no_expose] public def canonicalFirstDifferential (s t : ℕ) :
+    (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ)) →ₗ[ℤ]
+      (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage
+        (((s + 1 : ℕ) : ℤ), (t : ℤ)) :=
+  Internal.Source.towerFirstDifferentialNat (canonicalAdamsTower SphereSpectrum) s t
+
+/-- Coordinates of the actual coefficient-tower first page. Their
+construction is pending; the following formula fixes their differential. -/
+public def milnorCoordinates (s t : ℕ) :
+    (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]
+      MilnorCochains s t := by
+  sorry
+
+public theorem milnorCoordinates_differential (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ))) :
+    milnorCoordinates (s + 1) t (canonicalFirstDifferential s t x) =
+      milnorDifferential s t (milnorCoordinates s t x) := by
+  sorry
+
+section SphereMilnorComparisonConstruction
+set_option backward.privateInPublic true
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 2000000
+open CategoryTheory.Limits CategoryTheory.Pretriangulated KIP126.Core.SpectralSequence
+open KIP126.AdamsSynthetic.Internal.Source
+
+/- Adapted from c60fbbbb93ee1f225e69bb8b93d06b4f842d031d,
+Def/ClassicalAdams/MilnorCohomology/Comparison/{Data,CycleMap/Proofs}.lean.
+The same actual first differential identifies boundaries, including degree zero;
+the two canonical cycle-class surjections then induce the quotient comparison. -/
+private theorem milnorComparisonBoundaryZero (T : AbstractAdamsTower coefficients.unit (SphereSpectrum : Spectrum))
+    (t : ℕ) (x : T.FirstPage (0,(t:ℤ))) :
+    x ∈ T.boundaries 2 (by decide) (0,(t:ℤ)) ↔ x = 0 := by
+  constructor
+  · rintro ⟨a, ha, hax⟩
+    have he : T.mapAt (show (0:ℤ)-2+1 ≤ 0 by omega) = 𝟙 (T.stage 0) := T.map_self 0
+    change a ≫ T.mapAt (show (0:ℤ)-2+1 ≤ 0 by omega) = 0 at ha
+    rw [he] at ha
+    have ha0 : a = 0 := (Category.comp_id a).symm.trans ha
+    simpa only [ha0, map_zero] using hax.symm
+  · intro hx
+    subst x
+    exact Submodule.zero_mem _
+
+private theorem milnorComparisonBoundaryImage (T : AbstractAdamsTower coefficients.unit (SphereSpectrum : Spectrum))
+    (p : ℤ × ℤ) (x : T.FirstPage (p.1+1,p.2)) :
+    x ∈ T.boundaries 2 (by decide) (p.1+1,p.2) ↔
+      ∃ y : T.FirstPage p, towerFirstDifferential T p y = x := by
+  let hd : p.2-p.1-1 = p.2-(p.1+1) := by omega
+  let e := homotopyDegreeEquiv (T.stageAt (p.1+1)) hd
+  let e' := homotopyDegreeEquiv (T.stageAt p.1) hd
+  have hidx : p.1+1-(2:ℕ)+1 = p.1 := by omega
+  constructor
+  · rintro ⟨a,ha,hax⟩
+    change a ≫ T.mapAt (show p.1+1-(2:ℕ)+1 ≤ p.1+1 by omega) = 0 at ha
+    have ha := (support_towerI_zero_index T (p.2-(p.1+1))
+      (p.1+1-(2:ℕ)+1) p.1 (p.1+1) hidx _ a).mp ha
+    have hker : e.symm a ≫ T.mapAt (show p.1 ≤ p.1+1 by omega) = 0 := by
+      apply e'.injective
+      rw [map_zero]
+      change homotopyDegreeEquiv _ hd (e.symm a ≫ _) = 0
+      rw [homotopyDegreeEquiv_postcomp]
+      change e (e.symm a) ≫ _ = 0
+      rw [LinearEquiv.apply_symm_apply]
+      exact ha
+    obtain ⟨y,hy⟩ := (support_connecting_exact T p (e.symm a)).mp hker
+    refine ⟨y,?_⟩
+    change T.layerMap (p.1+1,p.2) (e (T.connecting p y)) = x
+    rw [hy,LinearEquiv.apply_symm_apply]
+    exact hax
+  · rintro ⟨y,rfl⟩
+    refine ⟨e (T.connecting p y), ?_, rfl⟩
+    change e (T.connecting p y) ≫ T.mapAt (show p.1+1-(2:ℕ)+1 ≤ p.1+1 by omega) = 0
+    apply (support_towerI_zero_index T (p.2-(p.1+1))
+      (p.1+1-(2:ℕ)+1) p.1 (p.1+1) hidx _ _).mpr
+    have hker := (support_connecting_exact T p (T.connecting p y)).mpr ⟨y,rfl⟩
+    have h := congrArg e' hker
+    change homotopyDegreeEquiv _ hd (T.connecting p y ≫ _) = e' 0 at h
+    rw [homotopyDegreeEquiv_postcomp, map_zero] at h
+    exact h
+
+private theorem milnorComparisonCastBoundary (T : AbstractAdamsTower coefficients.unit (SphereSpectrum : Spectrum))
+    {p q : ℤ × ℤ} (h : p=q) (x : T.FirstPage q) :
+    (firstPageDegreeEquiv T h).symm x ∈ T.boundaries 2 (by decide) p ↔
+      x ∈ T.boundaries 2 (by decide) q := by
+  subst q
+  rfl
+
+private theorem milnorComparisonBoundaryImageNat (T : AbstractAdamsTower coefficients.unit (SphereSpectrum : Spectrum))
+    (s t : ℕ) (x : T.FirstPage (((s+1:ℕ):ℤ),(t:ℤ))) :
+    x ∈ T.boundaries 2 (by decide) (((s+1:ℕ):ℤ),(t:ℤ)) ↔
+      ∃ y : T.FirstPage ((s:ℤ),(t:ℤ)), towerFirstDifferentialNat T s t y = x := by
+  let h : ((s:ℤ)+1,(t:ℤ)) = (((s+1:ℕ):ℤ),(t:ℤ)) := by simp
+  let e := firstPageDegreeEquiv T h
+  have hx := milnorComparisonCastBoundary T h x
+  rw [←hx,milnorComparisonBoundaryImage T ((s:ℤ),(t:ℤ))]
+  constructor
+  · rintro ⟨y,hy⟩
+    refine ⟨y,?_⟩
+    change e (towerFirstDifferential T ((s:ℤ),(t:ℤ)) y) = x
+    rw [hy,LinearEquiv.apply_symm_apply]
+  · rintro ⟨y,hy⟩
+    refine ⟨y,?_⟩
+    apply e.injective
+    change towerFirstDifferentialNat T s t y = e (e.symm x)
+    rw [hy,LinearEquiv.apply_symm_apply]
+
+private theorem milnorComparisonCoordinatesCycle (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s:ℤ),(t:ℤ))) :
+    x ∈ (canonicalAdamsTower SphereSpectrum).cycles 2 (by decide) ((s:ℤ),(t:ℤ)) ↔
+      milnorDifferential s t (milnorCoordinates s t x) = 0 := by
+  rw [← milnorCoordinates_differential, LinearEquiv.map_eq_zero_iff]
+  exact (towerFirstDifferentialNat_eq_zero_iff
+    (canonicalAdamsTower SphereSpectrum) s t x).symm
+
+private theorem milnorComparisonCoordinatesBoundary (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s:ℤ),(t:ℤ))) :
+    x ∈ (canonicalAdamsTower SphereSpectrum).boundaries 2 (by decide) ((s:ℤ),(t:ℤ)) ↔
+      milnorCoordinates s t x ∈ Milnor.boundaries s t := by
+  cases s with
+  | zero =>
+    change x ∈ (canonicalAdamsTower SphereSpectrum).boundaries 2 (by decide) (0,(t:ℤ)) ↔
+      milnorCoordinates 0 t x = 0
+    exact (milnorComparisonBoundaryZero (canonicalAdamsTower SphereSpectrum) t x).trans
+      (LinearEquiv.map_eq_zero_iff _).symm
+  | succ s =>
+    rw [milnorComparisonBoundaryImageNat]
+    change (∃ y, canonicalFirstDifferential s t y = x) ↔
+      ∃ y : MilnorCochains s t, milnorDifferential s t y = milnorCoordinates (s+1) t x
+    constructor
+    · rintro ⟨y,hy⟩
+      refine ⟨milnorCoordinates s t y, ?_⟩
+      rw [←milnorCoordinates_differential,hy]
+    · rintro ⟨y,hy⟩
+      refine ⟨(milnorCoordinates s t).symm y, ?_⟩
+      apply (milnorCoordinates (s+1) t).injective
+      rw [milnorCoordinates_differential,LinearEquiv.apply_symm_apply,hy]
+
+private def milnorComparisonCoordinateCycles (s t : ℕ) :
+    (canonicalAdamsTower (SphereSpectrum : Spectrum)).cycles 2 (by decide) ((s:ℤ),(t:ℤ)) →ₗ[ℤ]
+      Milnor.cycles s t where
+  toFun x := ⟨milnorCoordinates s t x.val, (milnorComparisonCoordinatesCycle s t x.val).mp x.property⟩
+  map_add' x y := by apply Subtype.ext; exact (milnorCoordinates s t).map_add x.val y.val
+  map_smul' n x := by apply Subtype.ext; exact (milnorCoordinates s t).map_smul n x.val
+
+private def milnorComparisonCycleMilnorMap (s t : ℕ) :
+    (canonicalAdamsTower (SphereSpectrum : Spectrum)).cycles 2 (by decide) ((s:ℤ),(t:ℤ)) →ₗ[ℤ]
+      MilnorCohomology s t :=
+  ((Milnor.classOf s t).restrictScalars ℤ).comp (milnorComparisonCoordinateCycles s t)
+
+private theorem milnorComparisonCycleMilnorMap_surjective (s t : ℕ) :
+    Function.Surjective (milnorComparisonCycleMilnorMap s t) := by
+  intro z
+  obtain ⟨y,hy,rfl⟩ := Milnor.classOfCycle_surjective z
+  let x := (milnorCoordinates s t).symm y
+  have hx : x ∈ (canonicalAdamsTower SphereSpectrum).cycles 2 (by decide) ((s:ℤ),(t:ℤ)) :=
+    (milnorComparisonCoordinatesCycle s t x).mpr (by
+      change milnorDifferential s t (milnorCoordinates s t ((milnorCoordinates s t).symm y)) = 0
+      rw [LinearEquiv.apply_symm_apply]
+      exact hy)
+  refine ⟨⟨x,hx⟩,?_⟩
+  change Milnor.classOfCycle (milnorCoordinates s t x) _ = Milnor.classOfCycle y hy
+  dsimp only [x]
+  simp only [LinearEquiv.apply_symm_apply]
+
+private theorem milnorComparisonCycleMaps_sameKernel (s t : ℕ) :
+    (towerE2ClassMap (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ))).ker =
+      (milnorComparisonCycleMilnorMap s t).ker := by
+  ext x
+  change towerE2ClassOfCycle (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ)) x.val x.property = 0 ↔
+    Milnor.classOfCycle (milnorCoordinates s t x.val) _ = 0
+  rw [towerE2ClassOfCycle_eq_zero_iff,Milnor.classOfCycle_eq_zero_iff]
+  exact milnorComparisonCoordinatesBoundary s t x.val
+
+private theorem milnorComparisonTowerCycleMap_surjective (s t : ℕ) :
+    Function.Surjective (towerE2ClassMap (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ))) := by
+  intro z
+  obtain ⟨x,hx,h⟩ := towerE2ClassOfCycle_surjective
+    (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ)) z
+  exact ⟨⟨x,hx⟩,h⟩
+
+private def milnorComparisonCanonicalMilnorEquiv (s t : ℕ) :
+    (canonicalAdamsSequence SphereSpectrum).Page 2 ((s:ℤ),(t:ℤ)) ≃ₗ[ℤ] MilnorCohomology s t :=
+  ((towerE2ClassMap (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ))).quotKerEquivOfSurjective
+      (milnorComparisonTowerCycleMap_surjective s t)).symm.trans
+    ((Submodule.quotEquivOfEq _ _ (milnorComparisonCycleMaps_sameKernel s t)).trans
+      ((milnorComparisonCycleMilnorMap s t).quotKerEquivOfSurjective (milnorComparisonCycleMilnorMap_surjective s t)))
+
+private theorem milnorComparisonCanonicalMilnorEquiv_cycle (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s:ℤ),(t:ℤ)))
+    (hx : x ∈ (canonicalAdamsTower SphereSpectrum).cycles 2 (by decide) ((s:ℤ),(t:ℤ))) :
+    milnorComparisonCanonicalMilnorEquiv s t (Internal.Source.canonicalE2ClassOfCycle
+      coefficients.unit SphereSpectrum ((s:ℤ),(t:ℤ)) x hx) =
+      milnorClassOfCycle (milnorCoordinates s t x) ((milnorComparisonCoordinatesCycle s t x).mp hx) := by
+  let f := towerE2ClassMap (canonicalAdamsTower SphereSpectrum) ((s:ℤ),(t:ℤ))
+  let e := f.quotKerEquivOfSurjective (milnorComparisonTowerCycleMap_surjective s t)
+  have he : e.symm (f ⟨x,hx⟩) = Submodule.Quotient.mk ⟨x,hx⟩ := by
+    apply e.injective
+    rw [LinearEquiv.apply_symm_apply]
+    exact (LinearMap.quotKerEquivOfSurjective_apply_mk _ _ _).symm
+  change (milnorComparisonCycleMilnorMap s t).quotKerEquivOfSurjective (milnorComparisonCycleMilnorMap_surjective s t)
+    (Submodule.quotEquivOfEq _ _ (milnorComparisonCycleMaps_sameKernel s t) (e.symm (f ⟨x,hx⟩))) = _
+  rw [he]
+  rfl
+
+private def milnorComparisonClassicalCanonicalPageEquiv (s t : ℕ) :
+    classical.sphere.Page 2 ((s:ℤ),(t:ℤ)) ≃ₗ[ℤ]
+      (canonicalAdamsSequence SphereSpectrum).Page 2 ((s:ℤ),(t:ℤ)) := by
+  let e := classical_canonicalIso (SphereSpectrum : Spectrum)
+  let i : classical.sphere.Page 2 ((s:ℤ),(t:ℤ)) ≅
+      (canonicalAdamsSequence SphereSpectrum).Page 2 ((s:ℤ),(t:ℤ)) :=
+    { hom := e.hom.pageMap 2 ((s:ℤ),(t:ℤ))
+      inv := e.inv.pageMap 2 ((s:ℤ),(t:ℤ))
+      hom_inv_id := by
+        rw [←SpectralSequenceMorphism.pageMap_comp,e.hom_inv_id,SpectralSequenceMorphism.pageMap_id]
+      inv_hom_id := by
+        rw [←SpectralSequenceMorphism.pageMap_comp,e.inv_hom_id,SpectralSequenceMorphism.pageMap_id] }
+  exact i.toLinearEquiv
+
+private def milnorComparisonSphereEquiv (s t : ℕ) :
+    classical.sphere.Page 2 ((s:ℤ),(t:ℤ)) ≃ₗ[ℤ] MilnorCohomology s t :=
+  (milnorComparisonClassicalCanonicalPageEquiv s t).trans (milnorComparisonCanonicalMilnorEquiv s t)
+
+private theorem milnorComparisonSphereEquiv_classOfCycle (s t : ℕ)
+    (x : (canonicalAdamsTower (SphereSpectrum : Spectrum)).FirstPage ((s : ℤ), (t : ℤ)))
+    (hx : x ∈ (canonicalAdamsTower (SphereSpectrum : Spectrum)).cycles 2 (by decide)
+      ((s : ℤ), (t : ℤ))) :
+    milnorComparisonSphereEquiv s t
+      ((classical_canonicalIso SphereSpectrum).inv.pageMap 2 _
+        (Internal.Source.canonicalE2ClassOfCycle coefficients.unit SphereSpectrum _ x hx)) =
+        milnorClassOfCycle (milnorCoordinates s t x)
+          ((milnorComparisonCoordinatesCycle s t x).mp hx) := by
+  change milnorComparisonCanonicalMilnorEquiv s t ((milnorComparisonClassicalCanonicalPageEquiv s t)
+    ((milnorComparisonClassicalCanonicalPageEquiv s t).symm (Internal.Source.canonicalE2ClassOfCycle coefficients.unit SphereSpectrum _ x hx))) = _
+  rw [LinearEquiv.apply_symm_apply]
+  exact milnorComparisonCanonicalMilnorEquiv_cycle s t x hx
+
+private theorem milnorComparisonSphereEquiv_exists (s t : ℕ) :
+    ∃ e : classical.sphere.Page 2 ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]
+      MilnorCohomology s t, e = milnorComparisonSphereEquiv s t :=
+  ⟨milnorComparisonSphereEquiv s t, rfl⟩
+
+set_option backward.privateInPublic true in
 /-- The fixed comparison with the independently defined normalized Milnor cobar
-cohomology. Its construction and compatibility with the actual first tower
-differential are separate registered obligations; an arbitrary linear
-isomorphism is not a completed source identification. The public recognition
-statements are in `Standard.Source`. -/
+cohomology, induced by the actual first-page coordinates on the same cycle
+quotient. The tower comparison, coordinates, and their differential formula
+remain separate registered obligations. The public cycle recognition
+statement is in `Standard.Source`. -/
 public def sphereE2_milnorEquiv (s t : ℕ) :
     classical.sphere.Page 2 ((s : ℤ), (t : ℤ)) ≃ₗ[ℤ]
-      MilnorCohomology s t := by
-  sorry
+      MilnorCohomology s t :=
+  Classical.choose (milnorComparisonSphereEquiv_exists s t)
+
+private theorem sphereE2_milnorEquiv_eq_constructed (s t : ℕ) :
+    sphereE2_milnorEquiv s t = milnorComparisonSphereEquiv s t :=
+  Classical.choose_spec (milnorComparisonSphereEquiv_exists s t)
+
+end SphereMilnorComparisonConstruction
 
 /- In cohomological degree zero, the two coaugmentations cancel over F₂. -/
 set_option backward.privateInPublic true in
@@ -110,9 +380,8 @@ private noncomputable def standardHiConstruction (i : ℕ) :
 
 set_option backward.privateInPublic true in
 /-- Pull back the specified Milnor cocycles to the actual sphere E₂.
-The fixed comparison remains a registered construction obligation.
-Its source recognition is separate; the pullback does not complete it.
-No source comparison is completed. -/
+The comparison is induced from the actual tower coordinates; its upstream
+coordinate and source-sequence constructions remain registered obligations. -/
 public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) :=
   (standardHiConstruction i).val
 
