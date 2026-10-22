@@ -1,7 +1,9 @@
 # CI event coverage and cache reuse
 
-CI keeps the existing Ubuntu runner, Lean thread count, toolchain, dependencies,
-source-inventory check, and full `lake build`. No mathematical check or module is
+Internal jobs use the isolated Inspire self-hosted runner described in
+[self-hosted CI](self-hosted-ci.md); fork PRs retain the hosted Ubuntu runner.
+CI keeps the pinned toolchain, dependencies, source-inventory check, and full
+`lake build`. No mathematical check or module is
 removed. `Lean checks` remains the required PR/main check.
 
 ## Avoiding duplicate develop runs

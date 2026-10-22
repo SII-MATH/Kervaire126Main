@@ -19,6 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import blueprint_boundaries
 import blueprint_memo
 import blueprint_proposals
+import blueprint_research
 import blueprint_interfaces
 import blueprint_meeting
 from blueprint_annotations import sync_authoring_notes
@@ -46,6 +47,7 @@ def stage_workspace():
             target.symlink_to(source, target_is_directory=source.is_dir())
     blueprint_memo.stage_memo(ROOT, project)
     blueprint_interfaces.stage_interfaces(ROOT, project)
+    blueprint_research.stage_research(ROOT, project)
     blueprint_meeting.stage_meeting(ROOT, project)
     return workspace
 
@@ -83,6 +85,7 @@ def export_site(workspace, out, report, boundary_checks):
         export_paper(ROOT, staging, load_paper(ROOT))
         blueprint_memo.export_memo(ROOT, staging)
         blueprint_proposals.export_proposals(ROOT, staging)
+        blueprint_research.export_research(ROOT, staging)
         blueprint_interfaces.export_interfaces(ROOT, staging)
         blueprint_meeting.export_meeting(ROOT, staging)
         (staging / 'native-sync.json').write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')
