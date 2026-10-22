@@ -35,6 +35,17 @@ Source paragraphs use `From \cite{key}, Theorem 6.1.` for quoted statements and 
 
 The **Proposals** section of the native **Interfaces** tab presents independent agent interface reports from tracked `interface/proposals/<module>/<id>/report.md` files. It supports full-report search, module/status filters, report downloads and review feedback for agents to write back to the same record. Existing archived reports retain their original approval scope and evidence limits. Export does not require the local archive or change formal interfaces, mathematical dependencies or proof states. See [the proposal guide](../docs/interface-proposals.md).
 
+The native **Research** tab presents research results from
+`research/results/<id>/report.md`, with full-text search, topic/status filters,
+expandable proofs, mathematical typesetting, stable report anchors and downloads.
+Each report distinguishes independent informal review, Lean formalization and
+literature novelty. Small evidence files accompany the report in the repository;
+export does not read `local-history/` or alter mathematical nodes, interfaces,
+approval records or proof states. The initial reports cover the theta5 product
+bounds and the Moore-spectrum comparison for an order-two theta6, including
+their unresolved and version-dependent inputs. See
+[the research result guide](../docs/research-results.md).
+
 The native **Interfaces** tab presents the eight public interface locks, generated exports, registered obligations, audit boundaries and identifier renames directly from `interface/baselines/`. An Overview-style status summary groups named public interfaces by completed proofs, locally complete proofs whose baselines still permit dependency gaps, direct obligations, and definitions or objects. Source-local flags and declaration kinds come from the native Lean parser; baseline axiom allowances are not a fresh dependency audit. Status and module counts open the matching declaration list; registry links include private responsibilities. Search and module filters operate on a derived export; original baselines remain the only source and can be downloaded unchanged. Source statements and local context come from the native Lean parser, before elaboration. The **Baselines** and **Proposals** sections share this single native tab, with links from declarations to matching reports and from reports to their module baseline. Neither section adds mathematical nodes, changes proof states, or certifies a Lean build. See [the baseline guide](../docs/metadata-baselines.md).
 
 Within a project, hgraph lazily retains up to six recent main views and three overlays, restoring reading positions, expanded content and graph/map controls. Hidden React views suspend their effects; least-recently-used views are evicted. Interfaces retains its two internal sections on first use, so returning to Baselines does not refetch the data or discard filters. Caches reset on project changes or document refresh; refresh reads the current export without relying on persistent browser storage.
