@@ -52,6 +52,15 @@ run_cmd do
       throwError "The final theorem changed its standard-class parameter, fixed background or product conclusion"
   -- Only generic spectral-sequence objects and the fixed Adams background may
   -- determine the statement. Literature and computation supply its proof.
+  -- Dependency inspection needs private constant data as well as public exports.
+  -- The consumer examples and statement checks above still use the ordinary import.
+  let opts ← getOptions
+  let auditEnv ← liftIO <| Lean.importModules #[{ module := `KIP126 }] opts
+    (loadExts := false) (level := .private)
+  let some auditInfo := auditEnv.find? target |
+    throwError "Missing final h6-square theorem in the dependency-audit environment"
+  unless auditInfo.type == info.type do
+    throwError "Dependency-audit environment changed the fixed final target type"
   let mut pending := info.type.getUsedConstants
   let mut seen : NameSet := {}
   while !pending.isEmpty do
@@ -59,9 +68,9 @@ run_cmd do
     pending := pending.pop
     if seen.contains name then continue
     seen := seen.insert name
-    let some dependency := env.find? name | throwError "Missing target dependency: {name}"
-    let some idx := env.getModuleIdxFor? name | continue
-    let owner := env.header.moduleNames[idx.toNat]!
+    let some dependency := auditEnv.find? name | throwError "Missing target dependency: {name}"
+    let some idx := auditEnv.getModuleIdxFor? name | continue
+    let owner := auditEnv.header.moduleNames[idx.toNat]!
     unless (`KIP126).isPrefixOf owner do continue
     unless (`KIP126.SpectralSequence).isPrefixOf owner ||
         (`KIP126.AdamsSynthetic).isPrefixOf owner do
