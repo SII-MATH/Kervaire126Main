@@ -4,14 +4,15 @@ import KIP126
 import Lean
 
 /-! The ordinary root import exposes all eight mathematical modules and the
-fixed standard target. Module-specific consumers retain their own checks;
+standard-family theorem on the fixed background. Module-specific consumers retain their own checks;
 Tests.Integration separately checks consumption without importing Main. -/
 
 open KIP126.Core.SpectralSequence
 open KIP126.AdamsSynthetic.Standard (model)
 
 example : NonzeroSurvival model.classical.sphere (2, 128)
-    model.standardClasses.standardH6Square := KIP126.Main.h6_sq_permanent
+    model.standardClasses.standardH6Square :=
+  KIP126.Main.h6_sq_permanent model.standardClasses
 
 example : KIP126.Literature.Geometry.KervaireInvariantOneExists 126 :=
   KIP126.Geometry.kervaire_invariant_one_126
@@ -33,8 +34,22 @@ run_cmd do
   let some info := env.find? target | throwError "Missing final h6-square theorem"
   unless wasOriginallyTheorem env target do
     throwError "The final conclusion must remain a theorem"
-  if info.type.isForall then
-    throwError "The fixed final theorem acquired caller hypotheses"
+  match info.type with
+  | .forallE _ _ _ .default => pure ()
+  | _ => throwError "The final theorem must take one explicit standard-class family"
+  liftTermElabM do
+    Meta.forallTelescope info.type fun args _ => do
+      unless args.size == 1 do
+        throwError "The final theorem acquired parameters beyond its standard-class family"
+    let expected ← Term.elabType (← `(∀
+      (H : KIP126.Classical.Adams.StandardSphereClasses
+        KIP126.AdamsSynthetic.Standard.classical
+        KIP126.AdamsSynthetic.Standard.sphereAlgebra),
+      NonzeroSurvival KIP126.AdamsSynthetic.Standard.classical.sphere (2,128)
+        (KIP126.AdamsSynthetic.Standard.sphereAlgebra.product (1,64) (1,64)
+          (H.hi 6) (H.hi 6))))
+    unless ← Meta.isDefEq info.type expected do
+      throwError "The final theorem changed its standard-class parameter, fixed background or product conclusion"
   -- Only generic spectral-sequence objects and the fixed Adams background may
   -- determine the statement. Literature and computation supply its proof.
   let mut pending := info.type.getUsedConstants
@@ -54,4 +69,4 @@ run_cmd do
     pending := pending ++ dependency.type.getUsedConstants
     if let some value := dependency.value? (allowOpaque := true) then
       pending := pending ++ value.getUsedConstants
-  logInfo "Architecture: eight mathematical modules; fixed standard target uses only its upstream objects"
+  logInfo "Architecture: eight mathematical modules; standard-family target uses only its fixed upstream objects"

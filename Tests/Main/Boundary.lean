@@ -3,7 +3,7 @@ module
 import KIP126.Main
 import Lean
 
-/-! A normal Main import exposes fixed results, not the old delivery
+/-! A normal Main import exposes the standard-family theorem and fixed results, not the old delivery
 mechanism, source implementations, or private page-calculus helpers. -/
 
 #check_failure KIP126.Challenge2
@@ -55,12 +55,32 @@ run_cmd do
   let env ← getEnv
   let exported := env
   for name in #[`KIP126.Main.h6_square_differential_dichotomy_and_criterion,
-      `KIP126.Main.h6_sq_permanent, `KIP126.Main.adams_two_line_classification] do
+      `KIP126.Main.adams_two_line_classification] do
     let some info := exported.find? name
       | throwError "Fixed paper endpoint is not exported: {name}"
     liftTermElabM <| Meta.forallTelescope info.type fun args _ => do
       unless args.isEmpty do
         throwError "Fixed paper endpoint acquired a caller premise: {name}"
+  let name := ``KIP126.Main.h6_sq_permanent
+  let some info := exported.find? name
+    | throwError "Standard-family paper endpoint is not exported: {name}"
+  match info.type with
+  | .forallE _ _ _ .default => pure ()
+  | _ => throwError "The final theorem must take one explicit standard-class family"
+  liftTermElabM do
+    Meta.forallTelescope info.type fun args _ => do
+      unless args.size == 1 do
+        throwError "The final theorem acquired parameters beyond its standard-class family"
+    let expected ← Term.elabType (← `(∀
+      (H : KIP126.Classical.Adams.StandardSphereClasses
+        KIP126.AdamsSynthetic.Standard.classical
+        KIP126.AdamsSynthetic.Standard.sphereAlgebra),
+      KIP126.Core.SpectralSequence.NonzeroSurvival
+        KIP126.AdamsSynthetic.Standard.classical.sphere (2,128)
+        (KIP126.AdamsSynthetic.Standard.sphereAlgebra.product (1,64) (1,64)
+          (H.hi 6) (H.hi 6))))
+    unless ← Meta.isDefEq info.type expected do
+      throwError "The final theorem changed its standard-class parameter, fixed background or product conclusion"
   for name in #[`KIP126.Main.any_choice_criterion,
       `KIP126.Main.adams_two_line_known_squares,
       `KIP126.Main.adams_two_line_stem126,

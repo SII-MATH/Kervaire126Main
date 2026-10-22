@@ -116,7 +116,11 @@ No source comparison is completed. -/
 public def standardHi (i : ℕ) : ActualE2At classical (hiDegree i) :=
   (standardHiConstruction i).val
 
-public def standardClasses : StandardSphereClasses classical sphereAlgebra := ⟨standardHi⟩
+public def standardClasses : StandardSphereClasses classical sphereAlgebra where
+  hi := standardHi
+  hi_ne_zero := by
+    intro i
+    exact (standardHiConstruction i).property
 public def classicalTower : ClassicalTowerPresentation coefficients.unit classical := by sorry
 public def classicalSuspension (X : ClassicalObject) :
     ClassicalTowerSuspension classicalTower (X.obj auxiliary) := by sorry

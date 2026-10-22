@@ -6,8 +6,8 @@ public import Mathlib.Algebra.Module.ZMod
 @[expose] section
 
 /-! Actual sphere E₂ operations and designated standard classes.
-Squares are products in this same E₂. Nonvanishing is an explicit proposition
-at the indices a consumer needs, never a default assumption on the whole family. -/
+Squares are products in this same E₂. Each specified standard generator is
+nonzero; nonvanishing of its square remains a separate proposition. -/
 
 namespace KIP126.Classical.Adams
 open CategoryTheory KIP126.StableHomotopy
@@ -61,11 +61,12 @@ end SphereE2Algebra
 
 public def hiDegree (i : ℕ) : Bidegree := (1, ((2 ^ i : ℕ) : ℤ))
 
-/-- Specified standard classes. Their identification with a source model is a
-producer obligation. No dimension or uniqueness condition is silently added. -/
+/-- Specified nonzero standard classes. Their identification with a source
+model is a producer obligation. No dimension or uniqueness condition is added. -/
 public structure StandardSphereClasses (A : ClassicalAdamsFamily C)
     (_P : SphereE2Algebra A) where
   hi : ∀ i : ℕ, ActualE2At A (hiDegree i)
+  hi_ne_zero : ∀ i : ℕ, hi i ≠ 0
 
 namespace StandardSphereClasses
 variable {A : ClassicalAdamsFamily C} {P : SphereE2Algebra A}
@@ -94,7 +95,7 @@ public noncomputable abbrev standardH6Square (H : StandardSphereClasses A P) :
 public theorem standardH6Square_eq_product (H : StandardSphereClasses A P) :
     H.standardH6Square = P.product (1, 64) (1, 64) H.standardH6 H.standardH6 := rfl
 
-/-- Required nonvanishing at one specified index, for use as an explicit input. -/
+/-- The nonvanishing proposition at one specified index. -/
 public def HiNonzero (H : StandardSphereClasses A P) (i : ℕ) : Prop := H.hi i ≠ 0
 
 /-- Square nonvanishing is separate from the nonvanishing of the factor. -/
