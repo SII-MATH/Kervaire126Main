@@ -2731,10 +2731,175 @@ public theorem selected_permanent_lift :
   ∀ X : ClassicalObject, PermanentLiftAt model X := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+section SelectedFiltrationLambdaConstruction
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 1200000
+
+/- The finite-quotient argument was independently checked in the 2026-10-18
+upstream-fidelity review. Reconstruct its filtration steps here from the public
+foundational interfaces, preserving the Literature dependency boundary. -/
+section General
+universe u v
+variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+  [HasFunctorialCofiber (C := Syn)]
+  {H : Syn} {unit : S_0_0 ⟶ H} {F : SyntheticAdamsFamily Syn}
+  {P : SyntheticTowerPresentation unit F} {X : Syn}
+
+private theorem selectedFiltration_filtration_at_zero (P : SyntheticTowerPresentation unit F)
+    (X : Syn) (m w : ℤ) (a : BiHom m w X) : FiltrationAtLeast P 0 a := by
+  refine ⟨a ≫ (P.tower X).zeroIso.inv, ?_⟩
+  change (a ≫ (P.tower X).zeroIso.inv) ≫ (P.tower X).projection 0 = a
+  simp only [AbstractAdamsTower.projection, Int.toNat_zero, (P.tower X).map_self]
+  erw [Category.assoc, Category.id_comp, Iso.inv_hom_id, Category.comp_id]
+
+private theorem selectedFiltration_filtration_iff_of_infinity_zero (c : SyntheticTowerConvergence P X)
+    (s t m w : ℤ) (hst : s ≤ t)
+    (hz : ∀ j, s ≤ j → j < t → IsZero (((F.obj X).sequence.ssData (j,m+j,w)).eInfty))
+    (a : BiHom m w X) : FiltrationAtLeast P s a ↔ FiltrationAtLeast P t a := by
+  have hgraded (j : ℤ) (hj : s ≤ j) (hjt : j < t) :
+      IsZero ((P.filtration X).associatedGraded j (m,w)) :=
+    (hz j hj hjt).of_iso (towerGradedIso c (m,w) j).symm
+  have he := (P.filtration X).eq_of_associatedGraded_isZero s t (m,w) hst hgraded
+  have he' := congrArg (fun Q => a ∈ (ModuleCat.subobjectModule (syntheticHomotopy X (m,w))) Q) he
+  simpa only [SyntheticTowerPresentation.filtration, OrderIso.apply_symm_apply,
+    FiltrationAtLeast] using Iff.of_eq he'
+end General
+
+private theorem selectedFiltration_finite_infinity_zero_outside (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+    (s t w : ℤ) (hw : ¬ (0 ≤ t-w ∧ t-w < q)) :
+    IsZero (((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData
+      (s,t,w)).eInfty) := by
+  haveI : Subsingleton (KIP126.Literature.finiteEInftyModel model X q (s,t) w) := by
+    delta KIP126.Literature.finiteEInftyModel; simp only [hw, ite_false]
+    infer_instance
+  haveI : Subsingleton (((model.family.quotient
+      (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData (s,t,w)).eInfty) :=
+    (KIP126.Literature.Standard.eInfinity_finite X q hq (s,t) w).injective.subsingleton
+  exact ModuleCat.isZero_of_subsingleton _
+
+private theorem selectedFiltration_finite_high_filtration_zero (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+    (m w s : ℤ) (hs : (q:ℤ) ≤ m+s-w)
+    (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))
+    (ha : FiltrationAtLeast model.syntheticTower s a) : a = 0 := by
+  apply KIP126.AdamsSynthetic.Standard.synthetic_homotopy_separated (.nu X) q m w a
+  intro j
+  by_cases hj : s ≤ (j:ℤ)
+  · exact (selectedFiltration_filtration_iff_of_infinity_zero (model.convergence (.quotient q (.nu X)))
+      s j m w hj (fun k hk _ => selectedFiltration_finite_infinity_zero_outside X q hq k (m+k) w (by omega)) a).mp ha
+  · exact model.syntheticTower.filtrationSubmodule_antitone _ (m,w) (by omega) ha
+
+
+-- Definition calculation, as in the existing Coherence.lambda_regrade_eq.
+private theorem selectedFiltration_regrade_lambda (m u : ℤ) (k : ℕ) (w : ℤ) (h : u-k=w)
+    (A : SyntheticSpectrum) (b : BiHom m u A) :
+    homotopyRegrade rfl h (lambdaMultiply k b) =
+      (biShiftAddIso (m,u) (0,-(k:ℤ)) (m,w) (by ext <;> dsimp <;> omega)).inv.app S_0_0 ≫
+        lambdaPow k (Smn m u) ≫ b := by
+  subst w
+  delta KIP126.Synthetic.Context.homotopyRegrade KIP126.Synthetic.Context.lambdaMultiply
+  simp only [biShiftAddIso, Iso.trans_inv, NatTrans.comp_app, eqToIso.inv, eqToHom_app, Category.assoc]
+
+private theorem selectedFiltration_lambda_filtration {A : SyntheticSpectrum} {m w : ℤ}
+    (k : ℕ) (s : ℤ) (a : BiHom m w A)
+    (ha : FiltrationAtLeast model.syntheticTower s a) :
+    FiltrationAtLeast model.syntheticTower s (lambdaMultiply k a) := by
+  obtain ⟨z,hz⟩ := ha
+  refine ⟨lambdaMultiply k z,?_⟩
+  change lambdaMultiply k z ≫ (model.syntheticTower.tower A).projection s = _
+  change z ≫ (model.syntheticTower.tower A).projection s = a at hz
+  delta KIP126.Synthetic.Context.lambdaMultiply
+  simp only [Category.assoc,hz]
+
+private theorem selectedFiltration_regrade_filtration {A : SyntheticSpectrum} {m m' w w' : ℤ}
+    (hm : m=m') (hw : w=w') (s : ℤ) (a : BiHom m w A)
+    (ha : FiltrationAtLeast model.syntheticTower s a) :
+    FiltrationAtLeast model.syntheticTower s (homotopyRegrade hm hw a) := by
+  subst m'; subst w'; exact ha
+
+private theorem selectedFiltration_map_filtration {A B : SyntheticSpectrum} (f : A ⟶ B)
+    (m w s : ℤ) (a : BiHom m w A)
+    (ha : FiltrationAtLeast model.syntheticTower s a) :
+    FiltrationAtLeast model.syntheticTower s (a ≫ f) := by
+  obtain ⟨z,hz⟩ := ha
+  let φ := model.syntheticTower.map f
+  refine ⟨z ≫ φ.stage s.toNat, ?_⟩
+  change (z ≫ φ.stage s.toNat) ≫ (model.syntheticTower.tower B).projection s = a ≫ f
+  change z ≫ (model.syntheticTower.tower A).projection s = a at hz
+  rw [Category.assoc, TowerMap.projection, ←Category.assoc, hz]
+
+private theorem selectedFiltration_nu_above_zero (X : ClassicalObject) (s t w : ℤ) (hw : t<w) :
+    IsZero (((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty) := by
+  haveI : Subsingleton (nuEInftyModel model X (s,t) w) := by
+    delta KIP126.Literature.nuEInftyModel; simp only [not_le.mpr hw, ite_false]
+    infer_instance
+  haveI : Subsingleton (((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty) :=
+    (KIP126.Literature.Standard.eInfinity_nu X (s,t) w).injective.subsingleton
+  exact ModuleCat.isZero_of_subsingleton _
+
+private theorem selectedFiltration_nu_bottom (X : ClassicalObject) (m s : ℤ)
+    (b : BiHom m (m+s) (model.nu.functor.obj (X.obj model.auxiliary))) :
+    FiltrationAtLeast model.syntheticTower s b := by
+  have hb0 := selectedFiltration_filtration_at_zero model.syntheticTower _ m (m+s) b
+  by_cases hs : s ≤ 0
+  · exact model.syntheticTower.filtrationSubmodule_antitone _ (m,m+s) hs hb0
+  · exact (selectedFiltration_filtration_iff_of_infinity_zero (model.convergence (.nu X))
+      0 s m (m+s) (by omega)
+      (fun j _ hj => selectedFiltration_nu_above_zero X j (m+j) (m+s) (by omega)) b).mp hb0
+
+private theorem selectedFiltration_divide_of_quotient_zero (X : ClassicalObject) (m u w : ℤ)
+    (k : ℕ) (h : u-k=w)
+    (a : BiHom m w (model.nu.functor.obj (X.obj model.auxiliary)))
+    (ha : quotientClass k a=0) :
+    ∃ b : BiHom m u (model.nu.functor.obj (X.obj model.auxiliary)),
+      homotopyRegrade rfl h (lambdaMultiply k b)=a := by
+  let A := model.nu.functor.obj (X.obj model.auxiliary)
+  obtain ⟨c,hc⟩ := (XModLambdaN.cofiberTriangle A k).coyoneda_exact₂
+    (XModLambdaN.cofiberTriangle_distinguished A k) a ha
+  change a = c ≫ lambdaPow k A at hc
+  let e := (biShiftAddIso (m,u) (0,-(k:ℤ)) (m,w) (by ext <;> dsimp <;> omega)).app
+    (S_0_0:SyntheticSpectrum)
+  obtain ⟨b,hb⟩ := (SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum)
+    (0,-(k:ℤ))).homEquiv.surjective (e.hom ≫ c)
+  change (SyntheticCategory.biShift (0,-(k:ℤ))).map b = e.hom ≫ c at hb
+  refine ⟨b,?_⟩
+  rw [selectedFiltration_regrade_lambda]
+  change e.inv ≫ lambdaPow k (Smn m u) ≫ b = a
+  rw [←lambdaPow_naturality, hb]
+  simpa only [Category.assoc,e.inv_hom_id_assoc] using hc.symm
+
+/-- Finite quotient vanishing and exactness identify filtration with the actual λ divisibility. -/
 public theorem selected_filtration_lambda :
-  ∀ X : ClassicalObject, FiltrationLambdaAt model X := by
-  sorry
+    ∀ X : ClassicalObject, FiltrationLambdaAt model X := by
+  intro X m w s h a
+  let k := (m+s-w).toNat
+  have hk : (k:ℤ)=m+s-w := Int.toNat_of_nonneg (by omega)
+  constructor
+  · intro ha
+    by_cases hk0 : k=0
+    · have hz : quotientClass k a=0 := by
+        rw [hk0]
+        let A := model.nu.functor.obj (X.obj model.auxiliary)
+        letI : IsIso (lambdaPow 0 A) := by
+          change IsIso (SyntheticCategory.biShift_zero.hom.app A)
+          infer_instance
+        have hi : XModLambdaN.incl A 0 = 0 := by
+          apply (cancel_epi (lambdaPow 0 A)).mp
+          simpa only [comp_zero] using XModLambdaN.lambdaPow_comp_incl A 0
+        exact (congrArg (fun f => a ≫ f) hi).trans (comp_zero)
+      exact selectedFiltration_divide_of_quotient_zero X m (m+s) w k (by omega) a hz
+    · have hq : 0<k := Nat.pos_of_ne_zero hk0
+      have himage : FiltrationAtLeast model.syntheticTower s (quotientClass k a) :=
+        selectedFiltration_map_filtration (XModLambdaN.incl _ k) m w s a ha
+      have hz : quotientClass k a=0 :=
+        selectedFiltration_finite_high_filtration_zero X k hq m w s (by omega) _ himage
+      exact selectedFiltration_divide_of_quotient_zero X m (m+s) w k (by omega) a hz
+  · rintro ⟨b,hb⟩
+    rw [←hb]
+    exact selectedFiltration_regrade_filtration rfl (by omega) s _ (selectedFiltration_lambda_filtration k s b (selectedFiltration_nu_bottom X m s b))
+
+
+end SelectedFiltrationLambdaConstruction
+
 
 /-- Source or comparison proof remains to be supplied. -/
 public theorem selected_realization_lifetime :

@@ -366,12 +366,20 @@ and the specified suspended coordinates put the source in
 $\operatorname{Ext}^{s,t+1}_{A_*}(\mathbb F_2,\mathcal H(\Sigma X))$.
 \uses{sem:AdamsSynthetic:coefficient-ext}
 \lean{KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex,KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex_shortExact,KIP126.AdamsSynthetic.Standard.cofiberExtBoundary}
-% Correspondence: Ext and composition with the actual SES extension class are defined using mathlib's derived localization. Lifting the recognized degreewise exactness to this comodule exact structure is a registered upstream proof responsibility. No synthetic operation or composition theorem is used to define this boundary.
+% Correspondence: Ext and composition with the actual SES extension class are defined using mathlib's derived localization. Degreewise exactness is lifted to the graded comodule short complex by the proof below; the canonical abelian structure and actual homology recognition remain registered construction responsibilities. No synthetic operation or composition theorem is used to define this boundary.
 \end{lemma}
 \begin{proof}
-Exactness in graded comodules over a field is detected on the underlying
-graded vector spaces. Naturality of the fixed homology recognition
-identifies these maps with the given actual homology maps. The canonical
+Naturality of the fixed homology recognition transports the assumed
+degreewise short exact sequence to the same graded comodule maps.
+Each element is a finite sum of homogeneous components, so degreewise
+injectivity, surjectivity and equality of image and kernel give the
+corresponding statements on the underlying vector spaces. Injectivity
+makes the first comodule map a monomorphism, and surjectivity makes the
+second an epimorphism. The unique linear lift through the first map
+preserves the grading by homogeneous decomposition. It preserves the
+coaction because tensoring an injective linear map over the field is
+injective. Hence the first map is a categorical kernel of the second,
+which proves exactness for the fixed abelian structure. The canonical
 derived triangle of this same short exact sequence defines its extension
 class; postcomposition gives the displayed connecting homomorphism.
 \end{proof}

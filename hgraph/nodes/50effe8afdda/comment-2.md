@@ -6,11 +6,11 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T05:53:20.573204+00:00'
+updated: '2026-10-22T09:36:08.321408+00:00'
 ---
 Fixed upstream source versions: [KIPSource5aa845241533](https://github.com/SII-MATH/Kervaire126/tree/5aa845241533b763c37a1d5fc70cce9708c4e68e), [KIPSourcebbac1fc05843](https://github.com/SII-MATH/Kervaire126/tree/bbac1fc05843bdf2d56057e6114a38839e939378). Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 
-These are separately registered source-to-selected-model comparison obligations; they do not assert that every selected object satisfies the complete-source hypotheses.
+The filtration--lambda clause is proved from the fixed infinite-page windows, finite-quotient separation and cofiber exactness. The permanent-lift and realization-kernel clauses remain separate obligations; no assertion that every selected object satisfies the complete-source hypotheses is made.
 
 Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. The realization-kernel clause is a consequence of the full synthetic category's localization telescope; its transport to this project's realization is a separate pending comparison. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.33; Proposition 4.40; Remark 4.41; pages PDF pp. 46–49; arXiv:1803.01804v3, 10 November 2022; not published pagination
 

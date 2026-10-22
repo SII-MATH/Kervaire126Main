@@ -781,7 +781,7 @@ Assume the complete-source hypotheses. If $r\ge2$ and a classical label $y$ has 
 A selected-model revision of \cite{BHS}, Theorem A.1 and Corollary A.19.\par
 
 For $X$ in the chosen classical object family, a classical label has a common infinite-cycle representative if and only if it is the first-quotient image of an untruncated class on $\nu X$. For a class of bidegree $(m,w)$ and $w-m\le s$, Adams filtration at least $s$ is equivalent to divisibility by $\lambda^{m+s-w}$ from weight $m+s$. A class on an object in the chosen synthetic family has zero realization if and only if some finite power of $\lambda$ annihilates it.
-% Blueprint note: These are separately registered source-to-selected-model comparison obligations; they do not assert that every selected object satisfies the complete-source hypotheses.
+% Blueprint note: The filtration--lambda clause is proved from the fixed infinite-page windows, finite-quotient separation and cofiber exactness. The permanent-lift and realization-kernel clauses remain separate obligations; no assertion that every selected object satisfies the complete-source hypotheses is made.
 \lean{KIP126.Literature.Standard.selected_permanent_lift,KIP126.Literature.Standard.selected_filtration_lambda,KIP126.Literature.Standard.selected_realization_kernel}
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. The realization-kernel clause is a consequence of the full synthetic category's localization telescope; its transport to this project's realization is a separate pending comparison. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [BHS](https://arxiv.org/pdf/1910.14116v3): Corollary A.19; pages PDF p. 76; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination [Pst](https://arxiv.org/pdf/1803.01804v3): Proposition 4.33; Proposition 4.40; Remark 4.41; pages PDF pp. 46–49; arXiv:1803.01804v3, 10 November 2022; not published pagination
 % Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1, the permanent-cycle paragraph, and Corollary A.19; \cite{Pst}, Remark 4.41. Source-to-selected-model comparison pending.)
@@ -790,6 +790,28 @@ For $X$ in the chosen classical object family, a classical label has a common in
 % Blueprint note: Source verification (2026-10-18): Partial source correspondence. BHS proves the source result for E-nilpotent complete spectra with a strongly convergent Adams spectral sequence. The selected family includes the ordinary sphere, its nu-cofiber, the detector, and shifts; membership alone does not establish BHS completeness. This entry is a pending source-to-selected-model comparison, not a direct application of BHS. The mathematical source has been checked; identification with the project's specified coefficient object, Adams towers, quotient maps and realization remains part of the existing formal comparison obligations. No Lean proof obligation is discharged by this citation. Primary references: [BHS](https://arxiv.org/pdf/1910.14116v3): Theorem A.1, permanent-cycle paragraph preceding (2a); proof of Theorem 9.19(2)–(4); pages PDF pp. 70, 76–77; arXiv:1910.14116v3, 10 May 2022; final prepublication version, not published pagination
 % Blueprint note: Detailed source attribution: (A selected-model revision of \cite{BHS}, Theorem A.1, the permanent-cycle paragraph and its proof on pp. 76--77 (arXiv v3). Source-to-selected-model comparison pending.)
 \end{proposition}
+\begin{proof}[Proof of the filtration--$\lambda$ clause]
+\uses{sem:Literature:infinite-nu-window,sem:Literature:infinite-finite-window,sem:AdamsSynthetic:finite-quotient-separation,sem:AdamsSynthetic:lambda-quotients,sem:AdamsSynthetic:selected-convergence}
+Put $k=m+s-w\ge0$. The infinite-page window of $\nu X$ vanishes when
+$t<w$, so every class of bidegree $(m,m+s)$ has filtration at least
+$s$. Precomposition by $\lambda^k$ preserves this filtration, proving
+one implication.
+
+Conversely, project a class of filtration at least $s$ to
+$\nu X/\lambda^k$. If $k>0$, its infinite-page window vanishes in all
+filtrations $j\ge s$, since $m+j-w\ge k$. The convergence comparison
+therefore identifies all these filtration pieces. Separation of the
+finite quotient makes the projected class zero. Cofiber exactness and
+the fully faithful weight shift then supply a class of bidegree
+$(m,m+s)$ whose $\lambda^k$ multiple is the original class. For $k=0$,
+the quotient projection is zero because $\lambda^0$ is an isomorphism,
+and the same exactness argument applies. Nonpositive filtrations are
+covered by the zeroth tower stage and monotonicity.
+
+This argument retains the fixed window and finite-quotient separation
+inputs. It proves neither the permanent-lift clause nor the
+realization-kernel clause, which remain pending.
+\end{proof}
 
 \begin{proposition}[The selected-model realization comparisons]
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
