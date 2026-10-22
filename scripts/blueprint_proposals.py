@@ -114,16 +114,18 @@ def reading_link(url, label, report_path, root):
     return f'<span class="proposal-local" title="{html.escape(url, quote=True)}">{label} <small>本地证据</small></span>'
 
 
-def markdown(text, report_path, root):
+def markdown(text, report_path, root, *, link_renderer=None):
     """Native prose convention, plus literal code fences and readable tables.
 
     Raw HTML is escaped by the native renderer. Links are allowlisted after
     rendering, including in tables; code blocks are never treated as prose.
     """
+    render_link = link_renderer or reading_link
+
     def prose(value):
         rendered = _md_to_html(value)
         return re.sub(r'<a href="([^"]*)">(.*?)</a>',
-                      lambda m: reading_link(m[1], m[2], report_path, root), rendered)
+                      lambda m: render_link(m[1], m[2], report_path, root), rendered)
 
     out, pending, code, fence = [], [], [], None
 
