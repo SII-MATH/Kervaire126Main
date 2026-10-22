@@ -104,7 +104,7 @@ class AimPaperPresentationTests(unittest.TestCase):
             destination = prepare_web_blueprint(root, Path(directory) / 'web')
             statements, _ = parse_blueprint(read_blueprint(destination / 'content.tex'))
             paper = [row for row in statements if row['label'].startswith('paper:')]
-            self.assertEqual(len(paper), 64)
+            self.assertEqual(len(paper), 62)
             permanence = next(row for row in paper if row['label'] == 'paper:1.4')
             self.assertIn('paper:7.1', permanence['labels'])
             self.assertIn('thm:126survives', permanence['labels'])

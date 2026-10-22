@@ -1,0 +1,508 @@
+Complete theorem: KIP126.ProofTools.Internal.FiniteLifting.cutoffAdamsDifferentialAtLevel
+∀ (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        X)
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        Y))
+  (page level : ℕ) (r m l s t κ : ℤ)
+  (x : ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X (Prod.mk.{0, 0} s t)))
+  (y :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HAdd.hAdd.{0, 0, 0} t m))))
+  (u :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s r) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1))))
+  (v :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s r) l)
+          (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1) l)))),
+  LE.le.{0} 2 page →
+    LE.le.{0} (↑page) r →
+      ∀
+        (hm :
+          LE.le.{0}
+            (↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+                f))
+            m),
+        LE.le.{0} m
+            (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (↑page) 2)
+              ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+                  f)) →
+          LE.le.{0}
+              (↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+                  f))
+              l →
+            KIP126.ProofTools.IsPermanent.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X
+                (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s r) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1)) u →
+              KIP126.ProofTools.IsPermanent.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s r) l)
+                    (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1) l))
+                  v →
+                KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X r (Prod.mk.{0, 0} s t)
+                    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s r) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1)) x u →
+                  KIP126.ProofTools.Standard.LevelFiniteExtension X Y f page level m s t x y →
+                    KIP126.Kervaire.Route.InfiniteExtension.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X Y f l
+                        (HAdd.hAdd.{0, 0, 0} s r) (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1) u v →
+                      LE.le.{0} 1 κ →
+                        LE.le.{0} κ (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} r l) m) →
+                          KIP126.ProofTools.Standard.LevelBoundaryNoCrossing X Y f page level r s t ∨
+                              KIP126.ProofTools.Standard.LevelFiniteNoCrossing X Y f page level m s t →
+                            (∀ (a c : ℤ),
+                                LT.lt.{0} (HAdd.hAdd.{0, 0, 0} s r) a →
+                                  LE.le.{0} a c →
+                                    LE.le.{0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s m) κ) c →
+                                      LE.le.{0} c (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s r) l) →
+                                        ∀
+                                          (source :
+                                            ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{1, 0}
+                                                (KIP126.Core.SpectralSequence.PreSS.ssData.{1, 0, 0}
+                                                  (KIP126.Core.SpectralSequence.toPreSS.{1, 0, 0}
+                                                    (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}
+                                                      (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}
+                                                        (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                            KIP126.AdamsSynthetic.Standard.model))
+                                                        (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                            (Prod.mk.{0, 0} 1
+                                                              (Neg.neg.{0}
+                                                                ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level)
+                                                                    1)))
+                                                            (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model X Y f))))))
+                                                  (Prod.mk.{0, 0} a
+                                                    (Prod.mk.{0, 0}
+                                                      (HAdd.hAdd.{0, 0, 0}
+                                                        (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                            (HSub.hSub.{0, 0, 0}
+                                                              (HAdd.hAdd.{0, 0, 0} t
+                                                                ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                    (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                        0, 1}
+                                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                                    f))
+                                                              ↑level)).1
+                                                        a)
+                                                      (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                          (HSub.hSub.{0, 0, 0}
+                                                            (HAdd.hAdd.{0, 0, 0} t
+                                                              ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0,
+                                                                      1}
+                                                                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                      KIP126.AdamsSynthetic.Standard.model))
+                                                                  f))
+                                                            ↑level)).2)))))
+                                          (target :
+                                            ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{1, 0}
+                                                (KIP126.Core.SpectralSequence.PreSS.ssData.{1, 0, 0}
+                                                  (KIP126.Core.SpectralSequence.toPreSS.{1, 0, 0}
+                                                    (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}
+                                                      (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1, 0}
+                                                        (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                            KIP126.AdamsSynthetic.Standard.model))
+                                                        (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                            (Prod.mk.{0, 0} 1
+                                                              (Neg.neg.{0}
+                                                                ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level)
+                                                                    1)))
+                                                            (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))
+                                                  (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} a (HSub.hSub.{0, 0, 0} c a))
+                                                    (Prod.mk.{0, 0}
+                                                      (HAdd.hAdd.{0, 0, 0}
+                                                        (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                            (HSub.hSub.{0, 0, 0}
+                                                              (HAdd.hAdd.{0, 0, 0} t
+                                                                ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                    (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                        0, 1}
+                                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                                    f))
+                                                              ↑level)).1
+                                                        (HAdd.hAdd.{0, 0, 0} a (HSub.hSub.{0, 0, 0} c a)))
+                                                      (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                          (HSub.hSub.{0, 0, 0}
+                                                            (HAdd.hAdd.{0, 0, 0} t
+                                                              ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0,
+                                                                      1}
+                                                                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                      KIP126.AdamsSynthetic.Standard.model))
+                                                                  f))
+                                                            ↑level)).2))))),
+                                          ¬KIP126.AdamsSynthetic.TowerEssentialExtension.{1, 0}
+                                              (KIP126.Kervaire.Route.Model.convergentMap.{1, 0, 1}
+                                                KIP126.AdamsSynthetic.Standard.model
+                                                (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                  (Prod.mk.{0, 0} 1
+                                                    (Neg.neg.{0}
+                                                      ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)))
+                                                  (KIP126.Kervaire.Route.extensionSourceObject.{1, 0, 1}
+                                                    KIP126.AdamsSynthetic.Standard.model X Y f))
+                                                (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                  (Prod.mk.{0, 0} 1
+                                                    (Neg.neg.{0}
+                                                      ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)))
+                                                  (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                                (CategoryTheory.Functor.map.{0, 0, 1, 1}
+                                                  (KIP126.Synthetic.Context.SyntheticCategory.biShift.{1, 0}
+                                                    (Prod.mk.{0, 0} 1
+                                                      (Neg.neg.{0}
+                                                        ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))))
+                                                  (KIP126.AdamsSynthetic.NormalizedSyntheticMap.map.{1, 0, 1}
+                                                    (KIP126.Kervaire.Route.ModelData.normalizedMap.{1, 0, 1}
+                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                        KIP126.AdamsSynthetic.Standard.model)
+                                                      X Y f))))
+                                              (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                (HSub.hSub.{0, 0, 0}
+                                                  (HAdd.hAdd.{0, 0, 0} t
+                                                    ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                        (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                            KIP126.AdamsSynthetic.Standard.model))
+                                                        f))
+                                                  ↑level))
+                                              a (HSub.hSub.{0, 0, 0} c a) source target) →
+                              (∃ η,
+                                  KIP126.AdamsSynthetic.HasInfinityRepresentative.{0}
+                                      (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.quotient.{1, 0}
+                                        (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                            KIP126.AdamsSynthetic.Standard.model))
+                                        (CategoryTheory.Functor.obj.{0, 0, 1, 1}
+                                          (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}
+                                            (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                KIP126.AdamsSynthetic.Standard.model)))
+                                          (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+                                            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                KIP126.AdamsSynthetic.Standard.model))
+                                            Y))
+                                        (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                      2
+                                      (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m)
+                                        (Prod.mk.{0, 0}
+                                          (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} t s) (HAdd.hAdd.{0, 0, 0} s m))
+                                          (HSub.hSub.{0, 0, 0}
+                                            (HAdd.hAdd.{0, 0, 0} t
+                                              ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                  (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                    (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                      KIP126.AdamsSynthetic.Standard.model))
+                                                  f))
+                                            ↑level)))
+                                      (KIP126.Kervaire.Route.regradeE2.{0} ⋯
+                                        ((CategoryTheory.ConcreteCategory.hom.{0, 0, 1, 0}
+                                            (KIP126.Core.SpectralSequence.SpectralSequenceMorphism.pageMap.{1, 0, 0}
+                                              (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.quotientProjection.{1,
+                                                  0}
+                                                (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                    KIP126.AdamsSynthetic.Standard.model))
+                                                (CategoryTheory.Functor.obj.{0, 0, 1, 1}
+                                                  (KIP126.Synthetic.Context.NuFunctorData.functor.{1, 0, 1, 0}
+                                                    (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                        KIP126.AdamsSynthetic.Standard.model)))
+                                                  (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+                                                    (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                    Y))
+                                                (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                              2
+                                              (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m)
+                                                (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} t m)
+                                                  (HSub.hSub.{0, 0, 0}
+                                                    (HAdd.hAdd.{0, 0, 0} t
+                                                      ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          f))
+                                                    ↑level)))))
+                                          (KIP126.AdamsSynthetic.nuWeightLabel.{1, 0, 1}
+                                            KIP126.AdamsSynthetic.Standard.model Y (HAdd.hAdd.{0, 0, 0} s m)
+                                            (HAdd.hAdd.{0, 0, 0} t m)
+                                            (HSub.hSub.{0, 0, 0}
+                                              (HAdd.hAdd.{0, 0, 0} t
+                                                ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                    (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                    f))
+                                              ↑level)
+                                            ⋯ y)))
+                                      η ∧
+                                    KIP126.AdamsSynthetic.TowerExtensionEquation.{1, 0}
+                                      (KIP126.Kervaire.Route.Model.convergentMap.{1, 0, 1}
+                                        KIP126.AdamsSynthetic.Standard.model
+                                        (KIP126.Kervaire.Route.SyntheticObject.quotient
+                                          (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)
+                                          (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                        (KIP126.Kervaire.Route.SyntheticObject.shift
+                                          (Prod.mk.{0, 0} 1
+                                            (Neg.neg.{0} ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)))
+                                          (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                        (CategoryTheory.CategoryStruct.comp.{0, 1}
+                                          (KIP126.Synthetic.Context.XModLambdaN.proj.{1, 0}
+                                            (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                              (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                  KIP126.AdamsSynthetic.Standard.model))
+                                              (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                  KIP126.AdamsSynthetic.Standard.model))
+                                              (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                            (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                          (CategoryTheory.Iso.inv.{0, 1}
+                                            (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso.{1, 0}
+                                              (↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                              (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                    KIP126.AdamsSynthetic.Standard.model))
+                                                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                    KIP126.AdamsSynthetic.Standard.model))
+                                                (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))
+                                      (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                        (HSub.hSub.{0, 0, 0}
+                                          (HAdd.hAdd.{0, 0, 0} t
+                                            ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                    KIP126.AdamsSynthetic.Standard.model))
+                                                f))
+                                          ↑level))
+                                      (HAdd.hAdd.{0, 0, 0} s m) (HSub.hSub.{0, 0, 0} κ 1) η 0) →
+                                (∀ (a c : ℤ),
+                                    LT.lt.{0} (HAdd.hAdd.{0, 0, 0} s m) a →
+                                      LE.le.{0} a c →
+                                        LE.le.{0} c
+                                            (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HSub.hSub.{0, 0, 0} κ 1)) →
+                                          ∀
+                                            (source :
+                                              ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{1, 0}
+                                                  (KIP126.Core.SpectralSequence.PreSS.ssData.{1, 0, 0}
+                                                    (KIP126.Core.SpectralSequence.toPreSS.{1, 0, 0}
+                                                      (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}
+                                                        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1,
+                                                            0}
+                                                          (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                KIP126.AdamsSynthetic.Standard.model))
+                                                            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                KIP126.AdamsSynthetic.Standard.model))
+                                                            (KIP126.Kervaire.Route.SyntheticObject.quotient
+                                                              (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)
+                                                              (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))
+                                                    (Prod.mk.{0, 0} a
+                                                      (Prod.mk.{0, 0}
+                                                        (HAdd.hAdd.{0, 0, 0}
+                                                          (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                              (HSub.hSub.{0, 0, 0}
+                                                                (HAdd.hAdd.{0, 0, 0} t
+                                                                  ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                      (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                          0, 1}
+                                                                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0,
+                                                                            1}
+                                                                          KIP126.AdamsSynthetic.Standard.model))
+                                                                      f))
+                                                                ↑level)).1
+                                                          a)
+                                                        (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                            (HSub.hSub.{0, 0, 0}
+                                                              (HAdd.hAdd.{0, 0, 0} t
+                                                                ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                    (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                        0, 1}
+                                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                                    f))
+                                                              ↑level)).2)))))
+                                            (target :
+                                              ↑(KIP126.Core.SpectralSequence.SSData.eInfty.{1, 0}
+                                                  (KIP126.Core.SpectralSequence.PreSS.ssData.{1, 0, 0}
+                                                    (KIP126.Core.SpectralSequence.toPreSS.{1, 0, 0}
+                                                      (KIP126.Synthetic.SpectralSequence.SyntheticAdamsSS.sequence.{0}
+                                                        (KIP126.Synthetic.SpectralSequence.SyntheticAdamsFamily.obj.{1,
+                                                            0}
+                                                          (KIP126.Kervaire.Route.ModelData.family.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                KIP126.AdamsSynthetic.Standard.model))
+                                                            (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                              (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                KIP126.AdamsSynthetic.Standard.model))
+                                                            (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                              (Prod.mk.{0, 0} 1
+                                                                (Neg.neg.{0}
+                                                                  ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level)
+                                                                      1)))
+                                                              (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))
+                                                    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} a (HSub.hSub.{0, 0, 0} c a))
+                                                      (Prod.mk.{0, 0}
+                                                        (HAdd.hAdd.{0, 0, 0}
+                                                          (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                              (HSub.hSub.{0, 0, 0}
+                                                                (HAdd.hAdd.{0, 0, 0} t
+                                                                  ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                      (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                          0, 1}
+                                                                        (KIP126.Kervaire.Route.Model.toModelData.{1, 0,
+                                                                            1}
+                                                                          KIP126.AdamsSynthetic.Standard.model))
+                                                                      f))
+                                                                ↑level)).1
+                                                          (HAdd.hAdd.{0, 0, 0} a (HSub.hSub.{0, 0, 0} c a)))
+                                                        (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                            (HSub.hSub.{0, 0, 0}
+                                                              (HAdd.hAdd.{0, 0, 0} t
+                                                                ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                                    (KIP126.Kervaire.Route.ModelData.classicalTower.{1,
+                                                                        0, 1}
+                                                                      (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                                        KIP126.AdamsSynthetic.Standard.model))
+                                                                    f))
+                                                              ↑level)).2))))),
+                                            ¬KIP126.AdamsSynthetic.TowerEssentialExtension.{1, 0}
+                                                (KIP126.Kervaire.Route.Model.convergentMap.{1, 0, 1}
+                                                  KIP126.AdamsSynthetic.Standard.model
+                                                  (KIP126.Kervaire.Route.SyntheticObject.quotient
+                                                    (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)
+                                                    (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                                  (KIP126.Kervaire.Route.SyntheticObject.shift
+                                                    (Prod.mk.{0, 0} 1
+                                                      (Neg.neg.{0}
+                                                        ↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1)))
+                                                    (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                                  (CategoryTheory.CategoryStruct.comp.{0, 1}
+                                                    (KIP126.Synthetic.Context.XModLambdaN.proj.{1, 0}
+                                                      (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                        (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                            KIP126.AdamsSynthetic.Standard.model))
+                                                        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                            KIP126.AdamsSynthetic.Standard.model))
+                                                        (KIP126.Kervaire.Route.SyntheticObject.nu Y))
+                                                      (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                                    (CategoryTheory.Iso.inv.{0, 1}
+                                                      (KIP126.ProofTools.Internal.Mahowald.biSuspensionIso.{1, 0}
+                                                        (↑(HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} page level) 1))
+                                                        (KIP126.Kervaire.Route.SyntheticObject.obj.{1, 0, 1}
+                                                          (KIP126.Kervaire.Route.ModelData.nu.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          (KIP126.Kervaire.Route.SyntheticObject.nu Y))))))
+                                                (Prod.mk.{0, 0} (HSub.hSub.{0, 0, 0} t s)
+                                                  (HSub.hSub.{0, 0, 0}
+                                                    (HAdd.hAdd.{0, 0, 0} t
+                                                      ↑(KIP126.AdamsSynthetic.normalizedExponent.{1, 0}
+                                                          (KIP126.Kervaire.Route.ModelData.classicalTower.{1, 0, 1}
+                                                            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1}
+                                                              KIP126.AdamsSynthetic.Standard.model))
+                                                          f))
+                                                    ↑level))
+                                                a (HSub.hSub.{0, 0, 0} c a) source target) →
+                                  KIP126.ProofTools.DifferentialAt.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+                                    (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} r l) m)
+                                    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HAdd.hAdd.{0, 0, 0} t m))
+                                    (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} s r) l)
+                                      (HAdd.hAdd.{0, 0, 0} (HSub.hSub.{0, 0, 0} (HAdd.hAdd.{0, 0, 0} t r) 1) l))
+                                    y v
+KIP126.ProofTools.Internal.FiniteLifting.cutoffAdamsDifferentialAtLevel: 861 ProofTools dependencies without local holes; 52 upstream responsibilities
+Complete theorem: KIP126.ProofTools.Internal.FiniteLifting.finiteLevelExtensionToClassical
+∀ (R : KIP126.Literature.RealizationCoordinates.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model)
+  (hcomp : KIP126.Literature.LambdaInversionAdamsComparison.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model R)
+  (X Y : KIP126.Kervaire.Route.ClassicalObject)
+  (f :
+    Quiver.Hom.{0, 1}
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        X)
+      (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        Y))
+  (page level : ℕ) (m s t : ℤ)
+  (x : ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model X (Prod.mk.{0, 0} s t)))
+  (y :
+    ↑(KIP126.ProofTools.Ambient.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model Y
+        (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HAdd.hAdd.{0, 0, 0} t m)))),
+  KIP126.Core.SpectralSequence.IsPermanentCycle.{0, 0}
+      (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}
+        (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}
+          (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+        (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+          (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+            (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+          X))
+      (Prod.mk.{0, 0} s t) x →
+    KIP126.ProofTools.Standard.LevelFiniteExtension X Y f page level m s t x y →
+      KIP126.ProofTools.Standard.LevelFiniteNoCrossing X Y f page level m s t →
+        KIP126.Core.SpectralSequence.IsPermanentCycle.{0, 0}
+            (KIP126.Classical.Adams.ClassicalAdamsFamily.obj.{1, 0}
+              (KIP126.Kervaire.Route.ModelData.classical.{1, 0, 1}
+                (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+              (KIP126.Kervaire.Route.ClassicalObject.obj.{1, 0}
+                (KIP126.Kervaire.Route.ModelData.auxiliary.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model))
+                Y))
+            (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HAdd.hAdd.{0, 0, 0} t m)) y ∧
+          ∃ a,
+            KIP126.AdamsSynthetic.ClassicalDetects.{1, 0}
+                (KIP126.Kervaire.Route.ModelData.classicalConvergence.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) X)
+                (Prod.mk.{0, 0} s t) x a ∧
+              KIP126.AdamsSynthetic.ClassicalDetects.{1, 0}
+                (KIP126.Kervaire.Route.ModelData.classicalConvergence.{1, 0, 1}
+                  (KIP126.Kervaire.Route.Model.toModelData.{1, 0, 1} KIP126.AdamsSynthetic.Standard.model) Y)
+                (Prod.mk.{0, 0} (HAdd.hAdd.{0, 0, 0} s m) (HAdd.hAdd.{0, 0, 0} t m)) y
+                (CategoryTheory.CategoryStruct.comp.{0, 1} (CategoryTheory.eqToHom.{0, 1} ⋯)
+                  (CategoryTheory.CategoryStruct.comp.{0, 1} a f))
+KIP126.ProofTools.Internal.FiniteLifting.finiteLevelExtensionToClassical: 322 ProofTools dependencies without local holes; 46 upstream responsibilities

@@ -6,6 +6,6 @@ created: '2026-10-20T15:49:27'
 date: '2026-10-20T15:49:27'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-21T06:13:14.838984+00:00'
+updated: '2026-10-22T04:17:23.135658+00:00'
 ---
-Mahowald--Leibniz composition under finite-layer surjectivity is a project-derived classical assertion. The fixed-model proposition FiniteLayerSurjectivityMahowaldLeibnizStatement is proved internally by finite_layer_surj_statement, retaining the two actual input differentials and every surjectivity layer. Its output uses the selected normalized first-quotient operation. Identifying that operation with the Ext boundary of the same homology short exact sequence remains a separate comparison. The private proof inherits registered upstream construction and comparison obligations; it is not a new public interface or a direct Lean binding for this Ext-formulated theorem.
+**Formal scope:** The complete local proof first derives the same rotated homology SES from positive Adams filtration, then applies the proved fixed-model composition with every surjectivity layer and the registered upstream first-quotient/Ext comparison. No homology exactness or comparison equality is added as a caller premise. Five inherited upstream responsibilities remain registered: the canonical comodule abelian structure, homology-comodule recognition, E2/Ext coordinates, exactness lift, and special-fiber comparison. The local completion does not assert that these foundations have been constructed.

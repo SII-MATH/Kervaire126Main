@@ -1,0 +1,13 @@
+module
+import KIP126.ProofTools.MahowaldLeibniz
+import KIP126.Literature.Standard.FiniteQuotientNormalized
+set_option pp.universes true
+set_option pp.explicit false
+#print KIP126.AdamsSynthetic.FirstQuotientComparison
+#print KIP126.AdamsSynthetic.HomologyShortExact
+#print KIP126.Literature.NormalizedTriangleCompatible
+#print KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary
+#print KIP126.ProofTools.Standard.FiniteLayerSurjectivityMahowaldLeibnizStatement
+#check KIP126.Literature.Standard.normalized_finite_quotient_horizontal_row
+#check KIP126.AdamsSynthetic.Standard.sphereE2_milnorEquiv
+#print axioms KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary

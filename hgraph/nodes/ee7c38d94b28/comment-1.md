@@ -6,6 +6,6 @@ created: '2026-10-21T05:06:27'
 date: '2026-10-21T05:06:27'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-21T05:06:27'
+updated: '2026-10-21T16:07:35.667854+00:00'
 ---
-**Formal scope:** The exact additive equivalence is proved by the private representative_family_has_lift_iff_boundary_mem lemma. Applying it to ss requires the actual q, delta and permitted subgroup V; no such identification is implied by that abstract lemma.
+**Formal scope:** The public theorem proves the displayed equivalence for the actual homomorphisms and correction subgroup. It constructs a lift of some member of the specified family, not necessarily of the initially chosen representative.

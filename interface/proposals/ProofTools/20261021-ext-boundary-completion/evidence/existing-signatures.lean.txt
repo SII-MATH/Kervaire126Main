@@ -1,0 +1,387 @@
+-- SOURCE: KIP126/ProofTools/MahowaldLeibniz.lean
+module
+
+public import KIP126.ProofTools.Language
+
+/-!
+# Mahowald--Leibniz composition under finite-layer surjectivity
+
+These definitions specify Mahowald--Leibniz composition under finite-layer surjectivity
+in the fixed model; they do not prove it.
+The boundary is constructed from the selected normalized map, rather than
+supplied as a free operation. Its identification with the Ext boundary of
+the homology short exact sequence remains a separate comparison.
+-/
+
+@[expose] section
+namespace KIP126.ProofTools.Standard
+open CategoryTheory
+open KIP126.StableHomotopy KIP126.Synthetic.Context
+open KIP126.Synthetic.SpectralSequence KIP126.AdamsSynthetic
+open KIP126.AdamsSynthetic.Standard KIP126.Kervaire.Route
+open KIP126.Literature
+noncomputable section
+
+/-- The first-quotient operation of the selected normalized f with e(f)=1.
+This is not the ordinary E₂ page map of f. Calling it the Ext connecting
+homomorphism additionally requires the triangle/Ext comparison. -/
+public def cofiberFirstQuotientBoundary
+    (T : TriangleData model.auxiliary)
+    (hef : normalizedExponent model.classicalTower T.f = 1)
+    (s t : ℤ) (x : Ambient model T.X (s,t)) :
+    Ambient model T.Y (s+1,t+1) :=
+  let F : (SyntheticCategory.biShift (Syn := SyntheticSpectrum) (0,1)).obj
+      (model.nu.functor.obj (T.X.obj model.auxiliary)) ⟶
+      model.nu.functor.obj (T.Y.obj model.auxiliary) := by
+    simpa only [hef, Nat.cast_one] using (model.normalizedMap T.X T.Y T.f).map
+  let a := (model.firstQuotient T.X 1 s t).symm x
+  let b := a ≫ XModLambdaN.map F 1 ≫
+    XModLambdaN.map (SyntheticCategory.biShift_zero.inv.app
+      (model.nu.functor.obj (T.Y.obj model.auxiliary))) 1
+  model.firstQuotient T.Y 0 (s+1) (t+1)
+    (homotopyRegrade (by omega) (by omega) b)
+
+/-- The finite-layer surjectivity condition for Mahowald--Leibniz composition,
+using the actual h page
+map and the fixed tower suspension comparison. All boundary denominators
+are R+j-1, including the final j=K-1 layer. -/
+public def MahowaldLeibnizFiniteLayerSurjectivity
+    (T : TriangleData model.auxiliary) (R K : ℕ) (s t : ℤ) : Prop :=
+  ∀ j : ℕ, 1 ≤ j → j < K →
+    ∀ a : Ambient model T.X (s+R+j,t+R+j-1),
+      IsCycle model T.X ((K:ℤ)-j) _ a →
+      ∃ z : Ambient model T.Z (s+R+j,t+R+j),
+        IsCycle model T.Z ((K:ℤ)-j) _ z ∧
+        ∃ b : Ambient model T.X (s+R+j,t+R+j-1),
+          (model.classicalSuspension T.X).DesuspendsClass (s+R+j) (t+R+j)
+            ((model.classical.functor.map T.h).pageMap 2 (s+R+j,t+R+j) z) b ∧
+          Congruent model T.X ((R:ℤ)+j-1) _ a b
+
+/-- The complete fixed-model Mahowald--Leibniz proposition under finite-layer surjectivity,
+allowing y=0. The selected
+normalized triangle must be compatible; no f-extension, source nonvanishing,
+output survival, or target permanence is an input. This definition supplies
+no proof. It ranges over the project's classical object family, and uses the
+actual first-quotient boundary, not an independently supplied Ext operation. -/
+public def FiniteLayerSurjectivityMahowaldLeibnizStatement
+    (T : TriangleData model.auxiliary)
+    (hef : normalizedExponent model.classicalTower T.f = 1)
+    (heg : normalizedExponent model.classicalTower T.g = 0)
+    (heh : normalizedExponent model.classicalTower T.h = 0) : Prop :=
+  ∀ (_hT : NormalizedTriangleCompatible model T (by simp [hef, heg, heh]))
+    (R K : ℕ), 2 ≤ R → 2 ≤ K → ∀ (s t : ℤ)
+    (x : Ambient model T.X (s,t))
+    (z : Ambient model T.Z (s+R,t+R))
+    (v : Ambient model T.Y (s+R+K,t+R+K-1)),
+    IsCycle model T.X ((R:ℤ)-1) _ x →
+    IsCycle model T.Z ((K:ℤ)-1) _ z →
+    (∃ u : Ambient model T.X (s+R,t+R-1),
+      (model.classicalSuspension T.X).DesuspendsClass (s+R) (t+R)
+        ((model.classical.functor.map T.h).pageMap 2 (s+R,t+R) z) u ∧
+      DifferentialAt model T.X R (s,t) (s+R,t+R-1) x u) →
+    DifferentialAt model T.Z K (s+R,t+R) (s+R+K,t+R+K-1) z
+      ((model.classical.functor.map T.g).pageMap 2 (s+R+K,t+R+K-1) v) →
+    MahowaldLeibnizFiniteLayerSurjectivity T R K s t →
+    let y := cofiberFirstQuotientBoundary T hef s t x
+    IsCycle model T.Y ((R:ℤ)+K-2) (s+1,t+1) y ∧
+    DifferentialAt model T.Y ((R:ℤ)+K-1)
+      (s+1,t+1) (s+R+K,t+R+K-1) y v
+
+end
+end KIP126.ProofTools.Standard
+
+
+-- SOURCE: KIP126/AdamsSynthetic/Comparisons.lean
+module
+
+public import KIP126.AdamsSynthetic.Families
+public import KIP126.AdamsSynthetic.Configuration
+
+/-! Comparisons use the same classical family, synthetic family and ν.
+Only the specified E₂ components are compared; no later-page equivalence
+or rigidity theorem is asserted by this interface. Adapted from the fixed
+review baseline's Route.ModelData and ComparisonCompatible. -/
+
+@[expose] section
+namespace KIP126.AdamsSynthetic
+
+open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence KIP126.Kervaire.Route
+
+universe u v w
+variable {C : Type u} [StableHomotopyCategory.{u,v} C]
+  [HasFunctorialCofiber (C := C)]
+  {Syn : Type w} [SyntheticCategory.{w,v} Syn]
+  [HasFunctorialCofiber (C := Syn)]
+
+/-- Selected E₂ labels on one pair of systems. The equations bind the
+chosen comparisons to the actual ν, unit isomorphism and λ maps. -/
+public structure E2Comparison
+    (A : ClassicalAdamsFamily C) (F : SyntheticAdamsFamily Syn)
+    (N : NuFunctorData C Syn) (aux : AuxiliaryData C) where
+  nuE2 : ∀ (X : ClassicalObject) (a s t : ℤ) (k : ℕ),
+    (A.obj (X.obj aux)).Page 2 (s,t) ≃ₗ[ℤ]
+      (F.obj ((SyntheticCategory.biShift (0,a)).obj
+        (N.functor.obj (X.obj aux)))).sequence.Page 2 (s,t,t+a-k)
+  sphereE2 : ∀ (s t : ℤ) (k : ℕ),
+    A.sphere.Page 2 (s,t) ≃ₗ[ℤ] F.sphere.sequence.Page 2 (s,t,t-k)
+  sphere_nu : ∀ (s t : ℤ) (k : ℕ) (x : A.sphere.Page 2 (s,t)),
+    (F.functor.map (SyntheticCategory.biShift_zero.hom.app _ ≫ N.unitIso.hom)).pageMap
+      2 (s,t,t-k) (by simpa only [add_zero, ClassicalObject.obj, SyntheticAdamsFamily.obj] using nuE2 .sphere 0 s t k x) = sphereE2 s t k x
+  nu_natural : ∀ (X Y : ClassicalObject) (f : X.obj aux ⟶ Y.obj aux)
+      (a s t : ℤ) (k : ℕ) (x : (A.obj (X.obj aux)).Page 2 (s,t)),
+    (F.functor.map ((SyntheticCategory.biShift (0,a)).map (N.functor.map f))).pageMap
+      2 (s,t,t+a-k) (nuE2 X a s t k x) =
+      nuE2 Y a s t k ((A.functor.map f).pageMap 2 (s,t) x)
+  nu_lambda : ∀ (X : ClassicalObject) (s t : ℤ) (k : ℕ)
+      (x : (A.obj (X.obj aux)).Page 2 (s,t)),
+    HEq ((F.functor.map (SyntheticCategory.lam.app (N.functor.obj (X.obj aux)))).pageMap
+      2 (s,t,t-1-k) (nuE2 X (-1) s t k x))
+      (nuE2 X 0 s t (k+1) x)
+
+/-- Complete short exactness of the actual mod-two homology maps in every
+degree. The endpoint conditions are essential in Pstrągowski Lemma 4.23;
+middle exactness alone is insufficient for ν to preserve a cofiber triangle.
+Reviewed source: bbac1fc05843, StableHomotopy/Implementation/Data:474. -/
+public def HomologyShortExact (H : ModTwoCoefficients C)
+    (T : CategoryTheory.Pretriangulated.Triangle C) : Prop :=
+  ∀ n : ℤ,
+    Function.Injective (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₁) n) ∧
+    Function.Exact
+      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₁) n)
+      (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n) ∧
+    Function.Surjective (inducedMap (MonoidalCategory.whiskerLeft H.object T.mor₂) n)
+
+end KIP126.AdamsSynthetic
+
+
+-- SOURCE: KIP126/AdamsSynthetic/Compatibility.lean
+module
+
+public import KIP126.AdamsSynthetic.Quotients
+public import KIP126.AdamsSynthetic.Recovery
+public import KIP126.AdamsSynthetic.Sphere
+public import KIP126.AdamsSynthetic.Comparisons
+public import KIP126.AdamsSynthetic.Detection
+
+@[expose] section
+
+set_option backward.isDefEq.respectTransparency false
+
+/-! The sphere's actual homotopy operations and their specified comparisons.
+Every compatibility concerns the same ν, quotient functor, E₂ algebra and
+canonical convergence. These are input conditions, not produced instances. -/
+
+namespace KIP126.Synthetic.Context
+open CategoryTheory KIP126.StableHomotopy
+universe u v
+noncomputable section
+variable {Syn : Type u} [SyntheticCategory.{u, v} Syn]
+
+/-- The composition product through the given bigraded suspension. -/
+public def sphereProduct {m n k l : ℤ}
+    (x : BiHom m n (S_0_0 : Syn)) (y : BiHom k l (S_0_0 : Syn)) :
+    BiHom (m + k) (n + l) (S_0_0 : Syn) :=
+  (SyntheticCategory.biShift_comp (m, n) (k, l)).inv.app S_0_0 ≫
+    (SyntheticCategory.biShift (k, l)).map x ≫ y
+
+public def sphereAction {m n k l : ℤ} {X : Syn}
+    (x : BiHom m n (S_0_0 : Syn)) (y : BiHom k l X) : BiHom (m + k) (n + l) X :=
+  (SyntheticCategory.biShift_comp (m, n) (k, l)).inv.app S_0_0 ≫
+    (SyntheticCategory.biShift (k, l)).map x ≫ y
+
+public def lambdaMultiply {m w : ℤ} {X : Syn} (k : ℕ)
+    (x : BiHom m w X) : BiHom m (w - k) X :=
+  eqToHom (by congr 1; simp) ≫
+    (SyntheticCategory.biShift_comp (m, w) (0, -(k : ℤ))).inv.app S_0_0 ≫
+      lambdaPow k (Smn m w) ≫ x
+
+public def homotopyRegrade {m m' w w' : ℤ} {X : Syn} (hm : m = m') (hw : w = w')
+    (x : BiHom m w X) : BiHom m' w' X := by
+  subst m'
+  subst w'
+  exact x
+
+public def biHomTargetIso (m n : ℤ) {X Y : Syn} (e : X ≅ Y) :
+    BiHom m n X ≃+ BiHom m n Y where
+  toFun x := x ≫ e.hom
+  invFun y := y ≫ e.inv
+  left_inv x := by simp
+  right_inv y := by simp
+  map_add' x y := by simp [Preadditive.add_comp]
+
+public def quotientClass [HasFunctorialCofiber (C := Syn)] {m n : ℤ} {X : Syn} (r : ℕ)
+    (x : BiHom m n X) : BiHom m n (XModLambdaN X r) :=
+  x ≫ XModLambdaN.incl X r
+end
+end KIP126.Synthetic.Context
+
+namespace KIP126.AdamsSynthetic
+open CategoryTheory KIP126.StableHomotopy KIP126.Synthetic.Context
+open KIP126.Classical.Adams KIP126.Synthetic.SpectralSequence KIP126.Kervaire.Route
+universe u v w
+noncomputable section
+variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+  [HasFunctorialCofiber (C := C)]
+  {Syn : Type w} [SyntheticCategory.{w, v} Syn]
+  [HasFunctorialCofiber (C := Syn)]
+
+public abbrev FirstQuotientComparison (A : ClassicalAdamsFamily C)
+    (N : NuFunctorData C Syn) (aux : AuxiliaryData C) :=
+  ∀ (X : ClassicalObject) (a s t : ℤ),
+    BiHom (t-s) (t+a)
+      (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj
+        (N.functor.obj (X.obj aux))) 1) ≃ₗ[ℤ] (A.obj (X.obj aux)).Page 2 (s,t)
+
+/-- The sphere specialization is transported from the ν-sphere comparison
+using the unit iso and this same actual quotient functor. It is not another choice. -/
+public def sphereFirstQuotient {A : ClassicalAdamsFamily C}
+    (N : NuFunctorData C Syn) {aux : AuxiliaryData C}
+    (Q : LambdaQuotientFunctoriality (Syn := Syn))
+    (comparison : FirstQuotientComparison A N aux) (s t : ℤ) :
+    BiHom (t-s) t (XModLambdaN (S_0_0 : Syn) 1) ≃ₗ[ℤ] A.sphere.Page 2 (s,t) := by
+  let e : (SyntheticCategory.biShift (0,0)).obj (N.functor.obj SphereSpectrum) ≅
+      (S_0_0 : Syn) := SyntheticCategory.biShift_zero.app _ ≪≫ N.unitIso
+  let q := (Q.functor 1).mapIso e
+  let c : BiHom (t-s) t
+      (XModLambdaN ((SyntheticCategory.biShift (0,0)).obj
+        (N.functor.obj SphereSpectrum)) 1) ≃ₗ[ℤ] A.sphere.Page 2 (s,t) := by
+    exact Eq.mp (congrArg (fun z : ℤ =>
+      BiHom (t-s) z (XModLambdaN ((SyntheticCategory.biShift (0,0)).obj
+        (N.functor.obj SphereSpectrum)) 1) ≃ₗ[ℤ] A.sphere.Page 2 (s,t))
+      (Int.add_zero t)) (comparison .sphere 0 s t)
+  exact (biHomTargetIso (t-s) t q.symm).toIntLinearEquiv.trans c
+
+/-- First-quotient and λ detection on the sphere, with the derived comparison. -/
+public structure SphereDetectionCompatible
+    {A : ClassicalAdamsFamily C} {F : SyntheticAdamsFamily Syn}
+    {N : NuFunctorData C Syn} {aux : AuxiliaryData C}
+    (K : E2Comparison A F N aux)
+    (Q : LambdaQuotientFunctoriality (Syn := Syn))
+    (first : FirstQuotientComparison A N aux)
+    {H : Syn} {unit : S_0_0 ⟶ H} {T : SyntheticTowerPresentation unit F}
+    (cSphere : SyntheticTowerConvergence T (S_0_0 : Syn))
+    (cQuotient : SyntheticTowerConvergence T (XModLambdaN (S_0_0 : Syn) 1)) : Prop where
+  first_quotient : ∀ (s t : ℤ) (x : A.sphere.Page 2 (s,t)),
+    Detects cQuotient (s,t,t)
+      (F.pageMap (XModLambdaN.incl S_0_0 1) 2 (s,t,t)
+        (by simpa only [SyntheticAdamsFamily.sphere, SyntheticAdamsSS.Page,
+          Nat.cast_zero, sub_zero] using K.sphereE2 s t 0 x))
+      ((sphereFirstQuotient N Q first s t).symm x)
+  homotopy_lambda : ∀ (s t : ℤ) (k : ℕ) (x : BiHom (t-s) t (S_0_0 : Syn)),
+    Detects cSphere (s,t,t-k)
+      (K.sphereE2 s t k (sphereFirstQuotient N Q first s t (quotientClass 1 x)))
+      (lambdaMultiply k x)
+
+/-- Detection respects the given E₂ product and actual composition product.
+The natural-number ranges and possible zero leading terms match the fixed source. -/
+public def MultiplicationCompatible
+    {A : ClassicalAdamsFamily C} {F : SyntheticAdamsFamily Syn}
+    {N : NuFunctorData C Syn} {aux : AuxiliaryData C}
+    (K : E2Comparison A F N aux) (P : SphereE2Algebra A)
+    {H : Syn} {unit : S_0_0 ⟶ H} {T : SyntheticTowerPresentation unit F}
+    (cSphere : SyntheticTowerConvergence T (S_0_0 : Syn)) : Prop :=
+  ∀ (s t s' t' k l : ℕ)
+    (x : A.sphere.Page 2 (s,t)) (y : A.sphere.Page 2 (s',t'))
+    (α : BiHom ((t : ℤ)-s) ((t : ℤ)-k) (S_0_0 : Syn))
+    (β : BiHom ((t' : ℤ)-s') ((t' : ℤ)-l) (S_0_0 : Syn)),
+    Detects cSphere (s,t,(t : ℤ)-k) (K.sphereE2 s t k x) α →
+    Detects cSphere (s',t',(t' : ℤ)-l) (K.sphereE2 s' t' l y) β →
+    Detects cSphere ((s : ℤ)+s', (t : ℤ)+t', (t : ℤ)+t'-(k+l : ℕ))
+      (K.sphereE2 ((s : ℤ)+s') ((t : ℤ)+t') (k+l)
+        (P.product (s,t) (s',t') x y))
+      (homotopyRegrade (by dsimp; omega)
+        (by dsimp; omega) (sphereProduct α β))
+
+/-- The sign uses topological degrees; no extra weight sign is inserted. -/
+public def SphereProductCommutative : Prop :=
+  ∀ (m n k l : ℤ) (x : BiHom m n (S_0_0 : Syn)) (y : BiHom k l (S_0_0 : Syn)),
+    sphereProduct x y = ((-1 : ℤ) ^ (m*k).natAbs) •
+      homotopyRegrade (add_comm k m) (add_comm l n) (sphereProduct y x)
+
+end
+end KIP126.AdamsSynthetic
+
+
+-- SOURCE: KIP126/AdamsSynthetic/Configuration.lean
+module
+
+public import KIP126.AdamsSynthetic.Context
+
+@[expose] section
+
+/-! Object closure for the selected proof route. Auxiliary objects are
+parameters with explicit maps, not asserted to have tmf's properties by
+their names. A(M) supplies the literature identifications/properties.
+The cofiber and its cell maps are derived from the supplied ν map. -/
+namespace KIP126.Kervaire.Route
+open CategoryTheory CategoryTheory.Pretriangulated KIP126.StableHomotopy KIP126.Synthetic.Context
+universe u v w
+variable {C : Type u} [StableHomotopyCategory.{u, v} C]
+
+public structure AuxiliaryData (C : Type u) [StableHomotopyCategory.{u, v} C] where
+  /-- The classical η map used by the generalized Leibniz rule.
+  Its identification with h₁ and with the synthetic η is an A(M) input. -/
+  etaMap : Sphere (C := C) 1 ⟶ SphereSpectrum
+  /-- The selected classical Hopf map; its h₂ detection is an A(M) input. -/
+  nuMap : Sphere (C := C) 3 ⟶ SphereSpectrum
+  /-- In the paper this pointed detecting spectrum is tmf. -/
+  detector : C
+  detectorUnit : SphereSpectrum ⟶ detector
+
+/-- No other spectra are needed in the selected Section 7 route when C(M)
+results are accepted; spectra used to prove C(M) are a separate dependency. -/
+public inductive ClassicalObject
+  | sphere
+  | nuCofiber
+  | detector
+  | shift (n : ℤ) (X : ClassicalObject)
+
+public noncomputable def ClassicalObject.obj [HasFunctorialCofiber (C := C)]
+    (A : AuxiliaryData C) : ClassicalObject → C
+  | .sphere => SphereSpectrum
+  | .nuCofiber => HasFunctorialCofiber.cofib A.nuMap
+  | .detector => A.detector
+  | .shift n X => (shiftFunctor C n).obj (X.obj A)
+
+/-- Synthetic objects used by normalized maps, finite λ/ρ/δ triangles,
+and the untruncated argument. Closure includes all shifts and quotients,
+but does not demand convergence on every object of the ambient category. -/
+public inductive SyntheticObject
+  | sphere
+  | nu (X : ClassicalObject)
+  | shift (p : ℤ × ℤ) (X : SyntheticObject)
+  | quotient (n : ℕ) (X : SyntheticObject)
+
+public noncomputable def SyntheticObject.obj [HasFunctorialCofiber (C := C)]
+    {Syn : Type w} [SyntheticCategory.{w, v} Syn] [HasFunctorialCofiber (C := Syn)]
+    (N : NuFunctorData C Syn) (A : AuxiliaryData C) : SyntheticObject → Syn
+  | .sphere => S_0_0
+  | .nu X => N.functor.obj (X.obj A)
+  | .shift p X => (SyntheticCategory.biShift p).obj (X.obj N A)
+  | .quotient n X => XModLambdaN (X.obj N A) n
+
+/-- A distinguished triangle within the selected classical object closure.
+The connecting map lands in the actual suspension of X. -/
+public structure TriangleData [HasFunctorialCofiber (C := C)] (A : AuxiliaryData C) where
+  X : ClassicalObject
+  Y : ClassicalObject
+  Z : ClassicalObject
+  f : X.obj A ⟶ Y.obj A
+  g : Y.obj A ⟶ Z.obj A
+  h : Z.obj A ⟶ (ClassicalObject.shift 1 X).obj A
+  distinguished : CategoryTheory.Pretriangulated.Triangle.mk f g h ∈
+    distTriang C
+
+/-- The specific triangle used in the ν-extension argument. Neither its
+cofiber nor its bottom/top cell maps are independent choices. -/
+public noncomputable def AuxiliaryData.nuRouteTriangle [HasFunctorialCofiber (C := C)]
+    (A : AuxiliaryData C) : TriangleData A where
+  X := .shift 3 .sphere
+  Y := .sphere
+  Z := .nuCofiber
+  f := A.nuMap
+  g := HasFunctorialCofiber.cofibι A.nuMap
+  h := HasFunctorialCofiber.cofibδ A.nuMap
+  distinguished := HasFunctorialCofiber.cofib_distinguished A.nuMap
+end KIP126.Kervaire.Route

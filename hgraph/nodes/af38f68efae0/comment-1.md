@@ -6,6 +6,6 @@ created: '2026-10-21T09:07:44'
 date: '2026-10-21T09:07:44'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-21T09:07:44'
+updated: '2026-10-22T05:15:39.488001+00:00'
 ---
-**Formal scope:** The existing public theorem proves exactly the visible finite-label permanence assertion. Its binding does not claim that GetSynImage constructs beta or that an unrelated full source has this beta as its image.
+**Formal scope:** The existing public theorem proves exactly the visible finite-label permanence assertion. It does not construct beta or identify an unrelated full source whose image is beta.

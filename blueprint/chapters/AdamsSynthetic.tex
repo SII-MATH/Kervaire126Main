@@ -271,6 +271,111 @@ The first-quotient identification commutes with positive weight shift and classi
 \lean{KIP126.AdamsSynthetic.Standard.firstQuotient_positive_shift,KIP126.AdamsSynthetic.Standard.firstQuotient_suspension}
 \end{theorem}
 
+\begin{definition}[Homology comodules and genuine coefficient Ext]
+\label{sem:AdamsSynthetic:coefficient-ext}
+\level{coarse}
+A fixed-model realization of the homology and Ext coordinates in
+\cite[Theorem 9.12(5) and Corollary 9.13]{BHS}; see also
+\cite[Lemma 4.29 and Lemma 4.56]{Pst}.\par
+Put $H=H\mathbb F_2$ and let
+\[
+A_*=\mathbb F_2[\xi_1,\xi_2,\ldots],\qquad
+|\xi_i|=2^i-1,\qquad
+\Delta(\xi_n)=\sum_{i=0}^n\xi_{n-i}^{2^i}\otimes\xi_i,
+\quad \xi_0=1,
+\]
+with its usual counit. Write $\mathcal A$ for the abelian category of
+$\mathbb Z$-graded left $A_*$-comodules and degree-preserving comodule
+maps. For $M\in\mathcal A$, write
+$(\Sigma_{\mathrm{int}}^aM)_n=M_{n-a}$ for internal suspension;
+this is distinct from cohomological suspension in
+$D(\mathcal A)$.
+
+The homology functor $\mathcal H:\mathrm{Sp}\to\mathcal A$ is the
+actual mod-two homology functor. Its degree-$n$ underlying vector space
+is $\pi_n(H\wedge X)$, and its map on $u:X\to Y$ is
+$\pi_n(H\wedge u)$. Under the fixed Milnor cooperation and Kunneth
+coordinates, its coaction is the map induced by
+\[
+H\wedge X\xrightarrow{\,1_H\wedge\eta\wedge1_X\,}
+H\wedge H\wedge X,
+\qquad \eta:S\to H.
+\]
+Thus both the graded vector spaces and their coactions come from these
+same spectra and maps. The canonical suspension comparison identifies
+$\mathcal H(\Sigma X)$ with $\Sigma_{\mathrm{int}}\mathcal H(X)$.
+
+For all $s,t\in\mathbb Z$, define genuine derived Ext by
+\[
+\operatorname{Ext}^{s,t}_{A_*}(\mathbb F_2,M)
+=\operatorname{Hom}_{D(\mathcal A)}
+  \bigl(\Sigma_{\mathrm{int}}^t\mathbb F_2,M[s]\bigr),
+\]
+where $[s]$ on the right is cohomological suspension. In particular this
+group is zero for $s<0$. For $X\in\mathcal C_0$, fix the natural Adams
+comparison
+\[
+\Phi_X^{s,t}:E_2^{s,t}(X)\xrightarrow{\sim}
+\operatorname{Ext}^{s,t}_{A_*}(\mathbb F_2,\mathcal H(X)).
+\]
+It is natural in actual maps $u:X\to Y$. Write
+$\sigma_{2,X}:E_2^{s,t}(X)\xrightarrow{\sim}E_2^{s,t+1}(\Sigma X)$
+for the actual classical Adams suspension comparison. The suspended
+coordinates used below are precisely
+\[
+\Phi_X^{\Sigma,s,t}(x)
+ :=\Phi_{\Sigma X}^{s,t+1}(\sigma_{2,X}x)
+ \in\operatorname{Ext}^{s,t+1}_{A_*}
+ (\mathbb F_2,\mathcal H(\Sigma X)).
+\]
+This formula fixes the comparison on the actual suspended spectrum;
+it does not introduce a separate operation on derived Ext.
+The comparison is also the Ext interpretation of the fixed
+first-quotient coordinates:
+\[
+\pi_{t-s,t}(\nu X/\lambda)
+\xrightarrow{\sim}E_2^{s,t}(X)
+\xrightarrow{\Phi_X^{s,t}}
+\operatorname{Ext}^{s,t}_{A_*}(\mathbb F_2,\mathcal H(X)).
+\]
+\uses{sem:AdamsSynthetic:categories,sem:AdamsSynthetic:families,sem:AdamsSynthetic:e2-comparison,sem:AdamsSynthetic:first-quotient-shifts}
+\lean{KIP126.AdamsSynthetic.Standard.SteenrodComodule,KIP126.AdamsSynthetic.Standard.homologyComodule,KIP126.AdamsSynthetic.Standard.ClassicalExt,KIP126.AdamsSynthetic.Standard.e2ExtEquiv,KIP126.AdamsSynthetic.Standard.suspendedE2ExtEquiv}
+% Correspondence: This fixes the actual coefficient-comodule objects, maps, spectral coaction, and genuine derived Ext coordinates needed for the composition theorem. The canonical abelian structure, selected-model homology recognition, and E2/Ext comparison are three registered upstream construction responsibilities; a degreewise vector-space identification alone does not supply the coaction. The suspended coordinates are exactly the E2 suspension followed by the comparison on the suspended spectrum. No global equivalence of synthetic spectra with a derived category, or construction of the foundations behind this source interface, is asserted here.
+\end{definition}
+
+\begin{lemma}[Homology short exact sequences and their Ext boundaries]
+\label{sem:AdamsSynthetic:homology-ext-boundary}
+\level{coarse}
+Use the actual homology and derived Ext coordinates of
+\ref{sem:AdamsSynthetic:coefficient-ext}. For a selected distinguished
+triangle $X\xrightarrow fY\xrightarrow gZ\xrightarrow h\Sigma X$,
+suppose its rotated homology sequence is short exact in each integer degree.
+Then the short complex with the same maps $\mathcal H(g),\mathcal H(h)$
+is short exact in the graded comodule category. Write its extension class as
+\[
+ [\mathcal S]\in
+ \operatorname{Ext}^1_{\mathcal A}(\mathcal H(\Sigma X),\mathcal H(Y)).
+\]
+The associated connecting operation in Adams coordinates is defined by
+\[
+ \partial_{g,h}(x)=(\Phi_Y^{s+1,t+1})^{-1}
+ \bigl([\mathcal S]\circ\Phi_X^{\Sigma,s,t}(x)\bigr).
+\]
+Here composition is genuine derived composition with the extension class,
+and the specified suspended coordinates put the source in
+$\operatorname{Ext}^{s,t+1}_{A_*}(\mathbb F_2,\mathcal H(\Sigma X))$.
+\uses{sem:AdamsSynthetic:coefficient-ext}
+\lean{KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex,KIP126.AdamsSynthetic.Standard.cofiberHomologyShortComplex_shortExact,KIP126.AdamsSynthetic.Standard.cofiberExtBoundary}
+% Correspondence: Ext and composition with the actual SES extension class are defined using mathlib's derived localization. Lifting the recognized degreewise exactness to this comodule exact structure is a registered upstream proof responsibility. No synthetic operation or composition theorem is used to define this boundary.
+\end{lemma}
+\begin{proof}
+Exactness in graded comodules over a field is detected on the underlying
+graded vector spaces. Naturality of the fixed homology recognition
+identifies these maps with the given actual homology maps. The canonical
+derived triangle of this same short exact sequence defines its extension
+class; postcomposition gives the displayed connecting homomorphism.
+\end{proof}
+
 \begin{definition}[Normalized synthetic lifts]
 \label{sem:AdamsSynthetic:normalized-map}
 \level{coarse}

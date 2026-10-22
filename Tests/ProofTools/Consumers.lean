@@ -5,6 +5,8 @@ module
 
 import KIP126.ProofTools
 
+#check KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibnizExt
+
 /-! The fixed tools preserve genuine page, cycle, extension, triangle and
 crossing hypotheses; their callers never supply upstream result packages. -/
 #check KIP126.ProofTools.Paper.adamsFiltrationVanishing
@@ -23,6 +25,33 @@ crossing hypotheses; their callers never supply upstream result packages. -/
 #check KIP126.ProofTools.Standard.generalizedMahowaldAtLevel
 #check KIP126.ProofTools.lambda_quotient_target_preserving_lift_iff
 #check KIP126.ProofTools.finite_target_from_full_lift_is_permanent
+#check KIP126.ProofTools.Standard.representativeFamilyLift_iff
+#check KIP126.ProofTools.Standard.finiteQuotientMahowaldLeibnizCore
+#check KIP126.ProofTools.Standard.finiteSurjectiveAmbiguityZero
+#check KIP126.ProofTools.Standard.finiteCollapsedAmbiguityZero
+#check KIP126.ProofTools.Standard.classicalNCComposition
+#check KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibniz
+#check KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerComparison
+#check KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerSurjectivity_iff
+#check KIP126.ProofTools.Standard.paper5_8_nu_e2_extension
+#check KIP126.ProofTools.Standard.paper5_13_nu_e2_no_crossing
+#check KIP126.ProofTools.Standard.paper5_13_nu_e3_no_crossing
+#check KIP126.ProofTools.Standard.paper5_13_nu_infinite_no_crossing
+#check KIP126.ProofTools.Standard.cutoffAdamsDifferentialAtLevel
+#check KIP126.ProofTools.Standard.finiteLevelExtensionToClassical
+
+-- Complete public statements do not expose their private proof constructions.
+#check_failure KIP126.ProofTools.Internal.FiniteLifting.cutoffAdamsDifferentialAtLevel
+#check_failure KIP126.ProofTools.Internal.FiniteLifting.finiteLevelExtensionToClassical
+#check_failure KIP126.ProofTools.Internal.FiniteLifting.level_full_source_with_realization
+#check_failure KIP126.ProofTools.Internal.MahowaldLeibniz.finite_quotient_mahowald_leibniz_core
+#check_failure KIP126.ProofTools.Internal.MahowaldLeibniz.classical_nc_composition
+#check_failure KIP126.ProofTools.lastLayerComparison
+#check_failure KIP126.ProofTools.lastLayerObstructionIsomorphism
+#check_failure KIP126.ProofTools.intermediateLayerSurjectivity
+#check_failure KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_preservesBoundaries
+#check_failure KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_exact
+#check_failure KIP126.ProofTools.Standard.classicalTriangleHMapHom_spec
 
 -- Retired false theorems cannot be consumed through the public entry point.
 #check_failure KIP126.ProofTools.Standard.generalizedLeibniz

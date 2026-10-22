@@ -33,7 +33,7 @@ class NativeProofPresentationTests(unittest.TestCase):
         targets = [row for row in statements
                    if row['label'].startswith('paper:')
                    and row['content_type'] != 'definition']
-        self.assertEqual(len(targets), 56)
+        self.assertEqual(len(targets), 54)
         for row in targets:
             with self.subTest(label=row['label']):
                 self.assertIn(row['label'], visible)
@@ -76,7 +76,7 @@ class NativeProofPresentationTests(unittest.TestCase):
         # These source arguments have known missing steps. A proof panel must
         # not erase those qualifications or present them as completed proofs.
         for label, qualification in {
-            'paper:5.10': 'low-filtration',
+            'sem:ProofTools:finite-lambda-division': 'low-filtration',
             'paper:6.12': 'No $\\lambda$ layer is cancelled',
             'paper:6.20': 'domain condition',
             'paper:6.23': 'not the full printed corollary',

@@ -6,13 +6,13 @@ created: '2026-10-17T18:17:10'
 date: '2026-10-17T18:17:10'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T03:59:04.879782+00:00'
+updated: '2026-10-21T16:07:35.663705+00:00'
 ---
 Mathematical dependency review: [AimPaper source, lines 1519-1536](paper/main.tex.html#L1519). Compare the two crossing definitions through multiplication by lambda, dividing its quotient-coordinate indeterminacy using the commutative square.
 
 The available image-filtration and minimal-length lemmas are supporting steps, not the stated equivalence for arbitrary lengths. The direct formal binding below is a statement-only theorem with a registered pending proof; the local supporting results do not discharge it.
 
-**Formal scope:** original statement registered; proof pending.
+**Formal scope:** The original general assertion is retained with its registered proof hole and its counterexample boundary. It is not an established theorem used by the revised tools.
 
 Private proofs establish division by $\lambda$ in finite quotients of the same actual normalized map, an image-filtration estimate, and the absence of crossings in the minimal-length range. The equivalence between crossings at arbitrary lengths remains unproved. The available division theorem additionally requires target $\lambda$-kernel no-crossing and is specialized to the standard model; it does not prove this original equivalence with its fixed premises.
 
