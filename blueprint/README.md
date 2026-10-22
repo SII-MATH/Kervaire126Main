@@ -102,4 +102,4 @@ python3 scripts/serve-blueprint.py --port 18726
 
 The default address is `http://127.0.0.1:18726/#/Kervaire126`. `scripts/preview-memo.py` creates an isolated Memo presentation preview from an existing native export; it does not recompile Lean or change mathematical dependencies or proof states. Browser checks under `Tests/check_blueprint_*.py` exercise the actual native reader, formulas, original diagrams and built-in map.
 
-GitHub Pages exports `main` with the same native workflow. Its Python runtime and diagram tools are independent of Lean CI; no compiled-evidence release or Lean build cache is needed to publish. See [GitHub Pages](../docs/github-pages.md). Git pushes and pulls still follow the separate Release build-cache rules in `AGENTS.md`.
+The Hong Kong site at <https://math.opensii.ai/blueprint/#/Kervaire126> publishes `main` from the same native export workflow. Its Python runtime and diagram tools are independent of Lean CI; no compiled-evidence release or Lean build cache is needed to publish. See [publication and operations](../docs/github-pages.md). Git pushes and pulls still follow the separate Release build-cache rules in `AGENTS.md`.
