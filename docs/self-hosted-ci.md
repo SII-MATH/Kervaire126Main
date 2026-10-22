@@ -54,8 +54,9 @@ public IP or GitHub webhook is needed. The existing host proxy watchdog is a
 prerequisite. A proxy outage makes the runner unavailable until it reconnects.
 
 The root-owned deployment is `/inspire/hdd/global_user/czxs25250150/ops/ci-runner/`.
-It contains copies of `.github/runner/service.py` and `job-start.py`; the latter
-is installed at `/usr/local/lib/kip126-ci/job-start.py`. Updating the repository
+It contains copies of `.github/runner/service.py`, `job-start.sh` and
+`job-start.py`. The shell entry point and Python policy are installed under
+`/usr/local/lib/kip126-ci/`. Updating the repository
 does not automatically change the host security policy.
 
 The existing `ops/instance-autostart.sh` starts this supervisor only for the

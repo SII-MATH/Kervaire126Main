@@ -76,7 +76,7 @@ def watch():
         'MATHLIB_NO_CACHE_ON_UPDATE': '1', 'TMPDIR': str(CI_HOME / 'tmp'),
         'https_proxy': 'http://127.0.0.1:7890', 'http_proxy': 'http://127.0.0.1:7890',
         'no_proxy': 'localhost,127.0.0.1',
-        'ACTIONS_RUNNER_HOOK_JOB_STARTED': '/usr/local/lib/kip126-ci/job-start.py',
+        'ACTIONS_RUNNER_HOOK_JOB_STARTED': '/usr/local/lib/kip126-ci/job-start.sh',
         'DOTNET_GCHeapHardLimit': '0x40000000',
     }
     try:
@@ -139,6 +139,8 @@ def main():
         policy.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(HERE / 'job-start.py', policy / 'job-start.py')
         (policy / 'job-start.py').chmod(0o755)
+        shutil.copyfile(HERE / 'job-start.sh', policy / 'job-start.sh')
+        (policy / 'job-start.sh').chmod(0o755)
         # Do not pass developer credentials or the shell environment to jobs.
         with (STATE / 'supervisor.log').open('a') as log:
             subprocess.Popen([sys.executable, str(HERE / 'service.py'), 'watch'],
