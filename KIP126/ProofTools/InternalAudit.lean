@@ -10,7 +10,29 @@ import all KIP126.ProofTools.Paper.ExtensionCrossingDichotomy
 import all KIP126.ProofTools.Paper.Crossing
 import all KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 import all KIP126.ProofTools.Paper.SyntheticExtensions
+import all KIP126.ProofTools.Paper.NumericalExamples
+import all KIP126.ProofTools.Paper.NuNumericalExtensions
+import all KIP126.ProofTools.Paper.NuCofiberNumericalDifferential
+import all KIP126.ProofTools.Paper.DoublingNumericalExtensions
+import all KIP126.ProofTools.Paper.DoublingCrossing
+import all KIP126.ProofTools.Paper.DoublingMaximalLift
+import all KIP126.ProofTools.StandardSpecializations
+import all KIP126.ProofTools.DoublingWarning
 import all KIP126.ProofTools
+import all KIP126.ProofTools.BlueprintTheorems
+import all KIP126.ProofTools.ExtBoundaryComparison
+import all KIP126.ProofTools.ExtBoundaryComparison.HomologySES
+import all KIP126.ProofTools.LastLayerComparison
+import all KIP126.ProofTools.LastLayerComparison.Boundary
+import all KIP126.ProofTools.LastLayerComparison.Actual
+import all KIP126.ProofTools.LastLayerComparison.ExactnessCoordinates
+import all KIP126.ProofTools.Paper.NuCrossingExamples
+import all KIP126.ProofTools.FiniteLifting.DifferentialTransport
+import all KIP126.ProofTools.FiniteLifting.ClassicalLift
+import all KIP126.ProofTools.FiniteLifting.CutoffDifferential
+import all KIP126.ProofTools.FiniteLifting.LevelSourceLift
+import all KIP126.ProofTools.FiniteLifting.LevelClassicalLift
+import all KIP126.ProofTools.FiniteLevelConsequences
 import all KIP126.ProofTools.MahowaldLeibniz
 import all KIP126.ProofTools.MahowaldLeibniz.FiniteCore
 import all KIP126.ProofTools.MahowaldLeibniz.FixedModel
@@ -163,9 +185,10 @@ import all KIP126.ProofTools.Representatives
 import all KIP126.ProofTools.Standard
 import all KIP126.ProofTools.Stretching
 import all KIP126.ProofTools.StretchingRepresentatives
+import all KIP126.ProofTools.SyntheticProgramRules
 
 
-public meta import Checks.Registry
+public meta import Checks.Registry.ProofTools
 import Lean
 
 /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually
@@ -175,7 +198,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.ProofTools.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let expected : Array Json ← entries.filterM fun (row : Json) => do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"
@@ -221,6 +244,57 @@ run_cmd do
   -- depend on any unfinished local paper theorem. In particular, the
   -- general MH1 boundary lift must stay independent of the retired GL/MH claims.
   let provedTools := #[
+    `KIP126.ProofTools.Standard.cutoffAdamsDifferentialAtLevel,
+    `KIP126.ProofTools.Standard.finiteLevelExtensionToClassical,
+    `KIP126.ProofTools.Internal.FiniteLifting.cutoffAdamsDifferentialAtLevel,
+    `KIP126.ProofTools.Internal.FiniteLifting.finiteLevelExtensionToClassical,
+    `KIP126.ProofTools.Internal.ExtBoundaryComparison.HomologySES.positive_normalized_homology_zero,
+    `KIP126.ProofTools.Internal.ExtBoundaryComparison.HomologySES.positive_normalized_rotated_homology_short_exact,
+    `KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibnizExt,
+    `KIP126.ProofTools.Standard.paper6_8_complete_crossing_warning,
+    `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_native_actual_zero_image,
+    `KIP126.ProofTools.Paper.DoublingMaximalLift.paper6_10_actual_maximal_zero_image_lift,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_long_inessential,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_nonzero_inessential_output,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_has_paper_crossing,
+    `KIP126.ProofTools.Paper.DoublingCrossing.paper6_8_lowered_actual_crossing,
+    `KIP126.ProofTools.Standard.cutoffLeibnizSquare,
+    `KIP126.ProofTools.Standard.ssCutoffSquareAtLevel,
+    `KIP126.ProofTools.Standard.ssLeibnizAtLevelZero,
+    `KIP126.ProofTools.Standard.ssMahowaldZeroInputLevels,
+    `KIP126.ProofTools.Standard.paper6_7_classical_d3,
+    `KIP126.ProofTools.Standard.paper6_19_finite_nu_extension,
+    `KIP126.ProofTools.Standard.paper6_24_infinite_nu_extension,
+    `KIP126.ProofTools.Standard.paper6_19_actual_cofiber_d2,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_full_two_representatives,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.finite_two_h4_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_long_nonzero_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_short_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_short_essential,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_long_zero_extension,
+    `KIP126.ProofTools.Paper.DoublingNumericalExtensions.paper6_8_crossing_warning,
+    `KIP126.ProofTools.Paper.NuCofiberNumericalDifferential.paper6_19_actual_cofiber_d2,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_24_full_nu_representatives,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_24_infinite_nu_extension,
+    `KIP126.ProofTools.Paper.NuNumericalExtensions.paper6_19_finite_nu_extension,
+    `KIP126.ProofTools.Paper.NumericalExamples.p_record,
+    `KIP126.ProofTools.Paper.NumericalExamples.d0_record,
+    `KIP126.ProofTools.Paper.NumericalExamples.h0p_basis,
+    `KIP126.ProofTools.Paper.NumericalExamples.h0d0_basis,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_7_classical_d3,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_7_classical,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_classical_d3,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_not_vanishing,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_8_not_zero,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_19_classical_d2_no_crossing,
+    `KIP126.ProofTools.Paper.NumericalExamples.paper6_19_top_page_two_no_crossing,
+    `KIP126.ProofTools.Internal.ProgramRules.four_edge_cutoff,
+    `KIP126.ProofTools.Internal.ProgramRules.quotientBoundaryCutoff,
+    `KIP126.ProofTools.Internal.ProgramRules.cutoffLeibnizSquare,
+    `KIP126.ProofTools.Internal.ProgramRules.ssCutoffSquareAtLevel,
+    `KIP126.ProofTools.Internal.ProgramRules.cutoff_boundary_exponents,
+    `KIP126.ProofTools.Internal.ProgramRules.ssLeibnizAtLevelZero,
+    `KIP126.ProofTools.Internal.ProgramRules.ssMahowaldZeroInputLevels,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_surjectivity_image_eq,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_level_collapsed_image_eq,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.last_layer_surjectivity_implies_target_boundary,
@@ -272,6 +346,25 @@ run_cmd do
     `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_g_classical_nc_statement,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.positive_second_finite_core,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_quotient_mahowald_leibniz_core,
+    `KIP126.ProofTools.Standard.representativeFamilyLift_iff,
+    `KIP126.ProofTools.Standard.finiteQuotientMahowaldLeibnizCore,
+    `KIP126.ProofTools.Standard.finiteSurjectiveAmbiguityZero,
+    `KIP126.ProofTools.Standard.finiteCollapsedAmbiguityZero,
+    `KIP126.ProofTools.Standard.classicalNCComposition,
+    `KIP126.ProofTools.Standard.finiteLayerSurjectivityMahowaldLeibniz,
+    `KIP126.ProofTools.lastLayerComparison,
+    `KIP126.ProofTools.lastLayerObstructionIsomorphism,
+    `KIP126.ProofTools.intermediateLayerSurjectivity,
+    `KIP126.ProofTools.intermediateLayerSurjectivity_not_converse,
+    `KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_preservesBoundaries,
+    `KIP126.ProofTools.Standard.cofiberFirstQuotientBoundary_exact,
+    `KIP126.ProofTools.Standard.classicalTriangleHMapHom_spec,
+    `KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerComparison,
+    `KIP126.ProofTools.Standard.mahowaldLeibnizLastLayerSurjectivity_iff,
+    `KIP126.ProofTools.Standard.paper5_8_nu_e2_extension,
+    `KIP126.ProofTools.Standard.paper5_13_nu_e2_no_crossing,
+    `KIP126.ProofTools.Standard.paper5_13_nu_e3_no_crossing,
+    `KIP126.ProofTools.Standard.paper5_13_nu_infinite_no_crossing,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.classical_nc_composition,
     `KIP126.ProofTools.Internal.MahowaldLeibniz.finite_may_signed_target_eq_top_at_level,
     `KIP126.ProofTools.Internal.Mahowald.actual_common_source_representative,
@@ -777,7 +870,9 @@ run_cmd do
     let some info := env.find? name | throwError "Missing proof dependency: {name}"
     let some idx := env.getModuleIdxFor? name | continue
     let mod := env.header.moduleNames[idx.toNat]!
-    unless (`KIP126).isPrefixOf mod do continue
+    -- Expand this module's full bodies. Upstream bodies are checked by their
+    -- own InternalAudit; ordinary imports need not expose upstream private lemmas.
+    unless (`KIP126.ProofTools).isPrefixOf mod do continue
     let body := info.value? (allowOpaque := true)
     if (`KIP126.ProofTools).isPrefixOf mod &&
         (info.type.hasSorry || body.any (·.hasSorry)) then

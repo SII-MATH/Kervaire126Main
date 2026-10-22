@@ -6,6 +6,6 @@ created: '2026-10-21T05:06:27'
 date: '2026-10-21T05:06:27'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-21T06:13:14.840166+00:00'
+updated: '2026-10-21T16:07:35.681809+00:00'
 ---
-**Formal scope:** The private classical_nc_composition proves ClassicalNCCompositionStatement for the selected fixed model, covering all three positions of the positive exponent. Each branch consumes its complete finite core, derives (A) from NC1 and the entire final NC2 condition, and decodes the same specified source and target. Actual normalized first-quotient operations are calibrated to ordinary page maps only when their exponent is zero. No representative, output-survival, or finite-square conclusion is added as a caller premise. This internal proof inherits registered upstream obligations and has no public Blueprint binding.
+**Formal scope:** The public theorem proves the complete fixed-model ClassicalNCCompositionStatement, covering all three positions of the positive exponent, every NC1 layer and the entire final NC2 condition. Its actual normalized first-quotient operations are calibrated to ordinary page maps only when their exponent is zero. It produces the stated cycle qualification and specified differential without a caller-supplied representative, output-survival assumption or finite-square conclusion. It does not assert a separate Ext-boundary identification and inherits registered upstream construction and comparison obligations.

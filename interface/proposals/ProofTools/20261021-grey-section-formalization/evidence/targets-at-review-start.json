@@ -1,0 +1,786 @@
+[
+  {
+    "section": "5.12",
+    "entry": {
+      "id": "5faeddf145b9",
+      "label": "paper:6.5",
+      "title": "A cutoff version of the Leibniz square",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "remark",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From \\cite{LWX126}, Remark 6.5 and Theorem 2.12.\\par\nIn the quotient-boundary square used for the Leibniz argument, let $x,y,z,w$ be the four specified infinite-page labels at a common stem and weight, with top, left and bottom extension lengths $m,r,l$. The four-edge theorem permits a cutoff $c$ with\n\\[\n0<c\\le r+l-m.\n\\]\nBesides the three input extensions and no crossing on the top or left edge, it suffices to require that the bottom extension has no crossing hitting filtration at least $s+m+c$, and that the right edge has an extension of length $c-1$ from $y$ to zero with no crossing. Then the right edge has an extension of length $r+l-m$ from $y$ to $w$.\n\nThis is the extension-square generalization proposed in the remark. Reading its right edge as a specified classical Adams differential additionally requires the boundary and label comparisons for that square; the cutoff does not by itself supply them. At positive lambda level the\nsame four-edge statement must be instantiated at the actual quotient\nand weight of the level square, including the right-edge zero extension.\nAt level zero it remains this cutoff specialization; no arbitrary-level\nclassical differential theorem is asserted solely by choosing $c$.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "73984613fe3d",
+          "title": "The extension theorem for a commutative square",
+          "label": "paper:2.12",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** informal specialization of the four-edge theorem; no Lean binding is asserted.",
+          "created": "2026-10-20T14:37:05",
+          "updated": "2026-10-20T14:37:05"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.12",
+    "entry": {
+      "id": "f85ba61e330c",
+      "label": "paper:6.8",
+      "title": "A crossing obstructing a Leibniz conclusion",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "proposition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From \\cite{LWX126}, Example 6.8 and Remarks 6.6, 6.9--6.10.\\par\nLet $f=2:S^0\\to S^0$, normalized by $[h_0]$. At\n\\[\nn=r=2,\\quad m=1,\\quad l=2,\\quad e(f)=1,\\quad s=1,\\quad t=16,\n\\]\nthe input relations are\n\\[\nd_2(h_4)=h_0h_3^2,\\qquad\nd_1^{f,E_2}(h_4)=h_0h_4,\\qquad\nd_2^{f,E_\\infty}(h_0h_3^2)=0.\n\\]\nThe bottom relation has the essential crossing\n\\[\nd_1^{f,E_\\infty}(d_0)=h_0d_0.\n\\]\nConsequently, omitting the bottom no-crossing hypothesis from the original Leibniz rule would give the incorrect conclusion $d_3(h_0h_4)=0$.\n\nThe same shorter extension also makes\n\\[\nd_2^{f,E_\\infty}(h_0h_3^2)=h_0d_0\n\\]\ninessential. Applying a rule without the required crossing control to these two choices would give the conflicting outputs\n\\[\nd_3(h_0h_4)=0,\\qquad d_3(h_0h_4)=h_0d_0.\n\\]\nThe issue persists if one merely chooses a lift with maximally lambda-divisible image: the article gives two lifts of $h_0h_3^2$, one with $[h_0]$-image zero and another with image $[h_0d_0]$. The first is the maximal choice in the sense discussed there, yet it would yield the incorrect zero conclusion. A maximal-image choice is not a replacement for the crossing hypothesis.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "13e4ddad4aaf",
+          "title": "The target coset of a page extension",
+          "label": "paper:5.7",
+          "type": "uses"
+        },
+        {
+          "id": "50ce862793e3",
+          "title": "Page extensions for nu and multiplication by two",
+          "label": "paper:5.8",
+          "type": "uses"
+        },
+        {
+          "id": "5519e1cc5e19",
+          "title": "Extensions on the $E_r$-page",
+          "label": "paper:5.4",
+          "type": "uses"
+        },
+        {
+          "id": "8afd6093be5c",
+          "title": "Crossings in the nu and multiplication-by-two examples",
+          "label": "paper:5.13",
+          "type": "uses"
+        },
+        {
+          "id": "bb7a8dc214da",
+          "title": "The Hopf-invariant-one differentials",
+          "label": "sem:Literature:one-line-differentials",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** this is the original concrete warning, with its target-coset and maximal-lift explanations combined. No Lean binding or general theorem about every positive lambda level is asserted. The Chua locators are those discussed in AimPaper, not an independent reformulation of all hypotheses of that work.",
+          "created": "2026-10-20T14:37:05",
+          "updated": "2026-10-20T14:37:05"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.13",
+    "entry": {
+      "id": "926b4369e63b",
+      "label": "paper:6.19",
+      "title": "The nu-cofiber calculation of a finite extension",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "proposition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From \\cite{LWX126}, Example 6.19.\\par\nConsider\n\\[\nS^3\\xrightarrow{\\nu}S^0\\xrightarrow{i}C\\nu\\xrightarrow{q}S^4,\n\\qquad (e(\\nu),e(i),e(q))=(1,0,0).\n\\]\nIn Atiyah--Hirzebruch notation, $a[4]$ has top-cell image $a$ and $b[0]$ denotes the bottom-cell image of $b$. The input data are\n\\[\n\\begin{aligned}\nd_0^{q,E_2}(h_0h_4^2[4])&=h_0h_4^2,\\\\\nd_2(h_0h_4^2[4])&=h_0p[0],\\\\\nd_0^{i,E_2}(h_0p)&=h_0p[0],\n\\end{aligned}\n\\]\nwhere $h_0p[0]$ is a permanent cycle. The classical $d_2$ and the length-zero $q$-extension have no crossing in the sense used in the article. With\n\\[\nn=2,\\quad m=l=0,\\quad n_1=1,\\quad m_1=l_1=0,\n\\quad r=r'=2,\n\\]\nthe claimed output is that $h_0h_4^2\\in E_2^{3,36}(S^3)$ survives to $E_3$ and\n\\[\nd_2^{\\nu,E_3}(h_0h_4^2)=h_0p,\n\\qquad h_0p\\in E_2^{5,38}(S^0).\n\\]",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "2809b8e4ac3b",
+          "title": "The finite-layer generalized Mahowald trick",
+          "label": "paper:6.12",
+          "type": "uses"
+        },
+        {
+          "id": "3f6a38e05535",
+          "title": "Crossings of Adams differentials",
+          "label": "paper:4.14",
+          "type": "uses"
+        },
+        {
+          "id": "5519e1cc5e19",
+          "title": "Extensions on the $E_r$-page",
+          "label": "paper:5.4",
+          "type": "uses"
+        },
+        {
+          "id": "b6cee8bec5a6",
+          "title": "The normalized cofiber triangle of nu",
+          "label": "sem:Literature:nu-cofiber",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** the original numerical application is unbound. This n=2 example is distinct from the existing n=3 Main zero-layer theorem.",
+          "created": "2026-10-20T14:37:05",
+          "updated": "2026-10-20T14:37:05"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.14",
+    "entry": {
+      "id": "5d15ee67c6a2",
+      "label": "paper:6.24",
+      "title": "The infinite-page nu-extension used in the Leibniz example",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "proposition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From \\cite{LWX126}, Example 6.24.\\par\nFor $f=\\nu:S^3\\to S^0$, the finite relation of Example~\\ref{paper:6.19},\n\\[\nd_2^{f,E_3}(h_0h_4^2)=h_0p,\n\\]\nis asserted in the article to extend to\n\\[\nd_2^{f,E_\\infty}(h_0h_4^2)=h_0p.\n\\]\nThe latter means that representatives in the full synthetic spheres have the prescribed source and image detections; it is stronger than the equation in the quotient by $\\lambda^2$ alone.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "5519e1cc5e19",
+          "title": "Extensions on the $E_r$-page",
+          "label": "paper:5.4",
+          "type": "uses"
+        },
+        {
+          "id": "8afd6093be5c",
+          "title": "Crossings in the nu and multiplication-by-two examples",
+          "label": "paper:5.13",
+          "type": "uses"
+        },
+        {
+          "id": "926b4369e63b",
+          "title": "The nu-cofiber calculation of a finite extension",
+          "label": "paper:6.19",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** original application recorded without a Lean binding. The infinite lifting step is not supplied by the current finite-page stretching theorem.",
+          "created": "2026-10-20T14:37:05",
+          "updated": "2026-10-20T14:37:05"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.14",
+    "entry": {
+      "id": "7fc0b271dcd0",
+      "label": "paper:6.7",
+      "title": "A classical d-three obtained by the Leibniz argument",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "proposition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From \\cite{LWX126}, Example 6.7.\\par\nFor $f=\\nu:S^3\\to S^0$, consider\n\\[\n\\begin{gathered}\nx=h_5\\in E_2^{1,35}(S^3),\\qquad\ny=h_2h_5\\in E_2^{2,36}(S^0),\\\\\nx_\\infty=h_0h_4^2\\in Z_\\infty^{3,36}(S^3),\\qquad\ny_\\infty=h_0p\\in Z_\\infty^{5,38}(S^0).\n\\end{gathered}\n\\]\nThe article applies the classical input and the two extensions\n\\[\nd_2(h_5)=h_0h_4^2,\\qquad\nd_1^{f,E_2}(h_5)=h_2h_5,\\qquad\nd_2^{f,E_\\infty}(h_0h_4^2)=h_0p\n\\]\nwith their specified no-crossing conditions to obtain\n\\[\nd_3(h_2h_5)=h_0p.\n\\]\nIts parameters are $n=r=2$, $m=1$, $l=2$, $e(f)=1$, $s=1$ and $t=35$.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "3f6a38e05535",
+          "title": "Crossings of Adams differentials",
+          "label": "paper:4.14",
+          "type": "uses"
+        },
+        {
+          "id": "50ce862793e3",
+          "title": "Page extensions for nu and multiplication by two",
+          "label": "paper:5.8",
+          "type": "uses"
+        },
+        {
+          "id": "5519e1cc5e19",
+          "title": "Extensions on the $E_r$-page",
+          "label": "paper:5.4",
+          "type": "uses"
+        },
+        {
+          "id": "5d15ee67c6a2",
+          "title": "The infinite-page nu-extension used in the Leibniz example",
+          "label": "paper:6.24",
+          "type": "uses"
+        },
+        {
+          "id": "872243ecb4a2",
+          "title": "Generalized Leibniz with an arbitrary lambda level",
+          "label": "sem:ProofTools:generalized-leibniz-at-level",
+          "type": "uses"
+        },
+        {
+          "id": "8afd6093be5c",
+          "title": "Crossings in the nu and multiplication-by-two examples",
+          "label": "paper:5.13",
+          "type": "uses"
+        },
+        {
+          "id": "bb7a8dc214da",
+          "title": "The Hopf-invariant-one differentials",
+          "label": "sem:Literature:one-line-differentials",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** the original numerical conclusion is unbound. The source argument and the actual hypotheses of the revised GL theorem are distinguished in the proof.",
+          "created": "2026-10-20T14:37:05",
+          "updated": "2026-10-20T14:37:05"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "de53911f1563",
+      "label": "sem:ProofTools:ml-ss-scope",
+      "title": "Mathematical rules used by the synthetic computation routines",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "remark",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A mathematical transcription of the synthetic routines of\n\\cite{LinProgram,LWXZenodo}, using the fixed source-code release and\nretaining its source-level conditions.\n\nThe differential rule has the shape\n\\[\nd_bx=u,\\qquad x\\longmapsto y,\\qquad u\\longmapsto v\n\\quad\\Longrightarrow\\quad d_{b+L-M}y=v,\n\\]\nwhere $M$ and $L$ are the two image filtration shifts. Its intended\nmathematical explanation is the quotient-boundary square of generalized\nLeibniz, including the cutoff of Remark~\\ref{paper:6.5}. Hidden images\nare sought by the Mahowald pattern: take an $h$ preimage, use a\ndifferential, and take a $g$ preimage, with length relation $r=n+l+m$.\nClassical extensions and permanent-cycle outputs additionally concern\nfull representatives and the realization of Proposition~\\ref{paper:5.14}.\n\nThis section first states the mathematical extension rules and derives\nthe indicated specializations of the level-indexed tools. It then\nspecifies the actual partial-data tests, without replacing them by\nassumed true extensions. The final comparison distinguishes a proved\nspecialization of a mathematical rule from the pending implication\nfrom the program's tests to that rule's hypotheses. The two operational\nsoundness assertions retain the latter pending implication.\n\nThe routines do not enumerate the complete sufficient-condition packages\nof \\ref{sem:ProofTools:cprime} or \\ref{sem:ProofTools:ml-classical-nc}.\nTheir staircase labels encode cycle, boundary and differential information.\nThey are not the lambda levels of \\ref{sem:ProofTools:ml-finite-core}.\nThe source-level transcription and its soundness assertions have no Lean\nbinding and introduce no admitted mathematical input. The full-lift\npermanence result below binds its existing proved public theorem.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "The fixed source is source code.zip in Zenodo record 14875701 (archive SHA-256 dd784541626f4d693c35f3ca84d4a67e83758ac463aabe58ab6c9cc92be22a15), also available locally at /inspire/hdd/global_user/czxs25250150/tmp/lwx-source/SSeqCpp-master. Its ss/category.cpp, ss/main.h and ss/deduce.cpp are byte-identical to the copies in /inspire/hdd/global_user/czxs25250150/ops/tmp/ss-program-2412150-top-input-20261019. Their SHA-256 hashes are be9e6cd3632ab6ec3905528b0b30a8c4d0d986c13a318d24a48f3e396bc8ae9a, 535a72430caed39826d8ab41e8beb3fa7286835309928a98b0247e7eb9b38eb5 and f299dbdadf8c8efde296adacb048f679fd927d611e910c615775d42ebced3fec. Source locators below refer to this fixed version, not a moving repository HEAD.",
+          "created": "2026-10-21T05:06:27",
+          "updated": "2026-10-21T07:20:01.991549+00:00"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "fbafa471d5b0",
+      "label": "sem:ProofTools:ss-leibniz-specialization",
+      "title": "The zero-input-level Leibniz rule with actual crossing conditions",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "corollary",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A specialization of\n\\ref{sem:ProofTools:generalized-leibniz-at-level}, using the filtration\nshifts of the differential routine in \\cite{LinProgram}.\n\nIn the fixed Standard model let $f:X\\to Y$, $e=e(f)$ and\n$F:\\Sigma^{0,e}\\nu X\\to\\nu Y$ be its actual normalized map. Suppose\n\\[\n2\\le n\\le b,\\qquad e\\le M\\le n-2+e,\\qquad L\\ge e.\n\\]\nTake the specified labels\n\\[\n\\begin{gathered}\nx\\in E_2^{s,t}(X),\\qquad y\\in E_2^{s+M,t+M}(Y),\\\\\nu\\in Z_\\infty^{s+b,t+b-1}(X),\\qquad\nv\\in Z_\\infty^{s+b+L,t+b+L-1}(Y).\n\\end{gathered}\n\\]\nAssume the actual equations\n\\[\nd_bx=u,\\qquad \\mathcal E^f_{n-1,0}(M;x,y),\\qquad\nd_L^F(u)=\\lambda^{L-e}v.\n\\]\nPut $p=(t-s,t+e)$ and $A=\\Sigma^{0,e}\\nu X$. Require\n\\[\n\\bigl(NC(F_{n-1};p,s,M)\\lor\n NC(\\delta_{n-1}^A;p,s,b)\\bigr)\n\\land NC(\\Sigma^{1,-(n-1)}F;p,s+b,L).\n\\]\nThen\n\\[\nd_{b+L-M}(y)=v.\n\\]\nAn original page-extension input $d_M^{f,E_n}(x)=y$ supplies the\nmiddle equation by \\ref{sem:ProofTools:extension-level-zero}; the\ncrossing conditions in this corollary remain conditions on the actual\nmaps at the displayed weight.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "804d656d197b",
+          "title": "From a page extension to its level-zero representative form",
+          "label": "sem:ProofTools:extension-level-zero",
+          "type": "uses"
+        },
+        {
+          "id": "872243ecb4a2",
+          "title": "Generalized Leibniz with an arbitrary lambda level",
+          "label": "sem:ProofTools:generalized-leibniz-at-level",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** Derived mathematical specialization, with no new Lean binding or interface. All premises, including the two permanent-label qualifications and the full bottom extension, are retained. They are not asserted to follow from a successful GetSynImage call.",
+          "created": "2026-10-21T09:07:44",
+          "updated": "2026-10-21T09:07:44"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "7e398cfe689c",
+      "label": "sem:ProofTools:ss-cutoff-square-specialization",
+      "title": "The cutoff Leibniz square at an arbitrary lambda level",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "proposition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A quotient-boundary specialization of the four-edge theorem\n\\ref{paper:2.12} and Remark~\\ref{paper:6.5}.\n\nFix $F:A\\to B$ with $A=\\Sigma^{0,e}\\nu X$, $B=\\nu Y$. For\n$n\\ge2$ and a lambda level $k\\ge0$ put $q=n+k-1$. Use the actual\ncommutative square\n\\[\n\\begin{array}{ccc}\nQ_qA&\\xrightarrow{F_q}&Q_qB\\\\\n\\delta_q^A\\downarrow&&\\downarrow\\delta_q^B\\\\\n\\Sigma^{1,-q}A&\\xrightarrow{\\Sigma^{1,-q}F}&\\Sigma^{1,-q}B.\n\\end{array}\n\\]\nHere $Q_qA=A/\\lambda^q$. Fix a stem and weight $p=(a,w)$, and actual\ninfinite-page classes $\\xi,\\eta,\\zeta,\\omega$ in the four vertices,\nat filtrations $s,s+M,s+b,s+b+L$, respectively; the remaining degree\ncoordinates are $(a+\\mathrm{filtration},w)$.\nLet $M,b,L\\ge0$, $D=b+L-M$ and $1\\le\\kappa\\le D$.\nAssume\n\\[\nd_M^{F_q}(\\xi)=\\eta,\\qquad\nd_b^{\\delta_q^A}(\\xi)=\\zeta,\\qquad\nd_L^{\\Sigma^{1,-q}F}(\\zeta)=\\omega.\n\\]\nRequire no crossing on the top or left equation. Require that the\nbottom equation have no crossing hitting filtration at least\n$s+M+\\kappa$. Finally require the actual right-edge equation\n\\[\nd_{\\kappa-1}^{\\delta_q^B}(\\eta)=0\n\\]\nwith no crossing. Every crossing here is measured in the extension\nspectral sequence of its actual edge, at the fixed stem and weight,\nwith its full shorter-image indeterminacy. Then\n\\[\nd_D^{\\delta_q^B}(\\eta)=\\omega.\n\\]\nThis is an extension-square conclusion. To read it as a specified\nclassical Adams differential, its labels must also have the required\nboundary-comparison form. For example, use the classical labels,\ndegrees and range bounds of \\ref{sem:ProofTools:ss-leibniz-specialization}.\nIf the actual comparisons give\n\\[\n\\begin{gathered}\n\\xi=\\lambda^k x,\\quad\n\\eta=\\lambda^{k+M-e}y,\\\\\n\\zeta=\\lambda^{b-n}u,\\quad\n\\omega=\\lambda^{b-n+L-e}v,\n\\end{gathered}\n\\]\nat weight $t+e-k$, then the exponent identity\n\\[\nD-q-1+(k+M-e)=b-n+L-e\n\\]\nis precisely the arithmetic required for the right boundary to decode\nas $d_Dy=v$. Those range bounds give $D\\ge2$ and\n$0\\le k+M-e<q$. Actual qualified labels and comparisons remain\nrequired; the exponent identity alone is not the decoding theorem.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "1ee828bc5d64",
+          "title": "Level extensions and the quotient-boundary square",
+          "label": "sem:ProofTools:level-finite-extension",
+          "type": "uses"
+        },
+        {
+          "id": "5faeddf145b9",
+          "title": "A cutoff version of the Leibniz square",
+          "label": "paper:6.5",
+          "type": "uses"
+        },
+        {
+          "id": "73984613fe3d",
+          "title": "The extension theorem for a commutative square",
+          "label": "paper:2.12",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "This is the mathematical cutoff square suggested by SetCwDiffSynthetic, category.cpp:497--515. The code's logged k is the cutoff kappa, not the lambda level k of this proposition. No assertion here turns a recorded zero range into the required crossing-free right-edge extension.",
+          "created": "2026-10-21T09:07:44",
+          "updated": "2026-10-21T09:07:44"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "d436d525c7cb",
+      "label": "sem:ProofTools:ss-mahowald-specialization",
+      "title": "The finite Mahowald rule with both input levels zero",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "corollary",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A specialization of the finite-layer revision\n\\ref{paper:6.12}, retaining the hidden-image pattern used in\n\\cite{LinProgram}.\n\nFix the same compatible normalized triangle and comparisons as in\n\\ref{paper:6.12}. Let\n\\[\n\\begin{gathered}\nn_1=n-e_f\\ge1,\\quad m_1=m-e_g\\ge0,\\quad\nk=l-e_h\\ge0,\\\\\nr=n+m+l,\\qquad A=n_1+k,\\quad B=m_1+1,\\quad\nr'=n_1+k+1.\n\\end{gathered}\n\\]\nThus $A+B=r$, $e_f+e_g+e_h=1$ and $r-k=n+m+e_h$.\nTake the prescribed labels\n\\[\n\\begin{gathered}\n\\bar x\\in Z_{r-1}^{s,t}(Z),\\quad\n\\bar y\\in Z_\\infty^{s+r,t+r-1}(Z),\\\\\nx\\in Z_{n_1}^{s+l,t+l-1}(X),\\quad\ny\\in Z_{m_1+1}^{s+l+n,t+l+n-1}(Y),\n\\end{gathered}\n\\]\nwith $d_r\\bar x=\\bar y$. For the actual finite maps and transported\nlabels of \\ref{paper:6.12}, suppose\n\\[\nd_l^{h_A}(\\bar x)=\\lambda^kx,\\qquad\nd_r^{\\delta_{A,B}}(\\bar x)=\\lambda^{B-1}\\bar y,\\qquad\nd_m^{g_B}(y)=\\lambda^{B-1}\\bar y.\n\\]\nRequire actual no-crossing on the $h_A$ equation or the\n$\\delta_{A,B}$ equation in the same weight. Their source class is\nthe same specified $\\bar x$, and their common boundary target is\nthe same top-layer class, not just independently chosen labels.\nThen there are the common actual representatives of\n\\ref{paper:6.12}, with\n\\[\n\\rho(c)=h_A(a),\\qquad f_r(c)=-\\lambda^Ab,\n\\]\nand the conclusions\n\\[\nx\\in Z_{r-k},\\qquad\nd_n^{\\widehat f_r}(\\lambda^kx)=[\\lambda^{r'-1}y].\n\\]\nThe source denominator is $B_{k+1}$ and the target denominator is\n$B_{r'}$, with the shorter images of this same actual map also\nretained. If $k=0$, this gives the ordinary level-zero page relation\nin quotient $Q_r$, namely $\\mathcal E^f_{r,0}(n;x,y)$, of effective\nclassical page $r+1$. If $k>0$, it retains the output level $k$;\nthe two zero input levels do not make its output level zero.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "1ee828bc5d64",
+          "title": "Level extensions and the quotient-boundary square",
+          "label": "sem:ProofTools:level-finite-extension",
+          "type": "uses"
+        },
+        {
+          "id": "2809b8e4ac3b",
+          "title": "The finite-layer generalized Mahowald trick",
+          "label": "paper:6.12",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** A derived specialization, not a new public interface. The general theorem allows independent input levels i,j; here only i=j=0 is selected. A claim about the smaller quotient or a full classical extension additionally requires its own division or lifting comparison.",
+          "created": "2026-10-21T09:07:44",
+          "updated": "2026-10-21T09:07:44"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "5816e9bbbf9e",
+      "label": "sem:ProofTools:ss-partial-adams-data",
+      "title": "Partial Adams data and candidate subspaces",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "definition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From the staircase and linear-algebra conventions of \\cite{LinProgram}.\n\nFix the actual $E_2$ spaces $V_W^d=E_2^d(W)$ over $\\mathbb F_2$,\nwhere $d=(s,t)$, with their specified coordinates. Regard their finite\ncoordinate spaces as subspaces of the common space\n$\\mathbb F_2^{(\\mathbb N)}$ of finitely supported coordinate vectors.\nThis convention permits the same raw vector to be assigned different\ndegrees; it does not supply a map between the corresponding $E_2$ spaces.\nEvery label, including\na zero vector, carries its assigned degree $d$; its filtration coordinate\nbelow is $s(d)$, not an intrinsic filtration assigned to zero.\nIn every degree take\nan ordered staircase basis $e_1,\\ldots,e_m$ with nondecreasing integer\nlabels $\\ell_i$. A row also carries a coordinate vector $\\Delta_i$, or\nthe information that this vector is not yet determined. Put\n\\[\nN=10000,\\qquad R=1000,\\qquad P=N-R,\n\\qquad D_W^d(<a)=\\langle e_i:\\ell_i<a\\rangle.\n\\]\nThese integers encode the source conventions; $R$ is the permanent-page\nsentinel, not a theorem identifying an arbitrary finite page with infinity.\nA label $r<N/2$ records a boundary with a specified or undetermined\n$d_r$ preimage. A label $N-r>P$ records a class reaching $E_r$ with its\n$d_r$ specified or undetermined. The label $P$ records a permanent cycle.\nZero and an undetermined vector are distinct.\n\nFor $v\\ne0$, let $\\ell(v)$ be the largest label used in its staircase\nbasis expansion. Define $\\Gamma(v)$ by summing the $\\Delta_i$ only over\nthe terms in that largest-label block; it is undefined if any used\ncolumn of that block is undetermined. Put $\\ell(0)=-1$ and\n$\\Gamma(0)=0$. Thus $\\Gamma$ is a partially specified map on the\nassociated grades of the recorded flag with raw coordinate output.\nOn a boundary block of label $r$, its output is the coordinate vector\nof a preimage in degree $d-(r,r-1)$, not an outgoing differential.\n\nFor a complete correct state, with $E_r=Z_{r-1}/B_{r-1}$, the finite\npage conventions give, only in the encoded nonsentinel range $2\\le r<R$,\n\\[\nD(<r)=B_{r-1},\\qquad D(<N-r)=Z_r.\n\\]\nThe correctly interpreted permanent and boundary blocks separately give\n\\[\nD(<P)=B_\\infty,\\qquad D(<P+1)=Z_\\infty.\n\\]\nFor partial data, $D$ denotes the recorded subspace itself; it must not\nbe replaced by a complete cycle or boundary space without a comparison.\n\nSay that degree $d=(s,t)$ has an undetermined incoming possibility of\nlength at most $b$ if, for some $2\\le a\\le\\min(b,s)$, degree\n$d-(a,a-1)$ has a staircase row whose column is undetermined and whose\nlabel is at least $N-a$. Define $U_W^d$ as follows. Remove the largest\nterminal sequence of whole equal-label blocks such that every removed\nlabel is at least $P+1$, every column is determined, and, for a block\nof label $N-r$, its target degree $d+(r,r-1)$ has no undetermined\nincoming possibility of length at most $r-1$. Then $U_W^d$ is the span\nof the remaining initial basis segment. This is the candidate space\nused by the image rule; it is not defined to be $Z_\\infty$.\n\nFor each recorded subspace $C$, let $R_C$ denote its specified\nGaussian-elimination remainder map. For each matrix $A$, fix the\nelimination selector $\\sigma_A$ in the source's basis order. It is a\nright inverse on $\\operatorname{im}A$; its elimination formula is also\ndefined on inputs outside that image, without asserting\n$A\\sigma_A(v)=v$ there. All uses below retain the indicated degrees\nand the specified coordinates.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "Fixed source: ss/main.h:20--25; ss/staircase.cpp:58--101; ss/ss.cpp:13--42 and :193--242; src/linalg.cpp:86--210. In particular, the image-membership assertion in GetImage is debug-only. The comparison of the recorded flag with actual Z/B data is part of the soundness problem, not an additional input containing the desired outputs.",
+          "created": "2026-10-21T07:20:01",
+          "updated": "2026-10-21T07:20:01"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "4430dbd0702f",
+      "label": "sem:ProofTools:ss-cutoff-data",
+      "title": "The recorded differential range and crossing bound",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "definition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "From the range queries of \\cite{LinProgram}.\n\nUse the data of \\ref{sem:ProofTools:ss-partial-adams-data}. For a\ncoordinate vector $v$, define its recorded differential range\n$\\mathcal R(v)=(r_0,w_0)$ by\n\\[\n\\mathcal R(v)=\n\\begin{cases}\n(R-1,0),&\\ell(v)<N/2,\\\\\n(N-\\ell(v),\\Gamma(v)),&\\ell(v)\\ge N/2\\text{ and }\\Gamma(v)\n  \\text{ is defined},\\\\\n(N-\\ell(v)-1,0),&\\ell(v)\\ge N/2\\text{ and }\\Gamma(v)\n  \\text{ is undefined}.\n\\end{cases}\n\\]\nAn undetermined $d_r$ therefore supplies only the preceding zero range,\nnot a claim that $d_r=0$. A boundary or zero vector uses the sentinel\nzero range.\n\nLet $\\ell_{\\max}(d)$ be the largest label in a nonempty degree. For\nan integer $E$, define the recorded crossing bound\n\\[\n\\chi_E(d)=\\min\\left(\n\\{R\\}\\cup\n\\left\\{j+N-\\ell_{\\max}(d+(j,j)):\n\\begin{array}{c}\n1\\le j\\le E-2,\\\\\n\\ell_{\\max}(d+(j,j))>N/2\n\\end{array}\\right\\}\\right).\n\\]\nEmpty degree components contribute nothing. This uses the earliest\ndifferential page not excluded by the recorded labels at a higher\nfiltration; it does not require a known nonzero crossing differential.\nIn particular, $\\chi_E(d)\\le b$ does not certify the existence of an\nactual crossing. The degrees used in this formula have their given\n$E_2$ coordinate spaces and declared zero spaces; bounds of the\ncomputed tables are not mathematical hypotheses of the rule.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "5816e9bbbf9e",
+          "title": "Partial Adams data and candidate subspaces",
+          "label": "sem:ProofTools:ss-partial-adams-data",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "Fixed source: ss/ss.cpp:258--279 (GetCrossR) and ss/cofseq.cpp:899--913 (GetRAndDiff). The former does not inspect the differential columns. The formula records its mathematical degree scan; availability and table-cutoff exits are excluded from this mathematical transcription.",
+          "created": "2026-10-21T07:20:01",
+          "updated": "2026-10-21T07:20:01"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "98f2d9c2cfa8",
+      "label": "sem:ProofTools:ss-image-certificate",
+      "title": "Finite recursive image certificates",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "definition",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A branchwise mathematical transcription of the image tests in\n\\cite{LinProgram}.\n\nFix one cofiber triangle and its specified degree-shifted $E_2$ matrices\n\\[\nH:V_Z\\longrightarrow V_X,\\qquad F:V_X\\longrightarrow V_Y,\n\\qquad G:V_Y\\longrightarrow V_Z.\n\\]\nWrite $\\delta_F,\\delta_G,\\delta_H$ for their bidegree shifts and\n$s(d),t(d)$ for the coordinates of a degree. Rotation of the triangle\nspecifies the matrices for recursive uses. All subspaces, selectors\nand partial queries are those of\n\\ref{sem:ProofTools:ss-partial-adams-data}.\n\nThe relation\n\\[\n\\mathcal I_f(x;\\ell,a,c)\\rightsquigarrow(d_y,y)\n\\]\nmeans that there is a finite derivation tree satisfying the following\nclauses. The inputs are $x\\in V_X^{d_x}$, its requested status $\\ell$,\nan ambiguity threshold $a$, and a crossing target threshold $c$.\nThe relation is defined by these algebraic clauses, not by the\nexistence of a true topological extension.\n\n\\textit{Ordinary-image clause.}\nLet $y_0=F(x)$ and $d_0=d_x+\\delta_F$. If\n\\[\ny_0\\ne0,\\qquad \\ell(y_0)\\ge s(d_0)-a,\n\\]\nthere is the leaf conclusion $(d_y,y)=(d_0,y_0)$. The subsequent kernel\nand crossing clauses do not apply to this leaf.\n\n\\textit{Hidden-image source clauses.}\nOtherwise construct $z,u,d_z$ in one of the following ways.\nIf $F(x)=0$, put\n\\[\nd_z=d_x-\\delta_H,\\qquad z=\\sigma_H(x),\\qquad u=\\Gamma(z),\n\\]\nand require $u$ to be defined and $\\ell(z)>\\ell$. Here $H$ is evaluated\non the staircase basis in its prescribed order. The assertion $H(z)=x$\nis supplied by the actual matrix exactness\n$\\ker F=\\operatorname{im}H$ when that comparison has been established;\nit is not a separate image-membership test in this branch.\n\nIf $y_0=F(x)\\ne0$ but $\\ell(y_0)<s(d_0)-a$, require $w=\\Gamma(y_0)$\nto be defined, and put\n\\[\n\\begin{gathered}\nd_w=d_0-(\\ell(y_0),\\ell(y_0)-1),\\qquad\nd_z=d_w+\\delta_G,\\\\\nz=G(w)\\ne0,\\qquad u=\\Gamma(z)\\text{ defined}.\n\\end{gathered}\n\\]\nRequire\n\\[\n\\ell(z)>\\ell-(s(d_x)-s(d_z)),\n\\]\na recursive certificate\n\\[\n\\mathcal I_h(z;\\ell(z),-1,0)\\rightsquigarrow(d_x,x_1),\n\\]\nand the exact recorded congruence\n\\[\nx_1-x\\in D_X^{d_x}(<\\ell).\n\\]\nFor complete data and $\\ell=N-b$, this is congruence modulo $Z_b$,\nso it preserves the $d_b$ value, rather than specifying the same\n$E_b$ class. For boundary status $\\ell=b$, its denominator is instead\n$B_{b-1}$.\n\n\\textit{Target equation and ambiguity clauses.}\nFor either hidden-image source, set\n\\[\nq=N-\\ell(z),\\quad d_u=d_z+(q,q-1),\\quad d_y=d_u-\\delta_G,\n\\quad C=D_Z^{d_u}(<q),\\quad A=R_C\\circ G.\n\\]\nHere the raw output $u=\\Gamma(z)$ is reassigned to degree $d_u$.\nA typed certificate requires its coordinate indices to be valid in\n$V_Z^{d_u}$, as for every other degree assignment in these clauses.\nFor a boundary status, this is a different degree from the preimage\ndegree $d_z-(\\ell(z),\\ell(z)-1)$. Reusing the raw coordinates neither\ndefines a natural map between these degrees nor establishes $u=d_qz$;\nthe outgoing-differential interpretation has to be justified where used.\nRequire exactly one of the following according to the input status:\n\\[\n\\begin{array}{ll}\n\\ell\\le P:\n &u\\in A(U_Y^{d_y}),\\qquad\n   \\ker(A|_{U_Y^{d_y}})\\subseteq D_Y^{d_y}(<s(d_y)-a),\\\\[2pt]\n\\ell>P:\n &u\\in\\operatorname{im}A,\\qquad\n   s(d_y)\\ge c\\ \\Longrightarrow\\ \\ker A=0.\n\\end{array}\n\\]\nIn the first case choose $y=\\sigma_{A|_{U_Y^{d_y}}}(u)$; in the\nsecond choose $y=\\sigma_A(u)$. Thus the tested equation is\n\\[\nR_C(G(y))=u.\n\\]\nThe right-hand side is not replaced by $R_C(u)$: the specified target\nmust already be a normal representative in this equation. In the\nfirst case the selector uses the staircase basis of $U_Y^{d_y}$;\nin the second it uses the original coordinate basis of the entire\n$E_2$ space. For complete data the first kernel bound reads\n$\\ker(A|_{U_Y^{d_y}})\\subseteq B_{s(d_y)-a-1}$.\n\n\\textit{Crossing clause.}\nThis clause is imposed only if $s(d_y)\\ge c$. For each\n\\[\ns(d_x)<s'<s(d_y)-s(\\delta_F),\\qquad\nd'=(s',s'+t(d_x)-s(d_x)),\n\\]\nand each staircase basis vector $e_i\\in V_X^{d'}$ with $\\ell_i\\ge\\ell$,\nrequire either a child certificate\n\\[\n\\mathcal I_f(e_i;\\ell_i,a,R)\\rightsquigarrow(d'_y,y'),\n\\]\nor the following immediate stopping condition:\n\\[\nF(e_i)=0,\\qquad z_i=\\sigma_H(e_i),\\qquad\n\\Gamma(z_i)\\text{ defined},\\qquad \\ell(z_i)\\le\\ell_i.\n\\]\nThis exception concerns that candidate itself; a failure inherited\nfrom one of its recursive calls is not an allowed stop.\nFor a child certificate whose target satisfies\n$c\\le s(d'_y)\\le s(d_y)$, impose\n\\[\n\\begin{cases}\n\\text{no such child is allowed},&\\ell>P,\\\\\ny'=0\\text{ or }y'\\notin U_Y^{d'_y},&\\ell\\le P.\n\\end{cases}\n\\]\nThe first case also excludes a zero returned vector at a target degree\nin that range. These are tests on the indicated basis vectors; the\ndefinition does not silently quantify over all their linear combinations.\nAll recursive certificates are finite. No termination theorem or\ntopological soundness statement is built into this definition.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "5816e9bbbf9e",
+          "title": "Partial Adams data and candidate subspaces",
+          "label": "sem:ProofTools:ss-partial-adams-data",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "Fixed source: ss/category.cpp:541--710. Ordinary leaf: 559--564; recursive nonzero-image branch: 569--595; zero-image branch and immediate status stop: 598--622; target and kernel conditions: 624--671; crossing clauses: 673--705. The sole immediate failure allowed by the crossing loop is return 12, not wrapped recursive failures. At line 696 a nonzero candidate lying in U is rejected; reversing that membership would change the rule.\n\n**Formal scope:** This is an unbound mathematical definition of the tested finite data. It neither asserts a given-label synthetic extension for every successful node nor supplies the normalization and label comparisons needed for such an assertion.",
+          "created": "2026-10-21T07:20:01",
+          "updated": "2026-10-21T07:20:01"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "3de59681128d",
+      "label": "sem:ProofTools:ss-adams-soundness",
+      "title": "Soundness assertion for the recorded Adams differential rule",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "conjecture",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "The mathematical assertion used by the differential routine of\n\\cite{LinProgram}; its correctness under the following tested conditions\nremains to be proved.\n\nFix actual spectra in a cofiber triangle, their specified normalized\nmaps and $E_2$ coordinates. Let the current partial Adams data correctly\nrecord the already established cycles, boundaries, differential values\nand permanent labels. All coordinates and partial queries below have\ntheir specified degrees; no desired new differential is part of this\ndata-correctness assumption.\n\nSuppose an input relation $d_bx=u$, with $2\\le b<R$, is recorded with $u\\ne0$ as a\ncoordinate vector. This does not impose nonvanishing of its class on\nthe page. Put\n\\[\nc_0=\\begin{cases}\n0,&\\chi_b(d_x)\\le b,\\\\\nR,&\\chi_b(d_x)>b,\n\\end{cases}\n\\]\nand suppose there is a finite certificate\n\\[\n\\mathcal I_f(x;N-b,-1,c_0)\\rightsquigarrow(d_y,y).\n\\]\nLet $M=s(d_y)-s(d_x)$, let $\\mathcal R(y)=(r_0,w_0)$, and set\n\\[\n\\kappa=\\min\\left(\n\\chi_{M-s(\\delta_F)+2}(d_y),\\quad\nr_0+\\mathbf 1_{w_0=0}\\right).\n\\]\nSuppose also that\n\\[\n\\mathcal I_f(u;b,s(d_y),s(d_y)+\\kappa)\n \\rightsquigarrow(d_v,v),\\qquad s(d_v)\\ge s(d_y)+\\kappa.\n\\]\nThen, with $n=s(d_v)-s(d_y)$, the asserted mathematical conclusion includes\n\\[\nn\\ge2,\\qquad d_v=d_y+(n,n-1),\n\\]\nthe cycle qualifications needed to define $[y]$ and $[v]$ on $E_n$,\nand the relation\n\\[\nd_n([y])=[v]\n\\]\nin the actual Adams spectral sequence of $Y$. Equivalently, if\n$s(d_v)=s(d_x)+b+L$, its length is $n=b+L-M$.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "4430dbd0702f",
+          "title": "The recorded differential range and crossing bound",
+          "label": "sem:ProofTools:ss-cutoff-data",
+          "type": "uses"
+        },
+        {
+          "id": "98f2d9c2cfa8",
+          "title": "Finite recursive image certificates",
+          "label": "sem:ProofTools:ss-image-certificate",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": []
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "b470cbeef7a7",
+      "label": "sem:ProofTools:ss-classical-soundness",
+      "title": "Soundness assertion for classical extension and permanent-cycle outputs",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "conjecture",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "The mathematical assertion used by the cofiber-extension routine of\n\\cite{LinProgram}; its correctness under the following tested conditions\nremains to be proved.\n\nUse actual spectra, maps and correct partial Adams data as in\n\\ref{sem:ProofTools:ss-adams-soundness}. Assume also the established\ndata invariant that the cofiber-extension table represents known\nAdams permanent classes and their classical extension information.\nTake a source $x$ in that table whose outgoing extension remains\nundetermined. Its permanence is inherited from this table invariant,\nnot inferred from the image routine's status argument.\n\nSuppose there is a finite certificate\n\\[\n\\mathcal I_f(x;P,-1,0)\\rightsquigarrow(d_v,v),\n\\]\nand put\n\\[\nn=s(d_v)-s(d_x),\\qquad n\\ne s(\\delta_F),\\qquad\nv_0=R_{D_Y^{d_v}(<P)}(v).\n\\]\nThe asserted mathematical output includes the length and degree conditions\n\\[\nn\\ge0,\\qquad\nd_v=d_x+\\bigl(n,n+t(\\delta_F)-s(\\delta_F)\\bigr),\n\\]\nand the classical homotopy extension\n\\[\nd_n^f\\bigl(x+B_\\infty^{d_x}(X)\\bigr)\n =v_0+B_\\infty^{d_v}(Y).\n\\]\nFor $v_0\\ne0$ the routine additionally asserts $v_0\\in Z_\\infty$.\nIf $v_0=0$, a zero extension remains an allowed output. Nonzero\nremainder modulo the currently recorded boundaries does not assert\nthat the final $E_\\infty$ class is nonzero.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "5816e9bbbf9e",
+          "title": "Partial Adams data and candidate subspaces",
+          "label": "sem:ProofTools:ss-partial-adams-data",
+          "type": "uses"
+        },
+        {
+          "id": "98f2d9c2cfa8",
+          "title": "Finite recursive image certificates",
+          "label": "sem:ProofTools:ss-image-certificate",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": []
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "5d6b2e293705",
+      "label": "sem:ProofTools:ss-level-implications",
+      "title": "What the level-indexed results imply for the program rules",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "remark",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "A comparison of the preceding mathematical specializations with the\noperational assertions of \\cite{LinProgram}.\n\nThe established specializations and their outstanding uses are as follows.\n\\begin{enumerate}\n\\item The arbitrary-level Leibniz theorem implies\n\\ref{sem:ProofTools:ss-leibniz-specialization} by setting its lambda\nlevel to zero. Its three equations, permanent-label qualifications\nand actual no-crossing conditions are retained. The cutoff square\n\\ref{sem:ProofTools:ss-cutoff-square-specialization} follows instead\nfrom the four-edge theorem at every quotient and weight; it retains\nthe crossing-free right-edge zero extension. A recorded zero range\nfor $y$ and the number $\\kappa$ do not, without a comparison, supply\nthat extension or its no-crossing condition. The page used in the\nfirst finite image relation must also satisfy the tool's length bounds.\n\n\\item The double-input-level Mahowald theorem implies\n\\ref{sem:ProofTools:ss-mahowald-specialization} by setting $i=j=0$.\nThis is a genuine generalization with respect to the two input\nlevels, with the same actual crossing and representative conditions.\nThe output still has level $k=l-e_h$. A zero-output-level assertion\nrequires $k=0$ or a proved division that preserves the prescribed\nsource and target. The allowed kernel and recursive congruence tests\nin \\ref{sem:ProofTools:ss-image-certificate} have not yet supplied\nthese actual representative and crossing hypotheses.\n\n\\item For classical-extension and permanent-cycle outputs, the finite\nMahowald conclusion must be followed by a target-preserving full\nlift. The exact obstruction criterion is\n\\ref{sem:ProofTools:ml-representative-family-lift}. Once a full target\nwith the prescribed finite detector has been constructed,\n\\ref{sem:ProofTools:ss-full-lift-permanence} proves the original target\nlabel permanent. Realization of a single full source and its actual\nimage then uses Proposition~\\ref{paper:5.14}. The source's permanence\nor the permanent-mode argument alone does not construct this lift.\n\\end{enumerate}\n\nIn logical terms, if $H_{\\mathrm{GL}}(k)$ denotes the complete hypotheses\nof the level-indexed Leibniz theorem and $Q_{\\mathrm{GL}}$ its conclusion,\nthe proved implication gives\n\\[\n\\bigl[\\,\\forall k\\ge0,\\ H_{\\mathrm{GL}}(k)\\Longrightarrow\n Q_{\\mathrm{GL}}\\,\\bigr]\n\\quad\\Longrightarrow\\quad\n\\bigl[\\,H_{\\mathrm{GL}}(0)\\Longrightarrow Q_{\\mathrm{GL}}\\,\\bigr].\n\\]\nThe additional implication from the actual program conditions to\n$H_{\\mathrm{GL}}(0)$, or to the appropriate cutoff hypotheses, is a\nseparate mathematical assertion. The same distinction applies to\nthe Mahowald specialization and its retained output layer. None of\nthese implications uses the two operational soundness assertions\nas premises.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "7e398cfe689c",
+          "title": "The cutoff Leibniz square at an arbitrary lambda level",
+          "label": "sem:ProofTools:ss-cutoff-square-specialization",
+          "type": "uses"
+        },
+        {
+          "id": "98f2d9c2cfa8",
+          "title": "Finite recursive image certificates",
+          "label": "sem:ProofTools:ss-image-certificate",
+          "type": "uses"
+        },
+        {
+          "id": "af38f68efae0",
+          "title": "Permanence from a full lift of the specified finite target",
+          "label": "sem:ProofTools:ss-full-lift-permanence",
+          "type": "uses"
+        },
+        {
+          "id": "d436d525c7cb",
+          "title": "The finite Mahowald rule with both input levels zero",
+          "label": "sem:ProofTools:ss-mahowald-specialization",
+          "type": "uses"
+        },
+        {
+          "id": "ee7c38d94b28",
+          "title": "Lifting a specified family of finite representatives",
+          "label": "sem:ProofTools:ml-representative-family-lift",
+          "type": "uses"
+        },
+        {
+          "id": "fbafa471d5b0",
+          "title": "The zero-input-level Leibniz rule with actual crossing conditions",
+          "label": "sem:ProofTools:ss-leibniz-specialization",
+          "type": "uses"
+        },
+        {
+          "id": "fda889a5db3c",
+          "title": "From infinity-page extensions to homotopy extensions",
+          "label": "paper:5.14",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "Source-to-mathematics dictionary: b is the recorded input Adams length; M=s(y)-s(x), L=s(v)-s(u), and D=b+L-M=s(v)-s(y). The cutoff kappa is the code's logged k. Staircase labels ell, lambda levels k or i,j, and this cutoff are three different parameters. This comparison proves no identification of a recorded matrix with the normalized first-quotient operation when its normalization exponent is positive.",
+          "created": "2026-10-21T09:07:44",
+          "updated": "2026-10-21T09:07:44"
+        }
+      ]
+    }
+  },
+  {
+    "section": "5.16",
+    "entry": {
+      "id": "3f1339849d89",
+      "label": "sem:ProofTools:ss-soundness-boundary",
+      "title": "Remaining comparisons for the computation rules",
+      "chapter": "ProofTools — Representatives, extensions and comparison laws",
+      "kind": "remark",
+      "level": "coarse",
+      "ref": null,
+      "sketch": false,
+      "body": "The source transcription separates several mathematical comparisons\nthat have not been completed by writing the preceding conditions.\nFirst, the recorded matrices, flag subspaces, selectors and normal\nrepresentatives must be identified with the actual normalized triangle\nand the indicated cycle and boundary information. This includes the\nuse of $\\ker F=\\operatorname{im}H$ when selecting an $H$ preimage and\nthe distinction between the two meanings of $\\Gamma$.\n\nSecond, the recursive congruences and the allowed target kernels must\nbe transported into the appropriate representative relations. A\nsuccessful image certificate is not, by definition, a fine\n$(f,E_\\infty)$-extension with its original target label. Third, the\ntests on basis vectors, their label restrictions and their sole\nstopping exception must be related to all the actual ambiguities\nrequired by the square or Mahowald argument. Finally, classical and\npermanent-cycle outputs require the full lifting and realization\ncomparison described above.\n\nThe surjectivity and (NC1)--(NC2) theorems provide other sufficient\nconditions for a finite composition. Applying either to the program\nrequires a proof connecting the particular certificate conditions to\nits hypotheses; no such implication follows merely from the presence\nof image and kernel computations. These unresolved comparisons neither\nestablish a counterexample to the program nor certify its correctness.",
+      "lean_status": "empty",
+      "mathlib_name": null,
+      "status": null,
+      "tags": null,
+      "lean": [],
+      "deps": [
+        {
+          "id": "3de59681128d",
+          "title": "Soundness assertion for the recorded Adams differential rule",
+          "label": "sem:ProofTools:ss-adams-soundness",
+          "type": "uses"
+        },
+        {
+          "id": "98f2d9c2cfa8",
+          "title": "Finite recursive image certificates",
+          "label": "sem:ProofTools:ss-image-certificate",
+          "type": "uses"
+        },
+        {
+          "id": "b470cbeef7a7",
+          "title": "Soundness assertion for classical extension and permanent-cycle outputs",
+          "label": "sem:ProofTools:ss-classical-soundness",
+          "type": "uses"
+        }
+      ],
+      "reviewed": false,
+      "maths_verdict": null,
+      "lean_verdict": null,
+      "reviews": [],
+      "comments": [
+        {
+          "author": "blueprint-authoring",
+          "title": "Formal scope and provenance",
+          "text": "**Formal scope:** The operational entries document mathematical tests and unproved soundness assertions, without formal bindings. The preceding specializations retain the complete mathematical hypotheses of their parent results; the permanence entry binds its existing public theorem. No interface or permitted-hole baseline is changed.",
+          "created": "2026-10-21T07:20:01",
+          "updated": "2026-10-21T09:07:44.569295+00:00"
+        }
+      ]
+    }
+  }
+]

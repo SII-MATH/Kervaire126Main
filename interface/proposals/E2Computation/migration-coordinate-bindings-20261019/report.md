@@ -1,7 +1,7 @@
 ---
 issue_id: E2Computation-migration-coordinate-bindings-20261019
 title: 旧商环关系证书迁移所需的固定生成元识别
-summary: 上轮三条关系已固定接口解决；剩四个生产直接洞中，h2_rel2 已有内核验证但未集成候选，仅另三条仍需新内部证明桥。当前仍214项登记责任，不请求接口修改。
+summary: 上轮三条关系已固定接口解决；本轮 h2_rel2 已生产集成并通过局部内核检查，默认完整构建通过、独立实际依赖审计通过并保留登记上游；仅另三条仍需新内部证明桥。不请求接口修改。
 responsibility_module: E2Computation
 targets:
   - KIP126.Computation.Table.h0_obstruction_rel0
@@ -19,11 +19,11 @@ source_file_and_sha256: KIP126/E2Computation/Standard.lean e3d0c252644f9d216ad1e
 baseline_source_file_and_sha256: KIP126/E2Computation/Standard.lean 32ab999ceb76b426813841e17e6131c51502f3ad29d7cb25b53ca0d2f98772fa
 reporter_agent: /root/interface_report
 independent_of_discoverer_and_implementer: true
-evidence_level: 上轮生产及依赖审计通过且继承已登记上游责任；本轮 rel2 候选独立内核验证退出0、尚未生产集成；三项新桥未完成，无固定对象反例
+evidence_level: 上轮生产及依赖审计通过且继承已登记上游责任；本轮 rel2 生产单文件检查与独立探针退出0，默认完整构建通过、独立实际依赖审计通过并保留登记上游；三项新桥未完成，无固定对象反例
 status: pending-human-review
 human_decision: null
-blocking: 三条关系仍需新内部证明桥；h2_rel2 为 candidate-kernel-verified-not-integrated，仅待协调者集成验证，不必先证明已登记 rel1。
-resolution: 保留原接口；rel2 候选直接消费已登记 rel1 和原生 Atom 关系，保留其上游待补；另三条继续内部补证。
+blocking: 三条关系仍需新内部证明桥；h2_rel2 已集成、局部内核通过，默认完整构建通过，独立实际依赖审计通过并保留登记上游；不必先证明已登记 rel1。
+resolution: 保留原接口；已集成 rel2 直接消费已登记 rel1 和原生 Atom 关系，保留其上游待补；另三条继续内部补证。
 ---
 
 # 固定生成元的迁移审查报告
@@ -34,9 +34,39 @@ resolution: 保留原接口；rel2 候选直接消费已登记 rel1 和原生 At
 
 如未来发现内部构造确实不能满足既有语义，才另交可审阅的精确修改方案。本报告不以 agent 意见授权重选固定生成元、增加下游假设、增加公理、移动责任或修改接口锁。当前七项签名及对象关联原样保留。
 
-## 2026-10-20 重新核对：rel2 已有保接口候选
+## 2026-10-20 路线集成阶段：rel2 已写入生产，最终验证通过且继承登记上游
 
-本轮生产源码、公共接口及待补清单均未改，仍为 **214** 项；上轮五项本地补证和其已登记上游依赖保持不变。协调者说明最新 main `06159aa` 仅有文档变化，数学 Lean/API/清单与 `ef01dcf` 基线一致；当前独立 worktree 仍以 `ef01dcf` 为 HEAD，包含上轮尚未推送的五项证明。本报告既有 SHA-256 分别标明基线和上轮当前源码，不冒充这轮新源码变化。
+本次状态更新由独立报告员 `/root/route_status_report` 核对。当前集成基线为 `ef1c6c718075659f68c6beaf0aae09937d2a4c25`；原报告的 `ef01dcf` 基线、完整原接口和历史证据不改写。生产 `KIP126/E2Computation/Table/Relations.lean` 的 SHA-256 为 `ac770f198e8764d6999423ccd2eb2e5878ed8d41aae851aec4ce0f1bd5b5e5b8`，`h2_obstruction_rel2` 的直接 `sorry` 已替换。报告员逐字核对原公开签名与当前签名，未改名称、类型、前提、固定 generator89、次数、页或责任；新增私有导入仅限 E2Computation 内部。
+
+报告员独立读取了实际生产证明、同一原生商环中的 `h2Relation2`/`h2Relation859` 及生产单文件检查日志；局部检查退出 0，日志仅余 `h0_obstruction_rel0`、`h0_obstruction_rel1`、`h2_obstruction_rel1` 三项原有直接洞。独立 countercheck 的通用环探针也退出 0，其公理仅 `propext`、`Quot.sound`。这些检查由 worker/独立审计员执行，报告员读取其源码和日志，没有亲自重跑编译。完整实际目标仍通过同一 `comparison` 运输，因此继承 rel1、比较、模型等已登记责任；通用环探针无 `sorryAx` 不能用来声称完整生产目标已无待补依赖。
+
+包含全部十一项的八数学入口构建、八模块 API、原214项表达式核对及默认完整构建均已通过，当前清单为203；独立实际十一目标依赖审计已通过并保留登记上游。当前 rel2 状态为 **`resolved-by-fixed-interface-proof`**。准确范围见下节。上轮默认构建和 8383 常量闭包只作为其原输入的历史证据保留，不能充当这轮新源码的验收。
+
+剩三条关系的新内部证明可继续，已登记上游可直接调用；本次不请求接口变更、人审重新授权或全局暂停。可随提案读取的集成摘要见 [本轮证据](evidence/reassessment-20261020.json)，原候选源码/日志仍保留。大型本地会话日志位于 Git 忽略的 `local-history/proof-sessions/route-integration-20261020/`，仅作本地证据，不伪造网页链接。
+
+### 本轮最终捕获、清单与完整构建通过
+
+本轮最终公开捕获和清单核对现已完成：八个数学入口普通导入后的全部导出、完整渲染类型、宇宙参数及实际定义源模块均与原基线精确相同，八份 API 锁文件逐字节不变。报告员独立比较了八份锁与 `ef1c6c7`；实际捕获和原214项 kernel 表达式比对由协调者执行，报告员读取其结果。原214项完整 kernel 类型全相同，恰好11项直接责任完成；其余43项仅 Lean 的诊断 sorry 标签变化，经完整表达式解析比较后才刷新证明体指纹，其余待补字段未改。清单现为 **203**（AdamsCalculations 5、AdamsSynthetic 72、E2Computation 15、Literature 110、ProofTools 1；133项证明、70项构造）。本地责任完成仍继承登记上游，不能称为无 `sorryAx` 闭合。
+
+包含全部十一项的八数学入口构建已通过3436任务；源码清单核验554个项目文件及35个消费/审计文件，依赖方向和私有导入边界通过。默认完整 `lake build` 已实际退出0，以 **`Build completed successfully (3580 jobs).`** 结束，全部既有消费、八模块信任审计、`Tests.Trust`、Main 公开根/ProofTools边界/Nu9回归均保留并通过。该构建由协调者执行，报告员独立读取最终成功日志；独立实际十一目标闭包随后已通过，准确范围见下一节。准确摘要见本报告既有证据 JSON；大型当前日志为 Git 忽略的本地会话材料。
+
+### 剩三条关系的当前产物辅助探针：通过不等于完成目标
+
+三份研究探针已使用本轮当前产物、普通公共导入、无 overlay、无 `-o` 各退出0，报告员读取了源码及 `RemainingThreeCurrentChecks.json`：完整 `(13,135)` 上 h₂ 作用恒零；h₀ 从源 `(10,72)` 到 `(11,73)` 在指定坐标中是 **`(x₀,x₁,x₂) ↦ (x₀,x₁)`**；原完整 rel1 等价于固定 h₂·Md₀ 在目标坐标等于 `Finsupp.single 1 1`。后一项不调用 rel1 或 rel2 自身，给的是等价归约，**尚未证明该坐标条件**。
+
+特别是 h₀ 的核是一维第三基方向，已有非零见证；不能记录为核零或单射。这些局部结果仍继承 `sourceCoordinates`、`sourceBasis_values` 等原登记责任；全分量 h₂ 消去还调用登记 rel1。它们支持进一步研究，**不是再完成三项公共目标**；本轮清单只移除前述11项。准确源/产物哈希、命令与空日志记录见 [本轮证据摘要](evidence/reassessment-20261020.json)。
+
+### 本轮独立实际依赖闭包终验通过
+
+独立证明审计员使用本轮当前已构建产物的全源码正文 collector，实际退出0，捕获 **8442** 个项目常量和本轮全部 **11** 个目标；随后按最终203项清单的 analyzer 全通过。报告员实际读取并逐项核对 `closure-summary.json`、`closure-summary.log`、`project-dependency-cycle-check.json` 与 collector 日志，没有重跑审计，也没有用旧 overlay 预检代替此次结果。
+
+十一项完整 kernel 类型表达式、类型指纹、宇宙、公开导出及实际源模块责任与原基线相同，十一项本地直接洞均已消除。全部可达直接洞同时在原214项和当前203项清单登记，完整类型原样；真实项目公理、synthetic sorry、缺失项目正文依赖、目标循环及 Main/Geometry 反向依赖均为0。完整项目依赖图8442节点全部可拓扑移除，无循环残余。
+
+最终结论为 **`passed-with-registered-upstream-obligations`**：本地固定接口补证及其实际依赖登记通过验收，**不表示全证明的未证输入已经闭合**。同一实际闭包中，E6 生存仍继承58项登记上游、product detection 38项、bx 等价34项、六个 BHS 包装各30项、sourceReplacement flatness 6项、rel2 33项；各目标仍含 `sorryAx`。这些计数是各自可达上游集合大小，不能相加作为全仓责任数。准确摘要和当前源/证据哈希见 [本轮证据](evidence/reassessment-20261020.json)，旧阶段证据继续保留。
+
+## 2026-10-20 盘点阶段：rel2 保接口候选（历史记录）
+
+盘点阶段生产源码、公共接口及待补清单未改，登记 **214** 项；当时上轮五项本地补证尚未提交，worktree 以 `ef01dcf` 为 HEAD。协调者当时说明 main `06159aa` 仅有文档变化。该阶段结论与下列原探针证据保留为历史记录；后续五项已形成 `ef1c6c7` 提交，本轮生产集成状态以上节为准。
 
 本报告员独立读取本轮审计的完整六项原因及 `H2Rel2Reviewed.lean`/日志，确认此前“剩四条都缺固定坐标桥”的概括过强。**`h2_obstruction_rel2` 改为 `candidate-kernel-verified-not-integrated`**：原目标仍是实际 E₂ `(13,75)` 上的 h₀³ 乘同一个 `generatorImage 89 10 72` 等于零；没有改名称、签名、前提、固定对象或结论。
 
@@ -59,7 +89,7 @@ resolution: 保留原接口；rel2 候选直接消费已登记 rel1 和原生 At
 | `h0_obstruction_rel0`、`h0_obstruction_rel1` | 迁移桥未补 | 现有固定生成元的原生识别或不变关系证明 |
 | `h2_obstruction_rel0` | `resolved-by-fixed-interface-proof` | 完整原生/枚举/运输证明已生产编译通过；比较接口的传递责任保留 |
 | `h2_obstruction_rel1` | 内部证明桥未补 | 只需 h0 像的标定或等价商类识别；原生生成元完全相等是更强的充分条件 |
-| `h2_obstruction_rel2` | `candidate-kernel-verified-not-integrated` | 候选可直接消费已登记 rel1，无需先证明 rel1；生产直接 sorry 暂留 |
+| `h2_obstruction_rel2` | `resolved-by-fixed-interface-proof` | 同一生产目标的直接 sorry 已替换；已登记 rel1 及比较的传递责任保留，完整构建通过、独立实际依赖审计通过并保留登记上游 |
 
 已独立检查新增 `Table/Internal/ThetaAnnihilation.lean` 及修改后的 `ThetaRelations.lean`。新私有证明先完整枚举自由多项式中权为 `(7,70)` 的 **33 个单项式**：`enumerateMonomials_complete` 用全部生成元 s 权为正保证递归穷尽，`thetaCandidates_complete` 覆盖所有可能支撑，`thetaEnumeration` 核对固定列表。**20 条原生定义关系**逐项消去它们乘 h₅ 的积；加法、标量与加权齐次归纳把结论提升到每个 `sourceData.component 7 70` 元素。这里使用整个同次分量的表示性质，没有声称这些 33 项是商环基底。
 
@@ -90,7 +120,7 @@ python3 interface/proposals/E2Computation/migration-coordinate-bindings-20261019
 
 [H₂ 候选独立证据](evidence/h2-candidate-audit.json)记录检查时的源码 SHA-256、私有性、目标签名一致性与静态计数；[关键证明摘录](evidence/h2-candidate-excerpts.txt)给出枚举 soundness、齐次延拓与实际运输的代码。原候选证据是源码核验；当前通过状态另记录于 [生产检查点记录](evidence/production-checkpoint.json)，生产与默认完整构建结果由协调者执行并提供，报告员独立读取 [完整构建日志摘录](evidence/final-full-build-excerpts.txt)；扩展闭包审计已通过但保留已登记上游责任。
 
-默认完整构建通过并未填掉其他目标：本报告四条 E₂ 关系和另份 Cν 报告中的 `cofiber_d3`、`cofiber_target_to_e6` 仍待补。既有 `pending-human-review`/`human_decision: null` 表示本报告尚无人审决定；构建成功不是接口变更授权。
+上轮默认完整构建通过时，本报告仍有四条 E₂ 关系及另份 Cν 报告中的两个直接洞；其后 rel2 的生产集成状态以上节为准，不能把该旧构建当成本轮新源码的验证。既有 `pending-human-review`/`human_decision: null` 表示本报告尚无人审决定；构建成功不是接口变更授权。
 
 ### 最终扩展依赖审计状态
 
@@ -98,7 +128,7 @@ python3 interface/proposals/E2Computation/migration-coordinate-bindings-20261019
 
 五个本地补证仍分别继承已登记上游洞：theta84/85 各 32，`t_not_h0_multiple` 为 35，`t_not_h2_multiple` 为 36，`h2_obstruction_rel0` 为 32；它们的最终公理依赖仍含 `sorryAx`。因此本地责任移除和接口保留通过审计，**全证明的信任依赖尚未闭合**；仍需完成既有比较、范畴等上游责任。T 两项这里只同步最终审计状态，不扩大本报告独立数学审查范围。
 
-结果由独立证明审计员产生并经协调者提供；报告员读取其最终结论，没有重新运行 collector。准确来源为 Git 忽略的本地材料 `local-history/reports/migration-proof-audit-20261019/verdict.json` 和 `local-history/reports/migration-proof-audit-20261019/report.md`（以文件开头的 final 结论为准，后文历史 interim 记录保留）。这些路径标为本地证据，不伪造发布后的网页链接。[生产检查点](evidence/production-checkpoint.json)同步摘要。生产仍保留四条 E₂ 关系和两条 Cν 直接洞；rel2 已有未集成内核候选，不能把六项一概视为同一种阻塞，人审 `pending-human-review`/`human_decision: null` 保持原样。
+结果由独立证明审计员产生并经协调者提供；报告员读取其最终结论，没有重新运行 collector。准确来源为 Git 忽略的本地材料 `local-history/reports/migration-proof-audit-20261019/verdict.json` 和 `local-history/reports/migration-proof-audit-20261019/report.md`（以文件开头的 final 结论为准，后文历史 interim 记录保留）。这些路径标为本地证据，不伪造发布后的网页链接。[生产检查点](evidence/production-checkpoint.json)同步摘要。该审计快照仍保留四条 E₂ 关系和两条 Cν 直接洞；本轮 rel2 后续已集成，不能把六项一概视为同一种阻塞，人审 `pending-human-review`/`human_decision: null` 保持原样。
 
 ### 当前源码与构建记录的边界
 
@@ -210,7 +240,7 @@ public theorem comparison_product (s t s' t' : ℕ) (ht : t+t' ≤ 261)
 | --- | --- | --- |
 | 同一固定未截断 CSV 原生商环 | 当前源构造已明确 | `sourceComponentConstruction`、`sourceProductConstruction`、`sourceAtomConstruction`；无新选择代数 |
 | Atom 为原始指定生成元 | 已有原生定义和 `sourceAtom_agrees` | Atom 的 CSV ID 在 `Atom.record` 中固定；`sourceAtom_agrees` 不能覆盖非 Atom ID |
-| 非 Atom ID 的原生识别 | 本次未获得证明 | 三项需新桥涉及 24、3、335、425、89；rel2 无需 g89 的原生 X 识别，候选已验证未集成；407/84/85 已解决 |
+| 非 Atom ID 的原生识别 | 本次未获得证明 | 三项需新桥涉及 24、3、335、425、89；rel2 无需 g89 的原生 X 识别，已集成且局部内核通过；407/84/85 已解决 |
 | degree、ID 有效及 `t ≤ 261` | 当前目标全在范围内 | 最大结果总次数为 139；错误 ID/次数不能用 `generatorImage` 的默认零分支绕过 |
 | 基底逆像与所有归档单项式兼容 | 已登记但未证 | `sourceBasis_values`；并非仅有维数相同就已证成 |
 | 源到实际同一 E₂ 比较 | 已登记但未构造/证明完 | `comparison`、`comparison_product`；可以按仓库规则直接消费，不能宣传最终无待补依赖 |
@@ -241,13 +271,13 @@ python3 interface/proposals/E2Computation/migration-coordinate-bindings-20261019
 2. 逐条移植理想成员证书到**当前固定 nativeIdeal**；使用私有识别引理展开各 ID，证明现有 `sourceValue` 的关系。经同一个 `comparison_product` 搬到实际页，保留比较接口的传递待补。
 3. 替代路线：若能在现有源对象上给出对允许坐标选择不变的关系证明，或由完整 `sourceBasis_values` 的乘积约束直接推出目标，可以避免统一原生识别。必须实际证明，不能把“基底维数正确”当作关系保持。
 
-以上为剩三项的可选内部补证计划；rel2 的短路线已完成候选验证，直接消费登记 rel1，无需等待该完整坐标构造。**不建议**将 `sourceGenerator` 改定义为新的任意原生生成元后仅检查 Lean 类型不变：在用户要求下，固定语义/对象关联也冻结，必须先证明新旧实现相同或完成原已指定构造。若这一等同性不能建立，须另行报告精确候选，不在本报告预先授权。
+以上为剩三项的可选内部补证计划；rel2 的短路线已生产集成且通过局部内核检查，直接消费登记 rel1，无需等待该完整坐标构造。**不建议**将 `sourceGenerator` 改定义为新的任意原生生成元后仅检查 Lean 类型不变：在用户要求下，固定语义/对象关联也冻结，必须先证明新旧实现相同或完成原已指定构造。若这一等同性不能建立，须另行报告精确候选，不在本报告预先授权。
 
 ## 下游影响
 
 | 范围 | 影响/责任 |
 | --- | --- |
-| 七个目标 | 直接证明责任留在 E2Computation；theta84/85 已固定接口解决，h2_rel0 已固定接口解决，余四项留在 Relations；不得向 Main 增加前提 |
+| 七个目标 | 直接证明责任留在 E2Computation；theta84/85、h2_rel0 已固定接口解决；rel2 已集成待本轮最终验证，另三项仍在 Relations；不得向 Main 增加前提 |
 | 源构造与比较 | `sourceCoordinates`、`sourceBasis_values`、`comparison`、`comparison_product` 的已登记责任保留；不移到 ProofTools 或 AdamsCalculations |
 | Main 消费 | `Main/SectionSeven/NuTargetH0Products.lean`、`NuTargetProducts.lean`、`Main/Internal/Theta/Products.lean` 直接使用七项关系；不改其接口 |
 | AdamsCalculations 消费 | `AdamsCalculations/Standard.lean` 使用 `h2_obstruction_rel1`；可按登记上游输入继续工作，但不算最终无未证依赖 |
@@ -257,9 +287,9 @@ python3 interface/proposals/E2Computation/migration-coordinate-bindings-20261019
 
 ## 阻塞范围与继续项
 
-目前仅三条仍需新内部桥：`h0_obstruction_rel0`、`h0_obstruction_rel1`、`h2_obstruction_rel1`；`h2_obstruction_rel2` 为已内核验证、尚待生产集成的候选，消费登记 rel1 即可，不要求先证明 rel1。`h2_obstruction_rel0` 的完整原生/枚举/运输证明现已生产编译通过，记为 `resolved-by-fixed-interface-proof`。两条 theta 已 `resolved-by-fixed-interface-proof`，不在阻塞列表。可以继续原生理想成员证书、正确坐标构造、生成元识别、完整基底兼容、坐标不变关系证明及其他不依赖此桥的目标。本 session 的 `t_not_h0_multiple`、`t_not_h2_multiple` 原生系数泛函路线与此桥独立，可以继续。两项 Cν 迁移的单独问题见 AdamsCalculations 同日 cofiber 报告。
+目前仅三条仍需新内部桥：`h0_obstruction_rel0`、`h0_obstruction_rel1`、`h2_obstruction_rel1`；`h2_obstruction_rel2` 已生产集成且完整构建通过，独立实际依赖审计通过并保留登记上游；它消费登记 rel1，不要求先证明 rel1。`h2_obstruction_rel0` 的完整原生/枚举/运输证明现已生产编译通过，记为 `resolved-by-fixed-interface-proof`。两条 theta 已 `resolved-by-fixed-interface-proof`，不在阻塞列表。可以继续原生理想成员证书、正确坐标构造、生成元识别、完整基底兼容、坐标不变关系证明及其他不依赖此桥的目标。本 session 的 `t_not_h0_multiple`、`t_not_h2_multiple` 原生系数泛函路线与此桥独立，可以继续。两项 Cν 迁移的单独问题见 AdamsCalculations 同日 cofiber 报告。
 
-已确认：当前实现采用坐标逆像，原始 Atom 是原生 `X`，历史关系针对原生商环。未决：三条关系的新内部证明、rel2 候选的生产集成与验证、以及相关传递上游责任的最终完成，默认完整构建、现有 audits/tests 及扩展闭包审计已通过，但均不消除已登记上游责任。theta 与 h2_rel0 的本地证明已完成，但实际比较接口的待补仍保留。人审等待不阻塞已授权固定接口补证。
+已确认：当前实现采用坐标逆像，原始 Atom 是原生 `X`，历史关系针对原生商环。未决：三条关系的新内部证明及相关传递上游责任的最终完成。rel2 的本轮生产与独立实际依赖审计均已通过。上轮默认完整构建和扩展审计仅验证上轮输入，本轮默认完整构建已通过、独立实际依赖审计已通过并保留登记上游；任何通过结果均不消除已登记上游责任。theta 与 h2_rel0 的本地证明已完成，但实际比较接口的待补仍保留。人审等待不阻塞已授权固定接口补证。
 
 ## 人类审核记录
 

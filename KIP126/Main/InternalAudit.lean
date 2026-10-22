@@ -142,7 +142,7 @@ import all KIP126.Main.SquareClassification
 import all KIP126.Main.TableOne
 
 
-public meta import Checks.Registry
+public meta import Checks.Registry.Main
 import Lean
 
 /-! Trust audit for article-owned proof and construction responsibilities. Only the exact individually
@@ -205,7 +205,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.Main.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let expected : Array Json ← entries.filterM fun (row : Json) => do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"
@@ -369,7 +369,7 @@ run_cmd do
   let roots ← rows.mapM fun row => do
     let name ← Lean.ofExcept <| row.getObjValAs? String "name"
     pure name.toName
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.Main.proofObligationLedger
   let route ← Lean.ofExcept <| ledger.getObjVal? "main_zero_layer_rewire_2026_10_16"
   let boundaryNames ← Lean.ofExcept <| route.getObjValAs? (Array String)
     "proofTools_boundary_declarations"

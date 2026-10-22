@@ -1,7 +1,7 @@
 ---
 issue_id: AdamsSynthetic-20261019-paper-complete-fixed-background
 title: 统一论文固定对象的完备背景与一次性 λ 反演比较
-summary: 用户已明确将跨模块完成背景迁移延期至 issue #31；普通源、完成模型与配套合成比较留待后续。当前只将既有已证代表元定理绑定原文节点，不实施本提案的接口迁移。
+summary: 用户已批准含整族非零字段的标准类结构及结构版主定理迁移，并确定论文 Standard 最终采用完成系统、普通来源保留独立入口。本轮实施可由已有公共输入推出的修改；完成背景落实精确规格与责任地图，实际完成范畴、配套合成模型及来源和塔比较仍归上游，issue #31 尚未解决。
 responsibility_module: AdamsSynthetic
 targets:
   - KIP126.AdamsSynthetic.Standard.Spectrum
@@ -13,20 +13,28 @@ targets:
   - KIP126.AdamsSynthetic.Standard.classicalTower
   - KIP126.AdamsSynthetic.Standard.syntheticTower
   - KIP126.Literature.LambdaInversionAdamsComparison
+  - KIP126.Classical.Adams.StandardSphereClasses
+  - KIP126.AdamsSynthetic.Standard.standardClasses
+  - KIP126.Computation.Standard.h6_exhaustive
+  - KIP126.Main.h6_sq_permanent
 baseline_commit: ef01dcfd904b51fe2288f0dc3e1eed074591967f
 worktree: /inspire/hdd/global_user/czxs25250150/ops/tmp/prooftools-main-proofs-20261019
 reporter_agent: /root/convergence_reporter
 independent_of_discoverer_and_implementer: true
 evidence_level: 独立源码与完整类型约束审查、公开主来源核对；没有完成范畴迁移证明或新实例构造，也没有完整模型反例
-status: pending-human-review
-human_decision: null
+status: partially-approved
+human_decision: "2026-10-21，本聊天用户确认采用含整族 hi_ne_zero 的结构版并授权按有界计划实施；论文 Standard 最终采用完成系统，普通来源保留独立入口。本轮完成背景工作限于精确规格、责任地图及可由现有公共输入导出的迁移，不授权新建底层谱或合成模型、完成理论、cobar/resolution 工具，亦不以新增公理或待补责任替代缺失构造。具体范围见文末后续决定。"
 tracking_issue: https://github.com/SII-MATH/Kervaire126Main/issues/31
-implementation_status: deferred-by-user
+implementation_status: bounded-interface-implemented-and-validated-foundations-deferred
 ---
 
 # 论文完备固定背景：范围与实施顺序提案
 
-## 请求人类决定的具体问题
+## 当前范围
+
+**2026-10-21 获批的有界接口改动及与最新 main 的整合均已通过完整验证。** 本轮把标准类整族非零性纳入结构，并将唯一对外主定理统一为该结构上的直接平方陈述；同时在本报告明确完成背景的精确规格和上游责任。当前尚未构造完成范畴、配套合成模型或实际来源比较，不能据此把现有 `Standard` 宣布为已完成迁移。具体授权、下游范围和分阶段验证边界见文末。以下原报告及其历史审核记录保留，描述的是当时的提案与决定，不代替本次实际实施结果。
+
+## 2026-10-19 原提案问题（历史）
 
 **当前已按用户明确要求延期实施，后续统一跟踪于 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。** 本轮只调整原文节点的已有形式化绑定，不进行本提案的跨模块对象、公共接口或锁变更。
 
@@ -167,3 +175,50 @@ hcomp₂由Literature在实际完成语境构造；其完整字段沿用[已有5
 > 这个是一个大改动，改了这个接口以后下游多个文件都要改，因此，先把这项改动挂到 issue，我们后面再改。现在，先把我们已经完成形式化的对象绑定到灰色节点，不再单独设改写的自然语言版本。因为结论是一样的，我们只是补全了论文当中默认的背景而已
 
 已据此创建 [issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31)。该决定批准本轮将已有证明直接绑定 `paper:2.20` 与 `paper:5.14`、取消两个独立改写节点，保留原文及背景/实际Standard未完成范围；它明确推迟本报告的跨模块迁移，未批准立即修改固定对象公共语义。因此接口提案仍为 `pending-human-review`，`human_decision` 仍为空，具体迁移由后续issue推进。
+
+### 后续决定：结构版主定理与有界实施
+
+2026-10-21，用户明确纠正主定理方案，确认的是把非零性放进整族标准类规格的结构版，并要求：
+
+> 好，就按这个结构版，把公共接口改动、证明责任和下游影响清单重新统一一遍，明确本轮完成哪些、哪些留给上游，先别改代码。
+
+在范围统一后，用户授权：
+
+> 好，就按照这个计划，行动
+
+此前用户还同意论文使用的 `Standard` 最终代表完成系统，普通来源保留在独立入口；同时明确不把本次工作扩大为 Milnor cobar/resolution 工具、具体谱或 synthetic 谱模型、完成理论及全部底层来源识别的建设。本次批准限于以下可审阅范围，不表示上文全部候选构造已经实现或被证明。
+
+| 本轮公共接口与消费者 | 授权改动及证明责任 | 当前实施边界 |
+| --- | --- | --- |
+| `KIP126.Classical.Adams.StandardSphereClasses` | 在既有 `hi` 上增加 `hi_ne_zero : ∀ i : ℕ, hi i ≠ 0`，不把维数或唯一性写进标准类定义。 | 构造者须提供证明；不得添加公理或新的来源待补项来填该字段。 |
+| `AdamsSynthetic.Standard.standardClasses` | 从既有 Milnor 类的非零性及实际 E₂ 线性等价证明固定整族非零，补齐结构构造。 | 继续继承 `sphereE2_milnorEquiv` 原已登记的构造责任；该推导不证明此等价的实际来源、第一微分或乘法兼容已经完成。 |
+| `KIP126.Computation.Standard.h6_exhaustive` | 由既有独立 E₂ 坐标证明实际 `(1,64)` 页中每个元素为零或固定 `h₆`；供任意符合新规格的结构族识别其第六类。 | 归属 E2Computation，不调用 ProofTools 或后续 Adams 计算，不以额外标准类公理替代坐标证明。 |
+| `KIP126.Main.h6_sq_permanent` | 保留这一个对外主定理名称，接收同一实际球 E₂ 上的 `StandardSphereClasses`，结论直接陈述其第六类与自身的实际乘积在 `(2,128)` 非零存活；既有指定类证明转为私有并复用。 | 不另增逐元素版或公开指定类版；Main 保持无直接证明洞。 |
+| Geometry、Main 其余调用及公共消费测试 | 原固定调用显式传入 `model.standardClasses`；同步真实受影响的接口锁、待补清单状态与必要的 Blueprint 陈述和绑定。 | Geometry 保持无本地证明洞；Blueprint 阅读顺序调整留待后续，不在本轮重排。 |
+
+完成背景的本轮交付是精确规格与责任地图；上文核心数学规格继续保留。其尚未具备的生产者按下表归属上游，不能改为由下游调用者提供结果包，也不能靠重新打包或重命名消除责任。
+
+| 固定对象／公共接口 | 完整上游责任及本轮处理 |
+| --- | --- |
+| `Standard.Spectrum`、`spectrumCategory`、`spectrumCofiber`、`coefficients` | 实际完成范畴 `C₂`、`L₂ ⊣ i`、全忠实包含、本质像的完成性，以及球、HF₂、单位、张量、shift/cofiber 的实际识别尚未构造。本轮不改变现有普通来源所约束的对象语义。 |
+| `ClassicalSourceRecognition`、`Standard.sourceRecognition` 及 source tensor/cofiber/derived smash recognition | 原完整普通源等价、整数稳定同伦及单位标定保留；独立普通入口和完成入口的精确公开命名仍待实际构造确定。完成识别须提供同一来源局部化与 `L₂` 的自然比较，不能原封不动继承普通整数同伦等价。 |
+| `Standard.SyntheticSpectrum`、`nu`、`recovery`、`exactness` | 配套 `Syn₂` 的选择与构造尚未完成。必须提供当前 `NuFunctorData`、`LambdaRecovery`、`StructuralExactness` 的全部字段，尤其同一实际 λ 可逆子范畴与 `C₂` 的等价、ν 的单位比较及恢复同构；本轮不削弱这些接口。 |
+| `Standard.auxiliary`、`classical`、`family`、双塔、`comparison` 及实际 E₂ 标定 | 完成球、完成的实际 ν cofiber、完成 tmf、源映射及其双塔比较仍须在同一模型上构造。独立 Ext/E₂ 计算可复用，但完成实例上的实际页、标准类及乘法比较仍须证明。 |
+| `Literature.BHSObjectApplicability` 及固定适用性 | 同一实际 HF₂ 塔的 residual nilpotent completeness、滤过完备性、分离性和 associated graded 比较仍须分别提供；有限滤过商还须在相同塔、相同选定对象及每个整数次数证明。不能由 `E∞ ≅ gr` 或现有范畴局部化自动推出。 |
+| `Literature.LambdaInversionAdamsComparison`、固定 `RealizationCoordinates` 及 ProofTools 固定推论 | 实际 target、各权移位 target、塔与层映射、代表及 ambient 坐标、零／边界标签和 E₂ 标定的相容性仍归上游。完成性本身不产生这些数据；现有 2.20／5.14 条件定理保留，待实际生产者完成后再消去固定背景参数。普通几何到完成球检测的 Browder 桥仍归 Literature。 |
+
+实质来源缺口有两处。首先，现有 `sourceRecognition` 的完整类型固定了普通源等价和整数稳定同伦标定，因此不能仅改 `Spectrum` 的说明便宣称完成化。其次，现有 `LambdaRecovery` 恢复的是同一个实际合成范畴的 λ 可逆子范畴，不能固定旧合成背景而仅替换经典范畴。现有 `localizedSphere_classicalIso` 是依赖既有 `sourceClassical_inverts_hf2` 待证项的谱序列同构，不是完成反射子、完成球同伦识别或滤过完备性证据。
+
+因此，即使把普通源和完成源责任合并到同一个记录、使 `sorry` 数量不变，也会增加独立数学构造责任；本轮不作这种替换。完成范畴在全部 ambient 上的精确定义、与当前 HF₂ 上同调局部化的一致范围、配套 `Syn₂`、实际单位与 λ 商的比较均仍待上游确定。不能无条件混同 HF₂ nilpotent completion、Moore(2) completion 和现有局部化。
+
+本次实施基于 `f17969a0c7839f7d47d550d5e8f8a0a0aa2ffe91`，工作树为 `/inspire/hdd/global_user/czxs25250150/ops/tmp/adams-complete-main-statement-20261021`。本补记记录获准范围及源码／完整类型的复核；原报告的 baseline、独立 reporter、来源证据和历史状态均予保留，不把旧证据冒充对本次 Lean 修改的独立编译核验。
+
+**整合 main 之前的历史验证（提交 `1962133`）。** 当时三份接口锁与编译捕获一致：AdamsSynthetic 增加非零字段和必要生成证明，E2Computation 只增加 `h6_exhaustive`，Main 只改变唯一主定理的结构参数；其他五份 API、所有既有宇宙参数和公理依赖保持不变。完整捕获包含 23,852 项项目声明，原有 214 项待补责任精确保留，没有新增项目公理或失败占位。默认 `lake build` 通过全部 3609 项任务，Main、Geometry 无本地证明洞的审计与精确 Main／ProofTools 边界均通过；源码清单、49 项 Blueprint 测试和 7 项元数据测试通过。34 项既有诊断标签指纹经独立 kernel 表达式核对后迁移，未改变证明责任，方法见 `docs/metadata-baselines.md`。这些数字仅描述该提交，不表示下述整合树已经通过相同检查。
+
+**与最新 main 的整合（完整验证通过）。** 结构版改动已与 `origin/main` 的 `fa6c729` 整合。上游已独立完成 15 项责任，许可待补总数为 199 项；不把这些补证计入本次迁移。固定 `standardClasses` 的非零字段直接复用上游 `standardHiConstruction` 的 `.property`，移除本任务重复添加的 Milnor 证明；相对于该 main，本次公共接口变化仍限于 AdamsSynthetic、E2Computation 和 Main 三份锁，且不新增证明洞。
+
+整合后的精确诊断标签核验已通过：核对 Background 的 28 项与 E2 Standard 的 9 项，共 37 项剩余责任，原始完整类型、宇宙、模块归属及标签归一化后的完整 kernel 证明体均相同。仅迁移 18 项诊断标签导致的证明体指纹（Background 在 `standardClasses` 之后的 13 项、E2 Standard 的 5 项）；`fa6c729` 全部 199 项责任、状态和审计边界精确保留，没有恢复上游完成的 15 项。证据见忽略的 `local-history/metadata/interface-reviews/20261021-standard-classes-merge-fa6c729-hole-labels/`。
+
+整合后的默认 `lake build` 已通过全部 3644 项任务，源码清单覆盖 606 个项目源文件和 35 个消费／审计文件。Main 审计覆盖 1922 项声明、Geometry 覆盖 6 项声明，均无本地证明洞；ProofTools 审计覆盖 5708 项声明，保留唯一既有待补责任，34 项 Main／ProofTools 边界均无本地证明洞，没有项目公理。独立全项目信任捕获已通过，共 24,855 项项目声明；更新器责任复核结果与现有 199 项清单完全相等，没有新增项目公理或失败占位。三份新公开捕获分别包含 AdamsSynthetic 1789 项、E2Computation 706 项、Main 34 项声明，名称、完整类型、宇宙与公理依赖均与接口锁及全项目捕获精确一致。93 项 Python 单元测试和原生 Blueprint 导出通过，导出包含 241 个数学条目、10,024 项 Lean 声明；保留 1,921 条原生警告，未改变既有非致命策略。
+
+以上实施与核验记录不改写原报告的独立证据等级；`status=partially-approved` 不表示完成背景已经实现，[issue #31](https://github.com/SII-MATH/Kervaire126Main/issues/31) 仍保留上述上游边界，Blueprint 阅读顺序调整也仍留待后续。

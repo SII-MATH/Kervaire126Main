@@ -2,12 +2,18 @@ module
 
 public import KIP126.ProofTools.Standard
 public import KIP126.ProofTools.GeneralizedLeibnizAtLevel
+public import KIP126.ProofTools.FiniteLevelConsequences
 public import KIP126.ProofTools.LambdaDivision
 public import KIP126.ProofTools.GeneralizedMahowald.ActualNoCrossing
 public import KIP126.ProofTools.GeneralizedMahowald.ClassicalLift
 public import KIP126.ProofTools.GeneralizedMahowald.FiniteLevelStatement
 public import KIP126.ProofTools.GeneralizedMahowald.FiniteLevelAssembly
 public import KIP126.ProofTools.MahowaldLeibniz
+public import KIP126.ProofTools.BlueprintTheorems
+public import KIP126.ProofTools.ExtBoundaryComparison
+public import KIP126.ProofTools.LastLayerComparison
+public import KIP126.ProofTools.LastLayerComparison.Actual
+public import KIP126.ProofTools.Paper.NuCrossingExamples
 public import KIP126.ProofTools.Operations
 public import KIP126.ProofTools.Paper.ExtensionRepresentatives
 public import KIP126.ProofTools.Paper.ExtensionDescent
@@ -17,3 +23,5 @@ public import KIP126.ProofTools.Paper.Crossing
 public import KIP126.ProofTools.Paper.SyntheticExtensions.LambdaRho
 public import KIP126.ProofTools.Paper.SyntheticExtensions
 public import KIP126.ProofTools.Paper.OriginalStatements
+public import KIP126.ProofTools.StandardSpecializations
+public import KIP126.ProofTools.DoublingWarning

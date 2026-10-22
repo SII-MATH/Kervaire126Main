@@ -71,13 +71,17 @@ class ProofToolsBindingTests(unittest.TestCase):
         all_rows, _ = parse_blueprint(read_blueprint(ROOT / 'blueprint/content.tex'))
         for row in all_rows:
             self.assertFalse(removed.intersection(row['uses']), row['label'])
-        original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite', '5.10': 'finiteCrossing_iff_syntheticCrossing'}
-        pending = {'5.10'}
+        self.assertNotIn('paper:5.10', by_label)
+        division = by_label['sem:ProofTools:finite-lambda-division']
+        self.assertEqual(division['lean'], ['KIP126.ProofTools.Standard.finiteLambdaDivision'])
+        self.assertIn('Proposition 5.10', division['body'])
+        self.assertIn('not assert that equivalence', division['body'])
+        self.assertTrue(declarations['KIP126.ProofTools.Paper.finiteCrossing_iff_syntheticCrossing']['sorry'])
+        original_statements = {'2.6': 'adamsFiltrationVanishing', '2.12': 'extensionSquare', '2.15': 'noCrossingExtensionSquare', '2.16': 'extensionTriangle', '2.17': 'extensionComposition', '2.18': 'extensionSpectralSequenceMorphism', '2.19': 'permanentCycle_of_nullComposite'}
         for number, name in original_statements.items():
             row = by_label['paper:' + number]
             self.assertEqual(row['lean'], ['KIP126.ProofTools.Paper.' + name])
-            self.assertEqual(_tex_lean_status(row, states)[0],
-                             'sorry' if number in pending else 'lean_ok')
+            self.assertEqual(_tex_lean_status(row, states)[0], 'lean_ok')
         # The article's original nodes bind the proved representative forms;
         # their common background stays explicit without duplicate statements.
         originals = {row['number']: row for row in load_paper(ROOT)}

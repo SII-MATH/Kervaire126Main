@@ -6,6 +6,6 @@ created: '2026-10-20T14:37:05'
 date: '2026-10-20T14:37:05'
 origin: blueprint-authoring-notes
 title: Formal scope and provenance
-updated: '2026-10-20T14:37:05'
+updated: '2026-10-22T05:15:39.470332+00:00'
 ---
-**Formal scope:** this is the original concrete warning, with its target-coset and maximal-lift explanations combined. No Lean binding or general theorem about every positive lambda level is asserted. The Chua locators are those discussed in AimPaper, not an independent reformulation of all hypotheses of that work.
+**Formal scope:** The public theorem contains the complete numerical warning: the actual normalized map, finite and infinite relations, both other no-crossing checks, the weight-18 essential crossing, inessentiality with nonzero infinity target, and two actual sphere lifts with respectively nonzero and zero h0-image. The same zero image has every lambda division. It uses the independent classical d3 input and does not invoke a discarded Leibniz rule or the disputed general crossing equivalence. The Chua locators remain those discussed in AimPaper.

@@ -7,6 +7,7 @@ Adapted from SII-MATH/Kervaire126, commit
 8cb35dad5f75ecc095e474df6c765baec9b175bf.
 -/
 
+public import Mathlib.Algebra.CharP.Lemmas
 import all KIP126.AdamsSynthetic.Internal.Milnor.Cobar
 
 @[expose] section
@@ -22,6 +23,7 @@ namespace KIP126.AdamsSynthetic.Milnor
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Polynomial/Hi/Data.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 /-- The polynomial representative `[ξ₁^(2^i)]` of `hᵢ`, starting with `i = 0`. -/
 def hiPolynomial (i : ℕ) : TensorPower 1 :=
   MvPolynomial.X (0, 0) ^ (2 ^ i)
@@ -33,6 +35,7 @@ noncomputable section
 
 open MvPolynomial
 
+set_option backward.privateInPublic true in
 /-- The representative has internal degree `2^i` and vanishing augmentation. -/
 theorem hiPolynomial_mem (i : ℕ) : IsCochain (2 ^ i) (hiPolynomial i) := by
   constructor
@@ -45,6 +48,7 @@ theorem hiPolynomial_mem (i : ℕ) : IsCochain (2 ^ i) (hiPolynomial i) := by
     subst slot
     simp [LinearMap.mem_ker, augmentSlot, hiPolynomial]
 
+set_option backward.privateInPublic true in
 /-- Frobenius preserves primitiveness in characteristic two. -/
 theorem hiPolynomial_differential (i : ℕ) :
     differentialPolynomial 1 (hiPolynomial i) = 0 := by
@@ -67,6 +71,7 @@ end
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Hi/Data.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 /-- The standard normalized cochain `[ξ₁^(2^i)]` in bidegree `(1, 2^i)`. -/
 def hiCochain (i : ℕ) : cochains 1 (2 ^ i) :=
   ⟨hiPolynomial i, hiPolynomial_mem i⟩
@@ -80,6 +85,7 @@ end
 /- Adapted from KIP126/Def/Steenrod/MilnorCobar/Hi/Proofs.lean. -/
 noncomputable section
 
+set_option backward.privateInPublic true in
 theorem hiCochain_isCycle (i : ℕ) : IsCycle (hiCochain i) := by
   apply Subtype.ext
   exact hiPolynomial_differential i

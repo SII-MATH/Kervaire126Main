@@ -482,15 +482,74 @@ public theorem nu_detection :
     (model.standardClasses.standardHi 2) model.auxiliary.nuMap := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+section OneLinePermanenceConstruction
+set_option backward.isDefEq.respectTransparency false
+
+private theorem nonzeroSurvivalOfPermanentNoIncoming
+    (p : ℤ × ℤ) (x : model.classical.sphere.Page 2 p)
+    (hperm : IsPermanentCycle model.classical.sphere p x) (hx : x ≠ 0)
+    (hin : ∀ r : ℤ, 2 ≤ r →
+      model.classical.sphere.d r (p-model.classical.sphere.diffDeg r) = 0) :
+    NonzeroSurvival model.classical.sphere p x := by
+  let E := model.classical.sphere
+  let D := E.ssData p
+  let n : WithTop ℕ := ↑(2-E.r₀).toNat
+  obtain ⟨z,hz⟩ := hperm
+  refine ⟨z,hz,?_⟩
+  intro hz0
+  have hB : D.B ⊤ = D.B n := boundaries_top_eq_of_d_eq_zero E 2
+    (le_of_eq (model.classical.firstPage SphereSpectrum)) p hin
+  have hb := (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) z).mp hz0
+  apply hx
+  rw [←hz]
+  change D.pageπ n (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) z) = 0
+  apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mpr
+  change (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ (D.Z n).arrow) z ∈ _
+  rw [Subobject.ofLE_arrow]
+  rwa [←hB]
+
+private theorem oneLineNoIncoming (t : ℤ) (r : ℤ) (hr : 2 ≤ r) :
+    model.classical.sphere.d r (((1:ℤ),t)-model.classical.sphere.diffDeg r) = 0 := by
+  let q := ((1:ℤ),t)-model.classical.sphere.diffDeg r
+  have hs : q.1 < 0 := by
+    dsimp only [q]
+    rw [model.classical.differentialDegree]
+    change 1-r < 0
+    omega
+  letI : Subsingleton (model.classical.sphere.Page r q) :=
+    KIP126.AdamsSynthetic.Standard.classical_page_negative .sphere r q.1 q.2 hs
+  ext a
+  have ha : a = 0 := Subsingleton.elim _ _
+  simp only [ha, map_zero]
+
+
+private theorem standardHiActualNonzero (i : ℕ) :
+    model.standardClasses.standardHi i ≠ 0 := by
+  change KIP126.AdamsSynthetic.Standard.standardHi i ≠ 0
+  unfold KIP126.AdamsSynthetic.Standard.standardHi
+  exact @Subtype.property
+    (ActualE2At KIP126.AdamsSynthetic.Standard.classical (hiDegree i))
+    (fun x => x ≠ 0) _
+
+/-- The detected standard h₁ is nonzero, and every incoming source has negative filtration. -/
 public theorem eta_permanent :
   NonzeroSurvival model.classical.sphere (1,2) (model.standardClasses.standardHi 1) := by
-  sorry
+  have hperm : IsPermanentCycle model.classical.sphere (1,2)
+      (model.standardClasses.standardHi 1) := by
+    obtain ⟨z,hz,_,_,_⟩ := eta_detection
+    exact ⟨z,hz⟩
+  exact nonzeroSurvivalOfPermanentNoIncoming (1,2) _ hperm (standardHiActualNonzero 1) (oneLineNoIncoming 2)
 
-/-- Source or comparison proof remains to be supplied. -/
+/-- The detected standard h₂ is nonzero, and every incoming source has negative filtration. -/
 public theorem nu_permanent :
   NonzeroSurvival model.classical.sphere (1,4) (model.standardClasses.standardHi 2) := by
-  sorry
+  have hperm : IsPermanentCycle model.classical.sphere (1,4)
+      (model.standardClasses.standardHi 2) := by
+    obtain ⟨z,hz,_,_,_⟩ := nu_detection
+    exact ⟨z,hz⟩
+  exact nonzeroSurvivalOfPermanentNoIncoming (1,4) _ hperm (standardHiActualNonzero 2) (oneLineNoIncoming 4)
+
+end OneLinePermanenceConstruction
 
 /-- Source or comparison proof remains to be supplied. -/
 public theorem eta_label :
@@ -529,29 +588,6 @@ public theorem adamsOneLine_d2 :
 
 section H5SquarePermanenceConstruction
 set_option backward.isDefEq.respectTransparency false
-
-private theorem nonzeroSurvivalOfPermanentNoIncoming
-    (p : ℤ × ℤ) (x : model.classical.sphere.Page 2 p)
-    (hperm : IsPermanentCycle model.classical.sphere p x) (hx : x ≠ 0)
-    (hin : ∀ r : ℤ, 2 ≤ r →
-      model.classical.sphere.d r (p-model.classical.sphere.diffDeg r) = 0) :
-    NonzeroSurvival model.classical.sphere p x := by
-  let E := model.classical.sphere
-  let D := E.ssData p
-  let n : WithTop ℕ := ↑(2-E.r₀).toNat
-  obtain ⟨z,hz⟩ := hperm
-  refine ⟨z,hz,?_⟩
-  intro hz0
-  have hB : D.B ⊤ = D.B n := boundaries_top_eq_of_d_eq_zero E 2
-    (le_of_eq (model.classical.firstPage SphereSpectrum)) p hin
-  have hb := (subobject_cokernel_π_eq_zero_iff (D.B ⊤) (D.Z ⊤) (D.B_le_Z ⊤) z).mp hz0
-  apply hx
-  rw [←hz]
-  change D.pageπ n (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) z) = 0
-  apply (subobject_cokernel_π_eq_zero_iff (D.B n) (D.Z n) (D.B_le_Z n) _).mpr
-  change (Subobject.ofLE (D.Z ⊤) (D.Z n) (D.Z_anti le_top) ≫ (D.Z n).arrow) z ∈ _
-  rw [Subobject.ofLE_arrow]
-  rwa [←hB]
 
 private theorem h5SquareActualNonzero : model.standardClasses.standardHiSquare 5 ≠ 0 := by
   obtain ⟨hdeg,xr,yr,_,hy,_,hne⟩ := adamsOneLine_d2 6 (by decide)
@@ -2044,12 +2080,98 @@ public def infinityNuLinear := EInfinityPresentation.nuLinear model infinityPres
 public def infinityFiniteLinear := EInfinityPresentation.finiteLinear model infinityPresentationData
 
 /-- Source or comparison proof remains to be supplied. -/
+public theorem eInfinity_nu_labels :
+  ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
+      (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+      (z : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty),
+    HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model X s t w hw x) z ↔
+      ∃ hx : x ∈ permanentCycles model X (s,t),
+        infinityNuWindow X (s,t) w hw z = subquotientClass (permanentCycles model X (s,t)) (boundaries model X (1+t-w) (s,t)) ⟨x,hx⟩ := by
+  sorry
+
+set_option backward.isDefEq.respectTransparency false in
+set_option maxHeartbeats 2000000 in
+private theorem lambdaNuWeightMap_eq
+    (X : KIP126.Kervaire.Route.ClassicalObject) (k : ℕ) (s t w : ℤ)
+    (hk : k ≠ 0) (hw : w ≤ t) :
+    KIP126.AdamsSynthetic.Standard.weight_map X s t (w-k) w (by omega) hw =
+      infinityLambda (.nu X) k (s,t) w := by
+  have hnat : (w-(w-(k:ℤ))).toNat = k := by omega
+  let A := model.nu.functor.obj (X.obj model.auxiliary)
+  let δ (j : ℕ) : ℤ × ℤ := (0,-(j:ℤ))
+  let p : ℤ × ℤ := (t-s,w)
+  let φ (j : ℕ) (hj : w-(j:ℤ) = w-(k:ℤ)) :
+      ((model.family.obj A).sequence.ssData (s,t,w)).eInfty ⟶
+        ((model.family.obj A).sequence.ssData (s,t,w-k)).eInfty :=
+    (eqToIso (congrArg (fun q => ((model.family.obj A).sequence.ssData q).eInfty)
+        (show (s,t,w) = (s,p.1+s,p.2) by dsimp only [p]; ext <;> simp (config := { congrConsts := false }))) ≪≫
+      towerInfinityIso (model.convergence (.nu X))
+        (model.convergence (.shift (δ j) (.nu X)))
+        (KIP126.AdamsSynthetic.Standard.shift_filtered (δ j) (.nu X) p) s ≪≫
+      eqToIso (congrArg (fun q =>
+        ((model.family.obj ((SyntheticCategory.biShift (δ j)).obj A)).sequence.ssData q).eInfty)
+        (show (s,(p+δ j).1+s,(p+δ j).2) = (s,t,w-k) by
+          dsimp only [p, δ, Prod.fst_add, Prod.snd_add]
+          ext <;> simp (config := { congrConsts := false }) only [add_zero, sub_add_cancel]
+          omega))).hom ≫
+      (model.family.map (lambdaPow j A)).eInftyMap (s,t,w-k)
+  have hφ : ∀ (j : ℕ) (hjk : j=k) (hj : w-(j:ℤ) = w-(k:ℤ)),
+      φ j hj = φ k rfl := by
+    intro j hjk hj
+    subst j
+    rfl
+  have hlambda : infinityLambda (.nu X) k (s,t) w = φ k rfl := by
+    exact dif_neg hk
+  exact (hφ (w-(w-(k:ℤ))).toNat hnat (by omega)).trans hlambda.symm
+
+
+set_option backward.isDefEq.respectTransparency false in
+set_option maxHeartbeats 2000000 in
+/-- The same permanent E₂ representative is preserved by the actual λ weight map. -/
 public theorem eInfinity_lambda_nu :
   ∀ (X : ClassicalObject) (k : ℕ) (p : Bidegree) (w : ℤ) (hw : w ≤ p.2)
       (x : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (p.1,p.2,w)).eInfty),
     infinityNuWindow X p (w-k) (by omega) (infinityLambda (.nu X) k p w x) =
       permanentQuotientMap model X (by omega) p (infinityNuWindow X p w hw x) := by
-  sorry
+  intro X k p w hw z
+  rcases p with ⟨s,t⟩
+  by_cases hk : k = 0
+  · subst k
+    dsimp only [infinityLambda, InfinityShiftCoordinates.lambdaMap]
+    simp (config := { congrConsts := false }) only [dite_true]
+    have htransport : ∀ (v : ℤ) (h : w = v) (hv : v ≤ t)
+        (he : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty =
+          ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,v)).eInfty),
+        HEq (infinityNuWindow X (s,t) v hv ((eqToHom he) z))
+          (infinityNuWindow X (s,t) w hw z) := by
+      intro v h hv he
+      subst v
+      rfl
+    have hquot : ∀ (v : ℤ) (h : v = w) (hb : 1+t-w ≤ 1+t-v),
+        HEq (permanentQuotientMap model X hb (s,t) (infinityNuWindow X (s,t) w hw z))
+          (infinityNuWindow X (s,t) w hw z) := by
+      intro v h hb
+      subst v
+      obtain ⟨a, ha⟩ := Quotient.mk_surjective (infinityNuWindow X (s,t) w hw z)
+      rw [← ha]
+      rfl
+    apply eq_of_heq
+    exact (htransport (w-((0:ℕ):ℤ)) (by omega) (by omega) _).trans
+      (hquot (w-((0:ℕ):ℤ)) (by omega) _).symm
+  · obtain ⟨a, ha⟩ := Quotient.mk_surjective (infinityNuWindow X (s,t) w hw z)
+    have hrep := (eInfinity_nu_labels X s t w hw a.val z).mpr ⟨a.property, ha.symm⟩
+    have hrep' := KIP126.AdamsSynthetic.Standard.weight_representative
+      X s t (w-k) w (by omega) hw a.val z hrep
+    rw [lambdaNuWeightMap_eq X k s t w hk hw] at hrep'
+    obtain ⟨hperm, hleft⟩ :=
+      (eInfinity_nu_labels X s t (w-k) (by omega) a.val _).mp hrep'
+    calc
+      _ = subquotientClass (permanentCycles model X (s,t))
+            (boundaries model X (1+t-(w-k)) (s,t)) ⟨a.val,hperm⟩ := hleft
+      _ = permanentQuotientMap model X (by omega) (s,t)
+            (subquotientClass (permanentCycles model X (s,t))
+              (boundaries model X (1+t-w) (s,t)) a) := rfl
+      _ = _ := congrArg (permanentQuotientMap model X (by omega) (s,t)) ha
 
 /-- Source or comparison proof remains to be supplied. -/
 public theorem eInfinity_lambda_finite :
@@ -2060,16 +2182,6 @@ public theorem eInfinity_lambda_finite :
         (infinityFiniteLambda X q k hkq p w x) =
       quotientMap model X (by omega) (by omega) p
         (infinityFiniteWindow X (q-k) (by omega) p w hw x) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem eInfinity_nu_labels :
-  ∀ (X : ClassicalObject) (s t w : ℤ) (hw : w ≤ t)
-      (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
-      (z : ((model.family.nu model.nu (X.obj model.auxiliary)).sequence.ssData (s,t,w)).eInfty),
-    HasInfinityRepresentative _ 2 (s,t,w) (nuWeightLabel model X s t w hw x) z ↔
-      ∃ hx : x ∈ permanentCycles model X (s,t),
-        infinityNuWindow X (s,t) w hw z = subquotientClass (permanentCycles model X (s,t)) (boundaries model X (1+t-w) (s,t)) ⟨x,hx⟩ := by
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/
@@ -2612,17 +2724,7 @@ public theorem bhs_differentials :
   DifferentialRigidity model := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_permanent_lift :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) → PermanentLiftAt model X := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_filtration_lambda :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) → FiltrationLambdaAt model X := by
-  sorry
+public def realizeNu := realizeNuZero model realizationData
 
 /-- Source or comparison proof remains to be supplied. -/
 public theorem selected_permanent_lift :
@@ -2632,60 +2734,6 @@ public theorem selected_permanent_lift :
 /-- Source or comparison proof remains to be supplied. -/
 public theorem selected_filtration_lambda :
   ∀ X : ClassicalObject, FiltrationLambdaAt model X := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem selected_realization_kernel :
-  RealizationKernel model := by
-  sorry
-
-public def realizeNu := realizeNuZero model realizationData
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_realization_lifetime :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) →
-    ∀ (s t : ℤ) (r : ℕ), 1 ≤ r →
-    ∀ (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
-      (a : BiHom (t-s) t (nuZero model X)),
-    ClassicalPermanentCycle model X (s,t) x →
-    SurvivesTo (model.classical.obj (X.obj model.auxiliary)) (r+1) (s,t) x →
-    quotientClass 1 a = firstLabel model X s t x → lambdaMultiply (r-1) a ≠ 0 := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_realization_detection :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) →
-    ∀ (s t : ℤ) (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
-      (a : BiHom (t-s) t (nuZero model X)),
-    NonzeroSurvival (model.classical.obj (X.obj model.auxiliary)) (s,t) x →
-    quotientClass 1 a = firstLabel model X s t x →
-    ClassicalDetects (model.classicalConvergence X) (s,t) x (realizeNu X a) := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_realization_prescribed_lift :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) →
-    ∀ (s t : ℤ) (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
-      (a : HomotopyGroup (t-s) (X.obj model.auxiliary)),
-    NonzeroSurvival (model.classical.obj (X.obj model.auxiliary)) (s,t) x →
-    ClassicalDetects (model.classicalConvergence X) (s,t) x a →
-    ∃ b : BiHom (t-s) t (nuZero model X), quotientClass 1 b = firstLabel model X s t x ∧
-      realizeNu X b = a := by
-  sorry
-
-/-- Source or comparison proof remains to be supplied. -/
-public theorem bhs_realization_boundary_lift :
-  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
-    BHSObjectApplicability model products (X.obj model.auxiliary) →
-    ∀ (s t : ℤ) (r : ℕ), 2 ≤ r →
-    ∀ y : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t),
-    ClassicalPermanentCycle model X (s,t) y →
-    HitOnPage (model.classical.obj (X.obj model.auxiliary)) r (s,t) y →
-    ∃ a : BiHom (t-s) t (nuZero model X), quotientClass 1 a = firstLabel model X s t y ∧
-      lambdaMultiply (r-1) a = 0 := by
   sorry
 
 /-- Source or comparison proof remains to be supplied. -/
@@ -2718,6 +2766,104 @@ public theorem selected_realization_prescribed_lift :
     ∃ b : BiHom (t-s) t (nuZero model X), quotientClass 1 b = firstLabel model X s t x ∧
       realizeNu X b = a := by
   sorry
+
+/-- Source or comparison proof remains to be supplied. -/
+public theorem selected_realization_boundary_lift :
+  ∀ (X : ClassicalObject) (s t : ℤ) (r : ℕ), 2 ≤ r →
+    ∀ y : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t),
+    ClassicalPermanentCycle model X (s,t) y →
+    HitOnPage (model.classical.obj (X.obj model.auxiliary)) r (s,t) y →
+    ∃ a : BiHom (t-s) t (nuZero model X), quotientClass 1 a = firstLabel model X s t y ∧
+      lambdaMultiply (r-1) a = 0 := by
+  sorry
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_permanent_lift :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) → PermanentLiftAt model X := by
+  intro X _ _
+  exact selected_permanent_lift X
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_filtration_lambda :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) → FiltrationLambdaAt model X := by
+  intro X _ _
+  exact selected_filtration_lambda X
+
+
+
+/-- Source or comparison proof remains to be supplied. -/
+public theorem selected_realization_kernel :
+  RealizationKernel model := by
+  sorry
+
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_realization_lifetime :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) →
+    ∀ (s t : ℤ) (r : ℕ), 1 ≤ r →
+    ∀ (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+      (a : BiHom (t-s) t (nuZero model X)),
+    ClassicalPermanentCycle model X (s,t) x →
+    SurvivesTo (model.classical.obj (X.obj model.auxiliary)) (r+1) (s,t) x →
+    quotientClass 1 a = firstLabel model X s t x → lambdaMultiply (r-1) a ≠ 0 := by
+  intro X _ _
+  exact selected_realization_lifetime X
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_realization_detection :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) →
+    ∀ (s t : ℤ) (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+      (a : BiHom (t-s) t (nuZero model X)),
+    NonzeroSurvival (model.classical.obj (X.obj model.auxiliary)) (s,t) x →
+    quotientClass 1 a = firstLabel model X s t x →
+    ClassicalDetects (model.classicalConvergence X) (s,t) x (realizeNu X a) := by
+  intro X _ _
+  exact selected_realization_detection X
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_realization_prescribed_lift :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) →
+    ∀ (s t : ℤ) (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t))
+      (a : HomotopyGroup (t-s) (X.obj model.auxiliary)),
+    NonzeroSurvival (model.classical.obj (X.obj model.auxiliary)) (s,t) x →
+    ClassicalDetects (model.classicalConvergence X) (s,t) x a →
+    ∃ b : BiHom (t-s) t (nuZero model X), quotientClass 1 b = firstLabel model X s t x ∧
+      realizeNu X b = a := by
+  intro X _ _
+  exact selected_realization_prescribed_lift X
+
+/-- Specialization of the registered selected-object comparison; the same object
+and all source applicability hypotheses are retained. The selected comparison
+remains a separate construction obligation. -/
+public theorem bhs_realization_boundary_lift :
+  ∀ (X : ClassicalObject) (products : HasProductsOfShape ℕ Spectrum),
+    BHSObjectApplicability model products (X.obj model.auxiliary) →
+    ∀ (s t : ℤ) (r : ℕ), 2 ≤ r →
+    ∀ y : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t),
+    ClassicalPermanentCycle model X (s,t) y →
+    HitOnPage (model.classical.obj (X.obj model.auxiliary)) r (s,t) y →
+    ∃ a : BiHom (t-s) t (nuZero model X), quotientClass 1 a = firstLabel model X s t y ∧
+      lambdaMultiply (r-1) a = 0 := by
+  intro X _ _
+  exact selected_realization_boundary_lift X
+
+
+
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem absorbedTheta5Lift :
@@ -2790,15 +2936,6 @@ public theorem theta5_detected_exists :
   obtain ⟨a, ha, _⟩ := theta5_lift
   exact ⟨a, ha⟩
 
-/-- Source or comparison proof remains to be supplied. -/
-public theorem selected_realization_boundary_lift :
-  ∀ (X : ClassicalObject) (s t : ℤ) (r : ℕ), 2 ≤ r →
-    ∀ y : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t),
-    ClassicalPermanentCycle model X (s,t) y →
-    HitOnPage (model.classical.obj (X.obj model.auxiliary)) r (s,t) y →
-    ∃ a : BiHom (t-s) t (nuZero model X), quotientClass 1 a = firstLabel model X s t y ∧
-      lambdaMultiply (r-1) a = 0 := by
-  sorry
 
 /-- The fixed mathematical object on the project background. -/
 public def bxTheta5 :
@@ -2831,10 +2968,145 @@ public theorem bx_total_boundary :
   deltaH6Square model = lambdaEtaThetaSquare eta bxTheta5 := by
   sorry
 
-/-- Source or comparison proof remains to be supplied. -/
+section BxUntruncatedConstruction
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 1000000
+
+private theorem sphereLiftIff (x : model.classical.sphere.Page 2 (2,128)) :
+    ClassicalPermanentCycle model .sphere (2,128) x ↔
+      ∃ a : BiHom 126 128 (S_0_0 : SyntheticSpectrum),
+        sphereFirstQuotient model 2 128 (quotientClass 1 a) = x := by
+  let e : nuZero model .sphere ≅ (S_0_0 : SyntheticSpectrum) :=
+    SyntheticCategory.biShift_zero.app _ ≪≫ model.nu.unitIso
+  constructor
+  · intro hx
+    obtain ⟨b,hb⟩ := (selected_permanent_lift .sphere 2 128 x).mp hx
+    let a := b ≫ e.hom
+    have hq : quotientClass 1 a ≫ XModLambdaN.map e.inv 1 = quotientClass 1 b := by
+      dsimp only [a, quotientClass]
+      simp only [Category.assoc]
+      rw [← XModLambdaN.incl_naturality]
+      simp only [Iso.hom_inv_id_assoc]
+    refine ⟨a, ?_⟩
+    change (model.firstQuotient .sphere 0 2 128)
+      (quotientClass 1 a ≫ XModLambdaN.map e.inv 1) = x
+    rw [hq, hb]
+    exact (model.firstQuotient .sphere 0 2 128).apply_symm_apply x
+  · rintro ⟨a,ha⟩
+    apply (selected_permanent_lift .sphere 2 128 x).mpr
+    refine ⟨a ≫ e.inv, ?_⟩
+    have hq : quotientClass 1 (a ≫ e.inv) =
+        quotientClass 1 a ≫ XModLambdaN.map e.inv 1 := by
+      dsimp only [quotientClass]
+      rw [Category.assoc, XModLambdaN.incl_naturality]
+      simp only [Category.assoc]
+    rw [hq]
+    apply (model.firstQuotient .sphere 0 2 128).injective
+    change (model.firstQuotient .sphere 0 2 128)
+        (quotientClass 1 a ≫ XModLambdaN.map e.inv 1) =
+      (model.firstQuotient .sphere 0 2 128)
+        ((model.firstQuotient .sphere 0 2 128).symm x)
+    rw [LinearEquiv.apply_symm_apply]
+    exact ha
+
+private theorem h6SquareNonzero : model.standardClasses.standardH6Square ≠ 0 := by
+  obtain ⟨hdeg,xr,yr,_,hy,_,hne⟩ := adamsOneLine_d2 7 (by decide)
+  intro hz
+  apply hne
+  rw [←hy.eq_on_page_two]
+  change model.sphereAlgebra.product (1,1) (2,128)
+    (model.standardClasses.standardHi 0) model.standardClasses.standardH6Square = 0
+  rw [hz, map_zero]
+
+private theorem h6SquareNoIncoming (r : ℤ) (hr : 2 ≤ r) :
+    model.classical.sphere.d r (((2:ℤ),128)-model.classical.sphere.diffDeg r) = 0 := by
+  by_cases h2 : r = 2
+  · subst r
+    have hq : ((2:ℤ),128)-model.classical.sphere.diffDeg 2 = (0,127) := by
+      rw [model.classical.differentialDegree]
+      decide
+    rw [hq]
+    letI := KIP126.AdamsSynthetic.Standard.sphere_page_filtration_zero 2 127 (by decide)
+    ext a
+    have ha : a = 0 := Subsingleton.elim _ _
+    simp only [ha, map_zero]
+  · let q := ((2:ℤ),128)-model.classical.sphere.diffDeg r
+    have hs : q.1 < 0 := by
+      dsimp only [q]
+      rw [model.classical.differentialDegree]
+      change 2-r < 0
+      omega
+    letI : Subsingleton (model.classical.sphere.Page r q) :=
+      KIP126.AdamsSynthetic.Standard.classical_page_negative .sphere r q.1 q.2 hs
+    ext a
+    have ha : a = 0 := Subsingleton.elim _ _
+    simp only [ha, map_zero]
+
+private theorem permanentIffSurvival :
+    ClassicalPermanentCycle model .sphere (2,128) model.standardClasses.standardH6Square ↔
+      model.H6SquarePermanent := by
+  constructor
+  · intro h
+    exact KIP126.Literature.Standard.nonzeroSurvivalOfPermanentNoIncoming _ _ h
+      h6SquareNonzero h6SquareNoIncoming
+  · rintro ⟨z,hz,_⟩
+    exact ⟨z,hz⟩
+
+private theorem boundaryLiftIff :
+    deltaH6Square model = 0 ↔
+      ∃ a : BiHom 126 128 (S_0_0 : SyntheticSpectrum),
+        sphereFirstQuotient model 2 128 (quotientClass 1 a) = model.standardClasses.standardH6Square := by
+  let x := (sphereFirstQuotient model 2 128).symm model.standardClasses.standardH6Square
+  have hboundary : deltaH6Square model = 0 ↔ x ≫ XModLambdaN.proj (S_0_0 : SyntheticSpectrum) 1 = 0 := by
+    change (susp_invariance 125 129 1 (-1) (S_0_0 : SyntheticSpectrum)).symm
+        (x ≫ sphereTotalBoundary) = 0 ↔ _
+    have hz : (susp_invariance 125 129 1 (-1) (S_0_0 : SyntheticSpectrum)) 0 = 0 := by
+      letI := model.exactness.shiftAdditive (1,-1)
+      change (SyntheticCategory.biShift_comp (125,129) (1,-1)).inv.app
+          (S_0_0 : SyntheticSpectrum) ≫
+        (SyntheticCategory.biShift (1,-1)).map
+          (0 : BiHom 125 129 (S_0_0 : SyntheticSpectrum)) ≫ 𝟙 _ = 0
+      erw [Functor.map_zero, Category.comp_id, comp_zero]
+    rw [Equiv.symm_apply_eq, hz]
+    dsimp only [sphereTotalBoundary]
+    constructor
+    · intro h
+      apply (cancel_mono ((SyntheticCategory.biShift_compat (Syn := SyntheticSpectrum) 1).inv.app
+        ((SyntheticCategory.biShift (0,-1)).obj S_0_0))).mp
+      apply (cancel_mono ((SyntheticCategory.biShift_comp (0,-1) (1,0)).hom.app
+        (S_0_0 : SyntheticSpectrum))).mp
+      simpa only [Category.assoc, zero_comp] using h
+    · intro h
+      simp only [← Category.assoc, h, zero_comp]
+  rw [hboundary]
+  constructor
+  · intro hx
+    let T := XModLambdaN.cofiberTriangle (S_0_0 : SyntheticSpectrum) 1
+    obtain ⟨a,ha⟩ := T.coyoneda_exact₃ (XModLambdaN.cofiberTriangle_distinguished _ _) x hx
+    refine ⟨a, ?_⟩
+    change x = a ≫ XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 1 at ha
+    change sphereFirstQuotient model 2 128
+      (a ≫ XModLambdaN.incl (S_0_0 : SyntheticSpectrum) 1) = _
+    rw [←ha]
+    exact (sphereFirstQuotient model 2 128).apply_symm_apply _
+  · rintro ⟨a,ha⟩
+    have hx : quotientClass 1 a = x := by
+      apply (sphereFirstQuotient model 2 128).injective
+      rw [ha]
+      exact ((sphereFirstQuotient model 2 128).apply_symm_apply _).symm
+    rw [←hx]
+    dsimp only [quotientClass]
+    rw [Category.assoc, XModLambdaN.incl_comp_proj, comp_zero]
+
+/-- The first λ-cofiber exact sequence identifies the total boundary obstruction
+with a permanent lift. Nonzero survival follows from the independent one-line
+differential and the absence of incoming classes. -/
 public theorem bx_untruncated :
-  model.H6SquarePermanent ↔ lambdaEtaThetaSquare eta bxTheta5 = 0 := by
-  sorry
+    model.H6SquarePermanent ↔ lambdaEtaThetaSquare eta bxTheta5 = 0 := by
+  rw [←bx_total_boundary]
+  exact permanentIffSurvival.symm.trans ((sphereLiftIff _).trans boundaryLiftIff.symm)
+
+end BxUntruncatedConstruction
 
 /-- The fixed mathematical object on the project background. -/
 @[implicit_reducible] public def may_leftShift :

@@ -8,7 +8,7 @@ import all KIP126.AdamsCalculations.Table.Data
 import all KIP126.AdamsCalculations.Table.Syntax
 import all KIP126.AdamsCalculations.Table
 
-public meta import Checks.Registry
+public meta import Checks.Registry.AdamsCalculations
 import Lean
 
 /-! Trust audit for fixed upstream declarations. Only the exact individually
@@ -18,7 +18,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.AdamsCalculations.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let env ← getEnv
   let expected : Array Json ← entries.filterM fun (row : Json) => do

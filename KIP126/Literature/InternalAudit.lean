@@ -28,6 +28,7 @@ import all KIP126.Literature.Standard.FiniteQuotientMiddle
 import all KIP126.Literature.Standard.FiniteQuotientNaturality
 import all KIP126.Literature.Standard.FiniteQuotientNoReturn
 import all KIP126.Literature.Standard.FiniteQuotientNormalized
+import all KIP126.Literature.Standard.ExtBoundary
 import all KIP126.Literature.Standard.FiniteQuotientObjectCases
 import all KIP126.Literature.Standard.FiniteQuotientPositive
 import all KIP126.Literature.Standard.FiniteQuotientRecognition
@@ -44,7 +45,7 @@ import all KIP126.Literature.Toda
 import all KIP126.Literature.Triangles
 
 
-public meta import Checks.Registry
+public meta import Checks.Registry.Literature
 import Lean
 
 /-! Trust audit for fixed upstream declarations. Only the exact individually
@@ -54,7 +55,7 @@ open Lean Elab Command
 set_option maxHeartbeats 0
 set_option maxRecDepth 8192
 run_cmd do
-  let ledger ← Lean.ofExcept <| Json.parse proofObligationLedger
+  let ledger ← Lean.ofExcept <| Json.parse Checks.Registry.Literature.proofObligationLedger
   let entries ← Lean.ofExcept <| ledger.getObjValAs? (Array Json) "obligations"
   let expected : Array Json ← entries.filterM fun (row : Json) => do
     let mod ← Lean.ofExcept <| row.getObjValAs? String "module"

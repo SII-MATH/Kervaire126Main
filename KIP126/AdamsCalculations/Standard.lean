@@ -2,6 +2,11 @@ module
 
 public import KIP126.E2Computation.Standard
 import KIP126.AdamsCalculations.Table
+import KIP126.Literature.Standard.FiniteQuotientNormalized
+import KIP126.SpectralSequence.Computation.Morphism.Proofs
+import KIP126.SpectralSequence.Computation.PageThree.Proofs
+import Mathlib.GroupTheory.Index
+import Mathlib.Data.Finsupp.Fintype
 import KIP126.AdamsCalculations.Table.Archive
 import KIP126.E2Computation.Table.Values
 import KIP126.E2Computation.Table.Relations
@@ -9010,8 +9015,1376 @@ public theorem no_other_incoming {r s t : ℤ} (_hr : 2 ≤ r) (h6 : r ≠ 6) (h
 
 public theorem cofiber_d3 : HasNonzeroDifferential nuCofiberSequence 3 (8,134) (11,136)
     cofiberSource (bottom 11 136 Y) := by sorry
+/- Actual first-quotient exactness and finite Cν-page construction.
+General naturality/suspension arguments adapted from Literature/Standard/
+FiniteQuotientTriangle.lean and FiniteQuotientNaturality.lean (ef1c6c7);
+finite incoming calculations adapted from historical 71e63c4,
+Computation/LinCoordinates/Certificates/SphereAndCofiber/CofiberCoordinates.lean.
+All are private proofs using the current fixed maps and registered inputs.
+The literal bottom map is shown injective by an 8/16/2 cardinality argument;
+no historical inclusion-coordinate equation or new public premise is assumed. -/
+section
+namespace CofiberResearch
+open KIP126.Literature
+open CategoryTheory CategoryTheory.Limits CategoryTheory.Functor
+open CategoryTheory.Pretriangulated KIP126.StableHomotopy
+open KIP126.Synthetic.Context KIP126.AdamsSynthetic KIP126.Kervaire.Route
+open KIP126.Literature.Standard
+open KIP126.AdamsSynthetic.Standard
+noncomputable section
+set_option backward.isDefEq.respectTransparency false
+set_option backward.defeqAttrib.useBackward true
+set_option maxHeartbeats 1800000
+
+set_option maxHeartbeats 1600000 in
+set_option backward.isDefEq.respectTransparency false in
+private theorem finite_quotient_shift_comparison (coh : BiShiftCoherence SyntheticSpectrum)
+    (a : ℤ × ℤ) (q : ℕ) (X : SyntheticSpectrum)
+    [cs : (SyntheticCategory.biShift (Syn := SyntheticSpectrum) a).CommShift ℤ]
+    [(SyntheticCategory.biShift (Syn := SyntheticSpectrum) a).IsTriangulated] :
+    ∃ e : XModLambdaN ((SyntheticCategory.biShift a).obj X) q ≅
+      (SyntheticCategory.biShift a).obj (XModLambdaN X q),
+      XModLambdaN.incl ((SyntheticCategory.biShift a).obj X) q ≫ e.hom =
+        (SyntheticCategory.biShift a).map (XModLambdaN.incl X q) := by
+  let oneComm (a : ℤ × ℤ) :
+      SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree 1) ≅
+        SyntheticCategory.biShift (lambdaDegree 1) ⋙ SyntheticCategory.biShift a :=
+    biShiftAddIso a (0,-1) (a+(0,-1)) rfl ≪≫
+      (biShiftAddIso (0,-1) a (a+(0,-1)) (add_comm _ _)).symm
+
+  let powerComm (a : ℤ × ℤ) : (q : ℕ) →
+      SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree q) ≅
+        SyntheticCategory.biShift (lambdaDegree q) ⋙ SyntheticCategory.biShift a := fun q =>
+    Nat.rec (motive := fun q =>
+      SyntheticCategory.biShift (Syn := SyntheticSpectrum) a ⋙ SyntheticCategory.biShift (lambdaDegree q) ≅
+        SyntheticCategory.biShift (lambdaDegree q) ⋙ SyntheticCategory.biShift a)
+      (isoWhiskerLeft _ SyntheticCategory.biShift_zero ≪≫
+        Functor.rightUnitor _ ≪≫ (Functor.leftUnitor _).symm ≪≫
+        (isoWhiskerRight SyntheticCategory.biShift_zero _).symm)
+      (fun q ih =>
+        isoWhiskerLeft _ (lambdaShiftAddIso 1 q (q+1) (by omega)).symm ≪≫
+        (Functor.associator _ _ _).symm ≪≫
+        isoWhiskerRight (oneComm a) _ ≪≫ Functor.associator _ _ _ ≪≫
+        isoWhiskerLeft _ ih ≪≫
+        (Functor.associator _ _ _).symm ≪≫
+        isoWhiskerRight (lambdaShiftAddIso 1 q (q+1) (by omega)) _) q
+
+  have powerComm_square (coh : BiShiftCoherence SyntheticSpectrum) (a : ℤ × ℤ)
+      (q : ℕ) (X : SyntheticSpectrum) :
+      lambdaPow q ((SyntheticCategory.biShift a).obj X) =
+        (powerComm a q).hom.app X ≫ (SyntheticCategory.biShift a).map (lambdaPow q X) := by
+    induction q generalizing X with
+    | zero =>
+      simp (config := {congrConsts := false}) [powerComm, lambdaPow, ← Functor.map_comp]
+    | succ q ih =>
+      have h1 : (oneComm a).hom.app X ≫
+          (SyntheticCategory.biShift a).map (SyntheticCategory.lam.app X) =
+          SyntheticCategory.lam.app ((SyntheticCategory.biShift a).obj X) := by
+        simpa (config := {congrConsts := false}) [oneComm, Category.assoc] using (coh.lambda_comm a X).symm
+      apply (cancel_epi ((lambdaShiftAddIso 1 q (q+1) (by omega)).hom.app
+        ((SyntheticCategory.biShift a).obj X))).mp
+      rw [lambdaPow_succ_comparison]
+      simp (config := {congrConsts := false}) only [powerComm, Iso.trans_hom, Iso.symm_hom, NatTrans.comp_app,
+        isoWhiskerLeft_hom, isoWhiskerRight_hom, whiskerLeft_app, whiskerRight_app,
+        Functor.associator_inv_app, Functor.associator_hom_app, Category.id_comp, Category.assoc]
+      rw [Iso.hom_inv_id_app_assoc]
+      rw [← Functor.map_comp, lambdaPow_succ_comparison, Functor.map_comp]
+      have hn := (powerComm a q).hom.naturality (SyntheticCategory.lam.app X)
+      have hn' := congrArg (fun h => h ≫ (SyntheticCategory.biShift a).map (lambdaPow q X)) hn
+      simp (config := {congrConsts := false}) only [Functor.comp_map, Category.assoc] at hn'
+      dsimp only [KIP126.Synthetic.Context.lambdaDegree, Functor.id_obj] at hn' ⊢
+      erw [← hn']
+      rw [← Category.assoc, ← Functor.map_comp, h1, ih]
+
+  let F := SyntheticCategory.biShift (Syn := SyntheticSpectrum) a
+  let T := Triangle.mk (lambdaPow q X) (XModLambdaN.incl X q) (XModLambdaN.proj X q)
+  let T' := Triangle.mk (lambdaPow q (F.obj X))
+    (XModLambdaN.incl (F.obj X) q) (XModLambdaN.proj (F.obj X) q)
+  have hT : T ∈ distTriang SyntheticSpectrum := HasFunctorialCofiber.cofib_distinguished _
+  have hT' : T' ∈ distTriang SyntheticSpectrum := HasFunctorialCofiber.cofib_distinguished _
+  let e := isoTriangleOfIso₁₂ T' (F.mapTriangle.obj T) hT'
+    (F.map_distinguished T hT) ((powerComm a q).app X) (Iso.refl _) (by
+      change lambdaPow q (F.obj X) ≫ 𝟙 _ =
+        (powerComm a q).hom.app X ≫ F.map (lambdaPow q X)
+      simpa (config := {congrConsts := false}) only [Category.comp_id] using powerComm_square coh a q X)
+  refine ⟨Triangle.π₃.mapIso e, ?_⟩
+  have h := e.hom.comm₂
+  change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
+    e.hom.hom₂ ≫ F.map (XModLambdaN.incl X q) at h
+  change XModLambdaN.incl (F.obj X) q ≫ e.hom.hom₃ =
+    F.map (XModLambdaN.incl X q)
+  simpa (config := {congrConsts := false}) only [e, isoTriangleOfIso₁₂_hom_hom₂, Iso.refl_hom, Category.id_comp] using h
+
+/-- An actual finite quotient comparison with ordinary suspension, preserving
+the selected quotient inclusion. This construction alone does not assert
+that the quotient of a normalized triangle is distinguished. -/
+private theorem finite_quotient_suspension_comparison
+    (q : ℕ) (X : SyntheticSpectrum) :
+    ∃ esusp : XModLambdaN (X⟦(1:ℤ)⟧) q ≅ (XModLambdaN X q)⟦(1:ℤ)⟧,
+      XModLambdaN.incl (X⟦(1:ℤ)⟧) q ≫ esusp.hom =
+        (shiftFunctor SyntheticSpectrum (1:ℤ)).map (XModLambdaN.incl X q) := by
+  let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (1,0)
+  let η := SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1
+  letI := model.exactness.shiftCommShift (1,0)
+  letI := model.exactness.shiftExact (1,0)
+  obtain ⟨e,he⟩ := finite_quotient_shift_comparison model.quotients.coherence (1,0) q X
+  let eQ := (model.quotients.functoriality.functor q).mapIso (η.symm.app X)
+  refine ⟨eQ ≪≫ e ≪≫ η.app (XModLambdaN X q), ?_⟩
+  change XModLambdaN.incl (X⟦(1:ℤ)⟧) q ≫ XModLambdaN.map (η.inv.app X) q ≫
+      e.hom ≫ η.hom.app (XModLambdaN X q) = _
+  calc
+    _ = (XModLambdaN.incl (X⟦(1:ℤ)⟧) q ≫ XModLambdaN.map (η.inv.app X) q) ≫
+        e.hom ≫ η.hom.app (XModLambdaN X q) := by simp (config := {congrConsts := false}) only [Category.assoc]
+    _ = (η.inv.app X ≫ XModLambdaN.incl (F.obj X) q) ≫
+        e.hom ≫ η.hom.app (XModLambdaN X q) := by
+      rw [←XModLambdaN.incl_naturality]
+    _ = η.inv.app X ≫ F.map (XModLambdaN.incl X q) ≫
+        η.hom.app (XModLambdaN X q) := by
+      simpa (config := {congrConsts := false}) only [Category.assoc] using congrArg
+        (fun z => η.inv.app X ≫ z ≫ η.hom.app (XModLambdaN X q)) he
+    _ = η.inv.app X ≫ η.hom.app X ≫
+        (shiftFunctor SyntheticSpectrum (1:ℤ)).map (XModLambdaN.incl X q) := by
+      rw [η.hom.naturality]
+    _ = _ := by rw [←Category.assoc,η.inv_hom_id_app,Category.id_comp]
+
+end
+end CofiberResearch
+end
+
+section
+namespace CofiberResearch
+open KIP126.Literature
+open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
+open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.Synthetic.SpectralSequence
+open KIP126.AdamsSynthetic KIP126.Core.SpectralSequence KIP126.Kervaire.Route
+open KIP126.Literature.Standard
+open KIP126.AdamsSynthetic.Standard
+noncomputable section
+set_option backward.isDefEq.respectTransparency false
+set_option backward.defeqAttrib.useBackward true
+set_option maxHeartbeats 1600000
+
+section Generic
+private theorem first_quotient_infinity_rep_morphism
+    {E E' : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) Tridegree}
+    (f : E ⟶ E') (i : Tridegree) {x : E.Page 2 i} {e : (E.ssData i).eInfty}
+    (h : ∃ z : (Subobject.underlying.obj ((E.ssData i).Z ⊤) : ModuleCat ℤ),
+      (Subobject.ofLE _ _ ((E.ssData i).Z_anti le_top) ≫
+        (E.ssData i).pageπ (↑(2-E.r₀).toNat : WithTop ℕ)) z = x ∧
+      (E.ssData i).pageπ ⊤ z = e) :
+    ∃ z : (Subobject.underlying.obj ((E'.ssData i).Z ⊤) : ModuleCat ℤ),
+      (Subobject.ofLE _ _ ((E'.ssData i).Z_anti le_top) ≫
+        (E'.ssData i).pageπ (↑(2-E'.r₀).toNat : WithTop ℕ)) z = f.pageMap 2 i x ∧
+      (E'.ssData i).pageπ ⊤ z = f.eInftyMap i e := by
+  have hstart := f.r₀_eq
+  rcases E with ⟨⟨r₀,D,δ,d⟩,dd,Zs,Bs⟩
+  rcases E' with ⟨⟨r₀',D',δ',d'⟩,dd',Zs',Bs'⟩
+  dsimp at hstart
+  subst r₀'
+  obtain ⟨z,hz,he⟩ := h
+  let n : WithTop ℕ := ↑(2-r₀).toNat
+  refine ⟨f.toSSDataMorphism.cycleMap i ⊤ z, ?_, ?_⟩
+  · have hs := f.toSSDataMorphism.cycleMap_ofLE_assoc i
+      (r := n) (s := ⊤) le_top ((D' i).pageπ n)
+    have hp := f.toSSDataMorphism.pageπ_pageMap i n
+    have hq : (Subobject.ofLE ((D i).Z ⊤) ((D i).Z n) ((D i).Z_anti le_top) ≫
+        (D i).pageπ n) ≫ f.toSSDataMorphism.pageMap i n =
+        f.toSSDataMorphism.cycleMap i ⊤ ≫
+          Subobject.ofLE ((D' i).Z ⊤) ((D' i).Z n) ((D' i).Z_anti le_top) ≫ (D' i).pageπ n := by
+      rw [Category.assoc,hp]
+      exact hs
+    change ((Subobject.ofLE _ _ _ ≫ (D' i).pageπ n)
+      (f.toSSDataMorphism.cycleMap i ⊤ z)) =
+      ((f.toSSDataMorphism.pageMap i n ≫ eqToHom _) x)
+    simpa only [ModuleCat.comp_apply, hz, eqToHom_refl, Category.comp_id, n]
+      using (ConcreteCategory.congr_hom hq z).symm
+  · have hp := f.toSSDataMorphism.pageπ_pageMap i ⊤
+    change (D' i).pageπ ⊤ (f.toSSDataMorphism.cycleMap i ⊤ z) =
+      f.toSSDataMorphism.pageMap i ⊤ e
+    simpa only [ModuleCat.comp_apply, he] using
+      (ConcreteCategory.congr_hom hp z).symm
+
+private theorem first_quotient_infinity_rep_map {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+    {F : SyntheticAdamsFamily Syn} {X Y : Syn} (g : X ⟶ Y)
+    (i : Tridegree) {x : (F.obj X).Page 2 i}
+    {e : ((F.obj X).sequence.ssData i).eInfty}
+    (h : HasInfinityRepresentative (F.obj X) 2 i x e) :
+    HasInfinityRepresentative (F.obj Y) 2 i (F.pageMap g 2 i x)
+      ((F.map g).eInftyMap i e) := by
+  obtain ⟨hr,z,hz,he⟩ := h
+  obtain ⟨z',hz',he'⟩ := first_quotient_infinity_rep_morphism (F.map g) i ⟨z,hz,he⟩
+  exact ⟨hr,z',hz',he'⟩
+
+/-- Detection is natural for the prescribed homotopy and E∞ maps of one convergent map. -/
+private theorem first_quotient_detects_map {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+    [HasFunctorialCofiber (C := Syn)] {H : Syn} {unit : S_0_0 ⟶ H}
+    {F : SyntheticAdamsFamily Syn} {P : SyntheticTowerPresentation unit F}
+    {X Y : Syn} {g : X ⟶ Y} {cx : SyntheticTowerConvergence P X}
+    {cy : SyntheticTowerConvergence P Y}
+    (M : ConvergentMap F g cx.toConvergence cy.toConvergence)
+    (i : Tridegree) {x : (F.obj X).Page 2 i}
+    {a : BiHom (i.2.1-i.1) i.2.2 X}
+    (h : KIP126.AdamsSynthetic.Detects cx i x a) :
+    KIP126.AdamsSynthetic.Detects cy i (F.pageMap g 2 i x) (a ≫ g) := by
+  obtain ⟨e, he, b, hb, hgr⟩ := h
+  let hc := M.comparison.filtration_compat i.1 (i.2.1-i.1,i.2.2)
+  let b' := hc.choose b
+  refine ⟨(F.map g).eInftyMap i e, first_quotient_infinity_rep_map g i he, b', ?_, ?_⟩
+  · have hmap := ConcreteCategory.congr_hom hc.choose_spec b
+    have heq := ConcreteCategory.congr_hom
+      (congrFun M.abutment_eq (i.2.1-i.1,i.2.2))
+      (((P.filtration X).F i.1 (i.2.1-i.1,i.2.2)).arrow b)
+    change ((P.filtration Y).F i.1 (i.2.1-i.1,i.2.2)).arrow b' = _
+    exact hmap.trans (heq.trans (congrArg (fun z => z ≫ g) hb))
+  · have hm := M.comparison.iso_compat i
+    simp only [SyntheticTowerConvergence.toConvergence, Filtration.transportGraded_self,
+      Category.comp_id] at hm
+    rw [M.infinity_eq] at hm
+    have hm' := ConcreteCategory.congr_hom hm e
+    change (cy.identification i).hom ((F.map g).eInftyMap i e) =
+      Filtration.inducedAssocGradedMap M.comparison.aMap M.comparison.filtration_compat
+        i.1 (i.2.1-i.1,i.2.2) ((cx.identification i).hom e) at hm'
+    rw [hgr] at hm'
+    have hg : (P.filtration X).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) ≫
+        Filtration.inducedAssocGradedMap M.comparison.aMap M.comparison.filtration_compat
+          i.1 (i.2.1-i.1,i.2.2) =
+        hc.choose ≫ (P.filtration Y).toAssociatedGraded i.1 (i.2.1-i.1,i.2.2) := by
+      exact cokernel.π_desc _ _ _
+    exact hm'.trans (ConcreteCategory.congr_hom hg b)
+
+private theorem first_quotient_familyPageMap_comp {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+    (F : SyntheticAdamsFamily Syn) {X Y Z : Syn} (f : X ⟶ Y) (g : Y ⟶ Z)
+    (r : ℤ) (i : Tridegree) :
+    F.pageMap (f ≫ g) r i = F.pageMap f r i ≫ F.pageMap g r i := by
+  change (F.map (f ≫ g)).pageMap r i =
+    (F.map f).pageMap r i ≫ (F.map g).pageMap r i
+  rw [F.map_comp, SpectralSequenceMorphism.pageMap_comp]
+
+
+variable {Syn : Type u} [SyntheticCategory.{u,v} Syn]
+  [HasFunctorialCofiber (C := Syn)]
+  {H : Syn} {unit : S_0_0 ⟶ H} {F : SyntheticAdamsFamily Syn}
+  {P : SyntheticTowerPresentation unit F} {X : Syn}
+
+private theorem first_quotient_filtration_iff_of_infinity_zero (c : SyntheticTowerConvergence P X)
+    (s t m w : ℤ) (hst : s ≤ t)
+    (hz : ∀ j, s ≤ j → j < t → IsZero (((F.obj X).sequence.ssData (j,m+j,w)).eInfty))
+    (a : BiHom m w X) : FiltrationAtLeast P s a ↔ FiltrationAtLeast P t a := by
+  have hgraded (j : ℤ) (hj : s ≤ j) (hjt : j < t) :
+      IsZero ((P.filtration X).associatedGraded j (m,w)) :=
+    (hz j hj hjt).of_iso (towerGradedIso c (m,w) j).symm
+  have he := (P.filtration X).eq_of_associatedGraded_isZero s t (m,w) hst hgraded
+  have he' := congrArg (fun Q => a ∈ (ModuleCat.subobjectModule (syntheticHomotopy X (m,w))) Q) he
+  simpa only [SyntheticTowerPresentation.filtration, OrderIso.apply_symm_apply,
+    FiltrationAtLeast] using Iff.of_eq he'
+private theorem first_quotient_filtration_map
+    {Y : Syn} (f : X ⟶ Y) (s : ℤ) (p : ℤ × ℤ)
+    (a : BiHom p.1 p.2 X) (ha : FiltrationAtLeast P s a) :
+    FiltrationAtLeast P s (a ≫ f) := by
+  obtain ⟨b,hb⟩ := ha
+  refine ⟨b ≫ (P.map f).stage s.toNat,?_⟩
+  change (b ≫ (P.map f).stage s.toNat) ≫ (P.tower Y).projection s = a ≫ f
+  rw [Category.assoc,(P.map f).projection,←Category.assoc]
+  exact congrArg (fun z => z ≫ f) hb
+
+end Generic
+
+private theorem first_quotient_finite_infinity_zero_outside (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+    (s t w : ℤ) (hw : ¬ (0 ≤ t-w ∧ t-w < q)) :
+    IsZero (((model.family.quotient (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData
+      (s,t,w)).eInfty) := by
+  haveI : Subsingleton (KIP126.Literature.finiteEInftyModel model X q (s,t) w) := by
+    dsimp only [KIP126.Literature.finiteEInftyModel]
+    simp only [hw, ite_false]
+    infer_instance
+  haveI : Subsingleton (((model.family.quotient
+      (model.nu.functor.obj (X.obj model.auxiliary)) q).sequence.ssData (s,t,w)).eInfty) :=
+    (KIP126.Literature.Standard.eInfinity_finite X q hq (s,t) w).injective.subsingleton
+  exact ModuleCat.isZero_of_subsingleton _
+
+private theorem first_quotient_finite_high_filtration_zero (X : ClassicalObject) (q : ℕ) (hq : 0 < q)
+    (m w s : ℤ) (hs : (q:ℤ) ≤ m+s-w)
+    (a : BiHom m w (XModLambdaN (model.nu.functor.obj (X.obj model.auxiliary)) q))
+    (ha : FiltrationAtLeast model.syntheticTower s a) : a = 0 := by
+  apply synthetic_homotopy_separated (.nu X) q m w a
+  intro j
+  by_cases hj : s ≤ (j:ℤ)
+  · exact (first_quotient_filtration_iff_of_infinity_zero (model.convergence (.quotient q (.nu X)))
+      s j m w hj (fun k hk _ => first_quotient_finite_infinity_zero_outside X q hq k (m+k) w (by omega)) a).mp ha
+  · exact model.syntheticTower.filtrationSubmodule_antitone _ (m,w) (by omega) ha
+
+/-- At the first quotient's upper filtration edge, the actual class is zero.
+The quotient is taken after the given weight shift, exactly as in firstQuotient. -/
+private theorem first_quotient_shifted_high_filtration_zero
+    (Y : ClassicalObject) (a s t : ℤ)
+    (d : BiHom (t-s) (t+a)
+      (XModLambdaN ((SyntheticCategory.biShift (0,a)).obj
+        (model.nu.functor.obj (Y.obj model.auxiliary))) 1))
+    (hd : FiltrationAtLeast model.syntheticTower (s+1) d) : d = 0 := by
+  letI := model.exactness.shiftCommShift (0,a)
+  letI := model.exactness.shiftExact (0,a)
+  let V := model.nu.functor.obj (Y.obj model.auxiliary)
+  let A : SyntheticObject := .quotient 1 (.shift (0,a) (.nu Y))
+  let B : SyntheticObject := .shift (0,a) (.quotient 1 (.nu Y))
+  obtain ⟨e,_⟩ := finite_quotient_shift_comparison model.quotients.coherence
+    (0,a) 1 V
+  have hde : FiltrationAtLeast model.syntheticTower (s+1) (d ≫ e.hom) :=
+    first_quotient_filtration_map e.hom (s+1) (t-s,t+a) d hd
+  let E : FilteredPieceIso (model.convergence (.quotient 1 (.nu Y))).filtration
+      (model.convergence B).filtration (t-s,t) (t-s,t+a) := by
+    have hp : (t-s,t)+(0,a) = (t-s,t+a) := by ext <;> simp
+    exact hp ▸ (essShift (0,a)).filtered (.quotient 1 (.nu Y)) (t-s,t)
+  have hmem : d ≫ e.hom ∈ ModuleCat.subobjectModule _
+      ((model.convergence B).filtration.F (s+1) (t-s,t+a)) := by
+    dsimp only [SyntheticTowerConvergence.filtration,SyntheticTowerPresentation.filtration,
+      FiltrationAtLeast,B,V,SyntheticObject.obj,syntheticHomotopy] at hde ⊢
+    simpa only [OrderIso.apply_symm_apply] using hde
+  obtain ⟨b,hb⟩ := hmem
+  have hcomm := ConcreteCategory.congr_hom (E.symm.level_arrow (s+1)) b
+  dsimp only [FilteredPieceIso.symm] at hcomm
+  simp only [ModuleCat.comp_apply] at hcomm
+  have hbase : FiltrationAtLeast model.syntheticTower (s+1)
+      (E.ambient.inv (d ≫ e.hom)) := by
+    have hbase' : E.ambient.inv (d ≫ e.hom) ∈ ModuleCat.subobjectModule _
+        ((model.convergence (.quotient 1 (.nu Y))).filtration.F (s+1) (t-s,t)) := by
+      refine ⟨(E.level (s+1)).inv b,?_⟩
+      change ((model.convergence (.quotient 1 (.nu Y))).filtration.F
+        (s+1) (t-s,t)).arrow ((E.level (s+1)).inv b) = E.ambient.inv (d ≫ e.hom)
+      simpa only [hb,Iso.symm_hom] using hcomm
+    simpa only [SyntheticTowerConvergence.filtration,SyntheticTowerPresentation.filtration,
+      OrderIso.apply_symm_apply,FiltrationAtLeast] using hbase'
+  have hzero := first_quotient_finite_high_filtration_zero Y 1 (by decide)
+    (t-s) t (s+1) (by omega) (E.ambient.inv (d ≫ e.hom)) hbase
+  have hdzero : d ≫ e.hom = 0 := by
+    apply (ModuleCat.mono_iff_injective E.ambient.inv).mp inferInstance
+    simpa only [map_zero] using hzero
+  apply (cancel_mono e.hom).mp
+  simpa only [zero_comp] using hdzero
+
+private def first_quotient_nu_label
+    (X : ClassicalObject) (a s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    (model.family.obj ((SyntheticCategory.biShift (0,a)).obj
+      (model.nu.functor.obj (X.obj model.auxiliary)))).Page 2 (s,t,t+a) := by
+  simpa only [Nat.cast_zero,sub_zero] using model.comparison.nuE2 X a s t 0 x
+
+private theorem first_quotient_nu_label_natural
+    (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (a s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    model.family.pageMap ((SyntheticCategory.biShift (0,a)).map
+      (model.nu.functor.map f)) 2 (s,t,t+a) (first_quotient_nu_label X a s t x) =
+      first_quotient_nu_label Y a s t
+        ((model.classical.functor.map f).pageMap 2 (s,t) x) := by
+  have regrade (w w' : ℤ) (hw : w=w')
+      (g : ((SyntheticCategory.biShift (0,a)).obj
+          (model.nu.functor.obj (X.obj model.auxiliary))) ⟶
+        ((SyntheticCategory.biShift (0,a)).obj
+          (model.nu.functor.obj (Y.obj model.auxiliary))))
+      (b : (model.family.obj ((SyntheticCategory.biShift (0,a)).obj
+        (model.nu.functor.obj (X.obj model.auxiliary)))).Page 2 (s,t,w))
+      (c : (model.family.obj ((SyntheticCategory.biShift (0,a)).obj
+        (model.nu.functor.obj (Y.obj model.auxiliary)))).Page 2 (s,t,w))
+      (h : model.family.pageMap g 2 (s,t,w) b = c) :
+      model.family.pageMap g 2 (s,t,w')
+        (Eq.mp (congrArg (fun w => ↥((model.family.obj
+          ((SyntheticCategory.biShift (0,a)).obj
+            (model.nu.functor.obj (X.obj model.auxiliary)))).Page 2 (s,t,w))) hw) b) =
+      Eq.mp (congrArg (fun w => ↥((model.family.obj
+        ((SyntheticCategory.biShift (0,a)).obj
+          (model.nu.functor.obj (Y.obj model.auxiliary)))).Page 2 (s,t,w))) hw) c := by
+    subst w'
+    exact h
+  exact regrade (t+a-(0:ℕ)) (t+a) (by simp)
+    _ _ _ (model.comparison.nu_natural X Y f a s t 0 x)
+
+/-- Before finite-window vanishing, naturality already holds modulo precisely
+one next filtration step, with the same x and the actual Q_1(nu f). -/
+private theorem first_quotient_nu_naturality_next_filtration
+    (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (a s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    FiltrationAtLeast model.syntheticTower (s+1)
+      ((model.firstQuotient X a s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,a)).map (model.nu.functor.map f)) 1 -
+      (model.firstQuotient Y a s t).symm
+        ((model.classical.functor.map f).pageMap 2 (s,t) x)) := by
+  let VX := (SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,a)).obj
+    (model.nu.functor.obj (X.obj model.auxiliary))
+  let VY := (SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (0,a)).obj
+    (model.nu.functor.obj (Y.obj model.auxiliary))
+  let g : VX ⟶ VY := (SyntheticCategory.biShift (0,a)).map (model.nu.functor.map f)
+  let qg := XModLambdaN.map g 1
+  let AX : SyntheticObject := .quotient 1 (.shift (0,a) (.nu X))
+  let AY : SyntheticObject := .quotient 1 (.shift (0,a) (.nu Y))
+  have hdX := model.comparisonCompatible.first_quotient X a s t x
+  have hdY := model.comparisonCompatible.first_quotient Y a s t
+    ((model.classical.functor.map f).pageMap 2 (s,t) x)
+  have hdMap := first_quotient_detects_map (model.convergentMap AX AY qg) (s,t,t+a) hdX
+  have hlabels : model.family.pageMap qg 2 (s,t,t+a)
+      (model.family.pageMap (XModLambdaN.incl VX 1) 2 (s,t,t+a)
+        (first_quotient_nu_label X a s t x)) =
+    model.family.pageMap (XModLambdaN.incl VY 1) 2 (s,t,t+a)
+      (first_quotient_nu_label Y a s t
+        ((model.classical.functor.map f).pageMap 2 (s,t) x)) := by
+    rw [←ModuleCat.comp_apply,←first_quotient_familyPageMap_comp,
+      ←XModLambdaN.incl_naturality,first_quotient_familyPageMap_comp,ModuleCat.comp_apply]
+    rw [first_quotient_nu_label_natural X Y f a s t x]
+  have hdMap' : Detects (model.convergence AY) (s,t,t+a)
+      (model.family.pageMap (XModLambdaN.incl VY 1) 2 (s,t,t+a)
+        (first_quotient_nu_label Y a s t
+          ((model.classical.functor.map f).pageMap 2 (s,t) x)))
+      ((model.firstQuotient X a s t).symm x ≫ qg) := by
+    rw [←hlabels]
+    exact hdMap
+  exact detects_sub_filtration (model.convergence AY) (s,t,t+a) hdMap' hdY
+
+/-- Strict naturality of the specified first-quotient coordinates for actual
+weight-shifted nu-images of classical maps. This is not an assertion about
+positive-exponent normalized lifts. -/
+private theorem first_quotient_nu_naturality
+    (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary) (a s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    (model.firstQuotient X a s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,a)).map (model.nu.functor.map f)) 1 =
+      (model.firstQuotient Y a s t).symm
+        ((model.classical.functor.map f).pageMap 2 (s,t) x) := by
+  apply sub_eq_zero.mp
+  exact first_quotient_shifted_high_filtration_zero Y a s t _
+    (first_quotient_nu_naturality_next_filtration X Y f a s t x)
+
+
+/-- Zero positive lambda power is exactly the existing inverse zero shift.
+This uses the unit coherence of the given bigraded action. -/
+private theorem normalized_zero_positive_power (A : SyntheticSpectrum) :
+    lambdaToPositivePow 0 A = SyntheticCategory.biShift_zero.inv.app A := by
+  have hu := model.quotients.coherence.right_unit (0,0) A
+  dsimp only [biShiftAddIso] at hu
+  simp only [eqToIso_refl,Iso.trans_refl] at hu
+  dsimp only [lambdaToPositivePow]
+  norm_num only
+  simp only [eqToHom_refl,Category.id_comp]
+  change SyntheticCategory.biShift_zero.inv.app A ≫
+    ((SyntheticCategory.biShift_comp (0,0) (0,0)).inv.app A ≫
+      SyntheticCategory.biShift_zero.hom.app ((SyntheticCategory.biShift (0,0)).obj A)) = _
+  erw [←hu,Iso.inv_hom_id_app,Category.comp_id]
+
+private theorem normalized_zero_factorization_form {A B : SyntheticSpectrum} {k : ℕ}
+    (hk : k=0) (M : (SyntheticCategory.biShift (0,(k:ℤ))).obj A ⟶ B)
+    (g : A ⟶ B) (hM : lambdaToPositivePow k A ≫ M = g) :
+    M = eqToHom (congrArg (fun j : ℕ =>
+      (SyntheticCategory.biShift (0,(j:ℤ))).obj A) hk) ≫
+        SyntheticCategory.biShift_zero.hom.app A ≫ g := by
+  subst k
+  rw [normalized_zero_positive_power] at hM
+  have h := congrArg (fun z => SyntheticCategory.biShift_zero.hom.app A ≫ z) hM
+  erw [←Category.assoc,Iso.hom_inv_id_app,Category.id_comp] at h
+  simpa only [eqToHom_refl,Category.id_comp] using h
+
+/-- The explicit source comparison to F_(0,0) nu X; its only transport is
+exactly the given equality of the actual normalization exponent with zero. -/
+private def normalized_zero_source_iso (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (h0 : normalizedExponent model.classicalTower f = 0) :
+    (SyntheticCategory.biShift (0,(normalizedExponent model.classicalTower f:ℤ))).obj
+        (model.nu.functor.obj (X.obj model.auxiliary)) ≅
+      (SyntheticCategory.biShift (0,0)).obj
+        (model.nu.functor.obj (X.obj model.auxiliary)) :=
+  eqToIso (congrArg (fun k : ℕ => (SyntheticCategory.biShift (0,(k:ℤ))).obj
+    (model.nu.functor.obj (X.obj model.auxiliary))) h0)
+
+/-- A selected normalized map of exponent zero is strictly the nu-image
+through the displayed source comparison and the existing zero-shift iso. -/
+private theorem normalized_map_at_zero (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (h0 : normalizedExponent model.classicalTower f = 0) :
+    (model.normalizedMap X Y f).map =
+      (normalized_zero_source_iso X Y f h0).hom ≫
+        SyntheticCategory.biShift_zero.hom.app _ ≫ model.nu.functor.map f := by
+  exact normalized_zero_factorization_form h0 _ _ (model.normalizedMap X Y f).factorization
+
+/-- The same first-quotient coordinates calibrate the actual selected
+normalized map when its exponent is zero. The source class is transported
+by the inverse of the explicit F_(0,0) comparison, through the actual Q_1. -/
+private theorem first_quotient_normalized_map_at_zero
+    (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (h0 : normalizedExponent model.classicalTower f = 0) (s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map (normalized_zero_source_iso X Y f h0).inv 1 ≫
+        XModLambdaN.map (model.normalizedMap X Y f).map 1 =
+      (model.firstQuotient Y 0 s t).symm
+          ((model.classical.functor.map f).pageMap 2 (s,t) x) ≫
+        XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 := by
+  have hM := normalized_map_at_zero X Y f h0
+  have hzero := SyntheticCategory.biShift_zero.hom.naturality (model.nu.functor.map f)
+  dsimp only [Functor.id_map] at hzero
+  calc
+    _ = (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _ ≫
+          model.nu.functor.map f) 1 := by
+      rw [hM,model.quotients.functoriality.map_comp]
+      rw [←Category.assoc (XModLambdaN.map _ _),
+        ←model.quotients.functoriality.map_comp]
+      simp only [Iso.inv_hom_id,model.quotients.functoriality.map_id,Category.id_comp]
+    _ = (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,0)).map (model.nu.functor.map f) ≫
+          SyntheticCategory.biShift_zero.hom.app _) 1 := by rw [hzero]
+    _ = ((model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,0)).map (model.nu.functor.map f)) 1) ≫
+        XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 := by
+      rw [model.quotients.functoriality.map_comp,Category.assoc]
+    _ = _ := by rw [first_quotient_nu_naturality X Y f 0 s t x]
+
+
+/-- At exponent zero the negative-target version is the original map
+followed by the explicit inverse zero shift and the same index transport. -/
+private theorem normalized_negative_lift_at_zero {A B : SyntheticSpectrum} {k : ℕ}
+    (h0 : k=0) (M : (SyntheticCategory.biShift (0,(k:ℤ))).obj A ⟶ B)
+    (g : A ⟶ B) (hM : lambdaToPositivePow k A ≫ M = g) :
+    negativeLift k M = g ≫ SyntheticCategory.biShift_zero.inv.app B ≫
+      eqToHom (congrArg (fun j : ℕ =>
+        (SyntheticCategory.biShift (0,-(j:ℤ))).obj B) h0).symm := by
+  subst k
+  simp only [eqToHom_refl,Category.comp_id]
+  apply ((SyntheticCategory.biShift_zero.app B).eq_comp_inv).mpr
+  have hnegative : negativeLift 0 M ≫ lambdaPow 0 B = lambdaToPositivePow 0 A ≫ M := by
+    dsimp only [negativeLift,lambdaToPositivePow]
+    simp only [Category.assoc]
+    rw [lambdaPow_naturality]
+  exact hnegative.trans hM
+
+
+/-- Direct first-quotient calibration of the literal negative-target
+normalized map of exponent zero. The target comparison to F_(0,0) is
+explicit and retains the original dependent exponent transport. -/
+private theorem first_quotient_normalized_negative_lift_at_zero
+    (X Y : ClassicalObject)
+    (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (h0 : normalizedExponent model.classicalTower f = 0) (s t : ℤ)
+    (x : (model.classical.obj (X.obj model.auxiliary)).Page 2 (s,t)) :
+    let eNeg : (SyntheticCategory.biShift
+          (0,-(normalizedExponent model.classicalTower f:ℤ))).obj
+          (model.nu.functor.obj (Y.obj model.auxiliary)) ≅
+        (SyntheticCategory.biShift (0,0)).obj
+          (model.nu.functor.obj (Y.obj model.auxiliary)) :=
+      eqToIso (congrArg (fun k : ℕ => (SyntheticCategory.biShift (0,-(k:ℤ))).obj
+        (model.nu.functor.obj (Y.obj model.auxiliary))) h0)
+    (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1 ≫
+        XModLambdaN.map (negativeLift (normalizedExponent model.classicalTower f)
+          (model.normalizedMap X Y f).map) 1 =
+      (model.firstQuotient Y 0 s t).symm
+          ((model.classical.functor.map f).pageMap 2 (s,t) x) ≫
+        XModLambdaN.map eNeg.inv 1 := by
+  dsimp only
+  let eNeg : (SyntheticCategory.biShift
+        (0,-(normalizedExponent model.classicalTower f:ℤ))).obj
+        (model.nu.functor.obj (Y.obj model.auxiliary)) ≅
+      (SyntheticCategory.biShift (0,0)).obj
+        (model.nu.functor.obj (Y.obj model.auxiliary)) :=
+    eqToIso (congrArg (fun k : ℕ => (SyntheticCategory.biShift (0,-(k:ℤ))).obj
+      (model.nu.functor.obj (Y.obj model.auxiliary))) h0)
+  have hneg := normalized_negative_lift_at_zero h0 (model.normalizedMap X Y f).map
+    (model.nu.functor.map f) (model.normalizedMap X Y f).factorization
+  have hzero := SyntheticCategory.biShift_zero.hom.naturality (model.nu.functor.map f)
+  dsimp only [Functor.id_map] at hzero
+  have hcomp : SyntheticCategory.biShift_zero.hom.app _ ≫
+      negativeLift (normalizedExponent model.classicalTower f)
+        (model.normalizedMap X Y f).map =
+    (SyntheticCategory.biShift (0,0)).map (model.nu.functor.map f) ≫ eNeg.inv := by
+    rw [hneg,←Category.assoc _ (model.nu.functor.map f),←hzero]
+    simp only [Category.assoc,←Category.assoc (SyntheticCategory.biShift_zero.hom.app _),
+      Iso.hom_inv_id_app,Category.id_comp]
+    rfl
+  calc
+    _ = (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _ ≫
+          negativeLift (normalizedExponent model.classicalTower f)
+            (model.normalizedMap X Y f).map) 1 := by
+      rw [model.quotients.functoriality.map_comp]
+    _ = (model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,0)).map (model.nu.functor.map f) ≫
+          eNeg.inv) 1 := by rw [hcomp]
+    _ = ((model.firstQuotient X 0 s t).symm x ≫
+        XModLambdaN.map ((SyntheticCategory.biShift (0,0)).map (model.nu.functor.map f)) 1) ≫
+        XModLambdaN.map eNeg.inv 1 := by
+      rw [model.quotients.functoriality.map_comp,Category.assoc]
+    _ = _ := by rw [first_quotient_nu_naturality X Y f 0 s t x]
+
+end
+end CofiberResearch
+end
+
+section
+namespace CofiberResearch
+open KIP126.Literature
+open CategoryTheory CategoryTheory.Limits CategoryTheory.Pretriangulated
+open KIP126.StableHomotopy KIP126.Synthetic.Context KIP126.AdamsSynthetic
+open KIP126.AdamsSynthetic.Standard KIP126.Kervaire.Route KIP126.Literature
+open KIP126.Literature.Standard KIP126.Computation.Table
+noncomputable section
+set_option backward.isDefEq.respectTransparency false
+set_option maxHeartbeats 3000000
+set_option maxRecDepth 10000
+section
+variable {A B C : Type*} [AddCommGroup A] [AddCommGroup B] [AddCommGroup C]
+  [Finite A] [Finite C]
+private theorem exact_card_8_16_2_injective (f : A →+ B) (g : B →+ C)
+    (hgf : ∀ a, g (f a)=0) (hex : ∀ b, g b=0 → ∃ a, f a=b)
+    (hcA : Nat.card A=8) (hcB : Nat.card B=16) (hcC : Nat.card C≤2) :
+    Function.Injective f := by
+  let fker : A → g.ker := fun a => ⟨f a,hgf a⟩
+  have hsurj : Function.Surjective fker := by
+    rintro ⟨b,hb⟩
+    obtain ⟨a,ha⟩ := hex b hb
+    exact ⟨a,Subtype.ext ha⟩
+  have hker : Nat.card g.ker≤8 := (Nat.card_le_card_of_surjective fker hsurj).trans hcA.le
+  have hrange : Nat.card g.range≤2 :=
+    (Nat.card_le_card_of_injective (fun b : g.range => b.val) Subtype.val_injective).trans hcC
+  have hprod : Nat.card g.ker*Nat.card g.range=16 := by
+    rw [←AddSubgroup.index_ker g,AddSubgroup.card_mul_index,hcB]
+  have hle : 16≤Nat.card g.ker*2 := by
+    rw [←hprod]
+    exact Nat.mul_le_mul_left _ hrange
+  have hcard : Nat.card A≤Nat.card g.ker := by omega
+  have hinj := (hsurj.bijective_of_nat_card_le hcard).injective
+  intro a b hab
+  exact hinj (Subtype.ext hab)
+end
+
+
+private theorem actual_bottom_14_139_kernel_zero
+    (x : model.classical.sphere.Page 2 (14,139))
+    (hx : (model.classical.pageMap
+      (HasFunctorialCofiber.cofibι model.auxiliary.nuMap) 2 (14,139)) x=0) : x=0 := by
+  classical
+  let N := KIP126.Literature.normalizedTriangle model model.auxiliary.nuRouteTriangle
+    nuCofiber_exponent_sum
+  let U := Smn (Syn:=SyntheticSpectrum) 125 139
+  let Q := model.quotients.functoriality.functor 1
+  let A := U ⟶ XModLambdaN N.obj₂ 1
+  let B := U ⟶ XModLambdaN N.obj₃ 1
+  let C := U ⟶ XModLambdaN (N.obj₁⟦(1:ℤ)⟧) 1
+  let S := shiftFunctor SyntheticSpectrum (1:ℤ)
+  let eN2 : N.obj₂ ≅ (SyntheticCategory.biShift (0,0)).obj
+      (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary)) :=
+    SyntheticCategory.biShift_zero.symm.app _
+  let eA : A ≃ model.classical.sphere.Page 2 (14,139) :=
+    (Iso.homCongr (Iso.refl U) (Q.mapIso eN2)).trans
+      (model.firstQuotient .sphere 0 14 139).toEquiv
+  have hnA : Standard.archive.basisCount 14 139=3 :=
+    (archive_dimension 14 139 (by decide)).trans (by decide)
+  let coordA : model.classical.sphere.Page 2 (14,139) ≃ (Fin 3 →₀ ZMod 2) := by
+    rw [←hnA]
+    exact (Standard.coordinates 14 139 (by decide)).toEquiv
+  letI : Finite A := Finite.of_equiv (Fin 3 →₀ ZMod 2) (eA.trans coordA).symm
+  have cardA : Nat.card A=8 := (Nat.card_congr (eA.trans coordA)).trans (by
+    rw [Nat.card_congr Finsupp.equivFunOnFinite]
+    simp [Nat.card_eq_fintype_card])
+  let eN3 : N.obj₃ ≅ (SyntheticCategory.biShift (0,0)).obj
+      (model.nu.functor.obj (ClassicalObject.nuCofiber.obj model.auxiliary)) := by
+    change (SyntheticCategory.biShift
+      (0,-(normalizedExponent model.classicalTower model.auxiliary.nuRouteTriangle.g:ℤ))).obj
+      (model.nu.functor.obj (ClassicalObject.nuCofiber.obj model.auxiliary)) ≅ _
+    rw [nuCofiber_bottom_exponent]
+    exact Iso.refl _
+  let eB : B ≃ (model.classical.obj (ClassicalObject.nuCofiber.obj model.auxiliary)).Page 2 (14,139) :=
+    (Iso.homCongr (Iso.refl U) (Q.mapIso eN3)).trans
+      (model.firstQuotient .nuCofiber 0 14 139).toEquiv
+  obtain ⟨coordB,hcoordB⟩ := cofiber_basis_correct
+    ⟨.nuCofiber,14,139,["372","449,1,0","1,1,7,1,275,1,0","0,2,425,1,0"]⟩
+    (by exact List.mem_of_getElem? (i:=54) rfl) rfl
+  let coordB' : (model.classical.obj (ClassicalObject.nuCofiber.obj model.auxiliary)).Page 2 (14,139) ≃
+      (Fin 4 →₀ ZMod 2) := coordB.toEquiv
+  letI : Finite B := Finite.of_equiv (Fin 4 →₀ ZMod 2) (eB.trans coordB').symm
+  have cardB : Nat.card B=16 := (Nat.card_congr (eB.trans coordB')).trans (by
+    rw [Nat.card_congr Finsupp.equivFunOnFinite]
+    simp [Nat.card_eq_fintype_card])
+  let eN1 : N.obj₁⟦(1:ℤ)⟧ ≅ Smn (Syn:=SyntheticSpectrum) 4 4 := by
+    change ((SyntheticCategory.biShift
+      (0,(normalizedExponent model.classicalTower model.auxiliary.nuMap:ℤ))).obj
+      (model.nu.functor.obj (Sphere (C:=Spectrum) 3)))⟦(1:ℤ)⟧ ≅ _
+    rw [nuCofiber_nu_exponent]
+    exact S.mapIso
+        ((SyntheticCategory.biShift (0,(1:ℤ))).mapIso (KIP126.Literature.nuSphereThree model) ≪≫
+          (biShiftAddIso (3,3) (0,1) (3,4) (by decide)).app S_0_0) ≪≫
+      (SyntheticCategory.biShift_compat (Syn:=SyntheticSpectrum) 1).symm.app _ ≪≫
+        (biShiftAddIso (3,4) (1,0) (4,4) (by decide)).app S_0_0
+  let F := SyntheticCategory.biShift (Syn:=SyntheticSpectrum) (4,4)
+  letI := model.exactness.shiftCommShift (4,4)
+  letI := model.exactness.shiftExact (4,4)
+  obtain ⟨eQ,hQ⟩ := finite_quotient_shift_comparison model.quotients.coherence
+    (4,4) 1 (S_0_0 : SyntheticSpectrum)
+  let eU : F.obj (Smn (Syn:=SyntheticSpectrum) 121 135) ≅ U :=
+    (biShiftAddIso (121,135) (4,4) (125,139) (by decide)).app S_0_0
+  let eC : C ≃ model.classical.sphere.Page 2 (14,135) :=
+    (Iso.homCongr (Iso.refl U) (Q.mapIso eN1 ≪≫ eQ)).trans
+      ((Iso.homCongr eU.symm (Iso.refl (F.obj (XModLambdaN S_0_0 1)))).trans
+        ((SyntheticCategory.biShift_fullyFaithful (Syn:=SyntheticSpectrum) (4,4)).homEquiv.symm.trans
+          (KIP126.Literature.sphereFirstQuotient model 14 135).toEquiv))
+  have hnC : Standard.archive.basisCount 14 135=1 :=
+    (archive_dimension 14 135 (by decide)).trans (by decide)
+  let coordC : model.classical.sphere.Page 2 (14,135) ≃ (Fin 1 →₀ ZMod 2) := by
+    rw [←hnC]
+    exact (Standard.coordinates 14 135 (by decide)).toEquiv
+  letI : Finite C := Finite.of_equiv (Fin 1 →₀ ZMod 2) (eC.trans coordC).symm
+  have cardC : Nat.card C≤2 := (Nat.card_congr (eC.trans coordC)).le.trans (by
+    rw [Nat.card_congr Finsupp.equivFunOnFinite]
+    simp [Nat.card_eq_fintype_card])
+  obtain ⟨esusp,hinc,hR⟩ := normalized_finite_quotient_horizontal_row
+    model.auxiliary.nuRouteTriangle nuCofiber_exponent_sum (nuCofiber_triangle _) 1 (by decide)
+  let R := Triangle.mk (XModLambdaN.map N.mor₂ 1) (XModLambdaN.map N.mor₃ 1)
+    (-(XModLambdaN.map (S.map N.mor₁) 1 ≫ esusp.hom))
+  let f : A →+ B := Preadditive.rightComp U (XModLambdaN.map N.mor₂ 1)
+  let g : B →+ C := Preadditive.rightComp U (XModLambdaN.map N.mor₃ 1)
+  have gf : ∀ a, g (f a)=0 := by
+    intro a
+    change (a≫R.mor₁)≫R.mor₂=0
+    rw [Category.assoc,comp_distTriang_mor_zero₁₂ R hR,comp_zero]
+  have hex : ∀ b, g b=0 → ∃ a, f a=b := by
+    intro b hb
+    obtain ⟨a,ha⟩ := R.coyoneda_exact₂ hR b hb
+    exact ⟨a,ha.symm⟩
+  have finj := exact_card_8_16_2_injective f g gf hex cardA cardB cardC
+  let a : A := (model.firstQuotient .sphere 0 14 139).symm x ≫
+    XModLambdaN.map (SyntheticCategory.biShift_zero.hom.app _) 1
+  have ha : f a=0 := by
+    change a ≫ XModLambdaN.map N.mor₂ 1 = 0
+    have hc := first_quotient_normalized_negative_lift_at_zero
+      model.auxiliary.nuRouteTriangle.Y model.auxiliary.nuRouteTriangle.Z
+      model.auxiliary.nuRouteTriangle.g nuCofiber_bottom_exponent 14 139 x
+    dsimp only at hc
+    have hb := hx
+    change ((model.classical.functor.map model.auxiliary.nuRouteTriangle.g).pageMap 2 (14,139)) x=0 at hb
+    have hz (j : XModLambdaN ((SyntheticCategory.biShift (0,0)).obj
+        (model.nu.functor.obj (ClassicalObject.nuCofiber.obj model.auxiliary))) 1 ⟶
+        XModLambdaN N.obj₃ 1) :
+      (model.firstQuotient .nuCofiber 0 14 139).symm
+        (((model.classical.functor.map model.auxiliary.nuRouteTriangle.g).pageMap 2 (14,139)) x)≫j=0 := by
+      calc
+        _ = (model.firstQuotient .nuCofiber 0 14 139).symm 0≫j :=
+          congrArg (fun y => (model.firstQuotient .nuCofiber 0 14 139).symm y≫j) hb
+        _ = 0 := by rw [LinearEquiv.map_zero,zero_comp]
+    have hcz := hc.trans (hz _)
+    dsimp only [f,R,a,N,KIP126.Literature.normalizedTriangle,Triangle.mk,
+      KIP126.Kervaire.Route.AuxiliaryData.nuRouteTriangle] at hcz ⊢
+    simpa only [Category.assoc] using hcz
+  have ha0 : a=0 := finj (ha.trans f.map_zero.symm)
+  let ezero := Q.mapIso (SyntheticCategory.biShift_zero.app
+    (model.nu.functor.obj (ClassicalObject.sphere.obj model.auxiliary)))
+  have hq0 : (model.firstQuotient .sphere 0 14 139).symm x=0 := by
+    apply (cancel_mono ezero.hom).mp
+    change a=0≫ezero.hom
+    simpa only [zero_comp] using ha0
+  apply (model.firstQuotient .sphere 0 14 139).symm.injective
+  exact hq0.trans (LinearEquiv.map_zero _).symm
+
+open KIP126.Core.SpectralSequence KIP126.Core.SpectralSequence.FinitePageCalculus
+private abbrev E := KIP126.Computation.Table.sequence .nuCofiber
+private theorem E_start : E.r₀ = 2 := model.classical.firstPage _
+private theorem degree_2_12 : (12,138) + E.diffDeg 2 = (14,139) := by
+  change (12,138) + (model.classical.obj (object .nuCofiber)).diffDeg 2 = (14,139)
+  rw [model.classical.differentialDegree]
+  decide
+private abbrev delta2_12 : E.Page 2 (12,138) ⟶ E.Page 2 (14,139) :=
+  E.d 2 (12,138) ≫ eqToHom (congrArg (E.Page 2) degree_2_12)
+/-- The finite Cnu incoming exclusion used at the end of Proposition 7.9.
+It uses complete degrees, not just the single level-9000 target row. -/
+private theorem cnu_d2_d3_incoming14_zero  :
+    ((E)).d 2 (11,137) = 0 ∧ ((E)).d 3 (11,137) = 0 := by
+  classical
+  have hdecode (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber 11 137 indices = true) :
+      decode .nuCofiber 11 137 indices =
+        some ((indices.map (basis .nuCofiber 11 137)).sum) := by
+    simp only [decode,hv,ite_true]
+  have h0 : ∃ xr : ((E)).Page 3 (11,137),
+      RepresentsOnPage (E) 3 (11,137) (basis .nuCofiber 11 137 0) xr ∧
+      ((E)).d 3 (11,137) xr = 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 76) (by rfl))
+    have hy' : y = basis .nuCofiber 11 137 0 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode [0] (by decide)))
+    subst y
+    exact differential_target_cycle h
+  have h3 : RepresentsOnPage (E) 3 (11,137) (basis .nuCofiber 11 137 3) 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 75) (by rfl))
+    have hy' : y = basis .nuCofiber 11 137 3 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode [3] (by decide)))
+    subst y
+    exact differential_target_later_zero (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide) h
+  have h12 : ReachesPage (E) 1000 (11,137)
+      (basis .nuCofiber 11 137 1 + basis .nuCofiber 11 137 2) := by
+    obtain ⟨x,hx,h⟩ := result _ (List.mem_of_getElem? (i := 77) (by rfl))
+    have hx' : x = basis .nuCofiber 11 137 1 + basis .nuCofiber 11 137 2 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx.symm.trans (hdecode [1,2] (by decide)))
+    exact hx' ▸ h
+  have h2 : ReachesPage (E) 14 (11,137) (basis .nuCofiber 11 137 2) := by
+    obtain ⟨x,hx,h⟩ := result _ (List.mem_of_getElem? (i := 78) (by rfl))
+    have hx' : x = basis .nuCofiber 11 137 2 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx.symm.trans (hdecode [2] (by decide)))
+    exact hx' ▸ h
+  obtain ⟨x12,hx12⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 3) (by decide : (3 : ℤ) ≤ 1000) h12
+  obtain ⟨x2,hx2⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 3) (by decide : (3 : ℤ) ≤ 14) h2
+  have hd12 : ((E)).d 3 (11,137) x12 = 0 := represents_d_zero_of_later
+    (by have hstart := E_start; omega) (by decide) hx12 h12
+  have hd2 : ((E)).d 3 (11,137) x2 = 0 := represents_d_zero_of_later
+    (by have hstart := E_start; omega) (by decide) hx2 h2
+  obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 44) (by rfl))
+  change ((E)).Page 2 (11,137) ≃ₗ[ℤ] (Fin 4 →₀ KIP126.Core.Algebra.F2) at e
+  change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = basis .nuCofiber 11 137 i.val at he
+  have hgen (i : Fin 4) : ∃ xr : ((E)).Page 3 (11,137),
+      RepresentsOnPage (E) 3 (11,137) (e.symm (Finsupp.single i 1)) xr ∧ ((E)).d 3 (11,137) xr = 0 := by
+    rw [he]
+    fin_cases i
+    · exact h0
+    · exact ⟨x12-x2, by simpa only [add_sub_cancel_right] using represents_sub hx12 hx2,
+        by rw [map_sub,hd12,hd2,sub_self]⟩
+    · exact ⟨x2,hx2,hd2⟩
+    · exact ⟨0,h3,map_zero _⟩
+  refine ⟨?_,d_zero_of_complete_representatives (by decide) e hgen⟩
+  apply d_zero_of_complete_representatives (by decide) e
+  intro i
+  obtain ⟨xr,hxr,_⟩ := hgen i
+  refine ⟨e.symm (Finsupp.single i 1),represents_two_self _,?_⟩
+  exact represents_d_zero_of_later (by have hstart := E_start; omega) (by decide)
+    (represents_two_self _) ⟨xr,hxr⟩
+
+private theorem degree_2_11 : (11,137) + E.diffDeg 2 = (13,138) := by
+  change (11,137) + (model.classical.obj (object .nuCofiber)).diffDeg 2 = (13,138)
+  rw [model.classical.differentialDegree]
+  decide
+private theorem degree_2_10 : (10,136) + E.diffDeg 2 = (12,137) := by
+  change (10,136) + (model.classical.obj (object .nuCofiber)).diffDeg 2 = (12,137)
+  rw [model.classical.differentialDegree]
+  decide
+private theorem degree_3_10 : (10,136) + E.diffDeg 3 = (13,138) := by
+  change (10,136) + (model.classical.obj (object .nuCofiber)).diffDeg 3 = (13,138)
+  rw [model.classical.differentialDegree]
+  decide
+private abbrev delta3_10 : E.Page 3 (10,136) ⟶ E.Page 3 (13,138) :=
+  E.d 3 (10,136) ≫ eqToHom (congrArg (E.Page 3) degree_3_10)
+private theorem degree_3_9 : (9,135) + E.diffDeg 3 = (12,137) := by
+  change (9,135) + (model.classical.obj (object .nuCofiber)).diffDeg 3 = (12,137)
+  rw [model.classical.differentialDegree]
+  decide
+private abbrev delta3_9 : E.Page 3 (9,135) ⟶ E.Page 3 (12,137) :=
+  E.d 3 (9,135) ≫ eqToHom (congrArg (E.Page 3) degree_3_9)
+private theorem degree_4_9 : (9,135) + E.diffDeg 4 = (13,138) := by
+  change (9,135) + (model.classical.obj (object .nuCofiber)).diffDeg 4 = (13,138)
+  rw [model.classical.differentialDegree]
+  decide
+private abbrev delta4_9 : E.Page 4 (9,135) ⟶ E.Page 4 (13,138) :=
+  E.d 4 (9,135) ≫ eqToHom (congrArg (E.Page 4) degree_4_9)
+private theorem retarget_zero {r : ℤ} {p q : ℤ × ℤ}
+    (hdeg : p + E.diffDeg r = q) {a : E.Page r p} (hz : E.d r p a = 0) :
+    (E.d r p ≫ eqToHom (congrArg (E.Page r) hdeg)) a = 0 := by
+  change (eqToHom (congrArg (E.Page r) hdeg)) (E.d r p a) = 0
+  rw [hz, map_zero]
+private theorem third_labels_eq_of_incoming_zero_at
+    {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
+    {p q : ℤ × ℤ} (hdeg : q + E.diffDeg 2 = p)
+    (hstart : E.r₀ ≤ 2) (hin : E.d 2 q = 0)
+    {x y : E.Page 2 p} {a : E.Page 3 p}
+    (hx : RepresentsOnPage E 3 p x a) (hy : RepresentsOnPage E 3 p y a) : x = y := by
+  subst p
+  have hm := (PageThree.equal_iff_sub_mem_d2_range hstart q hx hy).mp rfl
+  obtain ⟨b,hb⟩ := hm
+  apply sub_eq_zero.mp
+  exact hb.symm.trans (by rw [hin]; rfl)
+private theorem page_four_subsingleton_of_frame
+    {E : KIP126.Core.SpectralSequence (ModuleCat.{v} ℤ) (ℤ × ℤ)}
+    {p : ℤ × ℤ} (hstart : E.r₀ ≤ 3) (xr : E.Page 3 p)
+    (hcases : ∀ a : E.Page 3 p, a = 0 ∨ a = xr)
+    (hne : E.d 3 p xr ≠ 0) : Subsingleton (E.Page 4 p) := by
+  have hz (a : E.Page 4 p) : a = 0 := by
+    obtain ⟨x,hx4⟩ := page_has_initial_representative (by decide) a
+    obtain ⟨a3,ha3⟩ := reaches_earlier (by decide : (2:ℤ) ≤ 3)
+      (by decide : (3:ℤ) ≤ 4) ⟨a,hx4⟩
+    have hdzero := represents_d_zero_of_later hstart (by decide) ha3 ⟨a,hx4⟩
+    have ha3zero : a3 = 0 := by
+      rcases hcases a3 with hzero | heq
+      · exact hzero
+      · exact False.elim (hne (heq ▸ hdzero))
+    exact represents_later_zero (by decide : (3:ℤ) ≤ 4) (ha3zero ▸ ha3) hx4
+  exact ⟨fun a b => (hz a).trans (hz b).symm⟩
+
+private theorem cnu_10_136_data  :
+    ((E)).d 2 (10,136) = 0 ∧
+    (∀ a : ((E)).Page 3 (10,136),
+      RepresentsOnPage (E) 3 (13,138) 0 (delta3_10 a) ∨
+      RepresentsOnPage (E) 3 (13,138) (basis .nuCofiber 13 138 1) (delta3_10 a)) ∧
+    Subsingleton (((E)).Page 4 (10,136)) := by
+  classical
+  have hdecode (s t : ℕ) (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber s t indices = true) :
+      decode .nuCofiber s t indices =
+        some ((indices.map (basis .nuCofiber s t)).sum) := by
+    simp only [decode,hv,ite_true]
+  obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 64) (by rfl))
+  have hx' : x = basis .nuCofiber 10 136 0 := by
+    simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+      Option.some.inj (hx.symm.trans (hdecode 10 136 [0] (by decide)))
+  have hy' : y = basis .nuCofiber 13 138 1 := by
+    simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+      Option.some.inj (hy.symm.trans (hdecode 13 138 [1] (by decide)))
+  subst x y
+  change HasDifferential (E) 3 (10,136) (13,138) _ _ at h
+  obtain ⟨hdeg,xr,yr,hxr,hyr,hd⟩ := h
+  have hd' : delta3_10 xr = yr := by
+    change delta3_10 xr = yr at hd
+    exact hd
+  have hne : yr ≠ 0 := by
+    obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 51) (by rfl))
+    change ((E)).Page 2 (13,138) ≃ₗ[ℤ] (Fin 4 →₀ KIP126.Core.Algebra.F2) at e
+    change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = basis .nuCofiber 13 138 i.val at he
+    have hn : basis .nuCofiber 13 138 1 ≠ 0 := by
+      rw [← he ⟨1,by decide⟩]
+      intro hz
+      have hh := congrArg e hz
+      simp only [LinearEquiv.apply_symm_apply,map_zero] at hh
+      change (Finsupp.single (⟨1,by decide⟩ : Fin 4) (1 : KIP126.Core.Algebra.F2)) = 0 at hh
+      exact Finsupp.single_ne_zero.mpr one_ne_zero hh
+    exact represents_next_nonzero_of_incoming_zero_at
+      (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide)
+      cnu_d2_d3_incoming14_zero.1 hyr (represents_two_self _) hn degree_2_11
+  have h1 : RepresentsOnPage (E) 3 (10,136) (basis .nuCofiber 10 136 1) 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 62) (by rfl))
+    have hy' : y = basis .nuCofiber 10 136 1 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode 10 136 [1] (by decide)))
+    subst y
+    exact differential_target_later_zero (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide) h
+  have h2 : RepresentsOnPage (E) 3 (10,136) (basis .nuCofiber 10 136 2) 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 63) (by rfl))
+    have hy' : y = basis .nuCofiber 10 136 2 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode 10 136 [2] (by decide)))
+    subst y
+    exact differential_target_later_zero (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide) h
+  obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 39) (by rfl))
+  change ((E)).Page 2 (10,136) ≃ₗ[ℤ] (Fin 3 →₀ KIP126.Core.Algebra.F2) at e
+  change ∀ i : Fin 3, e.symm (Finsupp.single i 1) = basis .nuCofiber 10 136 i.val at he
+  have hbas (i : Fin 3) : RepresentsOnPage (E) 3 (10,136) (e.symm (Finsupp.single i 1)) (![xr,0,0] i) := by
+    rw [he]
+    fin_cases i
+    · exact hxr
+    · exact h1
+    · exact h2
+  have hd2 : ((E)).d 2 (10,136) = 0 := by
+    apply d_zero_of_complete_representatives (by decide) e
+    intro i
+    refine ⟨e.symm (Finsupp.single i 1),represents_two_self _,?_⟩
+    exact represents_d_zero_of_later (by have hs := E_start; omega) (by decide)
+      (represents_two_self _) ⟨_,hbas i⟩
+  have himage (a : ((E)).Page 3 (10,136)) :
+      RepresentsOnPage (E) 3 (13,138) 0 (delta3_10 a) ∨
+      RepresentsOnPage (E) 3 (13,138) (basis .nuCofiber 13 138 1) (delta3_10 a) := by
+    obtain ⟨c,hc⟩ := page_eq_sum_of_complete_representatives (by decide) e ![xr,0,0] hbas a
+    simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero,Matrix.cons_val_zero,
+      Matrix.cons_val_succ,ite_self] at hc
+    by_cases hc0 : c 0 = 0
+    · have ha : a = 0 := by simpa only [hc0,ite_true] using hc
+      left
+      have hda : delta3_10 a = (0 : ((E)).Page 3 (13,138)) := by rw [ha,map_zero]
+      exact hda.symm ▸ (RepresentsOnPage.zero (E := (E)) (p := (13,138)) (by decide))
+    · have ha : a = xr := by simpa only [hc0,ite_false] using hc
+      right
+      have hda : delta3_10 a = yr := (congrArg (delta3_10) ha).trans hd'
+      exact hda.symm ▸ hyr
+  have hcases (a : E.Page 3 (10,136)) : a = 0 ∨ a = xr := by
+    obtain ⟨c,hc⟩ := page_eq_sum_of_complete_representatives (by decide) e ![xr,0,0] hbas a
+    simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero,Matrix.cons_val_zero,
+      Matrix.cons_val_succ,ite_self] at hc
+    by_cases hc0 : c 0 = 0
+    · exact Or.inl (by simpa only [hc0,ite_true] using hc)
+    · exact Or.inr (by simpa only [hc0,ite_false] using hc)
+  have hrawne : E.d 3 (10,136) xr ≠ 0 := by
+    intro hz
+    exact hne (hd'.symm.trans (retarget_zero degree_3_10 hz))
+  exact ⟨hd2,himage,page_four_subsingleton_of_frame
+    (by have hs := E_start; omega) xr hcases hrawne⟩
+
+private theorem cnu_page4_target3_nonzero
+    (yr : E.Page 4 (13,138))
+    (hy : RepresentsOnPage E 4 (13,138) (basis .nuCofiber 13 138 3) yr) : yr ≠ 0 := by
+  classical
+  obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 51) (by rfl))
+  change E.Page 2 (13,138) ≃ₗ[ℤ] (Fin 4 →₀ KIP126.Core.Algebra.F2) at e
+  change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = basis .nuCofiber 13 138 i.val at he
+  have hn0 : basis .nuCofiber 13 138 3 ≠ 0 := by
+    rw [← he ⟨3,by decide⟩]
+    exact basis_vector_ne_zero e _
+  have hn1 : basis .nuCofiber 13 138 3 ≠ basis .nuCofiber 13 138 1 := by
+    rw [← he ⟨3,by decide⟩,← he ⟨1,by decide⟩]
+    intro hz
+    have hh := e.symm.injective hz
+    have hv := congrArg (fun f : Fin 4 →₀ KIP126.Core.Algebra.F2 => f ⟨3,by decide⟩) hh
+    simp at hv
+  obtain ⟨ar,har⟩ := represents_before (by decide : (2:ℤ) ≤ 3)
+    (by decide : (3:ℤ) ≤ 4) hy
+  apply represents_next_nonzero_of_not_incoming_at degree_3_10
+    (by have hs := E_start; omega) (by decide) hy har
+  intro a ha
+  rcases cnu_10_136_data.2.1 a with h0 | h1
+  · have hrep : RepresentsOnPage E 3 (13,138) 0 ar := ha ▸ h0
+    exact hn0 (third_labels_eq_of_incoming_zero_at degree_2_11
+      (by change E.r₀ ≤ 2; exact le_of_eq E_start)
+      cnu_d2_d3_incoming14_zero.1 har hrep)
+  · have hrep : RepresentsOnPage E 3 (13,138) (basis .nuCofiber 13 138 1) ar := ha ▸ h1
+    exact hn1 (third_labels_eq_of_incoming_zero_at degree_2_11
+      (by change E.r₀ ≤ 2; exact le_of_eq E_start)
+      cnu_d2_d3_incoming14_zero.1 har hrep)
+
+private theorem cnu_d4_incoming14_zero : E.d 4 (10,136) = 0 := by
+  haveI := cnu_10_136_data.2.2
+  ext x
+  change E.d 4 (10,136) x = 0
+  rw [Subsingleton.elim x 0, map_zero]
+
+private theorem cnu_d5_incoming14_zero  : ((E)).d 5 (9,135) = 0 := by
+  classical
+  have hdecode (s t : ℕ) (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber s t indices = true) :
+      decode .nuCofiber s t indices =
+        some ((indices.map (basis .nuCofiber s t)).sum) := by
+    as_aux_lemma =>
+      simp only [decode,hv,ite_true]
+  obtain ⟨x0,hx0,y0,hy0,h0⟩ := result _ (List.mem_of_getElem? (i := 51) (by rfl))
+  have hx0' : x0 = basis .nuCofiber 9 135 0 := by
+    as_aux_lemma =>
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx0.symm.trans (hdecode 9 135 [0] (by decide)))
+  have hy0' : y0 = basis .nuCofiber 12 137 4 := by
+    as_aux_lemma =>
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy0.symm.trans (hdecode 12 137 [4] (by decide)))
+  subst x0 y0
+  change HasDifferential (E) 3 (9,135) (12,137) _ _ at h0
+  obtain ⟨_,xr0,yr0,hxr0,hyr0,hd0⟩ := h0
+  change delta3_9 xr0 = yr0 at hd0
+  have hn0 : yr0 ≠ 0 := by
+    as_aux_lemma =>
+      obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 47) (by rfl))
+      change ((E)).Page 2 (12,137) ≃ₗ[ℤ] (Fin 5 →₀ KIP126.Core.Algebra.F2) at e
+      change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = basis .nuCofiber 12 137 i.val at he
+      have hn : basis .nuCofiber 12 137 4 ≠ 0 := by
+        as_aux_lemma =>
+          rw [← he ⟨4,by decide⟩]
+          intro hz
+          have hh := congrArg e hz
+          simp only [LinearEquiv.apply_symm_apply,map_zero] at hh
+          change (Finsupp.single (⟨4,by decide⟩ : Fin 5) (1 : KIP126.Core.Algebra.F2)) = 0 at hh
+          exact Finsupp.single_ne_zero.mpr one_ne_zero hh
+      exact represents_next_nonzero_of_incoming_zero_at
+        (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide)
+        cnu_10_136_data.1 hyr0 (represents_two_self _) hn degree_2_10
+  obtain ⟨x2,hx2,y2,hy2,h2⟩ := result _ (List.mem_of_getElem? (i := 50) (by rfl))
+  have hx2' : x2 = basis .nuCofiber 9 135 2 := by
+    as_aux_lemma =>
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx2.symm.trans (hdecode 9 135 [2] (by decide)))
+  have hy2' : y2 = basis .nuCofiber 13 138 3 := by
+    as_aux_lemma =>
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy2.symm.trans (hdecode 13 138 [3] (by decide)))
+  subst x2 y2
+  change HasDifferential (E) 4 (9,135) (13,138) _ _ at h2
+  obtain ⟨_,xr2,yr2,hxr2,hyr2,hd2⟩ := h2
+  change delta4_9 xr2 = yr2 at hd2
+  have hn2 : yr2 ≠ 0 := cnu_page4_target3_nonzero yr2 hyr2
+  obtain ⟨x23,hx23⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 3) (by decide : (3 : ℤ) ≤ 4) ⟨xr2,hxr2⟩
+  have hd23 : delta3_9 x23 = 0 := by
+    apply retarget_zero degree_3_9
+    exact represents_d_zero_of_later
+      (by have hs := E_start; omega) (by decide) hx23 ⟨xr2,hxr2⟩
+  have h1 : ReachesPage (E) 16 (9,135) (basis .nuCofiber 9 135 1) := by
+    as_aux_lemma =>
+      obtain ⟨x,hx,h⟩ := result _ (List.mem_of_getElem? (i := 49) (by rfl))
+      have hx' : x = basis .nuCofiber 9 135 1 := by
+        as_aux_lemma =>
+          simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+            Option.some.inj (hx.symm.trans (hdecode 9 135 [1] (by decide)))
+      exact hx' ▸ h
+  obtain ⟨x13,hx13⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 3) (by decide : (3 : ℤ) ≤ 16) h1
+  obtain ⟨x14,hx14⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 4) (by decide : (4 : ℤ) ≤ 16) h1
+  obtain ⟨x15,hx15⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 5) (by decide : (5 : ℤ) ≤ 16) h1
+  have hd13 : delta3_9 x13 = 0 := by
+    apply retarget_zero degree_3_9
+    exact represents_d_zero_of_later
+      (by have hs := E_start; omega) (by decide) hx13 h1
+  have hd14 : delta4_9 x14 = 0 := by
+    apply retarget_zero degree_4_9
+    exact represents_d_zero_of_later
+      (by have hs := E_start; omega) (by decide) hx14 h1
+  have hd15 : ((E)).d 5 (9,135) x15 = 0 := represents_d_zero_of_later
+    (by have hs := E_start; omega) (by decide) hx15 h1
+  have h3 : RepresentsOnPage (E) 3 (9,135) (basis .nuCofiber 9 135 3) 0 := by
+    as_aux_lemma =>
+      obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 47) (by rfl))
+      have hy' : y = basis .nuCofiber 9 135 3 := by
+        as_aux_lemma =>
+          simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+            Option.some.inj (hy.symm.trans (hdecode 9 135 [3] (by decide)))
+      subst y
+      exact differential_target_later_zero (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide) h
+  have h4 : RepresentsOnPage (E) 3 (9,135) (basis .nuCofiber 9 135 4) 0 := by
+    as_aux_lemma =>
+      obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 48) (by rfl))
+      have hy' : y = basis .nuCofiber 9 135 4 := by
+        as_aux_lemma =>
+          simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+            Option.some.inj (hy.symm.trans (hdecode 9 135 [4] (by decide)))
+      subst y
+      exact differential_target_later_zero (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide) h
+  obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 34) (by rfl))
+  change ((E)).Page 2 (9,135) ≃ₗ[ℤ] (Fin 5 →₀ KIP126.Core.Algebra.F2) at e
+  change ∀ i : Fin 5, e.symm (Finsupp.single i 1) = basis .nuCofiber 9 135 i.val at he
+  have hbas (i : Fin 5) : RepresentsOnPage (E) 3 (9,135) (e.symm (Finsupp.single i 1)) (![xr0,x13,x23,0,0] i) := by
+    as_aux_lemma =>
+      rw [he]
+      fin_cases i
+      · exact hxr0
+      · exact hx13
+      · exact hx23
+      · exact h3
+      · exact h4
+  ext a
+  change ((E)).d 5 (9,135) a = 0
+  obtain ⟨x,hx5⟩ := page_has_initial_representative (by decide) a
+  obtain ⟨ar3,har3⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 3) (by decide : (3 : ℤ) ≤ 5) ⟨a,hx5⟩
+  obtain ⟨ar4,har4⟩ := reaches_earlier (by decide : (2 : ℤ) ≤ 4) (by decide : (4 : ℤ) ≤ 5) ⟨a,hx5⟩
+  have hda3 : delta3_9 ar3 = 0 := by
+    apply retarget_zero degree_3_9
+    exact represents_d_zero_of_later
+      (by have hs := E_start; omega) (by decide) har3 ⟨a,hx5⟩
+  have hda4 : delta4_9 ar4 = 0 := by
+    apply retarget_zero degree_4_9
+    exact represents_d_zero_of_later
+      (by have hs := E_start; omega) (by decide) har4 ⟨a,hx5⟩
+  obtain ⟨c,hc⟩ := page_eq_sum_of_complete_representatives (by decide) e ![xr0,x13,x23,0,0] hbas ar3
+  have ha3 : ar3 = (if c 0=0 then 0 else xr0)+(if c 1=0 then 0 else x13)+(if c 2=0 then 0 else x23) := by
+    as_aux_lemma =>
+      simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero,Matrix.cons_val_zero,
+        Matrix.cons_val_succ,ite_self,← add_assoc] at hc
+      exact hc
+  have hb13 : delta3_9 (if c 1=0 then 0 else x13) = 0 := by
+    as_aux_lemma =>
+      split_ifs
+      · exact map_zero _
+      · exact hd13
+  have hb23 : delta3_9 (if c 2=0 then 0 else x23) = 0 := by
+    as_aux_lemma =>
+      split_ifs
+      · exact map_zero _
+      · exact hd23
+  have hc0 : c 0=0 := by
+    as_aux_lemma =>
+      by_contra hne
+      rw [ha3,map_add,map_add,hb13,hb23,add_zero,add_zero,if_neg hne,hd0] at hda3
+      exact hn0 hda3
+  have ha3' : ar3 = (if c 1=0 then 0 else x13)+(if c 2=0 then 0 else x23) := by
+    as_aux_lemma =>
+      simpa only [hc0,ite_true,zero_add] using ha3
+  have hbit3 := middle_add (represents_bit (c 1) hx13) (represents_bit (c 2) hx23)
+  have hbit3' : RepresentsOnPage (E) 3 (9,135) _ ar3 := ha3'.symm ▸ hbit3
+  have hbit4 := middle_add (represents_bit (c 1) hx14) (represents_bit (c 2) hxr2)
+  have ha4 := represents_transport_eq (by decide : (3 : ℤ) ≤ 4) har3 hbit3' har4 hbit4
+  have hb14 : delta4_9 (if c 1=0 then 0 else x14) = 0 := by
+    as_aux_lemma =>
+      split_ifs
+      · exact map_zero _
+      · exact hd14
+  have hc2 : c 2=0 := by
+    as_aux_lemma =>
+      by_contra hne
+      rw [ha4,map_add,hb14,zero_add,if_neg hne,hd2] at hda4
+      exact hn2 hda4
+  have ha4' : ar4 = (if c 1=0 then 0 else x14) := by simpa only [hc2,ite_true,add_zero] using ha4
+  have hbit4' : RepresentsOnPage (E) 4 (9,135) _ ar4 := ha4'.symm ▸ (represents_bit (c 1) hx14)
+  have ha5 := represents_transport_eq (by decide : (4 : ℤ) ≤ 5) har4 hbit4' hx5 (represents_bit (c 1) hx15)
+  rw [ha5]
+  split_ifs
+  · exact map_zero _
+  · exact hd15
+
+private theorem cnu_d2_incoming14_image  (a : ((E)).Page 2 (12,138)) :
+    delta2_12 a = 0 ∨
+    delta2_12 a = basis .nuCofiber 14 139 3 := by
+  classical
+  have hdecode (s t : ℕ) (indices : List ℕ)
+      (hv : Raw.coordinatesValid Raw.degrees .nuCofiber s t indices = true) :
+      decode .nuCofiber s t indices =
+        some ((indices.map (basis .nuCofiber s t)).sum) := by
+    simp only [decode,hv,ite_true]
+  have h0 : delta2_12 (basis .nuCofiber 12 138 0) = 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 92) (by rfl))
+    have hx' : x = basis .nuCofiber 12 138 0 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx.symm.trans (hdecode 12 138 [0] (by decide)))
+    subst x
+    obtain ⟨_,xr,_,hxr,_,_⟩ := h
+    have hz := represents_d_zero_of_later (E := E) (by change E.r₀ ≤ 2; exact le_of_eq E_start) (by decide)
+      (represents_two_self _) ⟨xr,hxr⟩
+    exact (congrArg (fun z => (eqToHom (congrArg (E.Page 2) degree_2_12)) z) hz).trans
+      (map_zero _)
+  have h1 : delta2_12 (basis .nuCofiber 12 138 1) = 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 90) (by rfl))
+    have hy' : y = basis .nuCofiber 12 138 1 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode 12 138 [1] (by decide)))
+    subst y
+    change HasDifferential (E) 2 (10,137) (12,138) x _ at h
+    obtain ⟨yr,hyr,hd⟩ := differential_target_cycle h
+    have hz := (congrArg (E.d 2 (12,138)) hyr.eq_on_page_two).trans hd
+    exact (congrArg (fun z => (eqToHom (congrArg (E.Page 2) degree_2_12)) z) hz).trans
+      (map_zero _)
+  have h3 : delta2_12 (basis .nuCofiber 12 138 3) = 0 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 91) (by rfl))
+    have hy' : y = basis .nuCofiber 12 138 3 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode 12 138 [3] (by decide)))
+    subst y
+    change HasDifferential (E) 2 (10,137) (12,138) x _ at h
+    obtain ⟨yr,hyr,hd⟩ := differential_target_cycle h
+    have hz := (congrArg (E.d 2 (12,138)) hyr.eq_on_page_two).trans hd
+    exact (congrArg (fun z => (eqToHom (congrArg (E.Page 2) degree_2_12)) z) hz).trans
+      (map_zero _)
+  have h2 : delta2_12 (basis .nuCofiber 12 138 2) =
+      basis .nuCofiber 14 139 3 := by
+    obtain ⟨x,hx,y,hy,h⟩ := result _ (List.mem_of_getElem? (i := 93) (by rfl))
+    have hx' : x = basis .nuCofiber 12 138 2 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hx.symm.trans (hdecode 12 138 [2] (by decide)))
+    have hy' : y = basis .nuCofiber 14 139 3 := by
+      simpa only [List.map_cons,List.map_nil,List.sum_cons,List.sum_nil,add_zero] using
+        Option.some.inj (hy.symm.trans (hdecode 14 139 [3] (by decide)))
+    subst x y
+    change HasDifferential (E) 2 (12,138) (14,139) _ _ at h
+    obtain ⟨hd, heq⟩ := h.eq_on_page_two
+    exact heq
+  obtain ⟨e,he⟩ := basis_correct _ (List.mem_of_getElem? (i := 48) (by rfl))
+  change ((E)).Page 2 (12,138) ≃ₗ[ℤ] (Fin 4 →₀ KIP126.Core.Algebra.F2) at e
+  change ∀ i : Fin 4, e.symm (Finsupp.single i 1) = basis .nuCofiber 12 138 i.val at he
+  have hbas (i : Fin 4) : RepresentsOnPage (E) 2 (12,138) (e.symm (Finsupp.single i 1))
+      (basis .nuCofiber 12 138 i.val) := (he i) ▸ represents_two_self _
+  obtain ⟨c,hc⟩ := page_eq_sum_of_complete_representatives (by decide) e
+    (fun i => basis .nuCofiber 12 138 i.val) hbas a
+  have ha : a = (if c 0=0 then 0 else basis .nuCofiber 12 138 0)+
+      (if c 1=0 then 0 else basis .nuCofiber 12 138 1)+
+      (if c 2=0 then 0 else basis .nuCofiber 12 138 2)+
+      (if c 3=0 then 0 else basis .nuCofiber 12 138 3) := by
+    simp only [Fin.sum_univ_succ,Fin.sum_univ_zero,add_zero,← add_assoc] at hc
+    exact hc
+  let f : ((E)).Page 2 (12,138) →+ ((E)).Page 2 (14,139) := (delta2_12).hom.toAddMonoidHom
+  change f (basis .nuCofiber 12 138 0) = 0 at h0
+  change f (basis .nuCofiber 12 138 1) = 0 at h1
+  change f (basis .nuCofiber 12 138 2) = basis .nuCofiber 14 139 3 at h2
+  change f (basis .nuCofiber 12 138 3) = 0 at h3
+  have hd : f a = if c 2=0 then 0 else basis .nuCofiber 14 139 3 := by
+    rw [ha,map_add,map_add,map_add]
+    split_ifs <;> simp only [map_zero,h0,h1,h2,h3,zero_add,add_zero]
+
+  change f a = 0 ∨ f a = basis .nuCofiber 14 139 3
+  by_cases hc2 : c 2=0
+  · exact Or.inl (by simpa only [hc2,ite_true] using hd)
+  · exact Or.inr (by simpa only [hc2,ite_false] using hd)
+
+
+private theorem cofiber_bottom_T_reaches_six : ReachesPage nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by
+  let E := model.classical.sphere
+  let A := E.ssData (14,139)
+  obtain ⟨z,hz⟩ := t_permanent_cycle
+  let k : WithTop ℕ := ↑(6-E.r₀).toNat
+  let n : WithTop ℕ := ↑(2-E.r₀).toNat
+  let z6 := (Subobject.ofLE (A.Z ⊤) (A.Z k) (A.Z_anti le_top)) z
+  have hrep : RepresentsOnPage E 6 (14,139) T (A.pageπ k z6) := by
+    refine ⟨by decide,z6,?_,rfl⟩
+    change (Subobject.ofLE (A.Z k) (A.Z n) _ ≫ A.pageπ n) z6 = T
+    dsimp only [z6]
+    rw [← ModuleCat.comp_apply, ← Category.assoc, Subobject.ofLE_comp_ofLE]
+    exact hz
+  let f := model.classical.map (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)
+  exact ⟨_, f.representsOnPage hrep⟩
+
+
+private theorem actual_bottom_14_139_injective : Function.Injective (bottom 14 139) := by
+  intro a b hab
+  have hz : bottom 14 139 (a-b)=0 := by rw [map_sub,hab,sub_self]
+  exact sub_eq_zero.mp (actual_bottom_14_139_kernel_zero (a-b) hz)
+
+/-- Full frozen target candidate, using the literal bottom image of T. -/
+private theorem cofiber_target_to_e6_candidate :
+    SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by
+  classical
+  have hs2 : nuCofiberSequence.r₀≤2 := (model.classical.firstPage _).le
+  obtain ⟨e,he⟩ := tInBasis217
+  have b2ne : basis .sphere 14 139 2≠0 := by
+    intro hz
+    exact (basis_vector_ne_zero e (2:Fin 3)) ((he (2:Fin 3)).trans hz)
+  have tne : T≠0 := by
+    intro hz
+    exact (basis_vector_ne_zero e (1:Fin 3)) ((he (1:Fin 3)).trans (basis_T.trans hz))
+  let incl := model.classical.map (HasFunctorialCofiber.cofibι model.auxiliary.nuMap)
+  have hmap := incl.hasDifferential tInRow314
+  change HasDifferential nuCofiberSequence 2 (12,138) (14,139)
+    (bottom 12 138 (basis .sphere 12 138 1))
+    (bottom 14 139 (basis .sphere 14 139 2)) at hmap
+  have himage : delta2_12 (bottom 12 138 (basis .sphere 12 138 1)) =
+      bottom 14 139 (basis .sphere 14 139 2) := hmap.eq_on_page_two.2
+  have bb : bottom 14 139 (basis .sphere 14 139 2)=basis .nuCofiber 14 139 3 := by
+    rcases cnu_d2_incoming14_image (bottom 12 138 (basis .sphere 12 138 1)) with hzero | hbasis
+    · have hz : bottom 14 139 (basis .sphere 14 139 2)=0 := himage.symm.trans hzero
+      exact False.elim (b2ne (actual_bottom_14_139_kernel_zero _ hz))
+    · exact himage.symm.trans hbasis
+  have avoid : ∀ a : nuCofiberSequence.Page 2 (12,138), delta2_12 a≠bottom 14 139 T := by
+    intro a hit
+    rcases cnu_d2_incoming14_image a with hzero | hbasis
+    · exact tne (actual_bottom_14_139_kernel_zero T (hit.symm.trans hzero))
+    · have hb : bottom 14 139 T=bottom 14 139 (basis .sphere 14 139 2) :=
+        hit.symm.trans (hbasis.trans bb.symm)
+      have ht : T=basis .sphere 14 139 2 := actual_bottom_14_139_injective hb
+      exact (tIn_second_avoid (basis .sphere 12 138 1))
+        (tInRow314.eq_on_page_two.2.trans ht.symm)
+  obtain ⟨y6,hy6⟩ := cofiber_bottom_T_reaches_six
+  obtain ⟨y3,hy3⟩ := reaches_earlier (by decide : (2:ℤ)≤3) (by decide : (3:ℤ)≤6) ⟨y6,hy6⟩
+  obtain ⟨y4,hy4⟩ := reaches_earlier (by decide : (2:ℤ)≤4) (by decide : (4:ℤ)≤6) ⟨y6,hy6⟩
+  obtain ⟨y5,hy5⟩ := reaches_earlier (by decide : (2:ℤ)≤5) (by decide : (5:ℤ)≤6) ⟨y6,hy6⟩
+  have y3ne : y3≠0 := represents_next_nonzero_of_not_incoming_at degree_2_12
+    hs2 (by decide) hy3 (represents_two_self _) avoid
+  have deg3 : (11,137)+nuCofiberSequence.diffDeg 3=(14,139) := by
+    change (11,137)+(model.classical.obj _).diffDeg 3=(14,139)
+    rw [model.classical.differentialDegree]
+    decide
+  have deg4 : (10,136)+nuCofiberSequence.diffDeg 4=(14,139) := by
+    change (10,136)+(model.classical.obj _).diffDeg 4=(14,139)
+    rw [model.classical.differentialDegree]
+    decide
+  have deg5 : (9,135)+nuCofiberSequence.diffDeg 5=(14,139) := by
+    change (9,135)+(model.classical.obj _).diffDeg 5=(14,139)
+    rw [model.classical.differentialDegree]
+    decide
+  have y4ne : y4≠0 := represents_next_nonzero_of_incoming_zero_at
+    (hs2.trans (by decide : (2:ℤ)≤3)) (by decide) cnu_d2_d3_incoming14_zero.2 hy4 hy3 y3ne deg3
+  have y5ne : y5≠0 := represents_next_nonzero_of_incoming_zero_at
+    (hs2.trans (by decide : (2:ℤ)≤4)) (by decide) cnu_d4_incoming14_zero hy5 hy4 y4ne deg4
+  have y6ne : y6≠0 := represents_next_nonzero_of_incoming_zero_at
+    (hs2.trans (by decide : (2:ℤ)≤5)) (by decide) cnu_d5_incoming14_zero hy6 hy5 y5ne deg5
+  exact ⟨y6,hy6,y6ne⟩
+
+end
+end CofiberResearch
+end
+
 public theorem cofiber_target_to_e6 :
-    SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by sorry
+    SurvivesTo nuCofiberSequence 6 (14,139) (bottom 14 139 T) := by
+  exact CofiberResearch.cofiber_target_to_e6_candidate
 /-- A hit before page six would kill the same nonzero E₆ continuation. -/
 public theorem cofiber_target_not_hit_through5 :
     NeverHitOnWindow nuCofiberSequence 2 5 (14,139) (bottom 14 139 T) := by
