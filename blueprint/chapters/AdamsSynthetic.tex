@@ -194,10 +194,25 @@ and a unit in degree $(0,0)$. Under the identifications of equal degree sums, th
 % Blueprint note: Fixed upstream source versions: \cite{KIPSource5aa845241533,KIPSource871b3be8f46a,KIPSourcebbac1fc05843}. Interface scope notes are retained as native hgraph node comments; historical migration records are local archives.
 \label{sem:AdamsSynthetic:standard-classes}
 \level{coarse}
-Let $\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$ be the fixed comparison. Define $h_i=\Phi_{1,2^i}^{-1}[\xi_1^{2^i}]$ and define $h_6^2\in E_2^{2,128}(S)$ as the product of $h_6$ with itself.
+For a classical Adams family $A$ with sphere second-page algebra $P$, a
+standard sphere class family consists of elements
+\[
+H_i\in E_2^{1,2^i}(S),\qquad H_i\ne0\quad(i\in\mathbb N).
+\]
+The family uses the sphere page and multiplication of this same $A$ and
+$P$; nonvanishing of the squares is a separate assertion.
+
+For the fixed sphere system, let
+$\Phi_{s,t}\colon E_2^{s,t}(S)\cong H^{s,t}_{\mathrm{Milnor}}$ be the
+fixed comparison and define
+$h_i=\Phi_{1,2^i}^{-1}[\xi_1^{2^i}]$. These classes are nonzero: the
+cobar differential out of length zero is zero, and the length-one
+polynomial $\xi_1^{2^i}$ is nonzero, so its cocycle class cannot be a
+boundary. They therefore give the fixed standard sphere class family.
+Define $h_6^2\in E_2^{2,128}(S)$ as the product of $h_6$ with itself.
 \uses{frontier:AdamsSynthetic:8b66ee46e41e,frontier:AdamsSynthetic:f05463b82afe}
-\lean{KIP126.AdamsSynthetic.Standard.standardClasses,KIP126.AdamsSynthetic.Standard.standardHi,KIP126.AdamsSynthetic.Standard.standardH6,KIP126.AdamsSynthetic.Standard.standardH6Square,KIP126.AdamsSynthetic.Standard.standardH6Square_eq_product}
-% Blueprint note: The standardHi definition is completed by pullback along the existing fixed comparison, and standardHi_milnor follows by inverse cancellation. The polynomial square-zero foundation is proved directly from the Milnor coproduct formula. Construction of the fixed comparison, its representative-level source recognition and its product compatibility remain separate registered obligations.
+\lean{KIP126.Classical.Adams.StandardSphereClasses,KIP126.AdamsSynthetic.Standard.standardClasses,KIP126.AdamsSynthetic.Standard.standardHi,KIP126.AdamsSynthetic.Standard.standardH6,KIP126.AdamsSynthetic.Standard.standardH6Square,KIP126.AdamsSynthetic.Standard.standardH6Square_eq_product}
+% Blueprint note: The standardHi definition and the nonzero field of standardClasses are proved by pullback along the existing fixed comparison. The polynomial square-zero foundation is proved directly from the Milnor coproduct formula. Construction of the fixed comparison, its representative-level source recognition and its product compatibility remain separate registered obligations. This construction does not identify the fixed background with the paper's 2-completed system.
 \end{definition}
 
 \section{Weight-graded hom groups and products}

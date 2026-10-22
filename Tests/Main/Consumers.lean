@@ -2,8 +2,9 @@ module
 
 import KIP126.Main
 
-/-! Ordinary consumers call the fixed paper theorems directly. The endpoint
-is the actual h₆ product on the same sphere, with nonzero E∞ semantics. -/
+/-! Ordinary consumers call the paper theorems directly. The final theorem
+accepts a standard-class family and concludes nonzero E∞ survival of its actual
+h₆ product on the fixed sphere. -/
 namespace Tests.Main
 open KIP126.Core.SpectralSequence
 open KIP126.AdamsSynthetic.Standard (model)
@@ -16,14 +17,20 @@ example :
 example (hc3 : Stem126D6Vanishes) : ¬ EtaExtensionDetection := eta_extension_excluded_of_d6_vanishes hc3
 
 example : NonzeroSurvival model.classical.sphere (2,128)
-    model.standardClasses.standardH6Square := h6_sq_permanent
+    model.standardClasses.standardH6Square := h6_sq_permanent model.standardClasses
 
 example : NonzeroSurvival model.classical.sphere (2,128)
     (model.sphereAlgebra.product (1,64) (1,64)
       model.standardClasses.standardH6 model.standardClasses.standardH6) := by
   change NonzeroSurvival model.classical.sphere (2,128)
     model.standardClasses.standardH6Square
-  exact h6_sq_permanent
+  exact h6_sq_permanent model.standardClasses
+
+example (H : KIP126.Classical.Adams.StandardSphereClasses
+    model.classical model.sphereAlgebra) :
+    NonzeroSurvival model.classical.sphere (2,128)
+      (model.sphereAlgebra.product (1,64) (1,64) (H.hi 6) (H.hi 6)) :=
+  h6_sq_permanent H
 
 example (hd : H6SquareSupportsD12) : ¬ H6SquarePermanent ∧ Stem126D6Vanishes := by
   obtain ⟨cases, criterion⟩ := h6_square_differential_dichotomy_and_criterion

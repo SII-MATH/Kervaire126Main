@@ -481,10 +481,21 @@ From \cite{LWX126}, Theorem 1.4, Theorem 7.1.\par
     The element $h_6^2$ survives to the $E_\infty$-page in the Adams spectral sequence.
 % END AIMPAPER STATEMENT
 \uses{paper:7.8,paper:7.9,sem:AdamsSynthetic:standard-classes}
+
+For the formal statement, fix the sphere Adams system $E$ and its
+second-page multiplication from
+\ref{sem:AdamsSynthetic:standard-classes}. Let $H$ be any standard sphere
+class family for this same system, so
+$H_i\in E_2^{1,2^i}$ and $H_i\ne0$ for every $i\in\mathbb N$. Then
+\[
+H_6\cdot H_6\in E_2^{2,128}
+\]
+survives nontrivially to $E_\infty$: it has a common permanent
+representative whose limiting image is nonzero.
 % Blueprint note: Mathematical dependency review: [AimPaper source, lines 2212-2214](paper/main.tex.html#L2212). The last-differential dichotomy and the incompatibility of conditions (3) and (5) imply permanence. Theorem 7.1 repeats this target, not an independent prerequisite.
 
 % Correspondence: Public correspondence.
-% Blueprint note: This is the same permanence target as Theorem 7.1. The fixed formal statement additionally retains a common permanent representative and its nonzero limiting image.
+% Blueprint note: The sole public theorem takes the nonzero standard-class family H on the fixed sphere system. The fixed Milnor family is one instance. Uniqueness in bidegree (1,64) identifies H_6 with the fixed h_6, so this family formulation expresses the same permanence target as Theorem 7.1 and retains a common permanent representative with nonzero limiting image. Identification of the fixed background with the paper's 2-completed system remains upstream.
 \lean{KIP126.Main.h6_sq_permanent}
 % Blueprint note: Formal counterparts: \texttt{KIP126.Main.h6\_sq\_permanent}.
 
@@ -492,9 +503,16 @@ From \cite{LWX126}, Theorem 1.4, Theorem 7.1.\par
 % Blueprint note: Original statements: [Theorem 1.4](paper/main.tex.html#L128), [Theorem 7.1 and its proof](paper/main.tex.html#L2106); article PDF: paper/2412.10879.pdf.
 \end{theorem}
 \begin{proof}
+\uses{paper:7.8,paper:7.9,sem:Computation:h6-line}
 \textit{(See \cite{LWX126}, Theorem 1.4.)} \href{paper/main.tex.html#L2212}{Original proof}.
 
 From Proposition~\ref{prop:state5false}, at least one of  statements $(3)$ or $(5)$ in Proposition~\ref{prop:possible_h_6_sq} is false. Consequently,  statement $(2)$ is also false, which confirms that statement $(1)$ in Proposition~\ref{prop:possible_h_6_sq} is true.
+
+This proves nonzero permanence for the fixed class $h_6^2$. For an
+arbitrary standard sphere class family $H$, its defining nonzero condition
+gives $H_6\ne0$. Theorem~\ref{sem:Computation:h6-line} therefore gives
+$H_6=h_6$. Their squares are equal in the same fixed multiplication,
+which supplies the stated nonzero permanence for $H_6\cdot H_6$.
 \end{proof}
 
 % AimPaper: 1.5 corollary 151 154

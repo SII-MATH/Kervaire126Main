@@ -111,3 +111,17 @@ Blueprint 保留 AimPaper 原文，将两项条件形式化绑定到单独明确
 用户随后授权完整检查通过后合并。整合 `origin/main` 的 E₂ 补证（PR #28）时，逐声明三方合并许可清单，保留上游十二项责任的完成及原有精确指纹；全仓许可责任从本任务的 231 项进一步减为 219 项，其中 E2Computation 为 21 项、ProofTools 仍只有 5.10，Main 为零。这十二项完成属于上游工作。本任务的已批准条件、未完成边界与公共声明保持不变。
 
 同时保留 main 的 Blueprint 原生证明展示和读者引用更新。Main 的两个完成证明各放入独立的原生 proof 块，原直接方法的历史缺口继续保留，避免重复或嵌套证明。完整检查覆盖默认 `lake build`、源码清单、全部 Python 测试及原生 Blueprint 导出；Release 缓存按最终干净提交和完整构建输入指纹同步。
+
+## 标准类结构与唯一主定理接口迁移（2026-10-21）
+
+用户已批准 `StandardSphereClasses` 增加整族非零字段、固定实例填入证明，以及 `Main.h6_sq_permanent` 改为接收同一固定系统上的标准类结构；对外只保留这一个主定理版本。E2Computation 新增 `h6_exhaustive`，其余消费者传入固定实例。接口锁记录实际类型、结构生成声明及固定实例字段的编译器证明辅助项；数学说明和证明依赖见对应 Blueprint 条目，完成背景的上游范围仍见原提案及 issue #31。
+
+以下为结构版改动提交 `1962133` 在整合最新 main 之前的历史核验，不是整合后源码的验证结果。当时源码插入改变了 Background 的 29 项和 E2 Standard 后部的 5 项既有 `sorry` 诊断标签。独立审核从与原始基点 `f17969a` 全部 670 个构建输入匹配的 Release 缓存加载旧模块，并逐项核对这两个文件共 38 项责任：旧类型和证明体指纹精确匹配原锁，新旧完整 kernel 类型、宇宙和责任集合不变；仅替换 Lean 识别的诊断标签参数后，完整证明表达式逐字相同，标签仍指向未改动的原 `sorry` 文本。因此只迁移当时的 34 项证明体指纹，不改变类型、状态、数量或审计规则。完整证据保留在忽略的 `local-history/metadata/interface-reviews/20261021-standard-classes-hole-labels/`。
+
+### 整合最新 main（完整验证通过）
+
+结构版改动已与 `origin/main` 的 `fa6c729` 整合。上游独立完成了 15 项责任，许可待补总数已由原来的 214 项减为 199 项；这些补证不归入本次接口迁移成果。固定 `standardClasses` 的非零字段直接复用上游 `standardHiConstruction` 的 `.property`，移除本任务重复添加的 Milnor 辅助证明。本任务相对于该 main 的公共接口变化仍限于 AdamsSynthetic、E2Computation 和 Main 三份锁，不新增证明洞。
+
+整合后的诊断标签核验已通过：逐项核对 Background 剩余的 28 项与 E2 Standard 的 9 项，共 37 项责任；新旧原始完整类型、宇宙参数、实际模块归属和去除诊断标签差异后的完整 kernel 证明体均相同。只迁移 18 项诊断标签导致的证明体指纹，其中 Background 在 `standardClasses` 之后的 13 项、E2 Standard 的 5 项。`fa6c729` 的全部 199 项责任、状态和审计边界精确保留，未恢复上游已完成的 15 项。证据保留在忽略的 `local-history/metadata/interface-reviews/20261021-standard-classes-merge-fa6c729-hole-labels/`。
+
+整合后的默认 `lake build` 已通过全部 3644 项任务；源码清单覆盖 606 个项目源文件和 35 个消费／审计文件。Main 审计检查 1922 项声明、Geometry 检查 6 项声明，均无本地证明洞；ProofTools 检查 5708 项声明，保留唯一既有待补责任，34 项 Main／ProofTools 边界均通过无本地证明洞核验，没有项目公理。独立全项目信任捕获通过，共 24,855 项项目声明；更新器的责任复核结果与现有 199 项清单完全相等，没有新增项目公理或失败占位。三份新捕获分别包含 AdamsSynthetic 1789 项、E2Computation 706 项、Main 34 项公开声明，其名称、完整类型、宇宙和公理依赖均与接口锁及全项目信任捕获精确一致。93 项 Python 单元测试及原生 Blueprint 导出通过；导出包含 241 个数学条目和 10,024 项 Lean 声明，1,921 条原生警告按既有规则保留，不设置致命警告门禁。这些验证只闭合本轮有界接口迁移，不消除原提案及 issue #31 保留的完成背景上游责任。
