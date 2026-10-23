@@ -1,53 +1,11 @@
 #!/usr/bin/env python3
-"""Keep local incremental caches separate for each locked Lean environment."""
+"""Reuse one CI-owned incremental cache per pinned toolchain and dependency lock."""
 import hashlib
 import os
 from pathlib import Path
-import importlib.util
-import subprocess
-import tempfile
+import time
 
-
-def valid_hash(value):
-    return len(value) == 64 and all(c in '0123456789abcdef' for c in value)
-
-
-def seed_baseline(root, cache):
-    """Called after exact Release lookup, never before it."""
-    environment = cache.resolve() / environment_key(root)
-    target = (root / '.lake').resolve()
-    fingerprint = (target / 'runner-build-inputs').read_text().strip()
-    if (not valid_hash(fingerprint) or target != environment / 'inputs' / fingerprint or
-            target.resolve() != target):
-        raise ValueError('Incremental target must be the current isolated input cache')
-    pending = target / 'runner-incremental-baseline'
-    if (target / 'build').exists():
-        if (target / 'build').is_symlink():
-            raise ValueError('Project build must be an independent directory')
-        pending.unlink(missing_ok=True)
-        print('Exact Release/current input build present; incremental copy skipped')
-        return
-    if not pending.exists():
-        print('No incremental baseline available; retaining normal full build')
-        return
-    relative = Path(pending.read_text().strip())
-    parts = relative.parts
-    if not (parts == ('build',) or
-            (len(parts) == 3 and parts[0] == 'inputs' and valid_hash(parts[1]) and parts[2] == 'build')):
-        raise ValueError('Invalid incremental baseline location')
-    baseline = environment / relative
-    if baseline.resolve() != baseline or baseline == target / 'build':
-        raise ValueError('Incremental baseline cannot escape its locked environment')
-    if not baseline.is_dir():
-        print('Previous baseline unavailable; retaining normal full build')
-        return
-    # A cancelled copy must not leave a populated-looking partial build.
-    with tempfile.TemporaryDirectory(prefix='.incremental-', dir=target) as temporary:
-        staged = Path(temporary) / 'build'
-        subprocess.run(['cp', '-a', '--reflink=auto', str(baseline), str(staged)], check=True)
-        staged.rename(target / 'build')
-    pending.unlink()
-    print('Exact Release unavailable; installed independent incremental baseline:', baseline)
+LAYOUT = 'single-slot-v1'
 
 
 def environment_key(root):
@@ -57,82 +15,69 @@ def environment_key(root):
     return digest.hexdigest()
 
 
-def build_fingerprint(root):
-    spec = importlib.util.spec_from_file_location('ci_inputs', root / 'scripts/ci-cache.py')
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    return module.build_inputs(root)['fingerprint']
+def valid_hash(value):
+    return len(value) == 64 and all(c in '0123456789abcdef' for c in value)
 
 
-def prepare(root, cache, fingerprint=None):
+def prepare(root, cache):
     lake = root / '.lake'
     expected = environment_key(root)
     cache = cache.resolve()
     cache.mkdir(parents=True, exist_ok=True)
-    environment = cache / expected
-    target = environment if fingerprint is None else environment / 'inputs' / fingerprint
-    baseline = None
-    if fingerprint is not None and (len(fingerprint) != 64 or any(c not in '0123456789abcdef' for c in fingerprint)):
-        raise ValueError('Invalid build input fingerprint')
+    target = cache / expected
     if target.resolve() != target:
-        raise ValueError('Persistent cache environment must be an independent directory')
-    target.parent.mkdir(parents=True, exist_ok=True)
+        raise ValueError('Persistent CI environment must be an independent directory')
+    target.mkdir(exist_ok=True)
     if lake.is_symlink():
         actual = lake.resolve()
         relative = actual.relative_to(cache) if actual.is_relative_to(cache) else Path('invalid')
         parts = relative.parts
-        valid = (len(parts) == 1 or (len(parts) == 3 and parts[1] == 'inputs'))
-        hashes = parts if len(parts) == 1 else (parts[0], parts[-1])
-        if not valid or any(len(p) != 64 or any(c not in '0123456789abcdef' for c in p) for p in hashes):
-            raise ValueError('CI .lake cannot point outside the dedicated environment cache')
-        if parts[0] == expected and actual != target and (actual / 'build').is_dir():
-            baseline = actual / 'build'
+        valid = ((len(parts) == 1 and valid_hash(parts[0])) or
+                 (len(parts) == 3 and valid_hash(parts[0]) and parts[1] == 'inputs' and valid_hash(parts[2])))
+        if not valid:
+            raise ValueError('CI .lake cannot point outside its dedicated environment cache')
+        if len(parts) == 3 and parts[0] == expected and actual != target:
+            # One-time migration from input snapshots: rename the active build,
+            # preserving its inode and all partial progress. Never copy it.
+            for name in ('build', 'config', 'lakefile.olean', 'lakefile.olean.trace'):
+                source, destination = actual / name, target / name
+                if source.is_symlink():
+                    raise ValueError('Migrated project artifacts must be independent')
+                if source.exists():
+                    if destination.exists():
+                        destination.rename(target / (name + '.before-single-slot-' + str(time.time_ns())))
+                    source.rename(destination)
+            print('Migrated active CI cache by same-filesystem rename; no build copy')
         if actual != target:
             lake.unlink()
     elif lake.exists():
-        # Migrate the initial independently seeded directory out of checkout.
-        import time
         marker = lake / 'runner-environment'
-        old = marker.read_text().strip() if marker.exists() else 'unclassified'
-        if old == expected and not target.exists():
-            lake.rename(target)
-        else:
-            lake.rename(cache / ('previous-' + str(time.time_ns())))
-    target.mkdir(parents=True, exist_ok=True)
-    restore = not (target / 'build').exists()
-    if restore and fingerprint is not None and baseline is not None:
-        if baseline.is_symlink():
-            raise ValueError('Incremental baseline must be an independent build directory')
-        # A new source can still incrementally reuse prior artifacts. Copy-on-
-        # write cloning retains both source caches; no shared writable outputs.
-        (target / 'runner-incremental-baseline').write_text(str(baseline.relative_to(environment)) + '\n')
-        print('Deferred incremental baseline until exact Release lookup:', baseline)
-    if fingerprint is not None:
-        packages = environment / 'packages'
-        packages.mkdir(exist_ok=True)
-        if not (target / 'packages').exists():
-            (target / 'packages').symlink_to(packages, target_is_directory=True)
-        (target / 'runner-build-inputs').write_text(fingerprint + '\n')
+        if marker.is_file() and marker.read_text().strip() == expected:
+            for name in ('build', 'packages', 'config', 'lakefile.olean', 'lakefile.olean.trace'):
+                source, destination = lake / name, target / name
+                if source.is_symlink():
+                    raise ValueError('Initial CI cache must not link to development artifacts')
+                if source.exists() and not destination.exists():
+                    source.rename(destination)
+        # Preserve any other initial files rather than deleting them.
+        lake.rename(cache / ('previous-checkout-' + str(time.time_ns())))
+    for name in ('build', 'packages'):
+        if (target / name).is_symlink():
+            raise ValueError('CI build and dependencies must remain independent of development')
+    (target / 'packages').mkdir(exist_ok=True)
     (target / 'runner-environment').write_text(expected + '\n')
+    (target / 'runner-cache-layout').write_text(LAYOUT + '\n')
     if not lake.is_symlink():
         lake.symlink_to(target, target_is_directory=True)
-    print('Persistent CI cache environment:', expected)
+    restore = not (target / 'build').exists()
     if output := os.environ.get('GITHUB_OUTPUT'):
         with open(output, 'a') as stream:
             stream.write('restore_release=' + str(restore).lower() + '\n')
-    print('Project cache inputs:', fingerprint or 'legacy environment')
-    print('Exact project cache needs Release restore:', restore)
+    print('Persistent single-slot CI cache:', target)
+    print('Existing build retained for Lake incremental checks:', not restore)
+    print('Release bootstrap needed:', restore)
     return target
 
 
 if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--seed-baseline', action='store_true')
-    args = parser.parse_args()
-    root = Path(os.environ['GITHUB_WORKSPACE'])
-    cache = Path.home() / 'cache/environments'
-    if args.seed_baseline:
-        seed_baseline(root, cache)
-    else:
-        prepare(root, cache, build_fingerprint(root))
+    prepare(Path(os.environ['GITHUB_WORKSPACE']), Path.home() / 'cache/environments')

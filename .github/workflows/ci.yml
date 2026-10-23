@@ -137,10 +137,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: python3 scripts/ci-cache.py restore-release
 
-      - name: Seed incremental baseline only after exact cache miss
-        if: runner.environment == 'self-hosted'
-        run: python3 .github/runner/prepare-cache.py --seed-baseline
-
       - name: Fetch only imported Mathlib dependencies
         # Native import headers are reused by source content; missing/new
         # dependencies still use the pinned cache fetch before full lake build.

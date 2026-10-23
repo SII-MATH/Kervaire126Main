@@ -34,24 +34,26 @@ registration. They cannot write root-owned host policy or developer files.
 ## Persistent cache
 
 The checkout links `.lake` to
-`~/cache/environments/<toolchain-and-lock>/inputs/<build-input-fingerprint>/`.
-The fingerprint uses the same complete Lean/build-input manifest as Release caches;
-images and website text therefore reuse the same build, while unrelated proof
-branches cannot replace one another's outputs. Previous and partial project builds
-remain available. Dependencies are shared only within the dedicated account and
-locked environment, independently of development caches.
+`~/cache/environments/<toolchain-and-lock>/`.
+The single slot reuses this same project build across commits, PRs and merge
+groups. Lake checks the current source and dependencies and incrementally rebuilds
+affected modules. Source/input fingerprints do not select another working cache,
+copy a baseline or trigger a Release download. Partial build progress is retained.
+Builds are serial; the directory is private to this CI account and never links to
+development caches. Another toolchain or lock selects another environment.
 
-When an input cache is absent, preparation records the previous same-environment
-baseline without copying it. CI first attempts the existing verified exact-input
-Release restore. Only if that leaves no project build does the fallback make an
-independent copy of the previous baseline. It stages the copy in a temporary
-directory and installs it atomically, so an interruption cannot create a false
-cache hit. Both source versions remain independent. GPFS currently does not
-support reflinks: `--reflink=auto` falls back to a full copy, making this ordering
-especially important. A populated cache is reused without downloading it again.
-Full `lake build` and the existing trust audits
-still run for every selected event. Release publication policy in `AGENTS.md`
-is unchanged.
+Migration from the old `inputs/<fingerprint>` layout renames the active build
+within the same filesystem, preserving its files and inodes. An older environment
+build is retained under a `build.before-single-slot-*` name when necessary.
+No project cache is copied. Other old input snapshots are left untouched.
+
+Only a missing project build triggers exact-input Release bootstrap. A populated
+working cache is always left for Lake to validate; recovery of a damaged cache
+requires preserving/moving it first, without active writers. Release metadata,
+input fingerprints and archive checksums remain strict. Every selected event
+still runs full `lake build` and existing trust audits. Release publication and
+sync remain required by `AGENTS.md`; the single CI working cache is not itself a
+claim that the newly checked-out source has already passed.
 
 A successful Mathlib cache operation is recorded by toolchain, lock and imported
 module set. Import headers come from Lean's native `--deps-json` parser and are

@@ -308,7 +308,8 @@ class ReleaseTests(unittest.TestCase):
         (assets / 'SHA256SUMS').write_text(''.join(f'{ci.sha256(p.read_bytes())}  {p.name}\n' for p in assets.iterdir()))
         return assets, inputs, metadata
 
-    def restore(self, root, assets, inputs, releases=None, source_commit='', self_hosted=False):
+    def restore(self, root, assets, inputs, releases=None, source_commit='', self_hosted=False,
+                persistent=False, empty=False):
         checkout = root / 'checkout'; checkout.mkdir(); (checkout / '.lake/build').mkdir(parents=True)
         (checkout / '.lake/build/old').write_text('existing cache')
         (checkout / 'lean-toolchain').write_text('lean-test\n'); (checkout / 'lake-manifest.json').write_bytes(b'lock')
@@ -316,10 +317,16 @@ class ReleaseTests(unittest.TestCase):
             digest = ci.hashlib.sha256()
             for name in ('lean-toolchain', 'lake-manifest.json'):
                 digest.update(name.encode() + b'\0' + (checkout / name).read_bytes() + b'\0')
-            target = root / 'home/cache/environments' / digest.hexdigest() / 'inputs' / inputs['fingerprint']
+            environment = root / 'home/cache/environments' / digest.hexdigest()
+            target = environment if persistent else environment / 'inputs' / inputs['fingerprint']
             target.parent.mkdir(parents=True)
             (checkout / '.lake').rename(target)
             (target / 'runner-build-inputs').write_text(inputs['fingerprint'])
+            if persistent:
+                (target / 'runner-cache-layout').write_text('single-slot-v1')
+                (target / 'runner-environment').write_text(digest.hexdigest())
+                if empty:
+                    shutil.rmtree(target / 'build')
             (checkout / '.lake').symlink_to(target, target_is_directory=True)
         requests = []
         def download(repo, tag, filename, directory):
@@ -355,6 +362,22 @@ class ReleaseTests(unittest.TestCase):
             self.assertTrue((checkout / '.lake').is_symlink())
             self.assertFalse((checkout / '.lake/build/old').exists())
             self.assertIn('metadata.json', requests)
+
+    def test_persistent_empty_environment_restores_exact_release(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            assets, inputs, metadata = self.fixture(root)
+            checkout, requests = self.restore(root, assets, inputs, self_hosted=True, persistent=True, empty=True)
+            self.assertEqual((checkout / '.lake/build/A.olean').read_bytes(), b'checked')
+            self.assertIn('project-build.tar.zst', requests)
+
+    def test_populated_persistent_environment_keeps_progress_without_release_lookup(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            assets, inputs, metadata = self.fixture(root)
+            checkout, requests = self.restore(root, assets, inputs, self_hosted=True, persistent=True)
+            self.assertEqual((checkout / '.lake/build/old').read_text(), 'existing cache')
+            self.assertEqual(requests, [])
 
     def test_queue_restores_parent_cache_without_listing_releases(self):
         with tempfile.TemporaryDirectory() as temporary:
