@@ -28,11 +28,11 @@ Geometry 只复现 AimPaper Theorem 1.1 与 Corollary 1.2：126 维存在性和�
 
 测试集中在 `Tests/`。`Tests.Architecture` 通过普通根导入检查八个数学模块和固定主目标；各模块子目录保留精确接口、公共消费及边界测试，`Tests.Integration` 另外验证上游消费无需导入 Main。`Tests.Trust` 汇总全部测试，检查测试自身没有引入公理或未完成证明。各模块独立入口检查验证实际定义归属与完整导出，源清单检查同时验证公开接口归属唯一。上述检查及各数学模块内部审计都纳入默认 `lake build`；单独检查总入口可运行 `lake build ArchitectureChecks`。修改后还应运行 `python3 scripts/check-source-inventory.py`，核对源文件覆盖与模块依赖边界。
 
-推送代码时，须在同一任务中把对应提交通过 `lake build` 的项目 `.lake/build/` 缓存上传到该仓库的 GitHub Release。标签应包含提交、操作系统和架构，例如 `build-cache-<commit>-<os>-<arch>`；附件包含缓存归档、`metadata.json` 和 SHA-256 校验和。元数据记录源提交、构建输入指纹、仓库、系统/架构、Lean 工具链和依赖锁哈希，不能把未提交源码的构建结果标记为已推送提交的缓存。
+Release 构建缓存只由合并后 `main` 的成功 CI 在后台生成；默认等待 60 秒合并连续更新，只处理最新待发布提交。日常推送、PR、合并队列与任务交付不等待打包上传。后台服务先复用已校验且构建输入与环境匹配的 Release；新缓存保留实际源提交、完整输入清单、成功构建日志、环境元数据与归档／逐文件／上传分片 SHA-256 校验，全部通过后才正式发布。失败保留队列及正确分片并自动重试，支持手动重试和重启恢复；未完成时如实报告待发布或重试状态。
 
-拉取并合并或变基更新源码后，即使没有要求编译，也须在同一任务中检查 Release：先核对元数据，选择与源码及环境匹配的缓存，再下载并校验归档（含分片校验）。已有本地匹配缓存可直接复用；只有不影响构建输入的文档变化可在核实后跨提交复用，其他旧缓存仅作为增量构建基线。安装前确认没有构建进程写入缓存，临时安全解压并检查路径和文件类型，备份后安装，保留更新的本地编译进度。后续仍运行 `lake build` 验证。没有兼容缓存或下载失败时说明情况并继续源码更新和增量构建；上传失败则明确报告缓存未同步。完整要求见 [AGENTS.md](AGENTS.md)。
+拉取或 merge/rebase 更新源码时优先保留本地匹配缓存；需要恢复时先检查远程元数据，再下载和校验匹配缓存。新 Release 尚未发布、没有兼容缓存或下载失败时不等待发布，继续源码更新，以本地缓存或已校验的同环境旧缓存为增量基线，完整运行 `lake build` 验证当前输入。恢复前确认无构建进程写入，安全解压到临时目录并检查路径和文件类型，备份后安装，不覆盖更新的编译进度。完整要求见 [AGENTS.md](AGENTS.md)。
 
-项目 Release 缓存与 Mathlib 依赖缓存分别恢复；`lake exe cache get` 获取后者。[CI](.github/workflows/ci.yml) 的 GitHub Actions 缓存保存 `.lake` 以加速 CI，不能代替面向其他工作者的 Release 附件；普通 Git 推送、拉取也不会自动同步这些附件。
+本机单槽 CI 在独立账户下直接复用自己的持久化工作缓存，由 Lake 增量编译；后台发布只读该缓存并在新 CI 到来时让步，归档完成后独立上传。项目 Release 缓存与 Mathlib 依赖缓存分别恢复，`lake exe cache get` 获取后者。GitHub Actions 缓存不代替经过校验的 Release 附件；Git 推送、拉取本身不传输这些附件。
 
 CI 的触发去重、依赖／项目缓存拆分及经过校验的 Release 缓存复用见 [CI 缓存说明](docs/ci-cache.md)。PR、main 与手动运行保留全量检查；develop 只在同提交已有面向 main 的 PR 时省去重复运行。
 
@@ -42,4 +42,4 @@ Non-draft pull requests from branches in this repository targeting `main` automa
 
 The App is configured through the Actions variable `INTEGRATE_APP_CLIENT_ID` and secret `INTEGRATE_APP_PRIVATE_KEY`. Its installation is limited to this repository with Contents and Pull requests write permissions. The workflow does not check out or execute PR code. App-authenticated merges trigger the existing `Blueprint Pages` workflow on `main`, updating the review dashboard after deployment succeeds.
 
-Release build-cache synchronization remains required for code pushed from local checkouts; GitHub Actions caches do not replace those Release assets.
+Verified Release build caches are published asynchronously for successful main builds. Pushes, PRs and task delivery do not wait for publication; failures retry in the background. GitHub Actions caches do not replace the verified Release assets.
