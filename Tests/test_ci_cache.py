@@ -204,6 +204,20 @@ class ExtractionTests(unittest.TestCase):
                 ci.install_build(root / 'staged', root, root / 'backup')
             self.assertEqual((old / 'progress').read_text(), 'newer work')
 
+    def test_only_explicitly_validated_lake_link_can_be_installed(self):
+        with tempfile.TemporaryDirectory() as temporary, patch.object(ci, 'active_build', return_value=False):
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            target = Path(temporary) / 'input-cache'; target.mkdir()
+            (root / '.lake').symlink_to(target, target_is_directory=True)
+            staged = Path(temporary) / 'staged'; staged.mkdir()
+            (staged / 'compiled').write_text('verified')
+            with self.assertRaises(ValueError):
+                ci.install_build(staged, root, Path(temporary) / 'backup')
+            with self.assertRaises(ValueError):
+                ci.install_build(staged, root, Path(temporary) / 'backup', allowed_lake=root / 'other')
+            ci.install_build(staged, root, Path(temporary) / 'backup', allowed_lake=target)
+            self.assertEqual((root / '.lake/build/compiled').read_text(), 'verified')
+
     def test_install_failure_rolls_back(self):
         with tempfile.TemporaryDirectory() as temporary, patch.object(ci, 'active_build', return_value=False):
             root = Path(temporary); old = root / '.lake/build'; old.mkdir(parents=True)
@@ -294,10 +308,19 @@ class ReleaseTests(unittest.TestCase):
         (assets / 'SHA256SUMS').write_text(''.join(f'{ci.sha256(p.read_bytes())}  {p.name}\n' for p in assets.iterdir()))
         return assets, inputs, metadata
 
-    def restore(self, root, assets, inputs, releases=None, source_commit=''):
+    def restore(self, root, assets, inputs, releases=None, source_commit='', self_hosted=False):
         checkout = root / 'checkout'; checkout.mkdir(); (checkout / '.lake/build').mkdir(parents=True)
         (checkout / '.lake/build/old').write_text('existing cache')
         (checkout / 'lean-toolchain').write_text('lean-test\n'); (checkout / 'lake-manifest.json').write_bytes(b'lock')
+        if self_hosted:
+            digest = ci.hashlib.sha256()
+            for name in ('lean-toolchain', 'lake-manifest.json'):
+                digest.update(name.encode() + b'\0' + (checkout / name).read_bytes() + b'\0')
+            target = root / 'home/cache/environments' / digest.hexdigest() / 'inputs' / inputs['fingerprint']
+            target.parent.mkdir(parents=True)
+            (checkout / '.lake').rename(target)
+            (target / 'runner-build-inputs').write_text(inputs['fingerprint'])
+            (checkout / '.lake').symlink_to(target, target_is_directory=True)
         requests = []
         def download(repo, tag, filename, directory):
             requests.append(filename)
@@ -315,13 +338,23 @@ class ReleaseTests(unittest.TestCase):
         with patch.object(ci, 'ROOT', checkout), patch.object(ci, 'build_inputs', return_value=inputs), \
                 patch.object(ci, 'api', return_value=releases if releases is not None else [{'tag_name': tag}]) as lookup, \
                 patch.object(ci, 'download', side_effect=download), \
-                patch.object(ci, 'active_build', return_value=False), patch.dict(os.environ, {
+                patch.object(ci, 'active_build', return_value=False), \
+                patch.object(ci.Path, 'home', return_value=root / 'home'), patch.dict(os.environ, {
                     'GITHUB_ACTIONS': 'true', 'GITHUB_WORKSPACE': str(checkout), 'GITHUB_REPOSITORY': 'owner/repo',
-                    'GITHUB_SHA': source_commit}):
+                    'GITHUB_SHA': source_commit, 'RUNNER_ENVIRONMENT': 'self-hosted' if self_hosted else 'github-hosted'}):
             ci.restore_release()
             if source_commit:
                 lookup.assert_not_called()
         return checkout, requests
+
+    def test_self_hosted_exact_input_directory_restores_verified_archive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            assets, inputs, metadata = self.fixture(root)
+            checkout, requests = self.restore(root, assets, inputs, self_hosted=True)
+            self.assertTrue((checkout / '.lake').is_symlink())
+            self.assertFalse((checkout / '.lake/build/old').exists())
+            self.assertIn('metadata.json', requests)
 
     def test_queue_restores_parent_cache_without_listing_releases(self):
         with tempfile.TemporaryDirectory() as temporary:

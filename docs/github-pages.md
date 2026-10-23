@@ -1,16 +1,25 @@
 # Blueprint publication on the Hong Kong VPS
 
 `main` is the sole publication source. A push to `main`, or a manual Actions
-dispatch for `main`, generates the Blueprint and uploads a static website artifact.
+dispatch for `main`, generates the Blueprint on our local independent runner and
+publishes it directly to the Hong Kong VPS.
 The public site is [Blueprint](https://math.opensii.ai/blueprint/#/Kervaire126).
 Changes reach `main` through the protected PR and merge queue workflow.
 
-The host-owned publisher on the Inspire development machine polls successful
-`Export main Blueprint` jobs every minute, downloads the `github-pages` artifact,
-validates its archive paths and file types, and uploads it over SSH to the Hong Kong
-VPS. The artifact name is retained for compatibility; GitHub Pages deployment and
-Pages permissions are no longer used. GitHub credentials and the SSH key remain
-on the operator host, outside the CI runner and GitHub Actions jobs.
+The export hands a SHA-256 checked archive to the root-owned local publisher
+through `/var/lib/kip126-blueprint-publish/incoming`. The publisher snapshots it
+into its own persistent queue, verifies the main Actions run and successful test,
+export and runtime steps, validates archive paths and file types, and transfers
+the generated files directly over SSH. It checks main again before activation to
+reject superseded or cancelled exports. GitHub supplies code, PRs and task
+coordination; no website artifact is uploaded to or downloaded from GitHub.
+GitHub operator credentials and the SSH key remain outside the job account.
+
+The workflow waits for a root-owned receipt matching its source and archive hash.
+It succeeds only after the public health checks pass. A network failure is retried
+from the persistent queue; a publisher process restart retains captured work.
+Failed checks roll back the website and fail publication. A newer main commit
+supersedes an older export; the newer commit's job publishes the current source.
 
 Caddy serves `/blueprint/` directly from `/srv/kip126-blueprint/current` without
 portal authentication. Publication uploads a new release directory, atomically
@@ -18,20 +27,25 @@ switches `current`, verifies the public deployment marker and project data, and
 keeps the previous good release for rollback. Existing portal authentication on
 other routes is preserved. The site remains available when the development
 machine is offline; new publication resumes when its watchdog starts the publisher.
-`deployment.json` identifies the actual export commit and Actions run.
+`deployment.json` identifies the actual export commit, Actions run and attempt,
+archive hash, and `local-direct-ssh` transport.
 
-Operational source lives in the separate `ops/blueprint/` control-plane directory.
-That directory also documents restart, rollback and route installation. The VPS
+The reviewed publisher source is `.github/runner/blueprint-publisher.py`; install
+it as `ops/blueprint/publisher.py` on the operator host. Repository checkout does
+not automatically update root-owned operational code. The separate control-plane
+directory documents restart, rollback and route installation. The VPS
 does not run Lean or build the website. Old GitHub Pages links should be updated
 to the address above; the Pages host is no longer the publication target.
 
 ## Public hgraph dependency
 
-The workflow checks out the exact public `SII-MATH/hgraph` revision pinned in
-`requirements-blueprint.txt`. No cross-repository secret or deploy key is needed.
-The checkout is outside the cached `.lake/` directory; the Python virtual
-environment is under `RUNNER_TEMP`. Neither is included in caches or the website artifact. The artifact
-contains only the generated public site, source links and native synchronization report.
+The independent runner uses the exact `SII-MATH/hgraph` revision pinned in
+`requirements-blueprint.txt`, preinstalled under root-owned
+`/opt/kip126-blueprint-tools`. It verifies this environment before every export;
+ordinary publication does not install dependencies. The local handoff contains
+the generated public site, source links, native synchronization report and the
+native review server's immutable project snapshot. Public feedback is stored
+separately on the VPS and never included in website replacement.
 
 ## Publication and proof verification
 

@@ -58,6 +58,7 @@ jobs:
           clean: ${{ runner.environment != 'self-hosted' }}
 
       - name: Prepare isolated persistent cache
+        id: local_cache
         if: runner.environment == 'self-hosted'
         run: |
           git clean -ffdx -e .lake -e .lake/
@@ -66,6 +67,12 @@ jobs:
 
       - name: Test self-hosted runner policy
         run: python3 -m unittest discover -s Tests -p 'test_self_hosted_runner.py'
+
+      - name: Test dependency cache readiness
+        run: python3 -m unittest discover -s Tests -p 'test_runner_dependencies.py'
+
+      - name: Test direct website publication
+        run: python3 -m unittest discover -s Tests -p 'test_direct_publication.py'
 
       - name: Identify all tracked inputs
         id: inputs
@@ -113,12 +120,7 @@ jobs:
       - name: Fetch only imported Mathlib dependencies
         # The environment-keyed cache can predate newly imported modules.
         # Cache get fills missing imports and reuses files already present.
-        run: |
-          lake env python3 scripts/mathlib-cache-roots.py > "$RUNNER_TEMP/mathlib-roots.txt"
-          mapfile -t mathlib_roots < "$RUNNER_TEMP/mathlib-roots.txt"
-          if (( ${#mathlib_roots[@]} )); then
-            lake exe cache get "${mathlib_roots[@]}"
-          fi
+        run: python3 .github/runner/ensure-mathlib.py
 
       - name: Save pinned dependencies once per environment
         if: runner.environment != 'self-hosted' && steps.dependencies.outputs.cache-hit != 'true'
@@ -130,7 +132,9 @@ jobs:
           key: ${{ steps.dependencies.outputs.cache-primary-key }}
 
       - name: Reuse a verified Release build across branches
-        if: runner.environment != 'self-hosted' && steps.cache.outputs.cache-hit != 'true'
+        if: >-
+          (runner.environment == 'self-hosted' && steps.local_cache.outputs.restore_release == 'true') ||
+          (runner.environment != 'self-hosted' && steps.cache.outputs.cache-hit != 'true')
         timeout-minutes: 5
         continue-on-error: true
         env:

@@ -14,8 +14,8 @@ all writable caches live under that home. The checkout links `.lake` only to its
 no dependency/build directory links to the development checkout. Bootstrap copies use independent files
 or copy-on-write copies, never hard links.
 
-There is one registered runner and thus one executing job at a time. Its entire
-process tree inherits a 12-logical-CPU affinity, nice level 10 and best-effort I/O
+The Lean runner has one executing job at a time. A separate main-only Blueprint runner uses a different account, workspace and four CPUs, so webpage exports do not wait for Lean PR jobs. The Lean process tree
+inherits a 12-logical-CPU affinity, nice level 10 and best-effort I/O
 priority 7. Lean uses four threads per process. A root supervisor samples the
 dedicated account's aggregate RSS every five seconds and terminates its processes
 if they exceed 64 GiB. This is a watchdog, not a kernel-enforced memory cgroup;
@@ -33,19 +33,27 @@ registration. They cannot write root-owned host policy or developer files.
 
 ## Persistent cache
 
-The actual `.lake` directory lives under `~/cache/environments/<environment>/`,
-outside checkout; checkout contains only a validated symlink to it. Recreating
-the repository therefore cannot delete the cache. Other untracked checkout files
-are removed before the Lean job. The toolchain and dependency lock identify an
-environment. Switching environments retains the previous cache and reconnects
-the appropriate one, including when returning to an earlier lock. Within one environment, Lake validates traces
-and rebuilds changed inputs and their dependents. Partial compilation survives
-cancellation without an upload/download round trip. Hosted jobs retain the
-existing Actions/Release restoration path.
+The checkout links `.lake` to
+`~/cache/environments/<toolchain-and-lock>/inputs/<build-input-fingerprint>/`.
+The fingerprint uses the same complete Lean/build-input manifest as Release caches;
+images and website text therefore reuse the same build, while unrelated proof
+branches cannot replace one another's outputs. Previous and partial project builds
+remain available. Dependencies are shared only within the dedicated account and
+locked environment, independently of development caches.
 
-The local runner does not automatically replace its incremental cache with a
-Release on every job. Release cache publication and verification required by
-`AGENTS.md` still apply to pushes; local persistence does not replace that policy.
+When an input cache is absent, an independent copy-on-write copy of the previous
+same-environment build provides an incremental baseline while preserving both
+source versions. The self-hosted runner also tries the existing
+verified Release restoration path before building. A populated cache is reused
+without downloading it again. Full `lake build` and the existing trust audits
+still run for every selected event. Release publication policy in `AGENTS.md`
+is unchanged.
+
+A successful Mathlib cache operation is recorded by toolchain, lock and imported
+module set. Repeated jobs check the imported `.olean` files and skip redundant
+network/cache work. New imports, another lock or a missing imported artifact
+cause the normal cache fetch again.
+
 Toolchain changes require provisioning the newly approved pinned toolchain before
 the runner can build it; this deployment does not upgrade project dependencies.
 
@@ -82,3 +90,28 @@ Stop interrupts an active CI job; use the existing ops drain mode for maintenanc
 and confirm GitHub reports the runner idle before planned work. Supervisor state
 and logs are under `ops/ci-runner/runtime/`; runner diagnostics are under
 `kip126-ci/runner/_diag/`. Registration files and credentials must never enter Git.
+
+## Independent Blueprint export slot
+
+`kip126-blueprint` is registered separately as `inspire-kip126-web-01` and runs
+as the non-login `kip-web` account under `/var/lib/kip126-web/`. Only the root supervisor reads its persistent
+registration/tool backup under `kip126-web/`; the job account gains no access
+to the developer workspace parent. Its root-owned admission
+hook accepts only `pages.yml` pushes or manual exports on `main`; it rejects PRs,
+forks, other branches and other workflows. Its process tree uses four CPUs away
+from the Lean slot, nice 10, I/O priority 7 and a 16 GiB RSS watchdog.
+
+The fixed hgraph commit `c33cf070fb664360e8822fd2834b39d15ebd8d8e`,
+PyYAML 6.0.1 and TeX/Graphviz tools are provisioned once. The Python environment is root-owned under
+`/opt/kip126-blueprint-tools`, outside the job account's writable home. The export job retains the native content-addressed diagram cache across checkouts,
+verifies the fixed tools and performs no apt, pip, Python-setup or hgraph checkout during publication.
+The independent root supervisor and existing instance watchdog restore the slot
+after runner failure or restart. Exported files pass through a local handoff to
+the root-owned publisher and directly over SSH to Hong Kong, with no GitHub
+artifact upload or download. Safe extraction, atomic release switching and
+health/rollback checks remain, and the job waits for the live publication receipt;
+public feedback remains outside website releases.
+
+Host supervisor: `ops/blueprint-runner/blueprint-service.py`. Registration and
+runtime credentials are never committed. Tool upgrades require explicit
+provisioning and a repository pin change; ordinary exports do not update them.
