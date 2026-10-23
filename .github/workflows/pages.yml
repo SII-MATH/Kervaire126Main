@@ -1,4 +1,4 @@
-name: Blueprint export
+name: Blueprint publication
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     # An independent slot cannot be blocked by Lean PR/merge-queue builds.
     runs-on: kip126-blueprint
-    timeout-minutes: 20
+    timeout-minutes: 30
     defaults:
       run:
         shell: bash
@@ -55,7 +55,5 @@ jobs:
           shutil.copytree(workspace / 'Kervaire126', runtime / 'Kervaire126')
           PYTHON
 
-      - name: Upload website only
-        uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
-        with:
-          path: _site
+      - name: Publish directly to Hong Kong and verify live site
+        run: python .github/runner/publish-blueprint.py
