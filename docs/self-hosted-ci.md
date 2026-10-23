@@ -41,18 +41,30 @@ branches cannot replace one another's outputs. Previous and partial project buil
 remain available. Dependencies are shared only within the dedicated account and
 locked environment, independently of development caches.
 
-When an input cache is absent, an independent copy-on-write copy of the previous
-same-environment build provides an incremental baseline while preserving both
-source versions. The self-hosted runner also tries the existing
-verified Release restoration path before building. A populated cache is reused
-without downloading it again. Full `lake build` and the existing trust audits
+When an input cache is absent, preparation records the previous same-environment
+baseline without copying it. CI first attempts the existing verified exact-input
+Release restore. Only if that leaves no project build does the fallback make an
+independent copy of the previous baseline. It stages the copy in a temporary
+directory and installs it atomically, so an interruption cannot create a false
+cache hit. Both source versions remain independent. GPFS currently does not
+support reflinks: `--reflink=auto` falls back to a full copy, making this ordering
+especially important. A populated cache is reused without downloading it again.
+Full `lake build` and the existing trust audits
 still run for every selected event. Release publication policy in `AGENTS.md`
 is unchanged.
 
 A successful Mathlib cache operation is recorded by toolchain, lock and imported
-module set. Repeated jobs check the imported `.olean` files and skip redundant
-network/cache work. New imports, another lock or a missing imported artifact
-cause the normal cache fetch again.
+module set. Import headers come from Lean's native `--deps-json` parser and are
+cached by each source file's content, toolchain, lock and parser implementation.
+Only changed/new files invoke Lean again; removal or movement recomputes which
+imports are external. No handwritten import parser is used. Repeated jobs check
+recorded `.olean` paths directly, without starting Lake or searching every
+package. Old success markers are upgraded after artifact checks. New imports,
+another lock or a missing imported artifact cause the normal cache fetch again.
+Python policy/cache tests retain their full coverage and use private temporary
+directories under local `/tmp`, avoiding GPFS metadata traffic for throwaway
+fixtures. Persistent project and dependency caches remain under the dedicated
+account's environment directory.
 
 Toolchain changes require provisioning the newly approved pinned toolchain before
 the runner can build it; this deployment does not upgrade project dependencies.

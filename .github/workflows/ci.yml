@@ -66,12 +66,18 @@ jobs:
           elan show
 
       - name: Test self-hosted runner policy
+        env:
+          TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_self_hosted_runner.py'
 
       - name: Test dependency cache readiness
+        env:
+          TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_runner_dependencies.py'
 
       - name: Test direct website publication
+        env:
+          TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_direct_publication.py'
 
       - name: Identify all tracked inputs
@@ -80,9 +86,13 @@ jobs:
         run: echo "tree=$(git rev-parse 'HEAD^{tree}')" >> "$GITHUB_OUTPUT"
 
       - name: Test CI cache and event policy
+        env:
+          TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_ci_cache.py'
 
       - name: Test module-local audit inputs
+        env:
+          TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_audit_obligation_inputs.py'
 
       - name: Restore pinned dependencies
@@ -117,9 +127,23 @@ jobs:
           use-mathlib-cache: false
           use-github-cache: false
 
+      - name: Reuse a verified Release build across branches
+        if: >-
+          (runner.environment == 'self-hosted' && steps.local_cache.outputs.restore_release == 'true') ||
+          (runner.environment != 'self-hosted' && steps.cache.outputs.cache-hit != 'true')
+        timeout-minutes: 5
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/ci-cache.py restore-release
+
+      - name: Seed incremental baseline only after exact cache miss
+        if: runner.environment == 'self-hosted'
+        run: python3 .github/runner/prepare-cache.py --seed-baseline
+
       - name: Fetch only imported Mathlib dependencies
-        # The environment-keyed cache can predate newly imported modules.
-        # Cache get fills missing imports and reuses files already present.
+        # Native import headers are reused by source content; missing/new
+        # dependencies still use the pinned cache fetch before full lake build.
         run: python3 .github/runner/ensure-mathlib.py
 
       - name: Save pinned dependencies once per environment
@@ -130,16 +154,6 @@ jobs:
         with:
           path: .lake/packages
           key: ${{ steps.dependencies.outputs.cache-primary-key }}
-
-      - name: Reuse a verified Release build across branches
-        if: >-
-          (runner.environment == 'self-hosted' && steps.local_cache.outputs.restore_release == 'true') ||
-          (runner.environment != 'self-hosted' && steps.cache.outputs.cache-hit != 'true')
-        timeout-minutes: 5
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 scripts/ci-cache.py restore-release
 
       - name: Check source inventory
         run: python3 scripts/check-source-inventory.py
