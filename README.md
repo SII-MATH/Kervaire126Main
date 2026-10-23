@@ -1,6 +1,6 @@
 # Kervaire126Main
 
-证明管理前端采用原生 hgraph：一个项目，八章依次为 SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry；第八章给出几何终点的局部证明，继承 Literature 中不变量构造与 Browder 桥接等上游待补责任。主蓝图用英文按数学内容组织，一个条目可绑定多个现有 Lean 声明；源码与完整编译依赖保留在内部审计中，既有待补责任继续核验。生成、发布与预览方式见 [Blueprint 使用说明](blueprint/README.md)；现有接口锁和默认构建检查继续保留。
+证明管理前端采用原生 hgraph：一个项目，八章依次为 SpectralSequence、AdamsSynthetic、Literature、AdamsComputation、ProofTools、SSComputation、Main、Geometry；第八章给出几何终点的局部证明，继承 Literature 中不变量构造与 Browder 桥接等上游待补责任。主蓝图用英文按数学内容组织，一个条目可绑定多个现有 Lean 声明；源码与完整编译依赖保留在内部审计中，既有待补责任继续核验。生成、发布与预览方式见 [Blueprint 使用说明](blueprint/README.md)；现有接口锁和默认构建检查继续保留。
 
 [AimPaper](AimPaper/main.tex) 关于 Kervaire 不变量 126 维情形的 Lean 形式化。
 
@@ -16,7 +16,7 @@ lake build
 
 模块职责、接口与任务边界见 [AGENTS.md](AGENTS.md)。根目录 [interface/](interface/README.md) 统一组织接口基线与提案，对应 hgraph 的 Interfaces 页签。[interface/baselines/](interface/baselines/) 只保留接口、许可证明洞、审计边界与命名检查所需的精简基线，格式见 [元数据检查基线](docs/metadata-baselines.md)。数学说明与论文对应在 Blueprint 中维护，接口范围说明保存在 hgraph 原生节点附件；文献及固定代码版本通过 bibliography 引用，代码版本条目见 [source-snapshots.bib](blueprint/source-snapshots.bib)。待补工作保留在 Lean 源码与许可清单；Blueprint 使用 hgraph 原生的源码局部状态和手写依赖，不核验编译依赖闭包；[proof-obligations.json](interface/baselines/proof-obligations.json) 保留证明洞许可基线，构建通过不代表全部证明完成。Lake 的依赖锁 `lake-manifest.json` 保留在根目录。
 
-SpectralSequence、AdamsSynthetic、Literature、E2Computation、ProofTools、AdamsCalculations、Main、Geometry 八个数学模块在 `KIP126/` 下平级组织，公共入口为 `KIP126.<模块名>`。计算层按 `E2Computation → ProofTools → AdamsCalculations → Main → Geometry` 单向组织：E₂ 层提供独立的基底、乘法、维数和实际对象比较；后续 Adams 层负责微分、边界与存活。原 `KIP126.Computation` 及其子路径的兼容入口已删除，直接使用实际分层入口；既有 `KIP126.Computation.*` 公开声明名称保持不变，由实际定义模块的独立接口锁检查。移除原 `Def/` 目录层级的路径映射和验证记录已归档到 `local-history/metadata/module-path-migration.json`；历史来源仍使用其原始提交中的路径。
+SpectralSequence、AdamsSynthetic、Literature、AdamsComputation、ProofTools、SSComputation、Main、Geometry 八个数学模块在 `KIP126/` 下平级组织，公共入口为 `KIP126.<模块名>`。计算层按 `AdamsComputation → ProofTools → SSComputation → Main → Geometry` 单向组织：AdamsComputation 对应上游 `Adams`，提供独立的 E₂ 基底、乘法、维数、映射和实际对象比较，以及直接计算的 d₂ 数据；SSComputation 对应上游 `ss`，负责传播或推导的微分（也包括 d₂）、边界与存活。ProofTools 只消费 `KIP126.AdamsComputation.E2` 及其组成模块，不导入直接 d₂ 数据。原 `KIP126.Computation` 及其子路径的兼容入口已删除，直接使用实际分层入口；既有 `KIP126.Computation.*` 公开声明名称保持不变，由实际定义模块的独立接口锁检查。移除原 `Def/` 目录层级的路径映射和验证记录已归档到 `local-history/metadata/module-path-migration.json`；历史来源仍使用其原始提交中的路径。
 
 历史计算审计、接口审查、证明会话、报告及完整契约和来源 JSON 统一放在被 Git 忽略的 `local-history/`，本地文件保留，整理与恢复方式见 [历史材料归档](docs/history-archive.md)。修正记录统一维护在根目录 [corrections.yaml](corrections.yaml)，按 [结构化格式](docs/corrections.md) 供 agent 编辑并生成网页；历史证据仍指向本地归档。构建、hgraph 导出与精简基线更新均不要求归档目录存在。
 

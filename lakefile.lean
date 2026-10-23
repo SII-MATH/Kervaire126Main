@@ -22,11 +22,11 @@ input_file adamsSyntheticApi where
 input_file literatureApi where
   path := "interface/baselines/literature-api.json"
   text := true
-input_file e2ComputationApi where
-  path := "interface/baselines/e2-computation-api.json"
+input_file adamsComputationApi where
+  path := "interface/baselines/adams-computation-api.json"
   text := true
-input_file adamsCalculationsApi where
-  path := "interface/baselines/adams-calculations-api.json"
+input_file ssComputationApi where
+  path := "interface/baselines/ss-computation-api.json"
   text := true
 input_file proofToolsApi where
   path := "interface/baselines/proof-tools-api.json"
@@ -83,12 +83,12 @@ lean_lib LiteratureAuditInputs where
   roots := #[`Checks.Registry.Literature]
   needs := #[.packageTarget .anonymous `literatureObligations]
 
-target e2ComputationObligations pkg : System.FilePath :=
-  moduleObligationInput pkg "E2Computation"
+target adamsComputationObligations pkg : System.FilePath :=
+  moduleObligationInput pkg "AdamsComputation"
 
-lean_lib E2ComputationAuditInputs where
-  roots := #[`Checks.Registry.E2Computation]
-  needs := #[.packageTarget .anonymous `e2ComputationObligations]
+lean_lib AdamsComputationAuditInputs where
+  roots := #[`Checks.Registry.AdamsComputation]
+  needs := #[.packageTarget .anonymous `adamsComputationObligations]
 
 target proofToolsObligations pkg : System.FilePath :=
   moduleObligationInput pkg "ProofTools"
@@ -97,12 +97,12 @@ lean_lib ProofToolsAuditInputs where
   roots := #[`Checks.Registry.ProofTools]
   needs := #[.packageTarget .anonymous `proofToolsObligations]
 
-target adamsCalculationsObligations pkg : System.FilePath :=
-  moduleObligationInput pkg "AdamsCalculations"
+target ssComputationObligations pkg : System.FilePath :=
+  moduleObligationInput pkg "SSComputation"
 
-lean_lib AdamsCalculationsAuditInputs where
-  roots := #[`Checks.Registry.AdamsCalculations]
-  needs := #[.packageTarget .anonymous `adamsCalculationsObligations]
+lean_lib SSComputationAuditInputs where
+  roots := #[`Checks.Registry.SSComputation]
+  needs := #[.packageTarget .anonymous `ssComputationObligations]
 
 target mainObligations pkg : System.FilePath :=
   moduleObligationInput pkg "Main"
@@ -134,9 +134,9 @@ lean_lib KIP126 where
   globs := #[.one `KIP126, .andSubmodules `KIP126.SpectralSequence,
     .andSubmodules `KIP126.AdamsSynthetic,
     .andSubmodules `KIP126.Literature,
-    .andSubmodules `KIP126.E2Computation,
+    .andSubmodules `KIP126.AdamsComputation,
     .andSubmodules `KIP126.ProofTools,
-    .andSubmodules `KIP126.AdamsCalculations,
+    .andSubmodules `KIP126.SSComputation,
     .andSubmodules `KIP126.Main,
     .andSubmodules `KIP126.Geometry]
 
@@ -162,16 +162,16 @@ lean_lib LiteratureChecks where
     `Tests.Literature.Lift, `Tests.Literature.Geometry, `Tests.Literature.GeometryObjects]
 
 @[default_target]
-lean_lib E2ComputationChecks where
-  needs := #[.packageTarget .anonymous `e2ComputationApi]
-  roots := #[`Tests.E2Computation.Interface, `Tests.E2Computation.Consumers,
-    `Tests.E2Computation.SourceExpression]
+lean_lib AdamsComputationChecks where
+  needs := #[.packageTarget .anonymous `adamsComputationApi]
+  roots := #[`Tests.AdamsComputation.Interface, `Tests.AdamsComputation.Consumers,
+    `Tests.AdamsComputation.SourceExpression, `Tests.AdamsComputation.DirectD2]
 
 @[default_target]
-lean_lib AdamsCalculationsChecks where
-  needs := #[.packageTarget .anonymous `adamsCalculationsApi]
-  roots := #[`Tests.AdamsCalculations.Interface, `Tests.AdamsCalculations.Consumers,
-    `Tests.AdamsCalculations.SourceConsumers]
+lean_lib SSComputationChecks where
+  needs := #[.packageTarget .anonymous `ssComputationApi]
+  roots := #[`Tests.SSComputation.Interface, `Tests.SSComputation.Consumers,
+    `Tests.SSComputation.SourceConsumers]
 
 @[default_target]
 lean_lib ProofToolsChecks where

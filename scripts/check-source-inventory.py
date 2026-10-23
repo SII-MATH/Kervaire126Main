@@ -20,9 +20,9 @@ mathematical_entries = {
     'SpectralSequence': 'KIP126.SpectralSequence',
     'AdamsSynthetic': 'KIP126.AdamsSynthetic',
     'Literature': 'KIP126.Literature',
-    'E2Computation': 'KIP126.E2Computation',
+    'AdamsComputation': 'KIP126.AdamsComputation',
     'ProofTools': 'KIP126.ProofTools',
-    'AdamsCalculations': 'KIP126.AdamsCalculations',
+    'SSComputation': 'KIP126.SSComputation',
     'Main': 'KIP126.Main',
     'Geometry': 'KIP126.Geometry',
 }
@@ -31,11 +31,11 @@ allowed_dependencies = {
     'SpectralSequence': {'SpectralSequence'},
     'AdamsSynthetic': {'SpectralSequence', 'AdamsSynthetic'},
     'Literature': {'SpectralSequence', 'AdamsSynthetic', 'Literature'},
-    'E2Computation': {'SpectralSequence', 'AdamsSynthetic', 'Literature', 'E2Computation'},
+    'AdamsComputation': {'SpectralSequence', 'AdamsSynthetic', 'Literature', 'AdamsComputation'},
     'ProofTools': {'SpectralSequence', 'AdamsSynthetic', 'Literature',
-                   'E2Computation', 'ProofTools'},
-    'AdamsCalculations': {'SpectralSequence', 'AdamsSynthetic', 'Literature',
-                          'E2Computation', 'ProofTools', 'AdamsCalculations'},
+                   'AdamsComputation', 'ProofTools'},
+    'SSComputation': {'SpectralSequence', 'AdamsSynthetic', 'Literature',
+                          'AdamsComputation', 'ProofTools', 'SSComputation'},
     'Main': set(mathematical_entries) - {'Geometry'},
     'Geometry': set(mathematical_entries),
 }
@@ -178,6 +178,11 @@ for path in actual_project:
     source_owner = owner(lean_name(path))
     for all_, imported in imports(path):
         imported_owner = owner(imported)
+        if source_owner == 'ProofTools' and (imported == 'KIP126.AdamsComputation' or
+                any(imported == prefix or imported.startswith(prefix + '.') for prefix in (
+                    'KIP126.AdamsComputation.D2', 'KIP126.AdamsComputation.Table.D2',
+                    'KIP126.AdamsComputation.Table.ClaimSyntax'))):
+            errors.append(f'ProofTools may consume only the E2 sublayer: {path.relative_to(root)} imports {imported}')
         if imported == 'KIPBase' or imported.startswith(('KIPBase.', 'Interface.', 'LinProgram.')):
             errors.append(f'Legacy dependency forbidden: {path.relative_to(root)} imports {imported}')
         if imported == 'KIP126' or imported.startswith('KIP126.'):

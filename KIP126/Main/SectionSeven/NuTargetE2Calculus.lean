@@ -1,5 +1,5 @@
 module
-public import KIP126.E2Computation.Table.Relations
+public import KIP126.AdamsComputation.Table.Relations
 /-! Degree-explicit associativity for the existing sphere product.
 This is only an interface adapter for the ring reassociations in the
 pinned NuTargetHelpers.lean:1766–2085 (bbac1fc05843, MIT). -/

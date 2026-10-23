@@ -2,7 +2,7 @@ module
 
 public import KIP126.ProofTools.Language
 public import KIP126.ProofTools.ConvergenceOperations
-public import KIP126.E2Computation.Standard
+public import KIP126.AdamsComputation.Standard
 import all KIP126.ProofTools.Paper.DoublingNumericalExtensions
 import all KIP126.ProofTools.Paper.DoublingCrossing
 import all KIP126.ProofTools.Paper.DoublingMaximalLift

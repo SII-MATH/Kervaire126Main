@@ -7,7 +7,7 @@ import all KIP126.Main.Internal.QuotientCalculus
 import all KIP126.Main.Internal.Selected.InfinityFrames
 import all KIP126.Main.Internal.Selected.SphereDetection
 import all KIP126.Main.SectionSeven.NuTargetWindows
-public import KIP126.AdamsCalculations.Table
+public import KIP126.SSComputation.Table
 /-! Finite-window gaps and the h₀ error estimate from NuTargetHelpers.lean:
 2277–2296,2388–2426,2732–2777, bbac1fc05843 (MIT). -/
 @[expose] section

@@ -1,6 +1,8 @@
 # Kervaire 126 Blueprint
 
-The Blueprint is one native hgraph project with eight chapters: SpectralSequence, AdamsSynthetic, Literature, E2Computation, ProofTools, AdamsCalculations, Main, and Geometry. The main document is English and organized by mathematical content. Geometry states the dimension-126 existence result and complete dimension classification; its literature assumptions and unfinished source-to-model bridges remain documented in Literature and in the Lean obligation registry.
+The Blueprint is one native hgraph project with eight chapters: SpectralSequence, AdamsSynthetic, Literature, AdamsComputation, ProofTools, SSComputation, Main, and Geometry. The main document is English and organized by mathematical content. Geometry states the dimension-126 existence result and complete dimension classification; its literature assumptions and unfinished source-to-model bridges remain documented in Literature and in the Lean obligation registry.
+
+Chapter 4 follows the upstream `Adams` program: its independent E₂ sublayer and direct d₂ outputs. Chapter 6 follows `ss` propagation, including derived d₂ equations as well as later-page calculations. ProofTools imports only the E₂ sublayer. Program provenance and the remaining actual-page certification responsibilities are explained in plain opening paragraphs of both chapters.
 
 ## Native dependency and proof-state behavior
 

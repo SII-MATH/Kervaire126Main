@@ -7,7 +7,7 @@ import all KIP126.Main.Internal.QuotientCalculus
 import all KIP126.Main.Internal.Selected.InfinityFrames
 import all KIP126.Main.Internal.Selected.SphereDetection
 import all KIP126.Main.SectionSeven.NuTargetWindows
-public import KIP126.AdamsCalculations.Table
+public import KIP126.SSComputation.Table
 import all KIP126.Main.SectionSeven.NuTargetFinite
 import all KIP126.Main.SectionSeven.NuTargetProducts
 import all KIP126.Main.SectionSeven.NuTargetH0Products

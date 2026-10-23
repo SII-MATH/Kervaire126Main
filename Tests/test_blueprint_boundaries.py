@@ -14,13 +14,13 @@ ROOT = Path(__file__).resolve().parents[1]
 class BindingOwnershipTests(unittest.TestCase):
     def test_namespace_does_not_override_actual_module_ownership(self):
         name = 'KIP126.Computation.label'
-        sources = {name: {'file': 'KIP126/E2Computation/Labels.lean', 'owner': 'E2Computation'}}
-        row = {'label': 'result', 'chapter': 'AdamsCalculations', 'lean': [name]}
+        sources = {name: {'file': 'KIP126/AdamsComputation/Labels.lean', 'owner': 'AdamsComputation'}}
+        row = {'label': 'result', 'chapter': 'SSComputation', 'lean': [name]}
         with self.assertRaisesRegex(ValueError, 'Cross-module Blueprint binding'):
-            boundaries.validate_binding_owners([row], sources, {name: 'E2Computation'})
-        sources[name]['owner'] = 'AdamsCalculations'
+            boundaries.validate_binding_owners([row], sources, {name: 'AdamsComputation'})
+        sources[name]['owner'] = 'SSComputation'
         with self.assertRaisesRegex(ValueError, 'Invalid source module ownership'):
-            boundaries.validate_binding_owners([row], sources, {name: 'AdamsCalculations'})
+            boundaries.validate_binding_owners([row], sources, {name: 'SSComputation'})
 
     def test_only_locked_public_interfaces_are_bindable(self):
         name = 'KIP126.Main.internal'
@@ -45,11 +45,11 @@ class ChapterOrderTests(unittest.TestCase):
         return boundaries.validate_chapter_dependencies(rows, proofs)
 
     def test_statement_and_proof_dependencies_obey_chapter_order(self):
-        source = (r'\chapter{E2Computation}\begin{theorem}\label{input}\label{alias}'
+        source = (r'\chapter{AdamsComputation}\begin{theorem}\label{input}\label{alias}'
                   r'Input.\end{theorem}'
                   r'\chapter{ProofTools}\begin{theorem}\label{result}Result.\end{theorem}'
                   r'\begin{proof}\uses{alias}Proof.\end{proof}')
-        self.assertEqual(self.check(source)['dependency_edges'], [['ProofTools', 'E2Computation']])
+        self.assertEqual(self.check(source)['dependency_edges'], [['ProofTools', 'AdamsComputation']])
         with self.assertRaisesRegex(ValueError, 'Chapter dependency points forward'):
             self.check(source.replace(r'Input.\end{theorem}', r'\uses{result}Input.\end{theorem}'))
 

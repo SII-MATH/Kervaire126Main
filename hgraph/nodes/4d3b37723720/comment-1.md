@@ -1,6 +1,6 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/chapters/E2Computation.tex
+authored_source: blueprint/chapters/AdamsComputation.tex
 blueprint_label: sem:E2Computation:d3-labels
 created: '2026-10-18T08:16:05'
 date: '2026-10-18T08:16:05'

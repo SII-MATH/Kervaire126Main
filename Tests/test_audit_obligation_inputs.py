@@ -37,10 +37,10 @@ def fixture():
         'schema_version': 2,
         'obligations': [
             {'name': 'KIP126.Computation.e2Pending',
-             'module': 'KIP126.E2Computation.Standard',
+             'module': 'KIP126.AdamsComputation.Standard',
              'type_fingerprint': '11', 'body_fingerprint': '12', 'status': 'pending-proof'},
             {'name': 'KIP126.Computation.adamsPending',
-             'module': 'KIP126.AdamsCalculations.Standard',
+             'module': 'KIP126.SSComputation.Standard',
              'type_fingerprint': '21', 'body_fingerprint': '22', 'status': 'pending-proof'},
             {'name': 'KIP126.Literature.pending', 'module': 'KIP126.Literature.Standard',
              'type_fingerprint': '31', 'body_fingerprint': '32', 'status': 'pending-construction'},
@@ -67,8 +67,8 @@ class AuditInputTests(unittest.TestCase):
         combined = [row for shard in shards.values() for row in shard['obligations']]
         self.assertEqual(sorted(combined, key=lambda row: row['name']),
                          sorted(ledger['obligations'], key=lambda row: row['name']))
-        self.assertEqual(shards['E2Computation']['obligations'], [ledger['obligations'][0]])
-        self.assertEqual(shards['AdamsCalculations']['obligations'], [ledger['obligations'][1]])
+        self.assertEqual(shards['AdamsComputation']['obligations'], [ledger['obligations'][0]])
+        self.assertEqual(shards['SSComputation']['obligations'], [ledger['obligations'][1]])
         for module, shard in shards.items():
             self.assertEqual(shard['audit_module'], module)
             self.assertNotIn('summary', shard)

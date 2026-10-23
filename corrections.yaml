@@ -325,9 +325,9 @@ corrections:
     - sem:AdamsCalculations:two-line-d2-screening
     - paper:1.5
   problem: |-
-    **来源核查发现的接口错误。** 原文及上一轮新增的第三页候选清单遗漏了 $h_0h_4$。Lin Theorem 1.3(1) 给出 $h_0^2h_3^2=0$，由 Adams 微分及 Leibniz 有 $d_2(h_0h_4)=0$；IWX Table 6，p. 222，首行明确给出非零 $d_3(h_0h_4)=h_0d_0$。因此上一轮 `AdamsCalculations.two_line_d2_candidates` 在所声称的经典 Adams 对象上不成立，当时依赖它的 Main 组合证明不能称为已有正确上游支持的完整证明。上一轮只去除了平方指标的提前截断，没有独立检查全部混合乘积，这是本次发现的遗漏。
+    **来源核查发现的接口错误。** 原文及上一轮新增的第三页候选清单遗漏了 $h_0h_4$。Lin Theorem 1.3(1) 给出 $h_0^2h_3^2=0$，由 Adams 微分及 Leibniz 有 $d_2(h_0h_4)=0$；IWX Table 6，p. 222，首行明确给出非零 $d_3(h_0h_4)=h_0d_0$。因此上一轮 `SSComputation.two_line_d2_candidates` 在所声称的经典 Adams 对象上不成立，当时依赖它的 Main 组合证明不能称为已有正确上游支持的完整证明。上一轮只去除了平方指标的提前截断，没有独立检查全部混合乘积，这是本次发现的遗漏。
   progress: |-
-    用户已授权补齐其上游接口并完成 Main 的组合证明。完整分类由 `Main.adams_two_line_classification` 给出，陈述仍是实际球面第二线上任意元素非零存活当且仅当属于原文清单，没有额外调用者前提。文献存活及排除结论归 Literature，无界 E₂ 基底归 E2Computation，首次微分后的候选筛选归 AdamsCalculations；Main 不接手这些上游待补证明。
+    用户已授权补齐其上游接口并完成 Main 的组合证明。完整分类由 `Main.adams_two_line_classification` 给出，陈述仍是实际球面第二线上任意元素非零存活当且仅当属于原文清单，没有额外调用者前提。文献存活及排除结论归 Literature，无界 E₂ 基底归 AdamsComputation，首次微分后的候选筛选归 SSComputation；Main 不接手这些上游待补证明。
   history: |-
     用户随后明确回复“批准，按此修正”。已据此在公共候选谓词补入 $(0,4)$；Literature 新增实际双次数 $(2,17)\to(5,19)$ 的非零 $d_3$ 接口 `iwx_h0_h4_d3`；Main 增加第四条混合项排除分支。最终永久存活分类及 Main 公共定理类型不变，新增一项独立的上游待补责任（309→310），并保留此前全部责任；Main 不新增本地证明洞。修正后的筛选与实际模型比较仍是上游待补，引用核查和有限检验不能替代全指标形式证明。批准范围与独立依据见 [接口复核](local-history/reports/two-line-source-alignment-2026-10-18/interface-review.md)，来源及实施验证见 [本次记录](local-history/reports/two-line-source-alignment-2026-10-18/report.md)。
 

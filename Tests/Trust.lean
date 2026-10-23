@@ -1,4 +1,5 @@
 module
+import all Tests.AdamsComputation.DirectD2
 
 import all Tests.Architecture
 import all Tests.AdamsSynthetic.Background
@@ -9,12 +10,12 @@ import all Tests.AdamsSynthetic.Interface
 import all Tests.AdamsSynthetic.Mapping
 import all Tests.AdamsSynthetic.Structural
 import all Tests.AdamsSynthetic.System
-import all Tests.AdamsCalculations.Consumers
-import all Tests.AdamsCalculations.Interface
-import all Tests.AdamsCalculations.SourceConsumers
-import all Tests.E2Computation.SourceExpression
-import all Tests.E2Computation.Consumers
-import all Tests.E2Computation.Interface
+import all Tests.SSComputation.Consumers
+import all Tests.SSComputation.Interface
+import all Tests.SSComputation.SourceConsumers
+import all Tests.AdamsComputation.SourceExpression
+import all Tests.AdamsComputation.Consumers
+import all Tests.AdamsComputation.Interface
 import all Tests.Integration
 import all Tests.Geometry.Interface
 import all Tests.Geometry.Consumers

@@ -30,7 +30,7 @@ class InterfacePageTests(unittest.TestCase):
                     for key, value in row.items():
                         self.assertEqual(by_name[row['name']][key], value)
         # The namespace is historical; the source module determines ownership.
-        self.assertTrue(any(r['owner'] == 'E2Computation' and r['name'].startswith('KIP126.Computation.')
+        self.assertTrue(any(r['owner'] == 'AdamsComputation' and r['name'].startswith('KIP126.Computation.')
                             for r in self.data['records']))
 
     def test_registry_private_responsibilities_and_audit_boundaries_are_retained(self):

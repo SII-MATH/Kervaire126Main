@@ -23,9 +23,9 @@ run_cmd do
         !(`KIP126.SpectralSequence).isPrefixOf mod &&
         !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
         !(`KIP126.Literature).isPrefixOf mod &&
-        !(`KIP126.E2Computation).isPrefixOf mod &&
+        !(`KIP126.AdamsComputation).isPrefixOf mod &&
         !(`KIP126.ProofTools).isPrefixOf mod &&
-        !(`KIP126.AdamsCalculations).isPrefixOf mod &&
+        !(`KIP126.SSComputation).isPrefixOf mod &&
         !(`KIP126.Main).isPrefixOf mod &&
         !(`KIP126.Geometry).isPrefixOf mod then
       throwError "Geometry crossed its dependency boundary: {mod}"

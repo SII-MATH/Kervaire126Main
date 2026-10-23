@@ -8,7 +8,7 @@ import re
 from hgraph.sync import parse_lean, parse_blueprint, read_blueprint, _assoc_proofs
 
 MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature',
-           'E2Computation', 'ProofTools', 'AdamsCalculations', 'Main', 'Geometry')
+           'AdamsComputation', 'ProofTools', 'SSComputation', 'Main', 'Geometry')
 
 
 def public_interfaces(root):

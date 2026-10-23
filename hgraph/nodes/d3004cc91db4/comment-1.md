@@ -1,6 +1,6 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/chapters/AdamsCalculations.tex
+authored_source: blueprint/chapters/SSComputation.tex
 blueprint_label: sem:AdamsCalculations:two-line-d2-candidates
 created: '2026-10-18T04:35:45'
 date: '2026-10-18T04:35:45'
