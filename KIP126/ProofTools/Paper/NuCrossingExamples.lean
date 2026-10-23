@@ -4,7 +4,7 @@ public import KIP126.ProofTools.Language
 public import KIP126.ProofTools.StandardSpecializations
 import all KIP126.ProofTools.Paper.DoublingNumericalExtensions
 import all KIP126.ProofTools.GeneralizedMahowald.FiniteLevelLabels
-import KIP126.E2Computation
+import KIP126.AdamsComputation.E2
 
 /-! The actual E₂ ν relation and the crossing checks of AimPaper 5.13.
 The page-two crossing range is empty. The later checks retain the actual

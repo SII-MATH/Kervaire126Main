@@ -1,6 +1,6 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/chapters/AdamsCalculations.tex
+authored_source: blueprint/chapters/SSComputation.tex
 blueprint_label: sem:Computation:detector-differential
 created: '2026-10-17T18:17:09'
 date: '2026-10-17T18:17:09'

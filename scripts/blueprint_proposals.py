@@ -10,8 +10,8 @@ from urllib.parse import quote, unquote, urlsplit
 import yaml
 from hgraph.site import _md_to_html
 
-MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature', 'E2Computation',
-           'ProofTools', 'AdamsCalculations', 'Main', 'Geometry', 'Computation')
+MODULES = ('SpectralSequence', 'AdamsSynthetic', 'Literature', 'AdamsComputation',
+           'ProofTools', 'SSComputation', 'Main', 'Geometry', 'Computation')
 STATUSES = {
     'draft': ('draft', '草稿'),
     'pending-human-review': ('pending', '未获人审批准'),

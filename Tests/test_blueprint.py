@@ -56,7 +56,7 @@ class AimPaperPresentationTests(unittest.TestCase):
         entries = {row['label']: row for row in rows}
         global_input = entries['sem:E2Computation:two-line-exhaustive']
         bounded = entries['sem:Computation:bounded-comparison']
-        self.assertEqual(global_input['lean'], ['KIP126.E2Computation.two_line_exhaustive'])
+        self.assertEqual(global_input['lean'], ['KIP126.AdamsComputation.two_line_exhaustive'])
         self.assertIn('For every integer $t$', global_input['body'])
         self.assertIn('There is no upper bound', global_input['body'])
         self.assertIn(r't\leq261', bounded['body'])

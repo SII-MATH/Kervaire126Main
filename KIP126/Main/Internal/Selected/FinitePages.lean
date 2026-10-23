@@ -1,6 +1,6 @@
 module
 public import KIP126.Main.Conditions
-public import KIP126.AdamsCalculations.Table
+public import KIP126.SSComputation.Table
 import all KIP126.Main.Internal.PageCalculus
 import all KIP126.Main.Internal.Selected.NormalizedTable
 

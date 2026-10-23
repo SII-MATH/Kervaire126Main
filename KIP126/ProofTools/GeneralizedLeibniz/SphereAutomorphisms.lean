@@ -1,7 +1,7 @@
 module
 import all KIP126.ProofTools.StretchingRepresentatives
-import KIP126.E2Computation.Standard
-import KIP126.E2Computation.Table.Dimensions
+import KIP126.AdamsComputation.Standard
+import KIP126.AdamsComputation.Table.Dimensions
 import Mathlib.LinearAlgebra.Finsupp.Pi
 
 /-! Sphere automorphisms act trivially after the first lambda quotient.

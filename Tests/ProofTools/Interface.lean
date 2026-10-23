@@ -19,11 +19,14 @@ run_cmd do
   let env ← getEnv
   let exported := env.setExporting true
   for mod in env.header.moduleNames do
+    if #[`KIP126.AdamsComputation.D2, `KIP126.AdamsComputation.Table.D2,
+        `KIP126.AdamsComputation.Table.ClaimSyntax].any (·.isPrefixOf mod) then
+      throwError "ProofTools imported direct Adams d2 data instead of the independent E2 sublayer: {mod}"
     if (`KIP126).isPrefixOf mod &&
         !(`KIP126.SpectralSequence).isPrefixOf mod &&
         !(`KIP126.AdamsSynthetic).isPrefixOf mod &&
         !(`KIP126.Literature).isPrefixOf mod &&
-        !(`KIP126.E2Computation).isPrefixOf mod &&
+        !(`KIP126.AdamsComputation).isPrefixOf mod &&
         !(`KIP126.ProofTools).isPrefixOf mod then
       throwError "ProofTools crossed its dependency boundary: {mod}"
   for decl in declarations do

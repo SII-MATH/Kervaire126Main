@@ -1,7 +1,7 @@
 module
 
 public import KIP126.Main.Conditions
-import KIP126.E2Computation.Table.Values
+import KIP126.AdamsComputation.Table.Values
 import KIP126.AdamsSynthetic.Standard.ClassicalSupport
 import all KIP126.Main.Internal.Choice.Invariance
 import all KIP126.Main.Internal.Choice.FinitePages

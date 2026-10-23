@@ -2,7 +2,7 @@ module
 import all KIP126.ProofTools.GeneralizedMahowald.FinalDivision
 import all KIP126.ProofTools.GeneralizedMahowald.ExtensionImage
 import all KIP126.ProofTools.GeneralizedMahowald.PageCalculus
-import KIP126.E2Computation.Table.Dimensions
+import KIP126.AdamsComputation.Table.Dimensions
 import all KIP126.ProofTools.GeneralizedLeibniz.CrossingRange
 
 /-!

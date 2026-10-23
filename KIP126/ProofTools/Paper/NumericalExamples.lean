@@ -1,7 +1,7 @@
 module
 
 import KIP126.ProofTools.Language
-import KIP126.E2Computation.Standard
+import KIP126.AdamsComputation.Standard
 import Mathlib.RingTheory.Ideal.Quotient.Operations
 
 /-! Numerical targets from AimPaper Section 6, on the fixed Standard model.

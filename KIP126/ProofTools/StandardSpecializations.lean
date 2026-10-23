@@ -2,7 +2,7 @@ module
 
 public import KIP126.ProofTools.GeneralizedLeibnizAtLevel
 public import KIP126.ProofTools.GeneralizedMahowald.FiniteLevelAssembly
-public import KIP126.E2Computation.Standard
+public import KIP126.AdamsComputation.Standard
 import all KIP126.ProofTools.SyntheticProgramRules
 import all KIP126.ProofTools.Paper.NumericalExamples
 import all KIP126.ProofTools.Paper.NuNumericalExtensions

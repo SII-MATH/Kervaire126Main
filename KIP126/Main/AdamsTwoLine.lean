@@ -2,8 +2,8 @@ module
 
 public import KIP126.Main.H6SquarePermanent
 public import KIP126.Literature
-public import KIP126.E2Computation
-public import KIP126.AdamsCalculations
+public import KIP126.AdamsComputation
+public import KIP126.SSComputation
 import all KIP126.Main.Internal.PageCalculus
 
 /-! AimPaper Corollary 1.5, as a proposition on the actual sphere E₂ page.
@@ -141,7 +141,7 @@ private theorem surviving_pair_listed (i j : ℕ) (hij : i ≤ j)
       (KIP126.Literature.Standard.hiProduct i j)) :
     (i = 0 ∧ j = 2) ∨ (i = 0 ∧ j = 3) ∨ (i = 2 ∧ j = 4) ∨
       (i = 1 ∧ 3 ≤ j) ∨ (i = j ∧ j ≤ 6) := by
-  have hc := KIP126.AdamsCalculations.two_line_d2_candidates i j hij
+  have hc := KIP126.SSComputation.two_line_d2_candidates i j hij
     (survival_nonzero hx) (survival_reaches_three hx)
   rcases hc with h02 | h03 | h24 | heta | hsq | ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩ | ⟨rfl,rfl⟩ |
     ⟨rfl,rfl⟩
@@ -174,7 +174,7 @@ public theorem adams_two_line_classification : AdamsTwoLineClassification := by
   intro t x
   constructor
   · intro hx
-    obtain ⟨i,j,hij,degree,heq⟩ := KIP126.E2Computation.two_line_exhaustive t x
+    obtain ⟨i,j,hij,degree,heq⟩ := KIP126.AdamsComputation.two_line_exhaustive t x
       (survival_nonzero hx)
     have hp := (survival_regrade degree (KIP126.Literature.Standard.hiProduct i j)).mp
       (heq ▸ hx)

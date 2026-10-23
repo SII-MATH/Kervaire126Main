@@ -21,8 +21,8 @@ open Lean Elab Command in
 run_cmd do
   let env ← getEnv
   let entries := #[`KIP126.SpectralSequence, `KIP126.AdamsSynthetic,
-    `KIP126.Literature, `KIP126.E2Computation, `KIP126.ProofTools,
-    `KIP126.AdamsCalculations, `KIP126.Main, `KIP126.Geometry]
+    `KIP126.Literature, `KIP126.AdamsComputation, `KIP126.ProofTools,
+    `KIP126.SSComputation, `KIP126.Main, `KIP126.Geometry]
   for entry in entries do
     unless env.header.moduleNames.contains entry do
       throwError "Root import is missing a public module: {entry}"

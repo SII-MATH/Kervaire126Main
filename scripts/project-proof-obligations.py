@@ -18,8 +18,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_LEDGER = ROOT / 'interface/baselines/proof-obligations.json'
 MODULES = (
-    'SpectralSequence', 'AdamsSynthetic', 'Literature', 'E2Computation',
-    'ProofTools', 'AdamsCalculations', 'Main', 'Geometry',
+    'SpectralSequence', 'AdamsSynthetic', 'Literature', 'AdamsComputation',
+    'ProofTools', 'SSComputation', 'Main', 'Geometry',
 )
 ROUTE_KEY = 'main_zero_layer_rewire_2026_10_16'
 ROUTE_FIELDS = ('public_main_roots', 'proofTools_boundary_declarations')

@@ -17,9 +17,9 @@ MODULES = [
     ('spectral-sequence', 'SpectralSequence', 'KIP126.SpectralSequence'),
     ('adams-synthetic', 'AdamsSynthetic', 'KIP126.AdamsSynthetic'),
     ('literature', 'Literature', 'KIP126.Literature'),
-    ('e2-computation', 'E2Computation', 'KIP126.E2Computation'),
+    ('adams-computation', 'AdamsComputation', 'KIP126.AdamsComputation'),
     ('proof-tools', 'ProofTools', 'KIP126.ProofTools'),
-    ('adams-calculations', 'AdamsCalculations', 'KIP126.AdamsCalculations'),
+    ('ss-computation', 'SSComputation', 'KIP126.SSComputation'),
     ('main', 'Main', 'KIP126.Main'),
     ('geometry', 'Geometry', 'KIP126.Geometry'),
 ]

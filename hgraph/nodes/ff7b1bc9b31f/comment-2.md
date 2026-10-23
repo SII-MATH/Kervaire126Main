@@ -1,6 +1,6 @@
 ---
 author: blueprint-authoring
-authored_source: blueprint/chapters/E2Computation.tex
+authored_source: blueprint/chapters/AdamsComputation.tex
 blueprint_label: sem:Computation:actual-coordinates
 created: '2026-10-17T18:17:09'
 date: '2026-10-17T18:17:09'

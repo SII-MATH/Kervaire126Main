@@ -1,5 +1,5 @@
 module
-public import KIP126.E2Computation.Table.Relations
+public import KIP126.AdamsComputation.Table.Relations
 import all KIP126.Main.SectionSeven.NuTargetE2Calculus
 import all KIP126.Main.SectionSeven.NuTargetLinear
 public import KIP126.ProofTools.Operations
