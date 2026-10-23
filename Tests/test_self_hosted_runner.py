@@ -3,6 +3,7 @@ import importlib.util
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -53,6 +54,14 @@ class AdmissionTests(unittest.TestCase):
 
 
 class PersistentCacheTests(unittest.TestCase):
+    def test_workflow_attempts_exact_release_before_fallback_and_dependencies(self):
+        workflow = (ROOT / '.github/workflows/ci.yml').read_text()
+        ordered = ['Prepare isolated persistent cache', 'Reuse a verified Release build across branches',
+                   'Seed incremental baseline only after exact cache miss',
+                   'Fetch only imported Mathlib dependencies', 'Build all modules and checks']
+        self.assertEqual([workflow.index(name) for name in ordered],
+                         sorted(workflow.index(name) for name in ordered))
+
     def test_source_variants_keep_independent_builds_and_shared_locked_dependencies(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary) / 'checkout'; root.mkdir()
@@ -64,6 +73,8 @@ class PersistentCacheTests(unittest.TestCase):
             (root / '.lake/build/result').write_text('version A')
             (root / '.lake/packages/dependency').write_text('locked dependency')
             cache.prepare(root, archives, 'b' * 64)
+            self.assertFalse((root / '.lake/build').exists())
+            cache.seed_baseline(root, archives)
             self.assertEqual((root / '.lake/build/result').read_text(), 'version A')
             self.assertEqual((root / '.lake/packages/dependency').read_text(), 'locked dependency')
             (root / '.lake/build/result').write_text('version B')
@@ -71,6 +82,66 @@ class PersistentCacheTests(unittest.TestCase):
             self.assertEqual((root / '.lake/build/result').read_text(), 'version A')
             cache.prepare(root, archives, 'b' * 64)
             self.assertEqual((root / '.lake/build/result').read_text(), 'version B')
+
+    def test_exact_restore_precedes_and_prevents_incremental_copy(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            archives = Path(temporary) / 'archives'
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives, 'a' * 64)
+            (root / '.lake/build').mkdir()
+            (root / '.lake/build/result').write_text('baseline A')
+            with patch.object(cache.subprocess, 'run') as copy:
+                cache.prepare(root, archives, 'b' * 64)
+                copy.assert_not_called()
+                # Model the verified Release installation before fallback.
+                (root / '.lake/build').mkdir()
+                (root / '.lake/build/result').write_text('exact B')
+                cache.seed_baseline(root, archives)
+                copy.assert_not_called()
+            self.assertEqual((root / '.lake/build/result').read_text(), 'exact B')
+            cache.prepare(root, archives, 'a' * 64)
+            self.assertEqual((root / '.lake/build/result').read_text(), 'baseline A')
+
+    def test_interrupted_copy_does_not_poison_future_cache_hits(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            archives = Path(temporary) / 'archives'
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives, 'a' * 64)
+            (root / '.lake/build').mkdir()
+            cache.prepare(root, archives, 'b' * 64)
+            def cancelled(args, **kwargs):
+                Path(args[-1]).mkdir()
+                (Path(args[-1]) / 'partial').write_text('unfinished')
+                raise RuntimeError('copy interrupted')
+            with patch.object(cache.subprocess, 'run', side_effect=cancelled):
+                with self.assertRaisesRegex(RuntimeError, 'interrupted'):
+                    cache.seed_baseline(root, archives)
+            self.assertFalse((root / '.lake/build').exists())
+            self.assertTrue((root / '.lake/runner-incremental-baseline').is_file())
+            cache.seed_baseline(root, archives)
+            self.assertTrue((root / '.lake/build').is_dir())
+
+    def test_fallback_rejects_escaping_or_symlinked_baselines(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; root.mkdir()
+            archives = Path(temporary) / 'archives'
+            (root / 'lean-toolchain').write_text('pinned')
+            (root / 'lake-manifest.json').write_text('{}')
+            cache.prepare(root, archives, 'a' * 64)
+            pending = root / '.lake/runner-incremental-baseline'
+            pending.write_text('../development/build')
+            with self.assertRaises(ValueError):
+                cache.seed_baseline(root, archives)
+            other = archives / cache.environment_key(root) / 'inputs' / ('b' * 64)
+            other.mkdir()
+            (other / 'build').symlink_to(root)
+            pending.write_text('inputs/' + 'b' * 64 + '/build')
+            with self.assertRaises(ValueError):
+                cache.seed_baseline(root, archives)
 
     def test_corrupt_fingerprint_cannot_escape_cache(self):
         with tempfile.TemporaryDirectory() as temporary:
