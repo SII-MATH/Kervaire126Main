@@ -90,6 +90,11 @@ jobs:
           TMPDIR: /tmp
         run: python3 -m unittest discover -s Tests -p 'test_ci_cache.py'
 
+      - name: Test asynchronous Release cache publication
+        env:
+          TMPDIR: /tmp
+        run: python3 -m unittest discover -s Tests -p 'test_async_release_cache.py'
+
       - name: Test module-local audit inputs
         env:
           TMPDIR: /tmp

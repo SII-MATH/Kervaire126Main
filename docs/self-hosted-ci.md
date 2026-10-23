@@ -51,9 +51,11 @@ Only a missing project build triggers exact-input Release bootstrap. A populated
 working cache is always left for Lake to validate; recovery of a damaged cache
 requires preserving/moving it first, without active writers. Release metadata,
 input fingerprints and archive checksums remain strict. Every selected event
-still runs full `lake build` and existing trust audits. Release publication and
-sync remain required by `AGENTS.md`; the single CI working cache is not itself a
-claim that the newly checked-out source has already passed.
+still runs full `lake build` and existing trust audits. Release publication runs
+asynchronously for successful main builds; pushes and task delivery do not wait
+for it. See [the background publisher](ci-cache.md#asynchronous-main-release-publication).
+The single CI working cache is not itself a claim that the newly checked-out
+source has already passed.
 
 A successful Mathlib cache operation is recorded by toolchain, lock and imported
 module set. Import headers come from Lean's native `--deps-json` parser and are
