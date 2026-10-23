@@ -106,8 +106,10 @@ PyYAML 6.0.1 and TeX/Graphviz tools are provisioned once. The Python environment
 `/opt/kip126-blueprint-tools`, outside the job account's writable home. The export job retains the native content-addressed diagram cache across checkouts,
 verifies the fixed tools and performs no apt, pip, Python-setup or hgraph checkout during publication.
 The independent root supervisor and existing instance watchdog restore the slot
-after runner failure or restart. Website artifacts still pass through the existing
-publisher, safe extraction, atomic release switch and health/rollback checks;
+after runner failure or restart. Exported files pass through a local handoff to
+the root-owned publisher and directly over SSH to Hong Kong, with no GitHub
+artifact upload or download. Safe extraction, atomic release switching and
+health/rollback checks remain, and the job waits for the live publication receipt;
 public feedback remains outside website releases.
 
 Host supervisor: `ops/blueprint-runner/blueprint-service.py`. Registration and

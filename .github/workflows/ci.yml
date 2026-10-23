@@ -71,6 +71,9 @@ jobs:
       - name: Test dependency cache readiness
         run: python3 -m unittest discover -s Tests -p 'test_runner_dependencies.py'
 
+      - name: Test direct website publication
+        run: python3 -m unittest discover -s Tests -p 'test_direct_publication.py'
+
       - name: Identify all tracked inputs
         id: inputs
         # Includes interfaces, obligation registry, scripts and workflow configuration.
