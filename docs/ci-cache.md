@@ -53,8 +53,10 @@ and [merge-group events](https://docs.github.com/en/actions/reference/workflows-
 
 - `.lake/packages` uses an OS/architecture/toolchain/manifest key. It is not
   uploaded again for every project-source change on the same cache scope.
-- `.lake/build` uses the same environment plus the complete Git tree. Exact,
-  same-tree partial, then same-environment incremental baselines are tried.
+- On the self-hosted single slot, `.lake/build` persists per toolchain and lock,
+  across source changes; Lake performs incremental validation without copying it.
+  On hosted runners, the complete Git tree selects exact, same-tree partial, then
+  same-environment incremental Actions baselines.
 - Successful project builds and best-effort partial failure builds remain
   distinct. A partial cache is never marked complete.
 
@@ -69,7 +71,7 @@ Every selected event still invokes full `lake build`.
 
 GitHub isolates Actions caches by branch/PR merge ref. CI therefore also checks
 the repository's existing `build-cache-<commit>-<os>-<arch>` Releases when it
-has no exact project-cache hit. It reads small metadata first and accepts only
+has no project build on the self-hosted slot, or no exact Actions project-cache hit on a hosted runner. It reads small metadata first and accepts only
 a passed, clean build with the same repository, OS/architecture, toolchain,
 manifest hash, and exact build-input manifest. This uses the existing Release
 schema: tracked Lean files, dependency locks, `interface/baselines/` JSON and scripts,
@@ -104,14 +106,67 @@ restricted to the fresh CI workspace before compilation. It does not modify
 the shared development worktree or its in-progress builds.
 
 CI always runs the full build after restoration; Release metadata does not
-replace verification. The required local push/pull Release synchronization
-policy remains in force; this workflow consumes those releases but does not
-claim that Actions caching publishes them.
+replace verification. Release publication is asynchronous and main-only; Actions caching does not
+publish Releases and no PR or push must wait for a fresh cache.
+
+## Asynchronous main Release publication
+
+A separate root-owned local service polls GitHub every 15 seconds. It observes
+only `main` push runs of `ci.yml`, confirms the repository and run attempt, and
+requires successful `Lean checks`, source inventory and full `lake build` on
+`inspire-kip126-01`. PRs, merge-group runs, develop and failed/cancelled runs cannot
+publish. The service is outside the required CI jobs, so pushing, merging and task
+delivery never wait for archive creation or upload. It uses the existing operator
+GitHub authentication; credentials are never passed into the runner job.
+
+The durable pending request follows the newest main SHA, with a 60-second quiet
+period to coalesce bursts. Pending older commits are superseded; a release already
+uploading may finish before the next main is handled. A populated CI cache is read
+only while the slot is idle and its checkout matches the successful build. If a
+new CI job starts or the checkout/cache changes, the unfinished capture is rejected
+and retried. It takes no CI lock and never copies or writes the working cache.
+Only the immutable verified artifact is uploaded after capture, so CI can run
+while uploads proceed. If the checkout has moved to a PR, publication waits for a
+successful latest-main checkout; rerun CI on main if immediate publication is
+needed. It never rebuilds another checkout just to publish a cache.
+
+Existing compatible Releases are verified and reused. New bundles retain the
+actual source commit, complete committed-input comparison, GitHub build log,
+environment metadata, safe archive member validation and every file's SHA-256.
+The compressed artifact is uploaded in 32 MiB parts. A draft becomes public only
+after all expected assets match their server SHA-256 and sizes. Retries resume
+the same draft and retain correct parts, uploading only missing/damaged expected
+assets. Published caches are immutable. A persistent queue retries failures after
+30 seconds, 2 minutes, 5 minutes, then every 15 minutes; successful main CI remains
+successful. Service and partial upload state survive restart. Missing new Releases
+never block pull/update: keep a local cache or use a verified same-environment old
+baseline and run full `lake build`.
+
+Install reviewed copies of `.github/runner/cache-publisher.py`,
+`scripts/release-cache.py`, and `scripts/ci-cache.py` together in
+`ops/cache-publisher/`, owned by root and inaccessible for job writes. Never run
+publisher modules from the job-writable checkout. The instance watchdog starts
+and stops this independent service alongside the CI supervisor; it needs no extra
+GitHub runner, incoming port, or webhook. Capture/compression runs on two CPUs,
+nice 15 and I/O priority 7. Its state, receipts and log live in `runtime/`.
+
+```sh
+python3 /inspire/hdd/global_user/czxs25250150/ops/cache-publisher/cache-publisher.py status
+python3 /inspire/hdd/global_user/czxs25250150/ops/cache-publisher/cache-publisher.py retry
+python3 /inspire/hdd/global_user/czxs25250150/ops/cache-publisher/cache-publisher.py start
+python3 /inspire/hdd/global_user/czxs25250150/ops/cache-publisher/cache-publisher.py stop
+```
+
+A status of `debouncing`, `waiting` or `publishing` is pending, not synced;
+`retrying` includes the next attempt and error. `published`/`reuse` requires a
+verified Release receipt. The watchdog restarts a dead service; `retry` requests
+an immediate retry without changing the queue concurrently.
 
 ## Validation
 
 ```sh
 python3 -m unittest discover -s Tests -p 'test_ci_cache.py'
+python3 -m unittest discover -s Tests -p 'test_async_release_cache.py'
 python3 scripts/check-source-inventory.py
 lake build
 ```
