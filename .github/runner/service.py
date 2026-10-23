@@ -112,6 +112,17 @@ def watch():
         (STATE / 'status.json').unlink(missing_ok=True)
 
 
+def cache_publisher(action):
+    """The existing instance watchdog also restores the independent publisher."""
+    publisher = HERE.parent / 'cache-publisher/cache-publisher.py'
+    if publisher.is_file():
+        try:
+            subprocess.run([sys.executable, str(publisher), action], check=True, timeout=10)
+        except (OSError, subprocess.SubprocessError) as error:
+            # Cache transport must never prevent runner availability.
+            print(f'Background cache publisher needs retry: {error}', flush=True)
+
+
 def main():
     if os.geteuid() != 0:
         raise SystemExit('Supervisor must run as root; runner jobs use the dedicated kip-ci account')
@@ -120,6 +131,7 @@ def main():
     if action == 'watch':
         watch()
     elif action == 'start':
+        cache_publisher('start')
         if live():
             return
         try:
@@ -148,6 +160,7 @@ def main():
                              start_new_session=True, close_fds=True,
                              env={'PATH': '/usr/local/bin:/usr/bin:/bin', 'LANG': 'C.UTF-8'})
     elif action == 'stop':
+        cache_publisher('stop')
         data = live()
         if data:
             os.kill(data['supervisor_pid'], signal.SIGTERM)

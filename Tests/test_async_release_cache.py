@@ -152,6 +152,14 @@ class QueueTests(unittest.TestCase):
             publisher.package.assert_not_called()
             publisher.publish.assert_called_once()
 
+    def test_watchdog_restores_publisher_and_failure_cannot_prevent_runner_start(self):
+        supervisor = load('async_runner_supervisor', '.github/runner/service.py')
+        with patch.object(supervisor.Path, 'is_file', return_value=True), patch.object(supervisor.subprocess, 'run', side_effect=subprocess.TimeoutExpired('publisher', 10)):
+            supervisor.cache_publisher('start')
+        source = (ROOT / '.github/runner/service.py').read_text()
+        self.assertLess(source.index("cache_publisher('start')"), source.index("if live():", source.index("elif action == 'start':")))
+        self.assertIn("cache_publisher('stop')", source)
+
     def test_runtime_imports_only_installed_publisher_code(self):
         self.assertIn("HERE / 'release-cache.py'", (ROOT / '.github/runner/cache-publisher.py').read_text())
         with patch.object(pub.importlib.util, 'spec_from_file_location', wraps=pub.importlib.util.spec_from_file_location) as spec:
