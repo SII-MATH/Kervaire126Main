@@ -1,5 +1,6 @@
 """Render the meeting task record as a native hgraph custom tab."""
 from collections import Counter
+from datetime import date
 import html
 from pathlib import Path
 import re
@@ -9,6 +10,7 @@ from urllib.parse import quote, urlsplit
 import yaml
 
 STATUSES = {
+    'pending': '待跟进',
     'completed': '已完成',
     'in_progress': '进行中',
     'to_confirm': '待确认',
@@ -16,16 +18,21 @@ STATUSES = {
     'to_verify': '待核实',
     'merged': '已合并',
 }
-FOLLOW_UP = {'in_progress', 'to_confirm', 'to_discuss', 'to_verify'}
-RECORD = 'meeting/2026-10-13.yaml'
+FOLLOW_UP = {'pending', 'in_progress', 'to_confirm', 'to_discuss', 'to_verify'}
 
 
-def read_meeting(root):
-    record = yaml.safe_load((Path(root) / RECORD).read_text())
+def read_meeting(path):
+    record = yaml.safe_load(Path(path).read_text())
+    # Dates are stable meeting identities as well as chronological sort keys.
+    identity = record['date']
+    if not isinstance(identity, str) or date.fromisoformat(identity).isoformat() != identity:
+        raise ValueError('Expected an ISO meeting date')
+    if Path(path).stem != identity:
+        raise ValueError('Meeting filename must match its date')
     tasks = record['tasks']
     identities = [task['id'] for task in tasks]
     if (len(identities) != len(set(identities)) or
-            any(not re.fullmatch(r'T\d{2}', identity) for identity in identities)):
+            any(not re.fullmatch(r'[A-Z]\d{2,}', identity) for identity in identities)):
         raise ValueError('Invalid or duplicate meeting task ID')
     by_id = {task['id']: task for task in tasks}
     for task in tasks:
@@ -44,11 +51,18 @@ def read_meeting(root):
     return record
 
 
+def read_meetings(root):
+    records = [read_meeting(path) for path in sorted((Path(root) / 'meeting').glob('*.yaml'))]
+    if not records:
+        raise ValueError('No meeting records found')
+    return sorted(records, key=lambda record: record['date'], reverse=True)
+
+
 def summary(record):
     counts = Counter(task['status'] for task in record['tasks'])
     return {'completed': counts['completed'],
             'follow_up': sum(counts[status] for status in FOLLOW_UP),
-            'to_discuss': counts['to_discuss'], 'merged': counts['merged']}
+            'merged': counts['merged']}
 
 
 def render_details(task, root):
@@ -89,53 +103,91 @@ def render_details(task, root):
             ''.join(sections) + '</details>')
 
 
-def render_meeting(record, root=None):
+def render_meeting(record, root=None, meetings=None, *, default_page=False):
     root = Path(root) if root is not None else Path(__file__).resolve().parent.parent
     escape = html.escape
+    meetings = meetings or [record]
+    latest = meetings[0]['date']
+    meeting_options = ''.join(
+        f'<option value="{item["date"]}.html"'
+        + (' selected' if item['date'] == record['date'] else '') + '>'
+        + escape(item['date'] + (' · 最新会议' if item['date'] == latest else '') + ' · ' + item['title'])
+        + '</option>' for item in meetings)
+    archive = ''.join(
+        f'<a href="{item["date"]}.html">{escape(item["date"])}</a> '
+        for item in meetings)
+    legacy = {}
+    if default_page:
+        current_ids = {task['id'] for task in record['tasks']}
+        # Keep existing index.html#Txx links working when the default meeting changes.
+        for item in reversed(meetings[1:]):
+            for task in item['tasks']:
+                if task['id'] not in current_ids:
+                    legacy[task['id']] = item['date'] + '.html'
+    legacy_links = ''.join(
+        f'<a data-legacy-task="{identity}" href="{page}#{identity}" hidden></a>'
+        for identity, page in legacy.items())
     counts = summary(record)
     metrics = ''.join(
         f'<button type="button" class="metric metric-{key}" data-filter="{key}" '
         f'aria-pressed="false"><strong>{counts[key]}</strong><span>{label}</span></button>'
-        for key, label in [('completed', '已完成'), ('follow_up', '仍需跟进'),
-                           ('to_discuss', '待上会讨论'), ('merged', '合并记录')])
+        for key, label in [('follow_up', '待跟进与讨论'), ('completed', '已完成'),
+                           ('merged', '合并记录')])
     rows = []
     for task in record['tasks']:
         identity, status = task['id'], task['status']
         note = f'<p class="task-note">{escape(task["note"])}</p>' if task.get('note') else ''
+        category = task.get('category', '')
+        badge = f'<span class="task-category">{escape(category)}</span>' if category else ''
         details = render_details(task, root)
         target = task.get('merged_into')
         merge = (f'<a class="merge-link" href="#{target}" data-target="{target}">并入 {target} ↗</a>'
                  if target else '')
         search = ' '.join([identity, task['title'], STATUSES[status], task.get('owner', ''),
-                           task.get('note', ''), target or ''])
+                           task.get('note', ''), category, target or ''])
         search += ' ' + ' '.join(section['title'] + ' ' + section['body'] + ' ' +
                                 section.get('snippet', '')
                                 for section in task.get('details', []))
         rows.append(
-            f'<tr id="{identity}" tabindex="-1" data-status="{status}" '
+            f'<tr id="{identity}" tabindex="-1" data-status="{status}" data-category="{escape(category, quote=True)}" '
             f'data-search="{escape(search, quote=True)}">'
             f'<th scope="row"><a href="#{identity}" data-target="{identity}">{identity}</a></th>'
-            f'<td class="task-title"><strong>{escape(task["title"])}</strong>{note}{details}</td>'
+            f'<td class="task-title">{badge}<strong>{escape(task["title"])}</strong>{note}{details}</td>'
             f'<td><span class="status status-{status}">{STATUSES[status]}</span>{merge}</td>'
             f'<td class="owner">{escape(task.get("owner", "—"))}</td></tr>')
-    options = '<option value="all">全部状态</option><option value="follow_up">仍需跟进</option>'
+    options = '<option value="all">全部状态</option><option value="follow_up">待跟进与讨论</option>'
     options += ''.join(f'<option value="{key}">{label}</option>' for key, label in STATUSES.items())
     links = ' '.join(
         f'<a href="{escape(record["sources"][key], quote=True)}" target="_blank" rel="noopener noreferrer">{label} ↗</a>'
         for key, label in [('card', '群内原卡片'), ('checklist', '原会议清单'),
-                           ('recording', '会议录屏'), ('transcript', '逐字稿')])
+                           ('recording', '会议录屏'), ('recording_a', 'A 段录屏'),
+                           ('recording_b', 'B 段录屏'), ('transcript', '逐字稿')]
+        if key in record['sources'])
     merges = '；'.join(f'{task["id"]} 并入 {task["merged_into"]}'
                       for task in record['tasks'] if task['status'] == 'merged')
-    footer = escape(merges + '。合并记录不重复计作跟进事项。待上会讨论计入仍需跟进。')
+    footer = escape((merges + '。' if merges else '') +
+                    '待跟进、进行中、待确认、待上会讨论和待核实统一计入待跟进与讨论；合并记录不重复计数。')
+    categories = list(dict.fromkeys(task.get('category') for task in record['tasks'] if task.get('category')))
+    category_filter = ('<label>事项类型<select id="task-category"><option value="all">全部类型</option>' +
+                       ''.join(f'<option value="{escape(category, quote=True)}">{escape(category)}</option>'
+                               for category in categories) + '</select></label>') if categories else ''
+    intro = record.get('intro', f'原始 {len(record["tasks"])} 项逐项保留，合并事项统一跟进。')
+    meeting_note = f'<p class="meeting-note">{escape(record["note"])}</p>' if record.get('note') else ''
+    latest_link = ('<span class="latest-label">最新会议</span>' if record['date'] == latest else
+                   '<a class="latest-link" href="index.html">返回最新会议 ↗</a>')
     return f'''<!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Meeting · Kervaire 126</title><link rel="stylesheet" href="meeting.css">
 <script src="../hgraph-custom-page.js" defer></script><script src="meeting.js" defer></script>
 </head><body><main class="meeting-page">
+<div class="meeting-navigation"><label for="meeting-select">会议记录 · 共 {len(meetings)} 次
+<select id="meeting-select">{meeting_options}</select></label>{latest_link}
+<a class="permalink" href="{record['date']}.html">本次会议固定链接 ↗</a></div>
+<noscript><nav aria-label="切换会议">{archive}</nav></noscript>
 <header><p class="eyebrow">MEETING / {escape(record['date'])}</p>
 <h1>{escape(record['title'])}</h1>
-<p class="intro">原始 {len(record['tasks'])} 项逐项保留，合并事项统一跟进。</p>
+<p class="intro">{escape(intro)}</p>{meeting_note}
 <div class="header-footer"><span>更新于 {escape(record['updated'])}</span><nav aria-label="会议依据">{links}</nav></div>
 </header>
 <section class="metrics" aria-label="会议进度">{metrics}</section>
@@ -144,13 +196,13 @@ def render_meeting(record, root=None):
 <button type="button" id="reset-filters">显示全部 {len(record['tasks'])} 项</button></div>
 <form id="meeting-filters" role="search">
 <label class="search">搜索事项<input id="task-search" type="search" placeholder="编号、事项或负责人" autocomplete="off"></label>
-<label>状态<select id="task-status">{options}</select></label></form>
+<label>状态<select id="task-status">{options}</select></label>{category_filter}</form>
 <p id="result-count" aria-live="polite">共 {len(record['tasks'])} 项</p>
 <div class="task-table"><table><thead><tr><th scope="col">编号</th><th scope="col">事项</th>
 <th scope="col">状态</th><th scope="col">负责人</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
 <p id="no-results" hidden>没有匹配的事项。<button type="button" data-reset>清除筛选</button></p>
 </section><footer>{footer}</footer>
-</main></body></html>'''
+</main>{legacy_links}</body></html>'''
 
 
 def stage_meeting(root, project):
@@ -162,9 +214,11 @@ def stage_meeting(root, project):
 
 def export_meeting(root, out):
     root = Path(root)
-    record = read_meeting(root)
+    records = read_meetings(root)
     destination = Path(out) / 'meeting'
     destination.mkdir(parents=True, exist_ok=True)
-    (destination / 'index.html').write_text(render_meeting(record, root))
+    (destination / 'index.html').write_text(render_meeting(records[0], root, records, default_page=True))
+    for record in records:
+        (destination / f'{record["date"]}.html').write_text(render_meeting(record, root, records))
     for name in ('meeting.css', 'meeting.js'):
         shutil.copyfile(root / 'site' / name, destination / name)

@@ -54,19 +54,34 @@ Generated hgraph nodes, edges, web presentation copies and `_site/` are reproduc
 
 ## Meeting task tab
 
-The native **Meeting** custom tab displays the October 13 meeting's original
-T01–T27 tasks, their current status, owners, merge targets and source links.
-`meeting/2026-10-13.yaml` is the authored record; update it when a task changes.
-The exporter derives the counts and page from that record. Merged tasks retain
-their original IDs and link to the receiving task, without counting twice in
-the follow-up total. All meeting discussion items, including T13, use the same
-discussion status and count toward the follow-up total. The tab supports
-status filters and search and is exported with the existing native website
-pipeline. Optional task `details` sections hold completion explanations or meeting discussion material,
-code excerpts, source `links` (`title` and HTTPS `url`), and `code` references
-(`file` and `declaration`); the exporter
-links these to the current declaration lines in the published sources. A task's
-optional `details_label` names its expandable panel.
+The native **Meeting** custom tab reads all `meeting/YYYY-MM-DD.yaml` records,
+orders them by meeting date, and opens the latest meeting by default. The meeting
+selector opens dated pages; each meeting has a stable `meeting/YYYY-MM-DD.html`
+link so bookmarks keep pointing to the same meeting when a newer one is added.
+The original October 13 T01–T27 record is retained alongside the October 20 and
+21 ai4m meetings, sourced from their group cards and action lists. October 20
+keeps its two recording segments as separate source links (`recording_a` and
+`recording_b`); the original M06 remains a later plan and M07 a meeting action.
+Legacy `index.html#Txx`
+links continue to open the October 13 task when that ID is absent from the latest
+meeting. Task IDs are unique within a meeting and may use the original source
+prefix (for example M01, F01, P01, E01 or Q01).
+
+The exporter derives three totals: pending follow-up/discussion, completed, and
+merged records. Discussion tasks belong to the follow-up total, without a second
+summary card. Merged tasks retain their IDs and link to the receiving task,
+without counting twice. Search, status filters and optional source-category
+filters operate within the selected meeting. Switching meetings starts with all
+items visible; per-meeting filter URLs remain shareable. Source categories keep
+meeting actions, later confirmations, plans, suggestions and verification questions
+distinct; importing a record does not assert execution or completion.
+
+Optional task `details` sections hold completion explanations or discussion
+material, code excerpts, source `links` (`title` and HTTPS `url`), and `code`
+references (`file` and `declaration`); the exporter links these to the current
+declaration lines in the published sources. A task's optional `details_label`
+names its expandable panel. Optional meeting `intro` and `note` fields preserve
+context and source limitations, and task `category` fields supply the type filter.
 Meeting statuses do not modify mathematical entries or proof states.
 
 ## Installation and export
