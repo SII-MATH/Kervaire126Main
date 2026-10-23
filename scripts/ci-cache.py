@@ -282,20 +282,28 @@ def restore_release():
     manifest_hash = sha256((ROOT / 'lake-manifest.json').read_bytes())
     allowed_lake = None
     if (ROOT / '.lake').is_symlink():
-        # The self-hosted slot deliberately keeps .lake outside checkout.
-        # Admit only its exact environment/input directory, never an arbitrary
-        # link (in particular, never a developer or another source's cache).
+        # Admit only this account's canonical locked environment or the legacy
+        # exact-input layout. Never follow a link into development caches.
         digest = hashlib.sha256()
         for name in ('lean-toolchain', 'lake-manifest.json'):
             digest.update(name.encode() + b'\0' + (ROOT / name).read_bytes() + b'\0')
-        expected = (Path.home().resolve() / 'cache/environments' / digest.hexdigest() /
-                    'inputs' / inputs['fingerprint'])
-        if (os.environ.get('RUNNER_ENVIRONMENT') != 'self-hosted' or
-                (ROOT / '.lake').resolve() != expected.resolve() or
-                expected.resolve() != expected or
-                (expected / 'runner-build-inputs').read_text().strip() != inputs['fingerprint']):
+        environment = Path.home().resolve() / 'cache/environments' / digest.hexdigest()
+        actual = (ROOT / '.lake').resolve()
+        persistent = (actual == environment and environment.resolve() == environment and
+                      (environment / 'runner-cache-layout').is_file() and
+                      (environment / 'runner-environment').is_file() and
+                      (environment / 'runner-cache-layout').read_text().strip() == 'single-slot-v1' and
+                      (environment / 'runner-environment').read_text().strip() == digest.hexdigest())
+        expected = environment / 'inputs' / inputs['fingerprint']
+        legacy = (actual == expected and expected.resolve() == expected and
+                  (expected / 'runner-build-inputs').is_file() and
+                  (expected / 'runner-build-inputs').read_text().strip() == inputs['fingerprint'])
+        if os.environ.get('RUNNER_ENVIRONMENT') != 'self-hosted' or not (persistent or legacy):
             raise ValueError('Self-hosted cache link does not match current environment/build inputs')
-        allowed_lake = expected
+        allowed_lake = actual
+        if persistent and (actual / 'build').exists():
+            print('Persistent CI build already present; preserving it for full Lake incremental checks')
+            return
     prefix = 'build-cache-'
     suffix = f'-{platform.system().lower()}-{platform.machine()}'
     checked = 0

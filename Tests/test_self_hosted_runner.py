@@ -54,159 +54,131 @@ class AdmissionTests(unittest.TestCase):
 
 
 class PersistentCacheTests(unittest.TestCase):
-    def test_workflow_attempts_exact_release_before_fallback_and_dependencies(self):
+    def make(self, root):
+        root.mkdir(parents=True, exist_ok=True)
+        (root / 'lean-toolchain').write_text('pinned')
+        (root / 'lake-manifest.json').write_text('{}')
+
+    def test_workflow_keeps_release_bootstrap_and_full_build_without_copy_step(self):
         workflow = (ROOT / '.github/workflows/ci.yml').read_text()
         ordered = ['Prepare isolated persistent cache', 'Reuse a verified Release build across branches',
-                   'Seed incremental baseline only after exact cache miss',
                    'Fetch only imported Mathlib dependencies', 'Build all modules and checks']
         self.assertEqual([workflow.index(name) for name in ordered],
                          sorted(workflow.index(name) for name in ordered))
+        self.assertNotIn('--seed-baseline', workflow)
+        self.assertIn("steps.local_cache.outputs.restore_release == 'true'", workflow)
 
-    def test_source_variants_keep_independent_builds_and_shared_locked_dependencies(self):
+    def test_source_changes_keep_one_build_directory_and_partial_progress(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives, 'a' * 64)
+            root = Path(temporary) / 'checkout'; self.make(root)
+            archives = Path(temporary) / 'cache'
+            first = cache.prepare(root, archives)
             (root / '.lake/build').mkdir()
-            (root / '.lake/build/result').write_text('version A')
-            (root / '.lake/packages/dependency').write_text('locked dependency')
-            cache.prepare(root, archives, 'b' * 64)
-            self.assertFalse((root / '.lake/build').exists())
-            cache.seed_baseline(root, archives)
-            self.assertEqual((root / '.lake/build/result').read_text(), 'version A')
-            self.assertEqual((root / '.lake/packages/dependency').read_text(), 'locked dependency')
-            (root / '.lake/build/result').write_text('version B')
-            cache.prepare(root, archives, 'a' * 64)
-            self.assertEqual((root / '.lake/build/result').read_text(), 'version A')
-            cache.prepare(root, archives, 'b' * 64)
-            self.assertEqual((root / '.lake/build/result').read_text(), 'version B')
+            result = root / '.lake/build/result'; result.write_text('partial build')
+            inode = result.stat().st_ino
+            (root / 'A.lean').write_text('new source version')
+            second = cache.prepare(root, archives)
+            self.assertEqual(first, second)
+            self.assertEqual(result.stat().st_ino, inode)
+            self.assertEqual(result.read_text(), 'partial build')
+            result.write_text('updated incrementally')
+            (root / 'A.lean').write_text('another source version')
+            self.assertEqual(cache.prepare(root, archives), first)
+            self.assertEqual(result.read_text(), 'updated incrementally')
+            self.assertFalse((first / 'inputs').exists())
 
-    def test_exact_restore_precedes_and_prevents_incremental_copy(self):
+    def test_environment_switch_retains_each_locked_cache(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives, 'a' * 64)
-            (root / '.lake/build').mkdir()
-            (root / '.lake/build/result').write_text('baseline A')
-            with patch.object(cache.subprocess, 'run') as copy:
-                cache.prepare(root, archives, 'b' * 64)
-                copy.assert_not_called()
-                # Model the verified Release installation before fallback.
-                (root / '.lake/build').mkdir()
-                (root / '.lake/build/result').write_text('exact B')
-                cache.seed_baseline(root, archives)
-                copy.assert_not_called()
-            self.assertEqual((root / '.lake/build/result').read_text(), 'exact B')
-            cache.prepare(root, archives, 'a' * 64)
-            self.assertEqual((root / '.lake/build/result').read_text(), 'baseline A')
-
-    def test_interrupted_copy_does_not_poison_future_cache_hits(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives, 'a' * 64)
-            (root / '.lake/build').mkdir()
-            cache.prepare(root, archives, 'b' * 64)
-            def cancelled(args, **kwargs):
-                Path(args[-1]).mkdir()
-                (Path(args[-1]) / 'partial').write_text('unfinished')
-                raise RuntimeError('copy interrupted')
-            with patch.object(cache.subprocess, 'run', side_effect=cancelled):
-                with self.assertRaisesRegex(RuntimeError, 'interrupted'):
-                    cache.seed_baseline(root, archives)
-            self.assertFalse((root / '.lake/build').exists())
-            self.assertTrue((root / '.lake/runner-incremental-baseline').is_file())
-            cache.seed_baseline(root, archives)
-            self.assertTrue((root / '.lake/build').is_dir())
-
-    def test_fallback_rejects_escaping_or_symlinked_baselines(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives, 'a' * 64)
-            pending = root / '.lake/runner-incremental-baseline'
-            pending.write_text('../development/build')
-            with self.assertRaises(ValueError):
-                cache.seed_baseline(root, archives)
-            other = archives / cache.environment_key(root) / 'inputs' / ('b' * 64)
-            other.mkdir()
-            (other / 'build').symlink_to(root)
-            pending.write_text('inputs/' + 'b' * 64 + '/build')
-            with self.assertRaises(ValueError):
-                cache.seed_baseline(root, archives)
-
-    def test_corrupt_fingerprint_cannot_escape_cache(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary); (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            with self.assertRaises(ValueError):
-                cache.prepare(root, root / 'cache', '../development')
-
-    def test_matching_environment_keeps_files_and_lock_change_archives_them(self):
-        with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives)
-            artifact = root / '.lake/artifact'; artifact.write_text('compiled')
-            cache.prepare(root, archives)
-            self.assertEqual(artifact.read_text(), 'compiled')
+            root = Path(temporary) / 'checkout'; self.make(root)
+            archives = Path(temporary) / 'cache'
+            first = cache.prepare(root, archives)
+            (first / 'build').mkdir(); (first / 'build/progress').write_text('old environment')
             (root / 'lake-manifest.json').write_text('{"changed":true}')
-            cache.prepare(root, archives)
-            self.assertFalse(artifact.exists())
-            self.assertEqual(next(archives.glob('*/artifact')).read_text(), 'compiled')
+            second = cache.prepare(root, archives)
+            self.assertNotEqual(first, second)
+            self.assertFalse((second / 'build').exists())
+            self.assertEqual((first / 'build/progress').read_text(), 'old environment')
             (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives)
-            self.assertEqual(artifact.read_text(), 'compiled')
+            self.assertEqual(cache.prepare(root, archives), first)
+            self.assertEqual((root / '.lake/build/progress').read_text(), 'old environment')
 
-    def test_checkout_recreation_does_not_delete_persistent_build(self):
+    def test_legacy_migration_renames_current_build_and_preserves_older_build(self):
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            archives = Path(temporary) / 'archives'
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives)
-            (root / '.lake/artifact').write_text('compiled')
-            # Checkout's directory removal must only remove the symlink.
-            import shutil
-            shutil.rmtree(root)
-            root.mkdir()
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            cache.prepare(root, archives)
-            self.assertEqual((root / '.lake/artifact').read_text(), 'compiled')
+            root = Path(temporary) / 'checkout'; self.make(root)
+            archives = Path(temporary) / 'cache'
+            environment = archives / cache.environment_key(root)
+            old = environment / 'inputs' / ('a' * 64)
+            (old / 'build').mkdir(parents=True)
+            (old / 'build/result').write_text('latest CI progress')
+            inode = (old / 'build/result').stat().st_ino
+            (environment / 'build').mkdir()
+            (environment / 'build/result').write_text('older baseline')
+            (root / '.lake').symlink_to(old, target_is_directory=True)
+            self.assertEqual(cache.prepare(root, archives), environment)
+            self.assertEqual((environment / 'build/result').stat().st_ino, inode)
+            self.assertFalse((old / 'build').exists())
+            backup = next(environment.glob('build.before-single-slot-*'))
+            self.assertEqual((backup / 'result').read_text(), 'older baseline')
+            self.assertEqual((root / '.lake/build/result').read_text(), 'latest CI progress')
 
-    def test_symlink_cannot_redirect_into_development_cache(self):
+    def test_checkout_recreation_keeps_persistent_build(self):
+        import shutil
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary)
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
-            (root / '.lake').symlink_to(root / 'development')
+            root = Path(temporary) / 'checkout'; self.make(root)
+            archives = Path(temporary) / 'cache'
+            cache.prepare(root, archives)
+            (root / '.lake/build').mkdir(); (root / '.lake/build/result').write_text('compiled')
+            shutil.rmtree(root); self.make(root)
+            cache.prepare(root, archives)
+            self.assertEqual((root / '.lake/build/result').read_text(), 'compiled')
+
+    def test_development_link_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; self.make(root)
+            (root / '.lake').symlink_to(Path(temporary) / 'development')
             with self.assertRaises(ValueError):
-                cache.prepare(root, root / 'archives')
+                cache.prepare(root, Path(temporary) / 'cache')
 
-    def test_source_cleanup_preserves_cache_link_and_removes_stale_files(self):
+    def test_build_and_dependency_links_cannot_escape_into_development(self):
+        for name in ('build', 'packages'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary) / 'checkout'; self.make(root)
+                archives = Path(temporary) / 'cache'
+                target = archives / cache.environment_key(root); target.mkdir(parents=True)
+                (target / name).symlink_to(Path(temporary) / 'development')
+                with self.assertRaises(ValueError):
+                    cache.prepare(root, archives)
+
+    def test_unclassified_checkout_cache_is_preserved_without_adopting_it(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; self.make(root)
+            (root / '.lake/build').mkdir(parents=True)
+            (root / '.lake/build/progress').write_text('unknown owner inputs')
+            archives = Path(temporary) / 'cache'
+            cache.prepare(root, archives)
+            self.assertFalse((root / '.lake/build').exists())
+            backup = next(archives.glob('previous-checkout-*'))
+            self.assertEqual((backup / 'build/progress').read_text(), 'unknown owner inputs')
+
+    def test_environment_ancestor_symlink_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'checkout'; self.make(root)
+            archives = Path(temporary) / 'cache'; archives.mkdir()
+            (archives / cache.environment_key(root)).symlink_to(Path(temporary) / 'development')
+            with self.assertRaises(ValueError):
+                cache.prepare(root, archives)
+
+    def test_source_cleanup_preserves_persistent_build(self):
         import subprocess
         with tempfile.TemporaryDirectory() as temporary:
-            root = Path(temporary) / 'checkout'; root.mkdir()
-            (root / 'lean-toolchain').write_text('pinned')
-            (root / 'lake-manifest.json').write_text('{}')
+            root = Path(temporary) / 'checkout'; self.make(root)
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            subprocess.run(['git', 'add', 'lean-toolchain', 'lake-manifest.json'], cwd=root, check=True)
-            cache.prepare(root, Path(temporary) / 'archives')
-            (root / '.lake/artifact').write_text('compiled')
-            (root / 'stale.tmp').write_text('old source')
+            subprocess.run(['git', 'add', '.'], cwd=root, check=True)
+            cache.prepare(root, Path(temporary) / 'cache')
+            (root / '.lake/build').mkdir(); (root / '.lake/build/progress').write_text('compiled')
+            (root / 'stale.tmp').write_text('stale')
             subprocess.run(['git', 'clean', '-ffdx', '-e', '.lake', '-e', '.lake/'],
                            cwd=root, check=True, capture_output=True)
             self.assertTrue((root / '.lake').is_symlink())
-            self.assertEqual((root / '.lake/artifact').read_text(), 'compiled')
+            self.assertEqual((root / '.lake/build/progress').read_text(), 'compiled')
             self.assertFalse((root / 'stale.tmp').exists())
