@@ -91,4 +91,29 @@ example (X Y : ClassicalObject)
   comparison.nu_natural X Y f a s t k x
 
 
+-- The page-extension application keeps the actual normalized quotient map,
+-- its chosen infinity witnesses, and the complete target indeterminacy.
+private theorem elementMap_zero_binding {A : ModuleCat.{0} ℤ} :
+    elementMap (0 : A) = 0 := by
+  ext z
+  simp [elementMap]
+
+example (X Y : ClassicalObject) (f : X.obj model.auxiliary ⟶ Y.obj model.auxiliary)
+    (r : ℕ) (n s t : ℤ) (x y)
+    (W : FiniteExtensionWitness model X Y f r n s t x y) :
+    W.Essential ↔ ¬ TowerExtensionEquation
+      (model.convergentMap (.quotient (r-1) (extensionSourceObject model X Y f))
+        (.quotient (r-1) (.nu Y)) (finiteExtensionMap model X Y f (r-1)))
+      (t-s,t+normalizedExponent model.classicalTower f) s n W.source 0 := by
+  let M := model.convergentMap
+    (.quotient (r-1) (extensionSourceObject model X Y f))
+    (.quotient (r-1) (.nu Y)) (finiteExtensionMap model X Y f (r-1))
+  have h := M.essential_iff_no_zero_target
+    (t-s,t+normalizedExponent model.classicalTower f) s n
+    (by simp [SyntheticTowerConvergence.toConvergence])
+    (by simp [SyntheticTowerConvergence.toConvergence])
+    (elementMap W.source) (elementMap W.target) W.equation
+  simpa only [FiniteExtensionWitness.Essential, TowerEssentialExtension,
+    TowerExtensionEquation, elementMap_zero_binding] using h
+
 end

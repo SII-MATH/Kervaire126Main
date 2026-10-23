@@ -601,23 +601,55 @@ Part (1) is straightforward from the setup of the extension spectral sequence an
 
 \section{Quotient and boundary maps}
 
-\begin{notation}[Quotient and boundary maps]
+\begin{definition}[Quotient and boundary maps]
 \label{notation:AdamsSynthetic:quotient-boundary-maps}
 \label{not:deltaandrho}
 \level{coarse}
-From \cite{LWX126}, Notation 4.1.\par
-There are certain special maps between synthetic spectra that we want to consider. For any $n<m\le \infty$ and a spectrum $X$, we have the following  distinguished triangles of $\HF$-synthetic spectra
-$$\Sus^{0,-n}\nu X/\lambda^{m-n}\fto{\lambda^n} \nu X/\lambda^m\fto{~\rho_{n,m}~} \nu X/\lambda^n\fto{~\delta_{n,m}~} \Sus^{1,-n}\nu X/\lambda^{m-n}.$$
-We simply write $\rho=\rho_{n,m}$, $\delta=\delta_{n,m}$ by abuse of notation if $n,m$ is understood in the context.
-When $m=\infty$, this sequence is interpreted  as
-$$\Sus^{0,-n}\nu X\fto{\lambda^n} \nu X\fto{~\rho~} \nu X/\lambda^n\fto{~\delta~} \Sus^{1,-n}\nu X.$$
+A finite-indexed revision of \cite{LWX126}, Notation 4.1.
 
-Many arguments for finite $m$ implies the corresponding statement when $m=\infty$ because of
-$$\nu X=\varprojlim_{m} \nu X/\lambda^m$$
-as shown in \cite[Proposition A.13]{BHS}.
+Put $Q_nZ=Z/\lambda^n$. For a synthetic spectrum $Z$ and natural
+numbers $0<n<m$, a lambda--rho--delta triangle consists of maps
+\[
+\Sigma^{0,-n}Q_{m-n}Z\xrightarrow{\ell_{n,m}}Q_mZ
+\xrightarrow{\rho_{n,m}}Q_nZ
+\xrightarrow{\delta_{n,m}}\Sigma\Sigma^{0,-n}Q_{m-n}Z
+\]
+forming a distinguished triangle. If $\iota_j:Z\to Q_jZ$ is the
+cofiber inclusion, require
+\[
+\ell_{n,m}\circ\Sigma^{0,-n}\iota_{m-n}
+   =\iota_m\circ\lambda^n,
+\qquad \rho_{n,m}\circ\iota_m=\iota_n.
+\]
+Use the triangle selected by the fixed finite quotient system of
+\ref{sem:AdamsSynthetic:lambda-quotients}. In particular, this defines
+the maps on $Z=\nu X$ used in the paper.
 
-We also note that our grading for the triangulation translation functor is smashing with $S^{1,0}$, which is consistent with \cite[Appendix A]{BHS} but is different from \cite[Section 7]{BurklundXu}.
-\end{notation}
+For the notation $m=\infty$, set $\rho_{n,\infty}=\iota_n$ and let
+$\delta_{n,\infty}$ be the boundary of the chosen cofiber of
+$\lambda^n$. The resulting triangle
+\[
+\Sigma^{0,-n}Z\xrightarrow{\lambda^n}Z
+\xrightarrow{\rho_{n,\infty}}Q_nZ
+\xrightarrow{\delta_{n,\infty}}\Sigma\Sigma^{0,-n}Z
+\]
+is distinguished, independently of any completeness assertion.
+\uses{sem:AdamsSynthetic:lambda-quotients}
+\lean{KIP126.Synthetic.Context.LambdaRhoDeltaTriangle,KIP126.Synthetic.Context.XModLambdaN.incl,KIP126.Synthetic.Context.XModLambdaN.proj,KIP126.Synthetic.Context.XModLambdaN.cofiberTriangle_distinguished}
+% Correspondence: The finite binding defines the triangle data, including its two compatibility laws; the fixed choice is supplied by the already bound quotient system. The untruncated inclusions, boundaries and distinguishedness are the actual cofiber constructions. These bindings do not assert a limit comparison or complete the registered Standard.quotients construction.
+\end{definition}
+
+We abbreviate the maps by $\rho$ and $\delta$ when the indices are clear.
+Ordinary triangulated suspension is $\Sigma^{1,0}$, as in
+\cite[Appendix A]{BHS}; compare the different convention in
+\cite[Section 7]{BurklundXu}.
+
+The inverse-limit assertion invoked in \cite{LWX126}, Notation 4.1, is
+separate from these cofiber triangles. Its nilpotent-completeness
+hypothesis and its source formulation are discussed in the background
+preceding \ref{sem:Literature:finite-bockstein}. A finite-quotient argument
+requires its own compatibility with that limit before giving an
+untruncated conclusion.
 
 \section{Finite- and infinite-page extensions}
 
@@ -683,9 +715,7 @@ $$n<\AF(f)\text{ or }n>r-2-k+e(f).$$
 % Blueprint note: \href{paper/main.tex.html#L1301}{Original statement, hypotheses, and context} · \href{paper/2412.10879.pdf}{Article PDF}
 \end{definition}
 
-\begin{definition}[Lambda levels and the zero-level convention]
-\label{sem:AdamsSynthetic:page-extension-levels}
-\level{coarse}
+\paragraph*{Lambda levels and the zero-level convention}
 Following \cite{LWX126}, Section 5, the coordinate formulas preceding
 Definition 5.4.\par
 Fix $f:X\to Y$, its normalized map
@@ -714,32 +744,67 @@ changing $k$ changes the quotient exponent to $q=R+k-1$. The original
 notation $d_n^{f,E_R}(x)=y$ uses $k=0$, $q=R-1$. This is a
 specialization of coordinates, not a rule for dividing an actual extension
 by a power of $\lambda$ or for transporting essentiality between levels.
-\uses{paper:5.4,sem:AdamsSynthetic:normalized-map,sem:AdamsSynthetic:ess-shifts}
-% Correspondence: mathematical notation for the arbitrary-level windows. This entry has no direct Lean binding in AdamsSynthetic; the public level relation and its representative comparison belong to ProofTools.
-\end{definition}
+
+The public level relation and its representative comparison are stated in
+the ProofTools chapter; the formulas here specify the coordinate convention.
 
 \begin{remark}[The target coset of a page extension]
 \label{paper:5.7}
 \label{def:fErextess}
 \level{coarse}
-From \cite{LWX126}, Remark 5.7.\par
-Let $d_n^{f,E_r}(x)=y$ be an extension as in Definition~\ref{paper:5.4}, and put $e=e(f)$. The target $y$ is a coset with indeterminacy
+A representative-level revision of \cite{LWX126}, Remark 5.7.
+
+Let $g:A\to B$ be a convergent synthetic map, with its specified
+filtrations and convergence identifications. Fix a stem and weight $p$,
+an integer filtration $s$, and an integer length $n$. Let $T$ be a
+$\mathbb Z$-module, and let $\xi,\eta$ be $T$-valued infinity-page
+classes in the pieces corresponding to $(s,p)$ and $(s+n,p)$.
+Suppose that $\xi$ has a length-$n$ extension to $\eta$; this includes
+the requirement $n\geq0$. Write $\bar\eta$ for the associated-graded
+image under the specified convergence, and let $C_g(\bar\eta)$ be
+the full target coset of the same filtered map, degree and length, as in
+\ref{sem:SpectralSequence:extension-equation}.
+
+For another target class $\zeta$ in that same infinity-page piece,
 \[
-B_{1+n-e}^{s+n,t+n}(Y)
+\xi\text{ extends to }\zeta
+\quad\Longleftrightarrow\quad
+\bar\zeta\in C_g(\bar\eta).
 \]
-together with the images of the shorter $d_{<n}^{\widehat f_{r-1}}$ extensions in that same extension spectral sequence. The extension is essential precisely when this full target coset does not contain zero. This is a statement about the coset, rather than a nonvanishing condition on a chosen representative in $E_2(Y)$.
-For the level-$k$ relation of
-Definition~\ref{sem:AdamsSynthetic:page-extension-levels}, the corresponding
-boundary denominator is $B_{k+n-e+1}$ and the shorter images are taken
-in that same quotient and weight. Essentiality again means that the full
-target coset excludes zero. Changing $k$ changes this coset; a relation
-transported by $\lambda$ or quotient reduction need not retain its
-essentiality.
-\uses{paper:5.4,paper:2.5,sem:AdamsSynthetic:page-extension-levels}
+The known extension is essential if and only if $\xi$ has no extension
+to the zero target, equivalently $0\notin C_g(\bar\eta)$.
+This applies to the actual finite normalized map underlying
+Definition~\ref{paper:5.4}, with its specified infinity-page witnesses.
+\uses{sem:SpectralSequence:extension-equation,paper:2.3,sem:AdamsSynthetic:selected-convergence,paper:5.4}
+\lean{KIP126.AdamsSynthetic.ConvergentMap.targets_iff_coset,KIP126.AdamsSynthetic.ConvergentMap.essential_iff_no_zero_target}
+% Correspondence: Both bindings state the representative-level conclusions displayed here for the same convergent map, with their full degree equalities and test-module parameter. They do not identify a classical cycle/boundary quotient with this coset or supply an unbounded ESS-differential comparison. The paper's coordinate interpretation is recorded separately below.
 \end{remark}
 \begin{proof}
-Definition~\ref{paper:5.4} reads the extension in the normalized-map ESS. Its target coordinates first divide out the displayed classical boundary group and then the images of shorter extensions. Essentiality means that the resulting differential target is nonzero, equivalently that the full coset does not contain zero.
+\uses{sem:SpectralSequence:extension-equation}
+Transport the classes to the associated-graded groups using the specified
+convergence. Subtracting two extensions with the same source gives an
+extension from zero to the difference of the targets. Conversely, adding
+such a homogeneous extension to the known extension gives every target
+in the coset. Applying this characterization to the zero target gives
+the essentiality criterion. These are representative equations for the
+same filtered map, so no boundedness or projectivity hypothesis is needed.
 \end{proof}
+
+\paragraph*{The paper's target coordinates}
+In \cite{LWX126}, Remark 5.7, the extension
+$d_n^{f,E_r}(x)=y$ is written using the target coordinates of
+Definition~\ref{paper:5.4}, with $e=e(f)$. The target is first taken
+modulo $B_{1+n-e}^{s+n,t+n}(Y)$ and then modulo the images of the
+shorter $d_{<n}^{\widehat f_{r-1}}$ extensions in that same ESS.
+At level $k$, the corresponding boundary denominator is
+$B_{k+n-e+1}$, with the shorter images taken in the same quotient and
+weight. The representative-level result above proves the full-coset
+criterion. Its identification with these particular classical
+cycle/boundary coordinates requires the finite-window and label
+comparisons; it is not a further conclusion of the two bound theorems.
+Those comparisons are developed in Literature and ProofTools.
+Changing $k$ changes the target coset, so transporting a relation by
+$\lambda$ or quotient reduction need not preserve essentiality.
 
 \section{Adams towers and synthetic comparison}
 % Mathematical authoring for the existing AdamsSynthetic frontier groups.
